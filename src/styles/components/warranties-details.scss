@@ -1,0 +1,73 @@
+.warranty-details {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  margin: 0 10rem;
+
+  @media (max-width: 1578px) {
+    margin: 0 2rem;
+  }
+
+  &__header {
+    display: flex;
+    gap: 2rem;
+    position: relative;
+
+    h2 {
+      font-size: var(--font-xl);
+    }
+  }
+
+  &__top-bar {
+    display: flex;
+    gap: 0.5rem;
+    margin: 0.5rem 0;
+  }
+
+  &__row {
+    display: flex;
+    justify-content: space-between;
+    margin: auto 1rem;
+  }
+
+  &__btn-row {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+
+  h2 {
+    margin-bottom: 0.8rem;
+    font-size: var(--font-xl);
+  }
+}
+
+
+/* EDIT WARRANTY DETAILS COMPONENT */
+
+.edit-warranty-details {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+
+  @media (max-width: 1578px) {
+    margin: 0 2rem;
+  }
+  
+  &__header {
+    display: flex;
+    gap: 2rem;
+    margin-bottom: 1.3rem;
+    position: relative;
+
+    h2 {
+      font-size: var(--font-xl);
+    }
+  }
+
+  &__row {
+    display: flex;
+    justify-content: space-between;
+    margin: 0 1rem;
+  }
+}

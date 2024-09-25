@@ -1,0 +1,25 @@
+.image-upload {
+  display: flex;
+  gap: 5rem;
+
+  h2 {
+    font-size: 2rem;
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+
+    button {
+      width: fit-content;
+    }
+
+    input[type='file'] {
+      margin-bottom: 0.8rem;
+    }
+  }
+
+  &__name-input {
+    margin: 0.5rem 0.5rem 0 0.5rem;
+  }
+}

@@ -1,0 +1,36 @@
+.sales-info {
+  section {
+    overflow-y: auto;
+    max-height: 32rem;
+  }
+
+  &__top-section {
+    display: flex;
+    text-align: center;
+    justify-content: center;
+    gap: 1.5rem;
+    
+    p {
+      font-size: var(--font-md);
+    }
+  }
+
+  &__sales-by-year {
+    border: 2px solid;
+    margin: 1.58rem;
+    padding: 0.5rem;
+    border-radius: 0.3rem;
+    overflow-y: auto;
+    max-height: 10rem;
+    width: 10rem;
+
+    &--row {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 0.5rem;
+      border: 1px solid black;
+      padding: 0.3rem;
+      border-radius: 0.3rem;
+    }
+  }
+}

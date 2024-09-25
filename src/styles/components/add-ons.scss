@@ -1,0 +1,36 @@
+.add-ons {
+  position: relative;
+
+  &__list {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+    margin-top: 1rem;
+  }
+
+  &__list-row {
+    background-color: var(--grey-dark-4);
+    border-radius: 0.3rem;
+    padding: 0.8rem;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    width: 100%;
+    display: flex;
+  }
+
+  &__list-row-content {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    max-width: 85%;
+    align-items: center;
+  }
+
+  &__list-row-buttons {
+    display: flex;
+    gap: 0.5rem;
+    place-items: center;
+    margin: auto 0.5rem auto auto;
+    flex-direction: column;
+  }
+}

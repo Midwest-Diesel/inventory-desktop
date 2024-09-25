@@ -1,0 +1,20 @@
+.customer-search {
+  width: 100%;
+
+  form {
+    display: flex;
+    flex-direction: column;
+  }
+
+  table tr {
+    cursor: pointer;
+  }
+
+  &__selected-customer {
+    color: var(--yellow-2);
+  }
+
+  h4, h3 {
+    cursor: default;
+  }
+}

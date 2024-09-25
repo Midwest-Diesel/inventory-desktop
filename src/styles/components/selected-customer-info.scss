@@ -1,0 +1,13 @@
+.selected-customer-info {
+  margin-bottom: 0.3rem;
+
+  td, th {
+    cursor: auto;
+  }
+
+  &__buttons {
+    display: flex;
+    gap: 0.3rem;
+    margin: 0.3rem 0;
+  }
+}

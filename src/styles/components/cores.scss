@@ -1,0 +1,17 @@
+.cores-page {
+  &__top-bar {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 0.7rem;
+  }
+
+  &__table-container {
+    width: fit-content;
+    max-height: 44rem;
+    overflow-y: auto;
+
+    table {
+      width: 100%;
+    }
+  }
+}

@@ -1,0 +1,111 @@
+.engine-details {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  margin: auto 2rem;
+  padding-bottom: 1rem;
+
+  &__header {
+    display: flex;
+    gap: 2rem;
+    margin-bottom: 1.3rem;
+    position: relative;
+
+    h2 {
+      font-size: var(--font-xl);
+    }
+  }
+
+  &__row {
+    display: flex;
+    justify-content: space-between;
+    margin: auto 1rem;
+  }
+
+  h2 {
+    margin-bottom: 0.8rem;
+    font-size: var(--font-xl);
+  }
+}
+
+.engine-parts-table, .edit-engine-parts-table {
+  color: white;
+  width: 100%;
+
+  th {
+    color: var(--yellow-2);
+    background-color: var(--grey-dark-1);
+  }
+
+  tr:nth-child(even) td {
+    background-color: var(--grey-dark-2);
+  }
+  
+  tr:nth-child(odd) td {
+    background-color: var(--grey-dark-4);
+  }
+}
+
+.edit-engine-parts-table {
+  th {
+    text-align: center;
+  }
+
+  td {
+    width: auto;
+  }
+}
+
+.item-cost-table {
+  max-height: 20rem;
+  overflow-y: auto;
+  width: fit-content;
+}
+
+.engine-profit {
+  &__top-bar {
+    display: flex;
+    gap: 1rem;
+    margin: 0.5rem 0 0.2rem 0;
+
+    span {
+      font-weight: normal;
+    }
+  }
+
+  &__table {
+    max-height: 24rem;
+    overflow-y: auto;
+    width: fit-content;
+  }
+}
+
+
+/* EDIT ENGINE DETAILS COMPONENT */
+
+.edit-engine-details {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+
+  @media (max-width: 1578px) {
+    margin: auto 2rem;
+  }
+
+  &__header {
+    display: flex;
+    gap: 2rem;
+    margin-bottom: 1.3rem;
+    position: relative;
+
+    h2 {
+      font-size: var(--font-xl);
+    }
+  }
+
+  &__row {
+    display: flex;
+    justify-content: space-between;
+    margin: auto 1rem;
+  }
+}

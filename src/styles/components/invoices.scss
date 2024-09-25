@@ -1,0 +1,42 @@
+.invoices {
+  display: flex;
+  flex-direction: column;
+  padding-left: 1rem;
+
+  &__container {
+    display: flex;
+    gap: 1rem;
+  }
+
+  &__top-bar {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 0.7rem;
+
+    &--count-block {
+      border: 1px solid var(--grey-light-2);
+      border-radius: 0.3rem;
+      padding: 0.5rem;
+    }
+  }
+
+  &__table-container {
+    width: 60rem;
+    max-height: 44rem;
+    overflow-y: auto;
+
+    td {
+      cursor: zoom-in;
+    }
+  }
+}
+
+.invoice-items-table {
+  &--invoices-page {
+    margin: 7.5rem 0 0 0.4rem;
+
+    thead {
+      font-size: var(--font-xxsm);
+    }
+  }
+}

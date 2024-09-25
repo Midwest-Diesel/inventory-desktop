@@ -1,0 +1,31 @@
+.sidebar {
+  background-color: var(--grey-light-1);
+  width: 12rem;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  display: flex;
+  flex-direction: column;
+  margin-top: 5rem;
+  border-top-right-radius: 1rem;
+  border-bottom-right-radius: 1rem;
+  position: absolute;
+
+  &__link {
+    color: white;
+    text-decoration: none;
+    padding: 1rem 0.8rem;
+    margin: 0;
+    transition: all ease-in-out 0.2s;
+    background-color: var(--grey-light-1);
+    box-shadow: none;
+    width: 100%;
+    font-weight: normal;
+    text-align: start;
+
+    &:nth-child(1) { border-top-right-radius: 1rem; }
+    &:last-child { border-bottom-right-radius: 1rem; }
+
+    &:hover {
+      background-color: var(--grey-dark-3);
+    }
+  }
+}

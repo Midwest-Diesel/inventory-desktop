@@ -1,0 +1,35 @@
+.new-engines-list {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+
+  &__top-bar {
+    display: flex;
+    gap: 0.3rem;
+    padding-bottom: 1rem;
+    white-space: nowrap;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  &__table-container {
+    overflow-y: auto;
+    max-height: 40rem;
+    width: fit-content;
+  }
+
+  &__filter {
+    margin-bottom: 0.2rem;
+  }
+}
+
+.new-engines-quotes-list {
+  margin-top: 2rem;
+
+  &__container {
+    overflow-y: auto;
+    max-height: 40rem;
+    width: fit-content;
+  }
+}

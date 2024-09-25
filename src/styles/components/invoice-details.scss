@@ -1,0 +1,78 @@
+.invoice-details {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  margin: auto 10rem;
+
+  &__close-btn {
+    right: 0rem;
+    top: 0.5rem;
+  }
+
+  &__edit-btn {
+    right: 4rem;
+    top: 0.5rem;
+  }
+
+  &__header {
+    display: flex;
+    gap: 2rem;
+    margin-bottom: 1.3rem;
+    position: relative;
+
+    h2 {
+      font-size: var(--font-xl);
+    }
+  }
+
+  &__row {
+    display: flex;
+    justify-content: space-between;
+    margin: auto 1rem;
+  }
+
+  h2 {
+    margin-bottom: 0.8rem;
+    font-size: var(--font-xl);
+  }
+}
+
+
+/* EDIT INVOICES DETAILS COMPONENT */
+
+.edit-invoice-details {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+
+  @media (max-width: 1578px) {
+    margin: auto 2rem;
+  }
+
+  &__close-btn {
+    right: 0rem;
+    top: 0.5rem;
+  }
+
+  &__save-btn {
+    right: 6.8rem;
+    top: 0.5rem;
+  }
+
+  &__header {
+    display: flex;
+    gap: 2rem;
+    margin-bottom: 1.3rem;
+    position: relative;
+
+    h2 {
+      font-size: var(--font-xl);
+    }
+  }
+
+  &__row {
+    display: flex;
+    justify-content: space-between;
+    margin: auto 1rem;
+  }
+}

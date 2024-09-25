@@ -1,0 +1,21 @@
+.tabs {
+  margin-top: 0.4rem;
+
+  &__links {
+    margin-left: 0.1rem;
+
+    button {
+      background-color: var(--grey-dark-3);
+      box-shadow: none;
+      font-weight: 400;
+      border-radius: 15px;
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
+      font-size: var(--font-xsm);
+    }
+
+    &--active {
+      background-color: var(--grey-light-2) !important;
+    }
+  }
+}

@@ -1,0 +1,23 @@
+.surplus {
+  &__top-bar {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 0.7rem;
+  }
+
+  &__table {
+    max-height: 47rem;
+    overflow-y: auto;
+    width: fit-content;
+  }
+
+  &__cost-color {
+    background-color: var(--green-light-1);
+    padding: 0.52rem 0.2rem 0.52rem 0;
+    margin-right: 0.4rem;
+
+    &--red {
+      background-color: var(--red-2);
+    }
+  }
+}

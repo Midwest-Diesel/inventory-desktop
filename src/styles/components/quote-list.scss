@@ -1,0 +1,31 @@
+.quote-list {
+  &__header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    width: fit-content;
+    cursor: pointer;
+  }
+
+  &-top-bar {
+    display: flex;
+    gap: 0.3rem;
+    margin: 0.3rem 0;
+  }
+
+  tbody {
+    max-height: 20rem;
+    overflow-y: auto;
+  }
+}
+
+.quote-search-dialog {
+  height: 100%;
+}
+
+.piggyback-quotes {
+  &__item {
+    display: flex;
+    gap: 0.5rem;
+  }
+}

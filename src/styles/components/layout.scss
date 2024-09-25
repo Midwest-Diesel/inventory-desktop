@@ -1,0 +1,15 @@
+.layout {
+  &__container {
+    display: flex;
+    height: 100%;
+  }
+
+  &__main-content {
+    margin-top: 1rem;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-height: calc(100vh - 2rem);
+  }
+}

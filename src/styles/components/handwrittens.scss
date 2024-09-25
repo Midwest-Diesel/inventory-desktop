@@ -1,0 +1,60 @@
+.handwrittens {
+  display: flex;
+  flex-direction: column;
+  padding-left: 1rem;
+
+  &__container {
+    display: flex;
+    gap: 1rem;
+  }
+
+  &__top-bar {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 0.7rem;
+
+    &--count-block {
+      border: 1px solid var(--grey-light-2);
+      border-radius: 0.3rem;
+      padding: 0.5rem;
+    }
+  }
+
+  &__top-buttons {
+    display: flex;
+    gap: 0.3rem;
+    margin-bottom: 0.5rem;
+  }
+
+  &__table-container {
+    width: 60rem;
+    max-height: 44rem;
+    overflow-y: auto;
+
+    table {
+      width: 100%;
+    }
+
+    td {
+      cursor: zoom-in;
+    }
+  }
+}
+
+.handwritten-items-table {
+  &--handwrittens-page {
+    margin: 6.1rem 0 0 0.4rem;
+
+    thead {
+      font-size: var(--font-xxsm);
+    }
+  }
+
+  &__stock-num button {
+    margin-left: 0.4rem;
+  }
+}
+
+.handwritten-details .handwritten-items-table--handwrittens-page {
+  margin: 0.3rem 0 0 0.05rem;
+}

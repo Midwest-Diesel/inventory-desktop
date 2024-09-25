@@ -1,0 +1,38 @@
+.purchase-orders-page {
+  display: flex;
+  flex-direction: column;
+  padding-left: 1rem;
+
+  &__container {
+    display: flex;
+    gap: 1rem;
+  }
+
+  &__top-buttons {
+    display: flex;
+    gap: 0.3rem;
+    margin-bottom: 0.5rem;
+  }
+
+  &__table-container {
+    width: 63rem;
+    max-height: 44rem;
+    overflow-y: auto;
+
+    table {
+      width: 100%;
+    }
+
+    td {
+      cursor: zoom-in;
+    }
+  }
+}
+
+.purchase-order-items-table {
+  margin: 6.7rem 0 0 0.4rem;
+}
+
+.purchase-order-items-table--details-page {
+  margin: 2rem 0;
+}

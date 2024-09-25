@@ -1,0 +1,63 @@
+.alerts-page {
+  &__container {
+    max-height: 45rem;
+    overflow-y: auto;
+    width: fit-content;
+  }
+  
+  table {
+    margin-top: 0.7rem;
+
+    tr:first-child td:first-child {
+      border-top-width: 0;
+    }
+
+    td:first-child {
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+      border-width: 1px 0px 1px 2px;
+    }
+
+    span {
+      color: var(--blue-light-3);
+      cursor: pointer;
+      transition: all 0.3s ease-in-out;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+}
+
+.alert {
+  max-width: 35rem;
+  min-width: 540px;
+
+  &--alert { background-color: var(--pink-1); }
+  &--huddle-up, &--see-jack, &--see-terry, &--huddle-or-jail { background-color: var(--green-2); }
+  &--cat-is-out { background-color: var(--red-3); }
+  &--systems-check { background-color: var(--orange-1); }
+
+  .button--X:hover {
+    color: white;
+  }
+
+  &__top-msg {
+    font-size: var(--font-xl);
+  }
+
+  &__type {
+    font-size: var(--font-xl);
+  }
+
+  &__part-num {
+    font-size: var(--font-lg);
+  }
+
+  &__note {
+    margin: 6rem 0;
+    font-size: var(--font-md);
+  }
+}
