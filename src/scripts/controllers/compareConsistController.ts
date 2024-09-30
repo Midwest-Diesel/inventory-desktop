@@ -1,4 +1,5 @@
 import api from "../config/axios";
+
 import { parseResDate } from "../tools/stringUtils";
 import { getEngineCostRemaining } from "./enginesController";
 
@@ -18,7 +19,7 @@ export const getCompareData = async () => {
     res.data = parseCompareDataRes(res.data);
     return res.data;
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -29,7 +30,7 @@ export const getCompareDataByCustomer = async (id: number) => {
     res.data = parseCompareDataRes(res.data);
     return res.data;
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -40,7 +41,7 @@ export const getCompareDataById = async (id: number) => {
     res.data = parseCompareDataRes(res.data);
     return res.data[0];
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -55,7 +56,7 @@ export const getPartsOnEngines = async (partNum: string) => {
     const parsedData = await Promise.all(parsedDataPromises);
     return { partNum: partNum, engines: parsedData };
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -66,6 +67,6 @@ export const addCompareData = async (data: CompareConsist) => {
     const auth = { withCredentials: true };
     await api.post('/api/compare-consist', data, auth);
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };

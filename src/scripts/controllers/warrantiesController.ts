@@ -1,4 +1,5 @@
 import api from "../config/axios";
+
 import { parseResDate } from "../tools/stringUtils";
 
 
@@ -22,7 +23,7 @@ export const getAllWarranties = async () => {
     const res = await api.get('/api/warranties', auth);
     return parseWarrantyRes(res.data);
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -32,7 +33,7 @@ export const getWarrantyById = async (id: number) => {
     const res = await api.get(`/api/warranties/id/${id}`, auth);
     return parseWarrantyRes(res.data)[0];
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -42,7 +43,7 @@ export const getSomeWarranties = async (page: number, limit: number) => {
     const res = await api.get(`/api/warranties/limit/${JSON.stringify({ page: (page - 1) * limit, limit })}`, auth);
     return parseWarrantyRes(res.data);
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -52,7 +53,7 @@ export const getWarrantyCount = async () => {
     const res = await api.get(`/api/warranties/count`, auth);
     return res.data;
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -63,7 +64,7 @@ export const addWarranty = async (warrantyData: Warranty) => {
     const auth = { withCredentials: true };
     await api.post('/api/warranties', warrantyData, auth);
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -72,7 +73,7 @@ export const addWarrantyItem = async (warrantyItems: WarrantyItem) => {
     const auth = { withCredentials: true };
     await api.post('/api/warranties/item', warrantyItems, auth);
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -83,7 +84,7 @@ export const editWarranty = async (warrantyData: Warranty) => {
     const auth = { withCredentials: true };
     await api.put('/api/warranties', warrantyData, auth);
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -92,7 +93,7 @@ export const editWarrantyItem = async (item: WarrantyItem) => {
     const auth = { withCredentials: true };
     await api.put('/api/warranties/item', item, auth);
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -103,7 +104,7 @@ export const deleteWarranty = async (id: number) => {
     const auth = { withCredentials: true };
     await api.delete(`/api/warranties/${id}`, auth);
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -112,6 +113,6 @@ export const deleteWarrantyItem = async (id: number) => {
     const auth = { withCredentials: true };
     await api.delete(`/api/warranties/item/${id}`, auth);
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };

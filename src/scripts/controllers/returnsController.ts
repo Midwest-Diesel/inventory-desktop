@@ -1,4 +1,5 @@
 import api from "../config/axios";
+
 import { parseResDate } from "../tools/stringUtils";
 import { isObjectNull } from "../tools/utils";
 
@@ -28,7 +29,7 @@ export const getAllReturns = async () => {
     const res = await api.get('/api/returns', auth);
     return parseReturnRes(res.data);
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -38,7 +39,7 @@ export const getReturnById = async (id: number) => {
     const res = await api.get(`/api/returns/id/${id}`, auth);
     return parseReturnRes(res.data)[0];
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -48,7 +49,7 @@ export const getSomeReturns = async (page: number, limit: number, notReceived?: 
     const res = await api.get(`/api/returns/limit/${JSON.stringify({ page: (page - 1) * limit, limit, notReceived })}`, auth);
     return parseReturnRes(res.data);
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -58,7 +59,7 @@ export const getSomeCompletedReturns = async (page: number, limit: number) => {
     const res = await api.get(`/api/returns/limit/completed/${JSON.stringify({ page: (page - 1) * limit, limit })}`, auth);
     return parseReturnRes(res.data);
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -68,7 +69,7 @@ export const searchReturns = async (returnData: ReturnSearchData) => {
     const res = await api.get(`/api/returns/search/${JSON.stringify(returnData)}`, auth);
     return parseReturnRes(res.data);
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -78,7 +79,7 @@ export const getReturnCount = async () => {
     const res = await api.get(`/api/returns/count`, auth);
     return res.data;
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -89,7 +90,7 @@ export const addReturn = async (returnData: Return) => {
     const auth = { withCredentials: true };
     await api.post('/api/returns', returnData, auth);
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -98,7 +99,7 @@ export const addReturnItems = async (returnItems: ReturnItem) => {
     const auth = { withCredentials: true };
     await api.post('/api/returns/items', returnItems, auth);
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -109,6 +110,6 @@ export const editReturn = async (returnData: Return) => {
     const auth = { withCredentials: true };
     await api.put('/api/returns', returnData, auth);
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };

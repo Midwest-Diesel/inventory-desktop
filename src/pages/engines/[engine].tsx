@@ -34,9 +34,13 @@ export default function EngineDetailsPage() {
       setEngine(res);
       setTitle(`${res.stockNum} Engine`);
       const costOutRes = await getEngineCostOut(Number(res.stockNum));
-      const upStockNums: EngineCostIn[] = costOutRes.filter((num) => num.stockNum && num.stockNum.includes('UP')).map((num) => ({ ...num, engineStockNum: num.stockNum, vendor: null }));
-      setEngineCostIn([...(await getEngineCostIn(Number(res.stockNum))), ...upStockNums] || []);
-      setEngineCostOut(costOutRes.filter((num) => num.stockNum && !num.stockNum.includes('UP')) || []);
+      const upStockNums: EngineCostIn[] = costOutRes
+        .filter((num) => num.stockNum && num.stockNum.includes('UP'))
+        .map((num) => ({ ...num, engineStockNum: num.stockNum, vendor: null }));
+      const costInData = await getEngineCostIn(Number(res.stockNum)) || [];
+      setEngineCostIn([...costInData, ...upStockNums]);
+      const filteredCostOut = costOutRes.filter((num) => num.stockNum && !num.stockNum.includes('UP'));
+      setEngineCostOut(filteredCostOut);
     };
     fetchData();
   }, [params]);

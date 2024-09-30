@@ -1,4 +1,5 @@
 import api from "../config/axios";
+
 import { parseResDate } from "../tools/stringUtils";
 
 interface RecentSearch {
@@ -21,7 +22,7 @@ export const getRecentPartSearches = async () => {
     });
     return res.data;
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -38,7 +39,7 @@ export const getQuotesByPartNum = async (partNum: string) => {
     });
     return res.data;
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -49,6 +50,6 @@ export const addRecentSearch = async (payload: RecentSearch) => {
     const auth = { withCredentials: true };
     await api.post('/api/recent-searches', payload, auth);
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };

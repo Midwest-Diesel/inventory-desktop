@@ -1,4 +1,5 @@
 import api from "../config/axios";
+
 import schedule from 'node-schedule';
 
 interface UserLogin {
@@ -17,7 +18,7 @@ export const getUser = async () => {
     const res = await api.get('/api/account', config);
     return res.data.user;
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -41,7 +42,7 @@ export const loginUser = async (user: UserLogin) => {
     };
     await api.post('/api/account/authenticate', user, config);
   } catch (err) {
-    console.log(err);
+    console.error(err);
     return err.response.data.message;
   }
 };

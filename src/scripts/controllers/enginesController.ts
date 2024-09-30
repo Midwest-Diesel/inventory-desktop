@@ -1,4 +1,5 @@
 import api from "../config/axios";
+
 import { parseResDate } from "../tools/stringUtils";
 
 
@@ -26,7 +27,7 @@ export const getAllEngines = async () => {
     res.data = parseEngineRes(res.data);
     return res.data;
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -37,7 +38,7 @@ export const getAutofillEngine = async (engineNum: number) => {
     res.data = parseEngineRes(res.data)[0];
     return res.data;
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -48,7 +49,7 @@ export const getEnginesByStatus = async (status: string) => {
     res.data = parseEngineRes(res.data);
     return res.data;
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -59,7 +60,7 @@ export const getEngineById = async (id: number) => {
     res.data = parseEngineRes(res.data);
     return res.data[0];
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -70,7 +71,7 @@ export const getEngineByStockNum = async (stockNum: number) => {
     res.data = parseEngineRes(res.data);
     return res.data[0];
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -81,7 +82,7 @@ export const getEnginesByEngineData = async (data: CustomerEngineData) => {
     res.data = parseEngineRes(res.data);
     return res.data;
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -91,7 +92,7 @@ export const getEngineCostIn = async (stockNum: number) => {
     const res = await api.get(`/api/engines/costIn/${stockNum}`, auth);
     return res.data;
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -101,7 +102,7 @@ export const getEngineCostOut = async (stockNum: number) => {
     const res = await api.get(`/api/engines/costOut/${stockNum}`, auth);
     return res.data;
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -111,7 +112,7 @@ export const getEngineCostRemaining = async (stockNum: number) => {
     const res = await api.get(`/api/engines/cost-remaining/${stockNum}`, auth);
     return res.data[0].costRemaining || 0;
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -121,7 +122,7 @@ export const getEngineProfit = async (stockNum: number) => {
     const res = await api.get(`/api/engines/profit/${stockNum}`, auth);
     return res.data;
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -132,7 +133,7 @@ export const addEngine = async (engine: EngineAddOn) => {
     const auth = { withCredentials: true };
     await api.post('/api/engines', engine, auth);
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -143,7 +144,7 @@ export const editEngine = async (engine: Engine) => {
     const auth = { withCredentials: true };
     await api.put('/api/engines', engine, auth);
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -152,7 +153,7 @@ export const editEngineCostIn = async (engine: EngineCostIn) => {
     const auth = { withCredentials: true };
     await api.put('/api/engines/cost-in', engine, auth);
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -161,7 +162,7 @@ export const editEngineCostOut = async (engine: EngineCostOut) => {
     const auth = { withCredentials: true };
     await api.put('/api/engines/cost-out', engine, auth);
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -170,7 +171,7 @@ export const editEnginePartsTable = async (parts: EnginePartsTable, id: number) 
     const auth = { withCredentials: true };
     await api.put('/api/engines/parts-table', { parts, id }, auth);
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -181,7 +182,7 @@ export const deleteEngineCostIn = async (id: number) => {
     const auth = { withCredentials: true };
     await api.delete(`/api/engines/cost-in/${id}`, auth);
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -190,6 +191,6 @@ export const deleteEngineCostOut = async (id: number) => {
     const auth = { withCredentials: true };
     await api.delete(`/api/engines/cost-out/${id}`, auth);
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };

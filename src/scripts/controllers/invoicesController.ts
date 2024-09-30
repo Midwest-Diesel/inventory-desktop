@@ -1,4 +1,5 @@
 import api from "../config/axios";
+
 import { parseResDate } from "../tools/stringUtils";
 
 interface InvoiceSearchData {
@@ -30,7 +31,7 @@ export const getAllInvoices = async () => {
     const res = await api.get('/api/invoices', auth);
     return parseInvoiceRes(res.data);
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -40,7 +41,7 @@ export const getInvoiceById = async (id: number) => {
     const res = await api.get(`/api/invoices/id/${id}`, auth);
     return parseInvoiceRes(res.data)[0];
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -50,7 +51,7 @@ export const getSomeInvoices = async (page: number, limit: number) => {
     const res = await api.get(`/api/invoices/limit/${JSON.stringify({ page: (page - 1) * limit, limit: limit })}`, auth);
     return await parseInvoiceRes(res.data);
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -60,7 +61,7 @@ export const searchInvoices = async (invoice: InvoiceSearchData) => {
     const res = await api.get(`/api/invoices/search/${JSON.stringify(invoice)}`, auth);
     return await parseInvoiceRes(res.data);
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -70,7 +71,7 @@ export const getInvoicesByDate = async (date: Date) => {
     const res = await api.get(`/api/invoices/date/${JSON.stringify(date)}`, auth);
     return res.data;
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -80,7 +81,7 @@ export const getInvoiceCount = async () => {
     const res = await api.get('/api/invoices/count', auth);
     return res.data;
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -91,7 +92,7 @@ export const addInvoice = async (invoice: Invoice) => {
     const auth = { withCredentials: true };
     await api.post('/api/invoices', invoice, auth);
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -102,6 +103,6 @@ export const editInvoice = async (invoice: Invoice) => {
     const auth = { withCredentials: true };
     await api.put('/api/invoices', invoice, auth);
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };

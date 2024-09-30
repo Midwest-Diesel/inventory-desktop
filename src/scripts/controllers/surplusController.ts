@@ -1,4 +1,5 @@
 import api from "../config/axios";
+
 import { parseResDate } from "../tools/stringUtils";
 
 
@@ -17,7 +18,7 @@ export const getAllSurplus = async () => {
     res.data = parseSurplusDataRes(res.data);
     return res.data;
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -30,7 +31,7 @@ export const getSurplusSoldParts = async (code: string) => {
     });
     return res.data;
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -43,7 +44,7 @@ export const getSurplusRemainingParts = async (code: string) => {
     });
     return res.data;
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -54,7 +55,7 @@ export const addSurplus = async (surplus: Surplus) => {
     const auth = { withCredentials: true };
     await api.post('/api/surplus', surplus, auth);
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -65,7 +66,7 @@ export const editSurplus = async (surplus: Surplus) => {
     const auth = { withCredentials: true };
     await api.put('/api/surplus', surplus, auth);
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -76,6 +77,6 @@ export const deleteSurplus = async (id: number) => {
     const auth = { withCredentials: true };
     await api.delete(`/api/surplus/${id}`, auth);
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };

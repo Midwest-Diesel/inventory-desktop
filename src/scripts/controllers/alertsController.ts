@@ -1,4 +1,5 @@
 import api from "../config/axios";
+
 import { parseResDate } from "../tools/stringUtils";
 
 
@@ -17,7 +18,7 @@ export const getAlerts = async () => {
     res.data = parseAlertDataRes(res.data);
     return res.data.reverse();
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -28,7 +29,7 @@ export const addAlert = async (alert: Alert) => {
     const auth = { withCredentials: true };
     await api.post('/api/alerts', alert, auth);
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -39,7 +40,7 @@ export const editAlert = async (alert: Alert) => {
     const auth = { withCredentials: true };
     await api.put('/api/alerts', alert, auth);
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -50,6 +51,6 @@ export const deleteAlert = async (id: number) => {
     const auth = { withCredentials: true };
     await api.delete(`/api/alerts/${id}`, auth);
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };

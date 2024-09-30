@@ -1,4 +1,5 @@
 import api from "../config/axios";
+
 import { parseResDate } from "../tools/stringUtils";
 
 
@@ -16,7 +17,7 @@ export const getAllCores = async () => {
     const res = await api.get('/api/cores', auth);
     return parseCoreDataRes(res.data);
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -26,7 +27,7 @@ export const getCoresByCustomer = async (customerId: number, handwrittenId: numb
     const res = await api.get(`/api/cores/customer/${JSON.stringify({customerId, handwrittenId})}`, auth);
     return parseCoreDataRes(res.data) || [];
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -36,7 +37,7 @@ export const getCoreReturnsByCustomer = async (id: number) => {
     const res = await api.get(`/api/cores/return/customer/${id}`, auth);
     return parseCoreDataRes(res.data) || [];
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -47,7 +48,7 @@ export const addCore = async (core: Core) => {
     const auth = { withCredentials: true };
     await api.post('/api/cores', core, auth);
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -58,7 +59,7 @@ export const removeQtyFromCore = async (core: Core, qtyRemoved: number) => {
     const auth = { withCredentials: true };
     await api.patch('/api/cores/qty', { core, qty: core.qty - qtyRemoved }, auth);
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -67,7 +68,7 @@ export const editCoreCustomer = async (handwrittenId: number, customerId: number
     const auth = { withCredentials: true };
     await api.patch('/api/cores/customer', { handwrittenId, customerId }, auth);
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -78,6 +79,6 @@ export const deleteCore = async (id: number) => {
     const auth = { withCredentials: true };
     await api.delete(`/api/cores/${id}`, auth);
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };

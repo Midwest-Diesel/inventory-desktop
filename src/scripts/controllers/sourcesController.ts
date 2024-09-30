@@ -1,6 +1,7 @@
 import api from "../config/axios";
 
 
+
 // === GET routes === //
 
 export const getAllSources = async () => {
@@ -9,6 +10,6 @@ export const getAllSources = async () => {
     const res = await api.get('/api/sources', auth);
     return res.data.map((source: any) => source.source).sort();
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };

@@ -15,7 +15,7 @@ interface Props {
 }
 
 export default function Dropdown({ children, className = '', variant = [], label = '', value, onChange, maxHeight = 'none' }: Props) {
-  const classes = generateClasses(className, variant && variant.filter((v) => !v.includes('label-stack' || 'label-space-between' || 'label-bold')), 'dropdown');
+  const classes = generateClasses(className, variant.filter((v) => !['label-stack', 'label-space-between', 'label-bold'].includes(v)), 'dropdown');
   const [isOpen, setIsOpen] = useState(false);
   const [idProp, setIdProp] = useState('');
   let id = '';

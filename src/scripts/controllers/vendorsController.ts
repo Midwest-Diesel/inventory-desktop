@@ -1,6 +1,7 @@
 import api from "../config/axios";
 
 
+
 const parseVendorDataRes = (data: any) => {
   return data.map((d: Vendor) => {
     return { ...d, id: Number(d.id) };
@@ -15,7 +16,7 @@ export const getVendorNames = async () => {
     const res = await api.get('/api/vendors/names', auth);
     return parseVendorDataRes(res.data);
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -25,6 +26,6 @@ export const getVendors = async () => {
     const res = await api.get('/api/vendors', auth);
     return parseVendorDataRes(res.data);
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };

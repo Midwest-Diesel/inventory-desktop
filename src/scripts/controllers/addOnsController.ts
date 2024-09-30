@@ -1,4 +1,5 @@
 import api from "../config/axios";
+
 import { parseResDate } from "../tools/stringUtils";
 
 
@@ -16,7 +17,7 @@ export const getAllAddOns = async () => {
     const res = await api.get('/api/add-ons', auth);
     return parseAddOnDataRes(res.data);
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -27,7 +28,7 @@ export const addAddOn = async (addOn?: AddOn) => {
     const auth = { withCredentials: true };
     await api.post('/api/add-ons', addOn, auth);
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -38,7 +39,7 @@ export const editAddOn = async (addOn: AddOn) => {
     const auth = { withCredentials: true };
     await api.put('/api/add-ons', addOn, auth);
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -49,6 +50,6 @@ export const deleteAddOn = async (id: number) => {
     const auth = { withCredentials: true };
     await api.delete(`/api/add-ons/${id}`, auth);
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };

@@ -1,4 +1,5 @@
 import api from "../config/axios";
+
 import { parseResDate } from "../tools/stringUtils";
 import { filterNullObjValuesArr } from "../tools/utils";
 import { getCoresByCustomer, getCoreReturnsByCustomer } from "./coresController";
@@ -59,7 +60,7 @@ export const getAllHandwrittens = async () => {
     const res = await api.get('/api/handwrittens', auth);
     return parseHandwrittenRes(res.data);
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -73,7 +74,7 @@ export const getHandwrittenById = async (id: number) => {
     res.data[0].coreReturns = coreReturns;
     return parseHandwrittenRes(res.data)[0];
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -83,7 +84,7 @@ export const getSomeHandwrittens = async (page: number, limit: number) => {
     const res = await api.get(`/api/handwrittens/limit/${JSON.stringify({ page: (page - 1) * limit, limit: limit })}`, auth);
     return await parseHandwrittenRes(res.data);
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -93,7 +94,7 @@ export const searchHandwrittens = async (invoice: HandwrittenSearchData) => {
     const res = await api.get(`/api/handwrittens/search/${JSON.stringify(invoice)}`, auth);
     return await parseHandwrittenRes(res.data);
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -103,7 +104,7 @@ export const getHandwrittensByDate = async (date: Date) => {
     const res = await api.get(`/api/handwrittens/date/${JSON.stringify(date)}`, auth);
     return res.data;
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -113,7 +114,7 @@ export const getHandwrittenCount = async () => {
     const res = await api.get('/api/handwrittens/count', auth);
     return res.data;
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -123,7 +124,7 @@ export const getAltShipByHandwritten = async (handwrittenId: number) => {
     const res = await api.get(`/api/handwrittens/alt-ship/${handwrittenId}`, auth);
     return res.data;
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -135,7 +136,7 @@ export const addHandwritten = async (invoice: Handwritten) => {
     const res = await api.post('/api/handwrittens', invoice, auth);
     return (res as any).data.id;
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -144,7 +145,7 @@ export const addHandwrittenItem = async (item: HandwrittenItem) => {
     const auth = { withCredentials: true };
     await api.post('/api/handwrittens/item', item, auth);
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -154,7 +155,7 @@ export const addBlankHandwritten = async (data: { date: Date, userId: number }) 
     const res = await api.post('/api/handwrittens/blank', data, auth);
     return (res as any).data.id;
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -163,7 +164,7 @@ export const addAltShipAddress = async (altShip: AltShip) => {
     const auth = { withCredentials: true };
     await api.post('/api/handwrittens/alt-ship', altShip, auth);
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -172,7 +173,7 @@ export const addHandwrittenItemChild = async (handwrittenId: number, item: Handw
     const auth = { withCredentials: true };
     await api.post('/api/handwrittens/child', { handwrittenId, item }, auth);
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -183,7 +184,7 @@ export const editHandwritten = async (invoice: Handwritten) => {
     const auth = { withCredentials: true };
     await api.put('/api/handwrittens', invoice, auth);
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -192,7 +193,7 @@ export const editHandwrittenItems = async (item: HandwrittenItem) => {
     const auth = { withCredentials: true };
     await api.put('/api/handwrittens/items', item, auth);
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -210,7 +211,7 @@ export const editHandwrittenOrderNotes = async (id: number, orderNotes: string) 
       await api.put('/api/handwrittens/order-notes', { id, orderNotes: `${newOrderNotes}\n` }, auth);
     }
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -221,7 +222,7 @@ export const deleteHandwritten = async (id: number) => {
     const auth = { withCredentials: true };
     await api.delete(`/api/handwrittens/${id}`, auth);
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -230,7 +231,7 @@ export const deleteAltShipAddress = async (id: number) => {
     const auth = { withCredentials: true };
     await api.delete(`/api/handwrittens/alt-ship/${id}`, auth);
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -239,7 +240,7 @@ export const deleteHandwrittenItem = async (id: number) => {
     const auth = { withCredentials: true };
     await api.delete(`/api/handwrittens/item/${id}`, auth);
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 

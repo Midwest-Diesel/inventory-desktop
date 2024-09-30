@@ -1,4 +1,5 @@
 import api from "../config/axios";
+
 import { parseResDate } from "../tools/stringUtils";
 
 
@@ -16,7 +17,7 @@ export const getPurchaseOrderById = async (id: number) => {
     const res = await api.get(`/api/po/${id}`, auth);
     return parsePoDataRes(res.data)[0];
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -26,7 +27,7 @@ export const getSomePurchaseOrders = async (page: number, limit: number, showInc
     const res = await api.get(`/api/po/limit/${JSON.stringify({ page: (page - 1) * limit, limit, showIncomming })}`, auth);
     return parsePoDataRes(res.data);
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -36,7 +37,7 @@ export const getPurchaseOrdersCount = async (showIncomming: boolean) => {
     const res = await api.get(`/api/po/count/${JSON.stringify({ showIncomming })}`, auth);
     return res.data;
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -47,7 +48,7 @@ export const addBlankPurchaseOrder = async () => {
     const auth = { withCredentials: true };
     await api.post('/api/po', {}, auth);
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -56,7 +57,7 @@ export const addPurchaseOrderItem = async (newItem: POItem) => {
     const auth = { withCredentials: true };
     await api.post('/api/po/item', newItem, auth);
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -67,7 +68,7 @@ export const editPurchaseOrder = async (po: PO) => {
     const auth = { withCredentials: true };
     await api.put('/api/po', po, auth);
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -76,7 +77,7 @@ export const editPurchaseOrderItem = async (po: POItem) => {
     const auth = { withCredentials: true };
     await api.put('/api/po/item', po, auth);
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -87,7 +88,7 @@ export const togglePurchaseOrderReceived = async (id: number, isReceived: boolea
     const auth = { withCredentials: true };
     await api.patch(`/api/po/received/${id}`, { isReceived }, auth);
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -99,7 +100,7 @@ export const deletePurchaseOrder = async (id: number) => {
     const auth = { withCredentials: true };
     await api.delete(`/api/po/${id}`, auth);
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -108,6 +109,6 @@ export const deletePurchaseOrderItem = async (id: number) => {
     const auth = { withCredentials: true };
     await api.delete(`/api/po/item/${id}`, auth);
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };

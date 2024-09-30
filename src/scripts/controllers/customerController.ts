@@ -1,4 +1,5 @@
 import api from "../config/axios";
+
 import { parseResDate } from "../tools/stringUtils";
 
 
@@ -20,7 +21,7 @@ export const getCustomers = async () => {
     res.data = parseCustomerRes(res.data);
     return res.data;
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -31,7 +32,7 @@ export const getSomeCustomers = async (page: number, limit: number) => {
     res.data = parseCustomerRes(res.data);
     return res.data;
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -41,7 +42,7 @@ export const getCustomersCount = async () => {
     const res = await api.get('/api/customers/count', auth);
     return res.data;
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -52,7 +53,7 @@ export const searchCustomers = async (name: string) => {
     res.data = parseCustomerRes(res.data);
     return res.data;
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -62,7 +63,7 @@ export const getCustomerNames = async () => {
     const res = await api.get('/api/customers/names', auth);
     return res.data.map((c) => c.company);
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -73,7 +74,7 @@ export const getCustomerById = async (id: number) => {
     res.data = parseCustomerRes(res.data);
     return res.data[0];
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -84,7 +85,7 @@ export const getCustomerByName = async (name: string) => {
     res.data = parseCustomerRes(res.data);
     return res.data[0];
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -94,7 +95,7 @@ export const getCustomerSalesHistory = async (id: number) => {
     const res = await api.get(`/api/customers/sales/${id}`, auth);
     return res.data;
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -105,7 +106,7 @@ export const addCustomer = async (customer: string) => {
     const auth = { withCredentials: true };
     await api.post('/api/customers', { name: customer }, auth);
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -114,7 +115,7 @@ export const addCustomerContact = async (customerId: number, name: string) => {
     const auth = { withCredentials: true };
     await api.post('/api/customers/contact', { customerId, name }, auth);
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -126,7 +127,7 @@ export const editCustomer = async (customer: Customer) => {
     const auth = { withCredentials: true };
     await api.put('/api/customers', customer, auth);
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -135,7 +136,7 @@ export const editContact = async (contact: Contact) => {
     const auth = { withCredentials: true };
     await api.put('/api/customers/contact', contact, auth);
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -146,7 +147,7 @@ export const deleteCustomer = async (id: number) => {
     const auth = { withCredentials: true };
     await api.delete(`/api/customers/${id}`, auth);
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -155,6 +156,6 @@ export const deleteContact = async (id: number) => {
     const auth = { withCredentials: true };
     await api.delete(`/api/customers/contact/${id}`, auth);
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };

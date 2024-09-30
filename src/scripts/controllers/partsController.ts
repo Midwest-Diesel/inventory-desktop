@@ -1,4 +1,5 @@
 import api from "../config/axios";
+
 import { parseResDate } from "../tools/stringUtils";
 import { isObjectNull } from "../tools/utils";
 
@@ -38,7 +39,7 @@ export const getPartById = async (id: number) => {
     const res = await api.get(`/api/parts/part/${id}`, auth);
     return (await parsePartsData(res.data))[0];
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -48,7 +49,7 @@ export const getPartsInfoByPartNum = async (partNum: string) => {
     const res = await api.get(`/api/parts/parts-info/${partNum}`, auth);
     return res.data;
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -58,7 +59,7 @@ export const getPartByPartNum = async (partNum: string) => {
     const res = await api.get(`/api/parts/part-num/${partNum}`, auth);
     return (await parsePartsData(res.data))[0];
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -68,7 +69,7 @@ export const getPartByEngineNum = async (engineNum: number) => {
     const res = await api.get(`/api/parts/engine-num/${engineNum}`, auth);
     return (await parsePartsData(res.data))[0];
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -78,7 +79,7 @@ export const getPartByStockNum = async (stockNum: string) => {
     const res = await api.get(`/api/parts/stock-num/${stockNum}`, auth);
     return (await parsePartsData(res.data))[0];
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -89,7 +90,7 @@ export const getAutofillPart = async (partNum: string) => {
     const data = (await parsePartsData(res.data))[0];
     return data ? data.partNum : '';
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -100,7 +101,7 @@ export const getPartCostIn = async (stockNum: string) => {
     const res = await api.get(`/api/parts/part-cost-in/${encodedParam}`, auth);
     return res.data;
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -111,7 +112,7 @@ export const getPartEngineCostOut = async (stockNum: string) => {
     const res = await api.get(`/api/parts/engine-cost-out/${encodedParam}`, auth);
     return res.data;
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -121,7 +122,7 @@ export const getPartsByYear = async (year: number) => {
     const res = await api.get(`/api/parts/year/${year}`, auth);
     return await parsePartsData(res.data);
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -131,7 +132,7 @@ export const getSomeParts = async (page: number, limit: number) => {
     const res = await api.get(`/api/parts/limit/${JSON.stringify({ page: (page - 1) * limit, limit: limit })}`, auth);
     return await parsePartsData(res.data);
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -141,7 +142,7 @@ export const getPartsQty = async () => {
     const res = await api.get('/api/parts/qty', auth);
     return res.data;
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -151,7 +152,7 @@ export const getAltsByPartNum = async (partNum: string) => {
     const res = await api.get(`/api/parts/alts/${partNum}`, auth);
     return res.data.length > 0 ? res.data[0] : res.data;
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -162,7 +163,7 @@ export const searchParts = async (part: PartSearchData) => {
     const res = await api.get(`/api/parts/search/${JSON.stringify(part)}`, auth);
     return await parsePartsData(res.data);
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -178,7 +179,7 @@ export const searchAltParts = async (part: PartSearchData) => {
     const res = await api.get(`/api/parts/searchAlt/${JSON.stringify(filteredPart)}`, auth);
     return await parsePartsData(res.data);
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -194,7 +195,7 @@ export const getSalesInfo = async (partNum: string) => {
     }).sort((a, b) => b.date - a.date);
     return res.data;
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -224,7 +225,7 @@ export const addPart = async (part: Part, partInfoExists: boolean, updateLoading
       await editAltParts(partNum, altsToAdd);
     }
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -236,7 +237,7 @@ export const editPart = async (part: Part) => {
     const data = { ...part, altParts: part.altParts.join(',') };
     await api.put('/api/parts', data, auth);
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -245,7 +246,7 @@ export const editPartCostIn = async (part: PartCostIn) => {
     const auth = { withCredentials: true };
     await api.put('/api/parts/cost-in', part, auth);
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -254,7 +255,7 @@ export const editAltParts = async (partNum: string, altParts: string[]) => {
     const auth = { withCredentials: true };
     await api.put('/api/parts/parts-info', { partNum, altParts }, auth);
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -270,7 +271,7 @@ export const addAltParts = async (partNum: string, altParts: string[], updateLoa
       }
     }
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -284,7 +285,7 @@ export const removeAltParts = async (partNum: string, altParts: string[]) => {
       }
     }
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -295,7 +296,7 @@ export const deletePart = async (id: number) => {
     const auth = { withCredentials: true };
     await api.delete(`/api/parts/${id}`, auth);
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -304,6 +305,6 @@ export const deletePartCostIn = async (id: number) => {
     const auth = { withCredentials: true };
     await api.delete(`/api/parts/cost-in/${id}`, auth);
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };

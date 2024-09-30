@@ -1,4 +1,5 @@
 import api from "../config/axios";
+
 import { parseResDate } from "../tools/stringUtils";
 
 
@@ -16,7 +17,7 @@ export const getAllEngineAddOns = async () => {
     const res = await api.get('/api/engine-add-ons', auth);
     return parseAddOnDataRes(res.data);
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -27,7 +28,7 @@ export const addEngineAddOn = async (addOn?: EngineAddOn) => {
     const auth = { withCredentials: true };
     await api.post('/api/engine-add-ons', addOn, auth);
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -38,7 +39,7 @@ export const editEngineAddOn = async (addOn: EngineAddOn) => {
     const auth = { withCredentials: true };
     await api.put('/api/engine-add-ons', addOn, auth);
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -49,6 +50,6 @@ export const deleteEngineAddOn = async (id: number) => {
     const auth = { withCredentials: true };
     await api.delete(`/api/engine-add-ons/${id}`, auth);
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
