@@ -1,6 +1,7 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 use std::process::Command;
+use serde::{Deserialize, Serialize};
 
 
 fn main() {
@@ -10,13 +11,18 @@ fn main() {
     .expect("error while running tauri application");
 }
 
-#[tauri::command]
-fn new_email_draft(file_path: Option<String>) {
-  let mut cmd = Command::new("C:/Program Files (x86)/Microsoft Office/root/Office16/OUTLOOK.EXE");
+#[derive(Deserialize, Serialize)]
+struct EmailArgs {
+  attachments: Option<Vec<String>>
+}
 
-  if let Some(path) = file_path {
-    cmd.args(&["/a", &path]);
+#[tauri::command]
+fn new_email_draft(email_args: EmailArgs) {
+  let mut cmd = Command::new("C:/Program Files (x86)/Microsoft Office/root/Office16/OUTLOOK.EXE");
+  if let Some(attachments) = email_args.attachments {
+    for attachment in attachments {
+      cmd.args(&["/a", &attachment]);
+    }
   }
-  
   cmd.output().expect("Failed to create new draft");
 }

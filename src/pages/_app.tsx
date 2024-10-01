@@ -1,7 +1,6 @@
 import { Provider } from 'jotai';
 import GlobalData from '@/components/GlobalData';
 import { useEffect } from 'react';
-import { initApp } from '@/scripts/config/outlook';
 import '../styles/globals.scss';
 
 

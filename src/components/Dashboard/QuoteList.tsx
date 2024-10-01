@@ -11,8 +11,8 @@ import Pagination from "@/components/Library/Pagination";
 import { formatCurrency, formatDate, formatPhone } from "@/scripts/tools/stringUtils";
 import Link from "next/link";
 import Checkbox from "@/components/Library/Checkbox";
-import { newDraftEmail } from "@/scripts/config/outlook";
 import { getPartByPartNum } from "@/scripts/controllers/partsController";
+import { invoke } from "@tauri-apps/api/tauri";
 
 interface Props {
   selectHandwrittenOpen: boolean
@@ -94,10 +94,8 @@ export default function QuoteList({ selectHandwrittenOpen, setSelectHandwrittenO
   };
 
   const handleEmail = async (quote: Quote) => {
-    const recipient = prompt('Enter recipient', quote.customer.email || '');
+    const recipient = prompt('Enter recipients', quote.customer.email || '');
     if (!recipient) return;
-    // const email = `mailto:${recipient}?subject=Quote&body=Quote%20Part%0A`;
-    // window.location.href = email;
     const email: Email = {
       subject: 'Quote',
       body: {
@@ -108,7 +106,7 @@ export default function QuoteList({ selectHandwrittenOpen, setSelectHandwrittenO
         emailAddress: { address: recipient }
       }]
     };
-    await newDraftEmail(email);
+    invoke('new_email_draft', { emailArgs: { attachments: ['C:/Users/BennettSmrdel/Documents/krita/showcase/showcase.png', 'C:/Users/BennettSmrdel/Documents/krita/DEF Tank & Parts/DEF Tank & Parts Montage.png'] } });
   };
 
   const handleChangePage = async (data: any, page: number) => {
