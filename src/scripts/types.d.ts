@@ -698,13 +698,11 @@ type Country = {
 
 interface Email {
   subject: string
-  body: {
-    contentType: 'Text' | 'HTML'
-    content: string
-  }
-  toRecipients: { emailAddress: { address: string } }[]
-  ccRecipients?: { emailAddress: { address: string } }[]
-  bccRecipients?: { emailAddress: { address: string } }[]
+  body: string
+  recipients: string[]
+  cc_recipients?: string[]
+  bcc_recipients?: string[]
+  attachments: string[]
 }
 
 interface CustomerEngineData {

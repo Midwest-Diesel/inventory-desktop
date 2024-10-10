@@ -94,19 +94,16 @@ export default function QuoteList({ selectHandwrittenOpen, setSelectHandwrittenO
   };
 
   const handleEmail = async (quote: Quote) => {
-    const recipient = prompt('Enter recipients', quote.customer.email || '');
-    if (!recipient) return;
-    const email: Email = {
+    const recipients = prompt('Enter recipients', quote.customer.email || '');
+    if (!recipients) return;
+    const emailArgs: Email = {
       subject: 'Quote',
-      body: {
-        contentType: 'HTML',
-        content: `${quote.desc}`
-      },
-      toRecipients: [{
-        emailAddress: { address: recipient }
-      }]
+      body: quote.desc,
+      recipients: recipients.split(', ').map((r) => r.trim()),
+      attachments: ['C:/Users/BennettSmrdel/Documents/krita/showcase/showcase.png', 'C:/Users/BennettSmrdel/Documents/krita/DEF Tank & Parts/DEF Tank & Parts Montage.png']
     };
-    invoke('new_email_draft', { emailArgs: { attachments: ['C:/Users/BennettSmrdel/Documents/krita/showcase/showcase.png', 'C:/Users/BennettSmrdel/Documents/krita/DEF Tank & Parts/DEF Tank & Parts Montage.png'] } });
+    // invoke('new_email_draft', { emailArgs: { attachments: ['C:/Users/BennettSmrdel/Documents/krita/showcase/showcase.png', 'C:/Users/BennettSmrdel/Documents/krita/DEF Tank & Parts/DEF Tank & Parts Montage.png'] } });
+    invoke('new_email_draft', { emailArgs });
   };
 
   const handleChangePage = async (data: any, page: number) => {

@@ -78,6 +78,7 @@ dependencies = [
  "simplelog",
  "tauri",
  "tauri-build",
+ "url",
 ]
 
 [[package]]
