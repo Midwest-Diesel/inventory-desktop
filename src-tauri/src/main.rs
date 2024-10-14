@@ -2,7 +2,8 @@
 
 use serde::{Deserialize, Serialize};
 use std::process::Command;
-use url::form_urlencoded;
+use std::fs::write;
+use std::env;
 
 
 fn main() {
@@ -24,18 +25,66 @@ struct EmailArgs {
 
 #[tauri::command]
 fn new_email_draft(email_args: EmailArgs) {
-  let mut cmd = Command::new("C:/Program Files (x86)/Microsoft Office/root/Office16/OUTLOOK.EXE");
   let recipients = email_args.recipients.join("; ");
-  let subject = form_urlencoded::byte_serialize(email_args.subject.as_bytes()).collect::<String>();
-  let body = form_urlencoded::byte_serialize(email_args.body.as_bytes()).collect::<String>();
-  
-  let email_address = format!("{}?subject={}&body={}", recipients, subject, body);
-  cmd.args(&["/m", &email_address]);
+  let subject = email_args.subject;
+  let body = email_args.body;
+  let cc_recipients = email_args.cc_recipients.unwrap_or_default().join("; ");
+  let bcc_recipients = email_args.bcc_recipients.unwrap_or_default().join("; ");
+  let attachments = email_args.attachments.unwrap_or_default();
+  let attachments_joined = attachments.join(";");
 
-  if let Some(attachments) = email_args.attachments {
-    for attachment in attachments {
-      cmd.args(&["/a", &attachment]);
+  let vbs_script = format!(
+    r#"
+    Dim OutlookApp
+    Set OutlookApp = CreateObject("Outlook.Application")
+    Dim MailItem
+    Set MailItem = OutlookApp.CreateItem(0)
+    MailItem.Subject = "{}"
+    MailItem.Body = "{}"
+    MailItem.To = "{}"
+    {}
+    {}
+    {}
+    
+    If Len(attachments) > 0 Then
+      Dim attachmentArray: attachmentArray = Split(attachments, ";")
+      Dim i
+      For i = LBound(attachmentArray) To UBound(attachmentArray)
+        Dim attachmentPath
+        attachmentPath = Trim(attachmentArray(i))
+        If attachmentPath <> "" Then
+          MailItem.Attachments.Add attachmentPath
+        End If
+      Next
+    End If
+
+    MailItem.Display
+    "#,
+    subject,
+    body,
+    recipients,
+    if !cc_recipients.is_empty() {
+      format!("MailItem.CC = \"{}\"", cc_recipients)
+    } else {
+      "".to_string()
+    },
+    if !bcc_recipients.is_empty() {
+      format!("MailItem.BCC = \"{}\"", bcc_recipients)
+    } else {
+      "".to_string()
+    },
+    if !attachments_joined.is_empty() {
+      format!("Dim attachments: attachments = \"{}\"", attachments_joined)
+    } else {
+      "".to_string()
     }
-  }
+  );
+
+  let temp_vbs_path = env::temp_dir().join("CreateEmailDraft.vbs");
+  write(&temp_vbs_path, vbs_script).expect("Failed to create VBS script");
+
+  let mut cmd = Command::new("wscript.exe");
+  cmd.arg(temp_vbs_path.clone());
   cmd.output().expect("Failed to create new draft");
+  let _ = std::fs::remove_file(temp_vbs_path);
 }
