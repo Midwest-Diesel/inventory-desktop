@@ -106,7 +106,18 @@ export default function QuoteList({ selectHandwrittenOpen, setSelectHandwrittenO
         '\\\\MWD1-SERVER\\Server\\Pictures\\parts_dir\\3834271\\IMG_20241009_094309952_HDR.jpg'
       ]
     };
-    invoke('new_email_draft', { emailArgs });
+    const quoteArgs = {
+      quote_id: 67678,
+      date: '9/16/2024',
+      customer: 'Jack Freemont',
+      contact: 'Jim',
+      qty: 2,
+      part_num: '2512314',
+      desc: 'FLYWHEEL C13',
+      unit_price: 695
+    };
+    // invoke('new_email_draft', { emailArgs });
+    invoke('email_quote', { quoteArgs });
   };
 
   const handleChangePage = async (data: any, page: number) => {
