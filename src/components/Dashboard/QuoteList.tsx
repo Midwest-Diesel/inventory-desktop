@@ -96,9 +96,54 @@ export default function QuoteList({ selectHandwrittenOpen, setSelectHandwrittenO
   const handleEmail = async (quote: Quote) => {
     const recipients = prompt('Enter recipients', quote.customer.email || '');
     if (!recipients) return;
+    const quoteArgs = {
+      quoteId: 67678,
+      date: '9/16/2024',
+      customer: 'Jack Freemont',
+      contact: 'Jim',
+      qty: 2,
+      partNum: '2512314',
+      desc: 'FLYWHEEL C13',
+      unitPrice: 695
+    };
     const emailArgs: Email = {
-      subject: 'Quote',
-      body: quote.desc,
+      subject: `Midwest Diesel Quote: ${quoteArgs.quoteId}`,
+      body: `
+        <style>
+          table {
+            border: 1px solid black;
+            border-collapse: collapse;
+          }
+          th, td {
+            padding: 8px;
+            text-align: left;
+            border: 1px solid black;
+          }
+          th {
+            background-color: #DDDCDC;
+          }
+        </style>
+        <table>
+          <thead>
+            <tr>
+              <th>Qty</th>
+              <th>Part Number</th>
+              <th>Description</th>
+              <th>Unit Price</th>
+              <th>Total Price</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>${quoteArgs.qty}</td>
+              <td>${quoteArgs.partNum}</td>
+              <td>${quoteArgs.desc}</td>
+              <td>${formatCurrency(quoteArgs.unitPrice)}</td>
+              <td>${formatCurrency(quoteArgs.qty * quoteArgs.unitPrice)}</td>
+            </tr>
+          </tbody>
+        </table>
+      `,
       recipients: recipients.split(', ').map((r) => r.trim()),
       attachments: [
         'C:/Users/BennettSmrdel/Documents/krita/showcase/showcase.png',
@@ -106,18 +151,7 @@ export default function QuoteList({ selectHandwrittenOpen, setSelectHandwrittenO
         '\\\\MWD1-SERVER\\Server\\Pictures\\parts_dir\\3834271\\IMG_20241009_094309952_HDR.jpg'
       ]
     };
-    const quoteArgs = {
-      quote_id: 67678,
-      date: '9/16/2024',
-      customer: 'Jack Freemont',
-      contact: 'Jim',
-      qty: 2,
-      part_num: '2512314',
-      desc: 'FLYWHEEL C13',
-      unit_price: 695
-    };
-    // invoke('new_email_draft', { emailArgs });
-    invoke('email_quote', { quoteArgs });
+    invoke('new_email_draft', { emailArgs });
   };
 
   const handleChangePage = async (data: any, page: number) => {
