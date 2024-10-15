@@ -34,6 +34,7 @@ export default function QuoteList({ selectHandwrittenOpen, setSelectHandwrittenO
   const [selectedCustomer] = useAtom<Customer>(selectedCustomerAtom);
   const [paginatedQuotes, setPaginatedQuotes] = useState<Quote[]>([]);
   const [expandedQuotes, setExpandedQuotes] = useState<number[]>([]);
+  const [filterByCustomer, setFilterByCustomer] = useState(true);
   const [page, setPage] = useState(1);
 
   useEffect(() => {
@@ -43,7 +44,15 @@ export default function QuoteList({ selectHandwrittenOpen, setSelectHandwrittenO
       await handleChangePage(null, 1);
     };
     fetchData();
+    if (!localStorage.getItem('customerId')) setFilterByCustomer(false);
   }, [lastSearch, selectedCustomer, quotesData]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      await handleChangePage(null, 1);
+    };
+    fetchData();
+  }, [filterByCustomer]);
 
 
   const toggleQuotesOpen = () => {
@@ -131,6 +140,7 @@ export default function QuoteList({ selectHandwrittenOpen, setSelectHandwrittenO
               <th>Description</th>
               <th>Unit Price</th>
               <th>Total Price</th>
+              ${quote.part ? `<th>Condition</th>` : ''}
             </tr>
           </thead>
           <tbody>
@@ -140,9 +150,10 @@ export default function QuoteList({ selectHandwrittenOpen, setSelectHandwrittenO
               <td>${quoteArgs.desc}</td>
               <td>${formatCurrency(quoteArgs.unitPrice)}</td>
               <td>${formatCurrency(quoteArgs.qty * quoteArgs.unitPrice)}</td>
+              ${quote.part ? `<td>${quote.part.condition}</td>` : ''}
             </tr>
             ${quote.piggybackQuotes.map((quote: PiggybackQuote) => {
-              if (quote.addToEmail) {
+              if (quote.addToEmail) {  
                 return (`
                   <tr>
                     <td>${quoteArgs.qty}</td>
@@ -150,6 +161,7 @@ export default function QuoteList({ selectHandwrittenOpen, setSelectHandwrittenO
                     <td>${quote.desc}</td>
                     <td>${formatCurrency(quote.price)}</td>
                     <td>${formatCurrency(quoteArgs.qty * quote.price)}</td>
+                    ${quote.part ? `<td>${quote.part.condition}</td>` : ''}
                   </tr>
                 `);
               }
@@ -169,7 +181,7 @@ export default function QuoteList({ selectHandwrittenOpen, setSelectHandwrittenO
 
   const handleChangePage = async (data: any, page: number) => {
     if (!selectedCustomer.id && localStorage.getItem('customerId')) return;
-    const res = await getSomeQuotes(page, 26, lastSearch, selectedCustomer.id, quoteListType === 'engine');
+    const res = await getSomeQuotes(page, 26, lastSearch, filterByCustomer ? selectedCustomer.id : null, quoteListType === 'engine');
     setPaginatedQuotes(res);
     setPage(page);
   };
@@ -212,6 +224,12 @@ export default function QuoteList({ selectHandwrittenOpen, setSelectHandwrittenO
               { quoteListType === 'part' ? 'Engine Quotes' : 'Part Quotes' }
             </Button> */}
             <Button onClick={handleNewQuote}>New</Button>
+            <Button
+              onClick={() => setFilterByCustomer(!filterByCustomer)}
+              disabled={!localStorage.getItem('customerId') && true}
+            >
+              {filterByCustomer ? 'No Customer Filter' : 'Filter by Customer'}
+            </Button>
           </div>
 
           <div style={{ height: '21.5rem', width: 'fit-content', overflow: 'auto' }}>
