@@ -142,15 +142,17 @@ export default function QuoteList({ selectHandwrittenOpen, setSelectHandwrittenO
               <td>${formatCurrency(quoteArgs.qty * quoteArgs.unitPrice)}</td>
             </tr>
             ${quote.piggybackQuotes.map((quote: PiggybackQuote) => {
-              return (`
-                <tr>
-                  <td>${quoteArgs.qty}</td>
-                  <td>${quote.partNum}</td>
-                  <td>${quote.desc}</td>
-                  <td></td>
-                  <td></td>
-                </tr>
-              `);
+              if (quote.addToEmail) {
+                return (`
+                  <tr>
+                    <td>${quoteArgs.qty}</td>
+                    <td>${quote.partNum}</td>
+                    <td>${quote.desc}</td>
+                    <td>${formatCurrency(quote.price)}</td>
+                    <td>${formatCurrency(quoteArgs.qty * quote.price)}</td>
+                  </tr>
+                `);
+              }
             })}
           </tbody>
         </table>
