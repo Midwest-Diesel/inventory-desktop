@@ -67,7 +67,8 @@ export default function PiggybackQuoteDialog({ open, setOpen, part }: Props) {
       rating: part.rating,
       toFollowUp: false,
       followUpNotes: '',
-      email: customer.email
+      email: customer.email,
+      partId: part.id
     } as any;
     const id = await addQuote(newQuote, user.id) as any;
     await piggybackQuote(selectedQuoteId, id);

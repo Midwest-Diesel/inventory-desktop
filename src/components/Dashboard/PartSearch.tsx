@@ -126,8 +126,9 @@ export default function PartSearch({ selectHandwrittenOpen, setSelectHandwritten
       notes: '',
       salesman: '',
       date: new Date(),
-      sale: false
-    } as Quote;
+      sale: false,
+      partId: part.id
+    } as any;
     await addQuote(newQuote, user.id);
     setQuotesData([newQuote, ...quotesData]);
   };

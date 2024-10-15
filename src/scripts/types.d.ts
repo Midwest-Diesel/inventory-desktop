@@ -94,6 +94,7 @@ type Quote = {
   createdAfter: boolean
   children: Quote[]
   piggybackQuotes: PiggybackQuote[]
+  part?: Part
 };
 
 type PiggybackQuote = {

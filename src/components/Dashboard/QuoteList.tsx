@@ -97,14 +97,14 @@ export default function QuoteList({ selectHandwrittenOpen, setSelectHandwrittenO
     const recipients = prompt('Enter recipients', quote.customer.email || '');
     if (!recipients) return;
     const quoteArgs = {
-      quoteId: 67678,
-      date: '9/16/2024',
-      customer: 'Jack Freemont',
-      contact: 'Jim',
-      qty: 2,
-      partNum: '2512314',
-      desc: 'FLYWHEEL C13',
-      unitPrice: 695
+      quoteId: quote.id,
+      date: formatDate(quote.date),
+      customer: quote.customer,
+      contact: quote.contact,
+      qty: (quote.part && quote.part.qty) || 1,
+      partNum: quote.partNum,
+      desc: quote.desc,
+      unitPrice: quote.price
     };
     const emailArgs: Email = {
       subject: `Midwest Diesel Quote: ${quoteArgs.quoteId}`,
@@ -238,7 +238,13 @@ export default function QuoteList({ selectHandwrittenOpen, setSelectHandwrittenO
                         <td>{ quote.contact }</td>
                         <td style={{ width:'7.5rem' }}>{ quote.phone && formatPhone(quote.phone) }</td>
                         <td>{ quote.state }</td>
-                        <td><Link href={`/part/${quote.partNum}`}>{ quote.partNum }</Link></td>
+                        <td>
+                          {quote.part ?
+                            <Link href={`/part/${quote.part.id}`}>{ quote.partNum }</Link>
+                            :
+                            quote.partNum
+                          }
+                        </td>
                         <td style={{ width: '15rem' }}>{ quote.desc }</td>
                         <td>{ quote.stockNum }</td>
                         <td>{ formatCurrency(quote.price) }</td>
