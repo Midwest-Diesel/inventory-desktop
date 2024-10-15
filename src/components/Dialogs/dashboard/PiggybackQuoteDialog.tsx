@@ -53,21 +53,21 @@ export default function PiggybackQuoteDialog({ open, setOpen, part }: Props) {
     const newQuote = {
       date: new Date(),
       customer: customer,
-      contact: customer.contact,
-      phone: customer.phone,
-      state: customer.billToState,
+      contact: customer ? customer.contact : null,
+      phone: customer ? customer.phone : null,
+      state: customer ? customer.billToState : null,
       partNum: part.partNum,
       desc: part.desc,
       stockNum: part.stockNum,
       price: 0,
-      notes: '',
+      notes: part.desc,
       salesmanId: user.id,
       sale: false,
       followedUp: false,
       rating: part.rating,
       toFollowUp: false,
       followUpNotes: '',
-      email: customer.email,
+      email: customer ? customer.email : null,
       partId: part.id
     } as any;
     const id = await addQuote(newQuote, user.id) as any;

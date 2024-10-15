@@ -99,8 +99,30 @@ type Quote = {
 
 type PiggybackQuote = {
   id: number
+  date: Date
+  source: Source
+  customer: Customer
+  contact: string
+  phone: string
+  state: string
   partNum: string
+  desc: string
+  stockNum: string
+  price: number
   notes: string
+  salesman: string
+  sale: boolean
+  followedUp: boolean
+  followUpDate: Date
+  rating: number
+  toFollowUp: boolean
+  followUpNotes: string
+  email: string
+  invoiceItem: number
+  createdAfter: boolean
+  children: Quote[]
+  piggybackQuotes: PiggybackQuote[]
+  part?: Part
 };
 
 type Core = {

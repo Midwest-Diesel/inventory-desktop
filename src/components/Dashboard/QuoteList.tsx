@@ -141,6 +141,17 @@ export default function QuoteList({ selectHandwrittenOpen, setSelectHandwrittenO
               <td>${formatCurrency(quoteArgs.unitPrice)}</td>
               <td>${formatCurrency(quoteArgs.qty * quoteArgs.unitPrice)}</td>
             </tr>
+            ${quote.piggybackQuotes.map((quote: PiggybackQuote) => {
+              return (`
+                <tr>
+                  <td>${quoteArgs.qty}</td>
+                  <td>${quote.partNum}</td>
+                  <td>${quote.desc}</td>
+                  <td></td>
+                  <td></td>
+                </tr>
+              `);
+            })}
           </tbody>
         </table>
       `,
@@ -271,8 +282,12 @@ export default function QuoteList({ selectHandwrittenOpen, setSelectHandwrittenO
                                   return (
                                     <li key={piggybackQuote.id}>
                                       <div className="piggyback-quotes__item">
-                                        <Link href={`/part/${piggybackQuote.partNum}`}>{ piggybackQuote.partNum }</Link>
-                                        <p>{ piggybackQuote.notes }</p>
+                                        {quote.part ?
+                                          <Link href={`/part/${quote.part.id}`}>{ piggybackQuote.partNum }</Link>
+                                          :
+                                          <p>{ quote.partNum }</p>
+                                        }
+                                        <p>{ piggybackQuote.desc }</p>
                                       </div>
                                     </li>
                                   );
