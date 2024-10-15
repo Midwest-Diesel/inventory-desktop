@@ -122,6 +122,15 @@ export const piggybackQuote = async (parentId: number, piggybackId: number) => {
   }
 };
 
+export const toggleAddToEmail = async (id: number, value: boolean) => {
+  try {
+    const auth = { withCredentials: true };
+    await api.patch('/api/quotes/add-to-email', { id, value }, auth);
+  } catch (err) {
+    console.error(err);
+  }
+};
+
 // === DELETE routes === //
 
 export const deleteQuote = async (id: number) => {

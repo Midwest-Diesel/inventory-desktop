@@ -3,7 +3,7 @@ import { generateClasses, parseClasses } from "@/scripts/tools/utils";
 interface Props extends InputHTML {
   className?: string
   labelClass?: string
-  variant?: ('label-thin' | 'label-space-between' | 'label-full-width' | 'label-bold' | 'dark-bg' | 'label-stack' | 'label-content-center' | 'label-align-center' | 'label-fit')[]
+  variant?: ('label-thin' | 'label-space-between' | 'label-full-width' | 'label-bold' | 'dark-bg' | 'label-stack' | 'label-content-center' | 'label-align-center' | 'label-fit' | 'label-vertical-align')[]
   label?: string
   disabled?: boolean
 }

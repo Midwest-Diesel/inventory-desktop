@@ -5,7 +5,7 @@ import QuoteSearchDialog from "../Dialogs/dashboard/QuoteSearchDialog";
 import { useAtom } from "jotai";
 import { lastPartSearchAtom, quotesAtom, selectedCustomerAtom, userAtom } from "@/scripts/atoms/state";
 import EditQuoteDialog from "@/components/Dialogs/dashboard/EditQuoteDialog";
-import { addQuote, deleteQuote, getQuotesCount, getSomeQuotes, toggleQuoteSold } from "@/scripts/controllers/quotesController";
+import { addQuote, deleteQuote, getQuotesCount, getSomeQuotes, toggleAddToEmail, toggleQuoteSold } from "@/scripts/controllers/quotesController";
 import Table from "@/components/Library/Table";
 import Pagination from "@/components/Library/Pagination";
 import { formatCurrency, formatDate, formatPhone } from "@/scripts/tools/stringUtils";
@@ -182,6 +182,16 @@ export default function QuoteList({ selectHandwrittenOpen, setSelectHandwrittenO
     setExpandedQuotes(arr);
   };
 
+  const handleAddToEmail = async (id: number, value: boolean) => {
+    await toggleAddToEmail(id, value);
+    setQuotes(paginatedQuotes.map((quote: any) => {
+      if (quote.piggybackQuoteId === id) {
+        return { ...quote, addToEmail: !quote.addToEmail };
+      }
+      return quote;
+    }));
+  };
+
 
   return (
     <div className="quote-list">
@@ -288,6 +298,12 @@ export default function QuoteList({ selectHandwrittenOpen, setSelectHandwrittenO
                                           <p>{ quote.partNum }</p>
                                         }
                                         <p>{ piggybackQuote.desc }</p>
+                                        <Checkbox
+                                          label="Add to Email"
+                                          variant={['label-bold', 'label-align-center', 'label-vertical-align']}
+                                          checked={piggybackQuote.addToEmail}
+                                          onChange={(e: any) => handleAddToEmail(quote.id, e.target.checked)}
+                                        />
                                       </div>
                                     </li>
                                   );

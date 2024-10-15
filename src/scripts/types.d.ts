@@ -122,6 +122,7 @@ type PiggybackQuote = {
   createdAfter: boolean
   children: Quote[]
   piggybackQuotes: PiggybackQuote[]
+  addToEmail: boolean
   part?: Part
 };
 
