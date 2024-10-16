@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { MouseEvent, useEffect, useRef, useState } from "react";
 import Dialog from "../../Library/Dialog";
 import Table from "@/components/Library/Table";
 import Pagination from "@/components/Library/Pagination";
@@ -29,7 +29,8 @@ export default function PiggybackQuoteDialog({ open, setOpen, quote, handleChang
   const [selectedPartId, setSelectedPartId] = useState(0);
   const [partSearchOpen, setPartSearchOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [isSearchMode, setIsSearchMode] = useState(false); 
+  const [isSearchMode, setIsSearchMode] = useState(false);
+  const [showRemarksList, setShowRemarksList] = useState<{ [id: number]: boolean }>({});
   
   useEffect(() => {
     const fetchData = async () => {
@@ -37,6 +38,15 @@ export default function PiggybackQuoteDialog({ open, setOpen, quote, handleChang
     };
     fetchData();
   }, [open]);
+
+  const handleMouseOver = (partId: number) => {
+    setShowRemarksList({});
+    setShowRemarksList((prevState) => ({ ...prevState, [partId]: true }));
+  };
+
+  const handleMouseOut = (partId: number) => {
+    setShowRemarksList((prevState) => ({ ...prevState, [partId]: false }));
+  };
 
   const resetPartsList = async () => {
     const pageCount = await getPartsQty();
@@ -106,13 +116,12 @@ export default function PiggybackQuoteDialog({ open, setOpen, quote, handleChang
         open={open}
         setOpen={setOpen}
         title="Select Part"
-        width={600}
+        width={660}
         className="piggyback-quote-dialog"
       >
         <div className="piggyback-quote-dialog__top-bar">
           <Button onClick={() => setPartSearchOpen(true)}>Search</Button>
         </div>
-
         {loading ?
           <Loading />
         :
@@ -126,23 +135,37 @@ export default function PiggybackQuoteDialog({ open, setOpen, quote, handleChang
                     <th>Desc</th>
                     <th>StockNum</th>
                     <th>Location</th>
+                    <th>Remarks</th>
                   </tr>
                 </thead>
                 <tbody>
                   {parts.map((part: Part) => {
                     return (
-                      <tr key={part.id} onClick={() => setSelectedPartId(part.id)} className={part.id === selectedPartId ? 'select-handwritten-dialog--selected' : ''}>
+                      <tr key={part.id} onClick={() => setSelectedPartId(part.id)} className={part.id === selectedPartId ? 'select-handwritten-dialog--selected' : ''} style={{ position: 'relative' }}>
                         <td>{ part.qty }</td>
                         <td>{ part.partNum }</td>
                         <td>{ part.desc }</td>
                         <td>{ part.stockNum }</td>
                         <td>{ part.location }</td>
+                        <td
+                          onMouseOver={() => handleMouseOver(part.id)}
+                          onMouseOut={() => handleMouseOut(part.id)}
+                        >
+                          {showRemarksList[part.id] ?
+                            <div className="piggyback-quote-dialog__remarks">
+                              <p>{ part.remarks }</p>
+                            </div>
+                          :
+                            <p style={{ textAlign: 'center' }}>
+                              ?
+                            </p>
+                          }
+                        </td>
                       </tr>
                     );
                   })}
                 </tbody>
               </Table>
-
               <Pagination
                 data={partsData}
                 setData={handleChangePage}
@@ -150,7 +173,6 @@ export default function PiggybackQuoteDialog({ open, setOpen, quote, handleChang
                 pageSize={26}
               />
             </div>
-
             <Button onClick={handlePiggybackQuote} className="piggyback-quote-dialog__submit-btn">Submit</Button>
           </>
         }
