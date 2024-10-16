@@ -91,6 +91,7 @@ export default function QuoteList({ selectHandwrittenOpen, setSelectHandwrittenO
     if (!confirm('Are you sure you want to delete this quote?')) return;
     await deleteQuote(id);
     setQuotes(quotes.filter((quote) => quote.id !== id));
+    setExpandedQuotes([]);
   };
 
   const invoiceQuote = async (quote: Quote) => {
