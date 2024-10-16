@@ -29,3 +29,13 @@
     gap: 0.5rem;
   }
 }
+
+.piggyback-quote-dialog {
+  &__top-bar {
+    margin-bottom: 0.3rem;
+  }
+
+  &__submit-btn {
+    margin-top: 0.3rem;
+  }
+}

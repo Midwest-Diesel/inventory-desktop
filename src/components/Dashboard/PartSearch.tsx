@@ -42,8 +42,6 @@ export default function PartSearch({ selectHandwrittenOpen, setSelectHandwritten
   const [partsSearchOpen, setPartsSearchOpen] = useState(false);
   const [altPartsSearchOpen, setAltPartsSearchOpen] = useState(false);
   const [salesInfoOpen, setSalesInfoOpen] = useState(false);
-  const [piggybackQuoteOpen, setPiggybackQuoteOpen] = useState(false);
-  const [piggybackQuotePart, setPiggybackQuotePart] = useState<Part>(null);
   const [loading, setLoading] = useState(true);
   const [partImages, setPartImages] = useState<Picture[]>([]);
   const [snImages, setSnImages] = useState<Picture[]>([]);
@@ -132,11 +130,6 @@ export default function PartSearch({ selectHandwrittenOpen, setSelectHandwritten
     await addQuote(newQuote, user.id);
     setQuotesData([newQuote, ...quotesData]);
   };
-
-  const quotePiggyback = (part: Part) => {
-    setPiggybackQuoteOpen(true);
-    setPiggybackQuotePart(part);
-  };
   
   const openPartImages = async (part: Part) => {
     setPartImages(await getImagesFromPart(part.partNum));
@@ -224,7 +217,6 @@ export default function PartSearch({ selectHandwrittenOpen, setSelectHandwritten
           <SalesInfoDialog open={salesInfoOpen} setOpen={setSalesInfoOpen} />
           <PartsSearchDialog open={partsSearchOpen} setOpen={setPartsSearchOpen} setParts={handleSearchData} setLoading={setLoading} />
           <AltPartsSearchDialog open={altPartsSearchOpen} setOpen={setAltPartsSearchOpen} setParts={handleSearchData} setLoading={setLoading} />
-          { piggybackQuotePart && <PiggybackQuoteDialog open={piggybackQuoteOpen} setOpen={setPiggybackQuoteOpen} part={piggybackQuotePart} /> }
 
           <div style={{ width:'fit-content', overflow: 'auto', maxHeight: '68vh' }}>
             <Table data-cy="part-search-table">
@@ -252,10 +244,7 @@ export default function PartSearch({ selectHandwrittenOpen, setSelectHandwritten
                   return (
                     <tr key={i}>
                       <td className="parts-list__left-col table-buttons">
-                        <div style={{ display: 'flex' }}>
-                          <Button variant={['x-small']} onClick={() => quotePart(part)} data-cy="quote-part-btn">Quote Part</Button>
-                          <Button variant={['x-small']} onClick={() => quotePiggyback(part)}>Quote Piggyback</Button>
-                        </div>
+                        <Button variant={['x-small']} onClick={() => quotePart(part)} data-cy="quote-part-btn">Quote Part</Button>
                         <Button variant={['x-small']} onClick={() => handleOpenSelectHandwrittenDialog(part)}>Add to Handwritten</Button>
                       </td>
                       <td>

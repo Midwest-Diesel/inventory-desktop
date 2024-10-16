@@ -1,55 +1,68 @@
-import { FormEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Dialog from "../../Library/Dialog";
-import { addQuote, getQuotesCountByPartNum, getSomeQuotesByPartNum, piggybackQuote, searchQuotes } from "@/scripts/controllers/quotesController";
 import Table from "@/components/Library/Table";
-import { formatDate } from "@/scripts/tools/stringUtils";
 import Pagination from "@/components/Library/Pagination";
 import { useAtom } from "jotai";
-import { quotesAtom, userAtom } from "@/scripts/atoms/state";
+import { userAtom } from "@/scripts/atoms/state";
 import Button from "@/components/Library/Button";
 import { getCustomerById } from "@/scripts/controllers/customerController";
+import { getPartById, getPartsQty, getSomeParts } from "@/scripts/controllers/partsController";
+import PiggybackPartSearchDialog from "./PiggybackPartSearchDialog";
+import Loading from "@/components/Library/Loading";
+import { addQuote, piggybackQuote } from "@/scripts/controllers/quotesController";
 
 interface Props {
   open: boolean
   setOpen: (open: boolean) => void
-  part: Part
+  quote: Quote
+  handleChangeQuotesPage: (_: any, page: number) => void
+  quotesPage: number
 }
 
 
-export default function PiggybackQuoteDialog({ open, setOpen, part }: Props) {
+export default function PiggybackQuoteDialog({ open, setOpen, quote, handleChangeQuotesPage, quotesPage }: Props) {
   const [user] = useAtom<User>(userAtom);
-  const [quotesData, setQuotesData] = useAtom<Quote[]>(quotesAtom);
-  const [quotes, setQuotes] = useState<Quote[]>([]);
-  const [quoteCount, setQuoteCount] = useState<number[]>([]);
+  const [partsData, setPartsData] = useState<Part[]>([]);
+  const [parts, setParts] = useState<Part[]>([]);
+  const [partCount, setPartCount] = useState<number[]>([]);
   const [currentPage, setCurrentPage] = useState(0);
-  const [isEngineQuotes, setIsEngineQuotes] = useState(false);
-  const [selectedQuoteId, setSelectedQuoteId] = useState(0);
+  const [selectedPartId, setSelectedPartId] = useState(0);
+  const [partSearchOpen, setPartSearchOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [isSearchMode, setIsSearchMode] = useState(false); 
   
   useEffect(() => {
     const fetchData = async () => {
-      resetQuotesList();
+      resetPartsList();
     };
     fetchData();
-  }, [open, isEngineQuotes]);
+  }, [open]);
 
-  const resetQuotesList = async () => {
-    const pageCount = await getQuotesCountByPartNum(isEngineQuotes, part.partNum);
-    setQuoteCount(pageCount);
-    const res = await getSomeQuotesByPartNum(1, 26, part.partNum, isEngineQuotes);
-    setQuotesData(res);
-    setQuotes(res);
+  const resetPartsList = async () => {
+    const pageCount = await getPartsQty();
+    setPartCount(pageCount);
+    const res = await getSomeParts(1, 26);
+    setPartsData(res);
+    setParts(res);
   };
   
   const handleChangePage = async (data: any, page: number) => {
     if (page === currentPage) return;
-    const res = await getSomeQuotesByPartNum(page, 26, part.partNum, isEngineQuotes);
-    setQuotes(res);
+    if (isSearchMode) {
+      const start = (page - 1) * 26;
+      const end = start + 26;
+      setParts(partsData.slice(start, end));
+    } else {
+      const res = await getSomeParts(page, 26);
+      setParts(res);
+    }
     setCurrentPage(page);
   };
 
   const handlePiggybackQuote = async () => {
     const customerId = Number(localStorage.getItem('customerId'));
     const customer = await getCustomerById(customerId) as Customer;
+    const part = await getPartById(selectedPartId);
     const newQuote = {
       date: new Date(),
       customer: customer,
@@ -71,54 +84,77 @@ export default function PiggybackQuoteDialog({ open, setOpen, part }: Props) {
       partId: part.id
     } as any;
     const id = await addQuote(newQuote, user.id) as any;
-    await piggybackQuote(selectedQuoteId, id);
+    await piggybackQuote(quote.id, id);
+    await handleChangeQuotesPage(null, quotesPage);
     setOpen(false);
+  };
+
+  const handleSearchParts = async (results: Part[]) => {
+    setIsSearchMode(true);
+    setPartsData(results);
+    setParts(results.slice(0, 26));
+    setPartCount(results.map((part) => part.qty));
+    setCurrentPage(1);
   };
 
 
   return (
-    <Dialog
-      open={open}
-      setOpen={setOpen}
-      title="Select Quote"
-      width={600}
-    >
-      <div className="select-handwritten-dialog">
-        <Button onClick={() => setIsEngineQuotes(!isEngineQuotes)}>Engine Quotes</Button>
-        <Table>
-          <thead>
-            <tr>
-              <th></th>
-              <th>Date</th>
-              <th>Customer</th>
-              <th>Part Num</th>
-              <th>Desc</th>
-            </tr>
-          </thead>
-          <tbody>
-            {quotes.map((quote: Quote) => {
-              return (
-                <tr key={quote.id} onClick={() => setSelectedQuoteId(quote.id)} className={quote.id === selectedQuoteId ? 'select-handwritten-dialog--selected' : ''}>
-                  <td>{ quote.id }</td>
-                  <td>{ formatDate(quote.date) }</td>
-                  <td>{ quote.customer.company }</td>
-                  <td>{ quote.partNum }</td>
-                  <td>{ quote.desc }</td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </Table>
+    <>
+      <PiggybackPartSearchDialog open={partSearchOpen} setOpen={setPartSearchOpen} setLoading={setLoading} setParts={handleSearchParts} />
 
-        <Pagination
-          data={quotesData}
-          setData={handleChangePage}
-          minData={quoteCount}
-          pageSize={26}
-        />
-      </div>
+      <Dialog
+        open={open}
+        setOpen={setOpen}
+        title="Select Part"
+        width={600}
+        className="piggyback-quote-dialog"
+      >
+        <div className="piggyback-quote-dialog__top-bar">
+          <Button onClick={() => setPartSearchOpen(true)}>Search</Button>
+        </div>
 
-      <Button onClick={handlePiggybackQuote}>Submit</Button>
-    </Dialog>
+        {loading ?
+          <Loading />
+        :
+          <>
+            <div className="select-handwritten-dialog">
+              <Table>
+                <thead>
+                  <tr>
+                    <th>Qty</th>
+                    <th>PartNum</th>
+                    <th>Desc</th>
+                    <th>StockNum</th>
+                    <th>Location</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {parts.map((part: Part) => {
+                    return (
+                      <tr key={part.id} onClick={() => setSelectedPartId(part.id)} className={part.id === selectedPartId ? 'select-handwritten-dialog--selected' : ''}>
+                        <td>{ part.qty }</td>
+                        <td>{ part.partNum }</td>
+                        <td>{ part.desc }</td>
+                        <td>{ part.stockNum }</td>
+                        <td>{ part.location }</td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </Table>
+
+              <Pagination
+                data={partsData}
+                setData={handleChangePage}
+                minData={partCount}
+                pageSize={26}
+              />
+            </div>
+
+            <Button onClick={handlePiggybackQuote} className="piggyback-quote-dialog__submit-btn">Submit</Button>
+          </>
+        }
+      </Dialog>
+    </>
   );
 }

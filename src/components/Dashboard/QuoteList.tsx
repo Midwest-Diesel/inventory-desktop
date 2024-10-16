@@ -13,6 +13,7 @@ import Link from "next/link";
 import Checkbox from "@/components/Library/Checkbox";
 import { getPartByPartNum } from "@/scripts/controllers/partsController";
 import { invoke } from "@tauri-apps/api/tauri";
+import PiggybackQuoteDialog from "../Dialogs/dashboard/PiggybackQuoteDialog";
 
 interface Props {
   selectHandwrittenOpen: boolean
@@ -35,6 +36,8 @@ export default function QuoteList({ selectHandwrittenOpen, setSelectHandwrittenO
   const [paginatedQuotes, setPaginatedQuotes] = useState<Quote[]>([]);
   const [expandedQuotes, setExpandedQuotes] = useState<number[]>([]);
   const [filterByCustomer, setFilterByCustomer] = useState(true);
+  const [piggybackQuoteOpen, setPiggybackQuoteOpen] = useState(false);
+  const [piggybackQuote, setPiggybackQuote] = useState<Quote>(null);
   const [page, setPage] = useState(1);
 
   useEffect(() => {
@@ -53,7 +56,6 @@ export default function QuoteList({ selectHandwrittenOpen, setSelectHandwrittenO
     };
     fetchData();
   }, [filterByCustomer]);
-
 
   const toggleQuotesOpen = () => {
     localStorage.setItem('quotesOpen', `${!quotesOpen}`);
@@ -206,6 +208,11 @@ export default function QuoteList({ selectHandwrittenOpen, setSelectHandwrittenO
     }));
   };
 
+  const quotePiggyback = (quote: Quote) => {
+    setPiggybackQuoteOpen(true);
+    setPiggybackQuote(quote);
+  };
+
 
   return (
     <div className="quote-list">
@@ -215,6 +222,15 @@ export default function QuoteList({ selectHandwrittenOpen, setSelectHandwrittenO
       </div>
       <QuoteSearchDialog open={searchDialogOpen} setOpen={setSearchDialogOpen} setQuotes={setQuotes} />
       { quoteEdited && <EditQuoteDialog setQuoteEdited={setQuoteEdited} quote={quoteEdited} setQuote={(q: Quote) => handleEdit(q)} /> }
+      { piggybackQuote &&
+        <PiggybackQuoteDialog
+          open={piggybackQuoteOpen}
+          setOpen={setPiggybackQuoteOpen}
+          quote={piggybackQuote}
+          handleChangeQuotesPage={handleChangePage}
+          quotesPage={page}
+        />
+      }
 
       {quotesOpen &&
         <>
@@ -268,6 +284,7 @@ export default function QuoteList({ selectHandwrittenOpen, setSelectHandwrittenO
                         </td>
                         <td className="table-buttons">
                           {!quote.sale && <Button variant={['x-small']} onClick={() => invoiceQuote(quote)} data-cy="invoice-btn">Invoice</Button>}
+                          <Button variant={['x-small']} onClick={() => quotePiggyback(quote)}>Quote Piggyback</Button>
                           <Button variant={['x-small']} onClick={() => setQuoteEdited(quote)}>Edit</Button>
                           <Button variant={['x-small']} onClick={() => handleEmail(quote)}>Email</Button>
                           <Button variant={['x-small', 'danger']} onClick={() => handleDelete(quote.id)} data-cy="delete-quote">Delete</Button>
