@@ -124,7 +124,7 @@ export default function PiggybackQuoteDialog({ open, setOpen, quote, handleChang
         </div>
         {loading ?
           <Loading />
-        :
+          :
           <>
             <div className="select-handwritten-dialog">
               <Table>
@@ -155,7 +155,7 @@ export default function PiggybackQuoteDialog({ open, setOpen, quote, handleChang
                             <div className="piggyback-quote-dialog__remarks">
                               <p>{ part.remarks }</p>
                             </div>
-                          :
+                            :
                             <p style={{ textAlign: 'center' }}>
                               ?
                             </p>

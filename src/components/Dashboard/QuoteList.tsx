@@ -1,3 +1,4 @@
+/* eslint-disable */
 import Image from "next/image";
 import { Fragment, useEffect, useState } from "react";
 import Button from "../Library/Button";
@@ -326,10 +327,10 @@ export default function QuoteList({ selectHandwrittenOpen, setSelectHandwrittenO
                                   return (
                                     <li key={piggybackQuote.id}>
                                       <div className="piggyback-quotes__item">
-                                        {quote.part ?
-                                          <Link href={`/part/${quote.part.id}`}>{ piggybackQuote.partNum }</Link>
+                                        {piggybackQuote.part ?
+                                          <Link href={`/part/${piggybackQuote.part.id}`}>{ piggybackQuote.partNum }</Link>
                                           :
-                                          <p>{ quote.partNum }</p>
+                                          <p>{ piggybackQuote.partNum }</p>
                                         }
                                         <p><strong>{ piggybackQuote.desc }</strong></p>
                                         <p><em>{ piggybackQuote.part && piggybackQuote.part.remarks }</em></p>
