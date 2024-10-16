@@ -334,7 +334,8 @@ export default function QuoteList({ selectHandwrittenOpen, setSelectHandwrittenO
                                           :
                                           <p>{ quote.partNum }</p>
                                         }
-                                        <p>{ piggybackQuote.desc }</p>
+                                        <p><strong>{ piggybackQuote.desc }</strong></p>
+                                        <p><em>{ piggybackQuote.part && piggybackQuote.part.remarks }</em></p>
                                         <Checkbox
                                           label="Add to Email"
                                           variant={['label-bold', 'label-align-center', 'label-vertical-align']}
