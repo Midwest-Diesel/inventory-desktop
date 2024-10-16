@@ -200,12 +200,7 @@ export default function QuoteList({ selectHandwrittenOpen, setSelectHandwrittenO
 
   const handleAddToEmail = async (id: number, value: boolean) => {
     await toggleAddToEmail(id, value);
-    setQuotes(paginatedQuotes.map((quote: any) => {
-      if (quote.piggybackQuoteId === id) {
-        return { ...quote, addToEmail: !quote.addToEmail };
-      }
-      return quote;
-    }));
+    await handleChangePage(null, page);
   };
 
   const quotePiggyback = (quote: Quote) => {
