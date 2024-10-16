@@ -268,13 +268,13 @@ export default function QuoteList({ selectHandwrittenOpen, setSelectHandwrittenO
               <tbody>
                 {paginatedQuotes.length === 0 && <h4 style={{ margin: '0.6rem 0' }}>No results...</h4>}
                 {paginatedQuotes.map((quote: Quote, i) => {
-                  const isExpanded = expandedQuotes.includes(i);
+                  const isExpanded = expandedQuotes.includes(quote.id);
                   return (
                     <Fragment key={i}>
                       <tr style={ quote.sale ? { backgroundColor: 'var(--green-dark-2)' } : null}>
                         <td rowSpan={isExpanded ? 2 : 1}>
                           {quote.piggybackQuotes.length > 0 &&
-                            <Button variant={['no-style']} onClick={() => toggleExpandedQuotes(i, !isExpanded)}>
+                            <Button variant={['no-style']} onClick={() => toggleExpandedQuotes(quote.id, !isExpanded)}>
                               <Image src={`/images/icons/arrow-${isExpanded ? 'up' : 'down'}.svg`} alt="Arrow" width={25} height={25} />
                             </Button>
                           }
