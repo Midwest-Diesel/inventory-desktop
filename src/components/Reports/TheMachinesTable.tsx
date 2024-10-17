@@ -1,4 +1,5 @@
 import Button from "../Library/Button";
+import Loading from "../Library/Loading";
 import Table from "../Library/Table";
 
 interface Props {
@@ -38,6 +39,7 @@ export default function TheMachinesTable({ setTableOpen, data, setReportsOpen }:
           })}
         </tbody>
       </Table>
+      { data.length == 0 && <Loading /> }
     </div>
   );
 }

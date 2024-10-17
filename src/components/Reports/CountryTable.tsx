@@ -1,4 +1,5 @@
 import Button from "../Library/Button";
+import Loading from "../Library/Loading";
 import Table from "../Library/Table";
 
 interface Props {
@@ -34,6 +35,7 @@ export default function CountryTable({ setTableOpen, data, setReportsOpen }: Pro
           })}
         </tbody>
       </Table>
+      { data.length == 0 && <Loading /> }
     </div>
   );
 }

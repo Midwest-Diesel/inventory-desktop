@@ -1,6 +1,7 @@
 import { formatCurrency } from "@/scripts/tools/stringUtils";
 import Button from "../Library/Button";
 import Table from "../Library/Table";
+import Loading from "../Library/Loading";
 
 interface Props {
   setTableOpen: (open: boolean) => void
@@ -41,6 +42,7 @@ export default function PartDescTable({ setTableOpen, data, setReportsOpen }: Pr
           })}
         </tbody>
       </Table>
+      { data.length == 0 && <Loading /> }
     </div>
   );
 }

@@ -1,4 +1,5 @@
 import Button from "../Library/Button";
+import Loading from "../Library/Loading";
 import Table from "../Library/Table";
 
 interface Props {
@@ -40,6 +41,7 @@ export default function HandwrittenCompanyTable({ setTableOpen, data, setReports
           })}
         </tbody>
       </Table>
+      { data.length == 0 && <Loading /> }
     </div>
   );
 }
