@@ -39,7 +39,7 @@ export default function Invoice() {
                 variant={['X', 'link']}
                 className="invoice-details__close-btn"
               >
-                <Link href="/invoices">Close</Link>
+                <a href="/invoices">Close</a>
               </Button>
               <Button
                 variant={['X', 'blue']}

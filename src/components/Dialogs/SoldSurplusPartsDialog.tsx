@@ -66,9 +66,9 @@ export default function SoldSurplusPartsDialog({ open, setOpen, code }: Props) {
             return (
               <tr key={i}>
                 <td>{ formatDate(part.soldToDate) }</td>
-                <td><Link href={`/customer/${part.customerId}`}>{ part.soldTo }</Link></td>
+                <td><a href={`/customer/${part.customerId}`}>{ part.soldTo }</a></td>
                 <td>{ part.qtySold }</td>
-                <td><Link href={`/part/${part.id}`}>{ part.partNum }</Link></td>
+                <td><a href={`/part/${part.id}`}>{ part.partNum }</a></td>
                 <td>{ part.desc }</td>
                 <td>{ part.stockNum }</td>
                 <td>{ formatCurrency(part.purchasePrice) }</td>

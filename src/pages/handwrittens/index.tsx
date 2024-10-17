@@ -113,7 +113,7 @@ export default function Handwrittens() {
                   {handwrittens.map((handwritten: Handwritten) => {
                     return (
                       <tr key={handwritten.id} onClick={() => setFocusedHandwritten(handwritten)} style={ focusedHandwritten && handwritten.id === focusedHandwritten.id ? { border: 'solid 3px var(--yellow-2)' } : {} }>
-                        <td><Link href={`/handwrittens/${handwritten.id}`}>{ handwritten.id }</Link></td>
+                        <td><a href={`/handwrittens/${handwritten.id}`}>{ handwritten.id }</a></td>
                         <td>{ formatDate(handwritten.date) }</td>
                         <td>{ handwritten.billToCompany }</td>
                         <td>{ handwritten.shipToCompany }</td>

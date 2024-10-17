@@ -111,7 +111,7 @@ export default function Handwritten() {
                   variant={['link']}
                   className="handwritten-details__close-btn"
                 >
-                  <Link href="/handwrittens">Close</Link>
+                  <a href="/handwrittens">Close</a>
                 </Button>
                 {user.accessLevel > 1 &&
                   <Button
@@ -151,7 +151,7 @@ export default function Handwritten() {
                     </tr>
                     <tr>
                       <th><strong>Customer</strong></th>
-                      <td><Link href={`/customer/${handwritten.customer.id}`}>{ handwritten.customer.company }</Link></td>
+                      <td><a href={`/customer/${handwritten.customer.id}`}>{ handwritten.customer.company }</a></td>
                     </tr>
                     <tr>
                       <th><strong>PO Number</strong></th>

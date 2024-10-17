@@ -71,7 +71,7 @@ export default function CoreEngines() {
                 {engines.map((engine: Engine) => {
                   return (
                     <tr key={engine.id}>
-                      <td><Link href={`/engines/${engine.stockNum}`}>{ engine.stockNum }</Link></td>
+                      <td><a href={`/engines/${engine.stockNum}`}>{ engine.stockNum }</a></td>
                       <td>{ formatDate(engine.loginDate) }</td>
                       <td>{ engine.model }</td>
                       <td>{ engine.serialNumber }</td>

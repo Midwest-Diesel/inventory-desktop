@@ -196,20 +196,20 @@ export default function PartSearch({ selectHandwrittenOpen, setSelectHandwritten
             >
               Alt Parts Search
             </Button>
-            <Link
+            <a
               className="parts-search-top-bar__link"
               href={`/compare-consist${!isObjectNull(selectedCustomer) ? `?c=${selectedCustomer.id}` : ''}`}
             >
               Compare / Consist
-            </Link>
+            </a>
             {user.accessLevel >= 2 &&
-              <Link
+              <a
                 className="parts-search-top-bar__link"
                 href="/part/new"
                 data-cy="new-part-btn"
               >
                 New Part
-              </Link>
+              </a>
             }
           </div>
 
@@ -258,7 +258,7 @@ export default function PartSearch({ selectHandwrittenOpen, setSelectHandwritten
                               <Image src="/images/icons/image.svg" alt="detail" width={20} height={20} style={{ alignSelf: 'center' }} />
                             </Button>
                           }
-                          <Link href={`/part/${part.id}`} data-cy="part-num-link">{ part.partNum }</Link>
+                          <a href={`/part/${part.id}`} data-cy="part-num-link">{ part.partNum }</a>
                         </div>  
                       </td>
                       <td>{ formatDate(part.entryDate) }</td>

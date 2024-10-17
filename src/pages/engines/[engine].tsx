@@ -93,7 +93,7 @@ export default function EngineDetailsPage() {
                   variant={['link']}
                   className="engine-details__close-btn"
                 >
-                  <Link href="/">Close</Link>
+                  <a href="/">Close</a>
                 </Button>
               </div>
             </div>

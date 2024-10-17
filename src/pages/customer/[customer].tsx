@@ -65,7 +65,7 @@ export default function Customer() {
                   variant={['link']}
                   className="customer-details__close-btn"
                 >
-                  <Link href="/">Close</Link>
+                  <a href="/">Close</a>
                 </Button>
                 {user.accessLevel > 1 &&
                   <Button

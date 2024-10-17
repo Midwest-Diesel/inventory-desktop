@@ -5,7 +5,7 @@ class MyDocument extends Document {
     return (
       <Html lang="en">
         <Head />
-        <link rel="preconnect" href="https://mtpatobcpnpvwwanxyqy.supabase.co"></link>
+        <a rel="preconnect" href="https://mtpatobcpnpvwwanxyqy.supabase.co"></a>
         <meta name="robots" content="noindex,nofollow" />
         <body>
           <Main />

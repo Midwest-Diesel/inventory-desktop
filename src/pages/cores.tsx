@@ -53,7 +53,7 @@ export default function Cores() {
               {cores.map((core: Core) => {
                 return (
                   <tr key={core.id}>
-                    <td><Link href={`/handwrittens/${core.invoiceId}`}>{ core.invoiceId }</Link></td>
+                    <td><a href={`/handwrittens/${core.invoiceId}`}>{ core.invoiceId }</a></td>
                     <td>{ formatDate(core.date) }</td>
                     <td>{ core.billToCompany }</td>
                     <td>{ core.shipToCompany }</td>

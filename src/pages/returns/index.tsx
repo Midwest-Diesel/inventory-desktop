@@ -94,8 +94,8 @@ export default function Returns() {
                           <Image src="/images/check.svg" alt="Checkmark" width={12} height={12} />
                         </Button>
                       </td>
-                      <td><Link href={`/returns/${ret.id}`}>{ ret.id }</Link></td>
-                      <td><Link href={`/handwrittens/${ret.invoiceId}`}>{ ret.invoiceId }</Link></td>
+                      <td><a href={`/returns/${ret.id}`}>{ ret.id }</a></td>
+                      <td><a href={`/handwrittens/${ret.invoiceId}`}>{ ret.invoiceId }</a></td>
                       <td>{ formatDate(ret.dateCalled) }</td>
                       <td>{ ret.createdBy }</td>
                       <td>{ ret.billToCompany }</td>
@@ -163,8 +163,8 @@ export default function Returns() {
                   const part = ret.returnItems[0];
                   return (
                     <tr key={ret.id}>
-                      <td><Link href={`/returns/${ret.id}`}>{ ret.id }</Link></td>
-                      <td><Link href={`/handwrittens/${ret.invoiceId}`}>{ ret.invoiceId }</Link></td>
+                      <td><a href={`/returns/${ret.id}`}>{ ret.id }</a></td>
+                      <td><a href={`/handwrittens/${ret.invoiceId}`}>{ ret.invoiceId }</a></td>
                       <td>{ formatDate(ret.dateCalled) }</td>
                       <td>{ ret.createdBy }</td>
                       <td>{ ret.billToCompany }</td>
@@ -232,8 +232,8 @@ export default function Returns() {
                   const part = ret.returnItems[0];
                   return (
                     <tr key={ret.id}>
-                      <td><Link href={`/returns/${ret.id}`}>{ ret.id }</Link></td>
-                      <td><Link href={`/handwrittens/${ret.invoiceId}`}>{ ret.invoiceId }</Link></td>
+                      <td><a href={`/returns/${ret.id}`}>{ ret.id }</a></td>
+                      <td><a href={`/handwrittens/${ret.invoiceId}`}>{ ret.invoiceId }</a></td>
                       <td>{ formatDate(ret.dateCalled) }</td>
                       <td>{ ret.createdBy }</td>
                       <td>{ ret.billToCompany }</td>

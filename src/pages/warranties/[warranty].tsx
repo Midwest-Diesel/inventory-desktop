@@ -88,7 +88,7 @@ export default function Warranty() {
                   variant={['link']}
                   className="warranty-details__close-btn"
                 >
-                  <Link href="/warranties">Close</Link>
+                  <a href="/warranties">Close</a>
                 </Button>
                 <Button
                   variant={['danger']}
@@ -106,7 +106,7 @@ export default function Warranty() {
                     <tr>
                       <th>Customer</th>
                       <td>
-                        <Link href={`/customer/${warrantyData.customer.id}`}>{ warrantyData.customer.company }</Link>
+                        <a href={`/customer/${warrantyData.customer.id}`}>{ warrantyData.customer.company }</a>
                       </td>
                     </tr>
                     <tr>
@@ -143,7 +143,7 @@ export default function Warranty() {
                     <tr>
                       <th>Connected Handwritten</th>
                       <td>
-                        <Link href={`/handwrittens/${warrantyData.handwrittenId}`}>{ warrantyData.handwrittenId }</Link>
+                        <a href={`/handwrittens/${warrantyData.handwrittenId}`}>{ warrantyData.handwrittenId }</a>
                       </td>
                     </tr>
                   </tbody>

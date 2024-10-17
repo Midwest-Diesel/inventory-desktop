@@ -351,7 +351,7 @@ export default function ShopAddonRow({ addOn, handleDuplicateAddOn }: Props) {
       </div>
 
       <div className="add-ons__list-row-buttons">
-        { addOn.po && <Link href={`/po/${addOn.po}`}>View PO</Link> }
+        { addOn.po && <a href={`/po/${addOn.po}`}>View PO</a> }
         <Button onClick={() => handleDuplicateAddOn(addOn)}>Duplicate</Button>
         <Button>Print Tag</Button>
         <Button variant={['danger']} onClick={handleDeleteAddOn}>Delete</Button>

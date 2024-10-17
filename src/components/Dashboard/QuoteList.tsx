@@ -290,13 +290,13 @@ export default function QuoteList({ selectHandwrittenOpen, setSelectHandwrittenO
                         <td>{ formatDate(quote.date) }</td>
                         <td>{ quote.salesman }</td>
                         <td>{ quote.source }</td>
-                        <td style={{ width: '15rem' }}>{ quote.customer && <Link href={`/customer/${quote.customer.id}`}>{ quote.customer.company }</Link> }</td>
+                        <td style={{ width: '15rem' }}>{ quote.customer && <a href={`/customer/${quote.customer.id}`}>{ quote.customer.company }</a> }</td>
                         <td>{ quote.contact }</td>
                         <td style={{ width:'7.5rem' }}>{ quote.phone && formatPhone(quote.phone) }</td>
                         <td>{ quote.state }</td>
                         <td>
                           {quote.part ?
-                            <Link href={`/part/${quote.part.id}`}>{ quote.partNum }</Link>
+                            <a href={`/part/${quote.part.id}`}>{ quote.partNum }</a>
                             :
                             quote.partNum
                           }
@@ -328,7 +328,7 @@ export default function QuoteList({ selectHandwrittenOpen, setSelectHandwrittenO
                                     <li key={piggybackQuote.id}>
                                       <div className="piggyback-quotes__item">
                                         {piggybackQuote.part ?
-                                          <Link href={`/part/${piggybackQuote.part.id}`}>{ piggybackQuote.partNum }</Link>
+                                          <a href={`/part/${piggybackQuote.part.id}`}>{ piggybackQuote.partNum }</a>
                                           :
                                           <p>{ piggybackQuote.partNum }</p>
                                         }

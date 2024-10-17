@@ -6,33 +6,33 @@ import NavDropdown from "./Library/Dropdown/NavDropdown";
 export default function Navbar() {
   return (
     <nav className="navbar">
-      <Link className="navbar__title" href="/">
+      <a className="navbar__title" href="/">
         <Image src="/images/icons/home-icon.svg" alt="home button" width={10} height={10} />
-      </Link>
-      <Link href="/handwrittens" className="navbar__link">Handwrittens</Link>
+      </a>
+      <a href="/handwrittens" className="navbar__link">Handwrittens</a>
       <NavDropdown label="Engines">
-        <Link href="/engines/running">Running</Link>
-        <Link href="/engines/torn-down">Torn Down</Link>
-        <Link href="/engines/core">Core Engines</Link>
-        <Link href="/engines/sold">Sold Engines</Link>
-        <Link href="/engines/new-engine">New Engines</Link>
+        <a href="/engines/running">Running</a>
+        <a href="/engines/torn-down">Torn Down</a>
+        <a href="/engines/core">Core Engines</a>
+        <a href="/engines/sold">Sold Engines</a>
+        <a href="/engines/new-engine">New Engines</a>
       </NavDropdown>
-      <Link href="/returns" className="navbar__link">Returns</Link>
-      <Link href="/warranties" className="navbar__link">Warranties</Link>
-      <Link href="/cores" className="navbar__link">Cores</Link>
-      <Link href="/surplus" className="navbar__link">Surplus Purchases</Link>
-      <Link href="/purchase-orders" className="navbar__link">Purchase Orders</Link>
+      <a href="/returns" className="navbar__link">Returns</a>
+      <a href="/warranties" className="navbar__link">Warranties</a>
+      <a href="/cores" className="navbar__link">Cores</a>
+      <a href="/surplus" className="navbar__link">Surplus Purchases</a>
+      <a href="/purchase-orders" className="navbar__link">Purchase Orders</a>
       <NavDropdown label="Add Ons">
-        <Link href="/add-ons/shop">Shop</Link>
-        <Link href="/add-ons/office">Office</Link>
-        <Link href="/add-ons/engine">Engine</Link>
+        <a href="/add-ons/shop">Shop</a>
+        <a href="/add-ons/office">Office</a>
+        <a href="/add-ons/engine">Engine</a>
       </NavDropdown>
-      <Link href="/performance" className="navbar__link">Performance</Link>
-      <Link href="/karmak" className="navbar__link">Karmak</Link>
-      <Link href="/reports" className="navbar__link">Reports</Link>
-      <Link href="/email-stuff" className="navbar__link">Email Stuff</Link>
-      <Link href="/alerts" className="navbar__link">Alerts</Link>
-      <Link href="/image-upload" className="navbar__link">Image Upload</Link>
+      <a href="/performance" className="navbar__link">Performance</a>
+      <a href="/karmak" className="navbar__link">Karmak</a>
+      <a href="/reports" className="navbar__link">Reports</a>
+      <a href="/email-stuff" className="navbar__link">Email Stuff</a>
+      <a href="/alerts" className="navbar__link">Alerts</a>
+      <a href="/image-upload" className="navbar__link">Image Upload</a>
     </nav>
   );
 }

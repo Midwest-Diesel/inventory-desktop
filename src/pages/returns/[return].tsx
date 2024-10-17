@@ -56,7 +56,7 @@ export default function Return() {
                   variant={['link']}
                   className="return-details__close-btn"
                 >
-                  <Link href="/returns">Close</Link>
+                  <a href="/returns">Close</a>
                 </Button>
                 <Button
                   variant={['danger']}
@@ -73,11 +73,11 @@ export default function Return() {
                   <tbody>
                     <tr>
                       <th>Handwritten</th>
-                      <td><Link href={`/handwrittens/${returnData.invoiceId}`}>{ returnData.invoiceId }</Link></td>
+                      <td><a href={`/handwrittens/${returnData.invoiceId}`}>{ returnData.invoiceId }</a></td>
                     </tr>
                     <tr>
                       <th>Customer</th>
-                      <td><Link href={`/customer/${returnData.customer.id}`}>{ returnData.customer.company }</Link></td>
+                      <td><a href={`/customer/${returnData.customer.id}`}>{ returnData.customer.company }</a></td>
                     </tr>
                     <tr>
                       <th>PO Number</th>

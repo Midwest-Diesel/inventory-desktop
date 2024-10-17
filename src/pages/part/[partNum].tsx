@@ -109,7 +109,7 @@ export default function PartDetails() {
                 variant={['link']}
                 className="part-details__close-btn"
               >
-                <Link href="/">Close</Link>
+                <a href="/">Close</a>
               </Button>
               {user.accessLevel > 1 &&
                 <Button
@@ -144,7 +144,7 @@ export default function PartDetails() {
           <div className="part-details__top-bar">
             <Button variant={['link']} disabled={part.engineNum === 0}>
               {part.engineNum != 0 ?
-                <Link href={`/engines/${part.engineNum}`} style={{ padding: '0.4rem' }}>Engine Details</Link>
+                <a href={`/engines/${part.engineNum}`} style={{ padding: '0.4rem' }}>Engine Details</a>
                 :
                 <p style={{ padding: '0.4rem' }}>Engine Details</p>
               }

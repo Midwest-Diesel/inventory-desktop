@@ -78,7 +78,7 @@ export default function PurchaseOrder() {
                   variant={['link']}
                   className="purchase-order-details__close-btn"
                 >
-                  <Link href="/purchase-orders">Close</Link>
+                  <a href="/purchase-orders">Close</a>
                 </Button>
                 <Button
                   variant={['danger']}
