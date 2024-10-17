@@ -800,3 +800,103 @@ interface EnginePartsTable {
   exhMnfldNew: string
   exhMnfldReman: string
 }
+
+interface SingleCompany {
+  id: number
+  date: Date
+  desc: string
+  partNum: string
+  billToAddress: string
+  billToCity: string
+  billToCompany: string
+  billToState: string
+  billToZip: string
+  qty: number
+  unitPrice: number
+  total: number
+}
+
+interface CountryReport {
+
+}
+
+interface AllCompaniesReport {
+  billToCompany: string
+  billToAddress: string
+  billToCity: string
+  billToState: string
+  billToZip: string
+  country: string
+  total: number
+}
+
+interface AllPartsReport {
+  altParts: string
+  firstOfDesc: string
+  sumOfQtySold: number
+  sales: number
+}
+
+interface PartDescReport {
+  altParts: string
+  firstOfDesc: string
+  sumOfQtySold: number
+  sales: number
+}
+
+interface AllEnginesReport {
+  soldTo: string
+  model: string
+  sellPrice: number
+  serialNum: string
+  engineStockNum: number
+}
+
+interface AllSourcesReport {
+  source: string
+  sales: number
+}
+
+interface AllSalesmenReport {
+  totalSales: number
+  salesCost: number
+  netSales: number
+  salesman: string
+}
+
+interface TheMachinesReport {
+  partNum: string
+  desc: string
+  total: number
+}
+
+interface ArielSalesReport {
+  date: Date
+  billToCompany: string
+  initials: string
+  source: string
+  total: number
+}
+
+interface SingleCompanyParts {
+  entryDate: Date
+  purchasedFrom: string
+  partNum: string
+  desc: string
+  purchasePrice: number
+}
+
+interface SingleCompanyEngines {
+  loginDate: Date
+  purchasedFrom: string
+  stockNum: number
+  model: string
+  purchasePrice: number
+}
+
+interface HandwrittensCompanyReport {
+  year: number
+  billToCompany: string
+  handwrittenCount: number
+  customerType: string
+}
