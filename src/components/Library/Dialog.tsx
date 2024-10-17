@@ -21,7 +21,6 @@ interface Props {
   y?: number
 }
 
-
 export default function Dialog({ children, className, variant, title, closeOnOutsideClick, exitWithEsc = true, width, height, maxHeight, open, setOpen, x, y, ...props }: Props) {
   const [dialogs, setDialogs] = useAtom<{ order: number, div: HTMLDivElement }[]>(dialogsAtom);
   const container = useRef<HTMLDivElement>(null);
@@ -37,21 +36,27 @@ export default function Dialog({ children, className, variant, title, closeOnOut
     if (open) bringToFront();
   }, [open]);
 
+  useEffect(() => {
+    setupOrder();
+  }, [dialogs]); // Ensure the order is set up whenever dialogs change
+
   const setupOrder = () => {
-    setDialogs(Array.from(document.querySelectorAll('.dialog__container')).map((div, i) => {
+    const dialogElements = Array.from(document.querySelectorAll('.dialog__container'));
+    const updatedDialogs = dialogElements.map((div, i) => {
       const zIndex = Number((div as HTMLDivElement).style.zIndex);
       const order = zIndex > 1 ? zIndex : i + 1;
-      return { order, div: div as HTMLDivElement};
-    }));
+      return { order, div: div as HTMLDivElement };
+    });
+    setDialogs(updatedDialogs);
   };
-  
+
   const bindEventListeners = () => {
     const handleOutsideClick = (e: MouseEvent) => {
       if (ref.current && !ref.current.contains(e.target as Node)) {
         closeDialog();
       }
     };
-  
+
     if (closeOnOutsideClick) {
       window.addEventListener('click', handleOutsideClick);
       return () => {
@@ -76,13 +81,12 @@ export default function Dialog({ children, className, variant, title, closeOnOut
         return dialog;
       }
     }).sort((a, b) => a.order - b.order);
-  
+
     updatedDialogs.forEach((dialog, index) => {
       dialog.div.style.zIndex = String(index + 1);
     });
     setDialogs(updatedDialogs);
-  }; 
-    
+  };
 
   return (
     <div ref={container} style={{ zIndex: '1', position: 'absolute', top: 0, left: 0, height: '100%' }} className="dialog__container">
@@ -96,13 +100,11 @@ export default function Dialog({ children, className, variant, title, closeOnOut
           onKeyDown={(e) => (exitWithEsc && e.key === 'Escape') && closeDialog()}
         >
           <div className="dialog__handlebar draggable"></div>
-          <div
-            {...props}
-          >
-            <h3 className="dialog__title">{ title }</h3>
+          <div {...props}>
+            <h3 className="dialog__title">{title}</h3>
             <Button variant={["X"]} onClick={closeDialog}>X</Button>
             <div className="dialog__content" style={{ maxHeight: maxHeight }}>
-              { children }
+              {children}
             </div>
           </div>
         </dialog>
