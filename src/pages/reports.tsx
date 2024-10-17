@@ -4,7 +4,6 @@ import AllPartsDialog from "@/components/Dialogs/reports/AllPartsDialog";
 import AllSalesmenDialog from "@/components/Dialogs/reports/AllSalesmenDialog";
 import AllSourcesDialog from "@/components/Dialogs/reports/AllSourcesDialog";
 import ArielSalesDialog from "@/components/Dialogs/reports/ArielSalesDialog";
-import CountryDialog from "@/components/Dialogs/reports/CountryDialog";
 import HandwrittenCompanyDialog from "@/components/Dialogs/reports/HandwrittenCompanyDialog";
 import PartDescDialog from "@/components/Dialogs/reports/PartDescDialog";
 import SingleCompanyDialog from "@/components/Dialogs/reports/SingleCompanyDialog";
@@ -19,7 +18,6 @@ import AllPartsTable from "@/components/Reports/AllPartsTable";
 import AllSalesmenTable from "@/components/Reports/AllSalesmenTable";
 import AllSourcesTable from "@/components/Reports/AllSourcesTable";
 import ArielSalesTable from "@/components/Reports/ArielSalesTable";
-import CountryTable from "@/components/Reports/CountryTable";
 import HandwrittenCompanyTable from "@/components/Reports/HandwrittenCompayTable";
 import PartDescTable from "@/components/Reports/PartDescTable";
 import SingleCompanyEnginesTable from "@/components/Reports/SingleCompanyEnginesTable";
@@ -33,9 +31,6 @@ export default function Reports() {
   const [singleCompanyOpen, setSingleCompanyOpen] = useState(false);
   const [singleCompanyTableOpen, setSingleCompanyTableOpen] = useState(false);
   const [singleCompanyData, setSingleCompanyData] = useState<SingleCompany[]>([]);
-  const [countryOpen, setCountryOpen] = useState(false);
-  const [countryTableOpen, setCountryTableOpen] = useState(false);
-  const [countryData, setCountryData] = useState<CountryReport[]>([]);
   const [allCompaniesOpen, setAllCompaniesOpen] = useState(false);
   const [allCompaniesTableOpen, setAllCompaniesTableOpen] = useState(false);
   const [allCompaniesData, setAllCompaniesData] = useState<AllCompaniesReport[]>([]);
@@ -88,7 +83,6 @@ export default function Reports() {
               <h2>Sales Reports</h2>
               <div className="reports-page-section__buttons">
                 <Button onClick={() => setSingleCompanyOpen(!singleCompanyOpen)}>Single Company/Keyword</Button>
-                <Button onClick={() => setCountryOpen(!countryOpen)}>Single State/Country</Button>
                 <Button onClick={() => setAllCompaniesOpen(!allCompaniesOpen)}>All Companies</Button>
                 <Button onClick={() => setAllPartsOpen(!allPartsOpen)}>All Parts</Button>
                 <Button onClick={() => setPartDescOpen(!partDescOpen)}>Single Part Description</Button>
@@ -127,15 +121,6 @@ export default function Reports() {
               setOpen={setSingleCompanyOpen}
               setTableOpen={setSingleCompanyTableOpen}
               setTableData={setSingleCompanyData}
-              setReportsOpen={setReportsPageOpen}
-            />
-          }
-          {countryOpen &&
-            <CountryDialog
-              open={countryOpen}
-              setOpen={setCountryOpen}
-              setTableOpen={setCountryTableOpen}
-              setTableData={setCountryData}
               setReportsOpen={setReportsPageOpen}
             />
           }
@@ -242,7 +227,6 @@ export default function Reports() {
         :
         <>
           { singleCompanyTableOpen && <SingleCompanyTable setTableOpen={setSingleCompanyTableOpen} data={singleCompanyData} setReportsOpen={setReportsPageOpen} /> }
-          { countryTableOpen && <CountryTable setTableOpen={setCountryTableOpen} data={countryData} setReportsOpen={setReportsPageOpen} /> }
           { allCompaniesTableOpen && <AllCompaniesTable setTableOpen={setAllCompaniesTableOpen} data={allCompaniesData} setReportsOpen={setReportsPageOpen} /> }
           { allPartsTableOpen && <AllPartsTable setTableOpen={setAllPartsTableOpen} data={allPartsData} setReportsOpen={setReportsPageOpen} /> }
           { partDescTableOpen && <PartDescTable setTableOpen={setPartDescTableOpen} data={partDescData} setReportsOpen={setReportsPageOpen} /> }
