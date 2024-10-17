@@ -46,15 +46,24 @@
   .dialog__content {
     text-align: center;
     overflow-y: auto;
+    overflow-x: hidden;
     max-height: 27.5rem;
   }
 
   img {
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
     margin: 0.5rem;
+    width: 100%;
+    max-width: fit-content;
+    height: fit-content;
+  }
+
+  .loading {
+    max-width: 5rem;
+    background: transparent;
+    box-shadow: none;
   }
 }
-
 
 /* EDIT PART DETAILS COMPONENT */
 

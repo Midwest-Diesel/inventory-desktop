@@ -2,7 +2,7 @@
 const nextConfig = {
   output: 'export',
   images: {
-    domains: ['mtpatobcpnpvwwanxyqy.supabase.co', 'localhost', '127.0.0.1'],
+    domains: ['mtpatobcpnpvwwanxyqy.supabase.co', 'http://127.0.0.1:54321', 'localhost', '127.0.0.1'],
     unoptimized: true,
   },
 };
