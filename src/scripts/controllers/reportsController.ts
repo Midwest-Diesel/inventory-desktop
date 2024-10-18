@@ -150,6 +150,16 @@ export const reportNoLocationParts = async () => {
   }
 };
 
+export const reportRecentSearches = async (partNum: string) => {
+  try {
+    const auth = { withCredentials: true };
+    const res = await api.get(`/api/reports/recent-searches/${JSON.stringify({partNum})}`, auth);
+    return parseReportData(res.data);
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 // === POST routes === //
 
 export const addGonculatorData = async (partList: string[]) => {

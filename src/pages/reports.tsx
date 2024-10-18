@@ -6,6 +6,7 @@ import AllSourcesDialog from "@/components/Dialogs/reports/AllSourcesDialog";
 import ArielSalesDialog from "@/components/Dialogs/reports/ArielSalesDialog";
 import HandwrittenCompanyDialog from "@/components/Dialogs/reports/HandwrittenCompanyDialog";
 import PartDescDialog from "@/components/Dialogs/reports/PartDescDialog";
+import RecentSearchesDialog from "@/components/Dialogs/reports/RecentSearchesDialog";
 import SingleCompanyDialog from "@/components/Dialogs/reports/SingleCompanyDialog";
 import SingleCompanyEnginesDialog from "@/components/Dialogs/reports/SingleCompanyEnginesDialog";
 import SingleCompanyPartsDialog from "@/components/Dialogs/reports/SingleCompanyPartsDialog";
@@ -22,6 +23,7 @@ import HandwrittenCompanyTable from "@/components/Reports/HandwrittenCompayTable
 import NoLocationPartsTable from "@/components/Reports/NoLocationPartsTable";
 import PartDescTable from "@/components/Reports/PartDescTable";
 import PBBTable from "@/components/Reports/PBBTable";
+import RecentSearchesTable from "@/components/Reports/RecentSearchesTable";
 import SingleCompanyEnginesTable from "@/components/Reports/SingleCompanyEnginesTable";
 import SingleCompanyPartsTable from "@/components/Reports/SingleCompanyPartsTable";
 import SingleCompanyTable from "@/components/Reports/SingleCompanyTable";
@@ -72,6 +74,8 @@ export default function Reports() {
   const [noLocationPartsTableOpen, setNoLocationPartsTableOpen] = useState(false);
   const [noLocationPartsData, setNoLocationPartsData] = useState<NoLocationPartsReport[]>([]);
   const [recentSearchesOpen, setRecentSearchesOpen] = useState(false);
+  const [recentSearchesTableOpen, setRecentSearchesTableOpen] = useState(false);
+  const [recentSearchesData, setRecentSearchesData] = useState<RecentPartSearch[]>([]);
   const [emailAddressesOpen, setEmailAddressesOpen] = useState(false);
   const [outstandingHighCoresOpen, setOutstandingHighCoresOpen] = useState(false);
   const [reportsPageOpen, setReportsPageOpen] = useState(true);
@@ -242,6 +246,15 @@ export default function Reports() {
               setReportsOpen={setReportsPageOpen}
             />
           }
+          {recentSearchesOpen &&
+            <RecentSearchesDialog
+              open={recentSearchesOpen}
+              setOpen={setRecentSearchesOpen}
+              setTableOpen={setRecentSearchesTableOpen}
+              setTableData={setRecentSearchesData}
+              setReportsOpen={setReportsPageOpen}
+            />
+          }
         </div>
         :
         <>
@@ -259,6 +272,7 @@ export default function Reports() {
           { handwrittensCompanyTableOpen && <HandwrittenCompanyTable setTableOpen={setHandwrittensCompanyTableOpen} data={handwrittensCompanyData} setReportsOpen={setReportsPageOpen} /> }
           { PBBListTableOpen && <PBBTable setTableOpen={setPBBListTableOpen} data={PBBListData} setReportsOpen={setReportsPageOpen} /> }
           { noLocationPartsTableOpen && <NoLocationPartsTable setTableOpen={setNoLocationPartsTableOpen} data={noLocationPartsData} setReportsOpen={setReportsPageOpen} /> }
+          { recentSearchesTableOpen && <RecentSearchesTable setTableOpen={setRecentSearchesTableOpen} data={recentSearchesData} setReportsOpen={setReportsPageOpen} /> }
         </>
       }
     </Layout>
