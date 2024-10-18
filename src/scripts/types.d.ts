@@ -926,3 +926,13 @@ interface EmailReport {
   billToState: string
   accountingStatus: string
 }
+
+interface OutstandingCoresReport {
+  initials: string
+  date: Date
+  qty: number
+  partNum: string
+  desc: string
+  billToCompany: string
+  charge: number
+}

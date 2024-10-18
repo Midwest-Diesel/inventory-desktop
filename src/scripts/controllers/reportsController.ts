@@ -170,6 +170,16 @@ export const reportEmails = async (startDate: Date, endDate: Date) => {
   }
 };
 
+export const reportOutstandingCores = async () => {
+  try {
+    const auth = { withCredentials: true };
+    const res = await api.get(`/api/reports/outstanding-cores`, auth);
+    return parseReportData(res.data);
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 // === POST routes === //
 
 export const addGonculatorData = async (partList: string[]) => {

@@ -23,6 +23,7 @@ import ArielSalesTable from "@/components/Reports/ArielSalesTable";
 import EmailsTable from "@/components/Reports/EmailsTable";
 import HandwrittenCompanyTable from "@/components/Reports/HandwrittenCompayTable";
 import NoLocationPartsTable from "@/components/Reports/NoLocationPartsTable";
+import OutstandingCoresTable from "@/components/Reports/OutstandingCoresTable";
 import PartDescTable from "@/components/Reports/PartDescTable";
 import PBBTable from "@/components/Reports/PBBTable";
 import RecentSearchesTable from "@/components/Reports/RecentSearchesTable";
@@ -30,7 +31,7 @@ import SingleCompanyEnginesTable from "@/components/Reports/SingleCompanyEngines
 import SingleCompanyPartsTable from "@/components/Reports/SingleCompanyPartsTable";
 import SingleCompanyTable from "@/components/Reports/SingleCompanyTable";
 import TheMachinesTable from "@/components/Reports/TheMachinesTable";
-import { reportNoLocationParts, reportPBB } from "@/scripts/controllers/reportsController";
+import { reportNoLocationParts, reportOutstandingCores, reportPBB } from "@/scripts/controllers/reportsController";
 import { useState } from "react";
 
 
@@ -82,6 +83,8 @@ export default function Reports() {
   const [emailAddressesTableOpen, setEmailAddressesTableOpen] = useState(false);
   const [emailAddressesData, setEmailAddressesData] = useState<EmailReport[]>([]);
   const [outstandingHighCoresOpen, setOutstandingHighCoresOpen] = useState(false);
+  const [outstandingHighCoresTableOpen, setOutstandingHighCoresTableOpen] = useState(false);
+  const [outstandingHighCoresData, setOutstandingHighCoresData] = useState<OutstandingCoresReport[]>([]);
   const [reportsPageOpen, setReportsPageOpen] = useState(true);
 
   const handleSearchPBB = async () => {
@@ -96,6 +99,13 @@ export default function Reports() {
     setReportsPageOpen(false);
     const res = await reportNoLocationParts();
     setNoLocationPartsData(res);
+  };
+  
+  const handleSearchOutstandingCores = async () => {
+    setOutstandingHighCoresTableOpen(true);
+    setReportsPageOpen(false);
+    const res = await reportOutstandingCores();
+    setOutstandingHighCoresData(res);
   };
 
 
@@ -137,7 +147,7 @@ export default function Reports() {
                 <Button onClick={handleSearchNoLocationParts}>No Location Parts</Button>
                 <Button onClick={() => setRecentSearchesOpen(!recentSearchesOpen)}>Recent Searches</Button>
                 {/* <Button onClick={() => setEmailAddressesOpen(!emailAddressesOpen)}>Email Addresses</Button> */}
-                <Button onClick={() => setOutstandingHighCoresOpen(!outstandingHighCoresOpen)}>Outstanding High Cores</Button>
+                <Button onClick={handleSearchOutstandingCores}>Outstanding High Cores</Button>
               </div>
             </div>
           </div>
@@ -287,6 +297,7 @@ export default function Reports() {
           { noLocationPartsTableOpen && <NoLocationPartsTable setTableOpen={setNoLocationPartsTableOpen} data={noLocationPartsData} setReportsOpen={setReportsPageOpen} /> }
           { recentSearchesTableOpen && <RecentSearchesTable setTableOpen={setRecentSearchesTableOpen} data={recentSearchesData} setReportsOpen={setReportsPageOpen} /> }
           {/* { emailAddressesTableOpen && <EmailsTable setTableOpen={setEmailAddressesTableOpen} data={emailAddressesData} setReportsOpen={setReportsPageOpen} /> } */}
+          { outstandingHighCoresTableOpen && <OutstandingCoresTable setTableOpen={setOutstandingHighCoresTableOpen} data={outstandingHighCoresData} setReportsOpen={setReportsPageOpen} /> }
         </>
       }
     </Layout>
