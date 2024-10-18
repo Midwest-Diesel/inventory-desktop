@@ -19,13 +19,14 @@ import AllSalesmenTable from "@/components/Reports/AllSalesmenTable";
 import AllSourcesTable from "@/components/Reports/AllSourcesTable";
 import ArielSalesTable from "@/components/Reports/ArielSalesTable";
 import HandwrittenCompanyTable from "@/components/Reports/HandwrittenCompayTable";
+import NoLocationPartsTable from "@/components/Reports/NoLocationPartsTable";
 import PartDescTable from "@/components/Reports/PartDescTable";
 import PBBTable from "@/components/Reports/PBBTable";
 import SingleCompanyEnginesTable from "@/components/Reports/SingleCompanyEnginesTable";
 import SingleCompanyPartsTable from "@/components/Reports/SingleCompanyPartsTable";
 import SingleCompanyTable from "@/components/Reports/SingleCompanyTable";
 import TheMachinesTable from "@/components/Reports/TheMachinesTable";
-import { reportPBB } from "@/scripts/controllers/reportsController";
+import { reportNoLocationParts, reportPBB } from "@/scripts/controllers/reportsController";
 import { useState } from "react";
 
 
@@ -68,7 +69,8 @@ export default function Reports() {
   const [handwrittensCompanyData, setHandwrittensCompanyData] = useState<HandwrittensCompanyReport[]>([]);
   const [PBBListTableOpen, setPBBListTableOpen] = useState(false);
   const [PBBListData, setPBBListData] = useState<PBBReport[]>([]);
-  const [noLocationPartsOpen, setNoLocationPartsOpen] = useState(false);
+  const [noLocationPartsTableOpen, setNoLocationPartsTableOpen] = useState(false);
+  const [noLocationPartsData, setNoLocationPartsData] = useState<NoLocationPartsReport[]>([]);
   const [recentSearchesOpen, setRecentSearchesOpen] = useState(false);
   const [emailAddressesOpen, setEmailAddressesOpen] = useState(false);
   const [outstandingHighCoresOpen, setOutstandingHighCoresOpen] = useState(false);
@@ -79,6 +81,13 @@ export default function Reports() {
     setReportsPageOpen(false);
     const res = await reportPBB();
     setPBBListData(res);
+  };
+
+  const handleSearchNoLocationParts = async () => {
+    setNoLocationPartsTableOpen(true);
+    setReportsPageOpen(false);
+    const res = await reportNoLocationParts();
+    setNoLocationPartsData(res);
   };
 
 
@@ -117,7 +126,7 @@ export default function Reports() {
               <div className="reports-page-section__buttons">
                 <Button onClick={() => setHandwrittensCompanyOpen(!handwrittensCompanyOpen)}>Handwrittens - Single Company/Keyword</Button>
                 <Button onClick={handleSearchPBB}>PBB List</Button>
-                <Button onClick={() => setNoLocationPartsOpen(!noLocationPartsOpen)}>No Location Parts</Button>
+                <Button onClick={handleSearchNoLocationParts}>No Location Parts</Button>
                 <Button onClick={() => setRecentSearchesOpen(!recentSearchesOpen)}>Recent Searches</Button>
                 <Button onClick={() => setEmailAddressesOpen(!emailAddressesOpen)}>Email Addresses</Button>
                 <Button onClick={() => setOutstandingHighCoresOpen(!outstandingHighCoresOpen)}>Outstanding High Cores</Button>
@@ -249,6 +258,7 @@ export default function Reports() {
           { enginesCompanyTableOpen && <SingleCompanyEnginesTable setTableOpen={setEnginesCompanyTableOpen} data={enginesCompanyData} setReportsOpen={setReportsPageOpen} /> }
           { handwrittensCompanyTableOpen && <HandwrittenCompanyTable setTableOpen={setHandwrittensCompanyTableOpen} data={handwrittensCompanyData} setReportsOpen={setReportsPageOpen} /> }
           { PBBListTableOpen && <PBBTable setTableOpen={setPBBListTableOpen} data={PBBListData} setReportsOpen={setReportsPageOpen} /> }
+          { noLocationPartsTableOpen && <NoLocationPartsTable setTableOpen={setNoLocationPartsTableOpen} data={noLocationPartsData} setReportsOpen={setReportsPageOpen} /> }
         </>
       }
     </Layout>

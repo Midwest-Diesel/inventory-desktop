@@ -908,3 +908,12 @@ interface PBBReport {
   stockNum: string
   remarks: string
 }
+
+interface NoLocationPartsReport {
+  qty: number
+  partNum: string
+  desc: string
+  location: string
+  stockNum: string
+  remarks: string
+}

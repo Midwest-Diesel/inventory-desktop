@@ -140,6 +140,16 @@ export const reportPBB = async () => {
   }
 };
 
+export const reportNoLocationParts = async () => {
+  try {
+    const auth = { withCredentials: true };
+    const res = await api.get(`/api/reports/no-location-parts`, auth);
+    return res.data;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 // === POST routes === //
 
 export const addGonculatorData = async (partList: string[]) => {
