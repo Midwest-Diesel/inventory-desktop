@@ -917,3 +917,12 @@ interface NoLocationPartsReport {
   stockNum: string
   remarks: string
 }
+
+interface EmailReport {
+  date: Date
+  billToCompany: string
+  email: string
+  phone: string
+  billToState: string
+  accountingStatus: string
+}

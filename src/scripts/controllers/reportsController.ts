@@ -160,6 +160,16 @@ export const reportRecentSearches = async (partNum: string) => {
   }
 };
 
+export const reportEmails = async (startDate: Date, endDate: Date) => {
+  try {
+    const auth = { withCredentials: true };
+    const res = await api.get(`/api/reports/emails/${JSON.stringify({startDate, endDate})}`, auth);
+    return parseReportData(res.data);
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 // === POST routes === //
 
 export const addGonculatorData = async (partList: string[]) => {

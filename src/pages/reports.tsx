@@ -4,6 +4,7 @@ import AllPartsDialog from "@/components/Dialogs/reports/AllPartsDialog";
 import AllSalesmenDialog from "@/components/Dialogs/reports/AllSalesmenDialog";
 import AllSourcesDialog from "@/components/Dialogs/reports/AllSourcesDialog";
 import ArielSalesDialog from "@/components/Dialogs/reports/ArielSalesDialog";
+import EmailsDialog from "@/components/Dialogs/reports/EmailDialog";
 import HandwrittenCompanyDialog from "@/components/Dialogs/reports/HandwrittenCompanyDialog";
 import PartDescDialog from "@/components/Dialogs/reports/PartDescDialog";
 import RecentSearchesDialog from "@/components/Dialogs/reports/RecentSearchesDialog";
@@ -19,6 +20,7 @@ import AllPartsTable from "@/components/Reports/AllPartsTable";
 import AllSalesmenTable from "@/components/Reports/AllSalesmenTable";
 import AllSourcesTable from "@/components/Reports/AllSourcesTable";
 import ArielSalesTable from "@/components/Reports/ArielSalesTable";
+import EmailsTable from "@/components/Reports/EmailsTable";
 import HandwrittenCompanyTable from "@/components/Reports/HandwrittenCompayTable";
 import NoLocationPartsTable from "@/components/Reports/NoLocationPartsTable";
 import PartDescTable from "@/components/Reports/PartDescTable";
@@ -77,6 +79,8 @@ export default function Reports() {
   const [recentSearchesTableOpen, setRecentSearchesTableOpen] = useState(false);
   const [recentSearchesData, setRecentSearchesData] = useState<RecentPartSearch[]>([]);
   const [emailAddressesOpen, setEmailAddressesOpen] = useState(false);
+  const [emailAddressesTableOpen, setEmailAddressesTableOpen] = useState(false);
+  const [emailAddressesData, setEmailAddressesData] = useState<EmailReport[]>([]);
   const [outstandingHighCoresOpen, setOutstandingHighCoresOpen] = useState(false);
   const [reportsPageOpen, setReportsPageOpen] = useState(true);
 
@@ -132,7 +136,7 @@ export default function Reports() {
                 <Button onClick={handleSearchPBB}>PBB List</Button>
                 <Button onClick={handleSearchNoLocationParts}>No Location Parts</Button>
                 <Button onClick={() => setRecentSearchesOpen(!recentSearchesOpen)}>Recent Searches</Button>
-                <Button onClick={() => setEmailAddressesOpen(!emailAddressesOpen)}>Email Addresses</Button>
+                {/* <Button onClick={() => setEmailAddressesOpen(!emailAddressesOpen)}>Email Addresses</Button> */}
                 <Button onClick={() => setOutstandingHighCoresOpen(!outstandingHighCoresOpen)}>Outstanding High Cores</Button>
               </div>
             </div>
@@ -255,6 +259,15 @@ export default function Reports() {
               setReportsOpen={setReportsPageOpen}
             />
           }
+          {/* {emailAddressesOpen &&
+            <EmailsDialog
+              open={emailAddressesOpen}
+              setOpen={setEmailAddressesOpen}
+              setTableOpen={setEmailAddressesTableOpen}
+              setTableData={setEmailAddressesData}
+              setReportsOpen={setReportsPageOpen}
+            />
+          } */}
         </div>
         :
         <>
@@ -273,6 +286,7 @@ export default function Reports() {
           { PBBListTableOpen && <PBBTable setTableOpen={setPBBListTableOpen} data={PBBListData} setReportsOpen={setReportsPageOpen} /> }
           { noLocationPartsTableOpen && <NoLocationPartsTable setTableOpen={setNoLocationPartsTableOpen} data={noLocationPartsData} setReportsOpen={setReportsPageOpen} /> }
           { recentSearchesTableOpen && <RecentSearchesTable setTableOpen={setRecentSearchesTableOpen} data={recentSearchesData} setReportsOpen={setReportsPageOpen} /> }
+          {/* { emailAddressesTableOpen && <EmailsTable setTableOpen={setEmailAddressesTableOpen} data={emailAddressesData} setReportsOpen={setReportsPageOpen} /> } */}
         </>
       }
     </Layout>
