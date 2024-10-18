@@ -20,10 +20,12 @@ import AllSourcesTable from "@/components/Reports/AllSourcesTable";
 import ArielSalesTable from "@/components/Reports/ArielSalesTable";
 import HandwrittenCompanyTable from "@/components/Reports/HandwrittenCompayTable";
 import PartDescTable from "@/components/Reports/PartDescTable";
+import PBBTable from "@/components/Reports/PBBTable";
 import SingleCompanyEnginesTable from "@/components/Reports/SingleCompanyEnginesTable";
 import SingleCompanyPartsTable from "@/components/Reports/SingleCompanyPartsTable";
 import SingleCompanyTable from "@/components/Reports/SingleCompanyTable";
 import TheMachinesTable from "@/components/Reports/TheMachinesTable";
+import { reportPBB } from "@/scripts/controllers/reportsController";
 import { useState } from "react";
 
 
@@ -64,12 +66,20 @@ export default function Reports() {
   const [handwrittensCompanyOpen, setHandwrittensCompanyOpen] = useState(false);
   const [handwrittensCompanyTableOpen, setHandwrittensCompanyTableOpen] = useState(false);
   const [handwrittensCompanyData, setHandwrittensCompanyData] = useState<HandwrittensCompanyReport[]>([]);
-  const [PBBListOpen, setPBBListOpen] = useState(false);
+  const [PBBListTableOpen, setPBBListTableOpen] = useState(false);
+  const [PBBListData, setPBBListData] = useState<PBBReport[]>([]);
   const [noLocationPartsOpen, setNoLocationPartsOpen] = useState(false);
   const [recentSearchesOpen, setRecentSearchesOpen] = useState(false);
   const [emailAddressesOpen, setEmailAddressesOpen] = useState(false);
   const [outstandingHighCoresOpen, setOutstandingHighCoresOpen] = useState(false);
   const [reportsPageOpen, setReportsPageOpen] = useState(true);
+
+  const handleSearchPBB = async () => {
+    setPBBListTableOpen(true);
+    setReportsPageOpen(false);
+    const res = await reportPBB();
+    setPBBListData(res);
+  };
 
 
   return (
@@ -106,7 +116,7 @@ export default function Reports() {
               <h2>Misc Reports</h2>
               <div className="reports-page-section__buttons">
                 <Button onClick={() => setHandwrittensCompanyOpen(!handwrittensCompanyOpen)}>Handwrittens - Single Company/Keyword</Button>
-                <Button onClick={() => setPBBListOpen(!PBBListOpen)}>PBB List</Button>
+                <Button onClick={handleSearchPBB}>PBB List</Button>
                 <Button onClick={() => setNoLocationPartsOpen(!noLocationPartsOpen)}>No Location Parts</Button>
                 <Button onClick={() => setRecentSearchesOpen(!recentSearchesOpen)}>Recent Searches</Button>
                 <Button onClick={() => setEmailAddressesOpen(!emailAddressesOpen)}>Email Addresses</Button>
@@ -238,6 +248,7 @@ export default function Reports() {
           { partsCompanyTableOpen && <SingleCompanyPartsTable setTableOpen={setPartsCompanyTableOpen} data={partsCompanyData} setReportsOpen={setReportsPageOpen} /> }
           { enginesCompanyTableOpen && <SingleCompanyEnginesTable setTableOpen={setEnginesCompanyTableOpen} data={enginesCompanyData} setReportsOpen={setReportsPageOpen} /> }
           { handwrittensCompanyTableOpen && <HandwrittenCompanyTable setTableOpen={setHandwrittensCompanyTableOpen} data={handwrittensCompanyData} setReportsOpen={setReportsPageOpen} /> }
+          { PBBListTableOpen && <PBBTable setTableOpen={setPBBListTableOpen} data={PBBListData} setReportsOpen={setReportsPageOpen} /> }
         </>
       }
     </Layout>

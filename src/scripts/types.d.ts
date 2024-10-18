@@ -900,3 +900,11 @@ interface HandwrittensCompanyReport {
   handwrittenCount: number
   customerType: string
 }
+
+interface PBBReport {
+  qty: number
+  partNum: string
+  desc: string
+  stockNum: string
+  remarks: string
+}

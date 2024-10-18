@@ -20,16 +20,6 @@ export const reportSingleCompany = async (customer: string, startDate: Date, end
   }
 };
 
-export const reportCountry = async () => {
-  try {
-    const auth = { withCredentials: true };
-    const res = await api.get(`/api/reports/country/`, auth);
-    return parseReportData(res.data);
-  } catch (err) {
-    console.log(err);
-  }
-};
-
 export const reportAllCompanies = async (startDate: Date, endDate: Date) => {
   try {
     const auth = { withCredentials: true };
@@ -134,6 +124,16 @@ export const reportHandwrittenCompany = async (customer: string, year: number) =
   try {
     const auth = { withCredentials: true };
     const res = await api.get(`/api/reports/handwrittens-company/${JSON.stringify({customer, year})}`, auth);
+    return res.data;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export const reportPBB = async () => {
+  try {
+    const auth = { withCredentials: true };
+    const res = await api.get(`/api/reports/pbb`, auth);
     return res.data;
   } catch (err) {
     console.log(err);
