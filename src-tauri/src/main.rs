@@ -80,7 +80,7 @@ fn new_email_draft(email_args: EmailArgs) {
     }
   );
 
-  let temp_vbs_path = env::temp_dir().join("CreateEmailDraft.vbs");
+  let temp_vbs_path = "C:/mwd/scripts/CreateEmailDraft.vbs";
   write(&temp_vbs_path, vbs_script).expect("Failed to create VBS script");
 
   let mut cmd = Command::new("wscript.exe");
