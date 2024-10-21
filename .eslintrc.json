@@ -3,6 +3,7 @@
   "rules": {
     "react-hooks/exhaustive-deps": 0,
     "semi": [2, "always"],
-    "indent": ["error", 2]
+    "indent": ["error", 2],
+    "@next/next/no-html-link-for-pages": "off"
   }
 }

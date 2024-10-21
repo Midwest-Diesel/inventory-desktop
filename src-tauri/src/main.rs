@@ -84,7 +84,7 @@ fn new_email_draft(email_args: EmailArgs) {
   write(&temp_vbs_path, vbs_script).expect("Failed to create VBS script");
 
   let mut cmd = Command::new("wscript.exe");
-  cmd.arg(temp_vbs_path.clone());
+  cmd.arg(temp_vbs_path);
   cmd.output().expect("Failed to create new draft");
   let _ = std::fs::remove_file(temp_vbs_path);
 }

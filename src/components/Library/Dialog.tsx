@@ -36,9 +36,9 @@ export default function Dialog({ children, className, variant, title, closeOnOut
     if (open) bringToFront();
   }, [open]);
 
-  useEffect(() => {
-    setupOrder();
-  }, [dialogs]); // Ensure the order is set up whenever dialogs change
+  // useEffect(() => {
+  //   setupOrder();
+  // }, [dialogs]);
 
   const setupOrder = () => {
     const dialogElements = Array.from(document.querySelectorAll('.dialog__container'));

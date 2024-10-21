@@ -210,10 +210,15 @@ export default function QuoteList({ selectHandwrittenOpen, setSelectHandwrittenO
     setPiggybackQuote(quote);
   };
 
+  const checkForUpdates = () => {
+    invoke('update');
+  };
+
 
   return (
     <div className="quote-list">
       <div className="quote-list__header no-select" onClick={toggleQuotesOpen}>
+        <Button onClick={checkForUpdates} type="button">Check for Updates</Button>
         <h2>Quotes</h2>
         <Image src={`/images/icons/arrow-${quotesOpen ? 'up' : 'down'}.svg`} alt="arrow" width={25} height={25} />
       </div>
