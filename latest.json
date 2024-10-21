@@ -1,0 +1,11 @@
+{
+  "version": "v1.0.0",
+  "notes": "Test release notes",
+  "pub_date": "2024-10-21T19:25:57Z",
+  "platforms": {
+    "windows-x86_64": {
+      "signature": "Content of app-setup.nsis.sig or app.msi.sig, depending on the chosen format",
+      "url": "https://github.com/Midwest-Diesel/inventory-desktop/releases/download/v1.0.0/inventory-x64-setup.nsis.zip"
+    }
+  }
+}
