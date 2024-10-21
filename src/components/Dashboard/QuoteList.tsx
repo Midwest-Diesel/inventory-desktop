@@ -272,7 +272,7 @@ export default function QuoteList({ selectHandwrittenOpen, setSelectHandwrittenO
                   const isExpanded = expandedQuotes.includes(quote.id);
                   return (
                     <Fragment key={i}>
-                      <tr style={ quote.sale ? { backgroundColor: 'var(--green-dark-2)' } : null}>
+                      <tr>
                         <td rowSpan={isExpanded ? 2 : 1}>
                           {quote.piggybackQuotes.length > 0 &&
                             <Button variant={['no-style']} onClick={() => toggleExpandedQuotes(quote.id, !isExpanded)}>
@@ -305,7 +305,7 @@ export default function QuoteList({ selectHandwrittenOpen, setSelectHandwrittenO
                         <td>{ quote.stockNum }</td>
                         <td>{ formatCurrency(quote.price) }</td>
                         <td>{ quote.notes }</td>
-                        <td className="cbx-td">
+                        <td className="cbx-td" style={ quote.sale ? { backgroundColor: 'var(--green-dark-2)' } : null}>
                           <Checkbox
                             checked={quote.sale}
                             onChange={(e: any) => {
