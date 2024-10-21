@@ -4,7 +4,7 @@
   "pub_date": "2024-10-21T19:25:57Z",
   "platforms": {
     "windows-x86_64": {
-      "signature": "Content of app-setup.nsis.sig or app.msi.sig, depending on the chosen format",
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVSYXQxaWtWaFNYeDBlQ1dyb3NZVXNHN2NZY3VTWUNPUjg0dXV0SW95YklySnRqSCtzWlN1R1Izem0vMGtoZDEvTFVRMWhHQkNhVWZ5Z0l2LzdrMGRILzZPVUNZdldsK2dvPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzI5NTM2NTQ2CWZpbGU6SW52ZW50b3J5XzEuMC4wX3g2NC1zZXR1cC5uc2lzLnppcAo1YVVEelJkY1pRb29vaTVDTkZwNHUxK3hjZldwZTZJMmJnL1c2UitjbndCZTl2VGxBSUxkendHdVpoSng2WWhQS00rRXNvVG02eWhmL0M2dzlrQnRBQT09Cg==",
       "url": "https://github.com/Midwest-Diesel/inventory-desktop/releases/download/v1.0.0/inventory-x64-setup.nsis.zip"
     }
   }
