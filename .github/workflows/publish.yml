@@ -39,6 +39,10 @@ jobs:
       - name: Install frontend dependencies
         run: npm install 
 
+      - name: Validate WiX File
+        run: |
+          candle main.wxs || { echo 'WiX file validation failed!'; exit 1; }
+
       - name: Build Tauri App
         env:
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
@@ -48,10 +52,6 @@ jobs:
         run: |
           npm run tauri clean
           npm run tauri build
-
-      - name: Run Tauri Build with Debugging
-        run: |
-          npm run tauri build || { echo 'Build failed!'; exit 1; }
 
       - uses: tauri-apps/tauri-action@v0
         env:
