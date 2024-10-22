@@ -5,30 +5,52 @@ use std::process::Command;
 use std::fs::{write, create_dir_all};
 use std::path::PathBuf;
 use tauri::{Manager};
+use reqwest::blocking::get;
+use std::fs::File;
+use std::io::copy;
+
 
 fn main() {
-    tauri::Builder::default()
-        .setup(|app| {
-            let handle = app.handle();
-            let handle_clone = handle.clone();
+  tauri::Builder::default()
+      .setup(|app| {
+          let handle = app.handle();
+          let handle_clone = handle.clone();
 
-            handle.listen_global("tauri://update-available", move |_| {
-                let new_download_path = PathBuf::from("C:/MWD/updates");
+          handle.listen_global("tauri://update-available", move |_| {
+              let new_download_path = PathBuf::from("C:/MWD/updates/inventory_0.0.7_x64-setup.exe");
 
-                // Create the directory if it does not exist
-                if let Err(e) = create_dir_all(&new_download_path) {
-                    eprintln!("Failed to create directory: {}", e);
-                    return;
-                }
+              // Create the directory if it does not exist
+              if let Err(e) = create_dir_all(new_download_path.parent().unwrap()) {
+                  eprintln!("Failed to create directory: {}", e);
+                  return;
+              }
 
-                // Emit event to install from the new path
-                handle_clone.emit_all("tauri://update-install", new_download_path.to_str()).unwrap();
-            });
-            Ok(())
-        })
-        .invoke_handler(tauri::generate_handler![new_email_draft])
-        .run(tauri::generate_context!())
-        .expect("error while running tauri application");
+              // Download the update manually
+              if let Err(e) = download_update(&new_download_path) {
+                  eprintln!("Failed to download update: {}", e);
+                  return;
+              }
+
+              // Install the update
+              if let Err(e) = Command::new(new_download_path.to_str().unwrap())
+                  .spawn() {
+                  eprintln!("Failed to install update: {}", e);
+              }
+          });
+          Ok(())
+      })
+      .invoke_handler(tauri::generate_handler![new_email_draft])
+      .run(tauri::generate_context!())
+      .expect("error while running tauri application");
+}
+
+// Function to manually download the update file
+fn download_update(dest: &PathBuf) -> Result<(), Box<dyn std::error::Error>> {
+  let url = "https://raw.githubusercontent.com/Midwest-Diesel/inventory-desktop/refs/heads/main/inventory_0.0.7_x64-setup.exe";
+  let mut resp = get(url)?;
+  let mut out = File::create(dest)?;
+  copy(&mut resp, &mut out)?;
+  Ok(())
 }
 
 #[derive(Deserialize, Serialize)]

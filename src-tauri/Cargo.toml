@@ -19,6 +19,7 @@ tauri = { version = "1.8.0", features = [ "updater", "shell-all"] }
 log = "0.4"
 simplelog = "0.11"
 url = "2.2"
+reqwest = { version = "0.11", features = ["blocking"] }
 
 [features]
 # this feature is used for production builds or when `devPath` points to the filesystem and the built-in dev server is disabled.
