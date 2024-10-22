@@ -39,6 +39,10 @@ jobs:
       - name: Install frontend dependencies
         run: npm install 
 
+      - name: List Files
+        run: |
+          ls -R
+
       - name: Validate WiX File
         run: |
           candle main.wxs || { echo 'WiX file validation failed!'; exit 1; }
