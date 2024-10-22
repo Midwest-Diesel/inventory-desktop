@@ -59,7 +59,7 @@
       "endpoints": [
         "https://raw.githubusercontent.com/Midwest-Diesel/inventory-desktop/refs/heads/main/latest.json"
       ],
-      "dialog": true,
+      "dialog": false,
       "windows": {
         "installMode": "passive"
       }

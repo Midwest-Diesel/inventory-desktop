@@ -2,56 +2,79 @@
 
 use serde::{Deserialize, Serialize};
 use std::process::Command;
-use std::fs::{write, create_dir_all};
-use std::path::PathBuf;
+use std::fs::{write};
+use std::{fs::File, io::copy};
 use tauri::{Manager};
-use reqwest::blocking::get;
-use std::fs::File;
-use std::io::copy;
+use reqwest::Client;
+use std::path::Path;
+use zip::read::ZipArchive;
 
-
-fn main() {
+#[tokio::main]
+async fn main() {
   tauri::Builder::default()
-      .setup(|app| {
-          let handle = app.handle();
-          let handle_clone = handle.clone();
-
-          handle.listen_global("tauri://update-available", move |_| {
-              let new_download_path = PathBuf::from("C:/MWD/updates/inventory_0.0.7_x64-setup.exe");
-
-              // Create the directory if it does not exist
-              if let Err(e) = create_dir_all(new_download_path.parent().unwrap()) {
-                  eprintln!("Failed to create directory: {}", e);
-                  return;
-              }
-
-              // Download the update manually
-              if let Err(e) = download_update(&new_download_path) {
-                  eprintln!("Failed to download update: {}", e);
-                  return;
-              }
-
-              // Install the update
-              if let Err(e) = Command::new(new_download_path.to_str().unwrap())
-                  .spawn() {
-                  eprintln!("Failed to install update: {}", e);
-              }
-          });
-          Ok(())
-      })
-      .invoke_handler(tauri::generate_handler![new_email_draft])
-      .run(tauri::generate_context!())
-      .expect("error while running tauri application");
+    .setup(|app| {
+      let handle = app.handle();
+      let version = app.package_info().version.to_string();
+      handle.listen_global("tauri://update", move |_| {
+        println!("Update detected");
+        let version = version.clone();
+        tokio::spawn(async move {
+          if let Err(e) = download_update(version).await {
+            println!("Error downloading the update: {}", e);
+          }
+        });
+      });
+      Ok(())
+    })
+    .invoke_handler(tauri::generate_handler![new_email_draft])
+    .run(tauri::generate_context!())
+    .expect("error while running tauri application");
 }
 
-// Function to manually download the update file
-fn download_update(dest: &PathBuf) -> Result<(), Box<dyn std::error::Error>> {
-  let url = "https://raw.githubusercontent.com/Midwest-Diesel/inventory-desktop/refs/heads/main/inventory_0.0.7_x64-setup.exe";
-  let mut resp = get(url)?;
-  let mut out = File::create(dest)?;
-  copy(&mut resp, &mut out)?;
+async fn download_update(version: String) -> Result<(), Box<dyn std::error::Error>> {
+  let url = format!(
+      "https://github.com/Midwest-Diesel/inventory-desktop/releases/download/v{}/Inventory_{}_x64-setup.nsis.zip",
+      version, version
+  );
+  let client = Client::new();
+  let response = client.get(url).send().await?;
+  
+  let zip_path = format!("C:/MWD/updates/Inventory_{}_x64-setup.nsis.zip", version);
+  let mut dest = File::create(&zip_path)?;
+  copy(&mut response.bytes().await?.as_ref(), &mut dest)?;
+
+  println!("Update downloaded successfully.");
+
+  // Extract the ZIP file
+  let mut archive = ZipArchive::new(File::open(&zip_path)?)?;
+  for i in 0..archive.len() {
+      let mut file = archive.by_index(i)?;
+      let outpath = Path::new("C:/MWD/updates").join(file.sanitized_name());
+      
+      if file.name().ends_with('/') {
+          std::fs::create_dir_all(&outpath)?;
+      } else {
+          if let Some(p) = outpath.parent() {
+              std::fs::create_dir_all(p)?;
+          }
+          let mut out_file = File::create(&outpath)?;
+          copy(&mut file, &mut out_file)?;
+      }
+  }
+
+  println!("Update extracted successfully.");
+
+  // Run the installer
+  let installer_path = "C:/MWD/updates/your_installer_name.exe"; // Replace with the actual installer name
+  let _ = Command::new(installer_path)
+      .arg("/S") // Add any required arguments for silent installation
+      .spawn()?;
+
+  println!("Installer executed.");
+
   Ok(())
 }
+
 
 #[derive(Deserialize, Serialize)]
 struct EmailArgs {
