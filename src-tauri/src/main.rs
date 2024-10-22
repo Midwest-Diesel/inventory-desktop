@@ -4,10 +4,21 @@ use serde::{Deserialize, Serialize};
 use std::process::Command;
 use std::fs::write;
 use std::env;
+use tauri::{Manager};
 
 
 fn main() {
   tauri::Builder::default()
+    .setup(|app| {
+      let handle = app.handle();
+      let handle_clone = handle.clone();
+
+      handle.listen_global("tauri://update-available", move |_| {
+        let new_download_path = std::path::PathBuf::from("C:/MWD/updates");
+        handle_clone.emit_all("tauri://update-install", new_download_path.to_str()).unwrap();
+      });
+      Ok(())
+    })
     .invoke_handler(tauri::generate_handler![new_email_draft])
     .run(tauri::generate_context!())
     .expect("error while running tauri application");
