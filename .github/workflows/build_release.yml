@@ -13,6 +13,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      - name: Install GDK dependencies
+        run: sudo apt-get update && sudo apt-get install -y libgdk3-dev
+
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
@@ -31,14 +34,10 @@ jobs:
 
       - name: Update latest.json
         run: |
-          # Get the version from tauri.conf.json
           VERSION=$(jq -r '.package.version' src-tauri/tauri.conf.json)
-          
-          # Update latest.json
           jq --arg version "v$VERSION" --arg signature "$(cat src-tauri/target/release/bundle/nsis/Inventory_${VERSION}_x64-setup.nsis.zip.sig)" \
              '.version = $version | .platforms."windows-x86_64".signature = $signature' \
              latest.json > updated_latest.json
-          
           mv updated_latest.json latest.json
 
       - name: Upload Release Asset
