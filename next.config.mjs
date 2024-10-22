@@ -8,7 +8,7 @@ const nextConfig = {
     domains: ['mtpatobcpnpvwwanxyqy.supabase.co', 'localhost', '127.0.0.1'],
     unoptimized: true,
   },
-  assetPrefix: isProd ? null : `http://${internalHost}:3000`,
+  assetPrefix: isProd ? '' : `http://${internalHost}:3000`,
 };
 
 export default nextConfig;
