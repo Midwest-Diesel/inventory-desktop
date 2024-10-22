@@ -223,7 +223,7 @@ export default function QuoteList({ selectHandwrittenOpen, setSelectHandwrittenO
     <div className="quote-list">
       <Button onClick={checkForUpdates} type="button">Check for Updates</Button>
       <div className="quote-list__header no-select" onClick={toggleQuotesOpen}>
-        <h2>QUOTES</h2>
+        <h2>QUOTEs</h2>
         <Image src={`/images/icons/arrow-${quotesOpen ? 'up' : 'down'}.svg`} alt="arrow" width={25} height={25} />
       </div>
       <QuoteSearchDialog open={searchDialogOpen} setOpen={setSearchDialogOpen} setQuotes={setQuotes} />
