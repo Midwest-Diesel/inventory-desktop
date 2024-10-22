@@ -1,0 +1,54 @@
+name: Build and Release Tauri App
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build Tauri app
+        run: npm run tauri build
+
+      - name: Update latest.json
+        run: |
+          # Get the version from tauri.conf.json
+          VERSION=$(jq -r '.package.version' src-tauri/tauri.conf.json)
+          
+          # Update latest.json
+          jq --arg version "v$VERSION" --arg signature "$(cat src-tauri/target/release/bundle/nsis/Inventory_${VERSION}_x64-setup.nsis.zip.sig)" \
+             '.version = $version | .platforms."windows-x86_64".signature = $signature' \
+             latest.json > updated_latest.json
+          
+          mv updated_latest.json latest.json
+
+      - name: Upload Release Asset
+        id: upload-release
+        uses: actions/upload-artifact@v2
+        with:
+          name: Inventory App
+          path: src-tauri/target/release/bundle/nsis/Inventory_${{ github.ref }}_x64-setup.nsis.zip
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: ${{ github.ref }}
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
