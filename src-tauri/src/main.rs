@@ -38,40 +38,33 @@ async fn download_update(version: String) -> Result<(), Box<dyn std::error::Erro
   );
   let client = Client::new();
   let response = client.get(url).send().await?;
-  
   let zip_path = format!("C:/MWD/updates/Inventory_{}_x64-setup.nsis.zip", version);
   let mut dest = File::create(&zip_path)?;
   copy(&mut response.bytes().await?.as_ref(), &mut dest)?;
-
   println!("Update downloaded successfully.");
 
-  // Extract the ZIP file
   let mut archive = ZipArchive::new(File::open(&zip_path)?)?;
   for i in 0..archive.len() {
-      let mut file = archive.by_index(i)?;
-      let outpath = Path::new("C:/MWD/updates").join(file.sanitized_name());
-      
-      if file.name().ends_with('/') {
-          std::fs::create_dir_all(&outpath)?;
-      } else {
-          if let Some(p) = outpath.parent() {
-              std::fs::create_dir_all(p)?;
-          }
-          let mut out_file = File::create(&outpath)?;
-          copy(&mut file, &mut out_file)?;
+    let mut file = archive.by_index(i)?;
+    let outpath = Path::new("C:/MWD/updates").join(file.name());
+    
+    if file.name().ends_with('/') {
+        std::fs::create_dir_all(&outpath)?;
+    } else {
+      if let Some(p) = outpath.parent() {
+          std::fs::create_dir_all(p)?;
       }
+      let mut out_file = File::create(&outpath)?;
+      copy(&mut file, &mut out_file)?;
+    }
   }
-
   println!("Update extracted successfully.");
 
-  // Run the installer
-  let installer_path = "C:/MWD/updates/your_installer_name.exe"; // Replace with the actual installer name
+  let installer_path = "C:/MWD/updates/Inventory_0.0.9_x64-setup.exe";
   let _ = Command::new(installer_path)
-      .arg("/S") // Add any required arguments for silent installation
-      .spawn()?;
-
+    .arg("/S")
+    .spawn()?;
   println!("Installer executed.");
-
   Ok(())
 }
 
