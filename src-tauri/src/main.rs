@@ -2,26 +2,33 @@
 
 use serde::{Deserialize, Serialize};
 use std::process::Command;
-use std::fs::write;
-use std::env;
+use std::fs::{write, create_dir_all};
+use std::path::PathBuf;
 use tauri::{Manager};
 
-
 fn main() {
-  tauri::Builder::default()
-    .setup(|app| {
-      let handle = app.handle();
-      let handle_clone = handle.clone();
+    tauri::Builder::default()
+        .setup(|app| {
+            let handle = app.handle();
+            let handle_clone = handle.clone();
 
-      handle.listen_global("tauri://update-available", move |_| {
-        let new_download_path = std::path::PathBuf::from("C:/MWD/updates");
-        handle_clone.emit_all("tauri://update-install", new_download_path.to_str()).unwrap();
-      });
-      Ok(())
-    })
-    .invoke_handler(tauri::generate_handler![new_email_draft])
-    .run(tauri::generate_context!())
-    .expect("error while running tauri application");
+            handle.listen_global("tauri://update-available", move |_| {
+                let new_download_path = PathBuf::from("C:/MWD/updates");
+
+                // Create the directory if it does not exist
+                if let Err(e) = create_dir_all(&new_download_path) {
+                    eprintln!("Failed to create directory: {}", e);
+                    return;
+                }
+
+                // Emit event to install from the new path
+                handle_clone.emit_all("tauri://update-install", new_download_path.to_str()).unwrap();
+            });
+            Ok(())
+        })
+        .invoke_handler(tauri::generate_handler![new_email_draft])
+        .run(tauri::generate_context!())
+        .expect("error while running tauri application");
 }
 
 #[derive(Deserialize, Serialize)]
