@@ -9,17 +9,21 @@ use reqwest::Client;
 use std::path::Path;
 use zip::read::ZipArchive;
 
+#[derive(Deserialize, Debug)]
+struct LatestVersionInfo {
+  version: String
+}
+
+
 #[tokio::main]
 async fn main() {
   tauri::Builder::default()
     .setup(|app| {
       let handle = app.handle();
-      let version = app.package_info().version.to_string();
       handle.listen_global("tauri://update", move |_| {
         println!("Update detected");
-        let version = version.clone();
         tokio::spawn(async move {
-          if let Err(e) = download_update(version).await {
+          if let Err(e) = download_update().await {
             println!("Error downloading the update: {}", e);
           }
         });
@@ -31,7 +35,16 @@ async fn main() {
     .expect("error while running tauri application");
 }
 
-async fn download_update(version: String) -> Result<(), Box<dyn std::error::Error>> {
+async fn download_update() -> Result<(), Box<dyn std::error::Error>> {
+  let client = Client::new();
+  let res = client
+    .get("https://raw.githubusercontent.com/Midwest-Diesel/inventory-desktop/main/latest.json")
+    .send()
+    .await?
+    .json::<LatestVersionInfo>()
+    .await?;
+  let version = res.version.trim_start_matches('v').to_string();
+
   let url = format!(
       "https://github.com/Midwest-Diesel/inventory-desktop/releases/download/v{}/Inventory_{}_x64-setup.nsis.zip",
       version, version
@@ -49,10 +62,10 @@ async fn download_update(version: String) -> Result<(), Box<dyn std::error::Erro
     let outpath = Path::new("C:/MWD/updates").join(file.name());
     
     if file.name().ends_with('/') {
-        std::fs::create_dir_all(&outpath)?;
+      std::fs::create_dir_all(&outpath)?;
     } else {
       if let Some(p) = outpath.parent() {
-          std::fs::create_dir_all(p)?;
+        std::fs::create_dir_all(p)?;
       }
       let mut out_file = File::create(&outpath)?;
       copy(&mut file, &mut out_file)?;
@@ -60,7 +73,7 @@ async fn download_update(version: String) -> Result<(), Box<dyn std::error::Erro
   }
   println!("Update extracted successfully.");
 
-  let installer_path = "C:/MWD/updates/Inventory_0.0.9_x64-setup.exe";
+  let installer_path = format!("C:/MWD/updates/Inventory_{}_x64-setup.exe", version);
   let _ = Command::new(installer_path)
     .arg("/S")
     .spawn()?;
