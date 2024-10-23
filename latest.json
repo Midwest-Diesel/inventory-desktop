@@ -1,12 +1,11 @@
 {
   "version": "v0.1.1",
-  "pub_date": "",
+  "pub_date": "2024-10-23T15:42:37Z",
+  "notes": "Test notes",
   "platforms": {
     "windows-x86_64": {
       "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVSYXQxaWtWaFNYeC90ZVltMkZ3ME5mbVhncSsxY2hVQWN4MUFOZk9GQU4xM0dzUHhNc0EyaVEwUFNiUFlBK2prZnU3Z09YcjV1Zy8wRGp3STdVQXRucE9IQ0d0R0ZtZVFBPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzI5Njk4MTU3CWZpbGU6SW52ZW50b3J5XzAuMS4xX3g2NC1zZXR1cC5uc2lzLnppcAprK1QzbTZkWjdVSW5ncDdicUp1YkpTQm0zV2g5Q0hTdjJoZUZDU1l3STgyQlptVlB6NFRGR3ljYlFqRWFjSDlNS1NKSGphNmRWZ3dvUjcyVXY1akVDQT09Cg==",
-      "url": "https://github.com/Midwest-Diesel/inventory-desktop/releases/download/vv0.1.1/Inventory_v0.1.1_x64-setup.nsis.zip",
-      "pub_date": "2024-10-23T15:42:37Z",
-      "notes": "Test notes"
+      "url": "https://github.com/Midwest-Diesel/inventory-desktop/releases/download/vv0.1.1/Inventory_v0.1.1_x64-setup.nsis.zip"
     }
   }
 }
