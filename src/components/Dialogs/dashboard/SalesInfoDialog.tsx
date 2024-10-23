@@ -77,13 +77,13 @@ export default function SalesInfo({ open, setOpen }: Props) {
               {sales.map((part: Part) => {
                 return (
                   <tr key={part.id}>
-                    <td><a href={`/part/${part.id}`}>{ part.partNum }</a></td>
+                    <td><Link href={`/part/${part.id}`}>{ part.partNum }</Link></td>
                     <td>{ formatDate(part.soldToDate) }</td>
                     <td>{ part.soldTo }</td>
                     <td>{ part.qtySold }</td>
                     <td>{ formatCurrency(part.sellingPrice) }</td>
                     <td>{ part.condition }</td>
-                    <td><a href={`/handwrittens/${part.invoiceNum}`}>{ part.invoiceNum }</a></td>
+                    <td><Link href={`/handwrittens/${part.invoiceNum}`}>{ part.invoiceNum }</Link></td>
                   </tr>
                 );
               })}

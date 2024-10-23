@@ -141,7 +141,7 @@ export default function NewEnginesList() {
                     <td>
                       <Button>Quote</Button>
                     </td>
-                    <td><a href={`/engines/${engine.stockNum}`}>{ engine.stockNum }</a></td>
+                    <td><Link href={`/engines/${engine.stockNum}`}>{ engine.stockNum }</Link></td>
                     <td className="cbx-td"><Checkbox checked={isEngineResNotNull(engine)} disabled /></td>
                     <td className="cbx-td"><Checkbox checked={engine.ecm} disabled /></td>
                     <td className="cbx-td"><Checkbox checked={engine.warranty} disabled /></td>

@@ -98,7 +98,7 @@ export default function Invoices() {
                   {invoices.map((invoice: Invoice) => {
                     return (
                       <tr key={invoice.id} onClick={() => setFocusedInvoice(invoice)}>
-                        <td><a href={`/invoices/${invoice.id}`}>{ invoice.id }</a></td>
+                        <td><Link href={`/invoices/${invoice.id}`}>{ invoice.id }</Link></td>
                         <td>{ formatDate(invoice.date) }</td>
                         <td>{ invoice.billToCompany }</td>
                         <td>{ invoice.shipToCompany }</td>

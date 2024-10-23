@@ -42,7 +42,7 @@ export default function PartsOnEnginesDialog({ open, setOpen, searchResults }: P
                   res.engines.map((eng, i) => {
                     return (
                       <tr key={i}>
-                        <td><a href={`engines/${eng.stockNum}`}>{ eng.stockNum }</a></td>
+                        <td><Link href={`engines/${eng.stockNum}`}>{ eng.stockNum }</Link></td>
                         <td>{ res.partNum }</td>
                         <td></td>
                         <td>{ formatDate(eng.loginDate) }</td>

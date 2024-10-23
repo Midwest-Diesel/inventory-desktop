@@ -77,7 +77,7 @@ export default function SoldEngines() {
                 {engines.map((engine: Engine) => {
                   return (
                     <tr key={engine.id}>
-                      <td><a href={`/engines/${engine.stockNum}`}>{ engine.stockNum }</a></td>
+                      <td><Link href={`/engines/${engine.stockNum}`}>{ engine.stockNum }</Link></td>
                       <td>{ formatDate(engine.loginDate) }</td>
                       <td>{ formatDate(engine.soldDate) }</td>
                       <td>{ engine.model }</td>

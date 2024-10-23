@@ -58,7 +58,7 @@ export default function RemainingSurplusDialog({ open, setOpen, code }: Props) {
               return (
                 <tr key={i}>
                   <td>{ part.qty }</td>
-                  <td><a href={`/part/${part.id}`}>{ part.partNum }</a></td>
+                  <td><Link href={`/part/${part.id}`}>{ part.partNum }</Link></td>
                   <td>{ part.desc }</td>
                   <td>{ part.stockNum }</td>
                   <td>{ formatCurrency(part.partCostIn) }</td>

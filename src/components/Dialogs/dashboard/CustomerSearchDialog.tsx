@@ -87,7 +87,7 @@ export default function CustomerSearchDialog({ open, setOpen, searchTerm }: Prop
           {displayedCustomers && displayedCustomers.map((customer: Customer) => {
             return (
               <tr key={customer.id} onClick={() => selectCustomer(customer)} className={`${customer.id === selectedCustomer.id ? 'customer-search__selected-customer' : ''}`}>
-                <td><a href={`customer/${customer.id}`}>Details</a></td>
+                <td><Link href={`customer/${customer.id}`}>Details</Link></td>
                 <td>{ customer.company }</td>
                 <td>{ customer.billToCity }</td>
                 <td>{ customer.billToState }</td>

@@ -14,6 +14,7 @@ import Checkbox from "@/components/Library/Checkbox";
 import { getPartByPartNum } from "@/scripts/controllers/partsController";
 import { invoke } from "@tauri-apps/api/tauri";
 import PiggybackQuoteDialog from "../Dialogs/dashboard/PiggybackQuoteDialog";
+import Link from "next/link";
 
 interface Props {
   selectHandwrittenOpen: boolean
@@ -289,13 +290,13 @@ export default function QuoteList({ selectHandwrittenOpen, setSelectHandwrittenO
                         <td>{ formatDate(quote.date) }</td>
                         <td>{ quote.salesman }</td>
                         <td>{ quote.source }</td>
-                        <td style={{ width: '15rem' }}>{ quote.customer && <a href={`/customer/${quote.customer.id}`}>{ quote.customer.company }</a> }</td>
+                        <td style={{ width: '15rem' }}>{ quote.customer && <Link href={`/customer/${quote.customer.id}`}>{ quote.customer.company }</Link> }</td>
                         <td>{ quote.contact }</td>
                         <td style={{ width:'7.5rem' }}>{ quote.phone && formatPhone(quote.phone) }</td>
                         <td>{ quote.state }</td>
                         <td>
                           {quote.part ?
-                            <a href={`/part/${quote.part.id}`}>{ quote.partNum }</a>
+                            <Link href={`/part/${quote.part.id}`}>{ quote.partNum }</Link>
                             :
                             quote.partNum
                           }
@@ -327,7 +328,7 @@ export default function QuoteList({ selectHandwrittenOpen, setSelectHandwrittenO
                                     <li key={piggybackQuote.id}>
                                       <div className="piggyback-quotes__item">
                                         {piggybackQuote.part ?
-                                          <a href={`/part/${piggybackQuote.part.id}`}>{ piggybackQuote.partNum }</a>
+                                          <Link href={`/part/${piggybackQuote.part.id}`}>{ piggybackQuote.partNum }</Link>
                                           :
                                           <p>{ piggybackQuote.partNum }</p>
                                         }
