@@ -14,7 +14,6 @@ import Checkbox from "@/components/Library/Checkbox";
 import { getPartByPartNum } from "@/scripts/controllers/partsController";
 import { invoke } from "@tauri-apps/api/tauri";
 import PiggybackQuoteDialog from "../Dialogs/dashboard/PiggybackQuoteDialog";
-import { checkUpdate, installUpdate } from '@tauri-apps/api/updater';
 
 interface Props {
   selectHandwrittenOpen: boolean
@@ -210,20 +209,11 @@ export default function QuoteList({ selectHandwrittenOpen, setSelectHandwrittenO
     setPiggybackQuote(quote);
   };
 
-  const checkForUpdates = async () => {
-    const update = await checkUpdate();
-    if (update.shouldUpdate) {
-      console.log(`Installing update ${update.manifest?.version}, ${update.manifest?.date}, ${update.manifest.body}`);
-      await installUpdate();
-    }
-  };
-
 
   return (
     <div className="quote-list">
-      <Button onClick={checkForUpdates} type="button">Check for Updates</Button>
       <div className="quote-list__header no-select" onClick={toggleQuotesOpen}>
-        <h2>QUOTES</h2>
+        <h2>Quotes</h2>
         <Image src={`/images/icons/arrow-${quotesOpen ? 'up' : 'down'}.svg`} alt="arrow" width={25} height={25} />
       </div>
       <QuoteSearchDialog open={searchDialogOpen} setOpen={setSearchDialogOpen} setQuotes={setQuotes} />

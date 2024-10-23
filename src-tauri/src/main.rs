@@ -4,7 +4,6 @@ use serde::{Deserialize, Serialize};
 use std::process::Command;
 use std::fs::{write};
 use std::{fs::File, io::copy};
-use tauri::{Manager};
 use reqwest::Client;
 use std::path::Path;
 use zip::read::ZipArchive;
@@ -18,21 +17,19 @@ struct LatestVersionInfo {
 #[tokio::main]
 async fn main() {
   tauri::Builder::default()
-    .setup(|app| {
-      let handle = app.handle();
-      handle.listen_global("tauri://update", move |_| {
-        println!("Update detected");
-        tokio::spawn(async move {
-          if let Err(e) = download_update().await {
-            println!("Error downloading the update: {}", e);
-          }
-        });
-      });
-      Ok(())
-    })
-    .invoke_handler(tauri::generate_handler![new_email_draft])
+    .invoke_handler(tauri::generate_handler![new_email_draft, install_update])
     .run(tauri::generate_context!())
     .expect("error while running tauri application");
+}
+
+#[tauri::command]
+fn install_update() {
+  println!("Update detected");
+  tokio::spawn(async move {
+    if let Err(e) = download_update().await {
+      println!("Error downloading the update: {}", e);
+    }
+  });
 }
 
 async fn download_update() -> Result<(), Box<dyn std::error::Error>> {
