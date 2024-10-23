@@ -15,7 +15,8 @@
     "test:unit": "jest --config=jest.config.ts --verbose",
     "test:cy": "cypress run",
     "test --w": "jest --config=jest.config.ts --verbose --watch",
-    "cy:open": "cypress open"
+    "cy:open": "cypress open",
+    "publish": "sh ./publish.sh"
   },
   "dependencies": {
     "@azure/msal-browser": "^3.23.0",
