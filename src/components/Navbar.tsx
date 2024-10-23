@@ -33,6 +33,7 @@ export default function Navbar() {
       <Link href="/email-stuff" className="navbar__link">Email Stuff</Link>
       <Link href="/alerts" className="navbar__link">Alerts</Link>
       <Link href="/image-upload" className="navbar__link">Image Upload</Link>
+      <Link href="/about" className="navbar__link">About</Link>
     </nav>
   );
 }

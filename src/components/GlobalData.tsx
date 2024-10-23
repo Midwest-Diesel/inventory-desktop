@@ -19,7 +19,6 @@ export default function GlobalData({ children }: Props) {
   const [user, setUser] = useState<User>();
   const [loaded, setLoaded] = useState(false);
   const [alertsData, setAlertsData] = useAtom<Alert[]>(alertsAtom);
-  const [version, setVersion] = useState('0.0.0');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -28,8 +27,6 @@ export default function GlobalData({ children }: Props) {
       setAlertsData(await getAlerts());
       setPictures(await getBucket('parts'));
       setSnPictures(await getBucket('stockNum'));
-      setVersion(await getVersion());
-      console.log(await getVersion());
     };
     fetchData();
   }, []);
