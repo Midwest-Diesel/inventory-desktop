@@ -31,8 +31,8 @@ jq --arg version "v$version" \
    '.version = $version |
     .platforms."windows-x86_64".signature = $signature |
     .platforms."windows-x86_64".url = "https://github.com/Midwest-Diesel/inventory-desktop/releases/download/v\($version)/Inventory_\($version)_x64-setup.nsis.zip" |
-    .platforms."windows-x86_64".pub_date = $pub_date |
-    .platforms."windows-x86_64".notes = $notes' \
+    .pub_date = $pub_date |
+    .notes = $notes' \
    "$latest_json" > tmp.json && mv tmp.json "$latest_json"
 
 echo "latest.json updated with version $version."
