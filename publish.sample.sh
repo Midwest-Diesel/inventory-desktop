@@ -24,11 +24,12 @@ pub_date=$(TZ=America/Chicago date -u +"%Y-%m-%dT%H:%M:%SZ")
 echo "Enter notes for this release (press Enter to skip):"
 read -r notes
 
-jq --arg version "v$version" \
+jq --arg version "$version" \
+   --arg versionPrefix "v$version" \
    --arg signature "$signature" \
    --arg pub_date "$pub_date" \
    --arg notes "$notes" \
-   '.version = $version |
+   '.version = $versionPrefix |
     .platforms."windows-x86_64".signature = $signature |
     .platforms."windows-x86_64".url = "https://github.com/Midwest-Diesel/inventory-desktop/releases/download/v\($version)/Inventory_\($version)_x64-setup.nsis.zip" |
     .pub_date = $pub_date |
