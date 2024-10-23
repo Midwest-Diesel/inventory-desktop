@@ -72,3 +72,9 @@ else
   echo "Failed to create release: $response"
   exit 1
 fi
+
+if [ -d "$bundle_dir" ]; then
+  rm -rf "$bundle_dir"/*
+else
+  echo "Error cleaning files in $bundle_dir"
+fi
