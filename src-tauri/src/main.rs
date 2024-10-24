@@ -17,9 +17,22 @@ struct LatestVersionInfo {
 #[tokio::main]
 async fn main() {
   tauri::Builder::default()
+    .setup(|_| {
+      create_directories();
+      Ok(())
+    })
     .invoke_handler(tauri::generate_handler![new_email_draft, install_update])
     .run(tauri::generate_context!())
     .expect("error while running tauri application");
+}
+
+fn create_directories() {
+  let directories = vec!["scripts", "updates"];
+  for dir_name in directories {
+    if std::fs::read_dir(format!("C:/MWD/{}", dir_name)).is_err() {
+      std::fs::create_dir(format!("C:/MWD/{}", dir_name)).expect("Failed to create dir");
+    }
+  }
 }
 
 #[tauri::command]
