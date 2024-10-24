@@ -32,7 +32,7 @@ fn install_update() {
       println!("Update successful, restarting app...");
       let batch_script = r#"
       @echo off
-      echo "Installing update..."
+      echo Installing update...
       "%SystemRoot%\\System32\\timeout.exe" /T 5 /NOBREAK > NUL
       taskkill /F /IM Inventory.exe > NUL 2>&1
       start "" "C:\\MWD\\Inventory.exe"
