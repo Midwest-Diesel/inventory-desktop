@@ -8,6 +8,8 @@ import Input from "@/components/Library/Input";
 import Button from "@/components/Library/Button";
 import Checkbox from "@/components/Library/Checkbox";
 import { confirm } from '@tauri-apps/api/dialog';
+import { invoke } from "@tauri-apps/api/tauri";
+
 
 interface Props {
   open: boolean
@@ -34,6 +36,7 @@ export default function SelectHandwrittenDialog({ open, setOpen, handleAddToHand
   const [search, setSearch] = useState('');
   
   useEffect(() => {
+    if (typeof window === 'undefined') return;
     const fetchData = async () => {
       resetHandwrittensList();
     };
@@ -51,7 +54,7 @@ export default function SelectHandwrittenDialog({ open, setOpen, handleAddToHand
     setHandwrittens(res);
   };
   
-  const handleChangePage = async (data: any, page: number) => {
+  const handleChangePage = async (_: any, page: number) => {
     if (page === currentPage) return;
     const res = await getSomeHandwrittens(page, 26);
     setHandwrittens(res);
@@ -60,7 +63,7 @@ export default function SelectHandwrittenDialog({ open, setOpen, handleAddToHand
 
   const handleSelectRow = (id: number) => {
     setSelectedHandwrittenId(id);
-    window.open(`${location.origin}/handwrittens/${id}`, '_blank', 'popup=true');
+    invoke('open_window', { windowArgs: { url: `/handwrittens/${id}` }});
   };
 
   const handleSubmitNewHandwritten = async (e: FormEvent) => {

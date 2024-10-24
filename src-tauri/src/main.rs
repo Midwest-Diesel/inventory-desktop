@@ -21,7 +21,7 @@ async fn main() {
       create_directories();
       Ok(())
     })
-    .invoke_handler(tauri::generate_handler![new_email_draft, install_update])
+    .invoke_handler(tauri::generate_handler![new_email_draft, install_update, open_window])
     .run(tauri::generate_context!())
     .expect("error while running tauri application");
 }
@@ -33,6 +33,25 @@ fn create_directories() {
       std::fs::create_dir(format!("C:/MWD/{}", dir_name)).expect("Failed to create dir");
     }
   }
+}
+
+#[derive(Deserialize, Serialize)]
+struct WindowArgs {
+  url: String
+}
+
+#[tauri::command]
+async fn open_window(app: tauri::AppHandle, window_args: WindowArgs) {
+  println!("{}", window_args.url);
+  tauri::WindowBuilder::new(
+    &app,
+    "Handwritten",
+    tauri::WindowUrl::App(window_args.url.into())
+  )
+    .title("Handwritten")
+    .inner_size(1500.0, 800.0)
+    .build()
+    .unwrap();
 }
 
 #[tauri::command]
