@@ -7,6 +7,7 @@ import Pagination from "@/components/Library/Pagination";
 import Input from "@/components/Library/Input";
 import Button from "@/components/Library/Button";
 import Checkbox from "@/components/Library/Checkbox";
+import { confirm } from '@tauri-apps/api/dialog';
 
 interface Props {
   open: boolean
@@ -77,7 +78,7 @@ export default function SelectHandwrittenDialog({ open, setOpen, handleAddToHand
     if (noVerbage) fullWar = '';
     const newItem = handwritten.handwrittenItems.find((item) => item.partNum === part.partNum);
     if (newItem) {
-      if (confirm('Part already exists do you want to add qty?')) {
+      if (await confirm('Part already exists do you want to add qty?')) {
         await editHandwrittenItems({ ...newItem, qty: newItem.qty + Number(qty), handwrittenId: handwritten.id });
         await addHandwrittenItemChild(newItem.id, { partId: part.id, qty: qty, cost: Number(price) } as HandwrittenItemChild);
         await editHandwrittenOrderNotes(handwritten.id, fullWar);

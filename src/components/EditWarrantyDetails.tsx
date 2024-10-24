@@ -9,6 +9,7 @@ import { addWarrantyItem, deleteWarrantyItem, editWarranty, editWarrantyItem, ge
 import Checkbox from "./Library/Checkbox";
 import CustomerSelect from "./Library/Select/CustomerSelect";
 import { getCustomerByName } from "@/scripts/controllers/customerController";
+import { confirm } from '@tauri-apps/api/dialog';
 
 interface Props {
   warrantyData: Warranty
@@ -27,7 +28,7 @@ export default function EditWarrantyDetails({ warrantyData, setWarranty, setIsEd
 
   const saveChanges = async (e: FormEvent) => {
     e.preventDefault();
-    if (!confirm('Are you sure you want to save these changes?')) return;
+    if (!await confirm('Are you sure you want to save these changes?')) return;
     const newCustomer = await getCustomerByName(company);
     const newWarranty = {
       id: Number(warrantyData.id),
@@ -60,7 +61,7 @@ export default function EditWarrantyDetails({ warrantyData, setWarranty, setIsEd
   };
 
   const handleDeleteItem = async (id: number) => {
-    if (!confirm('Are you sure you want to delete this item?')) return;
+    if (!await confirm('Are you sure you want to delete this item?')) return;
     const newItems = warrantyItems.filter((i: WarrantyItem) => i.id !== id);
     await deleteWarrantyItem(id);
     setWarrantyItems(newItems);

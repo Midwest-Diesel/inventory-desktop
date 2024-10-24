@@ -5,6 +5,7 @@ import { FormEvent, useState } from "react";
 import Input from "@/components/Library/Input";
 import { editCustomer } from "@/scripts/controllers/customerController";
 import Table from "../Library/Table";
+import { confirm } from '@tauri-apps/api/dialog';
 
 interface Props {
   customer: Customer
@@ -39,7 +40,7 @@ export default function CustomerDetails({ customer, setCustomer, setIsEditing }:
 
   const saveChanges = async (e: FormEvent) => {
     e.preventDefault();
-    if (!confirm('Are you sure you want to save these changes?')) return;
+    if (!await confirm('Are you sure you want to save these changes?')) return;
     const newCustomer = {
       id: customer.id,
       company,

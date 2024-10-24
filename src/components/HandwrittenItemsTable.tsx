@@ -6,6 +6,7 @@ import { addCore } from "@/scripts/controllers/coresController";
 import HandwrittenChildrenDialog from "./Dialogs/handwrittens/HandwrittenChildrenDialog";
 import { useEffect, useState } from "react";
 import Toast from "./Library/Toast";
+import { confirm } from '@tauri-apps/api/dialog';
 
 interface Props {
   className?: string
@@ -42,7 +43,7 @@ export default function HandwrittenItemsTable({ className, handwritten, handwrit
   const totalColorStyle = getInvoiceTotal() < 0 ? { color: 'var(--red-2)' } : '';
 
   const handleCoreCharge = async (item: HandwrittenItem) => {
-    if (!confirm('Are you sure you want to add a core charge?')) return;
+    if (!await confirm('Are you sure you want to add a core charge?')) return;
     const newItem = {
       handwrittenId: handwritten.id,
       date: item.date,

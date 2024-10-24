@@ -11,6 +11,7 @@ import Input from "../Library/Input";
 import Link from "next/link";
 import { getAutofillEngine } from "@/scripts/controllers/enginesController";
 import CustomerSelect from "../Library/Select/CustomerSelect";
+import { confirm } from '@tauri-apps/api/dialog';
 
 interface Props {
   addOn: AddOn
@@ -34,7 +35,7 @@ export default function ShopAddonRow({ addOn, handleDuplicateAddOn }: Props) {
   };
 
   const handleDeleteAddOn = async () => {
-    if (!confirm('Are you sure you want to delete this part?')) return;
+    if (!await confirm('Are you sure you want to delete this part?')) return;
     await deleteAddOn(addOn.id);
     setAddons(addOns.filter((a) => a.id !== addOn.id));
   };

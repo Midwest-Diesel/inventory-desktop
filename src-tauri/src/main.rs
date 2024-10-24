@@ -43,8 +43,8 @@ async fn download_update() -> Result<(), Box<dyn std::error::Error>> {
   let version = res.version.trim_start_matches('v').to_string();
 
   let url = format!(
-      "https://github.com/Midwest-Diesel/inventory-desktop/releases/download/v{}/Inventory_{}_x64-setup.nsis.zip",
-      version, version
+    "https://github.com/Midwest-Diesel/inventory-desktop/releases/download/v{}/Inventory_{}_x64-setup.nsis.zip",
+    version, version
   );
   let client = Client::new();
   let response = client.get(url).send().await?;

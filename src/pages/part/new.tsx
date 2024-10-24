@@ -8,6 +8,7 @@ import { Layout } from "@/components/Layout";
 import { addAltParts, addPart, editAltParts, getPartsInfoByPartNum, searchAltParts, searchParts } from "@/scripts/controllers/partsController";
 import Error from "@/components/Errors/Error";
 import Input from "@/components/Library/Input";
+import { confirm } from '@tauri-apps/api/dialog';
 
 
 export default function NewPart() {
@@ -37,7 +38,7 @@ export default function NewPart() {
 
   const saveChanges = async (e: FormEvent) => {
     e.preventDefault();
-    if (!confirm('Are you sure you want to create this part?')) return;
+    if (!await confirm('Are you sure you want to create this part?')) return;
     const newPart = {
       partNum,
       desc,

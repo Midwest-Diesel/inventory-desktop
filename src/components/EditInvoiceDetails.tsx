@@ -40,7 +40,7 @@ export default function EditInvoiceDetails({ invoice, setInvoice, setIsEditing }
 
   const saveChanges = async (e: FormEvent) => {
     e.preventDefault();
-    if (!confirm('Are you sure you want to save these changes?')) return;
+    if (!await confirm('Are you sure you want to save these changes?')) return;
     const newInvoice = {
       id: invoice.id,
       date,

@@ -9,6 +9,7 @@ import { deleteEngineAddOn } from "@/scripts/controllers/engineAddOnsController"
 import CustomerSelect from "../Library/Select/CustomerSelect";
 import { useAtom } from "jotai";
 import { engineAddOnsAtom } from "@/scripts/atoms/state";
+import { confirm } from '@tauri-apps/api/dialog';
 
 interface Props {
   addOn: EngineAddOn
@@ -31,7 +32,7 @@ export default function EngineAddOnRow({ addOn, handleDuplicateAddOn }: Props) {
   };
 
   const handleDeleteAddOn = async () => {
-    if (!confirm('Are you sure you want to delete this part?')) return;
+    if (!await confirm('Are you sure you want to delete this part?')) return;
     await deleteEngineAddOn(addOn.id);
     setAddons(addOns.filter((a) => a.id !== addOn.id));
   };
@@ -69,7 +70,7 @@ export default function EngineAddOnRow({ addOn, handleDuplicateAddOn }: Props) {
   };
 
   const handleAddToInventory = async () => {
-    if (!confirm('Are you sure you want to add this engine?')) return;
+    if (!await confirm('Are you sure you want to add this engine?')) return;
     await addEngine(addOn);
     await deleteEngineAddOn(addOn.id);
     setAddons(addOns.filter((a) => a.id !== addOn.id));

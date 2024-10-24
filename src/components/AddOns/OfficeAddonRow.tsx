@@ -11,6 +11,7 @@ import Input from "../Library/Input";
 import { getAutofillEngine } from "@/scripts/controllers/enginesController";
 import Loading from "../Library/Loading";
 import CustomerSelect from "../Library/Select/CustomerSelect";
+import { confirm } from '@tauri-apps/api/dialog';
 
 interface Props {
   addOn: AddOn
@@ -35,7 +36,7 @@ export default function OfficeAddonRow({ addOn }: Props) {
   };
 
   const handleDeleteAddOn = async () => {
-    if (!confirm('Are you sure you want to delete this part?')) return;
+    if (!await confirm('Are you sure you want to delete this part?')) return;
     await deleteAddOn(addOn.id);
     setAddons(addOns.filter((a) => a.id !== addOn.id));
   };
@@ -116,7 +117,7 @@ export default function OfficeAddonRow({ addOn }: Props) {
   };
 
   const handleAddToInventory = async () => {
-    if (!confirm('Are you sure you want to add this item?')) return;
+    if (!await confirm('Are you sure you want to add this item?')) return;
     setLoading(true);
     const partsInfo = await getPartsInfoByPartNum(addOn.partNum);
     const newPart = {

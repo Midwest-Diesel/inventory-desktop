@@ -9,6 +9,7 @@ import { editReturn, getReturnCount, getSomeCompletedReturns, getSomeReturns } f
 import { cap, formatDate } from "@/scripts/tools/stringUtils";
 import Checkbox from "@/components/Library/Checkbox";
 import Image from "next/image";
+import { confirm } from '@tauri-apps/api/dialog';
 
 
 export default function Returns() {
@@ -43,7 +44,7 @@ export default function Returns() {
   };
 
   const markReceived = async (ret: Return) => {
-    if (!confirm('Mark this return as received?')) return;
+    if (!await confirm('Mark this return as received?')) return;
     const newReturn = { ...ret, dateReceived: new Date(), customerId: ret.customer.id };
     setLoading(true);
     await editReturn(newReturn);

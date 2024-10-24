@@ -95,7 +95,7 @@ export default function EditEngineDetails({ engine, setEngine, setIsEditing, eng
 
   const saveChanges = async (e: FormEvent) => {
     e.preventDefault();
-    if (!confirm('Are you sure you want to save these changes?')) return;
+    if (!await confirm('Are you sure you want to save these changes?')) return;
     const newEngine = {
       id: engine.id,
       stockNum: engine.stockNum,
@@ -191,14 +191,14 @@ export default function EditEngineDetails({ engine, setEngine, setIsEditing, eng
   };
 
   const handleDeleteCostInItem = async (id: number) => {
-    if (!confirm('Are you sure you want to delete this item?')) return;
+    if (!await confirm('Are you sure you want to delete this item?')) return;
     const newItems = engineCostIn.filter((i: EngineCostIn) => i.id !== id);
     await deleteEngineCostIn(id);
     setEngineCostIn(newItems);
   };
 
   const handleDeleteCostOutItem = async (id: number) => {
-    if (!confirm('Are you sure you want to delete this item?')) return;
+    if (!await confirm('Are you sure you want to delete this item?')) return;
     const newItems = engineCostOut.filter((i: EngineCostOut) => i.id !== id);
     const newCostInItems = engineCostIn.filter((i: EngineCostIn) => i.id !== id);
     await deleteEngineCostOut(id);

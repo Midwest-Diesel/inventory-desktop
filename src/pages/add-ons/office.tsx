@@ -5,6 +5,7 @@ import { shopAddOnsAtom } from "@/scripts/atoms/state";
 import { editAddOn, getAllAddOns } from "@/scripts/controllers/addOnsController";
 import { useAtom } from "jotai";
 import { FormEvent, Fragment, useEffect, useState } from "react";
+import { confirm } from '@tauri-apps/api/dialog';
 
 
 export default function AddOnsOffice() {
@@ -24,20 +25,11 @@ export default function AddOnsOffice() {
       event.preventDefault();
       event.returnValue = '';
     }
+    
     window.addEventListener('beforeunload', confirmLeave);
-    document.querySelectorAll('a').forEach((link) => {
-      link.addEventListener('click', function handleClick(event) {
-        const shouldNavigate = confirm('Are you sure? Any unsaved data will be lost.');
-        if (!shouldNavigate) {
-          event.preventDefault();
-        } else {
-          window.removeEventListener('beforeunload', confirmLeave);
-          document.querySelectorAll('a').forEach((link) => {
-            link.removeEventListener('click', handleClick);
-          });
-        }
-      });
-    });
+    return () => {
+      window.removeEventListener('beforeunload', confirmLeave);
+    }
   }, []);
 
   const handleEditAddOns = async (e: FormEvent) => {

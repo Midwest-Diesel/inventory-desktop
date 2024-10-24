@@ -6,6 +6,7 @@ import { deleteCore, removeQtyFromCore } from "@/scripts/controllers/coresContro
 import { addHandwritten, addHandwrittenItem } from "@/scripts/controllers/handwrittensController";
 import { useAtom } from "jotai";
 import { userAtom } from "@/scripts/atoms/state";
+import { confirm } from '@tauri-apps/api/dialog';
 
 interface Props {
   open: boolean
@@ -19,7 +20,7 @@ export default function CoreCreditsDialog({ open, setOpen, cores, handwritten }:
   const [user] = useAtom<User>(userAtom);
 
   const handleCredit = async (core: Core) => {
-    if (!confirm('Are you sure you want to credit this core?')) return;
+    if (!await confirm('Are you sure you want to credit this core?')) return;
     const qty = core.qty > 1 ? Number(prompt('Enter qty to credit')) : 1;
     const id = await addHandwritten({ date: new Date(), salesmanId: user.id, ...handwritten });
     const newItem = {
@@ -43,7 +44,7 @@ export default function CoreCreditsDialog({ open, setOpen, cores, handwritten }:
   };
 
   const handleDelete = async (id: number) => {
-    if (!confirm('Are you sure you want to delete this core?')) return;
+    if (!await confirm('Are you sure you want to delete this core?')) return;
     await deleteCore(id);
   };
 

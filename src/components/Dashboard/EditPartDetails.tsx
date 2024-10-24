@@ -9,6 +9,7 @@ import Table from "../Library/Table";
 import { deleteEngineCostOut, editEngineCostOut } from "@/scripts/controllers/enginesController";
 import { userAtom } from "@/scripts/atoms/state";
 import { useAtom } from "jotai";
+import { confirm } from '@tauri-apps/api/dialog';
 
 interface Props {
   part: Part
@@ -46,7 +47,7 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
 
   const saveChanges = async (e: FormEvent) => {
     e.preventDefault();
-    if (!confirm('Are you sure you want to save these changes?')) return;
+    if (!await confirm('Are you sure you want to save these changes?')) return;
     const newPart = {
       id: part.id,
       partNum: part.partNum,
@@ -119,14 +120,14 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
   };
 
   const handleDeleteCostInItem = async (id: number) => {
-    if (!confirm('Are you sure you want to delete this item?')) return;
+    if (!await confirm('Are you sure you want to delete this item?')) return;
     const newItems = partCostIn.filter((i: PartCostIn) => i.id !== id);
     await deletePartCostIn(id);
     setPartCostIn(newItems);
   };
 
   const handleDeleteCostOutItem = async (id: number) => {
-    if (!confirm('Are you sure you want to delete this item?')) return;
+    if (!await confirm('Are you sure you want to delete this item?')) return;
     const newItems = engineCostOut.filter((i: EngineCostOut) => i.id !== id);
     await deleteEngineCostOut(id);
     setEngineCostOut(newItems);

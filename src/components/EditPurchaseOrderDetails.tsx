@@ -44,7 +44,7 @@ export default function EditPoDetails({ poData, setPo, setIsEditing }: Props) {
 
   const saveChanges = async (e: FormEvent) => {
     e.preventDefault();
-    if (!confirm('Are you sure you want to save these changes?')) return;
+    if (!await confirm('Are you sure you want to save these changes?')) return;
     const newPo = {
       id: poData.id,
       date,
@@ -92,7 +92,7 @@ export default function EditPoDetails({ poData, setPo, setIsEditing }: Props) {
   };
 
   const handleDeleteItem = async (id: number) => {
-    if (!confirm('Are you sure you want to delete this item?')) return;
+    if (!await confirm('Are you sure you want to delete this item?')) return;
     const newItems = poItems.filter((i: POItem) => i.id !== id);
     await deletePurchaseOrderItem(id);
     setPoItems(newItems);

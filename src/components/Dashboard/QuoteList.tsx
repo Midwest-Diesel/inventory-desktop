@@ -15,6 +15,7 @@ import { getPartByPartNum } from "@/scripts/controllers/partsController";
 import { invoke } from "@tauri-apps/api/tauri";
 import PiggybackQuoteDialog from "../Dialogs/dashboard/PiggybackQuoteDialog";
 import Link from "next/link";
+import { confirm } from '@tauri-apps/api/dialog';
 
 interface Props {
   selectHandwrittenOpen: boolean
@@ -89,14 +90,14 @@ export default function QuoteList({ selectHandwrittenOpen, setSelectHandwrittenO
   };
 
   const handleDelete = async (id: number) => {
-    if (!confirm('Are you sure you want to delete this quote?')) return;
+    if (!await confirm('Are you sure you want to delete this quote?')) return;
     await deleteQuote(id);
     setQuotes(quotes.filter((quote) => quote.id !== id));
     setExpandedQuotes([]);
   };
 
   const invoiceQuote = async (quote: Quote) => {
-    if (!confirm('Are you sure you want to invoice this quote?')) return;
+    if (!await await confirm('Are you sure you want to invoice this quote?')) return;
     toggleQuoteSold({ ...quote, sale: true });
     setQuotes(quotes.map((q) => q.id === quote.id ? { ...q, sale: true } : q));
 

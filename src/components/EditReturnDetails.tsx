@@ -8,6 +8,7 @@ import Grid from "./Library/Grid/Grid";
 import CustomerSelect from "./Library/Select/CustomerSelect";
 import SourceSelect from "./Library/Select/SourceSelect";
 import Table from "./Library/Table";
+import { confirm } from '@tauri-apps/api/dialog';
 
 interface Props {
   returnData: Return
@@ -44,7 +45,7 @@ export default function EditReturnDetails({ returnData, setReturn, setIsEditing 
   
   const saveChanges = async (e: FormEvent) => {
     e.preventDefault();
-    if (!confirm('Are you sure you want to save these changes?')) return;
+    if (!await confirm('Are you sure you want to save these changes?')) return;
     const newReturn = {
       ...returnData,
       poNum,

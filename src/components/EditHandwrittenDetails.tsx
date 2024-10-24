@@ -70,7 +70,7 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
 
   const saveChanges = async (e: FormEvent) => {
     e.preventDefault();
-    if (!confirm('Are you sure you want to save these changes?')) return;
+    if (!await confirm('Are you sure you want to save these changes?')) return;
     await handleAltShip();
     const newCustomer = await getCustomerByName(company);
     const newInvoice = {
@@ -164,7 +164,7 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
   };
 
   const handleDeleteItem = async (item: HandwrittenItem) => {
-    if (!confirm('Are you sure you want to delete this item?')) return;
+    if (!await confirm('Are you sure you want to delete this item?')) return;
     const newItems = handwrittenItems.filter((i: HandwrittenItem) => i.id !== item.id);
     await deleteHandwrittenItem(item.id);
     setHandwrittenItems(newItems);

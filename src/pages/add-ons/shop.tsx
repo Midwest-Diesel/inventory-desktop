@@ -24,20 +24,11 @@ export default function AddOnsShop() {
       event.preventDefault();
       event.returnValue = '';
     }
+
     window.addEventListener('beforeunload', confirmLeave);
-    document.querySelectorAll('a').forEach((link) => {
-      link.addEventListener('click', function handleClick(event) {
-        const shouldNavigate = confirm('Are you sure? Any unsaved data will be lost.');
-        if (!shouldNavigate) {
-          event.preventDefault();
-        } else {
-          window.removeEventListener('beforeunload', confirmLeave);
-          document.querySelectorAll('a').forEach((link) => {
-            link.removeEventListener('click', handleClick);
-          });
-        }
-      });
-    });
+    return () => {
+      window.removeEventListener('beforeunload', confirmLeave);
+    }
   }, []);
 
   const handleNewAddOn = async () => {

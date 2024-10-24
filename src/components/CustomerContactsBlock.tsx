@@ -63,7 +63,7 @@ export default function CustomerContactsBlock({ customer, setCustomer }: Props) 
   };
 
   const handleDeleteContact = async () => {
-    if (!confirm('Are you sure you want to delete this?')) return;
+    if (!await confirm('Are you sure you want to delete this?')) return;
     await deleteContact(contactsData[contactPage].id);
     await editCustomer({ ...customer, contact: null });
     location.reload();

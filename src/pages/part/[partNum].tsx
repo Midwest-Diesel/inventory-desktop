@@ -21,6 +21,7 @@ import PartCostIn from "@/components/PartCostIn";
 import Toast from "@/components/Library/Toast";
 import StockNumPicturesDialog from "@/components/Dialogs/StockNumPicturesDialog";
 import { setTitle } from "@/scripts/tools/utils";
+import { confirm } from '@tauri-apps/api/dialog';
 
 
 export default function PartDetails() {

@@ -14,6 +14,7 @@ import { useAtom } from "jotai";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import { confirm } from '@tauri-apps/api/dialog';
 
 
 export default function PurchaseOrder() {
@@ -43,7 +44,7 @@ export default function PurchaseOrder() {
   };
 
   const handleReceivedItem = async () => {
-    if (!confirm('Are you sure you want to do this?')) return;
+    if (!await confirm('Are you sure you want to do this?')) return;
     await togglePurchaseOrderReceived(poData.id, !poData.isItemReceived);
     const res = await getPurchaseOrderById(Number(params.po));
     setPoData(res);
