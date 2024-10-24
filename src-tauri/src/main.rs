@@ -37,18 +37,25 @@ fn create_directories() {
 
 #[derive(Deserialize, Serialize)]
 struct WindowArgs {
+  title: String,
   url: String
 }
 
 #[tauri::command]
 async fn open_window(app: tauri::AppHandle, window_args: WindowArgs) {
-  println!("{}", window_args.url);
+  let title = window_args.title;
+  let url = if cfg!(debug_assertions) {
+    window_args.url.clone()
+  } else {
+    format!("/index.html#{}", window_args.url)
+  };
+
   tauri::WindowBuilder::new(
     &app,
-    "Handwritten",
-    tauri::WindowUrl::App(window_args.url.into())
+    title.clone(),
+    tauri::WindowUrl::App(url.into())
   )
-    .title("Handwritten")
+    .title(title)
     .inner_size(1500.0, 800.0)
     .build()
     .unwrap();
