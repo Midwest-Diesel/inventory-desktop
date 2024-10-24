@@ -47,7 +47,7 @@ async fn open_window(app: tauri::AppHandle, window_args: WindowArgs) {
   let url = if cfg!(debug_assertions) {
     window_args.url.clone()
   } else {
-    format!("/index.html#{}", window_args.url)
+    format!("index.html#{}", window_args.url)
   };
 
   tauri::WindowBuilder::new(
