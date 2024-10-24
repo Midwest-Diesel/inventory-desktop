@@ -34,11 +34,8 @@ export default function Dialog({ children, className, variant, title, closeOnOut
 
   useEffect(() => {
     if (open) bringToFront();
+    setupOrder();
   }, [open]);
-
-  // useEffect(() => {
-  //   setupOrder();
-  // }, [dialogs]);
 
   const setupOrder = () => {
     const dialogElements = Array.from(document.querySelectorAll('.dialog__container'));
