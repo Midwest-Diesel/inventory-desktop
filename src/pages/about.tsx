@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 
 export default function About() {
   const [version, setVersion] = useState('0.0.0');
-  const [status, setStates] = useState('');
+  const [status, setStatus] = useState('');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -21,9 +21,10 @@ export default function About() {
     const update = await checkUpdate();
     if (update.shouldUpdate) {
       invoke('install_update');
-      setStates('Installed update');
+      setStatus('Installing update...');
     } else {
-      setStates('Most recent version is installed');
+      setStatus('Most recent version is installed');
+      setTimeout(() => setStatus(''), 2000);
     }
   };
 
