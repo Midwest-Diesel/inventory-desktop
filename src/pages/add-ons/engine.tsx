@@ -28,7 +28,7 @@ export default function AddOnsEngine() {
     window.addEventListener('beforeunload', confirmLeave);
     return () => {
       window.removeEventListener('beforeunload', confirmLeave);
-    }
+    };
   }, []);
 
   const handleEditAddOns = async (e: FormEvent) => {

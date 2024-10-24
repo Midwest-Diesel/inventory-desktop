@@ -9,6 +9,7 @@ interface Props {
   title?: string
   closeOnOutsideClick?: boolean
   exitWithEsc?: boolean
+  showCloseBtn?: boolean
   width?: number
   height?: number
   maxHeight?: string
@@ -18,7 +19,7 @@ interface Props {
 }
 
 
-export default function Modal({ children, className, variant, title, closeOnOutsideClick, exitWithEsc = true, width, height, maxHeight, open, setOpen, onClose, ...props }: Props) {
+export default function Modal({ children, className, variant, title, closeOnOutsideClick, exitWithEsc = true, showCloseBtn = true, width, height, maxHeight, open, setOpen, onClose, ...props }: Props) {
   const ref = useRef<HTMLDivElement>(null);
   const classes = generateClasses(className, variant, 'modal');
 
@@ -61,7 +62,7 @@ export default function Modal({ children, className, variant, title, closeOnOuts
         {...props}
       >
         <h3 className="modal__title">{ title }</h3>
-        <Button variant={["X"]} onClick={closeModal}>X</Button>
+        { showCloseBtn && <Button variant={["X"]} onClick={closeModal}>X</Button> }
         <div className="modal__content" style={{ maxHeight: maxHeight }}>
           { children }
         </div>

@@ -28,7 +28,7 @@ export default function AddOnsShop() {
     window.addEventListener('beforeunload', confirmLeave);
     return () => {
       window.removeEventListener('beforeunload', confirmLeave);
-    }
+    };
   }, []);
 
   const handleNewAddOn = async () => {

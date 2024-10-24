@@ -29,7 +29,7 @@ export default function AddOnsOffice() {
     window.addEventListener('beforeunload', confirmLeave);
     return () => {
       window.removeEventListener('beforeunload', confirmLeave);
-    }
+    };
   }, []);
 
   const handleEditAddOns = async (e: FormEvent) => {
