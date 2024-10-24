@@ -28,6 +28,26 @@ fn install_update() {
   tokio::spawn(async move {
     if let Err(e) = download_update().await {
       println!("Error downloading the update: {}", e);
+    } else {
+      println!("Update successful, restarting app...");
+      let batch_script = r#"
+      @echo off
+      "%SystemRoot%\\System32\\timeout.exe" /T 5 /NOBREAK > NUL
+      taskkill /F /IM Inventory.exe > NUL 2>&1
+      start "" "C:\\MWD\\Inventory.exe"
+      del "%~f0" & exit
+      "#;
+
+      let script_path = "C:\\MWD\\updates\\restart_app.bat";
+      std::fs::write(script_path, batch_script).expect("Failed to create batch script");
+
+      Command::new("C:\\Windows\\System32\\cmd.exe")
+        .arg("/C")
+        .arg(script_path)
+        .spawn()
+        .expect("Failed to run restart script");
+
+      std::process::exit(0);
     }
   });
 }
