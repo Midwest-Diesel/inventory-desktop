@@ -13,6 +13,22 @@ struct LatestVersionInfo {
   version: String
 }
 
+#[derive(Deserialize, Serialize)]
+struct WindowArgs {
+  title: String,
+  url: String
+}
+
+#[derive(Deserialize, Serialize)]
+struct EmailArgs {
+  subject: String,
+  body: String,
+  recipients: Vec<String>,
+  cc_recipients: Option<Vec<String>>,
+  bcc_recipients: Option<Vec<String>>,
+  attachments: Option<Vec<String>>
+}
+
 
 #[tokio::main]
 async fn main() {
@@ -35,20 +51,10 @@ fn create_directories() {
   }
 }
 
-#[derive(Deserialize, Serialize)]
-struct WindowArgs {
-  title: String,
-  url: String
-}
-
 #[tauri::command]
 async fn open_window(app: tauri::AppHandle, window_args: WindowArgs) {
   let title = window_args.title;
-  let url = if cfg!(debug_assertions) {
-    window_args.url.clone()
-  } else {
-    format!("index.html#{}", window_args.url)
-  };
+  let url = window_args.url.clone();
 
   tauri::WindowBuilder::new(
     &app,
@@ -136,17 +142,6 @@ async fn download_update() -> Result<(), Box<dyn std::error::Error>> {
     .spawn()?;
   println!("Installer executed.");
   Ok(())
-}
-
-
-#[derive(Deserialize, Serialize)]
-struct EmailArgs {
-  subject: String,
-  body: String,
-  recipients: Vec<String>,
-  cc_recipients: Option<Vec<String>>,
-  bcc_recipients: Option<Vec<String>>,
-  attachments: Option<Vec<String>>
 }
 
 #[tauri::command]
