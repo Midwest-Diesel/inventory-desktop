@@ -4,6 +4,7 @@
   height: 3.5rem;
   display: flex;
   box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  position: relative;
 
   &__title {
     font-size: var(--font-xl);
@@ -52,6 +53,18 @@
       text-align: center;
       padding-top: 0.5rem;
       align-content: end;
+    }
+  }
+
+  .nav-buttons {
+    display: flex;
+    position: absolute;
+    bottom: -1.5rem;
+    left: 0;
+
+    button {
+      padding: 0.2rem 0.4rem;
+      border-radius: 0;
     }
   }
 }

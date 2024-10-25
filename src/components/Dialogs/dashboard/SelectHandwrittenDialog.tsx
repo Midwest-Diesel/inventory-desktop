@@ -36,7 +36,6 @@ export default function SelectHandwrittenDialog({ open, setOpen, handleAddToHand
   const [search, setSearch] = useState('');
   
   useEffect(() => {
-    if (typeof window === 'undefined') return;
     const fetchData = async () => {
       resetHandwrittensList();
     };
