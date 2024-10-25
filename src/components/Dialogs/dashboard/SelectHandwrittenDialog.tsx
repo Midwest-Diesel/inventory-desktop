@@ -63,7 +63,7 @@ export default function SelectHandwrittenDialog({ open, setOpen, handleAddToHand
 
   const handleSelectRow = (id: number) => {
     setSelectedHandwrittenId(id);
-    invoke('open_window', { windowArgs: { title: 'Handwritten', url: `/handwrittens/${id}` }});
+    invoke('open_window', { windowArgs: { title: 'Handwritten', url: `/handwrittens` }});
   };
 
   const handleSubmitNewHandwritten = async (e: FormEvent) => {
