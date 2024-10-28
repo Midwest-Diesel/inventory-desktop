@@ -41,10 +41,12 @@ export default function QuoteList({ selectHandwrittenOpen, setSelectHandwrittenO
   const [piggybackQuoteOpen, setPiggybackQuoteOpen] = useState(false);
   const [piggybackQuote, setPiggybackQuote] = useState<Quote>(null);
   const [page, setPage] = useState(1);
+  const search = localStorage.getItem('altPartSearches') || localStorage.getItem('partSearches') || '';
 
   useEffect(() => {
     const fetchData = async () => {
-      const pageCount = await getQuotesCount(lastSearch, selectedCustomer.id, quoteListType === 'engine');
+      console.log(JSON.parse(search).partNum.replace('*', ''));
+      const pageCount = await getQuotesCount(JSON.parse(search).partNum.replace('*', ''), selectedCustomer.id, quoteListType === 'engine');
       setCount(pageCount);
       await handleChangePage(null, 1);
     };
@@ -186,7 +188,7 @@ export default function QuoteList({ selectHandwrittenOpen, setSelectHandwrittenO
 
   const handleChangePage = async (data: any, page: number) => {
     if (!selectedCustomer.id && localStorage.getItem('customerId')) return;
-    const res = await getSomeQuotes(page, 26, lastSearch, filterByCustomer ? selectedCustomer.id : null, quoteListType === 'engine');
+    const res = await getSomeQuotes(page, 26, JSON.parse(search).partNum.replace('*', ''), filterByCustomer ? selectedCustomer.id : null, quoteListType === 'engine');
     setPaginatedQuotes(res);
     setPage(page);
   };
