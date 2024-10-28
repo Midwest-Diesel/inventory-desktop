@@ -22,6 +22,7 @@ export default function About() {
     if (update.shouldUpdate) {
       invoke('install_update');
       setStatus('Installing update...');
+      localStorage.removeItem('showUpdate');
     } else {
       setStatus('Most recent version is installed');
       setTimeout(() => setStatus(''), 2000);

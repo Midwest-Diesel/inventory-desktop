@@ -13,17 +13,21 @@ export default function UpdateModal({ open, setOpen }: Props) {
     invoke('install_update');
   };
 
+  const handleClose = () => {
+    setOpen(false);
+    localStorage.setItem('showUpdate', 'false');
+  };
+
 
   return (
     <>
-      {open &&
+      {open && localStorage.getItem('showUpdate') !== 'false' &&
         <Modal
           open
-          setOpen={setOpen}
           title="Update Available"
-          closeOnOutsideClick={false}
-          exitWithEsc={false}
-          showCloseBtn={false}
+          closeOnOutsideClick={true}
+          exitWithEsc={true}
+          onClose={handleClose}
         >
           <div className="form__footer">
             <Button onClick={handleUpdate}>Install and restart</Button>
