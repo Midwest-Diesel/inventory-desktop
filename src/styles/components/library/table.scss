@@ -94,6 +94,10 @@ tr:nth-child(odd) {
       }
     }
   }
+
+  &--fit {
+    width: fit-content;
+  }
 }
 
 .table-buttons {

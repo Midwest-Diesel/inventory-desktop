@@ -10,6 +10,7 @@ type User = {
   password: string
   initials: string
   accessLevel: number
+  type: 'office' | 'shop'
 };
 
 type Picture = {
@@ -719,6 +720,10 @@ type Country = {
   name: string
   continent: string
 };
+
+interface Performance {
+  sales: { initials: string, amount: number }[]
+}
 
 interface Email {
   subject: string

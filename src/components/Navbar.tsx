@@ -28,10 +28,10 @@ export default function Navbar() {
         <Link href="/add-ons/office">Office</Link>
         <Link href="/add-ons/engine">Engine</Link>
       </NavDropdown>
+      <Link href="/email-stuff" className="navbar__link">Email Stuff</Link>
       <Link href="/performance" className="navbar__link">Performance</Link>
       <Link href="/karmak" className="navbar__link">Karmak</Link>
       <Link href="/reports" className="navbar__link">Reports</Link>
-      <Link href="/email-stuff" className="navbar__link">Email Stuff</Link>
       <Link href="/alerts" className="navbar__link">Alerts</Link>
       <Link href="/image-upload" className="navbar__link">Image Upload</Link>
       <Link href="/about" className="navbar__link">About</Link>

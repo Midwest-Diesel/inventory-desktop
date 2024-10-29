@@ -2,7 +2,7 @@ import { generateClasses, parseClasses } from "@/scripts/tools/utils";
 
 interface Props extends TableHTML {
   children: any
-  variant?: ('plain' | 'row-details' | 'edit-row-details')[]
+  variant?: ('plain' | 'row-details' | 'edit-row-details' | 'fit')[]
 }
 
 
