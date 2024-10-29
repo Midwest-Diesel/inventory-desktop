@@ -4,6 +4,7 @@ import { invoke } from "@tauri-apps/api/tauri";
 import { getVersion } from "@tauri-apps/api/app";
 import { checkUpdate } from "@tauri-apps/api/updater";
 import { useEffect, useState } from "react";
+import { logout } from "@/scripts/controllers/userController";
 
 
 export default function About() {
@@ -36,6 +37,8 @@ export default function About() {
         <h3>v{ version }</h3>
         <Button onClick={checkForUpdates}>Check For Updates</Button>
         <p className="about-page__status-text">{ status }</p>
+
+        <Button onClick={logout}>Logout</Button>
       </div>
     </Layout>
   );

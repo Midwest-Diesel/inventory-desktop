@@ -46,3 +46,13 @@ export const loginUser = async (user: UserLogin) => {
     return err.response.data.message;
   }
 };
+
+export const logout = async () => {
+  try {
+    const auth = { withCredentials: true };
+    await api.delete('/api/account/logout', auth);
+    location.reload();
+  } catch (err) {
+    console.error(err);
+  }
+};
