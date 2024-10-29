@@ -28,9 +28,9 @@ export default function Performance() {
             </tr>
           </thead>
           <tbody>
-            {performance && performance.sales.map((sale) => {
+            {performance && performance.sales.map((sale, i) => {
               return (
-                <tr>
+                <tr key={i}>
                   <td>{ sale.initials }</td>
                   <td>{ sale.amount }</td>
                 </tr>
