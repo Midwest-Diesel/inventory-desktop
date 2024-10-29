@@ -86,10 +86,10 @@ export default function Warranty() {
                   Edit
                 </Button>
                 <Button
-                  variant={['link']}
                   className="warranty-details__close-btn"
+                  onClick={() => window.history.back()}
                 >
-                  <Link href="/warranties">Close</Link>
+                  Close
                 </Button>
                 <Button
                   variant={['danger']}

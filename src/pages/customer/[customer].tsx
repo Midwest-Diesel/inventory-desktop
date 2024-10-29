@@ -63,10 +63,10 @@ export default function Customer() {
                   Edit
                 </Button>
                 <Button
-                  variant={['link']}
                   className="customer-details__close-btn"
+                  onClick={() => window.history.back()}
                 >
-                  <Link href="/">Close</Link>
+                  Close
                 </Button>
                 {user.accessLevel > 1 &&
                   <Button

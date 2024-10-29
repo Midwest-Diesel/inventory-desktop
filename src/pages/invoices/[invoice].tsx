@@ -36,10 +36,10 @@ export default function Invoice() {
             <div className="invoice-details__header">
               <h2>{ invoice.id }</h2>
               <Button
-                variant={['X', 'link']}
                 className="invoice-details__close-btn"
+                onClick={() => window.history.back()}
               >
-                <Link href="/invoices">Close</Link>
+                Close
               </Button>
               <Button
                 variant={['X', 'blue']}

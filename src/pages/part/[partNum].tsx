@@ -107,10 +107,10 @@ export default function PartDetails() {
                 Edit
               </Button>
               <Button
-                variant={['link']}
                 className="part-details__close-btn"
+                onClick={() => window.history.back()}
               >
-                <Link href="/">Close</Link>
+                Close
               </Button>
               {user.accessLevel > 1 &&
                 <Button

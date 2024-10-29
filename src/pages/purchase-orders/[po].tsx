@@ -76,10 +76,10 @@ export default function PurchaseOrder() {
                   Edit
                 </Button>
                 <Button
-                  variant={['link']}
                   className="purchase-order-details__close-btn"
+                  onClick={() => window.history.back()}
                 >
-                  <Link href="/purchase-orders">Close</Link>
+                  Close
                 </Button>
                 <Button
                   variant={['danger']}

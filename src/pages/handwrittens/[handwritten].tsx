@@ -108,10 +108,10 @@ export default function Handwritten() {
                   Edit
                 </Button>
                 <Button
-                  variant={['link']}
                   className="handwritten-details__close-btn"
+                  onClick={() => window.history.back()}
                 >
-                  <Link href="/handwrittens">Close</Link>
+                  Close
                 </Button>
                 {user.accessLevel > 1 &&
                   <Button

@@ -5,7 +5,8 @@ export const userAtom = atom<User>({
   username: null,
   password: null,
   initials: null,
-  accessLevel: null
+  accessLevel: null,
+  type: null
 });
 
 export const picturesAtom = atom<any[]>([]);

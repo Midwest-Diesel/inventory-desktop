@@ -53,10 +53,10 @@ export default function Return() {
                   Edit
                 </Button>
                 <Button
-                  variant={['link']}
                   className="return-details__close-btn"
+                  onClick={() => window.history.back()}
                 >
-                  <Link href="/returns">Close</Link>
+                  Close
                 </Button>
                 <Button
                   variant={['danger']}

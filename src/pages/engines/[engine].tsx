@@ -90,10 +90,10 @@ export default function EngineDetailsPage() {
                   Edit
                 </Button>
                 <Button
-                  variant={['link']}
                   className="engine-details__close-btn"
+                  onClick={() => window.history.back()}
                 >
-                  <Link href="/">Close</Link>
+                  Close
                 </Button>
               </div>
             </div>
