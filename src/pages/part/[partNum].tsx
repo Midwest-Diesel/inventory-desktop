@@ -21,7 +21,6 @@ import PartCostIn from "@/components/PartCostIn";
 import Toast from "@/components/Library/Toast";
 import StockNumPicturesDialog from "@/components/Dialogs/StockNumPicturesDialog";
 import { setTitle } from "@/scripts/tools/utils";
-import { confirm } from '@tauri-apps/api/dialog';
 
 
 export default function PartDetails() {
@@ -126,7 +125,7 @@ export default function PartDetails() {
 
             <h2>{ part.partNum }</h2>
             <h2>{ part.desc }</h2>
-            {checkImageExists(picturesData, part.partNum) &&
+            {part.imageExists &&
               <Button
                 variant={['plain','hover-move']}
                 onClick={() => setPicturesOpen(true)}
@@ -153,8 +152,8 @@ export default function PartDetails() {
           </div>
 
 
-          <PartPicturesDialog open={picturesOpen} setOpen={setPicturesOpen} pictures={pictures} />         
-          <StockNumPicturesDialog open={snPicturesOpen} setOpen={setSnPicturesOpen} pictures={snPictures} />
+          { part.imageExists && <PartPicturesDialog open={picturesOpen} setOpen={setPicturesOpen} pictures={pictures} /> }        
+          { part.snImageExists && <StockNumPicturesDialog open={snPicturesOpen} setOpen={setSnPicturesOpen} pictures={snPictures} /> }
 
           <Grid rows={1} cols={12} gap={1}>
             <GridItem colStart={1} colEnd={5} rowStart={1} variant={['low-opacity-bg']}>
@@ -169,7 +168,7 @@ export default function PartDetails() {
                     <td>
                       <div className="part-details__stock-pics">
                         { part.stockNum }
-                        {checkImageExists(snPicturesData, part.stockNum) &&
+                        {part.snImageExists &&
                           <Button
                             variant={['plain','hover-move']}
                             onClick={() => setSnPicturesOpen(true)}

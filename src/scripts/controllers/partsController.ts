@@ -28,7 +28,7 @@ const parsePartsData = async (parts: any) => {
       partsCostIn: part.partsCostIn ? part.partsCostIn.filter((part: any) => !isObjectNull(part)) : [],
       engineCostOut: part.engineCostOut ? part.engineCostOut.filter((part: any) => !isObjectNull(part)) : [],
       imageExists: await checkImageExists(part.partNum, 'part'),
-      snImageExists: await checkImageExists(part.partNum, 'stock'),
+      snImageExists: await checkImageExists(part.stockNum, 'stock'),
     };
   }));
   return partsWithImages;

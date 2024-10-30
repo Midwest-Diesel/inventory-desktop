@@ -13,8 +13,6 @@ interface Props {
 
 
 export default function GlobalData({ children }: Props) {
-  const [pictures, setPictures] = useAtom(picturesAtom);
-  const [snPictures, setSnPictures] = useAtom(snPicturesAtom);
   const [userData, setUserData] = useAtom<User>(userAtom);
   const [user, setUser] = useState<User>();
   const [loaded, setLoaded] = useState(false);

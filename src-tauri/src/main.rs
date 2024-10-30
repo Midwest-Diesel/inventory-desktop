@@ -202,7 +202,7 @@ async fn get_part_num_images(picture_args: PictureArgs) -> Result<Vec<Picture>, 
 #[tauri::command]
 async fn get_stock_num_images(picture_args: PictureArgs) -> Result<Vec<Picture>, String> {
   let path = "\\\\MWD1-SERVER/Server/Pictures/sn_specific";
-  let target_dir = format!("{}/{:?}", path, picture_args.stock_num.as_deref().unwrap_or(""));
+  let target_dir = format!("{}/{}", path, picture_args.stock_num.as_deref().unwrap_or(""));
   let mut pictures = Vec::new();
 
   match std::fs::read_dir(&target_dir) {

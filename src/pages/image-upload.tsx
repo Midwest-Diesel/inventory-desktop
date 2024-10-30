@@ -2,7 +2,6 @@ import { Layout } from "@/components/Layout";
 import Button from "@/components/Library/Button";
 import Input from "@/components/Library/Input";
 import Loading from "@/components/Library/Loading";
-import { addImageToSupabase, uploadFiles } from "@/scripts/controllers/imagesController";
 import { FormEvent, useState } from "react";
 
 export default function ImageUpload() {
@@ -17,7 +16,7 @@ export default function ImageUpload() {
     e.preventDefault();
     setIsUploadingParts(true);
     for (const image of partImages) {
-      await addImageToSupabase('parts', `${partImagesNames}/${image.name}`, image);
+      // await addImageToSupabase('parts', `${partImagesNames}/${image.name}`, image);
     }
     setPartImages(null);
     setPartImagesNames('');
@@ -28,7 +27,7 @@ export default function ImageUpload() {
     e.preventDefault();
     setIsUploadingStockNums(true);
     for (const image of stockNumImages) {
-      await addImageToSupabase('stockNum', `${stockNumImagesNames}/${image.name}`, image);
+      // await addImageToSupabase('stockNum', `${stockNumImagesNames}/${image.name}`, image);
     }
     setStockNumImages(null);
     setStockNumImagesNames('');
