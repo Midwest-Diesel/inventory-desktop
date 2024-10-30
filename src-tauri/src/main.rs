@@ -7,6 +7,7 @@ use std::{fs::File, io::copy};
 use reqwest::Client;
 use std::path::Path;
 use zip::read::ZipArchive;
+use base64::{engine::general_purpose::STANDARD as BASE64_STANDARD, Engine};
 
 #[derive(Deserialize, Debug)]
 struct LatestVersionInfo {
@@ -17,6 +18,20 @@ struct LatestVersionInfo {
 struct WindowArgs {
   title: String,
   url: String
+}
+
+#[derive(Deserialize, Serialize)]
+struct PictureArgs {
+  part_num: Option<String>,
+  stock_num: Option<String>,
+  name: Option<String>,
+  pic_type: Option<String>
+}
+
+#[derive(Deserialize, Serialize)]
+struct Picture {
+  url: String,
+  name: String
 }
 
 #[derive(Deserialize, Serialize)]
@@ -37,7 +52,14 @@ async fn main() {
       create_directories();
       Ok(())
     })
-    .invoke_handler(tauri::generate_handler![new_email_draft, install_update, open_window])
+    .invoke_handler(tauri::generate_handler![
+      new_email_draft,
+      install_update,
+      open_window,
+      get_part_num_images,
+      get_stock_num_images,
+      get_all_pictures
+    ])
     .run(tauri::generate_context!())
     .expect("error while running tauri application");
 }
@@ -142,6 +164,91 @@ async fn download_update() -> Result<(), Box<dyn std::error::Error>> {
     .spawn()?;
   println!("Installer executed.");
   Ok(())
+}
+
+#[tauri::command]
+async fn get_part_num_images(picture_args: PictureArgs) -> Result<Vec<Picture>, String> {
+  let path = "\\\\MWD1-SERVER/Server/Pictures/parts_dir";
+  let target_dir = format!("{}/{}", path, picture_args.part_num.as_deref().unwrap_or(""));
+  let mut pictures = Vec::new();
+
+  match std::fs::read_dir(&target_dir) {
+    Ok(entries) => {
+      for entry in entries {
+        let pic_entry = match entry {
+          Ok(entry) => entry,
+          Err(e) => return Err(format!("Error reading entry: {}", e)),
+        };
+        let pic_name = pic_entry.file_name().into_string().map_err(|_| "Invalid file name")?;
+        let pic_path = pic_entry.path();
+
+        let data = match std::fs::read(&pic_path) {
+          Ok(data) => data,
+          Err(e) => return Err(format!("Error reading image data: {}", e)),
+        };
+
+        let base64_data = BASE64_STANDARD.encode(&data);
+        pictures.push(Picture {
+          url: base64_data,
+          name: pic_name,
+        });
+      }
+      Ok(pictures)
+    }
+    Err(e) => Err(format!("Error accessing directory {}: {}", target_dir, e)),
+  }
+}
+
+#[tauri::command]
+async fn get_stock_num_images(picture_args: PictureArgs) -> Result<Vec<Picture>, String> {
+  let path = "\\\\MWD1-SERVER/Server/Pictures/sn_specific";
+  let target_dir = format!("{}/{:?}", path, picture_args.stock_num.as_deref().unwrap_or(""));
+  let mut pictures = Vec::new();
+
+  match std::fs::read_dir(&target_dir) {
+    Ok(entries) => {
+      for entry in entries {
+        let pic_entry = match entry {
+          Ok(entry) => entry,
+          Err(e) => return Err(format!("Error reading entry: {}", e)),
+        };
+        let pic_name = pic_entry.file_name().into_string().map_err(|_| "Invalid file name")?;
+        let pic_path = pic_entry.path();
+
+        let data = match std::fs::read(&pic_path) {
+          Ok(data) => data,
+          Err(e) => return Err(format!("Error reading image data: {}", e)),
+        };
+
+        let base64_data = BASE64_STANDARD.encode(&data);
+        pictures.push(Picture {
+          url: base64_data,
+          name: pic_name,
+        });
+      }
+      Ok(pictures)
+    }
+    Err(e) => Err(format!("Error accessing directory {}: {}", target_dir, e)),
+  }
+}
+
+#[tauri::command]
+async fn get_all_pictures(picture_args: PictureArgs) -> Result<bool, String> {
+  let path = format!(
+    "\\\\MWD1-SERVER/Server/Pictures/{}/{}",
+    match picture_args.pic_type.as_deref() {
+      Some("part") => "parts_dir",
+      Some(_) => "sn_specific",
+      None => "",
+    },
+    picture_args.part_num.as_deref().unwrap_or("")
+  );
+
+  if std::path::Path::new(&path).exists() {
+    Ok(true)
+  } else {
+    Ok(false)
+  }
 }
 
 #[tauri::command]

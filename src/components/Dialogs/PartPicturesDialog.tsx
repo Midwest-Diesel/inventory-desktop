@@ -4,7 +4,6 @@ import Dialog from "../Library/Dialog";
 import Loading from "../Library/Loading";
 
 interface Picture {
-  id: string;
   url: string;
   name: string;
 }
@@ -19,7 +18,6 @@ interface Props {
 export default function PartPicturesDialog({ open, setOpen, pictures }: Props) {
   const [loading, setLoading] = useState(true);
   const [loadedCount, setLoadedCount] = useState(0);
-  const filteredPictures = pictures.filter((pic) => pic.name !== 'Thumbs.db');
 
   useEffect(() => {
     if (pictures.length === 0) {
@@ -31,7 +29,7 @@ export default function PartPicturesDialog({ open, setOpen, pictures }: Props) {
   }, [pictures]);
 
   useEffect(() => {
-    if (loadedCount === filteredPictures.length) {
+    if (loadedCount === pictures.length) {
       setLoading(false);
     }
   }, [loadedCount, pictures]);
@@ -39,7 +37,7 @@ export default function PartPicturesDialog({ open, setOpen, pictures }: Props) {
   const handleImageLoad = () => {
     setLoadedCount((count) => count + 1);
   };
-
+  
 
   return (
     <Dialog
@@ -50,11 +48,11 @@ export default function PartPicturesDialog({ open, setOpen, pictures }: Props) {
       height={520}
       className="part-pictures-dialog"
     >
-      {filteredPictures.map((pic: Picture) => {
+      {pictures.map((pic: Picture, i) => {
         return (
           <Image
-            key={pic.id}
-            src={pic.url}
+            key={i}
+            src={`data:image/png;base64,${pic.url}`}
             alt={pic.name}
             width={160}
             height={160}

@@ -19,7 +19,6 @@ import { getPartsOnEngines } from "@/scripts/controllers/compareConsistControlle
 import PartsOnEnginesDialog from "../Dialogs/dashboard/PartsOnEnginesDialog";
 import { getSearchedPartNum } from "@/scripts/tools/search";
 import StockNumPicturesDialog from "../Dialogs/StockNumPicturesDialog";
-import PiggybackQuoteDialog from "../Dialogs/dashboard/PiggybackQuoteDialog";
 import { addQuote } from "@/scripts/controllers/quotesController";
 
 interface Props {
@@ -238,9 +237,6 @@ export default function PartSearch({ selectHandwrittenOpen, setSelectHandwritten
               <tbody className="parts-list">
                 {parts && parts.map((part: Part, i) => {
                   const status = extractStatusColors(part.remarks);
-                  const imageExists = checkImageExists(pictures, part.partNum);
-                  const snImageExists = checkImageExists(snPictures, part.stockNum);
-                  
                   return (
                     <tr key={i}>
                       <td className="parts-list__left-col table-buttons">
@@ -249,7 +245,7 @@ export default function PartSearch({ selectHandwrittenOpen, setSelectHandwritten
                       </td>
                       <td>
                         <div className="parts-list__left-content">
-                          {imageExists &&
+                          {part.imageExists &&
                             <Button
                               variant={['plain','hover-move']}
                               style={{ padding: '0.1rem' }}
@@ -266,7 +262,7 @@ export default function PartSearch({ selectHandwrittenOpen, setSelectHandwritten
                       <td style={{ width:'16rem' }}>{ part.desc }</td>
                       <td>
                         <div className="parts-list__left-content">
-                          {snImageExists &&
+                          {part.snImageExists &&
                             <Button
                               variant={['plain','hover-move']}
                               style={{ padding: '0.1rem' }}

@@ -1,5 +1,4 @@
 import { picturesAtom, userAtom, alertsAtom, snPicturesAtom } from "@/scripts/atoms/state";
-import { getBucket } from "@/scripts/controllers/imagesController";
 import { useAtom } from "jotai";
 import { useEffect, useState } from "react";
 import Login from "./Login";
@@ -28,8 +27,6 @@ export default function GlobalData({ children }: Props) {
       await handleGetUser();
       setLoaded(true);
       setAlertsData(await getAlerts());
-      setPictures(await getBucket('parts'));
-      setSnPictures(await getBucket('stockNum'));
     };
     fetchData();
   }, []);

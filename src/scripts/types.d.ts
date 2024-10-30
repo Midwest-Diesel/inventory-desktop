@@ -325,6 +325,8 @@ type Part = {
   partsCostIn: PartsCostIn[]
   engineCostOut: EngineCostOut[]
   pictures?: Picture[]
+  imageExists: boolean
+  snImageExists: boolean
 };
 
 type RecentPartSearch = {

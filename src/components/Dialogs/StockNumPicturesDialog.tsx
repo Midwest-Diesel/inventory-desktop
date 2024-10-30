@@ -18,10 +18,15 @@ export default function StockNumPicturesDialog({ open, setOpen, pictures = [] }:
       height={520}
       className="part-pictures-dialog"
     >
-      {pictures.map((pic: Picture) => {
-        if (pic.name === 'Thumbs.db') return;
+      {pictures.map((pic: Picture, i) => {
         return (
-          <Image key={pic.id} src={pic.url} alt={pic.name} width={160} height={160} />
+          <Image
+            key={i}
+            src={`data:image/png;base64,${pic.url}`}
+            alt={pic.name}
+            width={160}
+            height={160}
+          />
         );
       })}
     </Dialog>

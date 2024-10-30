@@ -2,6 +2,7 @@ import api from "../config/axios";
 
 import { parseResDate } from "../tools/stringUtils";
 import { isObjectNull } from "../tools/utils";
+import { checkImageExists } from "./imagesController";
 
 interface PartSearchData {
   partNum?: string
@@ -18,7 +19,7 @@ interface PartSearchData {
 
 
 const parsePartsData = async (parts: any) => {
-  const partsWithImages = parts.map((part: any) => {
+  const partsWithImages = await Promise.all(parts.map(async (part: any) => {
     return {
       ...part,
       entryDate: new Date(part.entryDate),
@@ -26,8 +27,10 @@ const parsePartsData = async (parts: any) => {
       altParts: part.altParts ? part.altParts.split(',').map((p: any) => p.trim()) : [],
       partsCostIn: part.partsCostIn ? part.partsCostIn.filter((part: any) => !isObjectNull(part)) : [],
       engineCostOut: part.engineCostOut ? part.engineCostOut.filter((part: any) => !isObjectNull(part)) : [],
+      imageExists: await checkImageExists(part.partNum, 'part'),
+      snImageExists: await checkImageExists(part.partNum, 'stock'),
     };
-  });
+  }));
   return partsWithImages;
 };
 
