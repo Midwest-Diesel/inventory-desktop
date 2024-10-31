@@ -687,6 +687,12 @@ type POItem = {
   isReceived: boolean
 };
 
+type EmailStuff = {
+  id: number
+  name: string
+  img: string
+};
+
 type Vendor = {
   id: number
   name: string
