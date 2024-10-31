@@ -1,6 +1,7 @@
 import { Layout } from "@/components/Layout";
 import Table from "@/components/Library/Table";
 import { getPerformance } from "@/scripts/controllers/reportsController";
+import { formatCurrency } from "@/scripts/tools/stringUtils";
 import { useEffect, useState } from "react";
 
 
@@ -32,7 +33,7 @@ export default function Performance() {
               return (
                 <tr key={i}>
                   <td>{ sale.initials }</td>
-                  <td>{ sale.amount }</td>
+                  <td>{ formatCurrency(sale.amount) }</td>
                 </tr>
               );
             })}

@@ -1,5 +1,29 @@
 .email-stuff-page {
+  &__list {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 0.5rem;
+  }
+
   &__item {
-    
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    img {
+      width: fit-content;
+      height: fit-content;
+      max-width: 15rem;
+      margin: 0.5rem 0;
+    }
+
+    &-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+    }
   }
 }

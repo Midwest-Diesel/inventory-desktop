@@ -1,5 +1,12 @@
+import { invoke } from "@tauri-apps/api/tauri";
 import api from "../config/axios";
 
+
+const parseEmailStuffRes = async (res) => {
+  return await Promise.all(res.map(async (item) => {
+    return { ...item, images: await invoke('convert_img_to_base64', { pictures: item.images.split(', ') }) };
+  }));
+};
 
 // === GET routes === //
 
@@ -7,7 +14,7 @@ export const getAllEmailStuff = async () => {
   try {
     const auth = { withCredentials: true };
     const res = await api.get('/api/email-stuff', auth);
-    return res.data;
+    return await parseEmailStuffRes(res.data);
   } catch (err) {
     console.error(err);
   }

@@ -176,11 +176,7 @@ export default function QuoteList({ selectHandwrittenOpen, setSelectHandwrittenO
         </table>
       `,
       recipients: recipients.split(', ').map((r) => r.trim()),
-      attachments: [
-        'C:/Users/BennettSmrdel/Documents/krita/showcase/showcase.png',
-        'C:/Users/BennettSmrdel/Documents/krita/DEF Tank & Parts/DEF Tank & Parts Montage.png',
-        '\\\\MWD1-SERVER\\Server\\Pictures\\parts_dir\\3834271\\IMG_20241009_094309952_HDR.jpg'
-      ]
+      attachments: []
     };
     invoke('new_email_draft', { emailArgs });
   };

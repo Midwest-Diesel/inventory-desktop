@@ -44,6 +44,11 @@ struct EmailArgs {
   attachments: Option<Vec<String>>
 }
 
+#[derive(Deserialize, Serialize)]
+struct Attachments {
+  attachments: Vec<String>
+}
+
 
 #[tokio::main]
 async fn main() {
@@ -58,7 +63,9 @@ async fn main() {
       open_window,
       get_part_num_images,
       get_stock_num_images,
-      get_all_pictures
+      get_all_pictures,
+      attach_to_existing_email,
+      convert_img_to_base64
     ])
     .run(tauri::generate_context!())
     .expect("error while running tauri application");
@@ -315,4 +322,56 @@ fn new_email_draft(email_args: EmailArgs) {
   cmd.arg(temp_vbs_path);
   cmd.output().expect("Failed to create new draft");
   let _ = std::fs::remove_file(temp_vbs_path);
+}
+
+#[tauri::command]
+fn attach_to_existing_email(payload: Attachments) {
+  let attachments_joined = payload.attachments.join(";");
+  let vbs_script = format!(
+    r#"
+    Dim OutlookApp
+    Set OutlookApp = CreateObject("Outlook.Application")
+    Dim MailItem
+    Set MailItem = OutlookApp.ActiveInspector.CurrentItem
+    
+    If Not MailItem Is Nothing Then
+      If Len("{attachments_joined}") > 0 Then
+        Dim attachmentArray: attachmentArray = Split("{attachments_joined}", ";")
+        Dim i
+        For i = LBound(attachmentArray) To UBound(attachmentArray)
+          Dim attachmentPath
+          attachmentPath = Trim(attachmentArray(i))
+          If attachmentPath <> "" Then
+            MailItem.Attachments.Add attachmentPath
+          End If
+        Next
+      End If
+      
+      MailItem.Display
+    Else
+      MsgBox "No active email draft found."
+    End If
+    "#
+  );
+
+  let temp_vbs_path = "C:/mwd/scripts/AttachToExistingEmail.vbs";
+  write(&temp_vbs_path, vbs_script).expect("Failed to create VBS script");
+
+  let mut cmd = Command::new("wscript.exe");
+  cmd.arg(temp_vbs_path);
+  cmd.output().expect("Failed to attach files to the existing draft");
+  let _ = std::fs::remove_file(temp_vbs_path);
+}
+
+#[tauri::command]
+fn convert_img_to_base64(pictures: Vec<String>) -> Result<Vec<String>, String> {
+  let mut base64_pictures = vec![];
+  for pic in pictures {
+    let data = match std::fs::read(&pic) {
+      Ok(data) => data,
+      Err(e) => return Err(format!("Error reading image data: {}", e)),
+    };
+    base64_pictures.push(BASE64_STANDARD.encode(&data));
+  }
+  Ok(base64_pictures)
 }
