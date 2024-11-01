@@ -55,6 +55,19 @@ struct Base64Picture {
   path: String
 }
 
+#[derive(Deserialize, Serialize)]
+struct FileUpload {
+  name: String,
+  data: String
+}
+
+#[derive(Deserialize, Serialize)]
+struct FilesArgs {
+  name: String,
+  files: Vec<FileUpload>,
+  is_multifile: bool
+}
+
 
 #[tokio::main]
 async fn main() {
@@ -71,7 +84,8 @@ async fn main() {
       get_stock_num_images,
       get_all_pictures,
       attach_to_existing_email,
-      convert_img_to_base64
+      convert_img_to_base64,
+      upload_email_stuff_files
     ])
     .run(tauri::generate_context!())
     .expect("error while running tauri application");
@@ -381,4 +395,22 @@ fn convert_img_to_base64(pictures: Vec<String>) -> Result<Vec<Base64Picture>, St
     base64_pictures.push(Base64Picture { data: BASE64_STANDARD.encode(&data), path: pic });
   }
   Ok(base64_pictures)
+}
+
+#[tauri::command]
+async fn upload_email_stuff_files(file_upload: FilesArgs) -> Result<(), String> {
+  for file_data in file_upload.files {
+    let decoded = BASE64_STANDARD.decode(&file_data.data).map_err(|e| e.to_string())?;
+    let path = if file_upload.is_multifile {
+      let new_dir = format!("\\\\MWD1-SERVER/Server/EmailAttachments/{}", file_upload.name);
+      if std::fs::read_dir(new_dir.clone()).is_err() {
+        let _ = std::fs::create_dir(new_dir.clone());
+      }
+      format!("{}/{}", new_dir, file_data.name)
+    } else {
+      format!("\\\\MWD1-SERVER/Server/EmailAttachments/{}", file_data.name)
+    };
+    std::fs::write(&path, decoded).map_err(|e| e.to_string())?;
+  }
+  Ok(())
 }

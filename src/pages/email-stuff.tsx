@@ -1,3 +1,4 @@
+import NewEmailAttachmentDialog from "@/components/Dialogs/NewEmailAttachmentDialog";
 import { Layout } from "@/components/Layout";
 import Button from "@/components/Library/Button";
 import Loading from "@/components/Library/Loading";
@@ -10,6 +11,7 @@ import { useEffect, useState } from "react";
 export default function EmailStuff() {
   const [emailStuff, setEmailStuff] = useState<EmailStuff[]>([]);
   const [imageErrors, setImageErrors] = useState<{ [key: string]: boolean }>({});
+  const [newAttachmentOpen, setNewAttachmentOpen] = useState(false);
   
   useEffect(() => {
     const fetchData = async () => {
@@ -19,8 +21,8 @@ export default function EmailStuff() {
     fetchData();
   }, []);
 
-  const handleNewEmailItem = async () => {
-
+  const handleNewEmailItem = () => {
+    setNewAttachmentOpen(true);
   };
 
   const handleAttachToNewEmail = async (item: EmailStuff) => {
@@ -46,6 +48,8 @@ export default function EmailStuff() {
   return (
     <Layout title="Email Stuff">
       <div className="email-stuff-page">
+        { newAttachmentOpen && <NewEmailAttachmentDialog open={newAttachmentOpen} setOpen={setNewAttachmentOpen} /> }
+
         <h1>Email Stuff</h1>
         <Button onClick={handleNewEmailItem}>New Email Item</Button>
 

@@ -22,7 +22,7 @@ export const getAllEmailStuff = async () => {
 
 // === POST routes === //
 
-export const addEmailStuffItem = async (payload: EmailStuff) => {
+export const addEmailStuffItem = async (payload: any) => {
   try {
     const auth = { withCredentials: true };
     await api.post('/api/email-stuff', payload, auth);
@@ -31,12 +31,12 @@ export const addEmailStuffItem = async (payload: EmailStuff) => {
   }
 };
 
-// === PUT routes === //
+// === DELETE routes === //
 
-export const editEmailStuffItem = async (payload: EmailStuff) => {
+export const deleteEmailStuffItem = async (id: number) => {
   try {
     const auth = { withCredentials: true };
-    await api.put('/api/email-stuff', payload, auth);
+    await api.delete(`/api/email-stuff/${id}`, auth);
   } catch (err) {
     console.error(err);
   }
