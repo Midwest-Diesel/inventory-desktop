@@ -690,7 +690,7 @@ type POItem = {
 type EmailStuff = {
   id: number
   name: string
-  images: string[]
+  images: { data: string, path: string }[]
 };
 
 type Vendor = {

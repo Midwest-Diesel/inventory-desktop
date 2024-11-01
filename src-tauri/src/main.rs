@@ -49,6 +49,12 @@ struct Attachments {
   attachments: Vec<String>
 }
 
+#[derive(Deserialize, Serialize)]
+struct Base64Picture {
+  data: String,
+  path: String
+}
+
 
 #[tokio::main]
 async fn main() {
@@ -364,14 +370,14 @@ fn attach_to_existing_email(payload: Attachments) {
 }
 
 #[tauri::command]
-fn convert_img_to_base64(pictures: Vec<String>) -> Result<Vec<String>, String> {
+fn convert_img_to_base64(pictures: Vec<String>) -> Result<Vec<Base64Picture>, String> {
   let mut base64_pictures = vec![];
   for pic in pictures {
     let data = match std::fs::read(&pic) {
       Ok(data) => data,
       Err(e) => return Err(format!("Error reading image data: {}", e)),
     };
-    base64_pictures.push(BASE64_STANDARD.encode(&data));
+    base64_pictures.push(Base64Picture { data: BASE64_STANDARD.encode(&data), path: pic });
   }
   Ok(base64_pictures)
 }

@@ -1,5 +1,6 @@
 import { Layout } from "@/components/Layout";
 import Button from "@/components/Library/Button";
+import Loading from "@/components/Library/Loading";
 import { getAllEmailStuff } from "@/scripts/controllers/emailStuffController";
 import { invoke } from "@tauri-apps/api/tauri";
 import Image from "next/image";
@@ -27,8 +28,8 @@ export default function EmailStuff() {
       subject: '',
       body: ``,
       recipients: [],
-      attachments: item.images
-    };
+      attachments: item.images.map((i) => i.path)
+    };    
     await invoke('new_email_draft', { emailArgs });
   };
 
@@ -48,15 +49,16 @@ export default function EmailStuff() {
         <Button onClick={handleNewEmailItem}>New Email Item</Button>
 
         <div className="email-stuff-page__list">
+          { emailStuff.length === 0 && <Loading /> }
           {emailStuff.map((item) => {
             const hasImageError = imageErrors[item.id];
 
             return (
               <div key={item.id} className="email-stuff-page__item">
                 <h2>{ item.name }</h2>
-                {!hasImageError && 
+                {!hasImageError &&
                   <Image
-                    src={`data:image/png;base64,${item.images[0]}`}
+                    src={`data:image/png;base64,${item.images[0].data}`}
                     alt={item.name}
                     width={100}
                     height={100}
