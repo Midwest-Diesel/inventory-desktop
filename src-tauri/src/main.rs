@@ -331,33 +331,34 @@ fn new_email_draft(email_args: EmailArgs) {
 }
 
 #[tauri::command]
-fn attach_to_existing_email(payload: Attachments) {
-  let attachments_joined = payload.attachments.join(";");
+fn attach_to_existing_email(attachments: String) {
   let vbs_script = format!(
     r#"
     Dim OutlookApp
     Set OutlookApp = CreateObject("Outlook.Application")
     Dim MailItem
     Set MailItem = OutlookApp.ActiveInspector.CurrentItem
+    {}
     
-    If Not MailItem Is Nothing Then
-      If Len("{attachments_joined}") > 0 Then
-        Dim attachmentArray: attachmentArray = Split("{attachments_joined}", ";")
-        Dim i
-        For i = LBound(attachmentArray) To UBound(attachmentArray)
-          Dim attachmentPath
-          attachmentPath = Trim(attachmentArray(i))
-          If attachmentPath <> "" Then
-            MailItem.Attachments.Add attachmentPath
-          End If
-        Next
-      End If
-      
-      MailItem.Display
-    Else
-      MsgBox "No active email draft found."
+    If Len(attachments) > 0 Then
+      Dim attachmentArray: attachmentArray = Split(attachments, ";")
+      Dim i
+      For i = LBound(attachmentArray) To UBound(attachmentArray)
+        Dim attachmentPath
+        attachmentPath = Trim(attachmentArray(i))
+        If attachmentPath <> "" Then
+          MailItem.Attachments.Add attachmentPath
+        End If
+      Next
     End If
-    "#
+
+    MailItem.Display
+    "#,
+    if !attachments.is_empty() {
+      format!("Dim attachments: attachments = \"{}\"", attachments.replace("\"", "\"\""))
+    } else {
+      "".to_string()
+    }
   );
 
   let temp_vbs_path = "C:/mwd/scripts/AttachToExistingEmail.vbs";

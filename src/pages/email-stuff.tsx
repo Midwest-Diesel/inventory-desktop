@@ -34,7 +34,8 @@ export default function EmailStuff() {
   };
 
   const handleAttachToExistingEmail = async (item: EmailStuff) => {
-    await invoke('attach_to_existing_email', { payload: { attachments: item.images }});
+    const attachments = item.images.map((i) => i.path).join(";");
+    await invoke('attach_to_existing_email', { attachments });
   };
 
   const handleImageError = (id: number) => {
