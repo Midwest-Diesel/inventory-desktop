@@ -2,7 +2,8 @@ import NewEmailAttachmentDialog from "@/components/Dialogs/NewEmailAttachmentDia
 import { Layout } from "@/components/Layout";
 import Button from "@/components/Library/Button";
 import Loading from "@/components/Library/Loading";
-import { getAllEmailStuff } from "@/scripts/controllers/emailStuffController";
+import { deleteEmailStuffItem, getAllEmailStuff } from "@/scripts/controllers/emailStuffController";
+import { confirm } from '@tauri-apps/api/dialog';
 import { invoke } from "@tauri-apps/api/tauri";
 import Image from "next/image";
 import { useEffect, useState } from "react";
@@ -44,6 +45,11 @@ export default function EmailStuff() {
     setImageErrors((prev) => ({ ...prev, [id]: true }));
   };
 
+  const handleDelete = async (id: number) => {
+    if (!await confirm('Are you sure you want to do this?')) return;
+    await deleteEmailStuffItem(id);
+  };
+
 
   return (
     <Layout title="Email Stuff">
@@ -74,6 +80,7 @@ export default function EmailStuff() {
                 <div className="email-stuff-page__item-buttons">
                   <Button onClick={() => handleAttachToNewEmail(item)}>Attach to New Email</Button>
                   <Button onClick={() => handleAttachToExistingEmail(item)}>Attach to Existing Email</Button>
+                  <Button variant={['danger']} onClick={() => handleDelete(item.id)}>Delete</Button>
                 </div>
               </div>
             );
