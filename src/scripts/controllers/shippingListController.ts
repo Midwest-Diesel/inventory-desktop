@@ -15,7 +15,7 @@ export const getShippingList = async () => {
 
 // === POST routes === //
 
-export const addToShippingList = async (row: ShippingList) => {
+export const addToShippingList = async (row: any) => {
   try {
     const auth = { withCredentials: true };
     await api.post('/api/shipping-list', row, auth);

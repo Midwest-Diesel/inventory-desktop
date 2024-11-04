@@ -20,7 +20,7 @@ export default function ShippingList() {
   }, []);
 
   const handleSave = async () => {
-
+    
   };
 
 
@@ -64,7 +64,7 @@ export default function ShippingList() {
             </tr>
           </thead>
           <tbody>
-            {shippingList.map((row) => {
+            {shippingList.map((row, i) => {
               return (
                 <tr key={row.id}>
                   <td>{ row.handwrittenId }</td>

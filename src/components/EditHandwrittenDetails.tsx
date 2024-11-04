@@ -14,6 +14,7 @@ import { getCustomerByName } from "@/scripts/controllers/customerController";
 import { getAllSources } from "@/scripts/controllers/sourcesController";
 import { editCoreCustomer } from "@/scripts/controllers/coresController";
 import { confirm } from "@tauri-apps/api/dialog";
+import { addToShippingList } from "@/scripts/controllers/shippingListController";
 
 interface Props {
   handwritten: Handwritten
@@ -133,7 +134,30 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
     }
     if (invoiceStatus === 'SENT TO ACCOUNTING') {
       if (await confirm('Add this to shipping list?')) {
-        
+        for (let i = 0; i < handwrittenItems.length; i++) {
+          const newShippingListRow = {
+            handwrittenId: newInvoice.id,
+            salesmanId: newInvoice.salesmanId,
+            shipVia: newInvoice.shipVia,
+            customer: newInvoice.customer.company,
+            attnTo: null,
+            partNum: handwrittenItems[i].partNum,
+            desc: handwrittenItems[i].desc,
+            stockNum: handwrittenItems[i].stockNum,
+            location: handwrittenItems[i].location,
+            mp: 0,
+            br: 0,
+            cap: 0,
+            fl: 0,
+            pulled: false,
+            packaged: false,
+            gone: false,
+            ready: false,
+            weight: 0,
+            dims: null
+          };
+          await addToShippingList(newShippingListRow);
+        }
       }
     }
 
