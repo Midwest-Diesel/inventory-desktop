@@ -48,13 +48,14 @@ export default function EmailStuff() {
   const handleDelete = async (id: number) => {
     if (!await confirm('Are you sure you want to do this?')) return;
     await deleteEmailStuffItem(id);
+    setEmailStuff(emailStuff.filter((item) => item.id !== id));
   };
 
 
   return (
     <Layout title="Email Stuff">
       <div className="email-stuff-page">
-        { newAttachmentOpen && <NewEmailAttachmentDialog open={newAttachmentOpen} setOpen={setNewAttachmentOpen} /> }
+        { newAttachmentOpen && <NewEmailAttachmentDialog open={newAttachmentOpen} setOpen={setNewAttachmentOpen} setEmailStuff={setEmailStuff} /> }
 
         <h1>Email Stuff</h1>
         <Button onClick={handleNewEmailItem}>New Email Item</Button>
