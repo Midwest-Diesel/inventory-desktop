@@ -81,7 +81,7 @@ export default function Handwrittens() {
           <h1>Handwrittens</h1>
           <div className="handwrittens__top-buttons">
             <Button onClick={() => setOpenSearch(true)}>Search</Button>
-            <Button onClick={handleNewHandwritten}>New</Button>
+            { user.type === 'office' && <Button onClick={handleNewHandwritten}>New</Button> }
           </div>
           <div className="handwrittens__top-bar">
             <div className="handwrittens__top-bar--count-block">

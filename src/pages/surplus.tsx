@@ -4,12 +4,15 @@ import SoldSurplusPartsDialog from "@/components/Dialogs/SoldSurplusPartsDialog"
 import { Layout } from "@/components/Layout";
 import Button from "@/components/Library/Button";
 import Table from "@/components/Library/Table";
+import { userAtom } from "@/scripts/atoms/state";
 import { getAllSurplus } from "@/scripts/controllers/surplusController";
 import { formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
+import { useAtom } from "jotai";
 import { useEffect, useState } from "react";
 
 
 export default function Surplus() {
+  const [user] = useAtom<User>(userAtom);
   const [surplus, setSurplus] = useState<Surplus[]>([]);
   const [soldPartsOpen, setSoldPartsOpen] = useState(false);
   const [soldPartsCode, setSoldPartsCode] = useState(null);
@@ -37,9 +40,11 @@ export default function Surplus() {
       <NewSurplusPartDialog open={newSurplusOpen} setOpen={setNewSurplusOpen} setSurplus={setSurplus} />
 
       <h1>Surplus Purchases</h1>
-      <div className="surplus__top-bar">
-        <Button onClick={() => setNewSurplusOpen(true)}>New Purchase</Button>
-      </div>
+      {user.type === 'office' &&
+        <div className="surplus__top-bar">
+          <Button onClick={() => setNewSurplusOpen(true)}>New Purchase</Button>
+        </div>
+      }
 
       <div className="surplus__table">
         <Table>

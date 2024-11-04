@@ -1,12 +1,12 @@
 import Image from "next/image";
-import NavDropdown from "./Library/Dropdown/NavDropdown";
+import NavDropdown from "../Library/Dropdown/NavDropdown";
 import Link from 'next/link';
-import Button from "./Library/Button";
+import Button from "../Library/Button";
 
 
-export default function Navbar() {
+export default function OfficeNavbar() {
   return (
-    <nav className="navbar">
+    <>
       <Link className="navbar__title" href="/">
         <Image src="/images/icons/home-icon.svg" alt="home button" width={10} height={10} />
       </Link>
@@ -40,6 +40,6 @@ export default function Navbar() {
         <Button onClick={() => window.history.back()}>&lt;</Button>
         <Button onClick={() => window.history.forward()}>&gt;</Button>
       </div>
-    </nav>
+    </>
   );
 }

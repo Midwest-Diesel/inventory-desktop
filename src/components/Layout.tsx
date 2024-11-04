@@ -1,8 +1,9 @@
 import React, { useEffect } from "react";
-import Navbar from "./Navbar";
+import Navbar from "./Navbar/Navbar";
 import AlertModal from "./Modals/AlertModal";
 import { useAtom } from "jotai";
 import { selectedAlertsAtom } from "@/scripts/atoms/components";
+import { userAtom } from "@/scripts/atoms/state";
 
 interface Props {
   children: React.ReactNode
@@ -11,6 +12,7 @@ interface Props {
 
 
 export function Layout({ children, title }: Props) {
+  const [user] = useAtom<User>(userAtom);
   const [alerts, setAlerts] = useAtom<Alert[]>(selectedAlertsAtom);
 
   useEffect(() => {
@@ -27,7 +29,7 @@ export function Layout({ children, title }: Props) {
   return (
     <div style={{ height: '100%' }}>
       { alert && <AlertModal alerts={alerts} setAlerts={setAlerts} /> }
-      <Navbar />
+      { user && <Navbar /> }
       <div className="layout__container">
         <div className="layout__main-content">
           { children }
