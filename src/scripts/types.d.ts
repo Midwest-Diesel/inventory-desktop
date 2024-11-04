@@ -693,6 +693,29 @@ type EmailStuff = {
   images: { data: string, path: string }[]
 };
 
+type ShippingList = {
+  id: number
+  handwrittenId: number
+  initials: string
+  shipVia: string
+  customer: string
+  attnTo: string
+  partNum: string
+  desc: string
+  stockNum: string
+  location: string
+  mp: number
+  br: number
+  cap: number
+  fl: number
+  pulled: boolean
+  packaged: boolean
+  gone: boolean
+  ready: boolean
+  weight: number
+  dims: string
+};
+
 type Vendor = {
   id: number
   name: string

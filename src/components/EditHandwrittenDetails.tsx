@@ -13,6 +13,7 @@ import CustomerSelect from "./Library/Select/CustomerSelect";
 import { getCustomerByName } from "@/scripts/controllers/customerController";
 import { getAllSources } from "@/scripts/controllers/sourcesController";
 import { editCoreCustomer } from "@/scripts/controllers/coresController";
+import { confirm } from "@tauri-apps/api/dialog";
 
 interface Props {
   handwritten: Handwritten
@@ -109,7 +110,7 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
       cores: handwritten.cores,
       coreReturns: handwritten.coreReturns,
       orderNotes,
-    } as Handwritten;   
+    } as Handwritten;
     await editHandwritten(newInvoice);
     await editCoreCustomer(handwritten.id, newCustomer.id);
     if (JSON.stringify(handwrittenItems) !== JSON.stringify(handwritten.handwrittenItems)) {
@@ -130,6 +131,12 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
         await editHandwrittenItems(newItem);
       }
     }
+    if (invoiceStatus === 'SENT TO ACCOUNTING') {
+      if (await confirm('Add this to shipping list?')) {
+        
+      }
+    }
+
     setHandwritten(await getHandwrittenById(handwritten.id));
     setIsEditing(false);
   };

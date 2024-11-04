@@ -28,6 +28,7 @@ export default function ShopNavbar() {
         <Link href="/add-ons/office">Office</Link>
         <Link href="/add-ons/engine">Engine</Link>
       </NavDropdown>
+      <Link href="/shipping-list" className="navbar__link">Shipping List</Link>
       <Link href="/image-upload" className="navbar__link">Image Upload</Link>
       <Link href="/about" className="navbar__link">About</Link>
 

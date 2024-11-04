@@ -33,6 +33,7 @@ export default function OfficeNavbar() {
       <Link href="/karmak" className="navbar__link">Karmak</Link>
       <Link href="/reports" className="navbar__link">Reports</Link>
       <Link href="/alerts" className="navbar__link">Alerts</Link>
+      <Link href="/shipping-list" className="navbar__link">Shipping List</Link>
       <Link href="/image-upload" className="navbar__link">Image Upload</Link>
       <Link href="/about" className="navbar__link">About</Link>
 
