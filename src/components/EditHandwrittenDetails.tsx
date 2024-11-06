@@ -43,6 +43,7 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
   const [shipToState, setShipToState] = useState<string>(handwritten.shipToState);
   const [shipToZip, setShipToZip] = useState<string>(handwritten.shipToZip);
   const [shipToCompany, setShipToCompany] = useState<string>(handwritten.shipToCompany);
+  const [shipVia, setShipVia] = useState<string>(handwritten.shipVia);
   const [cardNum, setCardNum] = useState<string>(handwritten.cardNum);
   const [expDate, setExpDate] = useState<string>(handwritten.expDate);
   const [cvv, setCvv] = useState<number>(handwritten.cvv);
@@ -80,7 +81,7 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
     const newCustomer = await getCustomerByName(company);
     const newInvoice = {
       id: handwritten.id,
-      shipVia: handwritten.shipVia,
+      shipVia: shipVia,
       initials: handwritten.initials,
       handwrittenItems: handwrittenItems,
       customer: newCustomer,
@@ -391,6 +392,16 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
                         variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                         value={shipToZip}
                         onChange={(e: any) => setShipToZip(e.target.value)}
+                      />
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>Ship Via</th>
+                    <td>
+                      <Input
+                        variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+                        value={shipVia}
+                        onChange={(e: any) => setShipVia(e.target.value)}
                       />
                     </td>
                   </tr>

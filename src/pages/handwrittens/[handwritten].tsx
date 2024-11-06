@@ -223,6 +223,10 @@ export default function Handwritten() {
                       <th><strong>Shipping Zip</strong></th>
                       <td>{ handwritten.shipToZip }</td>
                     </tr>
+                    <tr>
+                      <th><strong>Ship Via</strong></th>
+                      <td>{ handwritten.shipVia }</td>
+                    </tr>
                   </tbody>
                 </Table>
               </GridItem>

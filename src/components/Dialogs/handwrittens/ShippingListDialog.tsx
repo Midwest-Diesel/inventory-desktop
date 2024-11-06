@@ -7,6 +7,7 @@ import { invoke } from "@tauri-apps/api/tauri";
 import { isDateInCurrentOrNextWeek } from "@/scripts/tools/utils";
 import Button from "@/components/Library/Button";
 import Loading from "@/components/Library/Loading";
+import { getFreightCarrierFromShipVia } from "@/scripts/controllers/handwrittensController";
 
 interface Props {
   open: boolean
@@ -25,6 +26,7 @@ export default function ShippingListDialog({ open, setOpen, handwrittenItems, ne
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    const shipType = await getFreightCarrierFromShipVia(newShippingListRow.shipVia);
     const path = (isDateInCurrentOrNextWeek(date) === 'current' ?
       'C:/Users/BennettSmrdel/Desktop/shipping_list_current_week.xlsx'
     :
@@ -35,7 +37,7 @@ export default function ShippingListDialog({ open, setOpen, handwrittenItems, ne
         handwritten_id: Number(newShippingListRow.id),
         initials: newShippingListRow.initials,
         ship_via: newShippingListRow.shipVia,
-        ship_type: 'Misc',
+        ship_type: shipType,
         customer: newShippingListRow.customer.company,
         attn_to: '',
         part_num: 'Multiple',
@@ -62,7 +64,7 @@ export default function ShippingListDialog({ open, setOpen, handwrittenItems, ne
           handwritten_id: Number(newShippingListRow.id),
           initials: newShippingListRow.initials,
           ship_via: newShippingListRow.shipVia,
-          ship_type: 'Misc',
+          ship_type: shipType,
           customer: newShippingListRow.customer.company,
           attn_to: '',
           part_num: handwrittenItems[i].partNum,

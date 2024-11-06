@@ -496,7 +496,7 @@ fn add_to_shipping_list(new_shipping_list_row: ShippingListRow) {
       "Misc" => "Misc",
       "Will Call" => "Will Call",
       "Truck Line" => "Truck Lines",
-      _ => "",
+      _ => "Inits",
     },
     new_shipping_list_row.initials,
     new_shipping_list_row.ship_via,

@@ -128,6 +128,16 @@ export const getAltShipByHandwritten = async (handwrittenId: number) => {
   }
 };
 
+export const getFreightCarrierFromShipVia = async (name: string) => {
+  try {
+    const auth = { withCredentials: true };
+    const res = await api.get(`/api/handwrittens/freight-carrier/${name}`, auth);
+    return res.data.type;
+  } catch (err) {
+    console.error(err);
+  }
+};
+
 // === POST routes === //
 
 export const addHandwritten = async (invoice: Handwritten) => {
