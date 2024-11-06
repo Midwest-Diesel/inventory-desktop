@@ -15,6 +15,7 @@ import { getAllSources } from "@/scripts/controllers/sourcesController";
 import { editCoreCustomer } from "@/scripts/controllers/coresController";
 import { confirm } from "@tauri-apps/api/dialog";
 import { addToShippingList } from "@/scripts/controllers/shippingListController";
+import { invoke } from "@tauri-apps/api/tauri";
 
 interface Props {
   handwritten: Handwritten
@@ -77,6 +78,8 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
     const newCustomer = await getCustomerByName(company);
     const newInvoice = {
       id: handwritten.id,
+      shipVia: handwritten.shipVia,
+      initials: handwritten.initials,
       handwrittenItems: handwrittenItems,
       customer: newCustomer,
       date,
@@ -135,15 +138,16 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
     if (invoiceStatus === 'SENT TO ACCOUNTING') {
       if (await confirm('Add this to shipping list?')) {
         for (let i = 0; i < handwrittenItems.length; i++) {
-          const newShippingListRow = {
-            handwrittenId: newInvoice.id,
-            salesmanId: newInvoice.salesmanId,
-            shipVia: newInvoice.shipVia,
+          const new_shipping_list_row = {
+            handwritten_id: Number(newInvoice.id),
+            initials: newInvoice.initials,
+            ship_via: newInvoice.shipVia,
+            ship_type: 'UPS',
             customer: newInvoice.customer.company,
-            attnTo: null,
-            partNum: handwrittenItems[i].partNum,
+            attn_to: '',
+            part_num: handwrittenItems[i].partNum,
             desc: handwrittenItems[i].desc,
-            stockNum: handwrittenItems[i].stockNum,
+            stock_num: handwrittenItems[i].stockNum,
             location: handwrittenItems[i].location,
             mp: 0,
             br: 0,
@@ -154,9 +158,11 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
             gone: false,
             ready: false,
             weight: 0,
-            dims: null
+            dims: '',
+            day: 1,
+            list_path: 'C:/Users/BennettSmrdel/Desktop/shipping_list_current_week.xlsx'
           };
-          await addToShippingList(newShippingListRow);
+          await invoke('add_to_shipping_list', { newShippingListRow: new_shipping_list_row });
         }
       }
     }

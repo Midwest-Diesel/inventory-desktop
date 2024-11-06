@@ -68,6 +68,32 @@ struct FilesArgs {
   is_multifile: bool
 }
 
+#[derive(Deserialize, Serialize)]
+struct ShippingListRow {
+  handwritten_id: i32,
+  initials: String,
+  ship_via: String,
+  ship_type: String,
+  customer: String,
+  attn_to: String,
+  part_num: String,
+  desc: String,
+  stock_num: String,
+  location: String,
+  mp: i8,
+  br: i8,
+  cap: i8,
+  fl: i8,
+  pulled: bool,
+  packaged: bool,
+  gone: bool,
+  ready: bool,
+  weight: i16,
+  dims: String,
+  day: i8,
+  list_path: String
+}
+
 
 #[tokio::main]
 async fn main() {
@@ -85,7 +111,8 @@ async fn main() {
       get_all_pictures,
       attach_to_existing_email,
       convert_img_to_base64,
-      upload_email_stuff_files
+      upload_email_stuff_files,
+      add_to_shipping_list
     ])
     .run(tauri::generate_context!())
     .expect("error while running tauri application");
@@ -145,6 +172,8 @@ fn install_update() {
       std::process::exit(0);
     }
   });
+  let _ = std::fs::remove_dir_all("C:/MWD/updates");
+  let _ = std::fs::create_dir("C:/MWD/updates");
 }
 
 async fn download_update() -> Result<(), Box<dyn std::error::Error>> {
@@ -413,4 +442,84 @@ async fn upload_email_stuff_files(file_upload: FilesArgs) -> Result<(), String> 
     std::fs::write(&path, decoded).map_err(|e| e.to_string())?;
   }
   Ok(())
+}
+
+#[tauri::command]
+fn add_to_shipping_list(new_shipping_list_row: ShippingListRow) {
+  let vbs_script = format!(
+    r#"
+    Dim ExcelApp, Workbook, ExcelSheet
+    Set ExcelApp = CreateObject("Excel.Application")
+    ExcelApp.Visible = False
+    ExcelApp.DisplayAlerts = False
+
+    Set Workbook = ExcelApp.Workbooks.Open("{}")
+    Set ExcelSheet = Workbook.Sheets({})
+
+    Dim LastRow
+    LastRow = ExcelSheet.Cells.Find("{}").End(-4121).Row + 1
+
+    ExcelSheet.Range("A" & LastRow).Insert
+    ExcelSheet.Range("A" & LastRow).Value = "{}"
+    ExcelSheet.Range("B" & LastRow).Value = "{}"
+    ExcelSheet.Range("C" & LastRow).Value = "{}"
+    ExcelSheet.Range("D" & LastRow).Value = "{}"
+    ExcelSheet.Range("E" & LastRow).Value = "{}"
+    ExcelSheet.Range("F" & LastRow).Value = "{}"
+    ExcelSheet.Range("G" & LastRow).Value = "{}"
+    ExcelSheet.Range("H" & LastRow).Value = "{}"
+    ExcelSheet.Range("I" & LastRow).Value = "{}"
+    ExcelSheet.Range("J" & LastRow).Value = "{}"
+    ExcelSheet.Range("K" & LastRow).Value = "{}"
+    ExcelSheet.Range("L" & LastRow).Value = "{}"
+    ExcelSheet.Range("N" & LastRow).Value = "{}"
+    ExcelSheet.Range("O" & LastRow).Value = "{}"
+    ExcelSheet.Range("P" & LastRow).Value = "{}"
+    ExcelSheet.Range("Q" & LastRow).Value = "{}"
+    ExcelSheet.Range("R" & LastRow).Value = "{}"
+    ExcelSheet.Range("S" & LastRow).Value = "{}"
+    ExcelSheet.Range("T" & LastRow).Value = "{}"
+    
+    Workbook.Save
+    Workbook.Close
+    ExcelApp.Quit
+    "#,
+    new_shipping_list_row.list_path,
+    new_shipping_list_row.day,
+    match new_shipping_list_row.ship_type.as_str() {
+      "UPS" => "inits",
+      "Fedex" => "Fedex Small Pak",
+      "Misc" => "Misc",
+      "Will Call" => "Will Call",
+      "Truck Line" => "Truck Lines",
+      _ => "",
+    },
+    new_shipping_list_row.initials,
+    new_shipping_list_row.ship_via,
+    new_shipping_list_row.customer,
+    new_shipping_list_row.attn_to,
+    new_shipping_list_row.part_num,
+    new_shipping_list_row.desc,
+    new_shipping_list_row.stock_num,
+    new_shipping_list_row.location,
+    new_shipping_list_row.mp,
+    new_shipping_list_row.br,
+    new_shipping_list_row.cap,
+    new_shipping_list_row.fl,
+    if new_shipping_list_row.pulled {"x"} else {""},
+    if new_shipping_list_row.packaged {"x"} else {""},
+    if new_shipping_list_row.gone {"x"} else {""},
+    if new_shipping_list_row.ready {"x"} else {""},
+    new_shipping_list_row.weight,
+    new_shipping_list_row.dims,
+    new_shipping_list_row.handwritten_id
+  );
+
+  let temp_vbs_path = "C:/mwd/scripts/UpdateShippingList.vbs";
+  write(&temp_vbs_path, vbs_script).expect("Failed to create VBS script");
+
+  let mut cmd = Command::new("wscript.exe");
+  cmd.arg(temp_vbs_path);
+  cmd.output().expect("Failed to update shipping list");
+  let _ = std::fs::remove_file(temp_vbs_path);
 }

@@ -1,5 +1,6 @@
 import { Layout } from "@/components/Layout";
 import Button from "@/components/Library/Button";
+import Input from "@/components/Library/Input";
 import Table from "@/components/Library/Table";
 import { getShippingList } from "@/scripts/controllers/shippingListController";
 import { formatDate } from "@/scripts/tools/stringUtils";
@@ -20,7 +21,7 @@ export default function ShippingList() {
   }, []);
 
   const handleSave = async () => {
-    
+
   };
 
 
@@ -64,22 +65,88 @@ export default function ShippingList() {
             </tr>
           </thead>
           <tbody>
+            <tr><th colSpan={19} className="shipping-list__table-section">UPS</th></tr>
             {shippingList.map((row, i) => {
               return (
                 <tr key={row.id}>
-                  <td>{ row.handwrittenId }</td>
-                  <td>{ row.initials }</td>
-                  <td>{ row.shipVia }</td>
-                  <td>{ row.customer }</td>
-                  <td>{ row.attnTo }</td>
-                  <td>{ row.partNum }</td>
-                  <td>{ row.desc }</td>
-                  <td>{ row.stockNum }</td>
-                  <td>{ row.location }</td>
-                  <td>{ row.mp }</td>
-                  <td>{ row.br }</td>
-                  <td>{ row.cap }</td>
-                  <td>{ row.fl }</td>
+                  <td>
+                    <Input
+                      variant={['no-style']}
+                      value={row.handwrittenId}
+                    />
+                  </td>
+                  <td>
+                    <Input
+                      variant={['no-style']}
+                      value={row.initials}
+                    />
+                  </td>
+                  <td>
+                    <Input
+                      variant={['no-style']}
+                      value={row.shipVia}
+                    />
+                  </td>
+                  <td>
+                    <Input
+                      variant={['no-style', 'text-area']}
+                      value={row.customer}
+                    />
+                  </td>
+                  <td>
+                    <Input
+                      variant={['no-style']}
+                      value={row.attnTo}
+                    />
+                  </td>
+                  <td>
+                    <Input
+                      variant={['no-style']}
+                      value={row.partNum}
+                    />
+                  </td>
+                  <td>
+                    <Input
+                      variant={['no-style', 'text-area']}
+                      value={row.desc}
+                    />
+                  </td>
+                  <td>
+                    <Input
+                      variant={['no-style']}
+                      value={row.stockNum}
+                    />
+                  </td>
+                  <td>
+                    <Input
+                      variant={['no-style']}
+                      value={row.location}
+                    />
+                  </td>
+                  <td>
+                    <Input
+                      variant={['no-style']}
+                      value={row.mp}
+                    />
+                  </td>
+                  <td>
+                    <Input
+                      variant={['no-style']}
+                      value={row.br}
+                    />
+                  </td>
+                  <td>
+                    <Input
+                      variant={['no-style']}
+                      value={row.cap}
+                    />
+                  </td>
+                  <td>
+                    <Input
+                      variant={['no-style']}
+                      value={row.fl}
+                    />
+                  </td>
                   <td>{ row.pulled }</td>
                   <td>{ row.packaged }</td>
                   <td>{ row.gone }</td>
@@ -89,6 +156,10 @@ export default function ShippingList() {
                 </tr>
               );
             })}
+            <tr><th colSpan={19} className="shipping-list__table-section">Fedex Small Pak</th></tr>
+            <tr><th colSpan={19} className="shipping-list__table-section">Misc</th></tr>
+            <tr><th colSpan={19} className="shipping-list__table-section">Will Call</th></tr>
+            <tr><th colSpan={19} className="shipping-list__table-section">Truck Lines</th></tr>
           </tbody>
         </Table>
       </div>
