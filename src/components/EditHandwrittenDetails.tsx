@@ -14,8 +14,8 @@ import { getCustomerByName } from "@/scripts/controllers/customerController";
 import { getAllSources } from "@/scripts/controllers/sourcesController";
 import { editCoreCustomer } from "@/scripts/controllers/coresController";
 import { confirm } from "@tauri-apps/api/dialog";
-import { addToShippingList } from "@/scripts/controllers/shippingListController";
 import { invoke } from "@tauri-apps/api/tauri";
+import ShippingListDialog from "./Dialogs/handwrittens/ShippingListDialog";
 
 interface Props {
   handwritten: Handwritten
@@ -59,6 +59,8 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
   const [shippingStatus, setShippingStatus] = useState<ShippingStatus>(handwritten.shippingStatus);
   const [handwrittenItems, setHandwrittenItems] = useState<HandwrittenItem[]>(handwritten.handwrittenItems);
   const [orderNotes, setOrderNotes] = useState<string>(handwritten.orderNotes);
+  const [shippingListDialogOpen, setShippingListDialogOpen] = useState(false);
+  const [newShippingListRow, setNewShippingListRow] = useState<Handwritten>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -115,6 +117,7 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
       coreReturns: handwritten.coreReturns,
       orderNotes,
     } as Handwritten;
+    setNewShippingListRow(newInvoice);
     await editHandwritten(newInvoice);
     await editCoreCustomer(handwritten.id, newCustomer.id);
     if (JSON.stringify(handwrittenItems) !== JSON.stringify(handwritten.handwrittenItems)) {
@@ -137,38 +140,13 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
     }
     if (invoiceStatus === 'SENT TO ACCOUNTING') {
       if (await confirm('Add this to shipping list?')) {
-        for (let i = 0; i < handwrittenItems.length; i++) {
-          const new_shipping_list_row = {
-            handwritten_id: Number(newInvoice.id),
-            initials: newInvoice.initials,
-            ship_via: newInvoice.shipVia,
-            ship_type: 'UPS',
-            customer: newInvoice.customer.company,
-            attn_to: '',
-            part_num: handwrittenItems[i].partNum,
-            desc: handwrittenItems[i].desc,
-            stock_num: handwrittenItems[i].stockNum,
-            location: handwrittenItems[i].location,
-            mp: 0,
-            br: 0,
-            cap: 0,
-            fl: 0,
-            pulled: false,
-            packaged: false,
-            gone: false,
-            ready: false,
-            weight: 0,
-            dims: '',
-            day: 1,
-            list_path: 'C:/Users/BennettSmrdel/Desktop/shipping_list_current_week.xlsx'
-          };
-          await invoke('add_to_shipping_list', { newShippingListRow: new_shipping_list_row });
-        }
+        setShippingListDialogOpen(true);
       }
+    } else {
+      setIsEditing(false);
     }
 
     setHandwritten(await getHandwrittenById(handwritten.id));
-    setIsEditing(false);
   };
 
   const handleAltShip = async () => {
@@ -210,6 +188,15 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
 
   return (
     <>
+      {shippingListDialogOpen &&
+        <ShippingListDialog
+          open={shippingListDialogOpen}
+          setOpen={setShippingListDialogOpen}
+          handwrittenItems={handwrittenItems}
+          newShippingListRow={newShippingListRow}
+        />
+      }
+
       {handwritten &&
         <form className="edit-handwritten-details" onSubmit={(e) => saveChanges(e)}>
           <div className="edit-handwritten-details__header">

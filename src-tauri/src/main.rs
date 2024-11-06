@@ -78,8 +78,8 @@ struct ShippingListRow {
   attn_to: String,
   part_num: String,
   desc: String,
-  stock_num: String,
-  location: String,
+  stock_num: Option<String>,
+  location: Option<String>,
   mp: i8,
   br: i8,
   cap: i8,
@@ -457,7 +457,7 @@ fn add_to_shipping_list(new_shipping_list_row: ShippingListRow) {
     Set ExcelSheet = Workbook.Sheets({})
 
     Dim LastRow
-    LastRow = ExcelSheet.Cells.Find("{}").End(-4121).Row + 1
+    LastRow = ExcelSheet.Cells.Find("{}").Offset(-1, 0).End(-4121).Row + 1
 
     ExcelSheet.Range("A" & LastRow).Insert
     ExcelSheet.Range("A" & LastRow).Value = "{}"
@@ -479,6 +479,10 @@ fn add_to_shipping_list(new_shipping_list_row: ShippingListRow) {
     ExcelSheet.Range("R" & LastRow).Value = "{}"
     ExcelSheet.Range("S" & LastRow).Value = "{}"
     ExcelSheet.Range("T" & LastRow).Value = "{}"
+
+    ExcelSheet.Range("A" & LastRow & ":U" & LastRow).Font.Bold = False
+    ExcelSheet.Range("A" & LastRow & ":U" & LastRow).HorizontalAlignment = -4131
+    ExcelSheet.Range("A" & LastRow & ":U" & LastRow).Interior.ColorIndex = -4142
     
     Workbook.Save
     Workbook.Close
@@ -487,7 +491,7 @@ fn add_to_shipping_list(new_shipping_list_row: ShippingListRow) {
     new_shipping_list_row.list_path,
     new_shipping_list_row.day,
     match new_shipping_list_row.ship_type.as_str() {
-      "UPS" => "inits",
+      "UPS" => "Inits",
       "Fedex" => "Fedex Small Pak",
       "Misc" => "Misc",
       "Will Call" => "Will Call",
@@ -500,12 +504,12 @@ fn add_to_shipping_list(new_shipping_list_row: ShippingListRow) {
     new_shipping_list_row.attn_to,
     new_shipping_list_row.part_num,
     new_shipping_list_row.desc,
-    new_shipping_list_row.stock_num,
-    new_shipping_list_row.location,
-    new_shipping_list_row.mp,
-    new_shipping_list_row.br,
-    new_shipping_list_row.cap,
-    new_shipping_list_row.fl,
+    new_shipping_list_row.stock_num.clone().unwrap_or_else(|| "".to_string()),
+    new_shipping_list_row.location.clone().unwrap_or_else(|| "".to_string()),
+    if new_shipping_list_row.mp > 0 {new_shipping_list_row.mp.to_string()} else {"".to_string()},
+    if new_shipping_list_row.br > 0 {new_shipping_list_row.br.to_string()} else {"".to_string()},
+    if new_shipping_list_row.cap > 0 {new_shipping_list_row.cap.to_string()} else {"".to_string()},
+    if new_shipping_list_row.fl > 0 {new_shipping_list_row.fl.to_string()} else {"".to_string()},
     if new_shipping_list_row.pulled {"x"} else {""},
     if new_shipping_list_row.packaged {"x"} else {""},
     if new_shipping_list_row.gone {"x"} else {""},
