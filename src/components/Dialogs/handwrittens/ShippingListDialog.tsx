@@ -18,7 +18,7 @@ interface Props {
 
 
 export default function ShippingListDialog({ open, setOpen, handwrittenItems, newShippingListRow }: Props) {
-  const [date, setDate] = useState<Date>(new Date(new Date().toLocaleString('en-US', { timeZone: 'America/Chicago' })));
+  const [date, setDate] = useState<Date>(new Date());
   const [isCondensed, setIsCondensed] = useState(handwrittenItems.length > 2);
   const [desc, setDesc] = useState('');
   const [loading, setLoading] = useState(false);
@@ -106,7 +106,10 @@ export default function ShippingListDialog({ open, setOpen, handwrittenItems, ne
           label="Date"
           value={parseDateInputValue(date)}
           type="date"
-          onChange={(e: any) => setDate(new Date(new Date(e.target.value).toLocaleString('en-US', { timeZone: 'America/Chicago' })))}
+          onChange={(e: any) => {
+            const [year, month, day] = e.target.value.split('-');
+            setDate(new Date(Number(year), Number(month) - 1, Number(day)));
+          }}          
           required
         />
         {handwrittenItems.length > 2 &&
