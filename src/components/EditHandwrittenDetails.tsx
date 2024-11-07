@@ -117,6 +117,7 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
       cores: handwritten.cores,
       coreReturns: handwritten.coreReturns,
       orderNotes,
+      ...handwritten
     } as Handwritten;
     setNewShippingListRow(newInvoice);
     await editHandwritten(newInvoice);

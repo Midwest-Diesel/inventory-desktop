@@ -483,7 +483,10 @@ fn add_to_shipping_list(new_shipping_list_row: ShippingListRow) {
     ExcelSheet.Range("A" & LastRow & ":U" & LastRow).Font.Bold = False
     ExcelSheet.Range("A" & LastRow & ":U" & LastRow).HorizontalAlignment = -4131
     ExcelSheet.Range("A" & LastRow & ":U" & LastRow).Interior.ColorIndex = -4142
-    
+    If ExcelSheet.Range("B" & LastRow).Text = "UPS Red" Then
+      ExcelSheet.Range("B" & LastRow).Font.Color = RGB(255, 0, 0)
+    End If
+
     Workbook.Save
     Workbook.Close
     ExcelApp.Quit

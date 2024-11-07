@@ -190,6 +190,11 @@ type Handwritten = {
   shippingStatus: ShippingStatus
   cores: Core[]
   coreReturns: Core[]
+  shippingNotes: string
+  mp: number
+  br: number
+  cap: number
+  fl: number
 };
 
 type InvoiceStatus = 'INVOICE PENDING' | 'SENT TO ACCOUNTING' | 'CANCELLED' | 'STOP - HOLD' | 'HOLD AS FAVOR';
@@ -210,6 +215,11 @@ type HandwrittenItem = {
   return: boolean
   date: Date
   invoiceItemChildren: HandwrittenItemChild[]
+  qty: number
+  weight: number
+  length: number
+  width: number
+  height: number
 };
 
 type HandwrittenItemChild = {

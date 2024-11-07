@@ -28,11 +28,13 @@ export default function ShippingListDialog({ open, setOpen, handwrittenItems, ne
     setLoading(true);
     const shipType = await getFreightCarrierFromShipVia(newShippingListRow.shipVia);
     const path = (isDateInCurrentOrNextWeek(date) === 'current' ?
-      'C:/Users/BennettSmrdel/Desktop/shipping_list_current_week.xlsx'
+      '\\\\MWD1-SERVER/Server/shipping_list_current_week.xlsx'
     :
-      'C:/Users/BennettSmrdel/Desktop/shipping_list_next_week.xlsx'
+      '\\\\MWD1-SERVER/Server/shipping_list_next_week.xlsx'
     );
     if (isCondensed) {
+      const weight = handwrittenItems.reduce((arr, item) => arr + item.weight, 0);
+      const { length, width, height } = handwrittenItems[0];
       const new_shipping_list_row = {
         handwritten_id: Number(newShippingListRow.id),
         initials: newShippingListRow.initials,
@@ -44,22 +46,23 @@ export default function ShippingListDialog({ open, setOpen, handwrittenItems, ne
         desc: desc,
         stock_num: 'See Yellow',
         location: 'See Yellow',
-        mp: 0,
-        br: 0,
-        cap: 0,
-        fl: 0,
+        mp: newShippingListRow.mp,
+        br: newShippingListRow.br,
+        cap: newShippingListRow.cap,
+        fl: newShippingListRow.fl,
         pulled: false,
         packaged: false,
         gone: false,
         ready: false,
-        weight: 0,
-        dims: '',
+        weight,
+        dims: `${length}x${width}x${height}`,
         day: date.getDay(),
         list_path: path
       };
       await invoke('add_to_shipping_list', { newShippingListRow: new_shipping_list_row });
     } else {
       for (let i = 0; i < handwrittenItems.length; i++) {
+        const { length, width, height } = handwrittenItems[i];
         const new_shipping_list_row = {
           handwritten_id: Number(newShippingListRow.id),
           initials: newShippingListRow.initials,
@@ -71,16 +74,16 @@ export default function ShippingListDialog({ open, setOpen, handwrittenItems, ne
           desc: handwrittenItems[i].desc,
           stock_num: handwrittenItems[i].stockNum,
           location: handwrittenItems[i].location,
-          mp: 0,
-          br: 0,
-          cap: 0,
-          fl: 0,
+          mp: newShippingListRow.mp,
+          br: newShippingListRow.br,
+          cap: newShippingListRow.cap,
+          fl: newShippingListRow.fl,
           pulled: false,
           packaged: false,
           gone: false,
           ready: false,
-          weight: 0,
-          dims: '',
+          weight: handwrittenItems[i].weight,
+          dims: `${length}x${width}x${height}`,
           day: date.getDay(),
           list_path: path
         };
