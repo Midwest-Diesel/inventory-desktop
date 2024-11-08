@@ -25,9 +25,11 @@ export default function Handwrittens() {
   const [currentPage, setCurrentPage] = useState(0);
 
   useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const id = urlParams.get('id');
-    if (id) location.replace(`/handwrittens/${id}`);
+    const id = localStorage.getItem('handwrittenId');
+    if (id) {
+      location.replace(`/handwrittens/${id}`);
+      localStorage.removeItem('handwrittenId');
+    }
     console.log(id);
 
     const fetchData = async () => {
