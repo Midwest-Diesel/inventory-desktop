@@ -29,7 +29,7 @@ export default function ShippingListDialog({ open, setOpen, handwrittenItems, ne
     const shipType = await getFreightCarrierFromShipVia(newShippingListRow.shipVia);
     const path = (isDateInCurrentOrNextWeek(date) === 'current' ?
       '\\\\MWD1-SERVER/Server/shipping_list_current_week.xlsx'
-    :
+      :
       '\\\\MWD1-SERVER/Server/shipping_list_next_week.xlsx'
     );
     if (isCondensed) {

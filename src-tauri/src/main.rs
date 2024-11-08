@@ -517,8 +517,8 @@ fn add_to_shipping_list(new_shipping_list_row: ShippingListRow) {
     if new_shipping_list_row.packaged {"x"} else {""},
     if new_shipping_list_row.gone {"x"} else {""},
     if new_shipping_list_row.ready {"x"} else {""},
-    new_shipping_list_row.weight,
-    new_shipping_list_row.dims,
+    if new_shipping_list_row.weight > 0 {new_shipping_list_row.weight.to_string()} else {"".to_string()},
+    if new_shipping_list_row.dims == "0x0x0" {"".to_string()} else {new_shipping_list_row.dims},
     new_shipping_list_row.handwritten_id
   );
 

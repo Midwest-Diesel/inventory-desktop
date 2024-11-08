@@ -14,7 +14,6 @@ import { getCustomerByName } from "@/scripts/controllers/customerController";
 import { getAllSources } from "@/scripts/controllers/sourcesController";
 import { editCoreCustomer } from "@/scripts/controllers/coresController";
 import { confirm } from "@tauri-apps/api/dialog";
-import { invoke } from "@tauri-apps/api/tauri";
 import ShippingListDialog from "./Dialogs/handwrittens/ShippingListDialog";
 
 interface Props {
