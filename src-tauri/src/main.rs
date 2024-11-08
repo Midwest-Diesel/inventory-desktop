@@ -130,7 +130,12 @@ fn create_directories() {
 #[tauri::command]
 async fn open_window(app: tauri::AppHandle, window_args: WindowArgs) {
   let title = window_args.title;
-  let url = format!("http://localhost:3000{}", window_args.url).clone();
+  let base_url = if std::env::var("NODE_ENV").unwrap_or_default() == "production" {
+    "https://tauri.localhost"
+  } else {
+    "http://localhost:3000"
+  };
+  let url = format!("{}{}", base_url, window_args.url).clone();
 
   tauri::WindowBuilder::new(
     &app,
