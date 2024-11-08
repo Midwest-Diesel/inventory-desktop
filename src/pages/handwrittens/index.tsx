@@ -25,13 +25,6 @@ export default function Handwrittens() {
   const [currentPage, setCurrentPage] = useState(0);
 
   useEffect(() => {
-    const id = localStorage.getItem('handwrittenId');
-    if (id) {
-      location.replace(`/handwrittens/${id}`);
-      localStorage.removeItem('handwrittenId');
-    }
-    console.log(id);
-
     const fetchData = async () => {
       const pageCount = await getHandwrittenCount();
       setHandwrittenCount(pageCount);
