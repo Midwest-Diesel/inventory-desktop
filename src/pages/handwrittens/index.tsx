@@ -28,6 +28,7 @@ export default function Handwrittens() {
     const urlParams = new URLSearchParams(window.location.search);
     const id = urlParams.get('id');
     if (id) location.replace(`/handwrittens/${id}`);
+    console.log(id);
 
     const fetchData = async () => {
       const pageCount = await getHandwrittenCount();
