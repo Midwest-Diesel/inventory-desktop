@@ -146,7 +146,7 @@ export default function QuoteList({ selectHandwrittenOpen, setSelectHandwrittenO
               <th>Description</th>
               <th>Unit Price</th>
               <th>Total Price</th>
-              ${quote.part ? `<th>Condition</th>` : ''}
+              <th>Condition</th>
             </tr>
           </thead>
           <tbody>
@@ -156,7 +156,7 @@ export default function QuoteList({ selectHandwrittenOpen, setSelectHandwrittenO
               <td>${quoteArgs.desc}</td>
               <td>${formatCurrency(quoteArgs.unitPrice)}</td>
               <td>${formatCurrency(quoteArgs.qty * quoteArgs.unitPrice)}</td>
-              ${quote.part ? `<td>${quote.part.condition}</td>` : ''}
+              <td>${quote.part ? quote.part.condition : ''}</td>
             </tr>
             ${quote.piggybackQuotes.map((quote: PiggybackQuote) => {
               if (quote.addToEmail) {  
@@ -167,7 +167,7 @@ export default function QuoteList({ selectHandwrittenOpen, setSelectHandwrittenO
                     <td>${quote.desc}</td>
                     <td>${formatCurrency(quote.price)}</td>
                     <td>${formatCurrency(quoteArgs.qty * quote.price)}</td>
-                    ${quote.part ? `<td>${quote.part.condition}</td>` : ''}
+                    <td>${quote.part ? quote.part.condition : ''}</td>
                   </tr>
                 `);
               }
