@@ -54,7 +54,7 @@ export default function ShippingListDialog({ open, setOpen, handwrittenItems, ne
         packaged: false,
         gone: false,
         ready: false,
-        weight,
+        weight: weight || 0,
         dims: `${length}x${width}x${height}`,
         day: date.getDay(),
         list_path: path
@@ -82,7 +82,7 @@ export default function ShippingListDialog({ open, setOpen, handwrittenItems, ne
           packaged: false,
           gone: false,
           ready: false,
-          weight: handwrittenItems[i].weight,
+          weight: handwrittenItems[i].weight || 0,
           dims: `${length}x${width}x${height}`,
           day: date.getDay(),
           list_path: path
