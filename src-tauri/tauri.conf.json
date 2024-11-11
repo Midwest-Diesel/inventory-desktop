@@ -9,7 +9,7 @@
   },
   "package": {
     "productName": "Inventory",
-    "version": "0.7.10"
+    "version": "0.7.11"
   },
   "tauri": {
     "allowlist": {
@@ -62,7 +62,8 @@
     "security": {
       "csp": null,
       "dangerousRemoteDomainIpcAccess": [
-        {"domain": "https://tauri.localhost", "windows": ["Handwritten", "Handwrittens"]}
+        {"domain": "https://tauri.localhost/*", "windows": ["Handwritten", "Handwrittens"]},
+        {"domain": "http://localhost:3000/*", "windows": ["Handwritten", "Handwrittens"]}
       ]
     },
     "updater": {

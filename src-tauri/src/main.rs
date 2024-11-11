@@ -135,8 +135,6 @@ async fn open_window(app: tauri::AppHandle, window_args: WindowArgs) {
   } else {
     "http://localhost:3000"
   };
-  // TODO: npm run publish to see base_url on production
-  println!("{}", base_url);
   let url = format!("{}{}", base_url, window_args.url).clone();
 
   tauri::WindowBuilder::new(
