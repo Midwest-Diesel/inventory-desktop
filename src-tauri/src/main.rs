@@ -18,7 +18,8 @@ struct LatestVersionInfo {
 #[derive(Deserialize, Serialize)]
 struct WindowArgs {
   title: String,
-  url: String
+  url: String,
+  is_prod: bool
 }
 
 #[derive(Deserialize, Serialize)]
@@ -131,12 +132,11 @@ fn create_directories() {
 #[tauri::command]
 async fn open_window(app: tauri::AppHandle, window_args: WindowArgs) {
   let title = window_args.title;
-  let base_url = if std::env::var("NODE_ENV").unwrap_or_default() == "production" {
+  let base_url = if window_args.is_prod {
     "https://tauri.localhost"
   } else {
-    "https://tauri.localhost"
+    "http://localhost:3000"
   };
-  println!("ENVIRONMENT: {}", std::env::var("NODE_ENV").unwrap_or_default() == "production");
   let url = format!("{}{}", base_url, window_args.url).clone();
   let url = Url::parse(&url).expect("Invalid URL");
 

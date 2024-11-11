@@ -16,7 +16,7 @@ export default function App({ Component, pageProps }: any) {
           e.preventDefault();
           e.stopImmediatePropagation();
           const url = link.href;
-          invoke('open_window', { windowArgs: { title: 'Inventory', url }});
+          invoke('open_window', { windowArgs: { title: 'Inventory', url, is_prod: process.env.NODE_ENV === 'production' }});
         }
       }
     });

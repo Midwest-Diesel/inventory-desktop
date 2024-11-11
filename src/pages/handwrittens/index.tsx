@@ -14,9 +14,7 @@ import { useEffect, useState } from "react";
 
 
 export default function Handwrittens() {
-  const queryString = window.location.search;
-  const urlParams = new URLSearchParams(queryString);
-  const id = urlParams.get('id');
+  const id = location.href.split('/').pop();
 
   const [user] = useAtom<User>(userAtom);
   const [handwrittensData] = useState<Handwritten[]>([]);
@@ -43,6 +41,7 @@ export default function Handwrittens() {
 
   useEffect(() => {
     console.log(id);
+    if (!id) return;
     location.replace(`/handwrittens/${id}`);
   }, [id]);
 
