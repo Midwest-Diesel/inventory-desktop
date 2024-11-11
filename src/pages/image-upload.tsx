@@ -2,13 +2,15 @@ import { Layout } from "@/components/Layout";
 import Button from "@/components/Library/Button";
 import Input from "@/components/Library/Input";
 import Loading from "@/components/Library/Loading";
+import { invoke } from "@tauri-apps/api/tauri";
 import { FormEvent, useState } from "react";
+
 
 export default function ImageUpload() {
   const [partImages, setPartImages] = useState<File[]>(null);
   const [stockNumImages, setStockNumImages] = useState<File[]>(null);
-  const [partImagesNames, setPartImagesNames] = useState('');
-  const [stockNumImagesNames, setStockNumImagesNames] = useState('');
+  const [partImagesName, setPartImagesName] = useState('');
+  const [stockNumImagesName, setStockNumImagesName] = useState('');
   const [isUploadingParts, setIsUploadingParts] = useState(false);
   const [isUploadingStockNums, setIsUploadingStockNums] = useState(false);
 
@@ -16,10 +18,12 @@ export default function ImageUpload() {
     e.preventDefault();
     setIsUploadingParts(true);
     for (const image of partImages) {
-      // await addImageToSupabase('parts', `${partImagesNames}/${image.name}`, image);
+      const arrayBuffer = await image.arrayBuffer();
+      const content = Array.from(new Uint8Array(arrayBuffer));
+      await invoke('upload_file', { fileArgs: { file: content, dir: `\\\\MWD1-SERVER/Server/Pictures/parts_dir/${partImagesName}`, name: image.name }});
     }
     setPartImages(null);
-    setPartImagesNames('');
+    setPartImagesName('');
     setIsUploadingParts(false);
   };
 
@@ -27,17 +31,18 @@ export default function ImageUpload() {
     e.preventDefault();
     setIsUploadingStockNums(true);
     for (const image of stockNumImages) {
-      // await addImageToSupabase('stockNum', `${stockNumImagesNames}/${image.name}`, image);
+      const arrayBuffer = await image.arrayBuffer();
+      const content = Array.from(new Uint8Array(arrayBuffer));
+      await invoke('upload_file', { fileArgs: { file: content, dir: `\\\\MWD1-SERVER/Server/Pictures/sn_specific/${stockNumImagesName}`, name: image.name }});
     }
     setStockNumImages(null);
-    setStockNumImagesNames('');
+    setStockNumImagesName('');
     setIsUploadingStockNums(false);
   };
 
 
   return (
     <Layout title="Image Upload">
-      {/* <button onClick={() => uploadFiles()}>Upload Photos</button> */}
       <div className="image-upload">
         {isUploadingParts ?
           <Loading />
@@ -48,8 +53,8 @@ export default function ImageUpload() {
               labelClass="image-upload__name-input"
               label="Folder Name"
               variant={['small', 'thin', 'label-stack', 'label-fit-content']}
-              value={partImagesNames}
-              onChange={(e: any) => setPartImagesNames(e.target.value)}
+              value={partImagesName}
+              onChange={(e: any) => setPartImagesName(e.target.value)}
               required
             />
             <Input
@@ -72,8 +77,8 @@ export default function ImageUpload() {
               labelClass="image-upload__name-input"
               label="Folder Name"
               variant={['small', 'thin', 'label-stack', 'label-fit-content']}
-              value={stockNumImagesNames}
-              onChange={(e: any) => setStockNumImagesNames(e.target.value)}
+              value={stockNumImagesName}
+              onChange={(e: any) => setStockNumImagesName(e.target.value)}
               required
             />
             <Input

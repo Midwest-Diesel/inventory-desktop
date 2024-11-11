@@ -2,11 +2,12 @@
 
 use serde::{Deserialize, Serialize};
 use tauri::Manager;
+use std::fmt::format;
 use std::process::Command;
 use std::fs::{write};
 use std::{fs::File, io::copy};
 use reqwest::Client;
-use std::path::Path;
+use std::path::{Path, PathBuf};
 use zip::read::ZipArchive;
 use base64::{engine::general_purpose::STANDARD as BASE64_STANDARD, Engine};
 use url::Url;
@@ -97,6 +98,13 @@ struct ShippingListRow {
   list_path: String
 }
 
+#[derive(Deserialize, Serialize)]
+struct FileArgs {
+  file: Vec<u8>,
+  dir: String,
+  name: String
+}
+
 
 #[tokio::main]
 async fn main() {
@@ -115,7 +123,8 @@ async fn main() {
       attach_to_existing_email,
       convert_img_to_base64,
       upload_email_stuff_files,
-      add_to_shipping_list
+      add_to_shipping_list,
+      upload_file
     ])
     .run(tauri::generate_context!())
     .expect("error while running tauri application");
@@ -543,4 +552,16 @@ fn add_to_shipping_list(new_shipping_list_row: ShippingListRow) {
   cmd.arg(temp_vbs_path);
   cmd.output().expect("Failed to update shipping list");
   let _ = std::fs::remove_file(temp_vbs_path);
+}
+
+#[tauri::command]
+fn upload_file(file_args: FileArgs) -> Result<(), String> {
+  if !std::path::Path::new(&file_args.dir).exists() {
+    if let Err(e) = std::fs::create_dir_all(&file_args.dir) {
+        return Err(format!("Error creating directory: {}", e));
+    }
+  }
+  let file_path = format!("{}/{}", file_args.dir, file_args.name);
+  let _ = std::fs::write(file_path, &file_args.file).map_err(|e| e.to_string());
+  Ok(())
 }
