@@ -1,6 +1,7 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 use serde::{Deserialize, Serialize};
+use tauri::Manager;
 use std::process::Command;
 use std::fs::{write};
 use std::{fs::File, io::copy};
@@ -149,8 +150,12 @@ async fn open_window(app: tauri::AppHandle, window_args: WindowArgs) {
     .build()
     .unwrap();
 
-  let full_url = format!("{}{}", base_url, window_args.url);
-  new_window.eval(&format!("window.location.replace('{}');", full_url)).unwrap();
+  new_window.clone().on_window_event(move |event| {
+    if let tauri::WindowEvent::Focused(_) = event {
+      let full_url = format!("{}{}", base_url, window_args.url);
+      app.emit_to("Handwritten", "change-page", full_url).unwrap();
+    }
+  });
 }
 
 #[tauri::command]

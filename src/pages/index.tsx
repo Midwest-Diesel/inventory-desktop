@@ -11,6 +11,7 @@ import RecentPartSearches from "@/components/Dashboard/RecentPartSearches";
 import RecentQuotes from "@/components/Dashboard/RecentQuotes";
 import { addHandwrittenItem, editHandwrittenOrderNotes } from "@/scripts/controllers/handwrittensController";
 import SelectHandwrittenDialog from "@/components/Dialogs/dashboard/SelectHandwrittenDialog";
+import { listen } from '@tauri-apps/api/event';
 
 
 export default function Home() {
@@ -27,6 +28,12 @@ export default function Home() {
     };
     fetchData();
   }, [user]);
+
+  useEffect(() => {
+    listen<string>('change-page', (e) => {
+      location.replace(e.payload);
+    });
+  }, []);
 
   const handleAddToHandwritten = async (id: number, desc: string, qty: number, price: number, warranty: string) => {
     const newItem = {
