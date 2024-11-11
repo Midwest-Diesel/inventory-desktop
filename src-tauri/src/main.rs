@@ -137,18 +137,20 @@ async fn open_window(app: tauri::AppHandle, window_args: WindowArgs) {
   } else {
     "http://localhost:3000"
   };
-  let url = format!("{}{}", base_url, window_args.url).clone();
-  let url = Url::parse(&url).expect("Invalid URL");
+  let url = Url::parse(&base_url).expect("Invalid URL");
 
-  tauri::WindowBuilder::new(
+  let new_window = tauri::WindowBuilder::new(
     &app,
     title.clone(),
-    tauri::WindowUrl::External(url)
+    tauri::WindowUrl::External(url.into())
   )
     .title(title)
     .inner_size(1500.0, 800.0)
     .build()
     .unwrap();
+
+  let full_url = format!("{}{}", base_url, window_args.url);
+  new_window.eval(&format!("window.location.replace('{}');", full_url)).unwrap();
 }
 
 #[tauri::command]

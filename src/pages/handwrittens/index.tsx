@@ -14,8 +14,6 @@ import { useEffect, useState } from "react";
 
 
 export default function Handwrittens() {
-  const id = location.href.split('/').pop();
-
   const [user] = useAtom<User>(userAtom);
   const [handwrittensData] = useState<Handwritten[]>([]);
   const [handwrittens, setHandwrittens] = useState<Handwritten[]>([]);
@@ -38,12 +36,6 @@ export default function Handwrittens() {
     };
     fetchData();
   }, []);
-
-  useEffect(() => {
-    console.log(id);
-    if (!id) return;
-    location.replace(`/handwrittens/${id}`);
-  }, [id]);
 
   const handleChangePage = async (data: any, page: number) => {
     if (page === currentPage) return;
