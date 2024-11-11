@@ -12,9 +12,11 @@ import RecentQuotes from "@/components/Dashboard/RecentQuotes";
 import { addHandwrittenItem, editHandwrittenOrderNotes } from "@/scripts/controllers/handwrittensController";
 import SelectHandwrittenDialog from "@/components/Dialogs/dashboard/SelectHandwrittenDialog";
 import { listen } from '@tauri-apps/api/event';
+import { useRouter } from 'next/router';
 
 
 export default function Home() {
+  const router = useRouter();
   const [user] = useAtom<User>(userAtom);
   const [recentPartSearches, setRecentPartSearches] = useAtom<RecentPartSearch[]>(recentPartSearchesAtom);
   const [recentQuoteSearches, setRecentQuoteSearches] = useAtom<RecentQuoteSearch[]>(recentQuotesAtom);
@@ -31,7 +33,7 @@ export default function Home() {
 
   useEffect(() => {
     listen<string>('change-page', (e) => {
-      location.replace(e.payload);
+      router.replace(e.payload);
     });
   }, []);
 
