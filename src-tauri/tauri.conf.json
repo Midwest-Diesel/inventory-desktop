@@ -9,14 +9,14 @@
   },
   "package": {
     "productName": "Inventory",
-    "version": "0.7.12"
+    "version": "0.7.13"
   },
   "tauri": {
     "allowlist": {
       "all": false,
-      "shell": {
-        "all": true
-      },
+      "shell": {"all": true},
+      "window": { "all": true },
+      "http": { "all": true },
       "dialog": {
         "all": true,
         "ask": true,
@@ -62,8 +62,12 @@
     "security": {
       "csp": null,
       "dangerousRemoteDomainIpcAccess": [
-        {"domain": "https://tauri.localhost/handwrittens/*", "windows": ["Handwritten", "Handwrittens"]},
-        {"domain": "http://localhost:3000/handwrittens/*", "windows": ["Handwritten", "Handwrittens"]},
+        {"domain": "https://tauri.localhost/*", "windows": ["Handwritten", "Handwrittens"]},
+        {"domain": "https://tauri.localhost", "windows": ["Handwritten", "Handwrittens"]},
+        {"domain": "https://tauri.localhost/", "windows": ["Handwritten", "Handwrittens"]},
+        {"domain": "http://localhost:3000/*", "windows": ["Handwritten", "Handwrittens"]},
+        {"domain": "http://localhost:3000", "windows": ["Handwritten", "Handwrittens"]},
+        {"domain": "http://localhost:3000/", "windows": ["Handwritten", "Handwrittens"]},
         {"domain": "http://localhost:3000/handwrittens/46316", "windows": ["Handwritten", "Handwrittens"]}
       ]
     },
