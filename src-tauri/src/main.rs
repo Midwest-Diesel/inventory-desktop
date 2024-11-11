@@ -8,6 +8,7 @@ use reqwest::Client;
 use std::path::Path;
 use zip::read::ZipArchive;
 use base64::{engine::general_purpose::STANDARD as BASE64_STANDARD, Engine};
+use url::Url;
 
 #[derive(Deserialize, Debug)]
 struct LatestVersionInfo {
@@ -136,11 +137,12 @@ async fn open_window(app: tauri::AppHandle, window_args: WindowArgs) {
     "https://tauri.localhost"
   };
   let url = format!("{}{}", base_url, window_args.url).clone();
+  let url = Url::parse(&url).expect("Invalid URL");
 
   tauri::WindowBuilder::new(
     &app,
     title.clone(),
-    tauri::WindowUrl::App(url.into())
+    tauri::WindowUrl::External(url)
   )
     .title(title)
     .inner_size(1500.0, 800.0)
