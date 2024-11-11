@@ -31,8 +31,7 @@ export default function Home() {
 
   useEffect(() => {
     listen<string>('change-page', (e) => {
-      console.log(e);
-      // location.replace(e.payload);
+      location.replace(e.payload);
     });
   }, []);
 

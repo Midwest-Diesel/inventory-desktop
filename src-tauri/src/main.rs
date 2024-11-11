@@ -152,8 +152,7 @@ async fn open_window(app: tauri::AppHandle, window_args: WindowArgs) {
 
   new_window.clone().on_window_event(move |event| {
     if let tauri::WindowEvent::Focused(_) = event {
-      let full_url = format!("{}{}", base_url, window_args.url);
-      app.emit_to("Handwritten", "change-page", full_url).unwrap();
+      app.emit_to("Handwritten", "change-page", window_args.url.to_string()).unwrap();
     }
   });
 }
