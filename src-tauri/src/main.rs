@@ -136,6 +136,7 @@ async fn open_window(app: tauri::AppHandle, window_args: WindowArgs) {
   } else {
     "https://tauri.localhost"
   };
+  println!("ENVIRONMENT: {}", std::env::var("NODE_ENV").unwrap_or_default() == "production");
   let url = format!("{}{}", base_url, window_args.url).clone();
   let url = Url::parse(&url).expect("Invalid URL");
 

@@ -14,6 +14,10 @@ import { useEffect, useState } from "react";
 
 
 export default function Handwrittens() {
+  const queryString = window.location.search;
+  const urlParams = new URLSearchParams(queryString);
+  const id = urlParams.get('id');
+
   const [user] = useAtom<User>(userAtom);
   const [handwrittensData] = useState<Handwritten[]>([]);
   const [handwrittens, setHandwrittens] = useState<Handwritten[]>([]);
@@ -36,6 +40,11 @@ export default function Handwrittens() {
     };
     fetchData();
   }, []);
+
+  useEffect(() => {
+    console.log(id);
+    location.replace(`/handwrittens/${id}`);
+  }, [id]);
 
   const handleChangePage = async (data: any, page: number) => {
     if (page === currentPage) return;
