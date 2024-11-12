@@ -10,68 +10,70 @@ import { getCompareDataById } from "@/scripts/controllers/compareConsistControll
 import { getCustomerById, getCustomers } from "@/scripts/controllers/customerController";
 import { useAtom } from "jotai";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 
 export default function CompareConsist() {
+  const router = useRouter();
   const [customerData, setCustomersData] = useAtom<Customer[]>(customersAtom);
   const [customer, setCustomer] = useState<Customer>(null);
-  const [company, setCompany] = useState<string>('');
-  const [model, setModel] = useState<string>('');
-  const [serialNum, setSerialNum] = useState<string>('');
-  const [arrNum, setArrNum] = useState<string>('');
-  const [horsePower, setHorsePower] = useState<string>('');
-  const [changeCustomer, setChangeCustomer] = useState<boolean>(false);
-  const [notes, setNotes] = useState<string>('');
+  const [company, setCompany] = useState('');
+  const [model, setModel] = useState('');
+  const [serialNum, setSerialNum] = useState('');
+  const [arrNum, setArrNum] = useState('');
+  const [horsePower, setHorsePower] = useState('');
+  const [changeCustomer, setChangeCustomer] = useState(false);
+  const [notes, setNotes] = useState('');
 
-  const [newHead, setNewHead] = useState<string>('');
-  const [newBlock, setNewBlock] = useState<string>('');
-  const [newCrank, setNewCrank] = useState<string>('');
-  const [newPistons, setNewPistons] = useState<string>('');
-  const [newCam, setNewCam] = useState<string>('');
-  const [newInjectors, setNewInjectors] = useState<string>('');
-  const [newSingleTurbo, setNewSingleTurbo] = useState<string>('');
-  const [newFWH, setNewFWH] = useState<string>('');
-  const [newFrontHsng, setNewFrontHsng] = useState<string>('');
-  const [newOilPan, setNewOilPan] = useState<string>('');
-  const [newHPTurbo, setNewHPTurbo] = useState<string>('');
-  const [newLPTurbo, setNewLPTurbo] = useState<string>('');
-  const [newHEUIPump, setNewHEUIPump] = useState<string>('');
-  const [newExhMnfld, setNewExhMnfld] = useState<string>('');
-  const [newOilPump, setNewOilPump] = useState<string>('');
-  const [newWtrPump, setNewWtrPump] = useState<string>('');
+  const [newHead, setNewHead] = useState('');
+  const [newBlock, setNewBlock] = useState('');
+  const [newCrank, setNewCrank] = useState('');
+  const [newPistons, setNewPistons] = useState('');
+  const [newCam, setNewCam] = useState('');
+  const [newInjectors, setNewInjectors] = useState('');
+  const [newSingleTurbo, setNewSingleTurbo] = useState('');
+  const [newFWH, setNewFWH] = useState('');
+  const [newFrontHsng, setNewFrontHsng] = useState('');
+  const [newOilPan, setNewOilPan] = useState('');
+  const [newHPTurbo, setNewHPTurbo] = useState('');
+  const [newLPTurbo, setNewLPTurbo] = useState('');
+  const [newHEUIPump, setNewHEUIPump] = useState('');
+  const [newExhMnfld, setNewExhMnfld] = useState('');
+  const [newOilPump, setNewOilPump] = useState('');
+  const [newWtrPump, setNewWtrPump] = useState('');
   
-  const [remanHead, setRemanHead] = useState<string>('');
-  const [remanBlock, setRemanBlock] = useState<string>('');
-  const [remanCrank, setRemanCrank] = useState<string>('');
-  const [remanPistons, setRemanPistons] = useState<string>('');
-  const [remanCam, setRemanCam] = useState<string>('');
-  const [remanInjectors, setRemanInjectors] = useState<string>('');
-  const [remanSingleTurbo, setRemanSingleTurbo] = useState<string>('');
-  const [remanFWH, setRemanFWH] = useState<string>('');
-  const [remanFrontHsng, setRemanFrontHsng] = useState<string>('');
-  const [remanOilPan, setRemanOilPan] = useState<string>('');
-  const [remanHPTurbo, setRemanHPTurbo] = useState<string>('');
-  const [remanLPTurbo, setRemanLPTurbo] = useState<string>('');
-  const [remanHEUIPump, setRemanHEUIPump] = useState<string>('');
-  const [remanExhMnfld, setRemanExhMnfld] = useState<string>('');
-  const [remanOilPump, setRemanOilPump] = useState<string>('');
-  const [remanWtrPump, setRemanWtrPump] = useState<string>('');
+  const [remanHead, setRemanHead] = useState('');
+  const [remanBlock, setRemanBlock] = useState('');
+  const [remanCrank, setRemanCrank] = useState('');
+  const [remanPistons, setRemanPistons] = useState('');
+  const [remanCam, setRemanCam] = useState('');
+  const [remanInjectors, setRemanInjectors] = useState('');
+  const [remanSingleTurbo, setRemanSingleTurbo] = useState('');
+  const [remanFWH, setRemanFWH] = useState('');
+  const [remanFrontHsng, setRemanFrontHsng] = useState('');
+  const [remanOilPan, setRemanOilPan] = useState('');
+  const [remanHPTurbo, setRemanHPTurbo] = useState('');
+  const [remanLPTurbo, setRemanLPTurbo] = useState('');
+  const [remanHEUIPump, setRemanHEUIPump] = useState('');
+  const [remanExhMnfld, setRemanExhMnfld] = useState('');
+  const [remanOilPump, setRemanOilPump] = useState('');
+  const [remanWtrPump, setRemanWtrPump] = useState('');
 
-  const [headChecked, setHeadChecked] = useState<boolean>(false);
-  const [blockChecked, setBlockChecked] = useState<boolean>(false);
-  const [crankChecked, setCrankChecked] = useState<boolean>(false);
-  const [pistonsChecked, setPistonsChecked] = useState<boolean>(false);
-  const [camChecked, setCamChecked] = useState<boolean>(false);
-  const [injectorsChecked, setInjectorsChecked] = useState<boolean>(false);
-  const [singleTurboChecked, setSingleTurboChecked] = useState<boolean>(false);
-  const [fwhChecked, setFwhChecked] = useState<boolean>(false);
-  const [frontHousingChecked, setFrontHousingChecked] = useState<boolean>(false);
-  const [oilPanChecked, setOilPanChecked] = useState<boolean>(false);
-  const [hpTurboChecked, setHpTurboChecked] = useState<boolean>(false);
-  const [lpTurboChecked, setLpTurboChecked] = useState<boolean>(false);
-  const [heuiPumpChecked, setHeuiPumpChecked] = useState<boolean>(false);
-  const [exhManChecked, setExhManChecked] = useState<boolean>(false);
-  const [oilPumpChecked, setOilPumpChecked] = useState<boolean>(false);
-  const [waterPumpChecked, setWaterPumpChecked] = useState<boolean>(false);
+  const [headChecked, setHeadChecked] = useState(false);
+  const [blockChecked, setBlockChecked] = useState(false);
+  const [crankChecked, setCrankChecked] = useState(false);
+  const [pistonsChecked, setPistonsChecked] = useState(false);
+  const [camChecked, setCamChecked] = useState(false);
+  const [injectorsChecked, setInjectorsChecked] = useState(false);
+  const [singleTurboChecked, setSingleTurboChecked] = useState(false);
+  const [fwhChecked, setFwhChecked] = useState(false);
+  const [frontHousingChecked, setFrontHousingChecked] = useState(false);
+  const [oilPanChecked, setOilPanChecked] = useState(false);
+  const [hpTurboChecked, setHpTurboChecked] = useState(false);
+  const [lpTurboChecked, setLpTurboChecked] = useState(false);
+  const [heuiPumpChecked, setHeuiPumpChecked] = useState(false);
+  const [exhManChecked, setExhManChecked] = useState(false);
+  const [oilPumpChecked, setOilPumpChecked] = useState(false);
+  const [waterPumpChecked, setWaterPumpChecked] = useState(false);
 
   const [customerEngineData, setCustomerEngineData] = useState<CustomerEngineData>(null);
   const [mwdEngine, setMwdEngine] = useState<Engine>(null);
@@ -94,7 +96,7 @@ export default function CompareConsist() {
       if (customerData.length === 0) setCustomersData(await getCustomers());
     };
     fetchData();
-  }, []);
+  }, [params.c]);
 
   const openSideBySide = (engine: Engine) => {
     setCustomerEngineData(getEngineData());
@@ -103,49 +105,65 @@ export default function CompareConsist() {
 
   const getEngineData = () => {
     const data = {
-      serialNumber: serialNum,
-      arrangementNumber: arrNum,
-      newHead: headChecked ? newHead : undefined,
-      newBlock: blockChecked ? newBlock : undefined,
-      newCrank: crankChecked ? newCrank : undefined,
-      newPistons: pistonsChecked ? newPistons : undefined,
-      newCam: camChecked ? newCam : undefined,
-      newInjectors: injectorsChecked ? newInjectors : undefined,
-      newSingleTurbo: singleTurboChecked ? newSingleTurbo : undefined,
-      newFWH: fwhChecked ? newFWH : undefined,
-      newFrontHsng: frontHousingChecked ? newFrontHsng : undefined,
-      newOilPan: oilPanChecked ? newOilPan : undefined,
-      newHPTurbo: hpTurboChecked ? newHPTurbo : undefined,
-      newLPTurbo: lpTurboChecked ? newLPTurbo : undefined,
-      newHEUIPump: heuiPumpChecked ? newHEUIPump : undefined,
-      newExhMnfld: exhManChecked ? newExhMnfld : undefined,
-      newOilPump: oilPumpChecked ? newOilPump : undefined,
-      newWtrPump: waterPumpChecked ? newWtrPump : undefined,
-      remanHead: headChecked ? remanHead : undefined,
-      remanBlock: blockChecked ? remanBlock : undefined,
-      remanCrank: crankChecked ? remanCrank : undefined,
-      remanPistons: pistonsChecked ? remanPistons : undefined,
-      remanCam: camChecked ? remanCam : undefined,
-      remanInjectors: injectorsChecked ? remanInjectors : undefined,
-      remanSingleTurbo: singleTurboChecked ? remanSingleTurbo : undefined,
-      remanFWH: fwhChecked ? remanFWH : undefined,
-      remanFrontHsng: frontHousingChecked ? remanFrontHsng : undefined,
-      remanOilPan: oilPanChecked ? remanOilPan : undefined,
-      remanHPTurbo: hpTurboChecked ? remanHPTurbo : undefined,
-      remanLPTurbo: lpTurboChecked ? remanLPTurbo : undefined,
-      remanHEUIPump: heuiPumpChecked ? remanHEUIPump : undefined,
-      remanExhMnfld: exhManChecked ? remanExhMnfld : undefined,
-      remanOilPump: oilPumpChecked ? remanOilPump : undefined,
-      remanWtrPump: waterPumpChecked ? remanWtrPump : undefined
+      serialNum,
+      arrNum,
+      newHead: headChecked ? newHead : '',
+      headChecked,
+      newBlock: blockChecked ? newBlock : '',
+      blockChecked,
+      newCrank: crankChecked ? newCrank : '',
+      crankChecked,
+      newPistons: pistonsChecked ? newPistons : '',
+      pistonsChecked,
+      newCam: camChecked ? newCam : '',
+      camChecked,
+      newInjectors: injectorsChecked ? newInjectors : '',
+      injectorsChecked,
+      newSingleTurbo: singleTurboChecked ? newSingleTurbo : '',
+      singleTurboChecked,
+      newFWH: fwhChecked ? newFWH : '',
+      fwhChecked,
+      newFrontHsng: frontHousingChecked ? newFrontHsng : '',
+      frontHousingChecked,
+      newOilPan: oilPanChecked ? newOilPan : '',
+      oilPanChecked,
+      newHPTurbo: hpTurboChecked ? newHPTurbo : '',
+      hpTurboChecked,
+      newLPTurbo: lpTurboChecked ? newLPTurbo : '',
+      lpTurboChecked,
+      newHEUIPump: heuiPumpChecked ? newHEUIPump : '',
+      heuiPumpChecked,
+      newExhMnfld: exhManChecked ? newExhMnfld : '',
+      exhManChecked,
+      newOilPump: oilPumpChecked ? newOilPump : '',
+      oilPumpChecked,
+      newWtrPump: waterPumpChecked ? newWtrPump : '',
+      waterPumpChecked,
+      remanHead: headChecked ? remanHead : '',
+      remanBlock: blockChecked ? remanBlock : '',
+      remanCrank: crankChecked ? remanCrank : '',
+      remanPistons: pistonsChecked ? remanPistons : '',
+      remanCam: camChecked ? remanCam : '',
+      remanInjectors: injectorsChecked ? remanInjectors : '',
+      remanSingleTurbo: singleTurboChecked ? remanSingleTurbo : '',
+      remanFWH: fwhChecked ? remanFWH : '',
+      remanFrontHsng: frontHousingChecked ? remanFrontHsng : '',
+      remanOilPan: oilPanChecked ? remanOilPan : '',
+      remanHPTurbo: hpTurboChecked ? remanHPTurbo : '',
+      remanLPTurbo: lpTurboChecked ? remanLPTurbo : '',
+      remanHEUIPump: heuiPumpChecked ? remanHEUIPump : '',
+      remanExhMnfld: exhManChecked ? remanExhMnfld : '',
+      remanOilPump: oilPumpChecked ? remanOilPump : '',
+      remanWtrPump: waterPumpChecked ? remanWtrPump : ''
     };
-    return Object.fromEntries(Object.entries(data).map((d) => d[1] ? d : [d[0], undefined])) as any;
+    return Object.fromEntries(Object.entries(data).map((d) => d[1] ? d : [d[0], null])) as any;
   };
 
   const handleChangeCustomer = (value: string) => {
     setCompany(value);
     setChangeCustomer(false);
     const id = customerData.find((c) => c.company === value).id;
-    location.replace(`/compare-consist?c=${id}`);
+    router.replace(`/compare-consist?c=${id}`);
   };
 
   const loadCompareData = (data: CompareConsist) => {
@@ -208,15 +226,13 @@ export default function CompareConsist() {
         {!mwdEngine ?
           <>
             <div className="compare-consist__top-bar">
-              <div>
-                <CustomerSelect
-                  label="Customer"
-                  variant={['label-stack', 'label-bold']}
-                  value={company}
-                  onChange={(value: any) => handleChangeCustomer(value)}
-                  maxHeight="15rem"
-                />
-              </div>
+              <CustomerSelect
+                label="Customer"
+                variant={['label-stack', 'label-bold']}
+                value={company}
+                onChange={(value: any) => handleChangeCustomer(value)}
+                maxHeight="15rem"
+              />
               {/* <Select
                 label="Model"
                 variant={['label-stack']}
@@ -244,19 +260,19 @@ export default function CompareConsist() {
                 <option value="ISX">ISX</option>
                 <option value="M11">M11</option>
                 <option value="M14">M14</option>
-              </Select>
+              </Select> */}
               <Input
                 label="Serial Number"
                 variant={['label-stack', 'label-no-margin', 'thin']}
                 value={serialNum}
                 onChange={(e: any) => setSerialNum(e.target.value)}
-              /> */}
-              {/* <Input
+              />
+              <Input
                 label="Arrangement Number"
                 variant={['label-stack', 'label-no-margin', 'thin']}
                 value={arrNum}
                 onChange={(e: any) => setArrNum(e.target.value)}
-              /> */}
+              />
               {/* <Input
                 label="Horse Power"
                 variant={['label-stack', 'label-no-margin', 'thin', 'x-small']}

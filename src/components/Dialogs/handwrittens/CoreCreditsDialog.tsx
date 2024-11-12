@@ -7,6 +7,7 @@ import { addHandwritten, addHandwrittenItem } from "@/scripts/controllers/handwr
 import { useAtom } from "jotai";
 import { userAtom } from "@/scripts/atoms/state";
 import { confirm } from '@tauri-apps/api/dialog';
+import { useRouter } from "next/router";
 
 interface Props {
   open: boolean
@@ -17,6 +18,7 @@ interface Props {
 
 
 export default function CoreCreditsDialog({ open, setOpen, cores, handwritten }: Props) {
+  const router = useRouter();
   const [user] = useAtom<User>(userAtom);
 
   const handleCredit = async (core: Core) => {
@@ -40,7 +42,7 @@ export default function CoreCreditsDialog({ open, setOpen, cores, handwritten }:
     await addHandwrittenItem(newItem);
     await removeQtyFromCore(core, qty);
     if (core.qty - qty <= 0) await deleteCore(core.id);
-    location.replace(`/handwrittens`);
+    router.replace(`/handwrittens`);
   };
 
   const handleDelete = async (id: number) => {

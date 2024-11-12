@@ -12,12 +12,13 @@ import { formatDate } from "@/scripts/tools/stringUtils";
 import { setTitle } from "@/scripts/tools/utils";
 import { useAtom } from "jotai";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { confirm } from '@tauri-apps/api/dialog';
 
 
 export default function Warranty() {
+  const router = useRouter();
   const params = useParams();
   const [user] = useAtom<User>(userAtom);
   const [warrantyData, setWarrantyData] = useState<Warranty>(null);
@@ -36,7 +37,7 @@ export default function Warranty() {
   const handleDelete = async () => {
     if (user.accessLevel <= 1 || prompt('Type "confirm" to delete this warranty') !== 'confirm') return;
     await deleteWarranty(warrantyData.id);
-    location.replace('/warranties');
+    router.replace('/warranties');
   };
 
   const handleCompleteWarranty = async () => {

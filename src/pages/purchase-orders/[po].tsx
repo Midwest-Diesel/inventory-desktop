@@ -11,13 +11,13 @@ import { deletePurchaseOrder, getPurchaseOrderById, togglePurchaseOrderReceived 
 import { formatDate } from "@/scripts/tools/stringUtils";
 import { setTitle } from "@/scripts/tools/utils";
 import { useAtom } from "jotai";
-import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { confirm } from '@tauri-apps/api/dialog';
 
 
 export default function PurchaseOrder() {
+  const router = useRouter();
   const params = useParams();
   const [user] = useAtom<User>(userAtom);
   const [poData, setPoData] = useState<PO>(null);
@@ -36,7 +36,7 @@ export default function PurchaseOrder() {
   const handleDelete = async () => {
     if (user.accessLevel <= 1 || prompt('Type "confirm" to delete this purchase order') !== 'confirm') return;
     await deletePurchaseOrder(poData.id);
-    location.replace('/purchase-orders');
+    router.replace('/purchase-orders');
   };
 
   const handlePrint = () => {

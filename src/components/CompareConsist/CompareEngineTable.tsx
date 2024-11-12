@@ -8,6 +8,8 @@ import Button from "../Library/Button";
 import Pagination from "../Library/Pagination";
 import Loading from "../Library/Loading";
 import CompareConsistHistoryDialog from "../Dialogs/CompareConsistHistoryDialog";
+import { useRouter } from "next/router";
+import { addCompareData } from "@/scripts/controllers/compareConsistController";
 
 interface Props {
   openSideBySide: (engine: Engine) => void
@@ -17,6 +19,7 @@ interface Props {
 
 
 export default function CompareEngineTable({ openSideBySide, getEngineData, customerId }: Props) {
+  const router = useRouter();
   const [enginesData, setEnginesData] = useState<Engine[]>([]);
   const [engines, setEngines] = useState<Engine[]>([]);
   const [paginatedEngines, setPaginatedEngines] = useState<Engine[]>([]);
@@ -29,21 +32,28 @@ export default function CompareEngineTable({ openSideBySide, getEngineData, cust
       setEnginesData(res);
       setEngines(res);
       setLoading(false);
-      // findComparableEngines();
     };
     fetchData();
   }, []);
 
   const findComparableEngines = async () => {
     const newEngineData = await getEnginesByEngineData(getEngineData());
-    // if (newEngineData.length === 0) return;
     setEngines(newEngineData.sort((a: any, b: any) => b.stockNum - a.stockNum));
+    const data = {
+      customerId,
+      hp: '',
+      model: '',
+      notes: '',
+      dateCreated: new Date(),
+      ...getEngineData()
+    } as any;
+    await addCompareData(data);
   };
 
   const handleLoadBlankRecord = () => {
     const url = new URL(location.href);
     url.searchParams.delete('r');
-    location.replace(url.href);
+    router.replace(url.href);
   };
 
 
@@ -62,7 +72,7 @@ export default function CompareEngineTable({ openSideBySide, getEngineData, cust
               Find Comparable Engines
             </Button>
 
-            <Button
+            {/* <Button
               className="compare-consist__compare-section--compare-btn"
               variant={['x-small']}
               onClick={() => setDialogOpen(true)}
@@ -76,7 +86,7 @@ export default function CompareEngineTable({ openSideBySide, getEngineData, cust
               onClick={handleLoadBlankRecord}
             >
               Load Blank Record
-            </Button>
+            </Button> */}
           </div>
 
           <CompareConsistHistoryDialog open={dialogOpen} setOpen={setDialogOpen} customerId={customerId} />

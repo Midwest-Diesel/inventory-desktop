@@ -17,11 +17,12 @@ import { setTitle } from "@/scripts/tools/utils";
 import { RealtimePostgresInsertPayload, RealtimePostgresUpdatePayload } from "@supabase/supabase-js";
 import { useAtom } from "jotai";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 
 export default function Handwritten() {
+  const router = useRouter();
   const params = useParams();
   const [user] = useAtom<User>(userAtom);
   const [handwritten, setHandwritten] = useState<Handwritten>(null);
@@ -85,7 +86,7 @@ export default function Handwritten() {
   const handleDelete = async () => {
     if (user.accessLevel <= 1 || prompt('Type "confirm" to delete this handwritten') !== 'confirm') return;
     await deleteHandwritten(Number(handwritten.id));
-    location.replace('/handwrittens');
+    router.replace('/handwrittens');
   };
   
 

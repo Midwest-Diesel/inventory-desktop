@@ -5,13 +5,15 @@ import Grid from "@/components/Library/Grid/Grid";
 import GridItem from "@/components/Library/Grid/GridItem";
 import Table from "@/components/Library/Table";
 import { Layout } from "@/components/Layout";
-import { addAltParts, addPart, editAltParts, getPartsInfoByPartNum, searchAltParts, searchParts } from "@/scripts/controllers/partsController";
+import { addPart, getPartsInfoByPartNum } from "@/scripts/controllers/partsController";
 import Error from "@/components/Errors/Error";
 import Input from "@/components/Library/Input";
 import { confirm } from '@tauri-apps/api/dialog';
+import { useRouter } from "next/router";
 
 
 export default function NewPart() {
+  const router = useRouter();
   const [partNum, setPartNum] = useState<string>('');
   const [desc, setDesc] = useState<string>('');
   const [qty, setQty] = useState<number>(1);
@@ -61,7 +63,7 @@ export default function NewPart() {
 
     const testSearch = await getPartsInfoByPartNum(partNum);
     await addPart(newPart, testSearch.length > 0);
-    window.location.replace('/');
+    router.replace('/');
   };
 
   const handleChangePartCostIn = (item: PartCostIn, i: number) => {

@@ -1,5 +1,5 @@
 import { Layout } from "@/components/Layout";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import { formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
 import { useEffect, useState } from "react";
@@ -24,6 +24,7 @@ import { setTitle } from "@/scripts/tools/utils";
 
 
 export default function PartDetails() {
+  const router = useRouter();
   const params = useParams();
   const [user] = useAtom<User>(userAtom);
   const [part, setPart] = useState<Part>();
@@ -70,7 +71,7 @@ export default function PartDetails() {
   const handleDelete = async () => {
     if (user.accessLevel <= 1 || prompt('Type "confirm" to delete this part') !== 'confirm') return;
     await deletePart(part.id);
-    location.replace('/');
+    router.replace('/');
   };
 
 

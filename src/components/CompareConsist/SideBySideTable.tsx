@@ -7,6 +7,7 @@ import { formatCurrency } from "@/scripts/tools/stringUtils";
 import { addQuote } from "@/scripts/controllers/quotesController";
 import { useAtom } from "jotai";
 import { userAtom } from "@/scripts/atoms/state";
+import { invoke } from "@tauri-apps/api/tauri";
 
 interface Props {
   customer: Customer
@@ -19,7 +20,7 @@ interface Props {
 export default function SideBySideTable({ customer, customerEngineData, mwdEngine, setMwdEngine }: Props) {
   const [user] = useAtom<User>(userAtom);
   const [matchingValues, setMatchingValues] = useState<string[]>([]);
-  const isMatchingValues = (key: string) => matchingValues.includes(key);
+  const isMatchingValues = (key: string) => matchingValues.some((item) => item.split(' (')[0].toLowerCase() === key);
   const [price, setPrice] = useState('' as any);
 
   const [frontTimingGears, setFrontTimingGears] = useState(false);
@@ -32,36 +33,84 @@ export default function SideBySideTable({ customer, customerEngineData, mwdEngin
 
   const determineMatchingValues = () => {
     const arr = [];
-    if (customerEngineData.newHead === mwdEngine.headPartNum || customerEngineData.remanHead === mwdEngine.headRemanPartNum) arr.push('head');
-    if (customerEngineData.newBlock === mwdEngine.blockPartNum || customerEngineData.remanBlock === mwdEngine.blockRemanPartNum) arr.push('block');
-    if (customerEngineData.newCrank === mwdEngine.crankPartNum || customerEngineData.remanCrank === mwdEngine.crankRemanPartNum) arr.push('crank');
-    if (customerEngineData.newPistons === mwdEngine.pistonsPartNum || customerEngineData.remanPistons === mwdEngine.pistonsRemanPartNum) arr.push('pistons');
-    if (customerEngineData.newCam === mwdEngine.camPartNum || customerEngineData.remanCam === mwdEngine.camRemanPartNum) arr.push('cam');
-    if (customerEngineData.newInjectors === mwdEngine.injPartNum || customerEngineData.remanInjectors === mwdEngine.injRemanPartNum) arr.push('injectors');
-    if (customerEngineData.newSingleTurbo === mwdEngine.turboPartNum || customerEngineData.remanSingleTurbo === mwdEngine.turboRemanPartNum) arr.push('turbo');
-    if (customerEngineData.newFWH === mwdEngine.fwhPartNum || customerEngineData.remanFWH === mwdEngine.fwhRemanPartNum) arr.push('fwh');
-    if (customerEngineData.newFrontHsng === mwdEngine.frontHousingPartNum || customerEngineData.remanFrontHsng === mwdEngine.frontHousingPartNum) arr.push('frontHsng');
-    // if (customerEngineData.newFrontHsng === mwdEngine.frontHousingPartNum || customerEngineData.remanFrontHsng === mwdEngine.frontHousingPartNum) arr.push('frontHousing');
-    if (customerEngineData.newOilPan === mwdEngine.oilPanPartNum || customerEngineData.remanOilPan === mwdEngine.oilPanRemanPartNum) arr.push('oilPan');
-    if (customerEngineData.newHPTurbo === mwdEngine.turboHP || customerEngineData.remanHPTurbo === mwdEngine.turboHPReman) arr.push('turboHp');
-    if (customerEngineData.newLPTurbo === mwdEngine.turboLP || customerEngineData.remanLPTurbo === mwdEngine.turboLPReman) arr.push('turboLp');
-    if (customerEngineData.newHEUIPump === mwdEngine.heuiPumpPartNum || customerEngineData.remanHEUIPump === mwdEngine.heuiPumpRemanPartNum) arr.push('heuiPump');
-    if (customerEngineData.newExhMnfld === mwdEngine.exhMnfldNew || customerEngineData.remanExhMnfld === mwdEngine.exhMnfldReman) arr.push('exhMnfld');
-    if (customerEngineData.newOilPump === mwdEngine.oilPumpNew || customerEngineData.remanOilPump === mwdEngine.oilPumpReman) arr.push('oilPump');
-    if (customerEngineData.newWtrPump === mwdEngine.waterPump || customerEngineData.remanWtrPump === mwdEngine.waterPumpReman) arr.push('wtrPump');
-    setMatchingValues(arr);
+    if (customerEngineData.newHead === mwdEngine.headPartNum || customerEngineData.remanHead === mwdEngine.headRemanPartNum) arr.push(`
+      Head (${[customerEngineData.newHead, customerEngineData.remanHead].filter((e) => e).join(', ')})
+    `);
+    if (customerEngineData.newBlock === mwdEngine.blockPartNum || customerEngineData.remanBlock === mwdEngine.blockRemanPartNum) arr.push(`
+      Block (${[customerEngineData.newBlock, customerEngineData.remanBlock].filter((e) => e).join(', ')})
+    `);
+    if (customerEngineData.newCrank === mwdEngine.crankPartNum || customerEngineData.remanCrank === mwdEngine.crankRemanPartNum) arr.push(`
+      Crank (${[customerEngineData.newCrank, customerEngineData.remanCrank].filter((e) => e).join(', ')})
+    `);
+    if (customerEngineData.newPistons === mwdEngine.pistonsPartNum || customerEngineData.remanPistons === mwdEngine.pistonsRemanPartNum) arr.push(`
+      Pistons (${[customerEngineData.newPistons, customerEngineData.remanPistons].filter((e) => e).join(', ')})
+    `);
+    if (customerEngineData.newCam === mwdEngine.camPartNum || customerEngineData.remanCam === mwdEngine.camRemanPartNum) arr.push(`
+      Cam (${[customerEngineData.newCam, customerEngineData.remanCam].filter((e) => e).join(', ')})
+    `);
+    if (customerEngineData.newInjectors === mwdEngine.injPartNum || customerEngineData.remanInjectors === mwdEngine.injRemanPartNum) arr.push(`
+      Injectors (${[customerEngineData.newInjectors, customerEngineData.remanInjectors].filter((e) => e).join(', ')})
+    `);
+    if (customerEngineData.newSingleTurbo === mwdEngine.turboPartNum || customerEngineData.remanSingleTurbo === mwdEngine.turboRemanPartNum) arr.push(`
+      Turbo (${[customerEngineData.newSingleTurbo, customerEngineData.remanSingleTurbo].filter((e) => e).join(', ')})
+    `);
+    if (customerEngineData.newFWH === mwdEngine.fwhPartNum || customerEngineData.remanFWH === mwdEngine.fwhRemanPartNum) arr.push(`
+      Fwh (${[customerEngineData.newFWH, customerEngineData.remanFWH].filter((e) => e).join(', ')})
+    `);
+    if (customerEngineData.newFrontHsng === mwdEngine.frontHousingPartNum || customerEngineData.remanFrontHsng === mwdEngine.frontHousingPartNum) arr.push(`
+      FrontHsng (${[customerEngineData.newFrontHsng, customerEngineData.remanFrontHsng].filter((e) => e).join(', ')})
+    `);
+    if (customerEngineData.newOilPan === mwdEngine.oilPanPartNum || customerEngineData.remanOilPan === mwdEngine.oilPanRemanPartNum) arr.push(`
+      OilPan (${[customerEngineData.newOilPan, customerEngineData.remanOilPan].filter((e) => e).join(', ')})
+    `);
+    if (customerEngineData.newHPTurbo === mwdEngine.turboHP || customerEngineData.remanHPTurbo === mwdEngine.turboHPReman) arr.push(`
+      TurboHp (${[customerEngineData.newHPTurbo, customerEngineData.remanHPTurbo].filter((e) => e).join(', ')})
+    `);
+    if (customerEngineData.newLPTurbo === mwdEngine.turboLP || customerEngineData.remanLPTurbo === mwdEngine.turboLPReman) arr.push(`
+      TurboLp (${[customerEngineData.newLPTurbo, customerEngineData.remanLPTurbo].filter((e) => e).join(', ')})
+    `);
+    if (customerEngineData.newHEUIPump === mwdEngine.heuiPumpPartNum || customerEngineData.remanHEUIPump === mwdEngine.heuiPumpRemanPartNum) arr.push(`
+      HeuiPump (${[customerEngineData.newHEUIPump, customerEngineData.remanHEUIPump].filter((e) => e).join(', ')})
+    `);
+    if (customerEngineData.newExhMnfld === mwdEngine.exhMnfldNew || customerEngineData.remanExhMnfld === mwdEngine.exhMnfldReman) arr.push(`
+      ExhMnfld (${[customerEngineData.newExhMnfld, customerEngineData.remanExhMnfld].filter((e) => e).join(', ')})
+    `);
+    if (customerEngineData.newOilPump === mwdEngine.oilPumpNew || customerEngineData.remanOilPump === mwdEngine.oilPumpReman) arr.push(`
+      OilPump (${[customerEngineData.newOilPump, customerEngineData.remanOilPump].filter((e) => e).join(', ')})
+    `);
+    if (customerEngineData.newWtrPump === mwdEngine.waterPump || customerEngineData.remanWtrPump === mwdEngine.waterPumpReman) arr.push(`
+      WtrPump (${[customerEngineData.newWtrPump, customerEngineData.remanWtrPump].filter((e) => e).join(', ')})
+    `);
+    setMatchingValues(arr.map((item) => item.replaceAll('\n', '').trim()));
   };
 
-  const sendEmail = () => {
+  const sendEmail = async () => {
     const recipient = (customer && customer.email) || '';
-    const subject = 'Midwest%20Diesel%20Quote';
     const additionalContent = [
-      frontTimingGears ? 'Front%20Timing%20Gears' : null,
-      valveMechanism ? 'Valve%20Mechanism' : null,
-      valveCover ? 'Valve%20Cover' : null
+      frontTimingGears ? 'Front Timing Gears' : null,
+      valveMechanism ? 'Valve Mechanism' : null,
+      valveCover ? 'Valve Cover' : null
     ].filter((str) => str);
-    const bodyContent = [...additionalContent, ...matchingValues].join('%0A');
-    window.location.href = `mailto:${recipient}?subject=${subject}&body=Long%20Block%20(${mwdEngine.stockNum})%20includes:%0A${bodyContent}%0A%0APrice: ${formatCurrency(price)}`;
+    const bodyContent = [...additionalContent, ...matchingValues];
+
+    const emailArgs: Email = {
+      subject: `Midwest Diesel Quote`,
+      body: `
+        <h2>Engine ${mwdEngine.stockNum} includes:</h2>
+        <ul>
+          ${bodyContent.map((item) => {
+            return (
+              `<li>${item}</li>`
+            );
+          }).join('')}
+        </ul>
+        <br />
+        Price: ${formatCurrency(price)}
+      `,
+      recipients: [recipient],
+      attachments: []
+    };
+    await invoke('new_email_draft', { emailArgs });
   };
 
   const createQuote = async () => {
@@ -260,42 +309,42 @@ export default function SideBySideTable({ customer, customerEngineData, mwdEngin
               <td>{ mwdEngine.fwhPartNum }</td>
             </tr>
             <tr>
-              <th style={{ backgroundColor: `${isMatchingValues('frontHsng') ? 'var(--blue-1)' : ''}` }}>Front Housing</th>
+              <th style={{ backgroundColor: `${isMatchingValues('fronthsng') ? 'var(--blue-1)' : ''}` }}>Front Housing</th>
               <td>{ mwdEngine.frontHousingPartNum }</td>
               <td>{ mwdEngine.frontHousingPartNum }</td>
             </tr>
             <tr>
-              <th style={{ backgroundColor: `${isMatchingValues('oilPan') ? 'var(--blue-1)' : ''}` }}>Oil Pan</th>
+              <th style={{ backgroundColor: `${isMatchingValues('oilpan') ? 'var(--blue-1)' : ''}` }}>Oil Pan</th>
               <td>{ mwdEngine.oilPanRemanPartNum }</td>
               <td>{ mwdEngine.oilPanPartNum }</td>
             </tr>
             <tr>
-              <th style={{ backgroundColor: `${isMatchingValues('turboHp') ? 'var(--blue-1)' : ''}` }}>HP Turbo</th>
+              <th style={{ backgroundColor: `${isMatchingValues('turbohp') ? 'var(--blue-1)' : ''}` }}>HP Turbo</th>
               <td>{ mwdEngine.turboHPReman }</td>
               <td>{ mwdEngine.turboHP }</td>
             </tr>
             <tr>
-              <th style={{ backgroundColor: `${isMatchingValues('turboLp') ? 'var(--blue-1)' : ''}` }}>LP Turbo</th>
+              <th style={{ backgroundColor: `${isMatchingValues('turbolp') ? 'var(--blue-1)' : ''}` }}>LP Turbo</th>
               <td>{ mwdEngine.turboLPReman }</td>
               <td>{ mwdEngine.turboLP }</td>
             </tr>
             <tr>
-              <th style={{ backgroundColor: `${isMatchingValues('heuiPump') ? 'var(--blue-1)' : ''}` }}>HEUI Pump</th>
+              <th style={{ backgroundColor: `${isMatchingValues('heuipump') ? 'var(--blue-1)' : ''}` }}>HEUI Pump</th>
               <td>{ mwdEngine.heuiPumpRemanPartNum }</td>
               <td>{ mwdEngine.heuiPumpPartNum }</td>
             </tr>
             <tr>
-              <th style={{ backgroundColor: `${isMatchingValues('exhMnfld') ? 'var(--blue-1)' : ''}` }}>ExhManfld</th>
+              <th style={{ backgroundColor: `${isMatchingValues('exhmnfld') ? 'var(--blue-1)' : ''}` }}>ExhManfld</th>
               <td>{ mwdEngine.exhMnfldReman }</td>
               <td>{ mwdEngine.exhMnfldNew }</td>
             </tr>
             <tr>
-              <th style={{ backgroundColor: `${isMatchingValues('oilPump') ? 'var(--blue-1)' : ''}` }}>Oil Pump</th>
+              <th style={{ backgroundColor: `${isMatchingValues('oilpump') ? 'var(--blue-1)' : ''}` }}>Oil Pump</th>
               <td>{ mwdEngine.oilPumpReman }</td>
               <td>{ mwdEngine.oilPumpNew }</td>
             </tr>
             <tr>
-              <th style={{ backgroundColor: `${isMatchingValues('wtrPump') ? 'var(--blue-1)' : ''}` }}>Water Pump</th>
+              <th style={{ backgroundColor: `${isMatchingValues('wtrpump') ? 'var(--blue-1)' : ''}` }}>Water Pump</th>
               <td>{ mwdEngine.waterPumpReman }</td>
               <td>{ mwdEngine.waterPump }</td>
             </tr>
@@ -328,8 +377,8 @@ export default function SideBySideTable({ customer, customerEngineData, mwdEngin
       </div>
 
       <div className="side-by-side-table__bottom-buttons">
-        <Button onClick={sendEmail}>Send Email</Button>
-        <Button onClick={createQuote}>Create Quote</Button>
+        <Button onClick={sendEmail}>Create Email</Button>
+        {/* <Button onClick={createQuote}>Create Quote</Button> */}
       </div>
     </div>
   );
