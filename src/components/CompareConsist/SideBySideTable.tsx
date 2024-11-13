@@ -65,8 +65,6 @@ export default function SideBySideTable({ customer, customerEngineData, mwdEngin
       arr.push(`OilPump`);
     if ((customerEngineData.waterPumpNew && customerEngineData.waterPumpNew === mwdEngine.waterPumpNew) || (customerEngineData.waterPumpReman && customerEngineData.waterPumpReman === mwdEngine.waterPumpReman))
       arr.push(`WaterPump`);
-    console.log(customerEngineData, mwdEngine);
-    
     setMatchingValues(arr.map((item) => item.replaceAll('\n', '').trim()));
   };
 

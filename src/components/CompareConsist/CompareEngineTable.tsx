@@ -32,6 +32,7 @@ export default function CompareEngineTable({ openSideBySide, getEngineData, cust
       setEnginesData(res);
       setEngines(res);
       setLoading(false);
+      await findComparableEngines();
     };
     fetchData();
   }, []);
