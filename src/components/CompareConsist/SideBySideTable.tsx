@@ -33,22 +33,40 @@ export default function SideBySideTable({ customer, customerEngineData, mwdEngin
 
   const determineMatchingValues = () => {
     const arr = [];
-    if (customerEngineData.headNew === mwdEngine.headNew || customerEngineData.headReman === mwdEngine.headReman) arr.push(`Head`);
-    if (customerEngineData.blockNew === mwdEngine.blockNew || customerEngineData.blockReman === mwdEngine.blockReman) arr.push(`Block`);
-    if (customerEngineData.crankNew === mwdEngine.crankNew || customerEngineData.crankReman === mwdEngine.crankReman) arr.push(`Crank`);
-    if (customerEngineData.pistonNew === mwdEngine.pistonNew || customerEngineData.pistonReman === mwdEngine.pistonReman) arr.push(`Pistons`);
-    if (customerEngineData.camNew === mwdEngine.camNew || customerEngineData.camReman === mwdEngine.camReman) arr.push(`Cam`);
-    if (customerEngineData.injNew === mwdEngine.injNew || customerEngineData.injReman === mwdEngine.injReman) arr.push(`Injectors`);
-    if (customerEngineData.turboNew === mwdEngine.turboNew || customerEngineData.turboReman === mwdEngine.turboReman) arr.push(`Turbo`);
-    if (customerEngineData.fwhNew === mwdEngine.fwhNew || customerEngineData.fwhReman === mwdEngine.fwhReman) arr.push(`Fwh`);
-    if (customerEngineData.frontHsngNew === mwdEngine.frontHsngNew || customerEngineData.frontHsngReman === mwdEngine.frontHsngNew) arr.push(`FrontHsng`);
-    if (customerEngineData.oilPanNew === mwdEngine.oilPanNew || customerEngineData.oilPanReman === mwdEngine.oilPanReman) arr.push(`OilPan`);
-    if (customerEngineData.turboHpNew === mwdEngine.turboHpNew || customerEngineData.turboHpReman === mwdEngine.turboHpReman) arr.push(`TurboHp`);
-    if (customerEngineData.turboLpNew === mwdEngine.turboLpNew || customerEngineData.turboLpReman === mwdEngine.turboLpReman) arr.push(`TurboLp`);
-    if (customerEngineData.heuiPumpNew === mwdEngine.heuiPumpNew || customerEngineData.heuiPumpReman === mwdEngine.heuiPumpReman) arr.push(`HeuiPump`);
-    if (customerEngineData.exhMnfldNew === mwdEngine.exhMnfldNew || customerEngineData.exhMnfldReman === mwdEngine.exhMnfldReman) arr.push(`ExhMnfld`);
-    if (customerEngineData.oilPumpNew === mwdEngine.oilPumpNew || customerEngineData.oilPumpReman === mwdEngine.oilPumpReman) arr.push(`OilPump`);
-    if (customerEngineData.waterPumpNew === mwdEngine.waterPumpNew || customerEngineData.waterPumpReman === mwdEngine.waterPumpReman) arr.push(`WtrPump`);
+    if ((customerEngineData.headNew && customerEngineData.headNew === mwdEngine.headNew) || (customerEngineData.headReman && customerEngineData.headReman === mwdEngine.headReman))
+      arr.push(`Head`);
+    if ((customerEngineData.blockNew && customerEngineData.blockNew === mwdEngine.blockNew) || (customerEngineData.blockReman && customerEngineData.blockReman === mwdEngine.blockReman))
+      arr.push(`Block`);
+    if ((customerEngineData.crankNew && customerEngineData.crankNew === mwdEngine.crankNew) || (customerEngineData.crankReman && customerEngineData.crankReman === mwdEngine.crankReman))
+      arr.push(`Crank`);
+    if ((customerEngineData.pistonNew && customerEngineData.pistonNew === mwdEngine.pistonNew) || (customerEngineData.pistonReman && customerEngineData.pistonReman === mwdEngine.pistonReman))
+      arr.push(`Pistons`);
+    if ((customerEngineData.camNew && customerEngineData.camNew === mwdEngine.camNew) || (customerEngineData.camReman && customerEngineData.camReman === mwdEngine.camReman))
+      arr.push(`Cam`);
+    if ((customerEngineData.injNew && customerEngineData.injNew === mwdEngine.injNew) || (customerEngineData.injReman && customerEngineData.injReman === mwdEngine.injReman))
+      arr.push(`Injectors`);
+    if ((customerEngineData.turboNew && customerEngineData.turboNew === mwdEngine.turboNew) || (customerEngineData.turboReman && customerEngineData.turboReman === mwdEngine.turboReman))
+      arr.push(`Turbo`);
+    if ((customerEngineData.fwhNew && customerEngineData.fwhNew === mwdEngine.fwhNew) || (customerEngineData.fwhReman && customerEngineData.fwhReman === mwdEngine.fwhReman))
+      arr.push(`Fwh`);
+    if ((customerEngineData.frontHsngNew && customerEngineData.frontHsngNew === mwdEngine.frontHsngNew) || (customerEngineData.frontHsngReman && customerEngineData.frontHsngReman === mwdEngine.frontHsngNew))
+      arr.push(`FrontHsng`);
+    if ((customerEngineData.oilPanNew && customerEngineData.oilPanNew === mwdEngine.oilPanNew) || (customerEngineData.oilPanReman && customerEngineData.oilPanReman === mwdEngine.oilPanReman))
+      arr.push(`OilPan`);
+    if ((customerEngineData.turboHpNew && customerEngineData.turboHpNew === mwdEngine.turboHpNew) || (customerEngineData.turboHpReman && customerEngineData.turboHpReman === mwdEngine.turboHpReman))
+      arr.push(`TurboHp`);
+    if ((customerEngineData.turboLpNew && customerEngineData.turboLpNew === mwdEngine.turboLpNew) || (customerEngineData.turboLpReman && customerEngineData.turboLpReman === mwdEngine.turboLpReman))
+      arr.push(`TurboLp`);
+    if ((customerEngineData.heuiPumpNew && customerEngineData.heuiPumpNew === mwdEngine.heuiPumpNew) || (customerEngineData.heuiPumpReman && customerEngineData.heuiPumpReman === mwdEngine.heuiPumpReman))
+      arr.push(`HeuiPump`);
+    if ((customerEngineData.exhMnfldNew && customerEngineData.exhMnfldNew === mwdEngine.exhMnfldNew) || (customerEngineData.exhMnfldReman && customerEngineData.exhMnfldReman === mwdEngine.exhMnfldReman))
+      arr.push(`ExhMnfld`);
+    if ((customerEngineData.oilPumpNew && customerEngineData.oilPumpNew === mwdEngine.oilPumpNew) || (customerEngineData.oilPumpReman && customerEngineData.oilPumpReman === mwdEngine.oilPumpReman))
+      arr.push(`OilPump`);
+    if ((customerEngineData.waterPumpNew && customerEngineData.waterPumpNew === mwdEngine.waterPumpNew) || (customerEngineData.waterPumpReman && customerEngineData.waterPumpReman === mwdEngine.waterPumpReman))
+      arr.push(`WaterPump`);
+    console.log(customerEngineData, mwdEngine);
+    
     setMatchingValues(arr.map((item) => item.replaceAll('\n', '').trim()));
   };
 
@@ -145,82 +163,82 @@ export default function SideBySideTable({ customer, customerEngineData, mwdEngin
           </thead>
           <tbody>
             <tr>
-              <th style={{ backgroundColor: `${isMatchingValues('head') ? 'var(--blue-1)' : ''}` }}>Head</th>
+              <th style={{ backgroundColor: `${isMatchingValues('Head') ? 'var(--blue-1)' : ''}` }}>Head</th>
               <td>{ customerEngineData.headReman }</td>
               <td>{ customerEngineData.headNew }</td>
             </tr>
             <tr>
-              <th style={{ backgroundColor: `${isMatchingValues('block') ? 'var(--blue-1)' : ''}` }}>Block</th>
+              <th style={{ backgroundColor: `${isMatchingValues('Block') ? 'var(--blue-1)' : ''}` }}>Block</th>
               <td>{ customerEngineData.blockReman }</td>
               <td>{ customerEngineData.blockNew }</td>
             </tr>
             <tr>
-              <th style={{ backgroundColor: `${isMatchingValues('crank') ? 'var(--blue-1)' : ''}` }}>Crank</th>
+              <th style={{ backgroundColor: `${isMatchingValues('Crank') ? 'var(--blue-1)' : ''}` }}>Crank</th>
               <td>{ customerEngineData.crankReman }</td>
               <td>{ customerEngineData.crankNew }</td>
             </tr>
             <tr>
-              <th style={{ backgroundColor: `${isMatchingValues('pistons') ? 'var(--blue-1)' : ''}` }}>Pistons</th>
+              <th style={{ backgroundColor: `${isMatchingValues('Pistons') ? 'var(--blue-1)' : ''}` }}>Pistons</th>
               <td>{ customerEngineData.pistonReman }</td>
               <td>{ customerEngineData.pistonNew }</td>
             </tr>
             <tr>
-              <th style={{ backgroundColor: `${isMatchingValues('cam') ? 'var(--blue-1)' : ''}` }}>Camshaft</th>
+              <th style={{ backgroundColor: `${isMatchingValues('Cam') ? 'var(--blue-1)' : ''}` }}>Camshaft</th>
               <td>{ customerEngineData.camReman }</td>
               <td>{ customerEngineData.camNew }</td>
             </tr>
             <tr>
-              <th style={{ backgroundColor: `${isMatchingValues('injs') ? 'var(--blue-1)' : ''}` }}>Injectors</th>
+              <th style={{ backgroundColor: `${isMatchingValues('Injectors') ? 'var(--blue-1)' : ''}` }}>Injectors</th>
               <td>{ customerEngineData.injReman }</td>
               <td>{ customerEngineData.injNew }</td>
             </tr>
             <tr>
-              <th style={{ backgroundColor: `${isMatchingValues('turbo') ? 'var(--blue-1)' : ''}` }}>Single Turbo</th>
+              <th style={{ backgroundColor: `${isMatchingValues('Turbo') ? 'var(--blue-1)' : ''}` }}>Single Turbo</th>
               <td>{ customerEngineData.turboReman }</td>
               <td>{ customerEngineData.turboNew }</td>
             </tr>
             <tr>
-              <th style={{ backgroundColor: `${isMatchingValues('fwh') ? 'var(--blue-1)' : ''}` }}>FWH</th>
+              <th style={{ backgroundColor: `${isMatchingValues('Fwh') ? 'var(--blue-1)' : ''}` }}>FWH</th>
               <td>{ customerEngineData.fwhReman }</td>
               <td>{ customerEngineData.fwhNew }</td>
             </tr>
             <tr>
-              <th style={{ backgroundColor: `${isMatchingValues('frontHsng') ? 'var(--blue-1)' : ''}` }}>Front Housing</th>
+              <th style={{ backgroundColor: `${isMatchingValues('FrontHsng') ? 'var(--blue-1)' : ''}` }}>Front Housing</th>
               <td>{ customerEngineData.frontHsngReman }</td>
               <td>{ customerEngineData.frontHsngNew }</td>
             </tr>
             <tr>
-              <th style={{ backgroundColor: `${isMatchingValues('oilPan') ? 'var(--blue-1)' : ''}` }}>Oil Pan</th>
+              <th style={{ backgroundColor: `${isMatchingValues('OilPan') ? 'var(--blue-1)' : ''}` }}>Oil Pan</th>
               <td>{ customerEngineData.oilPanReman }</td>
               <td>{ customerEngineData.oilPanNew }</td>
             </tr>
             <tr>
-              <th style={{ backgroundColor: `${isMatchingValues('turboHp') ? 'var(--blue-1)' : ''}` }}>HP Turbo</th>
+              <th style={{ backgroundColor: `${isMatchingValues('TurboHp') ? 'var(--blue-1)' : ''}` }}>HP Turbo</th>
               <td>{ customerEngineData.turboHpReman }</td>
               <td>{ customerEngineData.turboHpNew }</td>
             </tr>
             <tr>
-              <th style={{ backgroundColor: `${isMatchingValues('turboLp') ? 'var(--blue-1)' : ''}` }}>LP Turbo</th>
+              <th style={{ backgroundColor: `${isMatchingValues('TurboLp') ? 'var(--blue-1)' : ''}` }}>LP Turbo</th>
               <td>{ customerEngineData.turboLpReman }</td>
               <td>{ customerEngineData.turboLpNew }</td>
             </tr>
             <tr>
-              <th style={{ backgroundColor: `${isMatchingValues('heuiPump') ? 'var(--blue-1)' : ''}` }}>HEUI Pump</th>
+              <th style={{ backgroundColor: `${isMatchingValues('HeuiPump') ? 'var(--blue-1)' : ''}` }}>HEUI Pump</th>
               <td>{ customerEngineData.heuiPumpReman }</td>
               <td>{ customerEngineData.heuiPumpNew }</td>
             </tr>
             <tr>
-              <th style={{ backgroundColor: `${isMatchingValues('exhMnfld') ? 'var(--blue-1)' : ''}` }}>ExhManfld</th>
+              <th style={{ backgroundColor: `${isMatchingValues('ExhMnfld') ? 'var(--blue-1)' : ''}` }}>ExhManfld</th>
               <td>{ customerEngineData.exhMnfldReman }</td>
               <td>{ customerEngineData.exhMnfldNew }</td>
             </tr>
             <tr>
-              <th style={{ backgroundColor: `${isMatchingValues('oilPump') ? 'var(--blue-1)' : ''}` }}>Oil Pump</th>
+              <th style={{ backgroundColor: `${isMatchingValues('OilPump') ? 'var(--blue-1)' : ''}` }}>Oil Pump</th>
               <td>{ customerEngineData.oilPumpReman }</td>
               <td>{ customerEngineData.oilPumpNew }</td>
             </tr>
             <tr>
-              <th style={{ backgroundColor: `${isMatchingValues('wtrPump') ? 'var(--blue-1)' : ''}` }}>Water Pump</th>
+              <th style={{ backgroundColor: `${isMatchingValues('WaterPump') ? 'var(--blue-1)' : ''}` }}>Water Pump</th>
               <td>{ customerEngineData.waterPumpReman }</td>
               <td>{ customerEngineData.waterPumpNew }</td>
             </tr>
@@ -237,82 +255,82 @@ export default function SideBySideTable({ customer, customerEngineData, mwdEngin
           </thead>
           <tbody>
             <tr>
-              <th style={{ backgroundColor: `${isMatchingValues('head') ? 'var(--blue-1)' : ''}` }}>Head</th>
+              <th style={{ backgroundColor: `${isMatchingValues('Head') ? 'var(--blue-1)' : ''}` }}>Head</th>
               <td>{ mwdEngine.headReman }</td>
               <td>{ mwdEngine.headNew }</td>
             </tr>
             <tr>
-              <th style={{ backgroundColor: `${isMatchingValues('block') ? 'var(--blue-1)' : ''}` }}>Block</th>
+              <th style={{ backgroundColor: `${isMatchingValues('Block') ? 'var(--blue-1)' : ''}` }}>Block</th>
               <td>{ mwdEngine.blockReman }</td>
               <td>{ mwdEngine.blockNew }</td>
             </tr>
             <tr>
-              <th style={{ backgroundColor: `${isMatchingValues('crank') ? 'var(--blue-1)' : ''}` }}>Crank</th>
+              <th style={{ backgroundColor: `${isMatchingValues('Crank') ? 'var(--blue-1)' : ''}` }}>Crank</th>
               <td>{ mwdEngine.crankReman }</td>
               <td>{ mwdEngine.crankNew }</td>
             </tr>
             <tr>
-              <th style={{ backgroundColor: `${isMatchingValues('pistons') ? 'var(--blue-1)' : ''}` }}>Pistons</th>
+              <th style={{ backgroundColor: `${isMatchingValues('Pistons') ? 'var(--blue-1)' : ''}` }}>Pistons</th>
               <td>{ mwdEngine.pistonReman }</td>
               <td>{ mwdEngine.pistonNew }</td>
             </tr>
             <tr>
-              <th style={{ backgroundColor: `${isMatchingValues('cam') ? 'var(--blue-1)' : ''}` }}>Camshaft</th>
+              <th style={{ backgroundColor: `${isMatchingValues('Cam') ? 'var(--blue-1)' : ''}` }}>Camshaft</th>
               <td>{ mwdEngine.camReman }</td>
               <td>{ mwdEngine.camNew }</td>
             </tr>
             <tr>
-              <th style={{ backgroundColor: `${isMatchingValues('injs') ? 'var(--blue-1)' : ''}` }}>Injectors</th>
+              <th style={{ backgroundColor: `${isMatchingValues('Injectors') ? 'var(--blue-1)' : ''}` }}>Injectors</th>
               <td>{ mwdEngine.injReman }</td>
               <td>{ mwdEngine.injNew }</td>
             </tr>
             <tr>
-              <th style={{ backgroundColor: `${isMatchingValues('turbo') ? 'var(--blue-1)' : ''}` }}>Single Turbo</th>
+              <th style={{ backgroundColor: `${isMatchingValues('Turbo') ? 'var(--blue-1)' : ''}` }}>Single Turbo</th>
               <td>{ mwdEngine.turboReman }</td>
               <td>{ mwdEngine.turboNew }</td>
             </tr>
             <tr>
-              <th style={{ backgroundColor: `${isMatchingValues('fwh') ? 'var(--blue-1)' : ''}` }}>FWH</th>
+              <th style={{ backgroundColor: `${isMatchingValues('Fwh') ? 'var(--blue-1)' : ''}` }}>FWH</th>
               <td>{ mwdEngine.fwhReman }</td>
               <td>{ mwdEngine.fwhNew }</td>
             </tr>
             <tr>
-              <th style={{ backgroundColor: `${isMatchingValues('fronthsng') ? 'var(--blue-1)' : ''}` }}>Front Housing</th>
-              <td>{ mwdEngine.frontHsngNew }</td>
+              <th style={{ backgroundColor: `${isMatchingValues('FrontHsng') ? 'var(--blue-1)' : ''}` }}>Front Housing</th>
+              <td></td>
               <td>{ mwdEngine.frontHsngNew }</td>
             </tr>
             <tr>
-              <th style={{ backgroundColor: `${isMatchingValues('oilpan') ? 'var(--blue-1)' : ''}` }}>Oil Pan</th>
+              <th style={{ backgroundColor: `${isMatchingValues('OilPan') ? 'var(--blue-1)' : ''}` }}>Oil Pan</th>
               <td>{ mwdEngine.oilPanReman }</td>
               <td>{ mwdEngine.oilPanNew }</td>
             </tr>
             <tr>
-              <th style={{ backgroundColor: `${isMatchingValues('turbohp') ? 'var(--blue-1)' : ''}` }}>HP Turbo</th>
+              <th style={{ backgroundColor: `${isMatchingValues('TurboHp') ? 'var(--blue-1)' : ''}` }}>HP Turbo</th>
               <td>{ mwdEngine.turboHpReman }</td>
               <td>{ mwdEngine.turboHpNew }</td>
             </tr>
             <tr>
-              <th style={{ backgroundColor: `${isMatchingValues('turbolp') ? 'var(--blue-1)' : ''}` }}>LP Turbo</th>
+              <th style={{ backgroundColor: `${isMatchingValues('TurboLp') ? 'var(--blue-1)' : ''}` }}>LP Turbo</th>
               <td>{ mwdEngine.turboLpReman }</td>
               <td>{ mwdEngine.turboLpNew }</td>
             </tr>
             <tr>
-              <th style={{ backgroundColor: `${isMatchingValues('heuipump') ? 'var(--blue-1)' : ''}` }}>HEUI Pump</th>
+              <th style={{ backgroundColor: `${isMatchingValues('HeuiPump') ? 'var(--blue-1)' : ''}` }}>HEUI Pump</th>
               <td>{ mwdEngine.heuiPumpReman }</td>
               <td>{ mwdEngine.heuiPumpNew }</td>
             </tr>
             <tr>
-              <th style={{ backgroundColor: `${isMatchingValues('exhmnfld') ? 'var(--blue-1)' : ''}` }}>ExhManfld</th>
+              <th style={{ backgroundColor: `${isMatchingValues('ExhMnfld') ? 'var(--blue-1)' : ''}` }}>ExhManfld</th>
               <td>{ mwdEngine.exhMnfldReman }</td>
               <td>{ mwdEngine.exhMnfldNew }</td>
             </tr>
             <tr>
-              <th style={{ backgroundColor: `${isMatchingValues('oilpump') ? 'var(--blue-1)' : ''}` }}>Oil Pump</th>
+              <th style={{ backgroundColor: `${isMatchingValues('OilPump') ? 'var(--blue-1)' : ''}` }}>Oil Pump</th>
               <td>{ mwdEngine.oilPumpReman }</td>
               <td>{ mwdEngine.oilPumpNew }</td>
             </tr>
             <tr>
-              <th style={{ backgroundColor: `${isMatchingValues('wtrpump') ? 'var(--blue-1)' : ''}` }}>Water Pump</th>
+              <th style={{ backgroundColor: `${isMatchingValues('WaterPump') ? 'var(--blue-1)' : ''}` }}>Water Pump</th>
               <td>{ mwdEngine.waterPumpReman }</td>
               <td>{ mwdEngine.waterPumpNew }</td>
             </tr>
