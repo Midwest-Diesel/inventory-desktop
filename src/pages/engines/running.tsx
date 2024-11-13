@@ -38,8 +38,8 @@ export default function EnginesRunning() {
   };
   
   const isResearched = (engine: Engine) => {
-    const { blockPartNum, blockRemanPartNum, crankPartNum, crankRemanPartNum, headPartNum, headRemanPartNum, camPartNum, camRemanPartNum, injPartNum, injRemanPartNum, turboPartNum, turboRemanPartNum, pistonsPartNum, pistonsRemanPartNum, cylPacksPartNum, cylPacksRemanPartNum, fwhPartNum, fwhRemanPartNum, oilPanPartNum, oilPanRemanPartNum, oilCoolerPartNum, oilCoolerRemanPartNum, frontHousingPartNum, flywheelPartNum, ragPartNum, heuiPumpPartNum, heuiPumpRemanPartNum } = engine;
-    if (blockPartNum || blockRemanPartNum || crankPartNum || crankRemanPartNum || headPartNum || headRemanPartNum || camPartNum || camRemanPartNum || injPartNum || injRemanPartNum || turboPartNum || turboRemanPartNum || pistonsPartNum || pistonsRemanPartNum || cylPacksPartNum || cylPacksRemanPartNum || fwhPartNum || fwhRemanPartNum || oilPanPartNum || oilPanRemanPartNum || oilCoolerPartNum || oilCoolerRemanPartNum || frontHousingPartNum || flywheelPartNum || ragPartNum || heuiPumpPartNum || heuiPumpRemanPartNum) {
+    const { blockNew, blockReman, crankNew, crankReman, headNew, headReman, camNew, camReman, injNew, injReman, turboNew, turboReman, pistonNew, pistonReman, cylPacksNew, cylPacksReman, fwhNew, fwhReman, oilPanNew, oilPanReman, oilCoolerNew, oilCoolerReman, frontHsngNew, flywheelNew, ragNew, heuiPumpNew, heuiPumpReman } = engine;
+    if (blockNew || blockReman || crankNew || crankReman || headNew || headReman || camNew || camReman || injNew || injReman || turboNew || turboReman || pistonNew || pistonReman || cylPacksNew || cylPacksReman || fwhNew || fwhReman || oilPanNew || oilPanReman || oilCoolerNew || oilCoolerReman || frontHsngNew || flywheelNew || ragNew || heuiPumpNew || heuiPumpReman) {
       return true;
     }
     return false;
@@ -89,7 +89,7 @@ export default function EnginesRunning() {
                       <td><Link href={`/engines/${engine.stockNum}`}>{ engine.stockNum }</Link></td>
                       <td>{ formatDate(engine.loginDate) }</td>
                       <td>{ engine.model }</td>
-                      <td>{ engine.serialNumber }</td>
+                      <td>{ engine.serialNum }</td>
                       <td>{ engine.location }</td>
                       <td>{ engine.comments }</td>
                       <td>{ engine.horsePower }</td>

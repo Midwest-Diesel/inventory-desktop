@@ -102,9 +102,9 @@ export default function CompareConsistHistoryDialog({ open, setOpen, customerId 
               </tr>
               <tr>
                 <th>Injectors</th>
-                <td>{ compareData[page].injectorNew }</td>
+                <td>{ compareData[page].injNew }</td>
                 <th>Injectors Reman</th>
-                <td>{ compareData[page].injectorReman }</td>
+                <td>{ compareData[page].injReman }</td>
               </tr>
               <tr>
                 <th>Turbo</th>
@@ -132,15 +132,15 @@ export default function CompareConsistHistoryDialog({ open, setOpen, customerId 
               </tr>
               <tr>
                 <th>HP Turbo</th>
-                <td>{ compareData[page].hpTurboNew }</td>
+                <td>{ compareData[page].turboHpNew }</td>
                 <th>HP Turbo Reman</th>
-                <td>{ compareData[page].hpTurboReman }</td>
+                <td>{ compareData[page].turboHpReman }</td>
               </tr>
               <tr>
                 <th>LP Turbo</th>
-                <td>{ compareData[page].lpTurboNew }</td>
+                <td>{ compareData[page].turboLpNew }</td>
                 <th>LP Turbo Reman</th>
-                <td>{ compareData[page].lpTurboReman }</td>
+                <td>{ compareData[page].turboLpReman }</td>
               </tr>
               <tr>
                 <th>HEUI Pump</th>

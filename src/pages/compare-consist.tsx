@@ -24,56 +24,56 @@ export default function CompareConsist() {
   const [changeCustomer, setChangeCustomer] = useState(false);
   const [notes, setNotes] = useState('');
 
-  const [newHead, setNewHead] = useState('');
-  const [newBlock, setNewBlock] = useState('');
-  const [newCrank, setNewCrank] = useState('');
-  const [newPistons, setNewPistons] = useState('');
-  const [newCam, setNewCam] = useState('');
-  const [newInjectors, setNewInjectors] = useState('');
-  const [newSingleTurbo, setNewSingleTurbo] = useState('');
-  const [newFWH, setNewFWH] = useState('');
-  const [newFrontHsng, setNewFrontHsng] = useState('');
-  const [newOilPan, setNewOilPan] = useState('');
-  const [newHPTurbo, setNewHPTurbo] = useState('');
-  const [newLPTurbo, setNewLPTurbo] = useState('');
-  const [newHEUIPump, setNewHEUIPump] = useState('');
-  const [newExhMnfld, setNewExhMnfld] = useState('');
-  const [newOilPump, setNewOilPump] = useState('');
-  const [newWtrPump, setNewWtrPump] = useState('');
+  const [headNew, setNewHead] = useState('');
+  const [blockNew, setNewBlock] = useState('');
+  const [crankNew, setNewCrank] = useState('');
+  const [pistonNew, setNewPistons] = useState('');
+  const [camNew, setNewCam] = useState('');
+  const [injNew, setNewInjectors] = useState('');
+  const [turboNew, setNewSingleTurbo] = useState('');
+  const [fwhNew, setNewFWH] = useState('');
+  const [frontHsngNew, setNewFrontHsng] = useState('');
+  const [oilPanNew, setNewOilPan] = useState('');
+  const [turboHpNew, setNewHPTurbo] = useState('');
+  const [turboLpNew, setNewLPTurbo] = useState('');
+  const [heuiPumpNew, setNewHEUIPump] = useState('');
+  const [exhMnfldNew, setNewExhMnfld] = useState('');
+  const [oilPumpNew, setNewOilPump] = useState('');
+  const [waterPumpNew, setNewWtrPump] = useState('');
   
-  const [remanHead, setRemanHead] = useState('');
-  const [remanBlock, setRemanBlock] = useState('');
-  const [remanCrank, setRemanCrank] = useState('');
-  const [remanPistons, setRemanPistons] = useState('');
-  const [remanCam, setRemanCam] = useState('');
-  const [remanInjectors, setRemanInjectors] = useState('');
-  const [remanSingleTurbo, setRemanSingleTurbo] = useState('');
-  const [remanFWH, setRemanFWH] = useState('');
-  const [remanFrontHsng, setRemanFrontHsng] = useState('');
-  const [remanOilPan, setRemanOilPan] = useState('');
-  const [remanHPTurbo, setRemanHPTurbo] = useState('');
-  const [remanLPTurbo, setRemanLPTurbo] = useState('');
-  const [remanHEUIPump, setRemanHEUIPump] = useState('');
-  const [remanExhMnfld, setRemanExhMnfld] = useState('');
-  const [remanOilPump, setRemanOilPump] = useState('');
-  const [remanWtrPump, setRemanWtrPump] = useState('');
+  const [headReman, setRemanHead] = useState('');
+  const [blockReman, setRemanBlock] = useState('');
+  const [crankReman, setRemanCrank] = useState('');
+  const [pistonReman, setRemanPistons] = useState('');
+  const [camReman, setRemanCam] = useState('');
+  const [injReman, setRemanInjectors] = useState('');
+  const [turboReman, setRemanSingleTurbo] = useState('');
+  const [fwhReman, setRemanFWH] = useState('');
+  const [frontHsngReman, setRemanFrontHsng] = useState('');
+  const [oilPanReman, setRemanOilPan] = useState('');
+  const [turboHpReman, setRemanHPTurbo] = useState('');
+  const [turboLpReman, setRemanLPTurbo] = useState('');
+  const [heuiPumpReman, setRemanHEUIPump] = useState('');
+  const [exhMnfldReman, setRemanExhMnfld] = useState('');
+  const [oilPumpReman, setRemanOilPump] = useState('');
+  const [waterPumpReman, setRemanWtrPump] = useState('');
 
-  const [headChecked, setHeadChecked] = useState(false);
-  const [blockChecked, setBlockChecked] = useState(false);
-  const [crankChecked, setCrankChecked] = useState(false);
-  const [pistonsChecked, setPistonsChecked] = useState(false);
-  const [camChecked, setCamChecked] = useState(false);
-  const [injectorsChecked, setInjectorsChecked] = useState(false);
-  const [singleTurboChecked, setSingleTurboChecked] = useState(false);
-  const [fwhChecked, setFwhChecked] = useState(false);
-  const [frontHousingChecked, setFrontHousingChecked] = useState(false);
-  const [oilPanChecked, setOilPanChecked] = useState(false);
-  const [hpTurboChecked, setHpTurboChecked] = useState(false);
-  const [lpTurboChecked, setLpTurboChecked] = useState(false);
-  const [heuiPumpChecked, setHeuiPumpChecked] = useState(false);
-  const [exhManChecked, setExhManChecked] = useState(false);
-  const [oilPumpChecked, setOilPumpChecked] = useState(false);
-  const [waterPumpChecked, setWaterPumpChecked] = useState(false);
+  const [headCheck, setHeadCheck] = useState(false);
+  const [blockCheck, setBlockCheck] = useState(false);
+  const [crankCheck, setCrankCheck] = useState(false);
+  const [pistonCheck, setPistonsCheck] = useState(false);
+  const [camCheck, setCamCheck] = useState(false);
+  const [injCheck, setInjectorsCheck] = useState(false);
+  const [turboCheck, setSingleTurboCheck] = useState(false);
+  const [fwhCheck, setFwhCheck] = useState(false);
+  const [frontHsngCheck, setFrontHousingCheck] = useState(false);
+  const [oilPanCheck, setOilPanCheck] = useState(false);
+  const [turboHpCheck, setHpTurboCheck] = useState(false);
+  const [turboLpCheck, setLpTurboCheck] = useState(false);
+  const [heuiPumpCheck, setHeuiPumpCheck] = useState(false);
+  const [exhMnfldCheck, setExhManCheck] = useState(false);
+  const [oilPumpCheck, setOilPumpCheck] = useState(false);
+  const [waterPumpCheck, setWaterPumpCheck] = useState(false);
 
   const [customerEngineData, setCustomerEngineData] = useState<CustomerEngineData>(null);
   const [mwdEngine, setMwdEngine] = useState<Engine>(null);
@@ -107,56 +107,56 @@ export default function CompareConsist() {
     const data = {
       serialNum,
       arrNum,
-      newHead: headChecked ? newHead : '',
-      headChecked,
-      newBlock: blockChecked ? newBlock : '',
-      blockChecked,
-      newCrank: crankChecked ? newCrank : '',
-      crankChecked,
-      newPistons: pistonsChecked ? newPistons : '',
-      pistonsChecked,
-      newCam: camChecked ? newCam : '',
-      camChecked,
-      newInjectors: injectorsChecked ? newInjectors : '',
-      injectorsChecked,
-      newSingleTurbo: singleTurboChecked ? newSingleTurbo : '',
-      singleTurboChecked,
-      newFWH: fwhChecked ? newFWH : '',
-      fwhChecked,
-      newFrontHsng: frontHousingChecked ? newFrontHsng : '',
-      frontHousingChecked,
-      newOilPan: oilPanChecked ? newOilPan : '',
-      oilPanChecked,
-      newHPTurbo: hpTurboChecked ? newHPTurbo : '',
-      hpTurboChecked,
-      newLPTurbo: lpTurboChecked ? newLPTurbo : '',
-      lpTurboChecked,
-      newHEUIPump: heuiPumpChecked ? newHEUIPump : '',
-      heuiPumpChecked,
-      newExhMnfld: exhManChecked ? newExhMnfld : '',
-      exhManChecked,
-      newOilPump: oilPumpChecked ? newOilPump : '',
-      oilPumpChecked,
-      newWtrPump: waterPumpChecked ? newWtrPump : '',
-      waterPumpChecked,
-      remanHead: headChecked ? remanHead : '',
-      remanBlock: blockChecked ? remanBlock : '',
-      remanCrank: crankChecked ? remanCrank : '',
-      remanPistons: pistonsChecked ? remanPistons : '',
-      remanCam: camChecked ? remanCam : '',
-      remanInjectors: injectorsChecked ? remanInjectors : '',
-      remanSingleTurbo: singleTurboChecked ? remanSingleTurbo : '',
-      remanFWH: fwhChecked ? remanFWH : '',
-      remanFrontHsng: frontHousingChecked ? remanFrontHsng : '',
-      remanOilPan: oilPanChecked ? remanOilPan : '',
-      remanHPTurbo: hpTurboChecked ? remanHPTurbo : '',
-      remanLPTurbo: lpTurboChecked ? remanLPTurbo : '',
-      remanHEUIPump: heuiPumpChecked ? remanHEUIPump : '',
-      remanExhMnfld: exhManChecked ? remanExhMnfld : '',
-      remanOilPump: oilPumpChecked ? remanOilPump : '',
-      remanWtrPump: waterPumpChecked ? remanWtrPump : ''
+      headNew: headCheck ? headNew : null,
+      headCheck,
+      blockNew: blockCheck ? blockNew : null,
+      blockCheck,
+      crankNew: crankCheck ? crankNew : null,
+      crankCheck,
+      pistonNew: pistonCheck ? pistonNew : null,
+      pistonCheck,
+      camNew: camCheck ? camNew : null,
+      camCheck,
+      injNew: injCheck ? injNew : null,
+      injCheck,
+      turboNew: turboCheck ? turboNew : null,
+      turboCheck,
+      fwhNew: fwhCheck ? fwhNew : null,
+      fwhCheck,
+      frontHsngNew: frontHsngCheck ? frontHsngNew : null,
+      frontHsngCheck,
+      oilPanNew: oilPanCheck ? oilPanNew : null,
+      oilPanCheck,
+      turboHpNew: turboHpCheck ? turboHpNew : null,
+      turboHpCheck,
+      turboLpNew: turboLpCheck ? turboLpNew : null,
+      turboLpCheck,
+      heuiPumpNew: heuiPumpCheck ? heuiPumpNew : null,
+      heuiPumpCheck,
+      exhMnfldNew: exhMnfldCheck ? exhMnfldNew : null,
+      exhMnfldCheck,
+      oilPumpNew: oilPumpCheck ? oilPumpNew : null,
+      oilPumpCheck,
+      waterPumpNew: waterPumpCheck ? waterPumpNew : null,
+      waterPumpCheck,
+      headReman: headCheck ? headReman : null,
+      blockReman: blockCheck ? blockReman : null,
+      crankReman: crankCheck ? crankReman : null,
+      pistonReman: pistonCheck ? pistonReman : null,
+      camReman: camCheck ? camReman : null,
+      injReman: injCheck ? injReman : null,
+      turboReman: turboCheck ? turboReman : null,
+      fwhReman: fwhCheck ? fwhReman : null,
+      frontHsngReman: frontHsngCheck ? frontHsngReman : null,
+      oilPanReman: oilPanCheck ? oilPanReman : null,
+      turboHpReman: turboHpCheck ? turboHpReman : null,
+      turboLpReman: turboLpCheck ? turboLpReman : null,
+      heuiPumpReman: heuiPumpCheck ? heuiPumpReman : null,
+      exhMnfldReman: exhMnfldCheck ? exhMnfldReman : null,
+      oilPumpReman: oilPumpCheck ? oilPumpReman : null,
+      waterPumpReman: waterPumpCheck ? waterPumpReman : null
     };
-    return Object.fromEntries(Object.entries(data).map((d) => d[1] ? d : [d[0], null])) as any;
+    return Object.fromEntries(Object.entries(data).map((d: any) => d[1] || d[0].includes('Check') ? d : [d[0], null])) as any;
   };
 
   const handleChangeCustomer = (value: string) => {
@@ -172,13 +172,13 @@ export default function CompareConsist() {
     setNewCrank(data.crankNew);
     setNewPistons(data.pistonNew);
     setNewCam(data.camNew);
-    setNewInjectors(data.injectorNew);
+    setNewInjectors(data.injNew);
     setNewSingleTurbo(data.turboNew);
     setNewFWH(data.fwhNew);
     setNewFrontHsng(data.frontHsngNew);
     setNewOilPan(data.oilPanNew);
-    setNewHPTurbo(data.hpTurboNew);
-    setNewLPTurbo(data.lpTurboNew);
+    setNewHPTurbo(data.turboHpNew);
+    setNewLPTurbo(data.turboLpNew);
     setNewHEUIPump(data.heuiPumpNew);
     setNewExhMnfld(data.exhMnfldNew);
     setNewOilPump(data.oilPumpNew);
@@ -189,34 +189,34 @@ export default function CompareConsist() {
     setRemanCrank(data.crankReman);
     setRemanPistons(data.pistonReman);
     setRemanCam(data.camReman);
-    setRemanInjectors(data.injectorReman);
+    setRemanInjectors(data.injReman);
     setRemanSingleTurbo(data.turboReman);
     setRemanFWH(data.fwhReman);
     setRemanFrontHsng(data.frontHsngReman);
     setRemanOilPan(data.oilPanReman);
-    setRemanHPTurbo(data.hpTurboReman);
-    setRemanLPTurbo(data.lpTurboReman);
+    setRemanHPTurbo(data.turboHpReman);
+    setRemanLPTurbo(data.turboLpReman);
     setRemanHEUIPump(data.heuiPumpReman);
     setRemanExhMnfld(data.exhMnfldReman);
     setRemanOilPump(data.oilPumpReman);
     setRemanWtrPump(data.waterPumpNew);
 
-    setHeadChecked(data.headCheck);
-    setBlockChecked(data.blockCheck);
-    setCrankChecked(data.crankCheck);
-    setPistonsChecked(data.pistonCheck);
-    setCamChecked(data.camCheck);
-    setInjectorsChecked(data.injectorCheck);
-    setSingleTurboChecked(data.turboCheck);
-    setFwhChecked(data.fwhCheck);
-    setFrontHousingChecked(data.frontHsngCheck);
-    setOilPanChecked(data.oilPanCheck);
-    setHpTurboChecked(data.hpTurboCheck);
-    setLpTurboChecked(data.lpTurboCheck);
-    setHeuiPumpChecked(data.heuiPumpCheck);
-    setExhManChecked(data.exhMnfldCheck);
-    setOilPumpChecked(data.oilPumpCheck);
-    setWaterPumpChecked(data.waterPumpCheck);
+    setHeadCheck(data.headCheck);
+    setBlockCheck(data.blockCheck);
+    setCrankCheck(data.crankCheck);
+    setPistonsCheck(data.pistonCheck);
+    setCamCheck(data.camCheck);
+    setInjectorsCheck(data.injCheck);
+    setSingleTurboCheck(data.turboCheck);
+    setFwhCheck(data.fwhCheck);
+    setFrontHousingCheck(data.frontHsngCheck);
+    setOilPanCheck(data.oilPanCheck);
+    setHpTurboCheck(data.turboHpCheck);
+    setLpTurboCheck(data.turboLpCheck);
+    setHeuiPumpCheck(data.heuiPumpCheck);
+    setExhManCheck(data.exhMnfldCheck);
+    setOilPumpCheck(data.oilPumpCheck);
+    setWaterPumpCheck(data.waterPumpCheck);
   };
 
 
@@ -319,112 +319,112 @@ export default function CompareConsist() {
                     <td>
                       <Input
                         variant={['thin', 'x-small', 'no-style']}
-                        value={newHead}
+                        value={headNew}
                         onChange={(e: any) => setNewHead(e.target.value)}
                       />
                     </td>
                     <td>
                       <Input
                         variant={['thin', 'x-small', 'no-style']}
-                        value={newBlock}
+                        value={blockNew}
                         onChange={(e: any) => setNewBlock(e.target.value)}
                       />
                     </td>
                     <td>
                       <Input
                         variant={['thin', 'x-small', 'no-style']}
-                        value={newCrank}
+                        value={crankNew}
                         onChange={(e: any) => setNewCrank(e.target.value)}
                       />
                     </td>
                     <td>
                       <Input
                         variant={['thin', 'x-small', 'no-style']}
-                        value={newPistons}
+                        value={pistonNew}
                         onChange={(e: any) => setNewPistons(e.target.value)}
                       />
                     </td>
                     <td>
                       <Input
                         variant={['thin', 'x-small', 'no-style']}
-                        value={newCam}
+                        value={camNew}
                         onChange={(e: any) => setNewCam(e.target.value)}
                       />
                     </td>
                     <td>
                       <Input
                         variant={['thin', 'x-small', 'no-style']}
-                        value={newInjectors}
+                        value={injNew}
                         onChange={(e: any) => setNewInjectors(e.target.value)}
                       />
                     </td>
                     <td>
                       <Input
                         variant={['thin', 'no-style']}
-                        value={newSingleTurbo}
+                        value={turboNew}
                         onChange={(e: any) => setNewSingleTurbo(e.target.value)}
                       />
                     </td>
                     <td>
                       <Input
                         variant={['thin', 'x-small', 'no-style']}
-                        value={newFWH}
+                        value={fwhNew}
                         onChange={(e: any) => setNewFWH(e.target.value)}
                       />
                     </td>
                     <td>
                       <Input
                         variant={['thin', 'x-small', 'no-style']}
-                        value={newFrontHsng}
+                        value={frontHsngNew}
                         onChange={(e: any) => setNewFrontHsng(e.target.value)}
                       />
                     </td>
                     <td>
                       <Input
                         variant={['thin', 'x-small', 'no-style']}
-                        value={newOilPan}
+                        value={oilPanNew}
                         onChange={(e: any) => setNewOilPan(e.target.value)}
                       />
                     </td>
                     <td>
                       <Input
                         variant={['thin', 'x-small', 'no-style']}
-                        value={newHPTurbo}
+                        value={turboHpNew}
                         onChange={(e: any) => setNewHPTurbo(e.target.value)}
                       />
                     </td>
                     <td>
                       <Input
                         variant={['thin', 'x-small', 'no-style']}
-                        value={newLPTurbo}
+                        value={turboLpNew}
                         onChange={(e: any) => setNewLPTurbo(e.target.value)}
                       />
                     </td>
                     <td>
                       <Input
                         variant={['thin', 'x-small', 'no-style']}
-                        value={newHEUIPump}
+                        value={heuiPumpNew}
                         onChange={(e: any) => setNewHEUIPump(e.target.value)}
                       />
                     </td>
                     <td>
                       <Input
                         variant={['thin', 'x-small', 'no-style']}
-                        value={newExhMnfld}
+                        value={exhMnfldNew}
                         onChange={(e: any) => setNewExhMnfld(e.target.value)}
                       />
                     </td>
                     <td>
                       <Input
                         variant={['thin', 'x-small', 'no-style']}
-                        value={newOilPump}
+                        value={oilPumpNew}
                         onChange={(e: any) => setNewOilPump(e.target.value)}
                       />
                     </td>
                     <td>
                       <Input
                         variant={['thin', 'x-small', 'no-style']}
-                        value={newWtrPump}
+                        value={waterPumpNew}
                         onChange={(e: any) => setNewWtrPump(e.target.value)}
                       />
                     </td>
@@ -435,112 +435,112 @@ export default function CompareConsist() {
                     <td>
                       <Input
                         variant={['thin', 'x-small', 'no-style']}
-                        value={remanHead}
+                        value={headReman}
                         onChange={(e: any) => setRemanHead(e.target.value)}
                       />
                     </td>
                     <td>
                       <Input
                         variant={['thin', 'x-small', 'no-style']}
-                        value={remanBlock}
+                        value={blockReman}
                         onChange={(e: any) => setRemanBlock(e.target.value)}
                       />
                     </td>
                     <td>
                       <Input
                         variant={['thin', 'x-small', 'no-style']}
-                        value={remanCrank}
+                        value={crankReman}
                         onChange={(e: any) => setRemanCrank(e.target.value)}
                       />
                     </td>
                     <td>
                       <Input
                         variant={['thin', 'x-small', 'no-style']}
-                        value={remanPistons}
+                        value={pistonReman}
                         onChange={(e: any) => setRemanPistons(e.target.value)}
                       />
                     </td>
                     <td>
                       <Input
                         variant={['thin', 'x-small', 'no-style']}
-                        value={remanCam}
+                        value={camReman}
                         onChange={(e: any) => setRemanCam(e.target.value)}
                       />
                     </td>
                     <td>
                       <Input
                         variant={['thin', 'x-small', 'no-style']}
-                        value={remanInjectors}
+                        value={injReman}
                         onChange={(e: any) => setRemanInjectors(e.target.value)}
                       />
                     </td>
                     <td>
                       <Input
                         variant={['thin', 'no-style']}
-                        value={remanSingleTurbo}
+                        value={turboReman}
                         onChange={(e: any) => setRemanSingleTurbo(e.target.value)}
                       />
                     </td>
                     <td>
                       <Input
                         variant={['thin', 'x-small', 'no-style']}
-                        value={remanFWH}
+                        value={fwhReman}
                         onChange={(e: any) => setRemanFWH(e.target.value)}
                       />
                     </td>
                     <td>
                       <Input
                         variant={['thin', 'x-small', 'no-style']}
-                        value={remanFrontHsng}
+                        value={frontHsngReman}
                         onChange={(e: any) => setRemanFrontHsng(e.target.value)}
                       />
                     </td>
                     <td>
                       <Input
                         variant={['thin', 'x-small', 'no-style']}
-                        value={remanOilPan}
+                        value={oilPanReman}
                         onChange={(e: any) => setRemanOilPan(e.target.value)}
                       />
                     </td>
                     <td>
                       <Input
                         variant={['thin', 'x-small', 'no-style']}
-                        value={remanHPTurbo}
+                        value={turboHpReman}
                         onChange={(e: any) => setRemanHPTurbo(e.target.value)}
                       />
                     </td>
                     <td>
                       <Input
                         variant={['thin', 'x-small', 'no-style']}
-                        value={remanLPTurbo}
+                        value={turboLpReman}
                         onChange={(e: any) => setRemanLPTurbo(e.target.value)}
                       />
                     </td>
                     <td>
                       <Input
                         variant={['thin', 'x-small', 'no-style']}
-                        value={remanHEUIPump}
+                        value={heuiPumpReman}
                         onChange={(e: any) => setRemanHEUIPump(e.target.value)}
                       />
                     </td>
                     <td>
                       <Input
                         variant={['thin', 'x-small', 'no-style']}
-                        value={remanExhMnfld}
+                        value={exhMnfldReman}
                         onChange={(e: any) => setRemanExhMnfld(e.target.value)}
                       />
                     </td>
                     <td>
                       <Input
                         variant={['thin', 'x-small', 'no-style']}
-                        value={remanOilPump}
+                        value={oilPumpReman}
                         onChange={(e: any) => setRemanOilPump(e.target.value)}
                       />
                     </td>
                     <td>
                       <Input
                         variant={['thin', 'x-small', 'no-style']}
-                        value={remanWtrPump}
+                        value={waterPumpReman}
                         onChange={(e: any) => setRemanWtrPump(e.target.value)}
                       />
                     </td>
@@ -548,22 +548,22 @@ export default function CompareConsist() {
   
                   <tr className="compare-consist__compare-section--no-border">
                     <td></td>
-                    <td><Checkbox checked={headChecked} onChange={() => setHeadChecked(!headChecked)} /></td>
-                    <td><Checkbox checked={blockChecked} onChange={() => setBlockChecked(!blockChecked)} /></td>
-                    <td><Checkbox checked={crankChecked} onChange={() => setCrankChecked(!crankChecked)} /></td>
-                    <td><Checkbox checked={pistonsChecked} onChange={() => setPistonsChecked(!pistonsChecked)} /></td>
-                    <td><Checkbox checked={camChecked} onChange={() => setCamChecked(!camChecked)} /></td>
-                    <td><Checkbox checked={injectorsChecked} onChange={() => setInjectorsChecked(!injectorsChecked)} /></td>
-                    <td><Checkbox checked={singleTurboChecked} onChange={() => setSingleTurboChecked(!singleTurboChecked)} /></td>
-                    <td><Checkbox checked={fwhChecked} onChange={() => setFwhChecked(!fwhChecked)} /></td>
-                    <td><Checkbox checked={frontHousingChecked} onChange={() => setFrontHousingChecked(!frontHousingChecked)} /></td>
-                    <td><Checkbox checked={oilPanChecked} onChange={() => setOilPanChecked(!oilPanChecked)} /></td>
-                    <td><Checkbox checked={hpTurboChecked} onChange={() => setHpTurboChecked(!hpTurboChecked)} /></td>
-                    <td><Checkbox checked={lpTurboChecked} onChange={() => setLpTurboChecked(!lpTurboChecked)} /></td>
-                    <td><Checkbox checked={heuiPumpChecked} onChange={() => setHeuiPumpChecked(!heuiPumpChecked)} /></td>
-                    <td><Checkbox checked={exhManChecked} onChange={() => setExhManChecked(!exhManChecked)} /></td>
-                    <td><Checkbox checked={oilPumpChecked} onChange={() => setOilPumpChecked(!oilPumpChecked)} /></td>
-                    <td><Checkbox checked={waterPumpChecked} onChange={() => setWaterPumpChecked(!waterPumpChecked)} /></td>
+                    <td><Checkbox checked={headCheck} onChange={() => setHeadCheck(!headCheck)} /></td>
+                    <td><Checkbox checked={blockCheck} onChange={() => setBlockCheck(!blockCheck)} /></td>
+                    <td><Checkbox checked={crankCheck} onChange={() => setCrankCheck(!crankCheck)} /></td>
+                    <td><Checkbox checked={pistonCheck} onChange={() => setPistonsCheck(!pistonCheck)} /></td>
+                    <td><Checkbox checked={camCheck} onChange={() => setCamCheck(!camCheck)} /></td>
+                    <td><Checkbox checked={injCheck} onChange={() => setInjectorsCheck(!injCheck)} /></td>
+                    <td><Checkbox checked={turboCheck} onChange={() => setSingleTurboCheck(!turboCheck)} /></td>
+                    <td><Checkbox checked={fwhCheck} onChange={() => setFwhCheck(!fwhCheck)} /></td>
+                    <td><Checkbox checked={frontHsngCheck} onChange={() => setFrontHousingCheck(!frontHsngCheck)} /></td>
+                    <td><Checkbox checked={oilPanCheck} onChange={() => setOilPanCheck(!oilPanCheck)} /></td>
+                    <td><Checkbox checked={turboHpCheck} onChange={() => setHpTurboCheck(!turboHpCheck)} /></td>
+                    <td><Checkbox checked={turboLpCheck} onChange={() => setLpTurboCheck(!turboLpCheck)} /></td>
+                    <td><Checkbox checked={heuiPumpCheck} onChange={() => setHeuiPumpCheck(!heuiPumpCheck)} /></td>
+                    <td><Checkbox checked={exhMnfldCheck} onChange={() => setExhManCheck(!exhMnfldCheck)} /></td>
+                    <td><Checkbox checked={oilPumpCheck} onChange={() => setOilPumpCheck(!oilPumpCheck)} /></td>
+                    <td><Checkbox checked={waterPumpCheck} onChange={() => setWaterPumpCheck(!waterPumpCheck)} /></td>
                   </tr>
                 </tbody>
               </Table>

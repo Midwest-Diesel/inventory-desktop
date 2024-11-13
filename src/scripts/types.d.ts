@@ -452,7 +452,7 @@ type Engine = {
   stockNum: number
   toreDownDate: Date
   model: string
-  serialNumber: string
+  serialNum: string
   location: string
   horsePower: string
   jakeBrake: boolean
@@ -476,61 +476,61 @@ type Engine = {
   pan: string
   application: string
   turboArr: string
-  turboHP: string
-  turboHPReman: string
-  turboHPActual: string
-  turboLP: string
-  turboLPReman: string
-  turboLPActual: string
+  turboHpNew: string
+  turboHpReman: string
+  turboHpActual: string
+  turboLpNew: string
+  turboLpReman: string
+  turboLpActual: string
   fwhNumber: string
   costProposed1: number
-  arrangementNumber: string
+  arrNum: string
   costIn1: number
   costIn2: number
   costIn3: number
   costIn4: number
-  blockPartNum: string
-  blockRemanPartNum: string
+  blockNew: string
+  blockReman: string
   blockActual: string
   blockCasting: string
-  crankPartNum: string
-  crankRemanPartNum: string
+  crankNew: string
+  crankReman: string
   crankActual: string
-  headPartNum: string
-  headRemanPartNum: string
+  headNew: string
+  headReman: string
   headActual: string
-  camPartNum: string
-  camRemanPartNum: string
+  camNew: string
+  camReman: string
   camActual: string
-  injPartNum: string
-  injRemanPartNum: string
+  injNew: string
+  injReman: string
   injActual: string
-  turboPartNum: string
-  turboRemanPartNum: string
+  turboNew: string
+  turboReman: string
   turboActual: string
-  pistonsPartNum: string
-  pistonsRemanPartNum: string
+  pistonNew: string
+  pistonReman: string
   pistonsActual: string
-  cylPacksPartNum: string
-  cylPacksRemanPartNum: string
+  cylPacksNew: string
+  cylPacksReman: string
   cylPacksActual: string
-  fwhPartNum: string
-  fwhRemanPartNum: string
+  fwhNew: string
+  fwhReman: string
   fwhActual: string
-  oilPanPartNum: string
-  oilPanRemanPartNum: string
+  oilPanNew: string
+  oilPanReman: string
   oilPanActual: string
-  oilCoolerPartNum: string
-  oilCoolerRemanPartNum: string
+  oilCoolerNew: string
+  oilCoolerReman: string
   oilCoolerActual: string
-  frontHousingPartNum: string
-  frontHousingActual: string
-  flywheelPartNum: string
+  frontHsngNew: string
+  frontHsngActual: string
+  flywheelNew: string
   flywheelActual: string
-  ragPartNum: string
+  ragNew: string
   ragActual: string
-  heuiPumpPartNum: string
-  heuiPumpRemanPartNum: string
+  heuiPumpNew: string
+  heuiPumpReman: string
   heuiActual: string
   exhMnfldNew: string
   exhMnfldReman: string
@@ -538,7 +538,7 @@ type Engine = {
   oilPumpNew: string
   oilPumpReman: string
   oilPumpActual: string
-  waterPump: string
+  waterPumpNew: string
   waterPumpReman: string
   waterPumpActual: string
 };
@@ -549,7 +549,7 @@ type CompareConsist = {
   dateCreated: Date
   model: string
   serialNum: string
-  arrNum: stromg
+  arrNum: string
   hp: string
   headNew: string
   headReman: string
@@ -561,8 +561,8 @@ type CompareConsist = {
   pistonReman: string
   camNew: string
   camReman: string
-  injectorNew: string
-  injectorReman: string
+  injNew: string
+  injReman: string
   turboNew: string
   turboReman: string
   fwhNew: string
@@ -571,10 +571,10 @@ type CompareConsist = {
   frontHsngReman: string
   oilPanNew: string
   oilPanReman: string
-  hpTurboNew: string
-  hpTurboReman: string
-  lpTurboNew: string
-  lpTurboReman: string
+  turboHpNew: string
+  turboHpReman: string
+  turboLpNew: string
+  turboLpReman: string
   heuiPumpNew: string
   heuiPumpReman: string
   exhMnfldNew: string
@@ -589,13 +589,13 @@ type CompareConsist = {
   crankCheck: boolean
   pistonCheck: boolean
   camCheck: boolean
-  injectorCheck: boolean
+  injCheck: boolean
   turboCheck: boolean
   fwhCheck: boolean
   frontHsngCheck: boolean
   oilPanCheck: boolean
-  hpTurboCheck: boolean
-  lpTurboCheck: boolean
+  turboHpCheck: boolean
+  turboLpCheck: boolean
   heuiPumpCheck: boolean
   exhMnfldCheck: boolean
   oilPumpCheck: boolean
@@ -776,69 +776,69 @@ interface Email {
 }
 
 interface CustomerEngineData {
-  serialNumber: string
-  arrangementNumber: string
-  newHead: string
-  newBlock: string
-  newCrank: string
-  newPistons: string
-  newCam: string
-  newInjectors: string
-  newSingleTurbo: string
-  newFWH: string
-  newFrontHsng: string
-  newOilPan: string
-  newHPTurbo: string
-  newLPTurbo: string
-  newHEUIPump: string
-  newExhMnfld: string
-  newOilPump: string
-  newWtrPump: string
-  remanHead: string
-  remanBlock: string
-  remanCrank: string
-  remanPistons: string
-  remanCam: string
-  remanInjectors: string
-  remanSingleTurbo: string
-  remanFWH: string
-  remanFrontHsng: string
-  remanOilPan: string
-  remanHPTurbo: string
-  remanLPTurbo: string
-  remanHEUIPump: string
-  remanExhMnfld: string
-  remanOilPump: string
-  remanWtrPump: string
+  serialNum: string
+  arrNum: string
+  headNew: string
+  blockNew: string
+  crankNew: string
+  pistonNew: string
+  camNew: string
+  injNew: string
+  turboNew: string
+  fwhNew: string
+  frontHsngNew: string
+  oilPanNew: string
+  turboHpNew: string
+  turboLpNew: string
+  heuiPumpNew: string
+  exhMnfldNew: string
+  oilPumpNew: string
+  waterPumpNew: string
+  headReman: string
+  blockReman: string
+  crankReman: string
+  pistonReman: string
+  camReman: string
+  injReman: string
+  turboReman: string
+  fwhReman: string
+  frontHsngReman: string
+  oilPanReman: string
+  turboHpReman: string
+  turboLpReman: string
+  heuiPumpReman: string
+  exhMnfldReman: string
+  oilPumpReman: string
+  waterPumpReman: string
 }
 
 interface EnginePartsTable {
-  blockRemanPartNum: string
-  blockPartNum: string
-  crankRemanPartNum: string
-  crankPartNum: string
-  camRemanPartNum: string
-  camPartNum: string
-  injRemanPartNum: string
-  injPartNum: string
-  turboRemanPartNum: string
-  turboPartNum: string
-  turboHPReman: string
-  turboHP: string
-  turboLPReman: string
-  turboLP: string
-  headRemanPartNum: string
-  headPartNum: string
-  pistonsRemanPartNum: string
-  pistonsPartNum: string
-  flywheelPartNum: string
-  oilPanRemanPartNum: string
-  oilPanPartNum: string
-  oilCoolerRemanPartNum: string
-  oilCoolerPartNum: string
-  frontHousingPartNum: string
-  heuiPumpRemanPartNum: string
-  heuiPumpPartNum: string
+  blockReman: string
+  blockNew: string
+  crankReman: string
+  crankNew: string
+  camReman: string
+  camNew: string
+  injReman: string
+  injNew: string
+  turboReman: string
+  turboNew: string
+  turboHpReman: string
+  turboHpNew: string
+  turboLpReman: string
+  turboLpNew: string
+  headReman: string
+  headNew: string
+  pistonReman: string
+  pistonNew: string
+  flywheelNew: string
+  oilPanReman: string
+  oilPanNew: string
+  oilCoolerReman: string
+  oilCoolerNew: string
+  frontHsngNew: string
+  heuiPumpReman: string
+  heuiPumpNew: string
   oilPumpReman: string
   oilPumpNew: string
   waterPumpReman: string

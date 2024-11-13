@@ -28,8 +28,8 @@ export default function EditEngineDetails({ engine, setEngine, setIsEditing, eng
   const [currentStatus, setCurrentStatus] = useState<EngineStatus>(engine.currentStatus);
   const [loginDate, setLoginDate] = useState<Date>(engine.loginDate);
   const [model, setModel] = useState<string>(engine.model);
-  const [serialNumber, setSerialNumber] = useState<string>(engine.serialNumber);
-  const [arrangementNumber, setArrNum] = useState<string>(engine.arrangementNumber);
+  const [serialNum, setSerialNumber] = useState<string>(engine.serialNum);
+  const [arrNum, setArrNum] = useState<string>(engine.arrNum);
   const [location, setLocation] = useState<string>(engine.location);
   const [horsePower, setHorsePower] = useState<string>(engine.horsePower);
   const [mileage, setMileage] = useState<string>(engine.mileage);
@@ -47,44 +47,44 @@ export default function EditEngineDetails({ engine, setEngine, setIsEditing, eng
   const [torque, setTorque] = useState<string>(engine.torque);
   const [pan, setPan] = useState<string>(engine.pan);
   const [application, setApplication] = useState<string>(engine.application);
-  const [turboHP, setTurboHP] = useState<string>(engine.turboHP);
-  const [turboLP, setTurboLP] = useState<string>(engine.turboLP);
+  const [turboHpNew, setTurboHP] = useState<string>(engine.turboHpNew);
+  const [turboLpNew, setTurboLP] = useState<string>(engine.turboLpNew);
   const [fwhNumber, setFwhNumber] = useState<string>(engine.fwhNumber);
   const [comments, setComments] = useState<string>(engine.comments);
   const [partsPulled, setPartsPulled] = useState<string>(engine.partsPulled);
   const [engineCostIn, setEngineCostIn] = useState<EngineCostIn[]>(engineCostInData);
   const [engineCostOut, setEngineCostOut] = useState<EngineCostOut[]>(engineCostOutData);
   const enginePartsData = {
-    blockRemanPartNum: engine.blockRemanPartNum,
-    blockPartNum: engine.blockPartNum,
-    crankRemanPartNum: engine.crankRemanPartNum,
-    crankPartNum: engine.crankPartNum,
-    camRemanPartNum: engine.camRemanPartNum,
-    camPartNum: engine.camPartNum,
-    injRemanPartNum: engine.injRemanPartNum,
-    injPartNum: engine.injPartNum,
-    turboRemanPartNum: engine.turboRemanPartNum,
-    turboPartNum: engine.turboPartNum,
-    turboHPReman: engine.turboHPReman,
-    turboHP: engine.turboHP,
-    turboLPReman: engine.turboLPReman,
-    turboLP: engine.turboLP,
-    headRemanPartNum: engine.headRemanPartNum,
-    headPartNum: engine.headPartNum,
-    pistonsRemanPartNum: engine.pistonsRemanPartNum,
-    pistonsPartNum: engine.pistonsPartNum,
-    flywheelPartNum: engine.flywheelPartNum,
-    oilPanRemanPartNum: engine.oilPanRemanPartNum,
-    oilPanPartNum: engine.oilPanPartNum,
-    oilCoolerRemanPartNum: engine.oilCoolerRemanPartNum,
-    oilCoolerPartNum: engine.oilCoolerPartNum,
-    frontHousingPartNum: engine.frontHousingPartNum,
-    heuiPumpRemanPartNum: engine.heuiPumpRemanPartNum,
-    heuiPumpPartNum: engine.heuiPumpPartNum,
+    blockReman: engine.blockReman,
+    blockNew: engine.blockNew,
+    crankReman: engine.crankReman,
+    crankNew: engine.crankNew,
+    camReman: engine.camReman,
+    camNew: engine.camNew,
+    injReman: engine.injReman,
+    injNew: engine.injNew,
+    turboReman: engine.turboReman,
+    turboNew: engine.turboNew,
+    turboHpReman: engine.turboHpReman,
+    turboHpNew: engine.turboHpNew,
+    turboLpReman: engine.turboLpReman,
+    turboLpNew: engine.turboLpNew,
+    headReman: engine.headReman,
+    headNew: engine.headNew,
+    pistonReman: engine.pistonReman,
+    pistonNew: engine.pistonNew,
+    flywheelNew: engine.flywheelNew,
+    oilPanReman: engine.oilPanReman,
+    oilPanNew: engine.oilPanNew,
+    oilCoolerReman: engine.oilCoolerReman,
+    oilCoolerNew: engine.oilCoolerNew,
+    frontHsngNew: engine.frontHsngNew,
+    heuiPumpReman: engine.heuiPumpReman,
+    heuiPumpNew: engine.heuiPumpNew,
     oilPumpReman: engine.oilPumpReman,
     oilPumpNew: engine.oilPumpNew,
     waterPumpReman: engine.waterPumpReman,
-    waterPump: engine.waterPump,
+    waterPump: engine.waterPumpNew,
     exhMnfldNew: engine.exhMnfldNew,
     exhMnfldReman: engine.exhMnfldReman
   };
@@ -102,8 +102,8 @@ export default function EditEngineDetails({ engine, setEngine, setIsEditing, eng
       currentStatus,
       loginDate,
       model,
-      serialNumber,
-      arrangementNumber,
+      serialNum,
+      arrNum,
       location,
       horsePower,
       mileage,
@@ -121,8 +121,8 @@ export default function EditEngineDetails({ engine, setEngine, setIsEditing, eng
       torque,
       pan,
       application,
-      turboHP,
-      turboLP,
+      turboHpNew,
+      turboLpNew,
       fwhNumber,
       comments,
       partsPulled
@@ -277,7 +277,7 @@ export default function EditEngineDetails({ engine, setEngine, setIsEditing, eng
                     <td>
                       <Input
                         variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
-                        value={serialNumber}
+                        value={serialNum}
                         onChange={(e: any) => setSerialNumber(e.target.value)}
                       />
                     </td>
@@ -287,7 +287,7 @@ export default function EditEngineDetails({ engine, setEngine, setIsEditing, eng
                     <td>
                       <Input
                         variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
-                        value={arrangementNumber}
+                        value={arrNum}
                         onChange={(e: any) => setArrNum(e.target.value)}
                       />
                     </td>
@@ -439,7 +439,7 @@ export default function EditEngineDetails({ engine, setEngine, setIsEditing, eng
                     <td>
                       <Input
                         variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
-                        value={turboHP}
+                        value={turboHpNew}
                         onChange={(e: any) => setTurboHP(e.target.value)}
                       />
                     </td>
@@ -449,7 +449,7 @@ export default function EditEngineDetails({ engine, setEngine, setIsEditing, eng
                     <td>
                       <Input
                         variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
-                        value={turboLP}
+                        value={turboLpNew}
                         onChange={(e: any) => setTurboLP(e.target.value)}
                       />
                     </td>

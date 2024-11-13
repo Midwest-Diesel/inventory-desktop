@@ -74,7 +74,7 @@ export default function CoreEngines() {
                       <td><Link href={`/engines/${engine.stockNum}`}>{ engine.stockNum }</Link></td>
                       <td>{ formatDate(engine.loginDate) }</td>
                       <td>{ engine.model }</td>
-                      <td>{ engine.serialNumber }</td>
+                      <td>{ engine.serialNum }</td>
                       <td>{ engine.location }</td>
                       <td>{ engine.comments }</td>
                       <td>{ engine.horsePower }</td>

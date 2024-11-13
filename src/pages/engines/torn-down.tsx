@@ -75,7 +75,7 @@ export default function EnginesTornDown() {
                       <td><Link href={`/engines/${engine.stockNum}`}>{ engine.stockNum }</Link></td>
                       <td>{ formatDate(engine.toreDownDate) }</td>
                       <td>{ engine.model }</td>
-                      <td>{ engine.serialNumber }</td>
+                      <td>{ engine.serialNum }</td>
                       <td>{ engine.location }</td>
                       <td>{ engine.horsePower }</td>
                       <td className="cbx-td"><Checkbox checked={engine.jakeBrake} disabled /></td>

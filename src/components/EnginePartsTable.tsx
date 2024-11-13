@@ -20,113 +20,113 @@ export default function EnginePartsTable({ engine }: Props) {
       <tbody>
         <tr>
           <th>Block</th>
-          <td>{ engine.blockPartNum }</td>
-          <td>{ engine.blockRemanPartNum }</td>
+          <td>{ engine.blockNew }</td>
+          <td>{ engine.blockReman }</td>
           <td>{ engine.blockCasting }</td>
           <td>{ engine.blockActual }</td>
         </tr>
         <tr>
           <th>Crankshaft</th>
-          <td>{ engine.crankPartNum }</td>
-          <td>{ engine.crankRemanPartNum }</td>
+          <td>{ engine.crankNew }</td>
+          <td>{ engine.crankReman }</td>
           <td></td>
           <td>{ engine.crankActual }</td>
         </tr>
         <tr>
           <th>Camshaft</th>
-          <td>{ engine.camPartNum }</td>
-          <td>{ engine.camRemanPartNum }</td>
+          <td>{ engine.camNew }</td>
+          <td>{ engine.camReman }</td>
           <td></td>
           <td>{ engine.camActual }</td>
         </tr>
         <tr>
           <th>Injector</th>
-          <td>{ engine.injPartNum }</td>
-          <td>{ engine.injRemanPartNum }</td>
+          <td>{ engine.injNew }</td>
+          <td>{ engine.injReman }</td>
           <td></td>
           <td>{ engine.injActual }</td>
         </tr>
         <tr>
           <th>Turbo</th>
-          <td>{ engine.turboPartNum }</td>
-          <td>{ engine.turboRemanPartNum }</td>
+          <td>{ engine.turboNew }</td>
+          <td>{ engine.turboReman }</td>
           <td></td>
           <td>{ engine.turboActual }</td>
         </tr>
         <tr>
           <th>Turbo HP</th>
-          <td>{ engine.turboHP }</td>
-          <td>{ engine.turboHPReman }</td>
+          <td>{ engine.turboHpNew }</td>
+          <td>{ engine.turboHpReman }</td>
           <td></td>
-          <td>{ engine.turboHPActual }</td>
+          <td>{ engine.turboHpActual }</td>
         </tr>
         <tr>
           <th>Turbo LP</th>
-          <td>{ engine.turboLP }</td>
-          <td>{ engine.turboLPReman }</td>
+          <td>{ engine.turboLpNew }</td>
+          <td>{ engine.turboLpReman }</td>
           <td></td>
-          <td>{ engine.turboLPActual }</td>
+          <td>{ engine.turboLpActual }</td>
         </tr>
         <tr>
           <th>Head</th>
-          <td>{ engine.headPartNum }</td>
-          <td>{ engine.headRemanPartNum }</td>
+          <td>{ engine.headNew }</td>
+          <td>{ engine.headReman }</td>
           <td></td>
           <td>{ engine.headActual }</td>
         </tr>
         <tr>
           <th>Pist./Cyl Pk</th>
-          <td>{ engine.pistonsPartNum }</td>
-          <td>{ engine.pistonsRemanPartNum }</td>
+          <td>{ engine.pistonNew }</td>
+          <td>{ engine.pistonReman }</td>
           <td></td>
           <td>{ engine.pistonsActual }</td>
         </tr>
         <tr>
           <th>Flywheel Hsng</th>
-          <td>{ engine.fwhPartNum }</td>
-          <td>{ engine.fwhRemanPartNum }</td>
+          <td>{ engine.fwhNew }</td>
+          <td>{ engine.fwhReman }</td>
           <td></td>
           <td>{ engine.fwhActual }</td>
         </tr>
         <tr>
           <th>Flywheel</th>
-          <td>{ engine.flywheelPartNum }</td>
+          <td>{ engine.flywheelNew }</td>
           <td></td>
           <td></td>
           <td>{ engine.flywheelActual }</td>
         </tr>
         <tr>
           <th>Oil Pan</th>
-          <td>{ engine.oilPanPartNum }</td>
-          <td>{ engine.oilPanRemanPartNum }</td>
+          <td>{ engine.oilPanNew }</td>
+          <td>{ engine.oilPanReman }</td>
           <td></td>
           <td>{ engine.oilPanActual }</td>
         </tr>
         <tr>
           <th>Oil Cooler</th>
-          <td>{ engine.oilCoolerPartNum }</td>
-          <td>{ engine.oilCoolerRemanPartNum }</td>
+          <td>{ engine.oilCoolerNew }</td>
+          <td>{ engine.oilCoolerReman }</td>
           <td></td>
           <td>{ engine.oilCoolerActual }</td>
         </tr>
         <tr>
           <th>Front Housing</th>
-          <td>{ engine.frontHousingPartNum }</td>
+          <td>{ engine.frontHsngNew }</td>
           <td></td>
           <td></td>
-          <td>{ engine.frontHousingActual }</td>
+          <td>{ engine.frontHsngActual }</td>
         </tr>
         <tr>
           <th>RA Group</th>
-          <td>{ engine.ragPartNum }</td>
+          <td>{ engine.ragNew }</td>
           <td></td>
           <td></td>
           <td>{ engine.ragActual }</td>
         </tr>
         <tr>
           <th>Heui Pump</th>
-          <td>{ engine.heuiPumpPartNum }</td>
-          <td>{ engine.heuiPumpRemanPartNum }</td>
+          <td>{ engine.heuiPumpNew }</td>
+          <td>{ engine.heuiPumpReman }</td>
           <td></td>
           <td>{ engine.heuiActual }</td>
         </tr>
@@ -139,7 +139,7 @@ export default function EnginePartsTable({ engine }: Props) {
         </tr>
         <tr>
           <th>Water Pump</th>
-          <td>{ engine.waterPump }</td>
+          <td>{ engine.waterPumpNew }</td>
           <td>{ engine.waterPumpReman }</td>
           <td></td>
           <td>{ engine.waterPumpActual }</td>

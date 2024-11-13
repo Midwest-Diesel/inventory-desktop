@@ -31,7 +31,7 @@ export default function SelectHandwrittenDialog({ open, setOpen, handleAddToHand
   const [warranty, setWarranty] = useState('');
   const [noWarranty, setNoWarranty] = useState(false);
   const [noVerbage, setNoVerbage] = useState(false);
-  const [injectoryWar, setInjectoryWar] = useState(false);
+  const [injectorWar, setInjectorWar] = useState(false);
   const [customWar, setCustomWar] = useState(false);
   const [search, setSearch] = useState('');
   
@@ -70,7 +70,7 @@ export default function SelectHandwrittenDialog({ open, setOpen, handleAddToHand
     if (!selectedHandwrittenId) return;
     const handwritten = await getHandwrittenById(selectedHandwrittenId) as Handwritten;
     let fullWar = `${handwritten.orderNotes ? '\n' : ''}`;
-    if (injectoryWar) fullWar += 'Injector warranty\n';
+    if (injectorWar) fullWar += 'Injector warranty\n';
     if (customWar) fullWar += `${warranty}\n`;
     if (noWarranty) fullWar += 'No CAT Warranty\n';
     if (!fullWar && !warranty && !noVerbage) {
@@ -160,8 +160,8 @@ export default function SelectHandwrittenDialog({ open, setOpen, handleAddToHand
           <Checkbox
             label="Injector Warranty"
             variant={['label-bold', 'dark-bg', 'label-align-center', 'label-fit']}
-            checked={injectoryWar}
-            onChange={(e: any) => setInjectoryWar(e.target.checked)}
+            checked={injectorWar}
+            onChange={(e: any) => setInjectorWar(e.target.checked)}
           />
           <Checkbox
             label="Custom Warranty"

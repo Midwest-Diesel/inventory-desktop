@@ -116,11 +116,11 @@ export default function EngineDetailsPage() {
                     </tr>
                     <tr>
                       <th>Serial Number</th>
-                      <td>{ engine.serialNumber }</td>
+                      <td>{ engine.serialNum }</td>
                     </tr>
                     <tr>
                       <th>Arr Number</th>
-                      <td>{ engine.arrangementNumber }</td>
+                      <td>{ engine.arrNum }</td>
                     </tr>
                     <tr>
                       <th>Location</th>
@@ -200,11 +200,11 @@ export default function EngineDetailsPage() {
                     </tr>
                     <tr>
                       <th>Turbo HP</th>
-                      <td>{ engine.turboHP }</td>
+                      <td>{ engine.turboHpNew }</td>
                     </tr>
                     <tr>
                       <th>Turbo LP</th>
-                      <td>{ engine.turboLP }</td>
+                      <td>{ engine.turboLpNew }</td>
                     </tr>
                     <tr>
                       <th>FWH Number</th>

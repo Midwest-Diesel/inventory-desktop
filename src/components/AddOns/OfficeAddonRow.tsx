@@ -104,7 +104,7 @@ export default function OfficeAddonRow({ addOn }: Props) {
       stockNum: part && part.stockNum,
       engineNum: res.stockNum,
       hp: res.horsePower,
-      serialNum: res.serialNumber,
+      serialNum: res.serialNum,
     } as AddOn;
     const updatedAddOns = addOns.map((a: AddOn) => {
       if (a.id === addOn.id) {

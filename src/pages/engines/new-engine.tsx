@@ -36,8 +36,8 @@ export default function NewEnginesList() {
   }, [enginesData, engineModel]);
 
   const isEngineResNotNull = (engine: Engine) => {
-    const { turboRemanPartNum, headPartNum, headRemanPartNum, pistonsPartNum, pistonsRemanPartNum, fwhPartNum, fwhRemanPartNum, oilPanPartNum, oilPanRemanPartNum, oilCoolerPartNum, oilCoolerRemanPartNum, frontHousingPartNum, flywheelPartNum, ragPartNum, heuiPumpPartNum, heuiPumpRemanPartNum } = engine;
-    return ![turboRemanPartNum, headPartNum, headRemanPartNum, pistonsPartNum, pistonsRemanPartNum, fwhPartNum, fwhRemanPartNum, oilPanPartNum, oilPanRemanPartNum, oilCoolerPartNum, oilCoolerRemanPartNum, frontHousingPartNum, flywheelPartNum, ragPartNum, heuiPumpPartNum, heuiPumpRemanPartNum].includes(null);
+    const { turboReman, headNew, headReman, pistonNew, pistonReman, fwhNew, fwhReman, oilPanNew, oilPanReman, oilCoolerNew, oilCoolerReman, frontHsngNew, flywheelNew, ragNew, heuiPumpNew, heuiPumpReman } = engine;
+    return ![turboReman, headNew, headReman, pistonNew, pistonReman, fwhNew, fwhReman, oilPanNew, oilPanReman, oilCoolerNew, oilCoolerReman, frontHsngNew, flywheelNew, ragNew, heuiPumpNew, heuiPumpReman].includes(null);
   };
 
   const getEngineModels = () => {
@@ -146,13 +146,13 @@ export default function NewEnginesList() {
                     <td className="cbx-td"><Checkbox checked={engine.ecm} disabled /></td>
                     <td className="cbx-td"><Checkbox checked={engine.warranty} disabled /></td>
                     <td>{ engine.model }</td>
-                    <td>{ engine.serialNumber }</td>
+                    <td>{ engine.serialNum }</td>
                     <td>{ engine.horsePower }</td>
                     <td>{ engine.torque }</td>
-                    <td>{ engine.oilPanPartNum }</td>
+                    <td>{ engine.oilPanNew }</td>
                     <td>{ engine.turboArr }</td>
-                    <td>{ engine.turboHP }</td>
-                    <td>{ engine.turboLP }</td>
+                    <td>{ engine.turboHpNew }</td>
+                    <td>{ engine.turboLpNew }</td>
                     <td>{ engine.application }</td>
                     <td>{ engine.purchasedFrom }</td>
                     <td>{ engine.currentStatus }</td>

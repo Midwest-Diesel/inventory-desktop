@@ -46,7 +46,7 @@ export default function CompareEngineTable({ openSideBySide, getEngineData, cust
       notes: '',
       dateCreated: new Date(),
       ...getEngineData()
-    } as any;
+    } as CompareConsist;
     await addCompareData(data);
   };
 
@@ -120,13 +120,13 @@ export default function CompareEngineTable({ openSideBySide, getEngineData, cust
                     <td className="cbx-td"><Checkbox checked={engine.ecm} disabled /></td>
                     <td className="cbx-td"><Checkbox checked={engine.warranty} disabled /></td>
                     <td>{ engine.model }</td>
-                    <td>{ engine.serialNumber }</td>
-                    <td>{ engine.arrangementNumber }</td>
+                    <td>{ engine.serialNum }</td>
+                    <td>{ engine.arrNum }</td>
                     <td>{ engine.location }</td>
                     <td>{ engine.horsePower }</td>
-                    <td>{ engine.oilPanPartNum }</td>
-                    <td>{ engine.turboHP }</td>
-                    <td>{ engine.turboLP }</td>
+                    <td>{ engine.oilPanNew }</td>
+                    <td>{ engine.turboHpNew }</td>
+                    <td>{ engine.turboLpNew }</td>
                     <td>{ formatCurrency(engine.costRemaining) }</td>
                     <td>{ engine.purchasedFrom }</td>
                     <td>{ engine.currentStatus }</td>

@@ -81,7 +81,7 @@ export default function SoldEngines() {
                       <td>{ formatDate(engine.loginDate) }</td>
                       <td>{ formatDate(engine.soldDate) }</td>
                       <td>{ engine.model }</td>
-                      <td>{ engine.serialNumber }</td>
+                      <td>{ engine.serialNum }</td>
                       <td>{ formatCurrency(engine.costProposed1) }</td>
                       <td>{ formatCurrency(engine.sellPrice) }</td>
                       <td>{ engine.comments }</td>
