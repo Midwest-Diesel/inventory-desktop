@@ -4,14 +4,14 @@ import Dialog from "../Library/Dialog";
 import Loading from "../Library/Loading";
 
 interface Picture {
-  url: string;
-  name: string;
+  url: string
+  name: string
 }
 
 interface Props {
-  open: boolean;
-  setOpen: (open: boolean) => void;
-  pictures: Picture[];
+  open: boolean
+  setOpen: (open: boolean) => void
+  pictures: Picture[]
 }
 
 

@@ -12,6 +12,14 @@ import { useAtom } from "jotai";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Button from "@/components/Library/Button";
+import CompareConsistSearchDialog from "@/components/Dialogs/CompareConsistSearchDialog";
+
+interface SearchData {
+  customer: Customer
+  serialNum: string
+  arrNum: string
+}
+
 
 export default function CompareConsist() {
   const router = useRouter();
@@ -82,6 +90,9 @@ export default function CompareConsist() {
   const params: any = Object.fromEntries(urlSearchParams.entries());
   const [enginesData, setEnginesData] = useState<Engine[]>([]);
   const [engines, setEngines] = useState<Engine[]>([]);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [search, setSearch] = useState<SearchData>({ customer: null, serialNum: null, arrNum: null });
+  const [searchData, setSearchData] = useState<CompareConsist[]>([]);
 
 
   useEffect(() => {
@@ -225,12 +236,18 @@ export default function CompareConsist() {
   const handleSearch = async () => {
     const res = await searchCompareData(customer.id || null, serialNum || null, arrNum || null);
     setEngines(res);
+    setSearchData(res);
+    loadCompareData(res[0]);
+    setSearch({ customer, serialNum, arrNum });
+    setSearchOpen(true);
   };
 
 
   return (
     <Layout title="Compare">
       <div className="compare-consist">
+        <CompareConsistSearchDialog open={searchOpen} setOpen={setSearchOpen} search={search} searchData={searchData} />
+
         {!mwdEngine ?
           <>
             <div className="compare-consist__top-bar">

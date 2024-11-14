@@ -38,9 +38,7 @@ export default function CompareEngineTable({ openSideBySide, getEngineData, cust
     fetchData();
   }, []);
 
-  const findComparableEngines = async () => {
-    const newEngineData = await getEnginesByEngineData(getEngineData());
-    setEngines(newEngineData.sort((a: any, b: any) => b.stockNum - a.stockNum));
+  const handleCompareableEngines = async () => {
     const data = {
       customerId,
       hp: '',
@@ -50,6 +48,12 @@ export default function CompareEngineTable({ openSideBySide, getEngineData, cust
       ...getEngineData()
     } as CompareConsist;
     await addCompareData(data);
+    await findComparableEngines();
+  };
+
+  const findComparableEngines = async () => {
+    const newEngineData = await getEnginesByEngineData(getEngineData());
+    setEngines(newEngineData.sort((a: any, b: any) => b.stockNum - a.stockNum));
   };
 
   const handleLoadBlankRecord = () => {
@@ -69,7 +73,7 @@ export default function CompareEngineTable({ openSideBySide, getEngineData, cust
             <Button
               className="compare-consist__compare-section--compare-btn"
               variant={['x-small']}
-              onClick={findComparableEngines}
+              onClick={handleCompareableEngines}
             >
               Find Comparable Engines
             </Button>
