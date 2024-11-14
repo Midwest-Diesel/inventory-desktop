@@ -6,11 +6,12 @@ import Checkbox from "@/components/Library/Checkbox";
 import Input from "@/components/Library/Input";
 import Table from "@/components/Library/Table";
 import { customersAtom } from "@/scripts/atoms/state";
-import { getCompareDataById } from "@/scripts/controllers/compareConsistController";
+import { getCompareDataById, searchCompareData } from "@/scripts/controllers/compareConsistController";
 import { getCustomerById, getCustomers } from "@/scripts/controllers/customerController";
 import { useAtom } from "jotai";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import Button from "@/components/Library/Button";
 
 export default function CompareConsist() {
   const router = useRouter();
@@ -79,6 +80,8 @@ export default function CompareConsist() {
   const [mwdEngine, setMwdEngine] = useState<Engine>(null);
   const urlSearchParams = new URLSearchParams(window.location.search);
   const params: any = Object.fromEntries(urlSearchParams.entries());
+  const [enginesData, setEnginesData] = useState<Engine[]>([]);
+  const [engines, setEngines] = useState<Engine[]>([]);
 
 
   useEffect(() => {
@@ -219,6 +222,11 @@ export default function CompareConsist() {
     setWaterPumpCheck(data.waterPumpCheck);
   };
 
+  const handleSearch = async () => {
+    const res = await searchCompareData(customer.id || null, serialNum || null, arrNum || null);
+    setEngines(res);
+  };
+
 
   return (
     <Layout title="Compare">
@@ -233,34 +241,6 @@ export default function CompareConsist() {
                 onChange={(value: any) => handleChangeCustomer(value)}
                 maxHeight="15rem"
               />
-              {/* <Select
-                label="Model"
-                variant={['label-stack']}
-                value={model}
-                onChange={(e: any) => setModel(e.target.value)}
-              >
-                <option value="C-7">C-7</option>
-                <option value="C-9">C-9</option>
-                <option value="C-10">C-10</option>
-                <option value="C-11">C-11</option>
-                <option value="C-12">C-12</option>
-                <option value="C-13">C-13</option>
-                <option value="C-15">C-15</option>
-                <option value="C-16">C-16</option>
-                <option value="C-18">C-18</option>
-                <option value="3116">3116</option>
-                <option value="3126">3126</option>
-                <option value="3176">3176</option>
-                <option value="3406A">3406A</option>
-                <option value="3406B">3406B</option>
-                <option value="3406C">3406C</option>
-                <option value="3406E">3406E</option>
-                <option value="ISB">ISB</option>
-                <option value="ISM">ISM</option>
-                <option value="ISX">ISX</option>
-                <option value="M11">M11</option>
-                <option value="M14">M14</option>
-              </Select> */}
               <Input
                 label="Serial Number"
                 variant={['label-stack', 'label-no-margin', 'thin']}
@@ -273,21 +253,8 @@ export default function CompareConsist() {
                 value={arrNum}
                 onChange={(e: any) => setArrNum(e.target.value)}
               />
-              {/* <Input
-                label="Horse Power"
-                variant={['label-stack', 'label-no-margin', 'thin', 'x-small']}
-                value={horsePower}
-                onChange={(e: any) => setHorsePower(e.target.value)}
-              /> */}
-
-              {/* <Input
-                label="Notes"
-                variant={['label-stack', 'text-area']}
-                rows={2}
-                cols={30}
-                value={notes}
-                onChange={(e: any) => setNotes(e.target.value)}
-              /> */}
+              <Button variant={['fit']} onClick={handleSearch}>Search</Button>
+              <Button variant={['fit']} onClick={() => location.reload()}>Reset Search</Button>
             </div>
   
             <div className="compare-consist__compare-section">
@@ -568,7 +535,14 @@ export default function CompareConsist() {
                 </tbody>
               </Table>
   
-              <CompareEngineTable openSideBySide={openSideBySide} getEngineData={getEngineData} customerId={params.c} />
+              <CompareEngineTable
+                openSideBySide={openSideBySide}
+                getEngineData={getEngineData}
+                customerId={params.c}
+                setEnginesData={setEnginesData}
+                engines={engines}
+                setEngines={setEngines}
+              />
             </div>
           </>
           :

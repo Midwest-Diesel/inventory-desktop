@@ -2,6 +2,7 @@
   &__top-bar {
     display: flex;
     gap: 1rem;
+    align-items: flex-end;
 
     &--title {
       margin: 0 0.8rem 0.3rem 0;

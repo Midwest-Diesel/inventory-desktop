@@ -12,10 +12,10 @@ const parseCompareDataRes = (data: any) => {
 
 // === GET routes === //
 
-export const getCompareData = async () => {
+export const getCompareDataByCustomer = async (id: number) => {
   try {
     const auth = { withCredentials: true };
-    const res = await api.get('/api/compare-consist', auth);
+    const res = await api.get(`/api/compare-consist/customer/${id}`, auth);
     res.data = parseCompareDataRes(res.data);
     return res.data;
   } catch (err) {
@@ -23,10 +23,10 @@ export const getCompareData = async () => {
   }
 };
 
-export const getCompareDataByCustomer = async (id: number) => {
+export const searchCompareData = async (customerId: number, serialNum: string, arrNum: string) => {
   try {
     const auth = { withCredentials: true };
-    const res = await api.get(`/api/compare-consist/customer/${id}`, auth);
+    const res = await api.get(`/api/compare-consist/search/${JSON.stringify({ customerId, serialNum, arrNum })}`, auth);
     res.data = parseCompareDataRes(res.data);
     return res.data;
   } catch (err) {
