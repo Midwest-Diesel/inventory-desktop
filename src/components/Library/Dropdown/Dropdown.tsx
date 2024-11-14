@@ -38,7 +38,6 @@ export default function Dropdown({ children, className = '', variant = [], label
   const [selectedOption, setSelectedOption] = useState(defaultValue);
   const [previouslySelectedOption, setPreviouslySelectedOption] = useState(defaultValue);
   
-
   useEffect(() => {
     id = generateRandId();
     setIdProp(id);
@@ -49,7 +48,6 @@ export default function Dropdown({ children, className = '', variant = [], label
     setSelectedOption(defaultValue);
   }, [defaultValue]);
   
-
 
   const handleScreenClick = (e: any) => {
     const clickedDropdown = e.target.closest('.dropdown__option');
@@ -67,7 +65,7 @@ export default function Dropdown({ children, className = '', variant = [], label
   const selectOption = (value: string, data?: any) => {
     setSelectedOption(value);
     setIsOpen(false);
-    if (onChange && previouslySelectedOption !== value) {
+    if (onChange && (previouslySelectedOption !== value || !value)) {
       onChange(value, data);
       setPreviouslySelectedOption(value);
     }

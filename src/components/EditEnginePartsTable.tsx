@@ -151,7 +151,7 @@ export default function EditEnginePartsTable({ engine }: Props) {
             <Input
               variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
               name="turboHp"
-              value={engineParts.turboHp}
+              value={engineParts.turboHpNew}
               onChange={handleChange}
             />
           </td>
@@ -172,7 +172,7 @@ export default function EditEnginePartsTable({ engine }: Props) {
             <Input
               variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
               name="turboLp"
-              value={engineParts.turboLp}
+              value={engineParts.turboLpNew}
               onChange={handleChange}
             />
           </td>

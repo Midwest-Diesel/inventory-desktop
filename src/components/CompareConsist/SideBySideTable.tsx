@@ -8,6 +8,7 @@ import { addQuote } from "@/scripts/controllers/quotesController";
 import { useAtom } from "jotai";
 import { userAtom } from "@/scripts/atoms/state";
 import { invoke } from "@tauri-apps/api/tauri";
+import { useRouter } from "next/router";
 
 interface Props {
   customer: Customer
@@ -18,6 +19,7 @@ interface Props {
 
 
 export default function SideBySideTable({ customer, customerEngineData, mwdEngine, setMwdEngine }: Props) {
+  const router = useRouter();
   const [user] = useAtom<User>(userAtom);
   const [matchingValues, setMatchingValues] = useState<string[]>([]);
   const isMatchingValues = (key: string) => matchingValues.includes(key);
@@ -77,6 +79,7 @@ export default function SideBySideTable({ customer, customerEngineData, mwdEngin
     ].filter((str) => str);
     const bodyContent = [...additionalContent, ...matchingValues];
 
+    /* eslint-disable */
     const emailArgs: Email = {
       subject: `Midwest Diesel Quote`,
       body: `
@@ -94,13 +97,12 @@ export default function SideBySideTable({ customer, customerEngineData, mwdEngin
       recipients: [recipient],
       attachments: []
     };
+    /* eslint-enable */
     await invoke('new_email_draft', { emailArgs });
   };
 
   const createQuote = async () => {
     if (!customer) return;
-    const inputPrice = prompt('Quote Price:', price);
-    if (!inputPrice) return;
     const quote = {
       date: new Date(),
       source: null,
@@ -109,9 +111,9 @@ export default function SideBySideTable({ customer, customerEngineData, mwdEngin
       phone: customer.phone,
       state: customer.billToState,
       partNum: null,
-      desc: null,
+      desc: '',
       stockNum: null,
-      price: inputPrice || 0,
+      price: price || 0,
       notes: null,
       salesman: null,
       sale: false,
@@ -125,6 +127,7 @@ export default function SideBySideTable({ customer, customerEngineData, mwdEngin
       createdAfter: false
     } as any;
     await addQuote(quote, user.id);
+    router.replace('/');
   };
 
 
@@ -362,7 +365,7 @@ export default function SideBySideTable({ customer, customerEngineData, mwdEngin
 
       <div className="side-by-side-table__bottom-buttons">
         <Button onClick={sendEmail}>Create Email</Button>
-        {/* <Button onClick={createQuote}>Create Quote</Button> */}
+        <Button onClick={createQuote}>Create Quote</Button>
       </div>
     </div>
   );

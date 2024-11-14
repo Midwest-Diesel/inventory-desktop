@@ -15,17 +15,16 @@ interface Props {
   openSideBySide: (engine: Engine) => void
   getEngineData: () => CustomerEngineData
   customerId: number
-  setEnginesData: (engines: Engine[]) => void
-  engines: Engine[]
-  setEngines: (engines: Engine[]) => void
 }
 
 
-export default function CompareEngineTable({ openSideBySide, getEngineData, customerId, setEnginesData, engines, setEngines }: Props) {
+export default function CompareEngineTable({ openSideBySide, getEngineData, customerId }: Props) {
   const router = useRouter();
   const [paginatedEngines, setPaginatedEngines] = useState<Engine[]>([]);
   const [loading, setLoading] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [enginesData, setEnginesData] = useState<Engine[]>([]);
+  const [engines, setEngines] = useState<Engine[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {

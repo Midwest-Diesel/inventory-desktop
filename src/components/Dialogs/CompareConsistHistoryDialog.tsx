@@ -19,6 +19,7 @@ export default function CompareConsistHistoryDialog({ open, setOpen, customerId 
   const [page, setPage] = useState(0);
 
   useEffect(() => {
+    if (!customerId) return;
     const fetchData = async () => {
       const res = await getCompareDataByCustomer(customerId);
       setCompareData(res);

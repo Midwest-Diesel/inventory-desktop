@@ -2,12 +2,11 @@
 
 use serde::{Deserialize, Serialize};
 use tauri::Manager;
-use std::fmt::format;
 use std::process::Command;
 use std::fs::{write};
 use std::{fs::File, io::copy};
 use reqwest::Client;
-use std::path::{Path, PathBuf};
+use std::path::{Path};
 use zip::read::ZipArchive;
 use base64::{engine::general_purpose::STANDARD as BASE64_STANDARD, Engine};
 use url::Url;

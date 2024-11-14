@@ -12,13 +12,6 @@ import { useAtom } from "jotai";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Button from "@/components/Library/Button";
-import CompareConsistSearchDialog from "@/components/Dialogs/CompareConsistSearchDialog";
-
-interface SearchData {
-  customer: Customer
-  serialNum: string
-  arrNum: string
-}
 
 
 export default function CompareConsist() {
@@ -88,10 +81,7 @@ export default function CompareConsist() {
   const [mwdEngine, setMwdEngine] = useState<Engine>(null);
   const urlSearchParams = new URLSearchParams(window.location.search);
   const params: any = Object.fromEntries(urlSearchParams.entries());
-  const [enginesData, setEnginesData] = useState<Engine[]>([]);
-  const [engines, setEngines] = useState<Engine[]>([]);
   const [searchOpen, setSearchOpen] = useState(false);
-  const [search, setSearch] = useState<SearchData>({ customer: null, serialNum: null, arrNum: null });
   const [searchData, setSearchData] = useState<CompareConsist[]>([]);
 
 
@@ -107,7 +97,7 @@ export default function CompareConsist() {
         const res = await getCompareDataById(params.r);
         loadCompareData(res);
       }
-      if (customerData.length === 0) setCustomersData(await getCustomers());
+      if (customerData.length < 100) setCustomersData(await getCustomers());
     };
     fetchData();
   }, [params.c]);
@@ -176,69 +166,71 @@ export default function CompareConsist() {
   const handleChangeCustomer = (value: string) => {
     setCompany(value);
     setChangeCustomer(false);
+    if (!value) {
+      router.replace('/compare-consist');
+      return;
+    }
     const id = customerData.find((c) => c.company === value).id;
     router.replace(`/compare-consist?c=${id}`);
   };
 
   const loadCompareData = (data: CompareConsist) => {
-    setNewHead(data.headNew);
-    setNewBlock(data.blockNew);
-    setNewCrank(data.crankNew);
-    setNewPistons(data.pistonNew);
-    setNewCam(data.camNew);
-    setNewInjectors(data.injNew);
-    setNewSingleTurbo(data.turboNew);
-    setNewFWH(data.fwhNew);
-    setNewFrontHsng(data.frontHsngNew);
-    setNewOilPan(data.oilPanNew);
-    setNewHPTurbo(data.turboHpNew);
-    setNewLPTurbo(data.turboLpNew);
-    setNewHEUIPump(data.heuiPumpNew);
-    setNewExhMnfld(data.exhMnfldNew);
-    setNewOilPump(data.oilPumpNew);
-    setNewWtrPump(data.waterPumpNew);
+    setNewHead(data.headNew || '');
+    setNewBlock(data.blockNew || '');
+    setNewCrank(data.crankNew || '');
+    setNewPistons(data.pistonNew || '');
+    setNewCam(data.camNew || '');
+    setNewInjectors(data.injNew || '');
+    setNewSingleTurbo(data.turboNew || '');
+    setNewFWH(data.fwhNew || '');
+    setNewFrontHsng(data.frontHsngNew || '');
+    setNewOilPan(data.oilPanNew || '');
+    setNewHPTurbo(data.turboHpNew || '');
+    setNewLPTurbo(data.turboLpNew || '');
+    setNewHEUIPump(data.heuiPumpNew || '');
+    setNewExhMnfld(data.exhMnfldNew || '');
+    setNewOilPump(data.oilPumpNew || '');
+    setNewWtrPump(data.waterPumpNew || '');
 
-    setRemanHead(data.headReman);
-    setRemanBlock(data.blockReman);
-    setRemanCrank(data.crankReman);
-    setRemanPistons(data.pistonReman);
-    setRemanCam(data.camReman);
-    setRemanInjectors(data.injReman);
-    setRemanSingleTurbo(data.turboReman);
-    setRemanFWH(data.fwhReman);
-    setRemanFrontHsng(data.frontHsngReman);
-    setRemanOilPan(data.oilPanReman);
-    setRemanHPTurbo(data.turboHpReman);
-    setRemanLPTurbo(data.turboLpReman);
-    setRemanHEUIPump(data.heuiPumpReman);
-    setRemanExhMnfld(data.exhMnfldReman);
-    setRemanOilPump(data.oilPumpReman);
-    setRemanWtrPump(data.waterPumpNew);
+    setRemanHead(data.headReman || '');
+    setRemanBlock(data.blockReman || '');
+    setRemanCrank(data.crankReman || '');
+    setRemanPistons(data.pistonReman || '');
+    setRemanCam(data.camReman || '');
+    setRemanInjectors(data.injReman || '');
+    setRemanSingleTurbo(data.turboReman || '');
+    setRemanFWH(data.fwhReman || '');
+    setRemanFrontHsng(data.frontHsngReman || '');
+    setRemanOilPan(data.oilPanReman || '');
+    setRemanHPTurbo(data.turboHpReman || '');
+    setRemanLPTurbo(data.turboLpReman || '');
+    setRemanHEUIPump(data.heuiPumpReman || '');
+    setRemanExhMnfld(data.exhMnfldReman || '');
+    setRemanOilPump(data.oilPumpReman || '');
+    setRemanWtrPump(data.waterPumpNew || '');
 
-    setHeadCheck(data.headCheck);
-    setBlockCheck(data.blockCheck);
-    setCrankCheck(data.crankCheck);
-    setPistonsCheck(data.pistonCheck);
-    setCamCheck(data.camCheck);
-    setInjectorsCheck(data.injCheck);
-    setSingleTurboCheck(data.turboCheck);
-    setFwhCheck(data.fwhCheck);
-    setFrontHousingCheck(data.frontHsngCheck);
-    setOilPanCheck(data.oilPanCheck);
-    setHpTurboCheck(data.turboHpCheck);
-    setLpTurboCheck(data.turboLpCheck);
-    setHeuiPumpCheck(data.heuiPumpCheck);
-    setExhManCheck(data.exhMnfldCheck);
-    setOilPumpCheck(data.oilPumpCheck);
-    setWaterPumpCheck(data.waterPumpCheck);
+    setHeadCheck(data.headCheck || false);
+    setBlockCheck(data.blockCheck || false);
+    setCrankCheck(data.crankCheck || false);
+    setPistonsCheck(data.pistonCheck || false);
+    setCamCheck(data.camCheck || false);
+    setInjectorsCheck(data.injCheck || false);
+    setSingleTurboCheck(data.turboCheck || false);
+    setFwhCheck(data.fwhCheck || false);
+    setFrontHousingCheck(data.frontHsngCheck || false);
+    setOilPanCheck(data.oilPanCheck || false);
+    setHpTurboCheck(data.turboHpCheck || false);
+    setLpTurboCheck(data.turboLpCheck || false);
+    setHeuiPumpCheck(data.heuiPumpCheck || false);
+    setExhManCheck(data.exhMnfldCheck || false);
+    setOilPumpCheck(data.oilPumpCheck || false);
+    setWaterPumpCheck(data.waterPumpCheck || false);
   };
 
   const handleSearch = async () => {
-    const res = await searchCompareData(customer.id || null, serialNum || null, arrNum || null);
-    setEngines(res);
+    const res = await searchCompareData(customer && customer.id || null, serialNum || null, arrNum || null);
     setSearchData(res);
-    loadCompareData(res[0]);
-    setSearch({ customer, serialNum, arrNum });
+    if (res[0]) loadCompareData(res[0]);
     setSearchOpen(true);
   };
 
@@ -246,8 +238,6 @@ export default function CompareConsist() {
   return (
     <Layout title="Compare">
       <div className="compare-consist">
-        <CompareConsistSearchDialog open={searchOpen} setOpen={setSearchOpen} search={search} searchData={searchData} />
-
         {!mwdEngine ?
           <>
             <div className="compare-consist__top-bar">
@@ -272,6 +262,7 @@ export default function CompareConsist() {
               />
               <Button variant={['fit']} onClick={handleSearch}>Search</Button>
               <Button variant={['fit']} onClick={() => location.reload()}>Reset Search</Button>
+              { searchData.length > 0 && <h3>{ searchData.length } search results { customer ? ` For ${customer.company}` : ' For all customers' }</h3> }
             </div>
   
             <div className="compare-consist__compare-section">
@@ -556,9 +547,6 @@ export default function CompareConsist() {
                 openSideBySide={openSideBySide}
                 getEngineData={getEngineData}
                 customerId={params.c}
-                setEnginesData={setEnginesData}
-                engines={engines}
-                setEngines={setEngines}
               />
             </div>
           </>

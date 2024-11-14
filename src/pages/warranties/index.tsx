@@ -98,7 +98,7 @@ export default function Warranties() {
                       <tr key={war.id} onClick={() => setFocusedHandwritten(war)} style={ focusedWarranty && war.id === focusedWarranty.id ? { border: 'solid 3px var(--yellow-2)' } : {} }>
                         <td><Link href={`/warranties/${war.id}`}>{ war.id }</Link></td>
                         <td>{ formatDate(war.date) }</td>
-                        <td><Link href={`/customer/${war.customer.id}`}>{ war.customer.company }</Link></td>
+                        <td>{ war.customer.company }</td>
                         <td>{ war.warrantyItems && war.warrantyItems[0].partNum }</td>
                         <td>{ war.warrantyItems && war.warrantyItems[0].desc }</td>
                         <td className="cbx-td">
