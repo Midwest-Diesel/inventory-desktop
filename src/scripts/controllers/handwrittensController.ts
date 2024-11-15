@@ -29,7 +29,7 @@ export const parseHandwrittenRes = (data: any) => {
     return {
       ...invoice,
       date: invoice.date && parseResDate(invoice.date),
-      handwrittenItems: filterNullObjValuesArr(invoice.handwrittenItems).map((item: any) => {
+      handwrittenItems: filterNullObjValuesArr(invoice.handwrittenItems.filter((item) => item)).map((item: any) => {
         return {
           ...item,
           date: item.date && parseResDate(item.date),
