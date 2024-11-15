@@ -92,6 +92,8 @@ export default function CompareConsist() {
         setCustomer(res);
         setCompany(res.company);
         setModel(res.model);
+      } else {
+        setCustomer(null);
       }
       if (params.r) {
         const res = await getCompareDataById(params.r);
