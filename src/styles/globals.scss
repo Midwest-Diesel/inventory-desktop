@@ -134,9 +134,20 @@ a {
 @media print {
   * {
     color: black !important;
+    overflow: visible !important;
   }
 
-  .navbar, button, .header__btn-container {
-    display: none
+  @page {
+    size: letter landscape;
+    margin: 0;
+  }
+
+  body {
+    zoom: 0.6;
+    width: 100%;
+  }
+
+  .navbar, button, .header__btn-container, .no-print {
+    display: none;
   }
 }

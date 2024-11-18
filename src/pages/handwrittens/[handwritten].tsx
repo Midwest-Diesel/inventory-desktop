@@ -290,7 +290,7 @@ export default function Handwritten() {
                 </Table>
               </GridItem>
 
-              <GridItem colStart={10} colEnd={12} variant={['low-opacity-bg']}>
+              <GridItem colStart={10} colEnd={12} variant={['low-opacity-bg']} className="no-print">
                 <div className="handwritten-details__btn-row">
                   <Button variant={['x-small']}>Print Ship Docs</Button>
                   <Button variant={['x-small']}>Print Invoice</Button>
