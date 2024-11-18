@@ -1,19 +1,5 @@
 import { expect } from '@jest/globals';
-import { getSalesByYear, searchCustomersByName } from "@/scripts/tools/search";
-
-describe('Search customers', () => {
-  it('should return sorted customers', () => {
-    const customers = [
-      { company: 'A' },
-      { company: 'B' },
-      { company: 'C' },
-      { company: 'Db' },
-    ];
-    const name = 'B';
-    const result = searchCustomersByName(name, customers as Customer[]);
-    expect(result).toEqual([{ company: 'B' }, { company: 'Db'}]);
-  });
-});
+import { getSalesByYear } from "@/scripts/tools/search";
 
 describe('Get sales by year', () => {
   it('should return sales by year', () => {

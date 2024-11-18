@@ -1,4 +1,4 @@
-import { generateClasses, generateRandId, parseClasses } from "@/scripts/tools/utils";
+import { generateClasses, generateRandId, parseClasses } from "../../../scripts/tools/utils";
 import React, { Children, useState, useEffect } from "react";
 import DropdownOption from "./DropdownOption";
 import Image from "next/image";
