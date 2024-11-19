@@ -747,6 +747,12 @@ type Alert = {
   note: string
 };
 
+type MapLocation = {
+  id: number
+  name: string
+  location: { lat: number, lng: number }
+};
+
 type Call = {
   id: number
   salesperson: string
