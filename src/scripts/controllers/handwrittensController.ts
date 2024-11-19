@@ -102,7 +102,7 @@ export const getHandwrittensByDate = async (date: Date) => {
   try {
     const auth = { withCredentials: true };
     const res = await api.get(`/api/handwrittens/date/${JSON.stringify(date)}`, auth);
-    return res.data;
+    return parseHandwrittenRes(res.data);
   } catch (err) {
     console.error(err);
   }

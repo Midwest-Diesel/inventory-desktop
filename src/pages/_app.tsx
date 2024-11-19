@@ -2,6 +2,7 @@ import { Provider } from 'jotai';
 import GlobalData from '@/components/GlobalData';
 import { useEffect } from 'react';
 import { invoke } from '@tauri-apps/api/tauri';
+import { APIProvider } from "@vis.gl/react-google-maps";
 import '../styles/globals.scss';
 
 
@@ -25,9 +26,11 @@ export default function App({ Component, pageProps }: any) {
 
   return (
     <Provider>
-      <GlobalData>
-        <Component {...pageProps} />
-      </GlobalData>
+      <APIProvider apiKey={process.env.NEXT_PUBLIC_MAPS_API}>
+        <GlobalData>
+          <Component {...pageProps} />
+        </GlobalData>
+      </APIProvider>
     </Provider>
   );
 }

@@ -34,6 +34,7 @@ export default function OfficeNavbar() {
       <Link href="/reports" className="navbar__link">Reports</Link>
       <Link href="/alerts" className="navbar__link">Alerts</Link>
       <Link href="/image-upload" className="navbar__link">Image Upload</Link>
+      <Link href="/map" className="navbar__link">Map</Link>
       <Link href="/about" className="navbar__link">About</Link>
 
       <div className="nav-buttons">

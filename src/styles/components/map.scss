@@ -1,0 +1,33 @@
+.map-page {
+  border: none;
+  height: 90%;
+  margin-top: 1rem;
+  display: flex;
+  gap: 0.5rem;
+
+  &__map {
+    height: 100%;
+    width: 100%;
+  }
+
+  .map-locations {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    min-width: 20%;
+    background-color: var(--grey-light-1);
+    padding: 0.5rem;
+    overflow-y: auto;
+
+    &__item {
+      p {
+        margin-bottom: 0.3rem;
+      }
+    }
+
+    &__btn-container {
+      display: flex;
+      gap: 0.3rem;
+    }
+  }
+}
