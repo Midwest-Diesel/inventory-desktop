@@ -6,6 +6,11 @@ import { confirm } from "@tauri-apps/api/dialog";
 import { Map, Marker, InfoWindow } from "@vis.gl/react-google-maps";
 import { FormEvent, Fragment, useEffect, useState } from "react";
 
+type PinData = {
+  name: string
+  location: { lat: number, lng: number }
+};
+
 
 export default function ImportantCustomersMap() {
   const startPos = { lat: 44.98022676149887, lng: -93.35875786260717 };
@@ -15,6 +20,7 @@ export default function ImportantCustomersMap() {
   const [showDialog, setShowDialog] = useState(false);
   const [dialogLocation, setDialogLocation] = useState<{ lat: number, lng: number }>(null);
   const [addressSearch, setAddressSearch] = useState('');
+  const [pinData, setPinData] = useState<PinData>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -24,16 +30,16 @@ export default function ImportantCustomersMap() {
     fetchData();
   }, []);
   
-  const handleMapClick = (mapProps: any) => {
-    const lat = mapProps.detail.latLng.lat;
-    const lng = mapProps.detail.latLng.lng;
+  const handleMapClick = (e: any) => {
+    const lat = e.detail.latLng.lat;
+    const lng = e.detail.latLng.lng;
     setShowDialog(true);
     setDialogLocation({ lat, lng });
     setSelectedLocation({ lat, lng });
-    mapInstance.panTo({ lat, lng });
+    panToLoc({ lat, lng });
   };
 
-  const handleViewLocation = (loc: any) => {
+  const panToLoc = (loc: any) => {
     const { lat, lng } = loc;
     mapInstance.panTo({ lat, lng });
   };
@@ -74,9 +80,25 @@ export default function ImportantCustomersMap() {
     if (loc.length === 0) return;
     const { lat, lng } = loc[0].geometry.location;
     handleAddLocation({ lat, lng });
-    mapInstance.panTo({ lat, lng });
+    panToLoc({ lat, lng });
   };
 
+  const handleSelectPin = async (loc: MapLocation) => {
+    setPinData(loc);
+  };
+
+  const getAdjustedPos = (loc: { lat: number; lng: number }) => {
+    if (!mapInstance) return loc;
+    const scale = Math.pow(2, mapInstance.getZoom());
+    const projection = mapInstance.getProjection();
+    const point = projection.fromLatLngToPoint(new google.maps.LatLng(loc.lat, loc.lng));
+    if (!point) return loc;
+
+    const adjustedPoint = new google.maps.Point(point.x, point.y - 50 / scale);
+    const adjustedLatLng = projection.fromPointToLatLng(adjustedPoint);
+    return { lat: adjustedLatLng.lat(), lng: adjustedLatLng.lng() };
+  };
+  
 
   return (
     <Layout>
@@ -92,7 +114,7 @@ export default function ImportantCustomersMap() {
         />
 
         {showDialog && (
-          <InfoWindow position={dialogLocation}>
+          <InfoWindow position={dialogLocation} onClose={() => setShowDialog(false)}>
             <Button onClick={() => handleAddLocation(selectedLocation)}>Add this location</Button>
           </InfoWindow>
         )}
@@ -118,12 +140,17 @@ export default function ImportantCustomersMap() {
                   >
                     <p>{loc.name}</p>
                     <div className="map-locations__btn-container">
-                      <Button onClick={() => handleViewLocation(loc.location)}>View</Button>
+                      <Button onClick={() => panToLoc(loc.location)}>View</Button>
                       <Button onClick={() => onDeleteLocation(loc)}>Delete</Button>
                     </div>
                   </div>
 
-                  <Marker position={loc.location} />
+                  <Marker position={loc.location} onClick={() => handleSelectPin(loc)} />
+                  {pinData &&
+                    <InfoWindow position={getAdjustedPos(pinData.location)} onClose={() => setPinData(null)}>
+                      <h3>{ pinData.name }</h3>
+                    </InfoWindow>
+                  }
                 </Fragment>
               );
             })}

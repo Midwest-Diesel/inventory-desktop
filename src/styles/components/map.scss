@@ -45,4 +45,23 @@
       gap: 0.3rem;
     }
   }
+
+  .gm-style-iw-a {
+    color: var(--black-1);
+
+    button[title="Close"] {
+      position: absolute !important;
+      top: -0.9rem;
+      right: -0.9rem;
+      transform: scale(0.75);
+
+      // span {
+      //   margin: 0 !important;
+      // }
+    }
+  }
+
+  .gm-style-iw-ch {
+    padding-top: 22px;
+  }
 }
