@@ -13,6 +13,15 @@ export const getMapLocations = async () => {
   }
 };
 
+export const getGeoLocation = async (address: string) => {
+  try {
+    const res = await api.get(`https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURI(address)}&key=${process.env.NEXT_PUBLIC_MAPS_API}`);
+    return res.data.results;
+  } catch (err) {
+    console.error(err);
+  }
+};
+
 // === POST routes === //
 
 export const addMapLocation = async (loc: any) => {

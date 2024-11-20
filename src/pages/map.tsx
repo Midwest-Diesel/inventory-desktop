@@ -1,17 +1,20 @@
 import { Layout } from "@/components/Layout";
 import Button from "@/components/Library/Button";
-import { addMapLocation, deleteMapLocation, getMapLocations } from "@/scripts/controllers/mapController";
+import Input from "@/components/Library/Input";
+import { addMapLocation, deleteMapLocation, getGeoLocation, getMapLocations } from "@/scripts/controllers/mapController";
 import { confirm } from "@tauri-apps/api/dialog";
 import { Map, Marker, InfoWindow } from "@vis.gl/react-google-maps";
-import { Fragment, useEffect, useState } from "react";
+import { FormEvent, Fragment, useEffect, useState } from "react";
 
 
 export default function ImportantCustomersMap() {
-  const startPos = { lat: 45.12100022079314, lng: -93.19415647227015 };
-  const [listOfLocations, setListOfLocations] = useState([]);
+  const startPos = { lat: 44.98022676149887, lng: -93.35875786260717 };
+  const [mapInstance, setMapInstance] = useState<google.maps.Map | null>(null);
+  const [listOfLocations, setListOfLocations] = useState<MapLocation[]>([]);
   const [selectedLocation, setSelectedLocation] = useState<{ lat: number, lng: number }>(null);
   const [showDialog, setShowDialog] = useState(false);
-  const [dialogLocation, setDialogLocation] = useState(null);
+  const [dialogLocation, setDialogLocation] = useState<{ lat: number, lng: number }>(null);
+  const [addressSearch, setAddressSearch] = useState('');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -27,10 +30,12 @@ export default function ImportantCustomersMap() {
     setShowDialog(true);
     setDialogLocation({ lat, lng });
     setSelectedLocation({ lat, lng });
+    mapInstance.panTo({ lat, lng });
   };
 
-  const onViewLocation = (loc: any) => {
-
+  const handleViewLocation = (loc: any) => {
+    const { lat, lng } = loc;
+    mapInstance.panTo({ lat, lng });
   };
 
   const onDeleteLocation = async (loc: MapLocation) => {
@@ -40,19 +45,19 @@ export default function ImportantCustomersMap() {
     setListOfLocations(updatedList);
   };
 
-  const onAddLocation = async () => {
+  const handleAddLocation = async (location: { lat: number, lng: number }) => {
     const geocoder = new window.google.maps.Geocoder();
-    await geocoder.geocode({ location: selectedLocation }, async (results, status) => {
+    await geocoder.geocode({ location }, async (results, status) => {
       if (status === "OK") {
         if (results[0]) {
           const address = results[0].formatted_address;
           const loc = results[0].geometry.location;
           const parsedAddress = address.includes('+') ? `LAT: ${loc.lat()}, LONG: ${loc.lng()}` : address;
-          const id = await addMapLocation({ name: parsedAddress, ...selectedLocation });
-          
+          const id = await addMapLocation({ name: parsedAddress, ...location });
+
           setListOfLocations([
             ...listOfLocations,
-            { id, name: parsedAddress, location: selectedLocation },
+            { id, name: parsedAddress, location: location },
           ]);
           setShowDialog(false);
         }
@@ -62,43 +67,67 @@ export default function ImportantCustomersMap() {
     });
   };
 
+  const handleSearch = async (e: FormEvent) => {
+    e.preventDefault();
+    setAddressSearch('');
+    const loc = await getGeoLocation(addressSearch);
+    if (loc.length === 0) return;
+    const { lat, lng } = loc[0].geometry.location;
+    handleAddLocation({ lat, lng });
+    mapInstance.panTo({ lat, lng });
+  };
+
 
   return (
     <Layout>
       <div className="map-page">
         <Map
-          defaultZoom={13}
+          defaultZoom={10}
           defaultCenter={startPos}
           gestureHandling={"greedy"}
           disableDefaultUI
           className="map-page__map"
           onClick={(mapProps) => handleMapClick(mapProps)}
+          onIdle={(map) => !mapInstance && setMapInstance(map.map)}
         />
 
         {showDialog && (
           <InfoWindow position={dialogLocation}>
-            <Button onClick={onAddLocation}>Add this location</Button>
+            <Button onClick={() => handleAddLocation(selectedLocation)}>Add this location</Button>
           </InfoWindow>
         )}
 
-        <div className="map-locations">
-          {listOfLocations.map((loc: MapLocation) => {
-            return (
-              <Fragment key={loc.id}>
-                <div
-                  className="map-locations__item"
-                >
-                  <p>{loc.name}</p>
-                  <div className="map-locations__btn-container">
-                    <Button onClick={() => onViewLocation(loc.location)}>View</Button>
-                    <Button onClick={() => onDeleteLocation(loc)}>Delete</Button>
-                  </div>
-                </div>
+        <div className="map-page__right-side">
+          <form className="map-page__right-side-search" onSubmit={handleSearch}>
+            <Input
+              variant={['label-bold', 'label-full-width']}
+              label="Pin Address"
+              placeholder="address, city"
+              value={addressSearch}
+              onChange={(e: any) => setAddressSearch(e.target.value)}
+            />
+            <Button>Search</Button>
+          </form>
 
-                <Marker position={loc.location} />
-              </Fragment>
-            );
-          })}
+          <div className="map-locations">
+            {listOfLocations.map((loc: MapLocation) => {
+              return (
+                <Fragment key={loc.id}>
+                  <div
+                    className="map-locations__item"
+                  >
+                    <p>{loc.name}</p>
+                    <div className="map-locations__btn-container">
+                      <Button onClick={() => handleViewLocation(loc.location)}>View</Button>
+                      <Button onClick={() => onDeleteLocation(loc)}>Delete</Button>
+                    </div>
+                  </div>
+
+                  <Marker position={loc.location} />
+                </Fragment>
+              );
+            })}
+          </div>
         </div>
       </div>
     </Layout>
