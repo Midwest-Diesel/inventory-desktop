@@ -30,3 +30,9 @@
     font-size: var(--font-md);
   }
 }
+
+.select-customer-dialog {
+  .dialog__content {
+    overflow-y: visible;
+  }
+}

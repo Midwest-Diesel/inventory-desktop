@@ -132,6 +132,10 @@ a {
   }
 }
 
+button:disabled:hover {
+  color: inherit;
+}
+
 @media print {
   * {
     color: black !important;

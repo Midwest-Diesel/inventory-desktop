@@ -1,3 +1,4 @@
+import CustomerSelectDialog from "@/components/Dialogs/CustomerSelectDialog";
 import HandwrittensSearchDialog from "@/components/Dialogs/HandwrittensSearchDialog";
 import HandwrittenItemsTable from "@/components/HandwrittenItemsTable";
 import { Layout } from "@/components/Layout";
@@ -21,6 +22,7 @@ export default function Handwrittens() {
   const [yesterdayInvoices, setYesterdayInvoices] = useState<Handwritten[]>(handwrittensData);
   const [handwrittenCount, setHandwrittenCount] = useState<number[]>([]);
   const [openSearch, setOpenSearch] = useState(false);
+  const [customerSelectOpen, setCustomerSelectOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(0);
 
@@ -66,8 +68,8 @@ export default function Handwrittens() {
     return yesterdayInvoices.reduce((acc, handwritten) => acc + sumHandwrittenItems(handwritten.handwrittenItems), 0);
   };
 
-  const handleNewHandwritten = async () => {
-    await addBlankHandwritten({ date: new Date(), userId: user.id });
+  const handleNewHandwritten = async (customer: Customer) => {
+    await addBlankHandwritten({ date: new Date(), userId: user.id, customerId: customer.id });
     location.reload();
   };
 
@@ -75,13 +77,14 @@ export default function Handwrittens() {
   return (
     <Layout title="Handwrittens">
       <HandwrittensSearchDialog open={openSearch} setOpen={setOpenSearch} setHandwrittens={handleSearch} />
+      <CustomerSelectDialog open={customerSelectOpen} setOpen={setCustomerSelectOpen} onSubmit={handleNewHandwritten} />
 
       <div className="handwrittens__container">
         <div className="handwrittens">
           <h1>Handwrittens</h1>
           <div className="handwrittens__top-buttons">
             <Button onClick={() => setOpenSearch(true)}>Search</Button>
-            { user.type === 'office' && <Button onClick={handleNewHandwritten}>New</Button> }
+            { user.type === 'office' && <Button onClick={() => setCustomerSelectOpen(true)}>New</Button> }
           </div>
           <div className="handwrittens__top-bar">
             <div className="handwrittens__top-bar--count-block">

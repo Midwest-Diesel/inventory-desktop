@@ -98,7 +98,7 @@ export default function QuoteList({ selectHandwrittenOpen, setSelectHandwrittenO
   };
 
   const invoiceQuote = async (quote: Quote) => {
-    if (!await await confirm('Are you sure you want to invoice this quote?')) return;
+    if (!await confirm('Are you sure you want to invoice this quote?')) return;
     toggleQuoteSold({ ...quote, sale: true });
     setQuotes(quotes.map((q) => q.id === quote.id ? { ...q, sale: true } : q));
 
@@ -241,6 +241,7 @@ export default function QuoteList({ selectHandwrittenOpen, setSelectHandwrittenO
             >
               {filterByCustomer ? 'No Customer Filter' : 'Filter by Customer'}
             </Button>
+            <Button>Sales End of Day</Button>
           </div>
 
           <div style={{ height: '21.5rem', width: 'fit-content', overflow: 'auto' }}>
@@ -279,7 +280,7 @@ export default function QuoteList({ selectHandwrittenOpen, setSelectHandwrittenO
                           }
                         </td>
                         <td className="table-buttons">
-                          {!quote.sale && <Button variant={['x-small']} onClick={() => invoiceQuote(quote)} data-cy="invoice-btn">Invoice</Button>}
+                          {/* {!quote.sale && <Button variant={['x-small']} onClick={() => invoiceQuote(quote)} data-cy="invoice-btn">Create Handwritten</Button>} */}
                           <Button variant={['x-small']} onClick={() => quotePiggyback(quote)}>Quote Piggyback</Button>
                           <Button variant={['x-small']} onClick={() => setQuoteEdited(quote)}>Edit</Button>
                           <Button variant={['x-small']} onClick={() => handleEmail(quote)}>Email</Button>

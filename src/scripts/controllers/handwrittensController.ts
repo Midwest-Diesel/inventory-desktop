@@ -159,7 +159,7 @@ export const addHandwrittenItem = async (item: HandwrittenItem) => {
   }
 };
 
-export const addBlankHandwritten = async (data: { date: Date, userId: number }) => {
+export const addBlankHandwritten = async (data: { date: Date, userId: number, customerId: number }) => {
   try {
     const auth = { withCredentials: true };
     const res = await api.post('/api/handwrittens/blank', data, auth);
