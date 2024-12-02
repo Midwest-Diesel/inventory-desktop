@@ -16,6 +16,7 @@ import { invoke } from "@tauri-apps/api/tauri";
 import PiggybackQuoteDialog from "../Dialogs/dashboard/PiggybackQuoteDialog";
 import Link from "next/link";
 import { confirm } from '@tauri-apps/api/dialog';
+import SalesEndOfDayDialog from "../Dialogs/dashboard/SalesEndOfDayDialog";
 
 interface Props {
   selectHandwrittenOpen: boolean
@@ -40,6 +41,7 @@ export default function QuoteList({ selectHandwrittenOpen, setSelectHandwrittenO
   const [filterByCustomer, setFilterByCustomer] = useState(true);
   const [piggybackQuoteOpen, setPiggybackQuoteOpen] = useState(false);
   const [piggybackQuote, setPiggybackQuote] = useState<Quote>(null);
+  const [endOfDayOpen, setEndOfDayOpen] = useState(false);
   const [page, setPage] = useState(1);
   const search = localStorage.getItem('altPartSearches') || localStorage.getItem('partSearches') || '';
 
@@ -216,6 +218,7 @@ export default function QuoteList({ selectHandwrittenOpen, setSelectHandwrittenO
         <Image src={`/images/icons/arrow-${quotesOpen ? 'up' : 'down'}.svg`} alt="arrow" width={25} height={25} />
       </div>
       <QuoteSearchDialog open={searchDialogOpen} setOpen={setSearchDialogOpen} setQuotes={setQuotes} />
+      <SalesEndOfDayDialog open={endOfDayOpen} setOpen={setEndOfDayOpen} />
       { quoteEdited && <EditQuoteDialog setQuoteEdited={setQuoteEdited} quote={quoteEdited} setQuote={(q: Quote) => handleEdit(q)} /> }
       { piggybackQuote &&
         <PiggybackQuoteDialog
@@ -241,7 +244,7 @@ export default function QuoteList({ selectHandwrittenOpen, setSelectHandwrittenO
             >
               {filterByCustomer ? 'No Customer Filter' : 'Filter by Customer'}
             </Button>
-            <Button>Sales End of Day</Button>
+            <Button onClick={() => setEndOfDayOpen(true)}>Sales End of Day</Button>
           </div>
 
           <div style={{ height: '21.5rem', width: 'fit-content', overflow: 'auto' }}>
