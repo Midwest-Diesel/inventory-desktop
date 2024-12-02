@@ -115,8 +115,7 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
       shippingStatus,
       cores: handwritten.cores,
       coreReturns: handwritten.coreReturns,
-      orderNotes,
-      ...handwritten
+      orderNotes
     } as Handwritten;
     setNewShippingListRow(newInvoice);
     await editHandwritten(newInvoice);
@@ -143,11 +142,8 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
       if (await confirm('Add this to shipping list?')) {
         setShippingListDialogOpen(true);
       }
-    } else {
-      setIsEditing(false);
     }
-
-    setHandwritten(await getHandwrittenById(handwritten.id));
+    setIsEditing(false);
   };
 
   const handleAltShip = async () => {
