@@ -81,7 +81,7 @@ export default function CoreCreditsDialog({ open, setOpen, cores, handwritten }:
                 <td>{ core.qty }</td>
                 <td>{ core.partNum }</td>
                 <td>{ core.desc }</td>
-                <td>{ formatCurrency(core.unitPrice) }</td>
+                <td>{ formatCurrency(core.charge) }</td>
               </tr>
             );
           })}

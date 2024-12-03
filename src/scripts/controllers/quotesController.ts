@@ -47,6 +47,16 @@ export const getQuotesCount = async (partNum: string, customerId: number, isEngi
   }
 };
 
+export const getAllQuotesCount = async () => {
+  try {
+    const auth = { withCredentials: true };
+    const res = await api.get(`/api/quotes/count-all`, auth);
+    return res.data;
+  } catch (err) {
+    console.error(err);
+  }
+};
+
 export const getQuotesCountByPartNum = async (isEngineQuote = false, partNum: string) => {
   try {
     const auth = { withCredentials: true };
@@ -74,6 +84,16 @@ export const getQuotesByEngine = async (model: string) => {
     const res = await api.get(`/api/quotes/engine/${model}`, auth);
     res.data = parseQuotesRes(res.data);
     return res.data.reverse();
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+export const getSomeUnsoldQuotes = async (page: number, limit: number) => {
+  try {
+    const auth = { withCredentials: true };
+    const res = await api.get(`/api/quotes/unsold/${JSON.stringify({ page: (page - 1) * limit, limit })}`, auth);
+    return parseQuotesRes(res.data);
   } catch (err) {
     console.error(err);
   }

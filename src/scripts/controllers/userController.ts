@@ -23,7 +23,7 @@ export const getUser = async () => {
     };
     return res.data.user;
   } catch (err) {
-    console.error(err);
+    console.error(`Unrelated Error: ${err}`);
   }
 };
 

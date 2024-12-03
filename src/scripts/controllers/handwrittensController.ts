@@ -36,12 +36,6 @@ export const parseHandwrittenRes = (data: any) => {
           invoiceItemChildren: item.invoiceItemChildren ? item.invoiceItemChildren : []
         };
       }).sort((a: any, b: any) => a.id - b.id).reverse(),
-      cores: invoice.cores ? invoice.cores.map((item: any) => {
-        return {
-          ...item,
-          date: item.date && parseResDate(item.date),
-        };
-      }) : [],
       coreReturns: invoice.coreReturns ? invoice.coreReturns.map((item: any) => {
         return {
           ...item,

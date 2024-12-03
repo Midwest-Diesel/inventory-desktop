@@ -46,7 +46,7 @@ export default function HandwrittenItemsTable({ className, handwritten, handwrit
     if (!await confirm('Are you sure you want to add a core charge?')) return;
     const newItem = {
       handwrittenId: handwritten.id,
-      date: item.date,
+      date: new Date(),
       desc: 'CORE DEPOSIT',
       partNum: item.partNum,
       stockNum: item.stockNum,
@@ -60,7 +60,7 @@ export default function HandwrittenItemsTable({ className, handwritten, handwrit
     
     const priority = cap((prompt('Enter core priority', 'Low') || 'Low').toLowerCase());
     const newCore = {
-      date: item.date,
+      date: new Date(),
       qty: item.qty,
       partNum: item.partNum,
       desc: item.desc,
