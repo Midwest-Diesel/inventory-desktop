@@ -1,0 +1,23 @@
+.karmak-page {
+  display: flex;
+  flex-direction: column;
+  padding-left: 1rem;
+
+  hr {
+    max-width: 32rem;
+    width: 100%;
+    margin: 0.8rem 0 1.3rem;
+  }
+
+  &__top-buttons {
+    display: flex;
+    gap: 0.3rem;
+    margin-bottom: 0.5rem;
+  }
+
+  &__table-container {
+    max-height: 44rem;
+    overflow-y: auto;
+    width: fit-content
+  }
+}

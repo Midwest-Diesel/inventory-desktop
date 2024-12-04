@@ -132,6 +132,26 @@ export const getFreightCarrierFromShipVia = async (name: string) => {
   }
 };
 
+export const getSomeHandwrittensByStatus = async (page: number, limit: number, status: string) => {
+  try {
+    const auth = { withCredentials: true };
+    const res = await api.get(`/api/handwrittens/status/${JSON.stringify({ page: (page - 1) * limit, limit, status })}`, auth);
+    return await parseHandwrittenRes(res.data);
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+export const getHandwrittenCountByStatus = async (status: string) => {
+  try {
+    const auth = { withCredentials: true };
+    const res = await api.get(`/api/handwrittens/status-count/${status || 'new'}`, auth);
+    return res.data;
+  } catch (err) {
+    console.error(err);
+  }
+};
+
 // === POST routes === //
 
 export const addHandwritten = async (invoice: Handwritten) => {
