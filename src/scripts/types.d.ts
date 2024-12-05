@@ -127,6 +127,16 @@ type PiggybackQuote = {
   part?: Part
 };
 
+type SalesEndOfDayItem = {
+  id: number
+  billToCompany: string
+  date: Date
+  partId: number
+  partNum: string
+  desc: string
+  unitPrice: number
+};
+
 type Core = {
   id: number
   date: Date

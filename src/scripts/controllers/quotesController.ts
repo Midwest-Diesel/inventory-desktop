@@ -89,16 +89,6 @@ export const getQuotesByEngine = async (model: string) => {
   }
 };
 
-export const getSomeUnsoldQuotes = async (page: number, limit: number) => {
-  try {
-    const auth = { withCredentials: true };
-    const res = await api.get(`/api/quotes/unsold/${JSON.stringify({ page: (page - 1) * limit, limit })}`, auth);
-    return parseQuotesRes(res.data);
-  } catch (err) {
-    console.error(err);
-  }
-};
-
 // === POST routes === //
 
 export const addQuote = async (quote: Quote, salesmanId: number) => {

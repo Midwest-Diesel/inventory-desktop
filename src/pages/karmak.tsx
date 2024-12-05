@@ -32,7 +32,7 @@ export default function Karmak() {
 
   // This is probably unoptimized because of the min count data fetching.
   // It's a very large array of data.
-  // This is also likely causing the quotes table to be unoptiomized
+  // This is also likely causing the quotes table to be unoptimized
 
   const handleChangePage = async (_: any, page: number) => {
     setLoading(true);

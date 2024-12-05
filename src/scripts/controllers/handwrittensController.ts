@@ -152,6 +152,21 @@ export const getHandwrittenCountByStatus = async (status: string) => {
   }
 };
 
+export const getSomeUnsoldItems = async (page: number, limit: number, salesmanId: number) => {
+  try {
+    const auth = { withCredentials: true };
+    const res = await api.get(`/api/handwrittens/unsold-items/${JSON.stringify({ page: (page - 1) * limit, limit, salesmanId })}`, auth);
+    return {
+      minItems: res.data.results.minItems || [],
+      rows: res.data.results.rows ? res.data.results.rows.map((item: any) => {
+        return { ...item, date: parseResDate(item.date) };
+      }) : []
+    };
+  } catch (err) {
+    console.error(err);
+  }
+};
+
 // === POST routes === //
 
 export const addHandwritten = async (invoice: Handwritten) => {
