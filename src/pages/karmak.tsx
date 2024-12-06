@@ -24,20 +24,22 @@ export default function Karmak() {
 
   const fetchData = async () => {
     setLoading(true);
+    setCurrentPage(1);
     setHandwrittensMin(await getHandwrittenCount());
     const res = await getSomeHandwrittens(1, LIMIT);
     setHandwrittensData(res);
+    setHandwrittens(res);
     setLoading(false);
   };
 
   // This is probably unoptimized because of the min count data fetching.
   // It's a very large array of data.
-  // This is also likely causing the quotes table to be unoptimized
+  // This is also likely causing the quotes table to be unoptimized.
 
   const handleChangePage = async (_: any, page: number) => {
     setLoading(true);
-    setCurrentPage(page);
     if (currentStatus === 'all') {
+      setCurrentPage(page);
       const res = await getSomeHandwrittens(page, LIMIT);
       setHandwrittens(res);
     } else {
@@ -45,12 +47,15 @@ export default function Karmak() {
     }
     setLoading(false);
   };
-
+  
   const handleFilterStatus = async (status: AccountingStatus, page: number) => {
+    if (currentStatus === status && currentPage === page) return;
+    setCurrentPage(page);
     setLoading(true);
     setCurrentStatus(status);
     setHandwrittensMin(await getHandwrittenCountByStatus(status));
     const res = await getSomeHandwrittensByStatus(page, LIMIT, status);
+    setHandwrittensData(res);
     setHandwrittens(res);
     setLoading(false);
   };
@@ -73,14 +78,8 @@ export default function Karmak() {
         <hr />
         <div className="karmak-page__top-buttons">
           <Button onClick={handleFilterAll}>All</Button>
-          <Button onClick={() => {
-            setCurrentPage(1);
-            handleFilterStatus('', 1);
-          }}>New</Button>
-          <Button onClick={() => {
-            setCurrentPage(1);
-            handleFilterStatus('IN PROCESS', 1);
-          }}>In Process</Button>
+          <Button onClick={() => handleFilterStatus('', 1)}>New</Button>
+          <Button onClick={() => handleFilterStatus('IN PROCESS', 1)}>In Process</Button>
           <Button onClick={() => handleFilterStatus('COMPLETE', currentPage)}>Completed</Button>
         </div>
 
@@ -117,6 +116,7 @@ export default function Karmak() {
             setData={handleChangePage}
             minData={handwrittensMin}
             pageSize={LIMIT}
+            page={currentPage}
           />
         </div>
       </div>
