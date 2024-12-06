@@ -157,8 +157,8 @@ export const getSomeUnsoldItems = async (page: number, limit: number, salesmanId
     const auth = { withCredentials: true };
     const res = await api.get(`/api/handwrittens/unsold-items/${JSON.stringify({ page: (page - 1) * limit, limit, salesmanId })}`, auth);
     return {
-      minItems: res.data.results.minItems || [],
-      rows: res.data.results.rows ? res.data.results.rows.map((item: any) => {
+      minItems: res.data.minItems || [],
+      rows: res.data.rows ? res.data.rows.map((item: any) => {
         return { ...item, date: parseResDate(item.date) };
       }) : []
     };

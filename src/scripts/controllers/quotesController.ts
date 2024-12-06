@@ -37,6 +37,21 @@ export const getSomeQuotesByPartNum = async (page: number, limit: number, partNu
   }
 };
 
+export const getSomeUnsoldQuotesByPartNum = async (page: number, limit: number, partNum: string, includeAlts: boolean) => {
+  try {
+    const auth = { withCredentials: true };
+    const res = await api.get(`/api/quotes/unsold-quotes/part-num/${JSON.stringify({ page: (page - 1) * limit, limit, partNum, includeAlts })}`, auth);
+    return {
+      minQuotes: res.data.minQuotes || [],
+      rows: res.data.rows ? res.data.rows.map((row: any) => {
+        return { ...row, date: parseResDate(row.date) };
+      }) : []
+    };
+  } catch (err) {
+    console.error(err);
+  }
+};
+
 export const getQuotesCount = async (partNum: string, customerId: number, isEngineQuote = false) => {
   try {
     const auth = { withCredentials: true };

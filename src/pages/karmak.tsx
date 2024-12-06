@@ -108,7 +108,7 @@ export default function Karmak() {
                     <td>{ handwritten.shipVia }</td>
                     <td>{ handwritten.accountingStatus }</td>
                   </tr>
-                )
+                );
               })}
             </tbody>
           </Table>

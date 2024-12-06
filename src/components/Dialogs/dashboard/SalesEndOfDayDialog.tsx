@@ -4,6 +4,7 @@ import Pagination from "@/components/Library/Pagination";
 import Table from "@/components/Library/Table";
 import { userAtom } from "@/scripts/atoms/state";
 import { getSomeUnsoldItems } from "@/scripts/controllers/handwrittensController";
+import { getSomeUnsoldQuotesByPartNum, toggleQuoteSold } from "@/scripts/controllers/quotesController";
 import { formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
 import { useAtom } from "jotai";
 import { useEffect, useState } from "react";
@@ -23,28 +24,45 @@ export default function SalesEndOfDayDialog({ open, setOpen }: Props) {
   const [quotesData, setQuotesData] = useState<Quote[]>([]);
   const [quotes, setQuotes] = useState<Quote[]>([]);
   const [quotesMin, setQuotesMin] = useState<number[]>([]);
+  const [showAlts, setShowAlts] = useState(true);
+  const [openNewQuoteDialog, setOpenNewQuoteDialog] = useState(false);
   const LIMIT = 40;
   
   useEffect(() => {
     const fetchData = async () => {
       if (!open) return;
-      const res = await getSomeUnsoldItems(1, LIMIT, 3);
+      const res = await getSomeUnsoldItems(1, LIMIT, user.id);
       setItemsMin(res.minItems);
       setItemsData(res.rows);
     };
     fetchData();
   }, [open]);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      if (!open || !selectedItem) return;
+      const res = await getSomeUnsoldQuotesByPartNum(1, LIMIT, selectedItem.partNum, showAlts);
+      setQuotesData(res.rows);
+      setQuotesMin(res.minQuotes);
+    };
+    fetchData();
+  }, [open, showAlts]);
+
   const handleChangeItemsPage = async (data: any, page: number) => {
     if (!open) return;
-    const res = await getSomeUnsoldItems(page, LIMIT, 3);
+    const res = await getSomeUnsoldItems(page, LIMIT, user.id);
     setItems(res.rows);
   };
 
   const handleChangeQuotesPage = async (data: any, page: number) => {
     if (!open) return;
-    const res = await getSomeUnsoldItems(page, LIMIT, 3);
+    const res = await getSomeUnsoldQuotesByPartNum(page, LIMIT, selectedItem.partNum, showAlts);
     setQuotes(res.rows);
+  };
+
+  const handleMarkQuoteSold = async (quote: Quote) => {
+    await toggleQuoteSold({ ...quote, sale: true });
+    setQuotes(quotes.filter((q) => q.id !== quote.id));
   };
 
 
@@ -79,7 +97,7 @@ export default function SalesEndOfDayDialog({ open, setOpen }: Props) {
                     <td>{ item.partNum }</td>
                     <td>{ item.desc }</td>
                     <td>{ formatCurrency(item.unitPrice) }</td>
-                    <td><Button onClick={() => setSelectedItem(item)}>Select</Button></td>
+                    <td><Button onClick={() => setSelectedItem(item)}>Open</Button></td>
                   </tr>
                 );
               })}
@@ -92,10 +110,12 @@ export default function SalesEndOfDayDialog({ open, setOpen }: Props) {
             pageSize={LIMIT}
           />
         </>
-      :
+        :
         <>
           <div className="sales-end-of-day-dialog__top-buttons">
             <Button onClick={() => setSelectedItem(null)}>Back</Button>
+            <Button onClick={() => setShowAlts(!showAlts)}>{ showAlts ? 'Hide' : 'Show' } Alternates</Button>
+            <Button onClick={() => setOpenNewQuoteDialog(true)}>New Quote</Button>
           </div>
           <h2>{ selectedItem.billToCompany }</h2>
           <Table>
@@ -120,7 +140,7 @@ export default function SalesEndOfDayDialog({ open, setOpen }: Props) {
                     <td>{ quote.partNum }</td>
                     <td>{ quote.desc }</td>
                     <td>{ formatCurrency(quote.price) }</td>
-                    <td><Button>Sold</Button></td>
+                    <td><Button onClick={() => handleMarkQuoteSold(quote)}>Sold</Button></td>
                   </tr>
                 );
               })}
