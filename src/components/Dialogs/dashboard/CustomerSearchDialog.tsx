@@ -102,7 +102,7 @@ export default function CustomerSearchDialog({ open, setOpen, searchTerm }: Prop
         minData={isSearching ? searchedCustomers : customersMin}
         pageSize={25}
       />
-      { displayedCustomers.length === 0 && <p>Loading...</p> }
+      { displayedCustomers.length === 0 && <p>No results</p> }
     </Dialog>
   );
 }

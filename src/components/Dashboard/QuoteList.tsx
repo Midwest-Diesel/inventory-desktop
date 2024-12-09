@@ -57,6 +57,8 @@ export default function QuoteList({ selectHandwrittenOpen, setSelectHandwrittenO
 
   useEffect(() => {
     const fetchData = async () => {
+      const pageCount = await getQuotesCount(JSON.parse(search).partNum.replace('*', ''), null, quoteListType === 'engine');
+      setCount(pageCount);
       await handleChangePage(null, 1);
     };
     fetchData();
