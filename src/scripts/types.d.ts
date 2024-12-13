@@ -68,6 +68,7 @@ type Customer = {
   customerType: string
   source: string
   paymentType: string
+  country: string
 };
 
 type Quote = {
@@ -760,8 +761,17 @@ type Alert = {
 type MapLocation = {
   id: number
   name: string
+  address: string
+  state: string
   location: { lat: number, lng: number }
+  type: MapLocationType
+  salesman: string
+  customer: Customer
+  customerType: string
+  date: Date
+  notes?: string
 };
+type MapLocationType = 'customer' | 'vendor' | '';
 
 type Call = {
   id: number

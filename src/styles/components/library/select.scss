@@ -29,6 +29,14 @@
     padding: 1rem;
     font-size: var(--font-md);
   }
+
+  &--label-bold {
+    font-weight: bold;
+    
+    select {
+      margin-top: 0.2rem;
+    }
+  }
 }
 
 .select-customer-dialog {

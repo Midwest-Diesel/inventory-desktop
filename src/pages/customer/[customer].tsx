@@ -1,13 +1,15 @@
 import CustomerContactsBlock from "@/components/CustomerContactsBlock";
 import EditCustomerDetails from "@/components/Dashboard/EditCustomerDetails";
+import AddToMapDialog from "@/components/Dialogs/customers/AddToMapDialog";
 import { Layout } from "@/components/Layout";
 import Button from "@/components/Library/Button";
 import Grid from "@/components/Library/Grid/Grid";
 import GridItem from "@/components/Library/Grid/GridItem";
 import Loading from "@/components/Library/Loading";
 import Table from "@/components/Library/Table";
-import { selectedCustomerAtom, userAtom } from "@/scripts/atoms/state";
+import { userAtom } from "@/scripts/atoms/state";
 import { deleteCustomer, getCustomerById, getCustomerSalesHistory } from "@/scripts/controllers/customerController";
+import { deleteMapLocationByCustomer, getMapLocationFromCustomer } from "@/scripts/controllers/mapController";
 import { formatCurrency, formatPhone } from "@/scripts/tools/stringUtils";
 import { setTitle } from "@/scripts/tools/utils";
 import { useAtom } from "jotai";
@@ -19,18 +21,21 @@ export default function Customer() {
   const router = useRouter();
   const params = useParams();
   const [user] = useAtom<User>(userAtom);
-  const [selectedCustomer] = useAtom<Customer>(selectedCustomerAtom);
   const [customer, setCustomer] = useState<Customer>(null);
   const [salesHistory, setSalesHistory] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
+  const [isOnMap, setIsOnMap] = useState(true);
+  const [addLocDialogOpen, setAddLocDialogOpen] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
       if (!params) return;
-      const customerRes = await getCustomerById(Number(params.customer));
+      const id = Number(params.customer);
+      const customerRes = await getCustomerById(id);
       setCustomer(customerRes);
-      setSalesHistory(await getCustomerSalesHistory(Number(params.customer)));
+      setSalesHistory(await getCustomerSalesHistory(id));
       setTitle(customerRes.company);
+      if (!Boolean(await getMapLocationFromCustomer(id))) setIsOnMap(false);
     };
     fetchData();
   }, [params]);
@@ -38,13 +43,23 @@ export default function Customer() {
   const handleDelete = async () => {
     if (user.accessLevel <= 1 || prompt('Type "confirm" to delete this customer') !== 'confirm') return;
     await deleteCustomer(customer.id);
-    if (selectedCustomer.id === customer.id) localStorage.removeItem('customerId');
+    await deleteMapLocationByCustomer(customer.id);
+    localStorage.removeItem('customerId');
     router.replace('/');
   };
 
 
   return (
     <Layout title="Customer">
+      {customer &&
+        <AddToMapDialog
+          open={addLocDialogOpen}
+          setOpen={(setAddLocDialogOpen)}
+          customer={customer}
+          userId={user.id}
+        />
+      }
+
       <div className="customer-details">
         {customer ? isEditing ?
           <EditCustomerDetails customer={customer} setCustomer={setCustomer} setIsEditing={setIsEditing} />
@@ -61,6 +76,14 @@ export default function Customer() {
                 >
                   Edit
                 </Button>
+                {!isOnMap &&
+                  <Button
+                    className="customer-details__close-btn"
+                    onClick={() => setAddLocDialogOpen(true)}
+                  >
+                    Add to Map
+                  </Button>
+                }
                 <Button
                   className="customer-details__close-btn"
                   onClick={() => window.history.back()}

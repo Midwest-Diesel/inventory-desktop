@@ -4,7 +4,7 @@ interface Props extends SelectHTML {
   children: any
   className?: string
   labelClass?: string
-  variant?: ('label-inline' | 'label-space-between' | 'label-full-width' | 'label-stack' | 'large')[]
+  variant?: ('label-inline' | 'label-space-between' | 'label-full-width' | 'label-stack' | 'large' | 'label-bold')[]
   label?: string
 }
 
