@@ -6,6 +6,8 @@ import Input from "@/components/Library/Input";
 import { editCustomer } from "@/scripts/controllers/customerController";
 import Table from "../Library/Table";
 import { confirm } from '@tauri-apps/api/dialog';
+import { getMapLocationFromCustomer } from "@/scripts/controllers/mapController";
+import EditMapLocDialog from "../Dialogs/customers/EditMapLocDialog";
 
 interface Props {
   customer: Customer
@@ -37,6 +39,8 @@ export default function CustomerDetails({ customer, setCustomer, setIsEditing }:
   const [serviceManager, setServiceManager] = useState<string>(customer.serviceManager);
   const [serviceManagerEmail, setServiceManagerEmail] = useState<string>(customer.serviceManagerEmail);
   const [paymentType, setPaymentType] = useState<string>(customer.paymentType);
+  const [editLocDialogOpen, setEditLocDialogOpen] = useState(false);
+  const [loc, setLoc] = useState<MapLocation>(null);
 
   const saveChanges = async (e: FormEvent) => {
     e.preventDefault();
@@ -68,12 +72,27 @@ export default function CustomerDetails({ customer, setCustomer, setIsEditing }:
     } as Customer;
     await editCustomer(newCustomer);
     setCustomer(newCustomer);
-    setIsEditing(false);
+
+    const location = await getMapLocationFromCustomer(customer.id);
+    if (Boolean(location) && await confirm('Do you want to update the map location?')) {
+      setLoc(location);
+      setEditLocDialogOpen(true);
+    } else {
+      setIsEditing(false);
+    }
   };
 
   
   return (
     <>
+      {editLocDialogOpen &&
+        <EditMapLocDialog
+          open={editLocDialogOpen}
+          setOpen={setEditLocDialogOpen}
+          loc={loc}
+        />
+      }
+
       <form className="edit-customer-details" onSubmit={(e) => saveChanges(e)}>
         {customer &&
           <>

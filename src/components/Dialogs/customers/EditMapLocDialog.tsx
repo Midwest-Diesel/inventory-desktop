@@ -2,46 +2,40 @@ import Button from "@/components/Library/Button";
 import Dialog from "@/components/Library/Dialog";
 import Input from "@/components/Library/Input";
 import Select from "@/components/Library/Select/Select";
-import { addMapLocation, getGeoLocation } from "@/scripts/controllers/mapController";
+import { editMapLocation, getGeoLocation } from "@/scripts/controllers/mapController";
 import { confirm } from "@tauri-apps/api/dialog";
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useState } from "react";
 
 interface Props {
   open: boolean
   setOpen: (open: boolean) => void
-  customer: Customer
-  userId: number
+  loc: MapLocation
 }
 
 
-export default function AddToMapDialog({ open, setOpen, customer, userId }: Props) {
-  const [name, setName] = useState(customer.company);
-  const [address, setAddress] = useState([customer.billToAddress, customer.billToCity, customer.billToState, customer.billToZip].filter((i) => i).join(', '));
-  const [type, setType] = useState<MapLocationType>('customer');
-  const [notes, setNotes] = useState('');
-
-  useEffect(() => {
-    setName(customer.company);
-    setAddress([customer.billToAddress, customer.billToCity, customer.billToState, customer.billToZip].filter((i) => i).join(', '));
-  }, [customer]);
+export default function EditMapLocDialog({ open, setOpen, loc }: Props) {
+  const [name, setName] = useState(loc.name);
+  const [address, setAddress] = useState(loc.address);
+  const [type, setType] = useState<MapLocationType>(loc.type);
+  const [notes, setNotes] = useState(loc.notes);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (!await confirm('Are you sure?')) return;
     const location = (await getGeoLocation(address))[0];
-    const loc = {
+    const newLoc = {
+      id: loc.id,
       name,
       address: location.formatted_address,
       lat: location.geometry.location.lat,
       lng: location.geometry.location.lng,
       type,
-      salesmanId: userId,
-      customerId: customer.id,
+      customerId: loc.customer.id,
       legacyId: null,
-      date: new Date(),
+      date: loc.date,
       notes
     };
-    await addMapLocation(loc);
+    await editMapLocation(newLoc);
     setOpen(false);
   };
 
@@ -50,13 +44,13 @@ export default function AddToMapDialog({ open, setOpen, customer, userId }: Prop
     <Dialog
       open={open}
       setOpen={setOpen}
-      title="Add Map Location"
+      title="Edit Map Location"
       width={300}
       height={400}
       x={800}
       y={-50}
     >
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={(e) => handleSubmit(e)}>
         <Input
           variant={['label-bold', 'label-stack']}
           label="Name"
