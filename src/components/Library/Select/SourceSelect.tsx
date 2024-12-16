@@ -30,6 +30,7 @@ export default function SourceSelect({ variant, label, ...props }: Props) {
           variant={variant}
           {...props}
         >
+          <option value="">-- SELECT A SOURCE --</option>
           {sourcesData.length > 0 && sourcesData.sort().map((source: string, i) => {
             return (
               <option key={i} value={source}>{ source }</option>

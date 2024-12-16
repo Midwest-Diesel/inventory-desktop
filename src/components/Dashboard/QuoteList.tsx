@@ -78,12 +78,12 @@ export default function QuoteList({ selectHandwrittenOpen, setSelectHandwrittenO
 
   const handleNewQuote = async () => {
     const newQuote = {
-      customer: null,
+      customer: selectedCustomer,
       date: new Date(),
-      source: null,
-      contact: '',
-      phone: null,
-      state: '',
+      source: '',
+      contact: selectedCustomer ? selectedCustomer.contact : '',
+      phone: selectedCustomer ? selectedCustomer.phone : '',
+      state: selectedCustomer ? selectedCustomer.billToState : '',
       partNum: '',
       stockNum: '',
       desc: '',
@@ -216,7 +216,7 @@ export default function QuoteList({ selectHandwrittenOpen, setSelectHandwrittenO
   return (
     <div className="quote-list">
       <div className="quote-list__header no-select" onClick={toggleQuotesOpen}>
-        <h2>Quotes</h2>
+        <h2>Part Quotes</h2>
         <Image src={`/images/icons/arrow-${quotesOpen ? 'up' : 'down'}.svg`} alt="arrow" width={25} height={25} />
       </div>
       <QuoteSearchDialog open={searchDialogOpen} setOpen={setSearchDialogOpen} setQuotes={setQuotes} />
