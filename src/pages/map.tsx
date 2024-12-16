@@ -61,10 +61,10 @@ export default function ImportantCustomersMap() {
           const parsedAddress = address.includes('+') ? `LAT: ${loc.lat()}, LONG: ${loc.lng()}` : address;
           const id = await addMapLocation({ name: parsedAddress, ...location });
 
-          setListOfLocations([
-            ...listOfLocations,
-            { id, name: parsedAddress, location: location },
-          ]);
+          // setListOfLocations([
+          //   ...listOfLocations,
+          //   { id, name: parsedAddress, location: location },
+          // ]);
           setShowDialog(false);
         }
       } else {
