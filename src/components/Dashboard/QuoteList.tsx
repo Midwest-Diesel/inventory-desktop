@@ -271,7 +271,7 @@ export default function QuoteList({ selectHandwrittenOpen, setSelectHandwrittenO
                 </tr>
               </thead>
               <tbody>
-                {paginatedQuotes.length === 0 && <h4 style={{ margin: '0.6rem 0' }}>No results...</h4>}
+                {paginatedQuotes.length === 0 && <tr><td colSpan={15} style={{ margin: '0.6rem 0' }}>No results...</td></tr>}
                 {paginatedQuotes.map((quote: Quote, i) => {
                   const isExpanded = expandedQuotes.includes(quote.id);
                   return (

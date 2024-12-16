@@ -1,5 +1,4 @@
 import api from "../config/axios";
-
 import { parseResDate } from "../tools/stringUtils";
 import { isObjectNull } from "../tools/utils";
 import { checkImageExists } from "./imagesController";
@@ -188,6 +187,7 @@ export const searchAltParts = async (part: PartSearchData) => {
 
 export const getSalesInfo = async (partNum: string) => {
   try {
+    if (!partNum) return;
     const auth = { withCredentials: true };
     const res = await api.get(`/api/parts/sales-info/${partNum}`, auth);
     res.data.sales = res.data.sales.map((s) => {
