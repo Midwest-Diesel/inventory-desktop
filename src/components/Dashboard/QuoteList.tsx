@@ -11,7 +11,7 @@ import Table from "@/components/Library/Table";
 import Pagination from "@/components/Library/Pagination";
 import { formatCurrency, formatDate, formatPhone } from "@/scripts/tools/stringUtils";
 import Checkbox from "@/components/Library/Checkbox";
-import { getPartByPartNum } from "@/scripts/controllers/partsController";
+import { getPartById, getPartByPartNum } from "@/scripts/controllers/partsController";
 import { invoke } from "@tauri-apps/api/tauri";
 import PiggybackQuoteDialog from "../Dialogs/dashboard/PiggybackQuoteDialog";
 import Link from "next/link";
@@ -19,16 +19,18 @@ import { confirm } from '@tauri-apps/api/dialog';
 import SalesEndOfDayDialog from "../Dialogs/dashboard/SalesEndOfDayDialog";
 
 interface Props {
-  selectHandwrittenOpen: boolean
+  quotes: Quote[]
+  setQuotes: (quotes: Quote[]) => void
   setSelectHandwrittenOpen: (value: boolean) => void
   setSelectedHandwrittenPart: (part: Part) => void
+  setHandwrittenCustomer: (customer: Customer) => void
+  setHandwrittenQuote: (quote: Quote) => void
 }
 
 
-export default function QuoteList({ selectHandwrittenOpen, setSelectHandwrittenOpen, setSelectedHandwrittenPart }: Props) {
+export default function QuoteList({ quotes, setQuotes, setSelectHandwrittenOpen, setSelectedHandwrittenPart, setHandwrittenCustomer, setHandwrittenQuote }: Props) {
   const [user] = useAtom<User>(userAtom);
   const [quotesData, setQuotesData] = useAtom<Quote[]>(quotesAtom);
-  const [quotes, setQuotes] = useState<Quote[]>(quotesData);
   const [count, setCount] = useState<number[]>([]);
   const [quotesOpen, setQuotesOpen] = useState(localStorage.getItem('quotesOpen') === 'true' || localStorage.getItem('quotesOpen') === null ? true : false);
   const [searchDialogOpen, setSearchDialogOpen] = useState(false);
@@ -102,14 +104,16 @@ export default function QuoteList({ selectHandwrittenOpen, setSelectHandwrittenO
   };
 
   const invoiceQuote = async (quote: Quote) => {
-    if (!await confirm('Are you sure you want to invoice this quote?')) return;
-    toggleQuoteSold({ ...quote, sale: true });
-    setQuotes(quotes.map((q) => q.id === quote.id ? { ...q, sale: true } : q));
-
-    const part = await getPartByPartNum(quote.partNum);
-    if (selectHandwrittenOpen) setSelectHandwrittenOpen(false);
-    setTimeout(() => setSelectHandwrittenOpen(true), 1);
+    const part = (
+      quote.part ?
+        await getPartById(quote.part.id)
+        :
+        await getPartByPartNum(quote.partNum)
+    );
+    setSelectHandwrittenOpen(true);
     setSelectedHandwrittenPart(part);
+    setHandwrittenCustomer(quote.customer);
+    setHandwrittenQuote(quote);
   };
 
   const handleEmail = async (quote: Quote) => {
@@ -285,10 +289,10 @@ export default function QuoteList({ selectHandwrittenOpen, setSelectHandwrittenO
                           }
                         </td>
                         <td className="table-buttons">
-                          {/* {!quote.sale && <Button variant={['x-small']} onClick={() => invoiceQuote(quote)} data-cy="invoice-btn">Create Handwritten</Button>} */}
                           <Button variant={['x-small']} onClick={() => quotePiggyback(quote)}>Quote Piggyback</Button>
                           <Button variant={['x-small']} onClick={() => setQuoteEdited(quote)}>Edit</Button>
                           <Button variant={['x-small']} onClick={() => handleEmail(quote)}>Email</Button>
+                          <Button variant={['x-small']} onClick={() => invoiceQuote(quote)} data-cy="invoice-btn">Add to Handwritten</Button>
                           <Button variant={['x-small', 'danger']} onClick={() => handleDelete(quote.id)} data-cy="delete-quote">Delete</Button>
                         </td>
                         <td>{ formatDate(quote.date) }</td>
