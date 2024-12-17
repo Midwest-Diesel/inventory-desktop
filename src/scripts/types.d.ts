@@ -147,7 +147,7 @@ type Core = {
   unitPrice: number
   customerId: number
   partInvoiceId: number
-  invoiceId: number
+  pendingInvoiceId: number
   billToCompany: string
   shipToCompany: string
   charge: number
