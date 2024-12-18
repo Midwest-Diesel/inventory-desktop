@@ -1,6 +1,6 @@
 import api from "../config/axios";
-
 import { parseResDate } from "../tools/stringUtils";
+import { deleteHandwrittenItem } from "./handwrittensController";
 
 
 const parseCoreDataRes = (data: any) => {
@@ -15,6 +15,16 @@ export const getAllCores = async () => {
   try {
     const auth = { withCredentials: true };
     const res = await api.get('/api/cores', auth);
+    return parseCoreDataRes(res.data);
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+export const getCoresByHandwritten = async (id: number) => {
+  try {
+    const auth = { withCredentials: true };
+    const res = await api.get(`/api/cores/handwritten/${id}`, auth);
     return parseCoreDataRes(res.data);
   } catch (err) {
     console.error(err);
@@ -74,10 +84,11 @@ export const editCoreCustomer = async (handwrittenId: number, customerId: number
 
 // === DELETE routes === //
 
-export const deleteCore = async (id: number) => {
+export const deleteCore = async (id: number, handwrittenItemId: number) => {
   try {
     const auth = { withCredentials: true };
     await api.delete(`/api/cores/${id}`, auth);
+    if (handwrittenItemId) await deleteHandwrittenItem(handwrittenItemId);
   } catch (err) {
     console.error(err);
   }

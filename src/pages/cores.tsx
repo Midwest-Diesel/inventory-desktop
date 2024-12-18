@@ -51,14 +51,15 @@ export default function Cores() {
             </thead>
             <tbody>
               {cores.map((core: Core) => {
+                const part = core.part;
                 return (
                   <tr key={core.id}>
                     <td><Link href={`/handwrittens/${core.pendingInvoiceId}`}>{ core.pendingInvoiceId }</Link></td>
                     <td>{ formatDate(core.date) }</td>
                     <td>{ core.billToCompany }</td>
                     <td>{ core.shipToCompany }</td>
-                    <td>{ core.partNum }</td>
-                    <td>{ core.desc }</td>
+                    <td>{ part ? <Link href={`/part/${part.id}`}>{ part.partNum }</Link> : core.partNum }</td>
+                    <td>{ part ? part.desc : core.desc }</td>
                     <td>{ core.qty }</td>
                     <td>{ formatCurrency(core.charge) }</td>
                     <td>{ core.priority }</td>

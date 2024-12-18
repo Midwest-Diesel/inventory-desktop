@@ -27,13 +27,13 @@ export default function CoreCreditsDialog({ open, setOpen, cores, handwritten }:
     const id = await addHandwritten({ date: new Date(), salesmanId: user.id, ...handwritten });
     const newItem = {
       handwrittenId: id,
-      partId: null,
-      stockNum: '',
-      location: '',
+      partId: core.part ? core.part.id : null,
+      stockNum: core.part ? core.part.stockNum : '',
+      location: 'CORE DEPOSIT',
       cost: core.charge,
       qty: -qty,
-      partNum: 'CORE DEPOSIT',
-      desc: 'CORE DEPOSIT',
+      partNum: core.partNum,
+      desc: core.desc,
       unitPrice: core.unitPrice,
       return: false,
       date: core.date,
@@ -41,13 +41,13 @@ export default function CoreCreditsDialog({ open, setOpen, cores, handwritten }:
     } as HandwrittenItem;
     await addHandwrittenItem(newItem);
     await removeQtyFromCore(core, qty);
-    if (core.qty - qty <= 0) await deleteCore(core.id);
+    if (core.qty - qty <= 0) await deleteCore(core.id, core.handwrittenItemId);
     router.replace(`/handwrittens`);
   };
 
-  const handleDelete = async (id: number) => {
+  const handleDelete = async (core: Core) => {
     if (!await confirm('Are you sure you want to delete this core?')) return;
-    await deleteCore(id);
+    await deleteCore(core.id, core.handwrittenItemId);
   };
 
 
@@ -75,7 +75,7 @@ export default function CoreCreditsDialog({ open, setOpen, cores, handwritten }:
               <tr key={i}>
                 <td className="parts-list__left-col table-buttons">
                   <Button variant={['x-small']} onClick={() => handleCredit(core)}>Credit</Button>
-                  <Button variant={['x-small', 'red-color']} onClick={() => handleDelete(core.id)}>Delete</Button>
+                  <Button variant={['x-small', 'red-color']} onClick={() => handleDelete(core)}>Delete</Button>
                 </td>
                 <td>{ formatDate(core.date) }</td>
                 <td>{ core.qty }</td>

@@ -148,12 +148,14 @@ type Core = {
   customerId: number
   partInvoiceId: number
   pendingInvoiceId: number
+  handwrittenItemId: number
   billToCompany: string
   shipToCompany: string
   charge: number
   priority: string
   salesmanId: number
   initials: string
+  part?: Part
 };
 
 type Handwritten = {
@@ -216,6 +218,7 @@ type HandwrittenItem = {
   id: number
   handwrittenId: number
   partId: number
+  handwrittenItemId: number
   stockNum: string
   location: string
   cost: number

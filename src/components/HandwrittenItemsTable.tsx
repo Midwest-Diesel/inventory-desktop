@@ -47,16 +47,16 @@ export default function HandwrittenItemsTable({ className, handwritten, handwrit
     const newItem = {
       handwrittenId: handwritten.id,
       date: new Date(),
-      desc: 'CORE DEPOSIT',
+      desc: item.desc,
       partNum: item.partNum,
       stockNum: item.stockNum,
       unitPrice: 0,
       qty: item.qty,
       cost: 0.01,
-      location: null,
-      partId: null,
+      location: 'CORE DEPOSIT',
+      partId: item.partId
     } as HandwrittenItem;
-    await addHandwrittenItem(newItem);
+    const newItemId = await addHandwrittenItem(newItem);
     
     const priority = cap((prompt('Enter core priority', 'Low') || 'Low').toLowerCase());
     const newCore = {
@@ -67,13 +67,15 @@ export default function HandwrittenItemsTable({ className, handwritten, handwrit
       unitPrice: item.unitPrice,
       customerId: handwritten.customer.id,
       partInvoiceId: item.handwrittenId,
-      invoiceId: handwritten.id,
+      pendingInvoiceId: handwritten.id,
       billToCompany: handwritten.billToCompany,
       shipToCompany: handwritten.shipToCompany,
       charge: item.cost,
       priority,
       salesmanId: handwritten.salesmanId,
-    } as Core;
+      partId: item.partId,
+      handwrittenItemId: newItemId
+    } as any;
     await addCore(newCore);
     setHandwritten({ ...handwritten, cores: [...handwritten.cores, newCore], handwrittenItems: [...handwritten.handwrittenItems, newItem] });
   };
@@ -111,15 +113,15 @@ export default function HandwrittenItemsTable({ className, handwritten, handwrit
               {handwrittenItems.map((item: HandwrittenItem, i: number) => {
                 return (
                   <tr key={i}>
-                    <td>{ !item.desc.includes('CORE DEPOSIT') && <Button variant={['x-small']} onClick={() => handleCoreCharge(item)}>Core Charge</Button> }</td>
-                    <td className="handwritten-items-table__stock-num" style={ item.desc.includes('CORE DEPOSIT') ? { color: 'var(--red-2)', fontWeight: 'bold' } : {}}>
+                    <td>{ item.location && !item.location.includes('CORE DEPOSIT') && <Button variant={['x-small']} onClick={() => handleCoreCharge(item)}>Core Charge</Button> }</td>
+                    <td className="handwritten-items-table__stock-num" style={ item.location && item.location.includes('CORE DEPOSIT') ? { color: 'var(--red-2)', fontWeight: 'bold' } : {}}>
                       { item.stockNum }
                       { item.invoiceItemChildren && item.invoiceItemChildren.length > 0 && <Button variant={['x-small']} onClick={() => handleOpenStockNums(item.invoiceItemChildren)}>View</Button> }
                     </td>
                     <td>{ item.location }</td>
                     <td>{ formatCurrency(item.cost) }</td>
                     <td>{ item.qty }</td>
-                    <td style={ item.desc.includes('CORE DEPOSIT') ? { color: 'var(--red-2)', fontWeight: 'bold' } : {}}>
+                    <td style={ item.location && item.location.includes('CORE DEPOSIT') ? { color: 'var(--red-2)', fontWeight: 'bold' } : {}}>
                       { item.partNum }
                     </td>
                     <td>{ item.desc }</td>

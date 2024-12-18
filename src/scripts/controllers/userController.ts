@@ -17,11 +17,11 @@ export const getUser = async () => {
     const res = await api.get('/api/account', config);
     // Disable deprecated warning message
     if (process.env.NODE_ENV === 'development') {
-      const originalError = console.error;
-      console.error = (...args: any) => {
-        if (location.pathname !== '/' && args[0].includes('findDOMNode is deprecated')) return;
-        originalError(...args);
-      };
+      // const originalError = console.error;
+      // console.error = (...args: any) => {
+      //   if (location.pathname !== '/' && args[0].includes('findDOMNode is deprecated')) return;
+      //   originalError(...args);
+      // };
     }
     return res.data.user;
   } catch (err) {

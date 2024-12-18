@@ -1,5 +1,4 @@
 import api from "../config/axios";
-
 import { parseResDate } from "../tools/stringUtils";
 import { filterNullObjValuesArr } from "../tools/utils";
 import { getCoresByCustomer, getCoreReturnsByCustomer } from "./coresController";
@@ -182,7 +181,8 @@ export const addHandwritten = async (invoice: Handwritten) => {
 export const addHandwrittenItem = async (item: HandwrittenItem) => {
   try {
     const auth = { withCredentials: true };
-    await api.post('/api/handwrittens/item', item, auth);
+    const res = await api.post('/api/handwrittens/item', item, auth);
+    return (res as any).data.id;
   } catch (err) {
     console.error(err);
   }
