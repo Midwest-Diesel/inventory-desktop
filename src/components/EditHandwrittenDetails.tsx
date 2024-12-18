@@ -12,7 +12,7 @@ import Table from "./Library/Table";
 import CustomerSelect from "./Library/Select/CustomerSelect";
 import { getCustomerByName } from "@/scripts/controllers/customerController";
 import { getAllSources } from "@/scripts/controllers/sourcesController";
-import { editCoreCustomer } from "@/scripts/controllers/coresController";
+import { deleteCoreByItemId, editCoreCustomer } from "@/scripts/controllers/coresController";
 import { confirm } from "@tauri-apps/api/dialog";
 import ShippingListDialog from "./Dialogs/handwrittens/ShippingListDialog";
 
@@ -179,6 +179,7 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
     if (!await confirm('Are you sure you want to delete this item?')) return;
     const newItems = handwrittenItems.filter((i: HandwrittenItem) => i.id !== item.id);
     await deleteHandwrittenItem(item.id);
+    if (item.location && item.location.includes('CORE DEPOSIT')) await deleteCoreByItemId(item.id);
     setHandwrittenItems(newItems);
   };
 

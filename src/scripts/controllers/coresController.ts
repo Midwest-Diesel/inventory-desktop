@@ -84,11 +84,20 @@ export const editCoreCustomer = async (handwrittenId: number, customerId: number
 
 // === DELETE routes === //
 
-export const deleteCore = async (id: number, handwrittenItemId: number) => {
+export const deleteCore = async (id: number, handwrittenItemId?: number) => {
   try {
     const auth = { withCredentials: true };
     await api.delete(`/api/cores/${id}`, auth);
     if (handwrittenItemId) await deleteHandwrittenItem(handwrittenItemId);
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+export const deleteCoreByItemId = async (id: number) => {
+  try {
+    const auth = { withCredentials: true };
+    await api.delete(`/api/cores/item/${id}`, auth);
   } catch (err) {
     console.error(err);
   }

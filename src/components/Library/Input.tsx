@@ -5,7 +5,7 @@ interface Props extends InputHTML {
   children?: any
   className?: string
   labelClass?: string
-  variant?: ('thin' | 'small' | 'x-small' | 'search' | 'label-stack' | 'label-no-stack' | 'label-space-between' | 'md-text' | 'label-full-width' | 'label-bold' | 'text-area' | 'label-inline' | 'label-no-margin' | 'no-style' | 'label-fit-content' | 'autofill-input')[]
+  variant?: ('thin' | 'small' | 'x-small' | 'search' | 'label-stack' | 'label-no-stack' | 'label-space-between' | 'md-text' | 'label-full-width' | 'label-bold' | 'text-area' | 'label-inline' | 'label-no-margin' | 'no-style' | 'label-fit-content' | 'autofill-input' | 'no-arrows')[]
   label?: string
   cols?: number
   rows?: number
