@@ -43,11 +43,6 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
   const [shipToZip, setShipToZip] = useState<string>(handwritten.shipToZip);
   const [shipToCompany, setShipToCompany] = useState<string>(handwritten.shipToCompany);
   const [shipVia, setShipVia] = useState<string>(handwritten.shipVia);
-  const [cardNum, setCardNum] = useState<string>(handwritten.cardNum);
-  const [expDate, setExpDate] = useState<string>(handwritten.expDate);
-  const [cvv, setCvv] = useState<number>(handwritten.cvv);
-  const [cardZip, setCardZip] = useState<string>(handwritten.cardZip);
-  const [cardName, setCardName] = useState<string>(handwritten.cardName);
   const [payment, setPayment] = useState<string>(handwritten.payment);
   const [contact, setContact] = useState<string>(handwritten.contactName);
   const [contactPhone, setContactPhone] = useState<string>(handwritten.phone);
@@ -105,11 +100,6 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
       phone: contactPhone,
       cell: contactCell,
       contactName: contact,
-      cardNum,
-      expDate,
-      cvv,
-      cardZip,
-      cardName,
       invoiceStatus,
       accountingStatus,
       shippingStatus,
@@ -138,7 +128,7 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
         await editHandwrittenItems(newItem);
       }
     }
-    if (invoiceStatus === 'SENT TO ACCOUNTING') {
+    if (invoiceStatus === 'SENT TO ACCOUNTING' && handwritten.invoiceStatus !== 'SENT TO ACCOUNTING') {
       if (await confirm('Add this to shipping list?')) {
         setShippingListDialogOpen(true);
       }
@@ -407,74 +397,6 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
             </GridItem>
 
             <GridItem colStart={1} colEnd={6} variant={['low-opacity-bg']}>
-              <Table variant={['plain', 'edit-row-details']}>
-                <tbody>
-                  <tr>
-                    <th>Card Number</th>
-                    <td>
-                      <Input
-                        variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
-                        value={cardNum}
-                        onChange={(e: any) => setCardNum(e.target.value)}
-                      />
-                    </td>
-                  </tr>
-                  <tr>
-                    <th>Exp Date</th>
-                    <td>
-                      <Input
-                        variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
-                        value={expDate}
-                        onChange={(e: any) => setExpDate(e.target.value)}
-                      />
-                    </td>
-                  </tr>
-                  <tr>
-                    <th>Security Code</th>
-                    <td>
-                      <Input
-                        variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
-                        value={cvv}
-                        type="number"
-                        onChange={(e: any) => setCvv(e.target.value)}
-                      />
-                    </td>
-                  </tr>
-                  <tr>
-                    <th>Card Zip Code</th>
-                    <td>
-                      <Input
-                        variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
-                        value={cardZip}
-                        onChange={(e: any) => setCardZip(e.target.value)}
-                      />
-                    </td>
-                  </tr>
-                  <tr>
-                    <th>Card Name</th>
-                    <td>
-                      <Input
-                        variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
-                        value={cardName}
-                        onChange={(e: any) => setCardName(e.target.value)}
-                      />
-                    </td>
-                  </tr>
-                  <tr>
-                    <th>Payment Type</th>
-                    <td>
-                      <Input
-                        variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
-                        value={payment}
-                        onChange={(e: any) => setPayment(e.target.value)}
-                      />
-                    </td>
-                  </tr>
-                </tbody>
-              </Table>
-            </GridItem>
-
-            <GridItem colStart={6} colEnd={12} variant={['low-opacity-bg']}>
               <Table variant={['plain', 'edit-row-details']}>
                 <tbody>
                   <tr>

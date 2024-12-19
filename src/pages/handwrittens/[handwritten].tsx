@@ -7,8 +7,10 @@ import { Layout } from "@/components/Layout";
 import Button from "@/components/Library/Button";
 import Grid from "@/components/Library/Grid/Grid";
 import GridItem from "@/components/Library/Grid/GridItem";
+import Input from "@/components/Library/Input";
 import Loading from "@/components/Library/Loading";
 import Table from "@/components/Library/Table";
+import Print from "@/components/Print";
 import { userAtom } from "@/scripts/atoms/state";
 import { supabase } from "@/scripts/config/supabase";
 import { AltShip, deleteHandwritten, getAltShipByHandwritten, getHandwrittenById } from "@/scripts/controllers/handwrittensController";
@@ -18,7 +20,7 @@ import { RealtimePostgresInsertPayload, RealtimePostgresUpdatePayload } from "@s
 import { useAtom } from "jotai";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 
 export default function Handwritten() {
@@ -31,6 +33,13 @@ export default function Handwritten() {
   const [returnsOpen, setReturnsOpen] = useState(false);
   const [altShipOpen, setAltShipOpen] = useState(false);
   const [altShipData, setAltShipData] = useState<AltShip[]>([]);
+  const [cardNum, setCardNum] = useState('');
+  const [expDate, setExpDate] = useState('');
+  const [cvv, setCvv] = useState<number>('' as any);
+  const [cardZip, setCardZip] = useState('');
+  const [cardName, setCardName] = useState('');
+  const [showCCLabel, setShowCCLabel] = useState(false);
+  const ccLabelRef = useRef(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -88,10 +97,17 @@ export default function Handwritten() {
     await deleteHandwritten(Number(handwritten.id));
     router.replace('/handwrittens');
   };
+
+  const printCCLabel = () => {
+    console.log(ccLabelRef.current.innerHTML);
+    setShowCCLabel(true);
+  };
   
 
   return (
     <Layout title="Handwritten Details">
+      { showCCLabel && <Print html={ccLabelRef.current.innerHTML} /> }
+
       <div className="handwritten-details">
         {handwritten ? isEditing ?
           <EditHandwrittenDetails handwritten={handwritten} setHandwritten={setHandwritten} setIsEditing={setIsEditing} />
@@ -166,6 +182,10 @@ export default function Handwritten() {
                       <th><strong>Salesperson</strong></th>
                       <td>{ handwritten.initials }</td>
                     </tr>
+                    <tr>
+                      <th><strong>Payment Type</strong></th>
+                      <td>{ handwritten.payment }</td>
+                    </tr>
                   </tbody>
                 </Table>
               </GridItem>
@@ -232,38 +252,67 @@ export default function Handwritten() {
                 </Table>
               </GridItem>
 
-              <GridItem colStart={1} colEnd={6} variant={['low-opacity-bg']}>
-                <Table variant={['plain', 'row-details']}>
-                  <tbody>
-                    <tr>
-                      <th><strong>Card Number</strong></th>
-                      <td></td>
-                    </tr>
-                    <tr>
-                      <th><strong>Exp Date</strong></th>
-                      <td></td>
-                    </tr>
-                    <tr>
-                      <th><strong>Security Code</strong></th>
-                      <td></td>
-                    </tr>
-                    <tr>
-                      <th><strong>Card Zip Code</strong></th>
-                      <td></td>
-                    </tr>
-                    <tr>
-                      <th><strong>Card Name</strong></th>
-                      <td></td>
-                    </tr>
-                    <tr>
-                      <th><strong>Payment Type</strong></th>
-                      <td>{ handwritten.payment }</td>
-                    </tr>
-                  </tbody>
-                </Table>
+              <GridItem colStart={6} colEnd={10} rowEnd={3} variant={['low-opacity-bg']}>
+                <div ref={ccLabelRef}>
+                  <Table variant={['plain', 'edit-row-details']}>
+                    <tbody>
+                      <tr>
+                        <th>Card Number</th>
+                        <td>
+                          <Input
+                            variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+                            value={cardNum}
+                            onChange={(e: any) => setCardNum(e.target.value)}
+                          />
+                        </td>
+                      </tr>
+                      <tr>
+                        <th>Exp Date</th>
+                        <td>
+                          <Input
+                            variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+                            value={expDate}
+                            onChange={(e: any) => setExpDate(e.target.value)}
+                          />
+                        </td>
+                      </tr>
+                      <tr>
+                        <th>Security Code</th>
+                        <td>
+                          <Input
+                            variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+                            value={cvv}
+                            type="number"
+                            onChange={(e: any) => setCvv(e.target.value)}
+                          />
+                        </td>
+                      </tr>
+                      <tr>
+                        <th>Card Zip Code</th>
+                        <td>
+                          <Input
+                            variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+                            value={cardZip}
+                            onChange={(e: any) => setCardZip(e.target.value)}
+                          />
+                        </td>
+                      </tr>
+                      <tr>
+                        <th>Card Name</th>
+                        <td>
+                          <Input
+                            variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+                            value={cardName}
+                            onChange={(e: any) => setCardName(e.target.value)}
+                          />
+                        </td>
+                      </tr>
+                    </tbody>
+                  </Table>
+                </div>
               </GridItem>
 
-              <GridItem colStart={6} colEnd={10} variant={['low-opacity-bg']}>
+              <GridItem colStart={1} colEnd={6} variant={['low-opacity-bg']}>
                 <Table variant={['plain', 'row-details']}>
                   <tbody>
                     <tr>
@@ -297,7 +346,7 @@ export default function Handwritten() {
                   <Button variant={['x-small']}>Print Ship Label</Button>
                   <Button variant={['x-small']}>Print CI and COO</Button>
                   <Button variant={['x-small']}>Print Return BOL</Button>
-                  <Button variant={['x-small']}>Print CC Label</Button>
+                  <Button variant={['x-small']} onClick={printCCLabel}>Print CC Label</Button>
                 </div>
               </GridItem>
 

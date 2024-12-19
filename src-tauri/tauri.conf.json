@@ -67,8 +67,7 @@
         {"domain": "https://tauri.localhost/", "windows": ["Handwritten"]},
         {"domain": "http://localhost:3000/*", "windows": ["Handwritten"]},
         {"domain": "http://localhost:3000", "windows": ["Handwritten"]},
-        {"domain": "http://localhost:3000/", "windows": ["Handwritten"]},
-        {"domain": "http://localhost:3000/handwrittens/46316", "windows": ["Handwritten"]}
+        {"domain": "http://localhost:3000/", "windows": ["Handwritten"]}
       ]
     },
     "updater": {
