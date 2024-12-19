@@ -8,7 +8,7 @@ import { useAtom } from "jotai";
 import { userAtom } from "@/scripts/atoms/state";
 import { confirm } from '@tauri-apps/api/dialog';
 import { useRouter } from "next/router";
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useState } from "react";
 import Checkbox from "@/components/Library/Checkbox";
 import Input from "@/components/Library/Input";
 

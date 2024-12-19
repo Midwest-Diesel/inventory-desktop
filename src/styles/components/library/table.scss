@@ -108,4 +108,14 @@ tr:nth-child(odd) {
     width: 100%;
     border: 1px solid var(--grey-dark-1);
   }
+
+  &--grid {
+    text-align: start;
+
+    button {
+      width: fit-content;
+      border: 1px solid var(--grey-dark-1);
+      margin: 0.1rem;
+    }
+  }
 }

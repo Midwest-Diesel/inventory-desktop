@@ -19,6 +19,22 @@
     max-height: 20rem;
     overflow-y: auto;
   }
+
+  &__btn-grid {
+    width: 6.5rem;
+
+    button {
+      padding: 0.26rem;
+
+      &:hover {
+        background-color: transparent;
+      }
+    }
+
+    .button--danger img {
+      padding-right: 0.05rem;
+    }
+  }
 }
 
 .quote-search-dialog {

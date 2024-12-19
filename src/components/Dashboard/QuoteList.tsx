@@ -288,12 +288,22 @@ export default function QuoteList({ quotes, setQuotes, setSelectHandwrittenOpen,
                             </Button>
                           }
                         </td>
-                        <td className="table-buttons">
-                          <Button variant={['x-small']} onClick={() => quotePiggyback(quote)}>Quote Piggyback</Button>
-                          <Button variant={['x-small']} onClick={() => setQuoteEdited(quote)}>Edit</Button>
-                          <Button variant={['x-small']} onClick={() => handleEmail(quote)}>Email</Button>
-                          <Button variant={['x-small']} onClick={() => invoiceQuote(quote)} data-cy="invoice-btn">Add to Handwritten</Button>
-                          <Button variant={['x-small', 'danger']} onClick={() => handleDelete(quote.id)} data-cy="delete-quote">Delete</Button>
+                        <td className="table-buttons table-buttons--grid quote-list__btn-grid">
+                          <Button variant={['fit']} onClick={() => quotePiggyback(quote)}>
+                            <Image alt="Quote piggyback" src="/images/icons/box-arrow-up.svg" width={17} height={17} />
+                          </Button>
+                          <Button variant={['fit']} onClick={() => setQuoteEdited(quote)}>
+                            <Image alt="Edit" src="/images/icons/edit.svg" width={17} height={17} />
+                          </Button>
+                          <Button variant={['fit']} onClick={() => handleEmail(quote)}>
+                            <Image alt="Email" src="/images/icons/email.svg" width={17} height={17} />
+                          </Button>
+                          <Button variant={['fit']} onClick={() => invoiceQuote(quote)} data-cy="invoice-btn">
+                            <Image alt="Add to handwritten" src="/images/icons/invoice.svg" width={17} height={17} />
+                          </Button>
+                          <Button variant={['fit', 'danger']} onClick={() => handleDelete(quote.id)} data-cy="delete-quote">
+                            <Image alt="Delete" src="/images/icons/delete.svg" width={17} height={17} />
+                          </Button>
                         </td>
                         <td>{ formatDate(quote.date) }</td>
                         <td>{ quote.salesman }</td>
