@@ -3,13 +3,13 @@ import Dialog from "../../Library/Dialog";
 import Input from "../../Library/Input";
 import Button from "../../Library/Button";
 import { editQuote } from "@/scripts/controllers/quotesController";
-import Checkbox from "../../Library/Checkbox";
 import SourceSelect from "../../Library/Select/SourceSelect";
 import CustomerSelect from "../../Library/Select/CustomerSelect";
 import { parseDateInputValue } from "@/scripts/tools/stringUtils";
 import { getCustomerByName, getCustomerNames } from "@/scripts/controllers/customerController";
 import { useAtom } from "jotai";
 import { customerNamesAtom } from "@/scripts/atoms/state";
+import PartSelectDialog from "./PartSelectDialog";
 
 interface Props {
   setQuoteEdited: (quote: Quote) => void
@@ -21,15 +21,13 @@ interface Props {
 export default function EditQuoteDialog({ setQuoteEdited, quote, setQuote }: Props) {
   const [customerNames, setCustomerNames] = useAtom<string[]>(customerNamesAtom);
   const [date, setDate] = useState<Date>(quote.date);
-  const [salesman, setSalesman] = useState<string>(quote.salesman);
   const [source, setSource] = useState<string>(quote.source);
   const [company, setCompany] = useState<string>(quote.customer.company || '');
-  const [partNum, setPartNum] = useState<string>(quote.partNum || '');
+  const [part, setPart] = useState<Part>(quote.part);
   const [desc, setDesc] = useState<string>(quote.desc || '');
-  const [stockNum, setStockNum] = useState<string>(quote.stockNum);
-  const [price, setPrice] = useState<number>(quote.price);
+  const [price, setPrice] = useState<number>(Number(quote.price));
   const [notes, setNotes] = useState<string>(quote.notes);
-  const [sale, setSale] = useState<boolean>(quote.sale);
+  const [partSelectOpen, setPartSelectOpen] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -42,17 +40,16 @@ export default function EditQuoteDialog({ setQuoteEdited, quote, setQuote }: Pro
     e.preventDefault();
     const customer = await getCustomerByName(company);
     const newQuote = {
-      id: quote.id,
+      ...quote,
       customer,
       date,
-      salesman,
       source,
-      partNum,
+      partNum: part ? part.partNum : quote.partNum,
+      stockNum: part ? part.stockNum : quote.stockNum,
       desc,
-      stockNum,
       price,
       notes,
-      sale,
+      partId: part ? part.id : null
     } as Quote;
     await editQuote(newQuote);
     setQuote(newQuote);
@@ -61,111 +58,98 @@ export default function EditQuoteDialog({ setQuoteEdited, quote, setQuote }: Pro
 
   const handelCancel = () => {
     setDate(quote.date);
-    setSalesman(quote.salesman);
     setSource(quote.source);
     setCompany(quote.customer.company);
-    setPartNum(quote.partNum);
+    setPart(quote.part);
     setDesc(quote.desc);
-    setStockNum(quote.stockNum);
     setPrice(quote.price);
     setNotes(quote.notes);
-    setSale(quote.sale);
     setQuoteEdited(null);
+  };
+
+  const onSubmitPartSelect = (part: Part) => {
+    setPart(part);
+    setDesc(part.desc);
   };
 
 
   return (
-    <Dialog
-      open
-      setOpen={() => setQuoteEdited(null)}
-      title="Edit Quote"
-      maxHeight="44rem"
-      width={500}
-    >
-      <form onSubmit={(e)=> handleSubmit(e)}>
-        <Input
-          label="Date"
-          variant={['label-space-between', 'label-full-width', 'small', 'thin']}
-          type="date"
-          value={parseDateInputValue(date)}
-          onChange={(e: any) => setDate(new Date(e.target.value))}
-          required
-        />
+    <>
+      <PartSelectDialog open={partSelectOpen} setOpen={setPartSelectOpen} onSubmit={onSubmitPartSelect} />
 
-        <Input
-          label="Qtd By"
-          variant={['label-space-between', 'label-full-width', 'x-small', 'thin']}
-          value={salesman}
-          onChange={(e: any) => setSalesman(e.target.value)}
-          required
-        />
+      <Dialog
+        open
+        setOpen={() => setQuoteEdited(null)}
+        title="Edit Quote"
+        maxHeight="44rem"
+        width={500}
+      >
+        <form onSubmit={(e)=> handleSubmit(e)}>
+          <Input
+            label="Date"
+            variant={['label-full-width', 'small', 'thin', 'label-bold', 'label-stack']}
+            type="date"
+            value={parseDateInputValue(date)}
+            onChange={(e: any) => setDate(new Date(e.target.value))}
+            required
+          />
 
-        <SourceSelect
-          label="Source"
-          variant={['label-space-between']}
-          value={source}
-          onChange={(e: any) => setSource(e.target.value)}
-        />
-        
-        <CustomerSelect
-          label="Customer"
-          variant={['label-space-between', 'label-full-width', 'gap', 'fill']}
-          value={company}
-          onChange={(value: any) => setCompany(value)}
-          maxHeight="15rem"
-        />
+          <SourceSelect
+            label="Source"
+            variant={['label-bold', 'label-stack']}
+            value={source}
+            onChange={(e: any) => setSource(e.target.value)}
+          />
+          
+          <CustomerSelect
+            label="Customer"
+            variant={['label-full-width', 'gap', 'fill', 'label-bold', 'label-stack']}
+            value={company}
+            onChange={(value: any) => setCompany(value)}
+            maxHeight="15rem"
+          />
 
-        <Input
-          label="Part Number"
-          variant={['label-space-between', 'label-full-width', 'small', 'thin']}
-          value={partNum}
-          onChange={(e: any) => setPartNum(e.target.value)}
-          required
-        />
+          {part &&
+            <>
+              <p><span style={{ fontWeight: 'bold' }}>PartNum:</span> {part.partNum}</p>
+              <p><span style={{ fontWeight: 'bold' }}>StockNum:</span> {part.stockNum}</p>
+            </>
+          }
 
-        <Input
-          label="Description"
-          variant={['label-space-between', 'label-full-width', 'small', 'thin']}
-          value={desc}
-          onChange={(e: any) => setDesc(e.target.value)}
-        />
+          <Button variant={['fit']} type="button" onClick={() => setPartSelectOpen(true)}>Select Part</Button>
+          <br />
 
-        <Input
-          label="Stock Number"
-          variant={['label-space-between', 'label-full-width', 'small', 'thin']}
-          value={stockNum}
-          onChange={(e: any) => setStockNum(e.target.value)}
-        />
+          <Input
+            label="Description"
+            variant={['label-full-width', 'small', 'thin', 'label-bold', 'label-stack']}
+            value={desc}
+            onChange={(e: any) => setDesc(e.target.value)}
+          />
 
-        <Input
-          label="Price"
-          variant={['label-space-between', 'label-full-width', 'small', 'thin']}
-          value={price}
-          onChange={(e: any) => setPrice(e.target.value)}
-          required
-        />
+          <Input
+            label="Price"
+            variant={['label-full-width', 'small', 'thin', 'label-bold', 'label-stack']}
+            value={price}
+            onChange={(e: any) => setPrice(e.target.value)}
+            type="number"
+            required
+          />
 
-        <Input
-          label="Notes"
-          variant={['label-stack', 'text-area']}
-          rows={5}
-          cols={100}
-          value={notes}
-          onChange={(e: any) => setNotes(e.target.value)}
-        />
+          <Input
+            label="Notes"
+            variant={['label-stack', 'text-area', 'label-bold', 'label-stack', 'label-fit-content']}
+            rows={5}
+            cols={100}
+            value={notes}
+            onChange={(e: any) => setNotes(e.target.value)}
+          />
 
-        <Checkbox
-          label="Sale"
-          variant={['label-space-between', 'dark-bg']}
-          checked={sale}
-          onChange={(e: any) => setSale(e.target.checked)}
-        />
-
-        <div className="form__footer">
-          <Button type="button" variant={['small']} onClick={handelCancel}>Cancel</Button>
-          <Button type="submit" variant={['small']}>Save</Button>
-        </div>
-      </form>
-    </Dialog>
+          <div className="form__footer">
+            <Button type="button" variant={['small']} onClick={handelCancel}>Cancel</Button>
+            <Button type="submit" variant={['small']}>Save</Button>
+          </div>
+        </form>
+      </Dialog>
+    </>
   );
 }

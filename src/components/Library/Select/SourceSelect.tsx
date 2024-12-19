@@ -6,7 +6,7 @@ import { useEffect } from "react";
 import { getAllSources } from "@/scripts/controllers/sourcesController";
 
 interface Props extends SelectHTML {
-  variant?: ('label-inline' | 'label-space-between' | 'label-full-width' | 'label-stack')[]
+  variant?: ('label-inline' | 'label-space-between' | 'label-full-width' | 'label-stack' | 'label-bold')[]
   label?: string
 }
 
