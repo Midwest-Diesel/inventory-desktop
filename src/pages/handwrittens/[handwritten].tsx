@@ -39,6 +39,7 @@ export default function Handwritten() {
   const [cvv, setCvv] = useState<number>('' as any);
   const [cardZip, setCardZip] = useState('');
   const [cardName, setCardName] = useState('');
+  const [cardAddress, setCardAddress] = useState('');
   const [showCCLabel, setShowCCLabel] = useState(false);
   const [payment, setPayment] = useState('');
   const ccLabelRef = useRef(null);
@@ -252,7 +253,7 @@ export default function Handwritten() {
                 </Table>
               </GridItem>
 
-              <GridItem colStart={6} colEnd={10} rowEnd={3} variant={['low-opacity-bg']}>
+              <GridItem colStart={5} colEnd={10} rowEnd={3} variant={['low-opacity-bg']}>
                 <div ref={ccLabelRef}>
                   <Table variant={['plain', 'edit-row-details']}>
                     <tbody>
@@ -298,13 +299,36 @@ export default function Handwritten() {
                         </td>
                       </tr>
                       <tr>
+                        <th>Card Address</th>
+                        <td>
+                          <Input
+                            variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold', 'search']}
+                            value={cardAddress}
+                            onChange={(e: any) => setCardAddress(e.target.value)}
+                          >
+                            <Button
+                              variant={['x-small']}
+                              style={{ width: '10rem' }}
+                              onClick={() => {
+                                setCardAddress(handwritten.billToAddress);
+                                setCardZip(handwritten.billToZip);
+                              }}
+                            >
+                              Same as Bill To
+                            </Button>
+                          </Input>
+                        </td>
+                      </tr>
+                      <tr>
                         <th>Card Name</th>
                         <td>
                           <Input
-                            variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+                            variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold', 'search']}
                             value={cardName}
                             onChange={(e: any) => setCardName(e.target.value)}
-                          />
+                          >
+                            <Button variant={['x-small']} style={{ width: '10rem' }} onClick={() => setCardName(handwritten.billToCompany)}>Same as Bill To</Button>
+                          </Input>
                         </td>
                       </tr>
                       <tr>
@@ -326,7 +350,7 @@ export default function Handwritten() {
                 </div>
               </GridItem>
 
-              <GridItem colStart={1} colEnd={6} variant={['low-opacity-bg']}>
+              <GridItem colStart={1} colEnd={5} variant={['low-opacity-bg']}>
                 <Table variant={['plain', 'row-details']}>
                   <tbody>
                     <tr>
