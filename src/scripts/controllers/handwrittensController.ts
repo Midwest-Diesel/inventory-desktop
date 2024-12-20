@@ -216,6 +216,18 @@ export const addHandwrittenItemChild = async (handwrittenId: number, item: Handw
   }
 };
 
+// === PATCH routes === //
+
+export const editHandwrittenPaymentType = async (id: number, payment: string) => {
+  try {
+    const auth = { withCredentials: true };
+    await api.patch('/api/handwrittens/payment', { id, payment }, auth);
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+
 // === PUT routes === //
 
 export const editHandwritten = async (invoice: Handwritten) => {

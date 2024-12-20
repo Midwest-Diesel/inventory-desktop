@@ -9,11 +9,12 @@ import Grid from "@/components/Library/Grid/Grid";
 import GridItem from "@/components/Library/Grid/GridItem";
 import Input from "@/components/Library/Input";
 import Loading from "@/components/Library/Loading";
+import Select from "@/components/Library/Select/Select";
 import Table from "@/components/Library/Table";
 import Print from "@/components/Print";
 import { userAtom } from "@/scripts/atoms/state";
 import { supabase } from "@/scripts/config/supabase";
-import { AltShip, deleteHandwritten, getAltShipByHandwritten, getHandwrittenById } from "@/scripts/controllers/handwrittensController";
+import { AltShip, deleteHandwritten, editHandwrittenPaymentType, getAltShipByHandwritten, getHandwrittenById } from "@/scripts/controllers/handwrittensController";
 import { formatDate, formatPhone, parseResDate } from "@/scripts/tools/stringUtils";
 import { setTitle } from "@/scripts/tools/utils";
 import { RealtimePostgresInsertPayload, RealtimePostgresUpdatePayload } from "@supabase/supabase-js";
@@ -39,7 +40,9 @@ export default function Handwritten() {
   const [cardZip, setCardZip] = useState('');
   const [cardName, setCardName] = useState('');
   const [showCCLabel, setShowCCLabel] = useState(false);
+  const [payment, setPayment] = useState('');
   const ccLabelRef = useRef(null);
+  const paymentTypes = ['Net 30', 'Wire Transfer', 'EBPP - Secure', 'Visa', 'Mastercard', 'AMEX', 'Discover', 'Comchek', 'T-Check', 'Check', 'Cash', 'Card on File', 'Net 10', 'No Charge'].sort();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -68,6 +71,7 @@ export default function Handwritten() {
       if (handwritten) {
         const altShip = await getAltShipByHandwritten(handwritten.id);
         setAltShipData(altShip);
+        setPayment(handwritten.payment);
       }
     };
     fetchData();
@@ -98,15 +102,15 @@ export default function Handwritten() {
     router.replace('/handwrittens');
   };
 
-  const printCCLabel = () => {
-    console.log(ccLabelRef.current.innerHTML);
-    setShowCCLabel(true);
+  const handleChangePayment = async (id: number, value: string) => {
+    setPayment(value);
+    await editHandwrittenPaymentType(id, value);
   };
   
 
   return (
     <Layout title="Handwritten Details">
-      { showCCLabel && <Print html={ccLabelRef.current.innerHTML} /> }
+      { showCCLabel && <Print html={ccLabelRef.current.innerHTML} styles={{ width: '30rem' }} onPrint={() => setShowCCLabel(false)} /> }
 
       <div className="handwritten-details">
         {handwritten ? isEditing ?
@@ -181,10 +185,6 @@ export default function Handwritten() {
                     <tr>
                       <th><strong>Salesperson</strong></th>
                       <td>{ handwritten.initials }</td>
-                    </tr>
-                    <tr>
-                      <th><strong>Payment Type</strong></th>
-                      <td>{ handwritten.payment }</td>
                     </tr>
                   </tbody>
                 </Table>
@@ -307,6 +307,20 @@ export default function Handwritten() {
                           />
                         </td>
                       </tr>
+                      <tr>
+                        <th>Payment Type</th>
+                        <td>
+                          <Select
+                            value={payment}
+                            onChange={(e: any) => handleChangePayment(handwritten.id, e.target.value)}
+                          >
+                            <option value="">-- SELECT PAYMENT TYPE --</option>
+                            {paymentTypes.map((type, i) => {
+                              return <option key={i}>{ type }</option>
+                            })}
+                          </Select>
+                        </td>
+                      </tr>
                     </tbody>
                   </Table>
                 </div>
@@ -341,12 +355,12 @@ export default function Handwritten() {
 
               <GridItem colStart={10} colEnd={12} variant={['low-opacity-bg']} className="no-print">
                 <div className="handwritten-details__btn-row">
-                  <Button variant={['x-small']}>Print Ship Docs</Button>
-                  <Button variant={['x-small']}>Print Invoice</Button>
-                  <Button variant={['x-small']}>Print Ship Label</Button>
-                  <Button variant={['x-small']}>Print CI and COO</Button>
-                  <Button variant={['x-small']}>Print Return BOL</Button>
-                  <Button variant={['x-small']} onClick={printCCLabel}>Print CC Label</Button>
+                  <Button variant={['x-small']} onClick={() => window.print()}>Print Ship Docs</Button>
+                  <Button variant={['x-small']} onClick={() => window.print()}>Print Invoice</Button>
+                  <Button variant={['x-small']} onClick={() => window.print()}>Print Ship Label</Button>
+                  <Button variant={['x-small']} onClick={() => window.print()}>Print CI and COO</Button>
+                  <Button variant={['x-small']} onClick={() => window.print()}>Print Return BOL</Button>
+                  <Button variant={['x-small']} onClick={() => setShowCCLabel(true)}>Print CC Label</Button>
                 </div>
               </GridItem>
 

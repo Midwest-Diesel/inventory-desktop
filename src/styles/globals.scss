@@ -138,6 +138,19 @@ button:disabled:hover {
   color: inherit;
 }
 
+.print-screen {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  background-color: var(--bg-color-1);
+  z-index: 5;
+  align-items: center;
+  display: flex;
+  justify-content: center;
+}
+
 @media print {
   * {
     color: black !important;
