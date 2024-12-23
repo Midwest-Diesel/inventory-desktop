@@ -41,6 +41,16 @@
     margin-bottom: 0.8rem;
     font-size: var(--font-xl);
   }
+
+  &__shipping-notes {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.3rem;
+
+    table {
+      max-width: 10.6rem;
+    }
+  }
 }
 
 

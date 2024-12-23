@@ -253,7 +253,7 @@ export default function Handwritten() {
                 </Table>
               </GridItem>
 
-              <GridItem colStart={5} colEnd={10} rowEnd={3} variant={['low-opacity-bg']}>
+              <GridItem colStart={5} colEnd={10} rowEnd={3} variant={['low-opacity-bg']} className="no-print">
                 <div ref={ccLabelRef}>
                   <Table variant={['plain', 'edit-row-details']}>
                     <tbody>
@@ -409,11 +409,39 @@ export default function Handwritten() {
                 <HandwrittenItemsTable className="handwritten-items-table--handwrittens-page" handwritten={handwritten} handwrittenItems={handwritten.handwrittenItems} setHandwritten={setHandwritten} />
               </GridItem>
 
-              <GridItem variant={['low-opacity-bg']} colStart={8} colEnd={12}>
-                <div>
-                  <h4 style={{ marginBottom: '0.3rem' }}>Order Notes</h4>
-                  <p style={{ whiteSpace: 'pre-line' }}>{ handwritten.orderNotes }</p>
+              <GridItem variant={['low-opacity-bg']} colStart={1} colEnd={7}>
+                <div className="handwritten-details__shipping-notes">
+                  <div>
+                    <h4 style={{ marginBottom: '0.3rem' }}>Shipping Notes</h4>
+                    <p style={{ whiteSpace: 'pre-line' }}>{ handwritten.shippingNotes }</p>
+                  </div>
+
+                  <Table variant={['plain', 'row-details']}>
+                    <tbody>
+                      <tr>
+                        <th><strong>Mousepads</strong></th>
+                        <td>{ handwritten.mp }</td>
+                      </tr>
+                      <tr>
+                        <th><strong>Hats</strong></th>
+                        <td>{ handwritten.cap }</td>
+                      </tr>
+                      <tr>
+                        <th><strong>Brochures</strong></th>
+                        <td>{ handwritten.br }</td>
+                      </tr>
+                      <tr>
+                        <th><strong>Flashlights</strong></th>
+                        <td>{ handwritten.fl }</td>
+                      </tr>
+                    </tbody>
+                  </Table>
                 </div>
+              </GridItem>
+
+              <GridItem variant={['low-opacity-bg']} colStart={7} colEnd={12}>
+                <h4 style={{ marginBottom: '0.3rem' }}>Order Notes</h4>
+                <p style={{ whiteSpace: 'pre-line' }}>{ handwritten.orderNotes }</p>
               </GridItem>
             </Grid>
           </>

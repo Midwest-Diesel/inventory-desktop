@@ -54,6 +54,7 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
   const [shippingStatus, setShippingStatus] = useState<ShippingStatus>(handwritten.shippingStatus);
   const [handwrittenItems, setHandwrittenItems] = useState<HandwrittenItem[]>(handwritten.handwrittenItems);
   const [orderNotes, setOrderNotes] = useState<string>(handwritten.orderNotes);
+  const [shippingNotes, setShippingNotes] = useState<string>(handwritten.shippingNotes);
   const [shippingListDialogOpen, setShippingListDialogOpen] = useState(false);
   const [newShippingListRow, setNewShippingListRow] = useState<Handwritten>(null);
 
@@ -105,7 +106,8 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
       shippingStatus,
       cores: handwritten.cores,
       coreReturns: handwritten.coreReturns,
-      orderNotes
+      orderNotes,
+      shippingNotes
     } as Handwritten;
     setNewShippingListRow(newInvoice);
     await editHandwritten(newInvoice);
@@ -583,13 +585,47 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
               <Button>Add</Button>
             </GridItem>
 
-            <GridItem variant={['low-opacity-bg']} colStart={8} colEnd={12} breakpoints={[{width: 1500, colStart: 1, colEnd: 5}]}>
+            <GridItem variant={['low-opacity-bg']} colStart={1} colEnd={7}>
+              <div className="handwritten-details__shipping-notes">
+                <Input
+                  style={{ maxWidth: 'none' }}
+                  label="Shipping Notes"
+                  variant={['label-stack', 'label-bold', 'text-area', 'label-full-width']}
+                  rows={5}
+                  value={shippingNotes}
+                  onChange={(e: any) => setShippingNotes(e.target.value)}
+                />
+
+                <Table variant={['plain', 'row-details']}>
+                  <tbody>
+                    <tr>
+                      <th><strong>Mousepads</strong></th>
+                      <td>{ handwritten.mp }</td>
+                    </tr>
+                    <tr>
+                      <th><strong>Hats</strong></th>
+                      <td>{ handwritten.cap }</td>
+                    </tr>
+                    <tr>
+                      <th><strong>Brochures</strong></th>
+                      <td>{ handwritten.br }</td>
+                    </tr>
+                    <tr>
+                      <th><strong>Flashlights</strong></th>
+                      <td>{ handwritten.fl }</td>
+                    </tr>
+                  </tbody>
+                </Table>
+              </div>
+            </GridItem>
+
+            <GridItem variant={['low-opacity-bg']} colStart={7} colEnd={12} breakpoints={[{width: 1500, colStart: 1, colEnd: 5}]}>
               <div>
                 <Input
+                  style={{ maxWidth: 'none' }}
                   label="Order Notes"
-                  variant={['label-stack', 'label-bold', 'text-area', 'label-fit-content']}
+                  variant={['label-stack', 'label-bold', 'text-area']}
                   rows={5}
-                  cols={300}
                   value={orderNotes}
                   onChange={(e: any) => setOrderNotes(e.target.value)}
                 />
