@@ -55,6 +55,10 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
   const [handwrittenItems, setHandwrittenItems] = useState<HandwrittenItem[]>(handwritten.handwrittenItems);
   const [orderNotes, setOrderNotes] = useState<string>(handwritten.orderNotes);
   const [shippingNotes, setShippingNotes] = useState<string>(handwritten.shippingNotes);
+  const [mp, setMp] = useState<number>(handwritten.mp);
+  const [cap, setCap] = useState<number>(handwritten.cap);
+  const [br, setBr] = useState<number>(handwritten.br);
+  const [fl, setFl] = useState<number>(handwritten.fl);
   const [shippingListDialogOpen, setShippingListDialogOpen] = useState(false);
   const [newShippingListRow, setNewShippingListRow] = useState<Handwritten>(null);
 
@@ -107,7 +111,11 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
       cores: handwritten.cores,
       coreReturns: handwritten.coreReturns,
       orderNotes,
-      shippingNotes
+      shippingNotes,
+      mp: Number(mp),
+      cap: Number(cap),
+      br: Number(br),
+      fl: Number(fl)
     } as Handwritten;
     setNewShippingListRow(newInvoice);
     await editHandwritten(newInvoice);
@@ -600,19 +608,51 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
                   <tbody>
                     <tr>
                       <th><strong>Mousepads</strong></th>
-                      <td>{ handwritten.mp }</td>
+                      <td style={{ padding: 0 }}>
+                        <Input
+                          style={{ margin: 0, color: 'white' }}
+                          variant={['no-arrows', 'no-style']}
+                          value={mp}
+                          onChange={(e: any) => setMp(e.target.value)}
+                          type="number"
+                        />
+                      </td>
                     </tr>
                     <tr>
                       <th><strong>Hats</strong></th>
-                      <td>{ handwritten.cap }</td>
+                      <td style={{ padding: 0 }}>
+                        <Input
+                          style={{ margin: 0, color: 'white' }}
+                          variant={['no-arrows', 'no-style']}
+                          value={cap}
+                          onChange={(e: any) => setCap(e.target.value)}
+                          type="number"
+                        />
+                      </td>
                     </tr>
                     <tr>
                       <th><strong>Brochures</strong></th>
-                      <td>{ handwritten.br }</td>
+                      <td style={{ padding: 0 }}>
+                        <Input
+                          style={{ margin: 0, color: 'white' }}
+                          variant={['no-arrows', 'no-style']}
+                          value={br}
+                          onChange={(e: any) => setBr(e.target.value)}
+                          type="number"
+                        />
+                      </td>
                     </tr>
                     <tr>
                       <th><strong>Flashlights</strong></th>
-                      <td>{ handwritten.fl }</td>
+                      <td style={{ padding: 0 }}>
+                        <Input
+                          style={{ margin: 0, color: 'white' }}
+                          variant={['no-arrows', 'no-style']}
+                          value={fl}
+                          onChange={(e: any) => setFl(e.target.value)}
+                          type="number"
+                        />
+                      </td>
                     </tr>
                   </tbody>
                 </Table>

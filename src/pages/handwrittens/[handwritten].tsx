@@ -340,7 +340,7 @@ export default function Handwritten() {
                           >
                             <option value="">-- SELECT PAYMENT TYPE --</option>
                             {paymentTypes.map((type, i) => {
-                              return <option key={i}>{ type }</option>
+                              return <option key={i}>{ type }</option>;
                             })}
                           </Select>
                         </td>
