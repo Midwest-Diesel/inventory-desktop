@@ -5,7 +5,6 @@ import { shopAddOnsAtom } from "@/scripts/atoms/state";
 import { editAddOn, getAllAddOns } from "@/scripts/controllers/addOnsController";
 import { useAtom } from "jotai";
 import { FormEvent, Fragment, useEffect, useState } from "react";
-import { confirm } from '@tauri-apps/api/dialog';
 
 
 export default function AddOnsOffice() {

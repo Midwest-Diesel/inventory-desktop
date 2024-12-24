@@ -104,6 +104,14 @@ struct FileArgs {
   name: String
 }
 
+#[derive(Deserialize, Serialize)]
+struct ShippingLabelArgs {
+  company: String,
+  address: String,
+  address2: String,
+  cityStateZip: String
+}
+
 
 #[tokio::main]
 async fn main() {
@@ -123,7 +131,8 @@ async fn main() {
       convert_img_to_base64,
       upload_email_stuff_files,
       add_to_shipping_list,
-      upload_file
+      upload_file,
+      print_shipping_label
     ])
     .run(tauri::generate_context!())
     .expect("error while running tauri application");
@@ -562,5 +571,61 @@ fn upload_file(file_args: FileArgs) -> Result<(), String> {
   }
   let file_path = format!("{}/{}", file_args.dir, file_args.name);
   let _ = std::fs::write(file_path, &file_args.file).map_err(|e| e.to_string());
+  Ok(())
+}
+
+#[tauri::command]
+fn print_shipping_label(args: ShippingLabelArgs) -> Result<(), String> {
+  let printer = "Brother HL-L5200DW series";
+  let vbs_script = format!(
+    r#"
+    Dim doc, sheet1
+    Set doc = CreateObject("Word.Application")
+    doc.Visible = True
+    Set sheet1 = doc.Documents.Open("\\MWD1-SERVER\Server\Shipping Label.docx")
+
+    With sheet1.Content.Find
+        .Text = "PAI INDUSTRIES"
+        .Replacement.Text = "{}"
+        .Wrap = 1
+        .Execute , , , , , , , , , , 2
+    End With
+    With sheet1.Content.Find
+        .Text = "630 OLD PEACHTREE RD"
+        .Replacement.Text = "{}"
+        .Wrap = 1
+        .Execute , , , , , , , , , , 2
+    End With
+    With sheet1.Content.Find
+        .Text = "BUILDING C"
+        .Replacement.Text = "{}"
+        .Wrap = 1
+        .Execute , , , , , , , , , , 2
+    End With
+    With sheet1.Content.Find
+        .Text = "SUWANEE, GA 30024"
+        .Replacement.Text = "{}"
+        .Wrap = 1
+        .Execute , , , , , , , , , , 2
+    End With
+
+    doc.ActivePrinter = "{}"
+    ' sheet1.PrintOut
+    ' doc.Quit
+    "#,
+    args.company,
+    args.address,
+    args.address2,
+    args.cityStateZip,
+    printer
+  );
+
+  let vbs_path = "C:\\MWD\\scripts\\generate_shipping_label.vbs";
+  write(&vbs_path, vbs_script).expect("Failed to create VBS script");
+
+  let mut cmd = Command::new("wscript.exe");
+  cmd.arg(vbs_path);
+  cmd.output().expect("Failed to update shipping list");
+  let _ = std::fs::remove_file(vbs_path);
   Ok(())
 }

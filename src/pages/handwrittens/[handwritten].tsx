@@ -18,9 +18,12 @@ import { AltShip, deleteHandwritten, editHandwrittenPaymentType, getAltShipByHan
 import { formatDate, formatPhone, parseResDate } from "@/scripts/tools/stringUtils";
 import { setTitle } from "@/scripts/tools/utils";
 import { RealtimePostgresInsertPayload, RealtimePostgresUpdatePayload } from "@supabase/supabase-js";
+import { confirm } from "@tauri-apps/api/dialog";
+import { invoke } from "@tauri-apps/api/tauri";
 import { useAtom } from "jotai";
 import Link from "next/link";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
+import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 
 
@@ -42,6 +45,7 @@ export default function Handwritten() {
   const [cardAddress, setCardAddress] = useState('');
   const [showCCLabel, setShowCCLabel] = useState(false);
   const [payment, setPayment] = useState('');
+  const [promptLeaveWindow, setPromptLeaveWindow] = useState(false);
   const ccLabelRef = useRef(null);
   const paymentTypes = ['Net 30', 'Wire Transfer', 'EBPP - Secure', 'Visa', 'Mastercard', 'AMEX', 'Discover', 'Comchek', 'T-Check', 'Check', 'Cash', 'Card on File', 'Net 10', 'No Charge'].sort();
 
@@ -84,6 +88,38 @@ export default function Handwritten() {
       .subscribe();
   }, [handwritten]);
 
+  useEffect(() => {
+    const handleRouteChangeStart = async (url: string) => {
+      router.events.off('routeChangeStart', handleRouteChangeStart);
+      if (!promptLeaveWindow) {
+        router.push(url);
+        return;
+      }
+      router.replace(location.href);
+      const exit = await confirm("Do you want to leave the page before printing the credit card label?");
+      if (exit) {
+        router.push(url);
+      }
+    };
+    
+    router.events.on('routeChangeStart', handleRouteChangeStart);  
+    return () => {
+      router.events.off('routeChangeStart', handleRouteChangeStart);
+    };
+  }, [promptLeaveWindow]);
+
+  useEffect(() => {
+    function confirmLeave(e: any) {
+      e.preventDefault();
+      e.returnValue = '';
+    }
+    
+    window.addEventListener('beforeunload', confirmLeave);
+    return () => {
+      window.removeEventListener('beforeunload', confirmLeave);
+    };
+  }, []);
+
   const refreshHandwrittenItems = (e: RealtimePostgresInsertPayload<HandwrittenItem>) => {
     const newItems = [...handwritten.handwrittenItems, { ...e.new, date: parseResDate(e.new.date as any) }];
     setHandwritten({ ...handwritten, handwrittenItems: newItems });
@@ -106,6 +142,24 @@ export default function Handwritten() {
   const handleChangePayment = async (id: number, value: string) => {
     setPayment(value);
     await editHandwrittenPaymentType(id, value);
+  };
+
+  const handleChangeCard = () => {
+    if (cardNum || cvv || expDate) {
+      setPromptLeaveWindow(true);
+    } else {
+      setPromptLeaveWindow(false);
+    }
+  };
+
+  const handlePrintShippingLabel = async () => {
+    const args = {
+      company: handwritten.shipToCompany || '',
+      address: handwritten.shipToAddress || '',
+      address2: handwritten.shipToAddress2 || '',
+      cityStateZip:  [handwritten.shipToCity, `${handwritten.shipToState} ${handwritten.shipToZip}`].join(', ')
+    };
+    await invoke('print_shipping_label', { args });
   };
   
 
@@ -263,7 +317,10 @@ export default function Handwritten() {
                           <Input
                             variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                             value={cardNum}
-                            onChange={(e: any) => setCardNum(e.target.value)}
+                            onChange={(e: any) => {
+                              setCardNum(e.target.value);
+                              handleChangeCard();
+                            }}
                           />
                         </td>
                       </tr>
@@ -273,7 +330,10 @@ export default function Handwritten() {
                           <Input
                             variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                             value={expDate}
-                            onChange={(e: any) => setExpDate(e.target.value)}
+                            onChange={(e: any) => {
+                              setExpDate(e.target.value);
+                              handleChangeCard();
+                            }}
                           />
                         </td>
                       </tr>
@@ -284,7 +344,10 @@ export default function Handwritten() {
                             variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                             value={cvv}
                             type="number"
-                            onChange={(e: any) => setCvv(e.target.value)}
+                            onChange={(e: any) => {
+                              setCvv(e.target.value);
+                              handleChangeCard();
+                            }}
                           />
                         </td>
                       </tr>
@@ -381,10 +444,18 @@ export default function Handwritten() {
                 <div className="handwritten-details__btn-row">
                   <Button variant={['x-small']} onClick={() => window.print()}>Print Ship Docs</Button>
                   <Button variant={['x-small']} onClick={() => window.print()}>Print Invoice</Button>
-                  <Button variant={['x-small']} onClick={() => window.print()}>Print Ship Label</Button>
+                  <Button variant={['x-small']} onClick={handlePrintShippingLabel}>Print Ship Label</Button>
                   <Button variant={['x-small']} onClick={() => window.print()}>Print CI and COO</Button>
                   <Button variant={['x-small']} onClick={() => window.print()}>Print Return BOL</Button>
-                  <Button variant={['x-small']} onClick={() => setShowCCLabel(true)}>Print CC Label</Button>
+                  <Button
+                    variant={['x-small']}
+                    onClick={() => {
+                      setShowCCLabel(true);
+                      setPromptLeaveWindow(false);
+                    }}
+                  >
+                    Print CC Label
+                  </Button>
                 </div>
               </GridItem>
 
