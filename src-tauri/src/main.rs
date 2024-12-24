@@ -585,28 +585,28 @@ fn print_shipping_label(args: ShippingLabelArgs) -> Result<(), String> {
     Set sheet1 = doc.Documents.Open("\\MWD1-SERVER\Server\Shipping Label.docx")
 
     With sheet1.Content.Find
-        .Text = "PAI INDUSTRIES"
-        .Replacement.Text = "{}"
-        .Wrap = 1
-        .Execute , , , , , , , , , , 2
+      .Text = "PAI INDUSTRIES"
+      .Replacement.Text = "{}"
+      .Wrap = 1
+      .Execute , , , , , , , , , , 2
     End With
     With sheet1.Content.Find
-        .Text = "630 OLD PEACHTREE RD"
-        .Replacement.Text = "{}"
-        .Wrap = 1
-        .Execute , , , , , , , , , , 2
+      .Text = "630 OLD PEACHTREE RD"
+      .Replacement.Text = "{}"
+      .Wrap = 1
+      .Execute , , , , , , , , , , 2
     End With
     With sheet1.Content.Find
-        .Text = "BUILDING C"
-        .Replacement.Text = "{}"
-        .Wrap = 1
-        .Execute , , , , , , , , , , 2
+      .Text = "BUILDING C"
+      .Replacement.Text = "{}"
+      .Wrap = 1
+      .Execute , , , , , , , , , , 2
     End With
     With sheet1.Content.Find
-        .Text = "SUWANEE, GA 30024"
-        .Replacement.Text = "{}"
-        .Wrap = 1
-        .Execute , , , , , , , , , , 2
+      .Text = "SUWANEE, GA 30024"
+      .Replacement.Text = "{}"
+      .Wrap = 1
+      .Execute , , , , , , , , , , 2
     End With
 
     doc.ActivePrinter = "{}"

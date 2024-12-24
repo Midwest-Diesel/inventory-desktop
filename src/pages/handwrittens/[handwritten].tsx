@@ -153,11 +153,12 @@ export default function Handwritten() {
   };
 
   const handlePrintShippingLabel = async () => {
+    const cityStateZip = [handwritten.shipToCity, `${handwritten.shipToState} ${handwritten.shipToZip}`].join(', ');
     const args = {
       company: handwritten.shipToCompany || '',
       address: handwritten.shipToAddress || '',
-      address2: handwritten.shipToAddress2 || '',
-      cityStateZip:  [handwritten.shipToCity, `${handwritten.shipToState} ${handwritten.shipToZip}`].join(', ')
+      address2: (handwritten.shipToAddress2 ? handwritten.shipToAddress2 : cityStateZip) || '',
+      cityStateZip: cityStateZip && handwritten.shipToAddress2 ? cityStateZip : ''
     };
     await invoke('print_shipping_label', { args });
   };
