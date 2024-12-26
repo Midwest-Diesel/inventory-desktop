@@ -155,15 +155,15 @@ export default function Handwritten() {
   const handlePrintShipDocs = async () => {
     const cityStateZip = `${handwritten.shipToCity} ${handwritten.shipToState} ${handwritten.shipToZip}`;
     const args = {
-      shipToCompany: handwritten.shipToCompany,
-      shipToAddress: handwritten.shipToAddress,
-      shipToAddress2: handwritten.shipToAddress2,
-      shipToCityStateZip: cityStateZip,
+      shipToCompany: handwritten.shipToCompany || '',
+      shipToAddress: handwritten.shipToAddress || '',
+      shipToAddress2: handwritten.shipToAddress2 || '',
+      shipToCityStateZip: cityStateZip || '',
       shipFromCompany: 'MIDWEST DIESEL',
       shipFromAddress: '3051 82ND LANE NE',
       shipFromAddress2: '',
       shipFromCityStateZip: 'MINNEAPOLIS MN 55449',
-      shipVia: handwritten.shipVia,
+      shipVia: handwritten.shipVia || '',
       prepaid: (!handwritten.isCollect && !handwritten.isThirdParty),
       collect: handwritten.isCollect,
       thirdParty: handwritten.isThirdParty

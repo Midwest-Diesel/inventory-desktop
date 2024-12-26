@@ -750,12 +750,23 @@ fn print_bol(args: BOLArgs) -> Result<(), String> {
       .Wrap = 1
       .Execute , , , , , , , , , , 2
     End With
-    With sheet1.Content.Find
-      .Text = "<SHIP_TO_ADDRESS_2>"
-      .Replacement.Text = "{}"
-      .Wrap = 1
-      .Execute , , , , , , , , , , 2
-    End With
+    If {} Then
+      With sheet1.Content.Find
+        .Text = "<SHIP_TO_ADDRESS_2>"
+        .Execute
+        If .Found Then
+          Set findRange = .Parent
+          findRange.Paragraphs(1).Range.Delete
+        End If
+      End With
+    Else
+      With sheet1.Content.Find
+        .Text = "<SHIP_TO_ADDRESS_2>"
+        .Replacement.Text = "{}"
+        .Wrap = 1
+        .Execute , , , , , , , , , , 2
+      End With
+    End If
     With sheet1.Content.Find
       .Text = "<SHIP_TO_CITY_STATE_ZIP>"
       .Replacement.Text = "{}"
@@ -774,12 +785,23 @@ fn print_bol(args: BOLArgs) -> Result<(), String> {
       .Wrap = 1
       .Execute , , , , , , , , , , 2
     End With
-    With sheet1.Content.Find
-      .Text = "<SHIP_FROM_ADDRESS_2>"
-      .Replacement.Text = "{}"
-      .Wrap = 1
-      .Execute , , , , , , , , , , 2
-    End With
+    If {} Then
+      With sheet1.Content.Find
+        .Text = "<SHIP_FROM_ADDRESS_2>"
+        .Execute
+        If .Found Then
+          Set findRange = .Parent
+          findRange.Paragraphs(1).Range.Delete
+        End If
+      End With
+    Else
+      With sheet1.Content.Find
+        .Text = "<SHIP_FROM_ADDRESS_2>"
+        .Replacement.Text = "{}"
+        .Wrap = 1
+        .Execute , , , , , , , , , , 2
+      End With
+    End If
     With sheet1.Content.Find
       .Text = "<SHIP_FROM_CITY_STATE_ZIP>"
       .Replacement.Text = "{}"
@@ -808,10 +830,12 @@ fn print_bol(args: BOLArgs) -> Result<(), String> {
     "#,
     args.shipToCompany,
     args.shipToAddress,
+    if args.shipToAddress2 == "" {"True"} else {"False"},
     args.shipToAddress2,
     args.shipToCityStateZip,
     args.shipFromCompany,
     args.shipFromAddress,
+    if args.shipFromAddress2 == "" {"True"} else {"False"},
     args.shipFromAddress2,
     args.shipFromCityStateZip,
     args.shipVia,
@@ -827,6 +851,6 @@ fn print_bol(args: BOLArgs) -> Result<(), String> {
   let mut cmd = Command::new("wscript.exe");
   cmd.arg(vbs_path);
   cmd.output().expect("Failed to update shipping list");
-  // let _ = std::fs::remove_file(vbs_path);
+  let _ = std::fs::remove_file(vbs_path);
   Ok(())
 }
