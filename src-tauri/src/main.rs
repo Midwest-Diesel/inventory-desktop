@@ -109,7 +109,8 @@ struct ShippingLabelArgs {
   company: String,
   address: String,
   address2: String,
-  cityStateZip: String
+  cityStateZip: String,
+  copies: i8
 }
 
 #[derive(Deserialize, Serialize)]
@@ -638,14 +639,15 @@ fn print_shipping_label(args: ShippingLabelArgs) -> Result<(), String> {
     End With
 
     doc.ActivePrinter = "{}"
-    ' sheet1.PrintOut
+    ' sheet1.PrintOut Copies:={}
     ' doc.Quit
     "#,
     args.company,
     args.address,
     args.address2,
     args.cityStateZip,
-    printer
+    printer,
+    args.copies
   );
 
   let vbs_path = "C:\\MWD\\scripts\\generate_shipping_label.vbs";

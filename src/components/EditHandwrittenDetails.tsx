@@ -80,7 +80,7 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
     const newCustomer = await getCustomerByName(company);
     const newInvoice = {
       id: handwritten.id,
-      shipVia: shipVia,
+      shipVia,
       initials: handwritten.initials,
       handwrittenItems: handwrittenItems,
       customer: newCustomer,
@@ -262,6 +262,7 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
                         value={source}
                         onChange={(e: any) => setSource(e.target.value)}
                       >
+                        <option value="">-- SELECT A SOURCE --</option>
                         {sourcesData.map((source: string, i) => {
                           return <option key={i} value={source}>{source}</option>;
                         })}

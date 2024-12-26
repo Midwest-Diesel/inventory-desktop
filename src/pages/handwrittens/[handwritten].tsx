@@ -153,6 +153,13 @@ export default function Handwritten() {
   };
 
   const handlePrintShipDocs = async () => {
+    if (handwritten.shipVia.toLowerCase().includes('freight')) {
+      const copies = Number(prompt('How many shipping labels do you want to print?'));
+      if (copies > 0) await handlePrintShippingLabel(copies);
+    } else if (await confirm('Print shipping label?')) {
+      await handlePrintShippingLabel();
+    }
+
     const cityStateZip = `${handwritten.shipToCity} ${handwritten.shipToState} ${handwritten.shipToZip}`;
     const args = {
       shipToCompany: handwritten.shipToCompany || '',
@@ -171,18 +178,20 @@ export default function Handwritten() {
     await invoke('print_bol', { args });
   };
 
-  const handlePrintShippingLabel = async () => {
+  const handlePrintShippingLabel = async (copies = 1) => {
     const cityStateZip = [handwritten.shipToCity, `${handwritten.shipToState} ${handwritten.shipToZip}`].join(', ');
     const args = {
       company: handwritten.shipToCompany || '',
       address: handwritten.shipToAddress || '',
       address2: (handwritten.shipToAddress2 ? handwritten.shipToAddress2 : cityStateZip) || '',
-      cityStateZip: cityStateZip && handwritten.shipToAddress2 ? cityStateZip : ''
+      cityStateZip: cityStateZip && handwritten.shipToAddress2 ? cityStateZip : '',
+      copies
     };
     await invoke('print_shipping_label', { args });
   };
 
   const handlePrintCCLabel = async () => {
+    if (!cardNum || !expDate || !cvv) return;
     await invoke('print_cc_label', { args: { cardNum: Number(cardNum), expDate, cvv: Number(cvv), cardZip, cardName, cardAddress } });
   };
   
@@ -468,7 +477,7 @@ export default function Handwritten() {
                 <div className="handwritten-details__btn-row">
                   <Button variant={['x-small']} onClick={handlePrintShipDocs}>Print Ship Docs</Button>
                   <Button variant={['x-small']} onClick={() => window.print()}>Print Invoice</Button>
-                  <Button variant={['x-small']} onClick={handlePrintShippingLabel}>Print Ship Label</Button>
+                  <Button variant={['x-small']} onClick={() => handlePrintShippingLabel()}>Print Ship Label</Button>
                   <Button variant={['x-small']} onClick={() => window.print()}>Print CI and COO</Button>
                   <Button variant={['x-small']} onClick={() => window.print()}>Print Return BOL</Button>
                   <Button
