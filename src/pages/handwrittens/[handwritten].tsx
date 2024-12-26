@@ -37,7 +37,7 @@ export default function Handwritten() {
   const [returnsOpen, setReturnsOpen] = useState(false);
   const [altShipOpen, setAltShipOpen] = useState(false);
   const [altShipData, setAltShipData] = useState<AltShip[]>([]);
-  const [cardNum, setCardNum] = useState('');
+  const [cardNum, setCardNum] = useState<number>('' as any);
   const [expDate, setExpDate] = useState('');
   const [cvv, setCvv] = useState<number>('' as any);
   const [cardZip, setCardZip] = useState('');
@@ -152,6 +152,25 @@ export default function Handwritten() {
     }
   };
 
+  const handlePrintShipDocs = async () => {
+    const cityStateZip = `${handwritten.shipToCity} ${handwritten.shipToState} ${handwritten.shipToZip}`;
+    const args = {
+      shipToCompany: handwritten.shipToCompany,
+      shipToAddress: handwritten.shipToAddress,
+      shipToAddress2: handwritten.shipToAddress2,
+      shipToCityStateZip: cityStateZip,
+      shipFromCompany: 'MIDWEST DIESEL',
+      shipFromAddress: '3051 82ND LANE NE',
+      shipFromAddress2: '',
+      shipFromCityStateZip: 'MINNEAPOLIS MN 55449',
+      shipVia: handwritten.shipVia,
+      prepaid: (!handwritten.isCollect && !handwritten.isThirdParty),
+      collect: handwritten.isCollect,
+      thirdParty: handwritten.isThirdParty
+    };
+    await invoke('print_bol', { args });
+  };
+
   const handlePrintShippingLabel = async () => {
     const cityStateZip = [handwritten.shipToCity, `${handwritten.shipToState} ${handwritten.shipToZip}`].join(', ');
     const args = {
@@ -161,6 +180,10 @@ export default function Handwritten() {
       cityStateZip: cityStateZip && handwritten.shipToAddress2 ? cityStateZip : ''
     };
     await invoke('print_shipping_label', { args });
+  };
+
+  const handlePrintCCLabel = async () => {
+    await invoke('print_cc_label', { args: { cardNum: Number(cardNum), expDate, cvv: Number(cvv), cardZip, cardName, cardAddress } });
   };
   
 
@@ -443,7 +466,7 @@ export default function Handwritten() {
 
               <GridItem colStart={10} colEnd={12} variant={['low-opacity-bg']} className="no-print">
                 <div className="handwritten-details__btn-row">
-                  <Button variant={['x-small']} onClick={() => window.print()}>Print Ship Docs</Button>
+                  <Button variant={['x-small']} onClick={handlePrintShipDocs}>Print Ship Docs</Button>
                   <Button variant={['x-small']} onClick={() => window.print()}>Print Invoice</Button>
                   <Button variant={['x-small']} onClick={handlePrintShippingLabel}>Print Ship Label</Button>
                   <Button variant={['x-small']} onClick={() => window.print()}>Print CI and COO</Button>
@@ -451,8 +474,8 @@ export default function Handwritten() {
                   <Button
                     variant={['x-small']}
                     onClick={() => {
-                      setShowCCLabel(true);
                       setPromptLeaveWindow(false);
+                      handlePrintCCLabel();
                     }}
                   >
                     Print CC Label

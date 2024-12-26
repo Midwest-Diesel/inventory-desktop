@@ -192,7 +192,7 @@ type Handwritten = {
   isBlindShipment: boolean
   isNoPriceInvoice: boolean
   shipVia: string
-  cardNum: string
+  cardNum: number
   expDate: string
   cvv: number
   cardZip: string
@@ -208,6 +208,8 @@ type Handwritten = {
   br: number
   cap: number
   fl: number
+  isCollect: boolean
+  isThirdParty: boolean
 };
 
 type InvoiceStatus = 'INVOICE PENDING' | 'SENT TO ACCOUNTING' | 'CANCELLED' | 'STOP - HOLD' | 'HOLD AS FAVOR';

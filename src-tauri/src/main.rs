@@ -112,6 +112,32 @@ struct ShippingLabelArgs {
   cityStateZip: String
 }
 
+#[derive(Deserialize, Serialize)]
+struct CCLabelArgs {
+  cardNum: i64,
+  expDate: String,
+  cvv: i8,
+  cardZip: String,
+  cardName: String,
+  cardAddress: String
+}
+
+#[derive(Deserialize, Serialize)]
+struct BOLArgs {
+  shipToCompany: String,
+  shipToAddress: String,
+  shipToAddress2: String,
+  shipToCityStateZip: String,
+  shipFromCompany: String,
+  shipFromAddress: String,
+  shipFromAddress2: String,
+  shipFromCityStateZip: String,
+  shipVia: String,
+  prepaid: bool,
+  collect: bool,
+  thirdParty: bool
+}
+
 
 #[tokio::main]
 async fn main() {
@@ -132,7 +158,9 @@ async fn main() {
       upload_email_stuff_files,
       add_to_shipping_list,
       upload_file,
-      print_shipping_label
+      print_shipping_label,
+      print_cc_label,
+      print_bol
     ])
     .run(tauri::generate_context!())
     .expect("error while running tauri application");
@@ -627,5 +655,178 @@ fn print_shipping_label(args: ShippingLabelArgs) -> Result<(), String> {
   cmd.arg(vbs_path);
   cmd.output().expect("Failed to update shipping list");
   let _ = std::fs::remove_file(vbs_path);
+  Ok(())
+}
+
+#[tauri::command]
+fn print_cc_label(args: CCLabelArgs) -> Result<(), String> {
+  let printer = "Brother HL-L5200DW series";
+  let vbs_script = format!(
+    r#"
+    Dim doc, sheet1
+    Set doc = CreateObject("Word.Application")
+    doc.Visible = True
+    Set sheet1 = doc.Documents.Open("\\MWD1-SERVER\Server\ccLabelTemplate.docx")
+
+    With sheet1.Content.Find
+      .Text = "<CARD_NUM>"
+      .Replacement.Text = "{}"
+      .Wrap = 1
+      .Execute , , , , , , , , , , 2
+    End With
+    With sheet1.Content.Find
+      .Text = "<EXP_DATE>"
+      .Replacement.Text = "{}"
+      .Wrap = 1
+      .Execute , , , , , , , , , , 2
+    End With
+    With sheet1.Content.Find
+      .Text = "<CVV>"
+      .Replacement.Text = "{}"
+      .Wrap = 1
+      .Execute , , , , , , , , , , 2
+    End With
+    With sheet1.Content.Find
+      .Text = "<CARD_ZIP>"
+      .Replacement.Text = "{}"
+      .Wrap = 1
+      .Execute , , , , , , , , , , 2
+    End With
+    With sheet1.Content.Find
+      .Text = "<CARD_NAME>"
+      .Replacement.Text = "{}"
+      .Wrap = 1
+      .Execute , , , , , , , , , , 2
+    End With
+    With sheet1.Content.Find
+      .Text = "<CARD_ADDRESS>"
+      .Replacement.Text = "{}"
+      .Wrap = 1
+      .Execute , , , , , , , , , , 2
+    End With
+
+    doc.ActivePrinter = "{}"
+    ' sheet1.PrintOut
+    ' doc.Quit
+    "#,
+    args.cardNum,
+    args.expDate,
+    args.cvv,
+    args.cardZip,
+    args.cardName,
+    args.cardAddress,
+    printer
+  );
+
+  let vbs_path = "C:\\MWD\\scripts\\generate_cc_label.vbs";
+  write(&vbs_path, vbs_script).expect("Failed to create VBS script");
+
+  let mut cmd = Command::new("wscript.exe");
+  cmd.arg(vbs_path);
+  cmd.output().expect("Failed to update ccLabel");
+  let _ = std::fs::remove_file(vbs_path);
+  Ok(())
+}
+
+#[tauri::command]
+fn print_bol(args: BOLArgs) -> Result<(), String> {
+  let printer = "Brother HL-L5200DW series";
+  let vbs_script = format!(
+    r#"
+    Dim doc, sheet1
+    Set doc = CreateObject("Word.Application")
+    doc.Visible = True
+    Set sheet1 = doc.Documents.Open("\\MWD1-SERVER\Server\BOLtemplate.docm")
+
+    With sheet1.Content.Find
+      .Text = "<SHIP_TO_COMPANY>"
+      .Replacement.Text = "{}"
+      .Wrap = 1
+      .Execute , , , , , , , , , , 2
+    End With
+    With sheet1.Content.Find
+      .Text = "<SHIP_TO_ADDRESS>"
+      .Replacement.Text = "{}"
+      .Wrap = 1
+      .Execute , , , , , , , , , , 2
+    End With
+    With sheet1.Content.Find
+      .Text = "<SHIP_TO_ADDRESS_2>"
+      .Replacement.Text = "{}"
+      .Wrap = 1
+      .Execute , , , , , , , , , , 2
+    End With
+    With sheet1.Content.Find
+      .Text = "<SHIP_TO_CITY_STATE_ZIP>"
+      .Replacement.Text = "{}"
+      .Wrap = 1
+      .Execute , , , , , , , , , , 2
+    End With
+    With sheet1.Content.Find
+      .Text = "<SHIP_FROM_COMPANY>"
+      .Replacement.Text = "{}"
+      .Wrap = 1
+      .Execute , , , , , , , , , , 2
+    End With
+    With sheet1.Content.Find
+      .Text = "<SHIP_FROM_ADDRESS>"
+      .Replacement.Text = "{}"
+      .Wrap = 1
+      .Execute , , , , , , , , , , 2
+    End With
+    With sheet1.Content.Find
+      .Text = "<SHIP_FROM_ADDRESS_2>"
+      .Replacement.Text = "{}"
+      .Wrap = 1
+      .Execute , , , , , , , , , , 2
+    End With
+    With sheet1.Content.Find
+      .Text = "<SHIP_FROM_CITY_STATE_ZIP>"
+      .Replacement.Text = "{}"
+      .Wrap = 1
+      .Execute , , , , , , , , , , 2
+    End With
+    With sheet1.Content.Find
+      .Text = "<SHIP_VIA>"
+      .Replacement.Text = "{}"
+      .Wrap = 1
+      .Execute , , , , , , , , , , 2
+    End With
+
+    Dim cc
+    For Each cc In sheet1.ContentControls
+      If cc.Tag = "prepaid" Then
+        cc.Checked = {}
+      ElseIf cc.Tag = "collect" Then
+        cc.Checked = {}
+      ElseIf cc.Tag = "3rdParty" Then
+        cc.Checked = {}
+      End If
+    Next
+
+    doc.ActivePrinter = "{}"
+    "#,
+    args.shipToCompany,
+    args.shipToAddress,
+    args.shipToAddress2,
+    args.shipToCityStateZip,
+    args.shipFromCompany,
+    args.shipFromAddress,
+    args.shipFromAddress2,
+    args.shipFromCityStateZip,
+    args.shipVia,
+    if args.prepaid {"True"} else {"False"},
+    if args.collect {"True"} else {"False"},
+    if args.thirdParty {"True"} else {"False"},
+    printer
+  );
+
+  let vbs_path = "C:\\MWD\\scripts\\generate_bol.vbs";
+  write(&vbs_path, vbs_script).expect("Failed to create VBS script");
+
+  let mut cmd = Command::new("wscript.exe");
+  cmd.arg(vbs_path);
+  cmd.output().expect("Failed to update shipping list");
+  // let _ = std::fs::remove_file(vbs_path);
   Ok(())
 }
