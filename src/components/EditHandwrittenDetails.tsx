@@ -104,6 +104,7 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
       payment,
       phone: contactPhone,
       cell: contactCell,
+      email: contactEmail,
       contactName: contact,
       invoiceStatus,
       accountingStatus,

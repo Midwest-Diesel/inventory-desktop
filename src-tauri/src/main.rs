@@ -157,6 +157,19 @@ struct ShippingInvoiceArgs {
   shipToContact: String,
   shipToCountry: String,
   accountNum: String,
+  cardNum: String,
+  expDate: String,
+  cvv: String,
+  cardName: String,
+  cardAddress: String,
+  paymentType: String,
+  contactPhone: String,
+  contactCell: String,
+  contactEmail: String,
+  contactFax: String,
+  model: String,
+  serialNum: String,
+  arrNum: String,
   taxable: bool,
   blind: bool,
   npi: bool,
@@ -895,7 +908,7 @@ fn print_shipping_invoice(args: ShippingInvoiceArgs) -> Result<(), String> {
 
     Sub ReplaceAndSetColor(sheet, findText, replaceText)
       If Len(replaceText) > 0 Then
-        If replaceText = "BILL TO ADDRESS 2" Or replaceText = "SHIP TO ADDRESS 2" Then
+        If InStr(replaceText, "ADDRESS 2") > 0 Then
           With sheet.Content.Find
             .Text = findText
             .Replacement.Text = replaceText
@@ -931,7 +944,20 @@ fn print_shipping_invoice(args: ShippingInvoiceArgs) -> Result<(), String> {
     Call ReplaceAndSetColor(sheet1, "SHIP TO ZIP", "{}")
     Call ReplaceAndSetColor(sheet1, "SHIP TO CONTACT", "{}")
     Call ReplaceAndSetColor(sheet1, "SHIP TO COUNTRY", "{}")
-    Call ReplaceAndSetColor(sheet1, "ACCOUNT NUM", "{}")
+    Call ReplaceAndSetColor(sheet1, "ACCOUNT NUMBER", "{}")
+    Call ReplaceAndSetColor(sheet1, "CREDIT CARD NUMBER", "{}")
+    Call ReplaceAndSetColor(sheet1, "EXP DATE", "{}")
+    Call ReplaceAndSetColor(sheet1, "CVV", "{}")
+    Call ReplaceAndSetColor(sheet1, "CREDIT CARD NAME", "{}")
+    Call ReplaceAndSetColor(sheet1, "CREDIT CARD ADDRESS", "{}")
+    Call ReplaceAndSetColor(sheet1, "PAYMENT TYPE", "{}")
+    Call ReplaceAndSetColor(sheet1, "CONTACT PHONE", "{}")
+    Call ReplaceAndSetColor(sheet1, "CONTACT CELL", "{}")
+    Call ReplaceAndSetColor(sheet1, "CONTACT EMAIL", "{}")
+    Call ReplaceAndSetColor(sheet1, "CONTACT FAX", "{}")
+    Call ReplaceAndSetColor(sheet1, "ENGINE MODEL NUMBER", "{}")
+    Call ReplaceAndSetColor(sheet1, "ENGINE SERIAL NO.", "{}")
+    Call ReplaceAndSetColor(sheet1, "ENGINE ARR NO.", "{}")
 
     Dim cc
     For Each cc In sheet1.ContentControls
@@ -968,6 +994,19 @@ fn print_shipping_invoice(args: ShippingInvoiceArgs) -> Result<(), String> {
     args.shipToContact,
     args.shipToCountry,
     args.accountNum,
+    args.cardNum,
+    args.expDate,
+    args.cvv,
+    args.cardName,
+    args.cardAddress,
+    args.paymentType,
+    args.contactPhone,
+    args.contactCell,
+    args.contactEmail,
+    args.contactFax,
+    args.model,
+    args.serialNum,
+    args.arrNum,
     if args.taxable {"True"} else {"False"},
     if args.blind {"True"} else {"False"},
     if args.npi {"True"} else {"False"},

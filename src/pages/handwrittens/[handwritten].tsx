@@ -224,7 +224,7 @@ export default function Handwritten() {
   return (
     <Layout title="Handwritten Details">
       { showCCLabel && <Print html={ccLabelRef.current.innerHTML} styles={{ width: '30rem' }} onPrint={() => setShowCCLabel(false)} /> }
-      <PrintInvoiceDialog open={printInvoiceOpen} setOpen={setPrintInvoiceOpen} handwritten={handwritten} />
+      <PrintInvoiceDialog open={printInvoiceOpen} setOpen={setPrintInvoiceOpen} handwritten={{...handwritten, cardNum, expDate, cvv, cardName, cardAddress}} />
 
       <div className="handwritten-details">
         {handwritten ? isEditing ?

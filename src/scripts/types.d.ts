@@ -175,6 +175,7 @@ type Handwritten = {
   billToCompany: string
   billToPhone: string
   fax: string
+  email: string
   contactName: string
   shipToAddress: string
   shipToAddress2: string
@@ -195,6 +196,7 @@ type Handwritten = {
   cardNum: number
   expDate: string
   cvv: number
+  cardAddress: string
   cardZip: string
   cardName: string
   orderNotes: string
