@@ -139,6 +139,31 @@ struct BOLArgs {
   thirdParty: bool
 }
 
+#[derive(Deserialize, Serialize)]
+struct ShippingInvoiceArgs {
+  billToCompany: String,
+  billToAddress: String,
+  billToAddress2: String,
+  billToCity: String,
+  billToState: String,
+  billToZip: String,
+  billToCountry: String,
+  shipToCompany: String,
+  shipToAddress: String,
+  shipToAddress2: String,
+  shipToCity: String,
+  shipToState: String,
+  shipToZip: String,
+  shipToContact: String,
+  shipToCountry: String,
+  accountNum: String,
+  taxable: bool,
+  blind: bool,
+  npi: bool,
+  collect: bool,
+  thirdParty: bool
+}
+
 
 #[tokio::main]
 async fn main() {
@@ -161,7 +186,8 @@ async fn main() {
       upload_file,
       print_shipping_label,
       print_cc_label,
-      print_bol
+      print_bol,
+      print_shipping_invoice
     ])
     .run(tauri::generate_context!())
     .expect("error while running tauri application");
@@ -853,6 +879,109 @@ fn print_bol(args: BOLArgs) -> Result<(), String> {
   let mut cmd = Command::new("wscript.exe");
   cmd.arg(vbs_path);
   cmd.output().expect("Failed to update shipping list");
+  let _ = std::fs::remove_file(vbs_path);
+  Ok(())
+}
+
+#[tauri::command]
+fn print_shipping_invoice(args: ShippingInvoiceArgs) -> Result<(), String> {
+  let printer = "Brother HL-L5200DW series";
+  let vbs_script = format!(
+    r#"
+    Dim doc, sheet1
+    Set doc = CreateObject("Word.Application")
+    doc.Visible = True
+    Set sheet1 = doc.Documents.Open("\\MWD1-SERVER\Server\handwrittenShippingCopy.docx")
+
+    Sub ReplaceAndSetColor(sheet, findText, replaceText)
+      If Len(replaceText) > 0 Then
+        If replaceText = "BILL TO ADDRESS 2" Or replaceText = "SHIP TO ADDRESS 2" Then
+          With sheet.Content.Find
+            .Text = findText
+            .Replacement.Text = replaceText
+            .Wrap = 1
+            .MatchWholeWord = True
+            .Execute , , , , , , , , , , 2
+          End With
+        Else
+          With sheet.Content.Find
+            .Text = findText
+            .Replacement.Text = replaceText
+            .Replacement.Font.Color = 0
+            .Wrap = 1
+            .MatchWholeWord = True
+            .Execute , , , , , , , , , , 2
+          End With
+        End If
+      End If
+    End Sub
+
+    Call ReplaceAndSetColor(sheet1, "BILL TO COMPANY", "{}")
+    Call ReplaceAndSetColor(sheet1, "BILL TO ADDRESS", "{}")
+      Call ReplaceAndSetColor(sheet1, "BILL_TO_ADDRESS_2", "{}")
+    Call ReplaceAndSetColor(sheet1, "BILL TO CITY", "{}")
+    Call ReplaceAndSetColor(sheet1, "BILL TO STATE", "{}")
+    Call ReplaceAndSetColor(sheet1, "BILL TO ZIP", "{}")
+    Call ReplaceAndSetColor(sheet1, "BILL TO COUNTRY", "{}")
+    Call ReplaceAndSetColor(sheet1, "SHIP TO COMPANY", "{}")
+    Call ReplaceAndSetColor(sheet1, "SHIP TO ADDRESS", "{}")
+    Call ReplaceAndSetColor(sheet1, "SHIP_TO_ADDRESS_2", "{}")
+    Call ReplaceAndSetColor(sheet1, "SHIP TO CITY", "{}")
+    Call ReplaceAndSetColor(sheet1, "SHIP TO STATE", "{}")
+    Call ReplaceAndSetColor(sheet1, "SHIP TO ZIP", "{}")
+    Call ReplaceAndSetColor(sheet1, "SHIP TO CONTACT", "{}")
+    Call ReplaceAndSetColor(sheet1, "SHIP TO COUNTRY", "{}")
+    Call ReplaceAndSetColor(sheet1, "ACCOUNT NUM", "{}")
+
+    Dim cc
+    For Each cc In sheet1.ContentControls
+      If cc.Tag = "taxable" Then
+        cc.Checked = {}
+      ElseIf cc.Tag = "blind" Then
+        cc.Checked = {}
+      ElseIf cc.Tag = "npi" Then
+        cc.Checked = {}
+      ElseIf cc.Tag = "collect" Then
+        cc.Checked = {}
+      ElseIf cc.Tag = "3rdParty" Then
+        cc.Checked = {}
+      End If
+    Next
+
+    doc.ActivePrinter = "{}"
+    ' sheet1.PrintOut
+    ' doc.Quit
+    "#,
+    args.billToCompany,
+    args.billToAddress,
+    if args.billToAddress2 != "" {args.billToAddress2} else {"BILL TO ADDRESS 2".to_string()},
+    args.billToCity,
+    args.billToState,
+    args.billToZip,
+    args.billToCountry,
+    args.shipToCompany,
+    args.shipToAddress,
+    if args.shipToAddress2 != "" {args.shipToAddress2} else {"SHIP TO ADDRESS 2".to_string()},
+    args.shipToCity,
+    args.shipToState,
+    args.shipToZip,
+    args.shipToContact,
+    args.shipToCountry,
+    args.accountNum,
+    if args.taxable {"True"} else {"False"},
+    if args.blind {"True"} else {"False"},
+    if args.npi {"True"} else {"False"},
+    if args.collect {"True"} else {"False"},
+    if args.thirdParty {"True"} else {"False"},
+    printer
+  );
+
+  let vbs_path = "C:\\MWD\\scripts\\generate_shipping_invoice.vbs";
+  write(&vbs_path, vbs_script).expect("Failed to create VBS script");
+
+  let mut cmd = Command::new("wscript.exe");
+  cmd.arg(vbs_path);
+  cmd.output().expect("Failed to update content");
   let _ = std::fs::remove_file(vbs_path);
   Ok(())
 }

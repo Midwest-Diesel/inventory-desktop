@@ -1,6 +1,7 @@
 import AltShipDialog from "@/components/Dialogs/handwrittens/AltShipDialog";
 import CoreCreditsDialog from "@/components/Dialogs/handwrittens/CoreCreditsDialog";
 import NewReturnDialog from "@/components/Dialogs/handwrittens/NewReturnDialog";
+import PrintInvoiceDialog from "@/components/Dialogs/handwrittens/PrintInvoiceDialog";
 import EditHandwrittenDetails from "@/components/EditHandwrittenDetails";
 import HandwrittenItemsTable from "@/components/HandwrittenItemsTable";
 import { Layout } from "@/components/Layout";
@@ -46,6 +47,7 @@ export default function Handwritten() {
   const [showCCLabel, setShowCCLabel] = useState(false);
   const [payment, setPayment] = useState('');
   const [promptLeaveWindow, setPromptLeaveWindow] = useState(false);
+  const [printInvoiceOpen, setPrintInvoiceOpen] = useState(false);
   const ccLabelRef = useRef(null);
   const paymentTypes = ['Net 30', 'Wire Transfer', 'EBPP - Secure', 'Visa', 'Mastercard', 'AMEX', 'Discover', 'Comchek', 'T-Check', 'Check', 'Cash', 'Card on File', 'Net 10', 'No Charge'].sort();
 
@@ -190,6 +192,29 @@ export default function Handwritten() {
     await invoke('print_shipping_label', { args });
   };
 
+  const handlePrintCI = async () => {
+    await invoke('print_ci_coo', { args: {  } });
+  };
+
+  const handlePrintReturnBOL = async () => {
+    const cityStateZip = `${handwritten.shipToCity} ${handwritten.shipToState} ${handwritten.shipToZip}`;
+    const args = {
+      shipFromCompany: handwritten.shipToCompany || '',
+      shipFromAddress: handwritten.shipToAddress || '',
+      shipFromAddress2: handwritten.shipToAddress2 || '',
+      shipFromCityStateZip: cityStateZip || '',
+      shipToCompany: 'MIDWEST DIESEL',
+      shipToAddress: '3051 82ND LANE NE',
+      shipToAddress2: '',
+      shipToCityStateZip: 'MINNEAPOLIS MN 55449',
+      shipVia: handwritten.shipVia || '',
+      prepaid: (!handwritten.isCollect && !handwritten.isThirdParty),
+      collect: handwritten.isCollect,
+      thirdParty: handwritten.isThirdParty
+    };
+    await invoke('print_bol', { args });
+  };
+
   const handlePrintCCLabel = async () => {
     if (!cardNum || !expDate || !cvv) return;
     await invoke('print_cc_label', { args: { cardNum: Number(cardNum), expDate, cvv: Number(cvv), cardZip, cardName, cardAddress } });
@@ -199,6 +224,7 @@ export default function Handwritten() {
   return (
     <Layout title="Handwritten Details">
       { showCCLabel && <Print html={ccLabelRef.current.innerHTML} styles={{ width: '30rem' }} onPrint={() => setShowCCLabel(false)} /> }
+      <PrintInvoiceDialog open={printInvoiceOpen} setOpen={setPrintInvoiceOpen} handwritten={handwritten} />
 
       <div className="handwritten-details">
         {handwritten ? isEditing ?
@@ -476,10 +502,10 @@ export default function Handwritten() {
               <GridItem colStart={10} colEnd={12} variant={['low-opacity-bg']} className="no-print">
                 <div className="handwritten-details__btn-row">
                   <Button variant={['x-small']} onClick={handlePrintShipDocs}>Print Ship Docs</Button>
-                  <Button variant={['x-small']} onClick={() => window.print()}>Print Invoice</Button>
+                  <Button variant={['x-small']} onClick={() => setPrintInvoiceOpen(true)}>Print Invoice</Button>
                   <Button variant={['x-small']} onClick={() => handlePrintShippingLabel()}>Print Ship Label</Button>
-                  <Button variant={['x-small']} onClick={() => window.print()}>Print CI and COO</Button>
-                  <Button variant={['x-small']} onClick={() => window.print()}>Print Return BOL</Button>
+                  <Button variant={['x-small']} onClick={handlePrintCI}>Print CI and COO</Button>
+                  <Button variant={['x-small']} onClick={handlePrintReturnBOL}>Print Return BOL</Button>
                   <Button
                     variant={['x-small']}
                     onClick={() => {
