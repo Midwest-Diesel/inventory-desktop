@@ -193,7 +193,17 @@ export default function Handwritten() {
   };
 
   const handlePrintCI = async () => {
-    await invoke('print_ci_coo', { args: {  } });
+    const cityStateZip = [handwritten.shipToCity, `${handwritten.shipToState} ${handwritten.shipToZip}`].join(', ');
+    const args = {
+      company: handwritten.shipToCompany || '',
+      address: handwritten.shipToAddress || '',
+      address2: (handwritten.shipToAddress2 ? handwritten.shipToAddress2 : cityStateZip) || '',
+      cityStateZip: cityStateZip && handwritten.shipToAddress2 ? cityStateZip : '',
+      date: formatDate(handwritten.date) || '',
+      po: handwritten.poNum || ''
+    };
+    await invoke('print_ci', { args });
+    await invoke('print_coo');
   };
 
   const handlePrintReturnBOL = async () => {

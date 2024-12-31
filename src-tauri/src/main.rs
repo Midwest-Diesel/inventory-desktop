@@ -181,6 +181,16 @@ struct ShippingInvoiceArgs {
   thirdParty: bool
 }
 
+#[derive(Deserialize, Serialize)]
+struct CIArgs {
+  company: String,
+  address: String,
+  address2: String,
+  cityStateZip: String,
+  date: String,
+  po: String
+}
+
 
 #[tokio::main]
 async fn main() {
@@ -204,7 +214,9 @@ async fn main() {
       print_shipping_label,
       print_cc_label,
       print_bol,
-      print_shipping_invoice
+      print_shipping_invoice,
+      print_ci,
+      print_coo
     ])
     .run(tauri::generate_context!())
     .expect("error while running tauri application");
@@ -1091,6 +1103,78 @@ fn print_shipping_invoice(args: ShippingInvoiceArgs) -> Result<(), String> {
   let mut cmd = Command::new("wscript.exe");
   cmd.arg(vbs_path);
   cmd.output().expect("Failed to update content");
+  let _ = std::fs::remove_file(vbs_path);
+  Ok(())
+}
+
+#[tauri::command]
+fn print_ci(args: CIArgs) -> Result<(), String> {
+  let printer = "Brother MFC-L3770CDW series";
+  let vbs_script = format!(
+    r#"
+    Dim doc, sheet1
+    Set doc = CreateObject("Word.Application")
+    doc.Visible = True
+    Set sheet1 = doc.Documents.Open("\\MWD1-SERVER\Server\COMINVtemplate.docm")
+
+    Sub ReplaceAndSetColor(sheet, findText, replaceText)
+      With sheet.Content.Find
+        .Text = findText
+        .Replacement.Text = replaceText
+        .Wrap = 1
+        .MatchWholeWord = True
+        .Execute , , , , , , , , , , 2
+      End With
+    End Sub
+
+    Call ReplaceAndSetColor(sheet1, "<SHIP_TO_COMPANY>", "{}")
+    Call ReplaceAndSetColor(sheet1, "<SHIP_TO_ADDRESS_2>", "{}")
+    Call ReplaceAndSetColor(sheet1, "<SHIP_TO_ADDRESS>", "{}")
+    Call ReplaceAndSetColor(sheet1, "<CITY_STATE_ZIP>", "{}")
+    Call ReplaceAndSetColor(sheet1, "<DATE>", "{}")
+    Call ReplaceAndSetColor(sheet1, "<PO>", "{}")
+
+    doc.ActivePrinter = "{}"
+    "#,
+    args.company,
+    args.address2,
+    args.address,
+    args.cityStateZip,
+    args.date,
+    args.po,
+    printer
+  );
+
+  let vbs_path = "C:\\MWD\\scripts\\generate_ci_template.vbs";
+  write(&vbs_path, vbs_script).expect("Failed to create VBS script");
+
+  let mut cmd = Command::new("wscript.exe");
+  cmd.arg(vbs_path);
+  cmd.output().expect("Failed to update shipping list");
+  let _ = std::fs::remove_file(vbs_path);
+  Ok(())
+}
+
+#[tauri::command]
+fn print_coo() -> Result<(), String> {
+  let printer = "Brother MFC-L3770CDW series";
+  let vbs_script = format!(
+    r#"
+    Dim doc, sheet1
+    Set doc = CreateObject("Word.Application")
+    doc.Visible = True
+    Set sheet1 = doc.Documents.Open("\\MWD1-SERVER\Server\CERTOOtemplate.docm")
+    doc.ActivePrinter = "{}"
+    "#,
+    printer,
+  );
+
+  let vbs_path = "C:\\MWD\\scripts\\generate_coo_template.vbs";
+  write(&vbs_path, vbs_script).expect("Failed to create VBS script");
+
+  let mut cmd = Command::new("wscript.exe");
+  cmd.arg(vbs_path);
+  cmd.output().expect("Failed to update shipping list");
   let _ = std::fs::remove_file(vbs_path);
   Ok(())
 }
