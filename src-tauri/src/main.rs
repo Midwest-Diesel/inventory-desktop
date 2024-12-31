@@ -1,6 +1,7 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 use serde::{Deserialize, Serialize};
+use serde_json::to_string;
 use tauri::Manager;
 use std::process::Command;
 use std::fs::{write};
@@ -170,6 +171,17 @@ struct ShippingInvoiceArgs {
   model: String,
   serialNum: String,
   arrNum: String,
+  createdBy: String,
+  soldBy: String,
+  handwrittenId: i32,
+  date: String,
+  contact: String,
+  poNum: String,
+  shipVia: String,
+  freightQuotes: String,
+  source: String,
+  items: String,
+  setup: bool,
   taxable: bool,
   blind: bool,
   npi: bool,
@@ -899,12 +911,13 @@ fn print_bol(args: BOLArgs) -> Result<(), String> {
 #[tauri::command]
 fn print_shipping_invoice(args: ShippingInvoiceArgs) -> Result<(), String> {
   let printer = "Brother HL-L5200DW series";
+  let json_data = to_string(&args.items).unwrap();
   let vbs_script = format!(
     r#"
     Dim doc, sheet1
     Set doc = CreateObject("Word.Application")
     doc.Visible = True
-    Set sheet1 = doc.Documents.Open("\\MWD1-SERVER\Server\handwrittenShippingCopy.docx")
+    Set sheet1 = doc.Documents.Open("\\MWD1-SERVER\Server\handwrittenShippingTemplate.docx")
 
     Sub ReplaceAndSetColor(sheet, findText, replaceText)
       If Len(replaceText) > 0 Then
@@ -931,7 +944,7 @@ fn print_shipping_invoice(args: ShippingInvoiceArgs) -> Result<(), String> {
 
     Call ReplaceAndSetColor(sheet1, "BILL TO COMPANY", "{}")
     Call ReplaceAndSetColor(sheet1, "BILL TO ADDRESS", "{}")
-      Call ReplaceAndSetColor(sheet1, "BILL_TO_ADDRESS_2", "{}")
+    Call ReplaceAndSetColor(sheet1, "BILL_TO_ADDRESS_2", "{}")
     Call ReplaceAndSetColor(sheet1, "BILL TO CITY", "{}")
     Call ReplaceAndSetColor(sheet1, "BILL TO STATE", "{}")
     Call ReplaceAndSetColor(sheet1, "BILL TO ZIP", "{}")
@@ -958,6 +971,15 @@ fn print_shipping_invoice(args: ShippingInvoiceArgs) -> Result<(), String> {
     Call ReplaceAndSetColor(sheet1, "ENGINE MODEL NUMBER", "{}")
     Call ReplaceAndSetColor(sheet1, "ENGINE SERIAL NO.", "{}")
     Call ReplaceAndSetColor(sheet1, "ENGINE ARR NO.", "{}")
+    Call ReplaceAndSetColor(sheet1, "CREATED_BY", "{}")
+    Call ReplaceAndSetColor(sheet1, "SOLD_BY", "{}")
+    Call ReplaceAndSetColor(sheet1, "INVOICE#", "{}")
+    Call ReplaceAndSetColor(sheet1, "INVOICE DATE", "{}")
+    Call ReplaceAndSetColor(sheet1, "CONTACT NAME", "{}")
+    Call ReplaceAndSetColor(sheet1, "PO#", "{}")
+    Call ReplaceAndSetColor(sheet1, "SHIP VIA", "{}")
+    Call ReplaceAndSetColor(sheet1, "FREIGHT QUOTES", "{}")
+    Call ReplaceAndSetColor(sheet1, "SOURCE", "{}")
 
     Dim cc
     For Each cc In sheet1.ContentControls
@@ -971,8 +993,58 @@ fn print_shipping_invoice(args: ShippingInvoiceArgs) -> Result<(), String> {
         cc.Checked = {}
       ElseIf cc.Tag = "3rdParty" Then
         cc.Checked = {}
+      ElseIf cc.Tag = "setup" Then
+        cc.Checked = {}
       End If
     Next
+
+    Dim handwrittenItems, jsonData, item, table, row, i
+    jsonData = {:?}
+
+    If Len(jsonData) > 2 Then
+      Dim items
+      items = Split(jsonData, "}},")
+      Set table = sheet1.Tables(1)
+
+      For i = LBound(items) To UBound(items)
+        Dim fields, keyValue, j
+        If i > 0 Or table.Rows.Count = 1 Then
+          table.Rows.Add
+        End If
+
+        Set row = table.Rows(table.Rows.Count)
+        fields = Split(items(i), ",")
+
+        For j = LBound(fields) To UBound(fields)
+          keyValue = Split(fields(j), ":")
+          keyValue(0) = Replace(keyValue(0), "[{{", "")
+          keyValue(0) = Replace(keyValue(0), "{{", "")
+          If UBound(keyValue) >= 1 Then
+            keyValue(1) = Replace(keyValue(1), "}}]", "")
+          End If
+
+          Select Case keyValue(0)
+            Case "cost"
+              row.Cells(1).Range.Text = keyValue(1)
+              row.Cells(1).Range.Font.Bold = False
+            Case "qty"
+              row.Cells(2).Range.Text = keyValue(1)
+            Case "partNum"
+              row.Cells(3).Range.Text = keyValue(1)
+            Case "desc"
+              row.Cells(4).Range.Text = keyValue(1)
+            Case "stockNum"
+              row.Cells(5).Range.Text = keyValue(1)
+            Case "location"
+              row.Cells(6).Range.Text = keyValue(1)
+            Case "unitPrice"
+              row.Cells(7).Range.Text = keyValue(1)
+            Case "total"
+              row.Cells(8).Range.Text = keyValue(1)
+          End Select
+        Next
+      Next
+    End If
 
     doc.ActivePrinter = "{}"
     ' sheet1.PrintOut
@@ -1007,11 +1079,22 @@ fn print_shipping_invoice(args: ShippingInvoiceArgs) -> Result<(), String> {
     args.model,
     args.serialNum,
     args.arrNum,
+    args.createdBy,
+    args.soldBy,
+    args.handwrittenId,
+    args.date,
+    args.contact,
+    args.poNum,
+    args.shipVia,
+    args.freightQuotes,
+    args.source,
     if args.taxable {"True"} else {"False"},
     if args.blind {"True"} else {"False"},
     if args.npi {"True"} else {"False"},
     if args.collect {"True"} else {"False"},
     if args.thirdParty {"True"} else {"False"},
+    if args.setup {"True"} else {"False"},
+    json_data.replace("\"", "").replace("\\", ""),
     printer
   );
 
@@ -1021,6 +1104,6 @@ fn print_shipping_invoice(args: ShippingInvoiceArgs) -> Result<(), String> {
   let mut cmd = Command::new("wscript.exe");
   cmd.arg(vbs_path);
   cmd.output().expect("Failed to update content");
-  let _ = std::fs::remove_file(vbs_path);
+  // let _ = std::fs::remove_file(vbs_path);
   Ok(())
 }

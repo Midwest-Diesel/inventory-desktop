@@ -233,7 +233,6 @@ type HandwrittenItem = {
   return: boolean
   date: Date
   invoiceItemChildren: HandwrittenItemChild[]
-  qty: number
   weight: number
   length: number
   width: number

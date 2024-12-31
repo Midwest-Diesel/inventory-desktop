@@ -3,6 +3,7 @@ import Dialog from "../../Library/Dialog";
 import { invoke } from "@tauri-apps/api/tauri";
 import Checkbox from "@/components/Library/Checkbox";
 import Button from "@/components/Library/Button";
+import { formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
 
 interface Props {
   open: boolean
@@ -49,11 +50,32 @@ export default function PrintInvoiceDialog({ open, setOpen, handwritten }: Props
       model: '',
       serialNum: handwritten.engineSerialNum || '',
       arrNum: '',
+      createdBy: handwritten.initials || '',
+      soldBy: '',
+      handwrittenId: Number(handwritten.id),
+      date: formatDate(handwritten.date) || '',
+      contact: handwritten.contactName || '',
+      poNum: handwritten.poNum || '',
+      shipVia: handwritten.shipVia || '',
+      freightQuotes: '',
+      source: handwritten.source || '',
+      setup: false,
       taxable: false,
       blind: handwritten.isBlindShipment,
       npi: handwritten.isNoPriceInvoice,
       collect: handwritten.isCollect,
-      thirdParty: handwritten.isThirdParty
+      thirdParty: handwritten.isThirdParty,
+      items: JSON.stringify(handwritten.handwrittenItems.map((item) => {
+        return {
+          stockNum: item.stockNum || '',
+          location: item.location || '',
+          cost: formatCurrency(item.cost) || '$0.00',
+          qty: item.qty,
+          partNum: item.partNum || '',
+          desc: item.desc || '',
+          unitPrice: formatCurrency(item.unitPrice) || '$0.00'
+        };
+      }))
     };
     await invoke('print_shipping_invoice', { args });
   };
