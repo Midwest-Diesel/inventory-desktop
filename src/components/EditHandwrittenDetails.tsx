@@ -650,6 +650,7 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
                         <Input
                           style={{ margin: 0, color: 'white' }}
                           variant={['no-arrows', 'no-style']}
+                          maxLength={245}
                           value={fl}
                           onChange={(e: any) => setFl(e.target.value)}
                           type="number"
@@ -668,6 +669,7 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
                   label="Order Notes"
                   variant={['label-stack', 'label-bold', 'text-area']}
                   rows={5}
+                  maxLength={245}
                   value={orderNotes}
                   onChange={(e: any) => setOrderNotes(e.target.value)}
                 />

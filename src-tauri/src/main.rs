@@ -158,19 +158,7 @@ struct ShippingInvoiceArgs {
   shipToContact: String,
   shipToCountry: String,
   accountNum: String,
-  cardNum: String,
-  expDate: String,
-  cvv: String,
-  cardName: String,
-  cardAddress: String,
   paymentType: String,
-  contactPhone: String,
-  contactCell: String,
-  contactEmail: String,
-  contactFax: String,
-  model: String,
-  serialNum: String,
-  arrNum: String,
   createdBy: String,
   soldBy: String,
   handwrittenId: i32,
@@ -178,9 +166,13 @@ struct ShippingInvoiceArgs {
   contact: String,
   poNum: String,
   shipVia: String,
-  freightQuotes: String,
-  source: String,
   items: String,
+  invoiceNotes: String,
+  shippingNotes: String,
+  mp: String,
+  cap: String,
+  br: String,
+  fl: String,
   setup: bool,
   taxable: bool,
   blind: bool,
@@ -910,7 +902,7 @@ fn print_bol(args: BOLArgs) -> Result<(), String> {
 
 #[tauri::command]
 fn print_shipping_invoice(args: ShippingInvoiceArgs) -> Result<(), String> {
-  let printer = "Brother HL-L5200DW series";
+  let printer = "Brother MFC-L3770CDW series";
   let json_data = to_string(&args.items).unwrap();
   let vbs_script = format!(
     r#"
@@ -939,6 +931,17 @@ fn print_shipping_invoice(args: ShippingInvoiceArgs) -> Result<(), String> {
             .Execute , , , , , , , , , , 2
           End With
         End If
+
+        Dim footer
+        Set footer = sheet.Sections(1).Footers(1)
+        With footer.Range.Find
+          .Text = findText
+          .Replacement.Text = replaceText
+          .Replacement.Font.Color = 0
+          .Wrap = 1
+          .MatchWholeWord = True
+          .Execute , , , , , , , , , , 2
+        End With
       End If
     End Sub
 
@@ -958,19 +961,7 @@ fn print_shipping_invoice(args: ShippingInvoiceArgs) -> Result<(), String> {
     Call ReplaceAndSetColor(sheet1, "SHIP TO CONTACT", "{}")
     Call ReplaceAndSetColor(sheet1, "SHIP TO COUNTRY", "{}")
     Call ReplaceAndSetColor(sheet1, "ACCOUNT NUMBER", "{}")
-    Call ReplaceAndSetColor(sheet1, "CREDIT CARD NUMBER", "{}")
-    Call ReplaceAndSetColor(sheet1, "EXP DATE", "{}")
-    Call ReplaceAndSetColor(sheet1, "CVV", "{}")
-    Call ReplaceAndSetColor(sheet1, "CREDIT CARD NAME", "{}")
-    Call ReplaceAndSetColor(sheet1, "CREDIT CARD ADDRESS", "{}")
     Call ReplaceAndSetColor(sheet1, "PAYMENT TYPE", "{}")
-    Call ReplaceAndSetColor(sheet1, "CONTACT PHONE", "{}")
-    Call ReplaceAndSetColor(sheet1, "CONTACT CELL", "{}")
-    Call ReplaceAndSetColor(sheet1, "CONTACT EMAIL", "{}")
-    Call ReplaceAndSetColor(sheet1, "CONTACT FAX", "{}")
-    Call ReplaceAndSetColor(sheet1, "ENGINE MODEL NUMBER", "{}")
-    Call ReplaceAndSetColor(sheet1, "ENGINE SERIAL NO.", "{}")
-    Call ReplaceAndSetColor(sheet1, "ENGINE ARR NO.", "{}")
     Call ReplaceAndSetColor(sheet1, "CREATED_BY", "{}")
     Call ReplaceAndSetColor(sheet1, "SOLD_BY", "{}")
     Call ReplaceAndSetColor(sheet1, "INVOICE#", "{}")
@@ -978,8 +969,12 @@ fn print_shipping_invoice(args: ShippingInvoiceArgs) -> Result<(), String> {
     Call ReplaceAndSetColor(sheet1, "CONTACT NAME", "{}")
     Call ReplaceAndSetColor(sheet1, "PO#", "{}")
     Call ReplaceAndSetColor(sheet1, "SHIP VIA", "{}")
-    Call ReplaceAndSetColor(sheet1, "FREIGHT QUOTES", "{}")
-    Call ReplaceAndSetColor(sheet1, "SOURCE", "{}")
+    Call ReplaceAndSetColor(sheet1, "INVOICE NOTES", "{}")
+    Call ReplaceAndSetColor(sheet1, "SHIPPING NOTES", "{}")
+    Call ReplaceAndSetColor(sheet1, "Mousepads", "{}")
+    Call ReplaceAndSetColor(sheet1, "Hats", "{}")
+    Call ReplaceAndSetColor(sheet1, "Brochures", "{}")
+    Call ReplaceAndSetColor(sheet1, "Flashlights", "{}")
 
     Dim cc
     For Each cc In sheet1.ContentControls
@@ -1048,7 +1043,7 @@ fn print_shipping_invoice(args: ShippingInvoiceArgs) -> Result<(), String> {
 
     doc.ActivePrinter = "{}"
     ' sheet1.PrintOut
-    ' doc.Quit
+    ' doc.Close
     "#,
     args.billToCompany,
     args.billToAddress,
@@ -1066,19 +1061,7 @@ fn print_shipping_invoice(args: ShippingInvoiceArgs) -> Result<(), String> {
     args.shipToContact,
     args.shipToCountry,
     args.accountNum,
-    args.cardNum,
-    args.expDate,
-    args.cvv,
-    args.cardName,
-    args.cardAddress,
     args.paymentType,
-    args.contactPhone,
-    args.contactCell,
-    args.contactEmail,
-    args.contactFax,
-    args.model,
-    args.serialNum,
-    args.arrNum,
     args.createdBy,
     args.soldBy,
     args.handwrittenId,
@@ -1086,8 +1069,12 @@ fn print_shipping_invoice(args: ShippingInvoiceArgs) -> Result<(), String> {
     args.contact,
     args.poNum,
     args.shipVia,
-    args.freightQuotes,
-    args.source,
+    args.invoiceNotes,
+    args.shippingNotes,
+    args.mp,
+    args.cap,
+    args.br,
+    args.fl,
     if args.taxable {"True"} else {"False"},
     if args.blind {"True"} else {"False"},
     if args.npi {"True"} else {"False"},
@@ -1104,6 +1091,6 @@ fn print_shipping_invoice(args: ShippingInvoiceArgs) -> Result<(), String> {
   let mut cmd = Command::new("wscript.exe");
   cmd.arg(vbs_path);
   cmd.output().expect("Failed to update content");
-  // let _ = std::fs::remove_file(vbs_path);
+  let _ = std::fs::remove_file(vbs_path);
   Ok(())
 }
