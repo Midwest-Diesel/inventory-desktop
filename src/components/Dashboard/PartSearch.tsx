@@ -110,22 +110,23 @@ export default function PartSearch({ selectHandwrittenOpen, setSelectHandwritten
   const quotePart = async (part: Part) => {
     const newQuote = {
       source: null,
-      customer: selectedCustomer,
+      customerId: selectedCustomer.id,
       contact: selectedCustomer.contact,
-      phone: '',
-      state: '',
+      phone: selectedCustomer.phone,
+      state: selectedCustomer.billToState,
       partNum: part.partNum,
       desc: part.desc,
       stockNum: part.stockNum,
       price: 0,
       notes: '',
-      salesman: '',
+      salesmanId: user.id,
       date: new Date(),
-      sale: false,
+      rating: part.rating,
+      email: selectedCustomer.email,
       partId: part.id
     } as any;
-    await addQuote(newQuote, user.id);
-    setQuotesData([newQuote, ...quotesData]);
+    await addQuote(newQuote);
+    setQuotesData([{ ...newQuote, customer: selectedCustomer, part: part, salesman: user }, ...quotesData]);
   };
   
   const openPartImages = async (part: Part) => {

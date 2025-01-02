@@ -122,7 +122,7 @@ export default function SelectHandwrittenDialog({ open, setOpen, part, customer,
       invoiceStatus: 'INVOICE PENDING',
       accountingStatus: '',
       shippingStatus: '',
-    } as Handwritten;
+    } as any;
     await addHandwritten(newHandwritten);
     setToastOpen(true);
     await handleSearch();
@@ -261,7 +261,7 @@ export default function SelectHandwrittenDialog({ open, setOpen, part, customer,
                   <tr key={handwritten.id} onClick={() => handleSelectRow(handwritten.id)} className={handwritten.id === selectedHandwrittenId ? 'select-handwritten-dialog--selected' : ''}>
                     <td>{ handwritten.id }</td>
                     <td>{ formatDate(handwritten.date) }</td>
-                    <td>{ handwritten.customer.company }</td>
+                    <td>{ handwritten.customer ? handwritten.customer.company : null }</td>
                     <td>{ handwritten.billToCompany }</td>
                   </tr>
                 );

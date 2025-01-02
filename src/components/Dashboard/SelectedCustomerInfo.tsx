@@ -87,7 +87,7 @@ export default function SelectedCustomerInfo({ customerData, setCustomerData }: 
       invoiceStatus: 'INVOICE PENDING',
       accountingStatus: '',
       shippingStatus: '',
-    } as Handwritten;
+    } as any;
     await addHandwritten(newHandwritten);
     setToastOpen(true);
   };

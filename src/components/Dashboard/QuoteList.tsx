@@ -80,19 +80,23 @@ export default function QuoteList({ quotes, setQuotes, setSelectHandwrittenOpen,
 
   const handleNewQuote = async () => {
     const newQuote = {
-      customer: selectedCustomer,
       date: new Date(),
-      source: '',
+      source: null,
+      customerId: selectedCustomer.id,
       contact: selectedCustomer ? selectedCustomer.contact : '',
       phone: selectedCustomer ? selectedCustomer.phone : '',
       state: selectedCustomer ? selectedCustomer.billToState : '',
-      partNum: '',
-      stockNum: '',
+      partNum: null,
       desc: '',
+      stockNum: null,
       price: 0,
-      notes: '',
-    } as Quote;
-    await addQuote(newQuote, user.id);
+      notes: null,
+      salesmanId: user.id,
+      rating: 0,
+      email: selectedCustomer.email,
+      partId: null
+    };
+    await addQuote(newQuote);
     setQuotes(await getSomeQuotes(page, 26, lastSearch, selectedCustomer.id, quoteListType === 'engine'));
   };
 

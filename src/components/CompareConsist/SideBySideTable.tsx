@@ -106,7 +106,7 @@ export default function SideBySideTable({ customer, customerEngineData, mwdEngin
     const quote = {
       date: new Date(),
       source: null,
-      customer: customer,
+      customerId: customer.id,
       contact: customer.contact,
       phone: customer.phone,
       state: customer.billToState,
@@ -115,18 +115,12 @@ export default function SideBySideTable({ customer, customerEngineData, mwdEngin
       stockNum: null,
       price: price || 0,
       notes: null,
-      salesman: null,
-      sale: false,
-      followedUp: false,
-      followUpDate: null,
-      rating: null,
-      toFollowUp: false,
-      followUpNotes: null,
+      salesmanId: user.id,
+      rating: 0,
       email: customer.email,
-      invoiceItem: null,
-      createdAfter: false
-    } as any;
-    await addQuote(quote, user.id);
+      partId: null
+    };
+    await addQuote(quote);
     router.replace('/');
   };
 

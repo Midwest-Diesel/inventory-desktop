@@ -74,7 +74,7 @@ type Customer = {
 type Quote = {
   id: number
   date: Date
-  source: Source
+  source: string
   customer: Customer
   contact: string
   phone: string
@@ -132,10 +132,11 @@ type SalesEndOfDayItem = {
   id: number
   billToCompany: string
   date: Date
-  partId: number
+  part?: Part
   partNum: string
   desc: string
   unitPrice: number
+  customer: Customer
 };
 
 type Core = {

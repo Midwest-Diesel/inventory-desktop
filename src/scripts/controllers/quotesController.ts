@@ -7,6 +7,24 @@ interface QuoteSearchData {
   stockNum?: string;
 }
 
+interface NewQuote {
+  date: Date
+  source: string
+  customerId: number
+  contact: string
+  phone: string
+  state: string
+  partNum: string
+  desc: string
+  stockNum: string
+  price: number
+  notes: string
+  salesmanId: number
+  rating: number
+  email: string
+  partId: number
+}
+
 
 const parseQuotesRes = (data: any) => {
   return data.map((quote: any) => {
@@ -36,10 +54,10 @@ export const getSomeQuotesByPartNum = async (page: number, limit: number, partNu
   }
 };
 
-export const getSomeUnsoldQuotesByPartNum = async (page: number, limit: number, partNum: string, includeAlts: boolean) => {
+export const getSomeUnsoldQuotesByPartNum = async (page: number, limit: number, partNum: string, customerId: number, includeAlts: boolean) => {
   try {
     const auth = { withCredentials: true };
-    const res = await api.get(`/api/quotes/unsold-quotes/part-num/${JSON.stringify({ page: (page - 1) * limit, limit, partNum, includeAlts })}`, auth);
+    const res = await api.get(`/api/quotes/unsold-quotes/part-num/${JSON.stringify({ page: (page - 1) * limit, limit, partNum, customerId, includeAlts })}`, auth);
     return {
       minQuotes: res.data.minQuotes || [],
       rows: res.data.rows ? res.data.rows.map((row: any) => {
@@ -105,10 +123,10 @@ export const getQuotesByEngine = async (model: string) => {
 
 // === POST routes === //
 
-export const addQuote = async (quote: Quote, salesmanId: number) => {
+export const addQuote = async (quote: NewQuote) => {
   try {
     const auth = { withCredentials: true };
-    const res = await api.post('/api/quotes', { ...quote, salesmanId }, auth);
+    const res = await api.post('/api/quotes', { quote }, auth);
     return res.data.id;
   } catch (err) {
     console.error(err);

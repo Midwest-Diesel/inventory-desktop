@@ -2,9 +2,9 @@ import Button from "@/components/Library/Button";
 import Dialog from "@/components/Library/Dialog";
 import Pagination from "@/components/Library/Pagination";
 import Table from "@/components/Library/Table";
-import { userAtom } from "@/scripts/atoms/state";
+import { quotesAtom, userAtom } from "@/scripts/atoms/state";
 import { getSomeUnsoldItems } from "@/scripts/controllers/handwrittensController";
-import { getSomeUnsoldQuotesByPartNum, toggleQuoteSold } from "@/scripts/controllers/quotesController";
+import { addQuote, getSomeUnsoldQuotesByPartNum, toggleQuoteSold } from "@/scripts/controllers/quotesController";
 import { formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
 import { useAtom } from "jotai";
 import { useEffect, useState } from "react";
@@ -17,6 +17,7 @@ interface Props {
 
 export default function SalesEndOfDayDialog({ open, setOpen }: Props) {
   const [user] = useAtom<User>(userAtom);
+  const [quotesDataAtom, setQuotesDataAtom] = useAtom<Quote[]>(quotesAtom);
   const [itemsData, setItemsData] = useState<SalesEndOfDayItem[]>([]);
   const [items, setItems] = useState<SalesEndOfDayItem[]>([]);
   const [itemsMin, setItemsMin] = useState<number[]>([]);
@@ -25,7 +26,6 @@ export default function SalesEndOfDayDialog({ open, setOpen }: Props) {
   const [quotes, setQuotes] = useState<Quote[]>([]);
   const [quotesMin, setQuotesMin] = useState<number[]>([]);
   const [showAlts, setShowAlts] = useState(true);
-  const [openNewQuoteDialog, setOpenNewQuoteDialog] = useState(false);
   const LIMIT = 40;
   
   useEffect(() => {
@@ -41,7 +41,7 @@ export default function SalesEndOfDayDialog({ open, setOpen }: Props) {
   useEffect(() => {
     const fetchData = async () => {
       if (!open || !selectedItem) return;
-      const res = await getSomeUnsoldQuotesByPartNum(1, LIMIT, selectedItem.partNum, showAlts);
+      const res = await getSomeUnsoldQuotesByPartNum(1, LIMIT, selectedItem.partNum, selectedItem.customer.id, showAlts);
       setQuotesData(res.rows);
       setQuotesMin(res.minQuotes);
     };
@@ -56,13 +56,51 @@ export default function SalesEndOfDayDialog({ open, setOpen }: Props) {
 
   const handleChangeQuotesPage = async (data: any, page: number) => {
     if (!open) return;
-    const res = await getSomeUnsoldQuotesByPartNum(page, LIMIT, selectedItem.partNum, showAlts);
+    const res = await getSomeUnsoldQuotesByPartNum(page, LIMIT, selectedItem.partNum, selectedItem.customer.id, showAlts);
     setQuotes(res.rows);
   };
 
   const handleMarkQuoteSold = async (quote: Quote) => {
     await toggleQuoteSold({ ...quote, sale: true });
     setQuotes(quotes.filter((q) => q.id !== quote.id));
+  };
+
+  const handleNewQuote = async () => {
+    const quote = {
+      date: new Date(),
+      source: null,
+      customerId: selectedItem.customer.id,
+      contact: selectedItem.customer.contact,
+      phone: selectedItem.customer.phone,
+      state: selectedItem.customer.billToState,
+      partNum: selectedItem.partNum,
+      desc: selectedItem.desc,
+      stockNum: selectedItem.part ? selectedItem.part.stockNum : null,
+      price: selectedItem.unitPrice,
+      notes: '',
+      rating: selectedItem.part ? selectedItem.part.rating : 0,
+      email: selectedItem.customer.email,
+      salesmanId: user.id,
+      partId: selectedItem.part ? selectedItem.part.id : null
+    };
+    const id = await addQuote(quote);
+    const newQuote = {
+      ...quote,
+      id,
+      customer: selectedItem.customer,
+      part: selectedItem.part || null,
+      salesman: user.initials,
+      sale: false,
+      followedUp: false,
+      followUpDate: null,
+      toFollowUp: false,
+      followUpNotes: null,
+      invoiceItem: null,
+      createdAfter: null,
+      children: [],
+      piggybackQuotes: []
+    };
+    setQuotesDataAtom([newQuote, ...quotesData]);
   };
 
 
@@ -115,7 +153,7 @@ export default function SalesEndOfDayDialog({ open, setOpen }: Props) {
           <div className="sales-end-of-day-dialog__top-buttons">
             <Button onClick={() => setSelectedItem(null)}>Back</Button>
             <Button onClick={() => setShowAlts(!showAlts)}>{ showAlts ? 'Hide' : 'Show' } Alternates</Button>
-            <Button onClick={() => setOpenNewQuoteDialog(true)}>New Quote</Button>
+            <Button onClick={handleNewQuote}>New Quote</Button>
           </div>
           <h2>{ selectedItem.billToCompany }</h2>
           <Table>
