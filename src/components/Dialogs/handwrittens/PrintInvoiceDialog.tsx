@@ -71,7 +71,10 @@ export default function PrintInvoiceDialog({ open, setOpen, handwritten }: Props
         };
       }))
     };
-    await invoke('print_shipping_invoice', { args });
+
+    if (accounting) await invoke('print_accounting_invoice', { args });
+    if (shipping) await invoke('print_shipping_invoice', { args });
+    if (coreDeposit) await invoke('print_core_invoice', { args });
   };
 
 
