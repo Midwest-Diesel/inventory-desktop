@@ -25,8 +25,8 @@ export default function UpdateModal({ open, setOpen }: Props) {
         <Modal
           open
           title="Update Available"
-          closeOnOutsideClick={true}
-          exitWithEsc={true}
+          closeOnOutsideClick={false}
+          exitWithEsc={false}
           onClose={handleClose}
         >
           <div className="form__footer">
