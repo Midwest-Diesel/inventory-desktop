@@ -298,6 +298,16 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
                     </td>
                   </tr>
                   <tr>
+                    <th>Billing Address 2</th>
+                    <td>
+                      <Input
+                        variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+                        value={billToAddress2}
+                        onChange={(e: any) => setBillToAddress2(e.target.value)}
+                      />
+                    </td>
+                  </tr>
+                  <tr>
                     <th>Billing City</th>
                     <td>
                       <Input
@@ -361,6 +371,16 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
                         variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                         value={shipToAddress}
                         onChange={(e: any) => setShipToAddress(e.target.value)}
+                      />
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>Shipping Address 2</th>
+                    <td>
+                      <Input
+                        variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+                        value={shipToAddress2}
+                        onChange={(e: any) => setShipToAddress2(e.target.value)}
                       />
                     </td>
                   </tr>

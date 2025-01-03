@@ -63,6 +63,10 @@ export default function SalesEndOfDayDialog({ open, setOpen }: Props) {
   const handleMarkQuoteSold = async (quote: Quote) => {
     await toggleQuoteSold({ ...quote, sale: true });
     setQuotes(quotes.filter((q) => q.id !== quote.id));
+    setQuotesDataAtom(quotesDataAtom.map((q) => {
+      if (q.id === quote.id) return { ...q, sale: true };
+      return q;
+    }));
   };
 
   const handleNewQuote = async () => {

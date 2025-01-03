@@ -326,6 +326,10 @@ export default function Handwritten() {
                       <td>{ handwritten.billToAddress }</td>
                     </tr>
                     <tr>
+                      <th><strong>Billing Address 2</strong></th>
+                      <td>{ handwritten.billToAddress2 }</td>
+                    </tr>
+                    <tr>
                       <th><strong>Billing City</strong></th>
                       <td>{ handwritten.billToCity }</td>
                     </tr>
@@ -355,6 +359,10 @@ export default function Handwritten() {
                     <tr>
                       <th><strong>Shipping Address</strong></th>
                       <td>{ handwritten.shipToAddress }</td>
+                    </tr>
+                    <tr>
+                      <th><strong>Shipping Address 2</strong></th>
+                      <td>{ handwritten.shipToAddress2 }</td>
                     </tr>
                     <tr>
                       <th><strong>Shipping City</strong></th>
