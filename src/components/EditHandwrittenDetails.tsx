@@ -611,8 +611,6 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
                   })}
                 </tbody>
               </Table>
-
-              <Button>Add</Button>
             </GridItem>
 
             <GridItem variant={['low-opacity-bg']} colStart={1} colEnd={7}>

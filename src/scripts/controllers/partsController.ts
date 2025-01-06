@@ -232,6 +232,17 @@ export const addPart = async (part: Part, partInfoExists: boolean, updateLoading
   }
 };
 
+// === PATCH routes === //
+
+export const editPartQtyAndCost = async (partId: number, qty: number, cost: number) => {
+  try {
+    const auth = { withCredentials: true };
+    await api.patch('/api/parts/takeoff', { partId, qty, cost }, auth);
+  } catch (err) {
+    console.error(err);
+  }
+};
+
 // === PUT routes === //
 
 export const editPart = async (part: Part) => {

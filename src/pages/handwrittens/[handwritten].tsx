@@ -2,6 +2,7 @@ import AltShipDialog from "@/components/Dialogs/handwrittens/AltShipDialog";
 import CoreCreditsDialog from "@/components/Dialogs/handwrittens/CoreCreditsDialog";
 import NewReturnDialog from "@/components/Dialogs/handwrittens/NewReturnDialog";
 import PrintInvoiceDialog from "@/components/Dialogs/handwrittens/PrintInvoiceDialog";
+import TakeoffsDialog from "@/components/Dialogs/handwrittens/TakeoffsDialog";
 import EditHandwrittenDetails from "@/components/EditHandwrittenDetails";
 import HandwrittenItemsTable from "@/components/HandwrittenItemsTable";
 import { Layout } from "@/components/Layout";
@@ -25,7 +26,7 @@ import { useAtom } from "jotai";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useRouter } from "next/router";
-import { useEffect, useRef, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 
 
 export default function Handwritten() {
@@ -48,6 +49,9 @@ export default function Handwritten() {
   const [payment, setPayment] = useState('');
   const [promptLeaveWindow, setPromptLeaveWindow] = useState(false);
   const [printInvoiceOpen, setPrintInvoiceOpen] = useState(false);
+  const [takeoff, setTakeoff] = useState('');
+  const [takeoffItem, setTakeoffItem] = useState<HandwrittenItem>(null);
+  const [takeoffsOpen, setTakeoffsOpen] = useState(false);
   const ccLabelRef = useRef(null);
   const paymentTypes = ['Net 30', 'Wire Transfer', 'EBPP - Secure', 'Visa', 'Mastercard', 'AMEX', 'Discover', 'Comchek', 'T-Check', 'Check', 'Cash', 'Card on File', 'Net 10', 'No Charge'].sort();
 
@@ -111,6 +115,7 @@ export default function Handwritten() {
   }, [promptLeaveWindow]);
 
   useEffect(() => {
+    if (!promptLeaveWindow) return;
     function confirmLeave(e: any) {
       e.preventDefault();
       e.returnValue = '';
@@ -120,7 +125,7 @@ export default function Handwritten() {
     return () => {
       window.removeEventListener('beforeunload', confirmLeave);
     };
-  }, []);
+  }, [promptLeaveWindow]);
 
   const refreshHandwrittenItems = (e: RealtimePostgresInsertPayload<HandwrittenItem>) => {
     const newItems = [...handwritten.handwrittenItems, { ...e.new, date: parseResDate(e.new.date as any) }];
@@ -229,12 +234,22 @@ export default function Handwritten() {
     if (!cardNum || !expDate || !cvv) return;
     await invoke('print_cc_label', { args: { cardNum: Number(cardNum), expDate, cvv: Number(cvv), cardZip, cardName, cardAddress } });
   };
+
+  const handleTakeoffs = (e: FormEvent) => {
+    e.preventDefault();
+    const stockNum = takeoff.replace('<', '').replace('>', '');
+    const item = handwritten.handwrittenItems.find((item) => item.stockNum === stockNum);
+    if (!item) return;
+    setTakeoffsOpen(true);
+    setTakeoffItem(item);
+  };
   
 
   return (
     <Layout title="Handwritten Details">
       { showCCLabel && <Print html={ccLabelRef.current.innerHTML} styles={{ width: '30rem' }} onPrint={() => setShowCCLabel(false)} /> }
       <PrintInvoiceDialog open={printInvoiceOpen} setOpen={setPrintInvoiceOpen} handwritten={handwritten} />
+      { takeoffItem && <TakeoffsDialog open={takeoffsOpen} setOpen={setTakeoffsOpen} item={takeoffItem} /> }
 
       <div className="handwritten-details">
         {handwritten ? isEditing ?
@@ -592,6 +607,16 @@ export default function Handwritten() {
                 <p style={{ whiteSpace: 'pre-line' }}>{ handwritten.orderNotes }</p>
               </GridItem>
             </Grid>
+
+            <form onSubmit={handleTakeoffs}>
+              <Input
+                variant={['label-bold', 'label-stack', 'small']}
+                label="Takeoff"
+                value={takeoff}
+                onChange={(e: any) => setTakeoff(e.target.value)}
+                required
+              />
+            </form>
           </>
           :
           <Loading />
