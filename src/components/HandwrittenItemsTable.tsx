@@ -33,6 +33,20 @@ export default function HandwrittenItemsTable({ className, handwritten, handwrit
     });
   }, []);
 
+  const textStyles = (item: HandwrittenItem) => {
+    const styles = {} as any;
+    if (!item.location) return {};
+    if (item.location.includes('CORE DEPOSIT')) {
+      styles.color = 'var(--red-2)';
+      styles.fontWeight = 'bold';
+    }
+    if (item.isTakeoffDone) {
+      styles.color = 'var(--yellow-2)';
+      styles.fontWeight = 'bold';
+    }
+    return styles;
+  };
+
   const getTotalCost = (): number => {
     return handwrittenItems.reduce((acc, item) => item.cost !== 0.04 && item.cost !== 0.01 && acc + (item.cost * item.qty), 0);
   };
@@ -114,14 +128,14 @@ export default function HandwrittenItemsTable({ className, handwritten, handwrit
                 return (
                   <tr key={i}>
                     <td>{ item.location && !item.location.includes('CORE DEPOSIT') && <Button variant={['x-small']} onClick={() => handleCoreCharge(item)}>Core Charge</Button> }</td>
-                    <td className="handwritten-items-table__stock-num" style={ item.location && item.location.includes('CORE DEPOSIT') ? { color: 'var(--red-2)', fontWeight: 'bold' } : {}}>
+                    <td className="handwritten-items-table__stock-num" style={ textStyles(item) }>
                       { item.stockNum }
                       { item.invoiceItemChildren && item.invoiceItemChildren.length > 0 && <Button variant={['x-small']} onClick={() => handleOpenStockNums(item.invoiceItemChildren)}>View</Button> }
                     </td>
                     <td>{ item.location }</td>
                     <td>{ formatCurrency(item.cost) }</td>
                     <td>{ item.qty }</td>
-                    <td style={ item.location && item.location.includes('CORE DEPOSIT') ? { color: 'var(--red-2)', fontWeight: 'bold' } : {}}>
+                    <td style={ textStyles(item) }>
                       { item.partNum }
                     </td>
                     <td>{ item.desc }</td>
