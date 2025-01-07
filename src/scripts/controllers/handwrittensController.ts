@@ -227,6 +227,15 @@ export const editHandwrittenPaymentType = async (id: number, payment: string) =>
   }
 };
 
+export const toggleHandwrittenTakeoffState = async (id: number, isTakeoffDone: boolean) => {
+  try {
+    const auth = { withCredentials: true };
+    await api.patch('/api/handwrittens/takeoff', { id, isTakeoffDone }, auth);
+  } catch (err) {
+    console.error(err);
+  }
+};
+
 
 // === PUT routes === //
 

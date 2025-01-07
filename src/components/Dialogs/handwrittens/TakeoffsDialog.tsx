@@ -1,13 +1,15 @@
 import Button from "@/components/Library/Button";
 import Dialog from "@/components/Library/Dialog";
 import Input from "@/components/Library/Input";
-import { editPartQtyAndCost } from "@/scripts/controllers/partsController";
+import { toggleHandwrittenTakeoffState } from "@/scripts/controllers/handwrittensController";
+import { getPartById, handlePartTakeoff } from "@/scripts/controllers/partsController";
+import { getSurplusByCode, editSurplusPrice } from "@/scripts/controllers/surplusController";
 import { FormEvent, useEffect, useState } from "react";
 
 interface Props {
   open: boolean
   setOpen: (open: boolean) => void
-  item: HandwrittenItem
+  item: HandwrittenItem | HandwrittenItemChild
 }
 
 
@@ -18,14 +20,21 @@ export default function TakeoffsDialog({ open, setOpen, item }: Props) {
 
   useEffect(() => {
     if (item.cost === 0.04) {
-      setChangeCost(true)
+      setChangeCost(true);
       setCost(0.04);
     };
   }, [item]);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    await editPartQtyAndCost(item.partId, Number(qty), Number(cost));
+    await handlePartTakeoff(item.partId, Number(qty), Number(cost));
+    await toggleHandwrittenTakeoffState(item.id, true);
+    const part: Part = await getPartById(item.partId);
+    const surplus: Surplus = await getSurplusByCode(part.purchasedFrom);
+    if (surplus) {
+      await editSurplusPrice(surplus.id, surplus.price - Number(cost));
+    }
+
     setOpen(false);
     setChangeCost(false);
   };

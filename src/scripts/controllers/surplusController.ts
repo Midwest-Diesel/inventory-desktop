@@ -21,6 +21,17 @@ export const getAllSurplus = async () => {
   }
 };
 
+export const getSurplusByCode = async (code: string) => {
+  try {
+    const auth = { withCredentials: true };
+    const res = await api.get(`/api/surplus/code/${code}`, auth);
+    res.data = parseSurplusDataRes(res.data);
+    return res.data[0];
+  } catch (err) {
+    console.error(err);
+  }
+};
+
 export const getSurplusSoldParts = async (code: string) => {
   try {
     const auth = { withCredentials: true };
@@ -53,6 +64,18 @@ export const addSurplus = async (surplus: Surplus) => {
   try {
     const auth = { withCredentials: true };
     await api.post('/api/surplus', surplus, auth);
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+// === PATCH routes === //
+
+export const editSurplusPrice = async (id: number, price: number) => {
+  try {
+    const auth = { withCredentials: true };
+    await api.patch('/api/surplus/price', { id, price }, auth);
+    if (price <= 0) console.log('SET ALL COSTS TO $0.01');
   } catch (err) {
     console.error(err);
   }

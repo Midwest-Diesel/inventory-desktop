@@ -1,3 +1,5 @@
+export const clamp = (num: number, min: number, max: number) => Math.min(Math.max(num, min), max);
+
 export const generateClasses = (className: string, variantList: string[], elmt: string): string => {
   const variants = variantList ? variantList.map((i) => `${elmt}--${i}`).join(' ') : '';
   return [className ? [elmt, className].join(' ') : elmt, variants && variants].filter(Boolean).join(' ');

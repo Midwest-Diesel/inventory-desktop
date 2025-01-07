@@ -233,6 +233,7 @@ type HandwrittenItem = {
   unitPrice: number
   return: boolean
   date: Date
+  isTakeoffDone: boolean
   invoiceItemChildren: HandwrittenItemChild[]
   weight: number
   length: number

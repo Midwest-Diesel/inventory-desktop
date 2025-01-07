@@ -50,7 +50,7 @@ export default function Handwritten() {
   const [promptLeaveWindow, setPromptLeaveWindow] = useState(false);
   const [printInvoiceOpen, setPrintInvoiceOpen] = useState(false);
   const [takeoff, setTakeoff] = useState('');
-  const [takeoffItem, setTakeoffItem] = useState<HandwrittenItem>(null);
+  const [takeoffItem, setTakeoffItem] = useState<HandwrittenItem | HandwrittenItemChild>(null);
   const [takeoffsOpen, setTakeoffsOpen] = useState(false);
   const ccLabelRef = useRef(null);
   const paymentTypes = ['Net 30', 'Wire Transfer', 'EBPP - Secure', 'Visa', 'Mastercard', 'AMEX', 'Discover', 'Comchek', 'T-Check', 'Check', 'Cash', 'Card on File', 'Net 10', 'No Charge'].sort();
@@ -238,10 +238,16 @@ export default function Handwritten() {
   const handleTakeoffs = (e: FormEvent) => {
     e.preventDefault();
     const stockNum = takeoff.replace('<', '').replace('>', '');
+    const children = [];
     const item = handwritten.handwrittenItems.find((item) => item.stockNum === stockNum);
-    if (!item) return;
+    handwritten.handwrittenItems.forEach((item) => {
+      if (item.invoiceItemChildren.length > 0) children.push(...item.invoiceItemChildren);
+    });
+    const itemChild = children.find((item) => item.stockNum === stockNum);
+
+    if (!item && !itemChild) return;
     setTakeoffsOpen(true);
-    setTakeoffItem(item);
+    setTakeoffItem(itemChild || item);
   };
   
 
