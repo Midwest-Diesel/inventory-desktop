@@ -63,7 +63,7 @@ export default function PartDetails() {
   useEffect(() => {}, [pictures, snPictures, part]);
   
   const getTotalCostIn = () => {
-    return partCostIn.filter((num) => num.cost !== 0.04 && num.cost !== 0.01 && num.costType !== 'ReconPrice').reduce((acc, val) => acc + val.cost, 0);
+    return partCostIn.reduce((acc, val) => acc + val.cost, 0);
   };
 
   const handleDelete = async () => {

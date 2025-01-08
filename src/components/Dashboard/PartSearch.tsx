@@ -154,6 +154,14 @@ export default function PartSearch({ selectHandwrittenOpen, setSelectHandwritten
     setLoading(false);
   };
 
+  const getTotalCostIn = (part: Part) => {
+    return part.partsCostIn.reduce((acc, val) => acc + val.cost, 0);
+  };
+
+  const partCostStyles = (part: Part) => {
+    return getTotalCostIn(part) === 0.04 && part.stockNum.slice(0, 2) !== 'UP' ? { color: 'var(--orange-1)', fontWeight: 'bold' } : {}
+  };
+
 
   return (
     <div>
@@ -277,7 +285,7 @@ export default function PartSearch({ selectHandwrittenOpen, setSelectHandwritten
                       <td style={{ width:'22rem', fontSize:'var(--font-xsm)', backgroundColor:`var(--status-${status})`, color: `${status ? 'black' : 'white'}` }}>
                         { part.remarks }
                       </td>
-                      <td>{ formatCurrency(part.purchasePrice) }</td>
+                      <td style={partCostStyles(part)}>{ formatCurrency(getTotalCostIn(part)) }</td>
                       <td style={{ fontSize: 'var(--font-xsm)' }}>
                         <strong>List:</strong> { formatCurrency(part.listPrice) }<br />
                         <strong>Fleet:</strong> { formatCurrency(part.fleetPrice) }
