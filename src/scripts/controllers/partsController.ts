@@ -234,10 +234,11 @@ export const addPart = async (part: Part, partInfoExists: boolean, updateLoading
 
 // === PATCH routes === //
 
-export const handlePartTakeoff = async (partId: number, qty: number, cost: number) => {
+export const handlePartTakeoff = async (partId: number, qty: number, stockNum: string, cost: number) => {
   try {
     const auth = { withCredentials: true };
-    await api.patch('/api/parts/takeoff', { partId, qty, cost }, auth);
+    await api.patch('/api/parts/takeoff', { partId, qty }, auth);
+    await api.patch('/api/parts/cost-in/takeoff', { stockNum, cost }, auth);
   } catch (err) {
     console.error(err);
   }
