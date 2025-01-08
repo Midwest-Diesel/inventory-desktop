@@ -36,16 +36,20 @@ export default function PartsSearchDialog({ open, setOpen, setParts, setLoading 
 
   useEffect(() => {
     if (prevSearches){
-      setPartNum(prevSearches.partNum.toUpperCase());
-      setStockNum(prevSearches.stockNum);
-      setDesc(prevSearches.desc);
-      setLocation(prevSearches.location);
-      setQty(prevSearches.qty);
-      setRemarks(prevSearches.remarks);
-      setRating(prevSearches.rating);
-      setPurchasedFrom(prevSearches.purchasedFrom);
-      if (prevSearches.partNum) handleSearch(prevSearches.partNum);
-      clearInputs();
+      const { partNum, stockNum, desc, location, qty, remarks, rating, purchasedFrom } = prevSearches;
+      setPartNum(partNum);
+      setStockNum(stockNum);
+      setDesc(desc);
+      setLocation(location);
+      setQty(qty);
+      setRemarks(remarks);
+      setRating(rating);
+      setPurchasedFrom(purchasedFrom);
+
+      const hasValidSearchCriteria = (partNum && partNum !== '*') || stockNum || desc || location || qty || remarks || rating || purchasedFrom;
+      if (hasValidSearchCriteria) {
+        handleSearch(partNum, stockNum, desc, location, qty, remarks, rating, purchasedFrom);
+      }
     }
   }, []);
 
@@ -73,16 +77,16 @@ export default function PartsSearchDialog({ open, setOpen, setParts, setLoading 
     if (isObjectNull({ partNum, stockNum, desc, location, qty, remarks, rating, purchasedFrom })) {
       window.location.reload();
     } else {
-      await handleSearch(partNum);
+      await handleSearch(partNum, stockNum, desc, location, qty, remarks, rating, purchasedFrom);
       if (partNum) await addRecentSearch({ partNum, salespersonId: user.id });
     }
     setLastSearch(partNum.replace('*', ''));
   };
   
-  const handleSearch = async (partNum: string) => {
+  const handleSearch = async (partNum: string, stockNum: string, desc: string, location: string, qty: number, remarks: string, rating: number, purchasedFrom: string) => {
     setLoading(true);
     setRecentQuoteSearches(await getQuotesByPartNum(partNum));
-    const results = await searchParts(JSON.parse(localStorage.getItem('partSearches'))) as Part[];
+    const results = await searchParts({ partNum, stockNum, desc, location, qty, remarks, rating, purchasedFrom }) as Part[];
     setPartsQty(results.map((part) => part.qty));
     detectAlerts(results);
     setParts(results);

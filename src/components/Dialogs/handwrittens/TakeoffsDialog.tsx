@@ -2,7 +2,7 @@ import Button from "@/components/Library/Button";
 import Dialog from "@/components/Library/Dialog";
 import Input from "@/components/Library/Input";
 import { toggleHandwrittenTakeoffState } from "@/scripts/controllers/handwrittensController";
-import { getPartById, getPartCostIn, handlePartTakeoff } from "@/scripts/controllers/partsController";
+import { addPart, getPartById, getPartCostIn, handlePartTakeoff } from "@/scripts/controllers/partsController";
 import { getSurplusByCode, editSurplusPrice } from "@/scripts/controllers/surplusController";
 import { FormEvent, useEffect, useState } from "react";
 
@@ -36,6 +36,7 @@ export default function TakeoffsDialog({ open, setOpen, item }: Props) {
     if (surplus && Number(cost) === 0.04) {
       await editSurplusPrice(surplus.id, surplus.price - Number(cost));
     }
+    await addPart({ ...part, qty: Number(qty) }, true);
 
     setOpen(false);
     setChangeCost(false);

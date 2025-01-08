@@ -67,8 +67,8 @@ export default function PartSearch({ selectHandwrittenOpen, setSelectHandwritten
   const searchInputExists = () => {
     const altSearch = JSON.parse(localStorage.getItem('altPartSearches'));
     return (
-      !isObjectNull(altSearch ? altSearch.partNum.replace('*', '') : []) ||
-      !isObjectNull(JSON.parse(localStorage.getItem('partSearches')) || [])
+      !isObjectNull(altSearch ? { ...altSearch, partNum: altSearch.partNum.replace('*', '')} : {}) ||
+      !isObjectNull(JSON.parse(localStorage.getItem('partSearches')) || {})
     );
   };
 
