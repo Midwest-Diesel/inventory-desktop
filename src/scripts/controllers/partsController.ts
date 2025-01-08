@@ -232,13 +232,21 @@ export const addPart = async (part: Part, partInfoExists: boolean, updateLoading
   }
 };
 
+export const addPartCostIn = async (stockNum: string, cost: number, invoiceNum: number, vendor: string, costType: string, note: string) => {
+  try {
+    const auth = { withCredentials: true };
+    await api.post('/api/parts/part-cost-in', { stockNum, cost, invoiceNum, vendor, costType, note }, auth);
+  } catch (err) {
+    console.error(err);
+  }
+};
+
 // === PATCH routes === //
 
-export const handlePartTakeoff = async (partId: number, qty: number, stockNum: string, cost: number) => {
+export const handlePartTakeoff = async (partId: number, qty: number) => {
   try {
     const auth = { withCredentials: true };
     await api.patch('/api/parts/takeoff', { partId, qty }, auth);
-    await api.patch('/api/parts/cost-in/takeoff', { stockNum, cost }, auth);
   } catch (err) {
     console.error(err);
   }

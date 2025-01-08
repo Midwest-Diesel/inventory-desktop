@@ -227,7 +227,7 @@ export const editHandwrittenPaymentType = async (id: number, payment: string) =>
   }
 };
 
-export const toggleHandwrittenTakeoffState = async (id: number, isTakeoffDone: boolean) => {
+export const editHandwrittenTakeoffState = async (id: number, isTakeoffDone: boolean) => {
   try {
     const auth = { withCredentials: true };
     await api.patch('/api/handwrittens/takeoff', { id, isTakeoffDone }, auth);
@@ -236,6 +236,14 @@ export const toggleHandwrittenTakeoffState = async (id: number, isTakeoffDone: b
   }
 };
 
+export const editHandwrittenItemQty = async (id: number, qty: number) => {
+  try {
+    const auth = { withCredentials: true };
+    await api.patch('/api/handwrittens/item-qty', { id, qty }, auth);
+  } catch (err) {
+    console.error(err);
+  }
+};
 
 // === PUT routes === //
 

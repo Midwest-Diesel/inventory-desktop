@@ -255,7 +255,7 @@ export default function Handwritten() {
     <Layout title="Handwritten Details">
       { showCCLabel && <Print html={ccLabelRef.current.innerHTML} styles={{ width: '30rem' }} onPrint={() => setShowCCLabel(false)} /> }
       <PrintInvoiceDialog open={printInvoiceOpen} setOpen={setPrintInvoiceOpen} handwritten={handwritten} />
-      { takeoffItem && <TakeoffsDialog open={takeoffsOpen} setOpen={setTakeoffsOpen} item={takeoffItem} /> }
+      { takeoffItem && <TakeoffsDialog open={takeoffsOpen} setOpen={setTakeoffsOpen} item={takeoffItem} setHandwritten={setHandwritten} /> }
 
       <div className="handwritten-details">
         {handwritten ? isEditing ?

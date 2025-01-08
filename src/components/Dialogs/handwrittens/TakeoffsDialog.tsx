@@ -1,19 +1,23 @@
 import Button from "@/components/Library/Button";
 import Dialog from "@/components/Library/Dialog";
 import Input from "@/components/Library/Input";
-import { toggleHandwrittenTakeoffState } from "@/scripts/controllers/handwrittensController";
-import { addPart, getPartById, getPartCostIn, handlePartTakeoff } from "@/scripts/controllers/partsController";
+import { editHandwrittenItemQty, editHandwrittenTakeoffState, getHandwrittenById } from "@/scripts/controllers/handwrittensController";
+import { addPart, addPartCostIn, editPartCostIn, getPartById, getPartCostIn, handlePartTakeoff } from "@/scripts/controllers/partsController";
 import { getSurplusByCode, editSurplusPrice } from "@/scripts/controllers/surplusController";
+import { formatDate } from "@/scripts/tools/stringUtils";
+import { useParams } from "next/navigation";
 import { FormEvent, useEffect, useState } from "react";
 
 interface Props {
   open: boolean
   setOpen: (open: boolean) => void
   item: HandwrittenItem | HandwrittenItemChild
+  setHandwritten: (handwritten: Handwritten) => void
 }
 
 
-export default function TakeoffsDialog({ open, setOpen, item }: Props) {
+export default function TakeoffsDialog({ open, setOpen, item, setHandwritten }: Props) {
+  const params = useParams();
   const [qty, setQty] = useState<number>(item.qty);
   const [cost, setCost] = useState<number>(item.cost);
   const [changeCost, setChangeCost] = useState(false);
@@ -28,16 +32,23 @@ export default function TakeoffsDialog({ open, setOpen, item }: Props) {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     const part: Part = await getPartById(item.partId);
-    const partCostIn = await getPartCostIn(part.stockNum);
-    const totalPartCost = partCostIn.filter((num) => num.cost !== 0.04 && num.cost !== 0.01 && num.costType !== 'ReconPrice' && num.vendor === part.purchasedFrom).reduce((acc, val) => acc + val.cost, 0) - Number(cost);
-    await handlePartTakeoff(item.partId, Number(qty), part.stockNum, totalPartCost);
-    await toggleHandwrittenTakeoffState(item.id, true);
+    await handlePartTakeoff(item.partId, Number(qty));
+    await editHandwrittenTakeoffState(item.id, true);
     const surplus: Surplus = await getSurplusByCode(part.purchasedFrom);
-    if (surplus && Number(cost) === 0.04) {
+    if (surplus) {
       await editSurplusPrice(surplus.id, surplus.price - Number(cost));
     }
-    await addPart({ ...part, qty: Number(qty) }, true);
+    if (part.qty - Number(qty) <= 0) {
+      const partCostIn = (await getPartCostIn(part.stockNum)).find((p: PartCostIn) => p.vendor === part.purchasedFrom);
+      await editPartCostIn({ ...partCostIn, cost: Number(cost) });
+    } else {
+      const newStockNum = `${part.stockNum} (${formatDate(new Date())})`;
+      await addPart({ ...part, qty: 0, stockNum: newStockNum }, true);
+      await addPartCostIn(newStockNum, Number(cost), null, part.purchasedFrom, 'PurchasePrice', null);
+    }
 
+    const res = await getHandwrittenById(Number(params.handwritten));
+    setHandwritten(res);
     setOpen(false);
     setChangeCost(false);
   };
