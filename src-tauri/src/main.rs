@@ -269,6 +269,10 @@ fn install_update() {
       let batch_script = r#"
       @echo off
       echo Installing update...
+      "%SystemRoot%\\System32\\timeout.exe" /T 1 /NOBREAK > NUL
+      echo Examining reactor core...
+      "%SystemRoot%\\System32\\timeout.exe" /T 1 /NOBREAK > NUL
+      echo Training AI...
       "%SystemRoot%\\System32\\timeout.exe" /T 5 /NOBREAK > NUL
       taskkill /F /IM Inventory.exe > NUL 2>&1
       start "" "C:\\MWD\\Inventory.exe"
