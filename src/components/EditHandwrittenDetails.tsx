@@ -15,6 +15,8 @@ import { getAllSources } from "@/scripts/controllers/sourcesController";
 import { deleteCoreByItemId, editCoreCustomer } from "@/scripts/controllers/coresController";
 import { confirm } from "@tauri-apps/api/dialog";
 import ShippingListDialog from "./Dialogs/handwrittens/ShippingListDialog";
+import { useRouter } from "next/router";
+import Checkbox from "./Library/Checkbox";
 
 interface Props {
   handwritten: Handwritten
@@ -24,6 +26,7 @@ interface Props {
 
 
 export default function EditHandwrittenDetails({ handwritten, setHandwritten, setIsEditing }: Props) {
+  const router = useRouter();
   const [sourcesData, setSourcesData] = useAtom<string[]>(sourcesAtom);
   const [date, setDate] = useState<Date>(handwritten.date);
   const [poNum, setPoNum] = useState<string>(handwritten.poNum);
@@ -61,6 +64,13 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
   const [fl, setFl] = useState<number>(handwritten.fl);
   const [shippingListDialogOpen, setShippingListDialogOpen] = useState(false);
   const [newShippingListRow, setNewShippingListRow] = useState<Handwritten>(null);
+  const [isTaxable, setIsTaxable] = useState<boolean>(handwritten.isTaxable);
+  const [isBlindShipment, setIsBlind] = useState<boolean>(handwritten.isBlindShipment);
+  const [isThirdParty, setIsThirdParty] = useState<boolean>(handwritten.isThirdParty);
+  const [isNoPriceInvoice, setIsNoPriceInvoice] = useState<boolean>(handwritten.isNoPriceInvoice);
+  const [isCollect, setIsCollect] = useState<boolean>(handwritten.isCollect);
+  const [isSetup, setIsSetup] = useState<boolean>(handwritten.isSetup);
+  const [changesSaved, setChangesSaved] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -73,9 +83,26 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
     setHandwrittenItems(handwritten.handwrittenItems);
   }, [handwritten]);
 
+  useEffect(() => {
+    if (changesSaved) {
+      window.removeEventListener('beforeunload', confirmLeave);
+      return
+    }
+    function confirmLeave(e: any) {
+      e.preventDefault();
+      e.returnValue = '';
+    }
+    
+    window.addEventListener('beforeunload', confirmLeave);
+    return () => {
+      window.removeEventListener('beforeunload', confirmLeave);
+    };
+  }, [changesSaved]);
+
   const saveChanges = async (e: FormEvent) => {
     e.preventDefault();
     if (!await confirm('Are you sure you want to save these changes?')) return;
+    setChangesSaved(true);
     await handleAltShip();
     const newCustomer = await getCustomerByName(company);
     const newInvoice = {
@@ -116,7 +143,13 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
       mp: Number(mp),
       cap: Number(cap),
       br: Number(br),
-      fl: Number(fl)
+      fl: Number(fl),
+      isTaxable,
+      isBlindShipment,
+      isNoPriceInvoice,
+      isThirdParty,
+      isCollect,
+      isSetup
     } as Handwritten;
     setNewShippingListRow(newInvoice);
     await editHandwritten(newInvoice);
@@ -197,7 +230,7 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
       }
 
       {handwritten &&
-        <form className="edit-handwritten-details" onSubmit={(e) => saveChanges(e)}>
+        <form className="edit-handwritten-details" onSubmit={(e) => saveChanges(e)} onChange={() => setChangesSaved(false)}>
           <div className="edit-handwritten-details__header">
             <h2>{ handwritten.id }</h2>
           
@@ -483,6 +516,47 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
                   </tr>
                 </tbody>
               </Table>
+            </GridItem>
+
+            <GridItem colStart={1} colEnd={12} variant={['no-style']}>
+              <div style={{ display: 'flex', gap: '2rem' }}>
+                <Checkbox
+                  variant={['label-bold', 'label-align-center']}
+                  label="TAXABLE"
+                  checked={isTaxable}
+                  onChange={(e: any) => setIsTaxable(e.target.checked)}
+                />
+                <Checkbox
+                  variant={['label-bold', 'label-align-center']}
+                  label="BLIND"
+                  checked={isBlindShipment}
+                  onChange={(e: any) => setIsBlind(e.target.checked)}
+                />
+                <Checkbox
+                  variant={['label-bold', 'label-align-center']}
+                  label="NPI"
+                  checked={isNoPriceInvoice}
+                  onChange={(e: any) => setIsNoPriceInvoice(e.target.checked)}
+                />
+                <Checkbox
+                  variant={['label-bold', 'label-align-center']}
+                  label="3RD PARTY BILL"
+                  checked={isThirdParty}
+                  onChange={(e: any) => setIsThirdParty(e.target.checked)}
+                />
+                <Checkbox
+                  variant={['label-bold', 'label-align-center']}
+                  label="COLLECT"
+                  checked={isCollect}
+                  onChange={(e: any) => setIsCollect(e.target.checked)}
+                />
+                <Checkbox
+                  variant={['label-bold', 'label-align-center']}
+                  label="SETUP"
+                  checked={isSetup}
+                  onChange={(e: any) => setIsSetup(e.target.checked)}
+                />
+              </div>
             </GridItem>
 
             <GridItem colStart={1} colEnd={12} variant={['no-style']}>

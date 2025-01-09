@@ -7,6 +7,7 @@ import EditHandwrittenDetails from "@/components/EditHandwrittenDetails";
 import HandwrittenItemsTable from "@/components/HandwrittenItemsTable";
 import { Layout } from "@/components/Layout";
 import Button from "@/components/Library/Button";
+import Checkbox from "@/components/Library/Checkbox";
 import Grid from "@/components/Library/Grid/Grid";
 import GridItem from "@/components/Library/Grid/GridItem";
 import Input from "@/components/Library/Input";
@@ -554,6 +555,47 @@ export default function Handwritten() {
                   >
                     Print CC Label
                   </Button>
+                </div>
+              </GridItem>
+
+              <GridItem colStart={1} colEnd={12} variant={['no-style']}>
+                <div style={{ display: 'flex', gap: '2rem' }}>
+                  <Checkbox
+                    variant={['label-bold', 'label-align-center']}
+                    label="TAXABLE"
+                    checked={handwritten.isTaxable}
+                    disabled
+                  />
+                  <Checkbox
+                    variant={['label-bold', 'label-align-center']}
+                    label="BLIND"
+                    checked={handwritten.isBlindShipment}
+                    disabled
+                  />
+                  <Checkbox
+                    variant={['label-bold', 'label-align-center']}
+                    label="NPI"
+                    checked={handwritten.isNoPriceInvoice}
+                    disabled
+                  />
+                  <Checkbox
+                    variant={['label-bold', 'label-align-center']}
+                    label="3RD PARTY BILL"
+                    checked={handwritten.isThirdParty}
+                    disabled
+                  />
+                  <Checkbox
+                    variant={['label-bold', 'label-align-center']}
+                    label="COLLECT"
+                    checked={handwritten.isCollect}
+                    disabled
+                  />
+                  <Checkbox
+                    variant={['label-bold', 'label-align-center']}
+                    label="SETUP"
+                    checked={handwritten.isSetup}
+                    disabled
+                  />
                 </div>
               </GridItem>
 

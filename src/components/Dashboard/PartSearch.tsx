@@ -216,17 +216,17 @@ export default function PartSearch({ selectHandwrittenOpen, setSelectHandwritten
             >
               Alt Parts Search
             </Button>
+            <Button
+              onClick={() => setShowSoldParts(!showSoldParts)}
+            >
+              {showSoldParts ? 'Hide' : 'Show'} Sold Parts
+            </Button>
             <Link
               className="parts-search-top-bar__link"
               href={`/compare-consist${!isObjectNull(selectedCustomer) ? `?c=${selectedCustomer.id}` : ''}`}
             >
               Compare / Consist
             </Link>
-            <Button
-              onClick={() => setShowSoldParts(!showSoldParts)}
-            >
-              {showSoldParts ? 'Hide' : 'Show'} Sold Parts
-            </Button>
             {user.accessLevel >= 2 &&
               <Link
                 className="parts-search-top-bar__link"

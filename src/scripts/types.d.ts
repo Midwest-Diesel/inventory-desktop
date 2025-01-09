@@ -213,6 +213,8 @@ type Handwritten = {
   fl: number
   isCollect: boolean
   isThirdParty: boolean
+  isTaxable: boolean
+  isSetup: boolean
 };
 
 type InvoiceStatus = 'INVOICE PENDING' | 'SENT TO ACCOUNTING' | 'CANCELLED' | 'STOP - HOLD' | 'HOLD AS FAVOR';
