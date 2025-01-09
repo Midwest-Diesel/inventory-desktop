@@ -260,7 +260,7 @@ type AddOn = {
   stockNum: string
   location: string
   remarks: string
-  entryDate: string
+  entryDate: Date
   rating: number
   engineNum: number
   condition: string

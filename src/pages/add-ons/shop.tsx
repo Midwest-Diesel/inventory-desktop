@@ -4,7 +4,7 @@ import Button from "@/components/Library/Button";
 import { shopAddOnsAtom } from "@/scripts/atoms/state";
 import { addAddOn, editAddOn, getAllAddOns } from "@/scripts/controllers/addOnsController";
 import { useAtom } from "jotai";
-import { FormEvent, Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 
 
 export default function AddOnsShop() {
@@ -45,8 +45,7 @@ export default function AddOnsShop() {
     setPrevAddons([res[0], ...prevAddons]);
   };
 
-  const handleEditAddOns = async (e: FormEvent) => {
-    e.preventDefault();
+  const handleEditAddOns = async () => {
     setSavedBtnText('Saved!');
     for (let i = 0; i < addOns.length; i++) {
       if (JSON.stringify(prevAddons[i]) !== JSON.stringify(addOns[i])) {
@@ -68,26 +67,24 @@ export default function AddOnsShop() {
           New Part
         </Button>
 
-        <form onSubmit={handleEditAddOns}>
-          <div className="header__btn-container">
-            <Button
-              variant={['save']}
-              type="submit"
-            >
-              { savedBtnText }
-            </Button>
-          </div>
+        <div className="header__btn-container">
+          <Button
+            variant={['save']}
+            onClick={handleEditAddOns}
+          >
+            { savedBtnText }
+          </Button>
+        </div>
 
-          <div className="add-ons__list">
-            {addOns.map((addOn) => {
-              return (
-                <Fragment key={addOn.id}>
-                  <ShopAddonRow addOn={addOn} handleDuplicateAddOn={handleDuplicateAddOn} />
-                </Fragment>
-              );
-            })}
-          </div>
-        </form>
+        <div className="add-ons__list">
+          {addOns.map((addOn) => {
+            return (
+              <Fragment key={addOn.id}>
+                <ShopAddonRow addOn={addOn} handleDuplicateAddOn={handleDuplicateAddOn} />
+              </Fragment>
+            );
+          })}
+        </div>
       </div>
     </Layout>
   );

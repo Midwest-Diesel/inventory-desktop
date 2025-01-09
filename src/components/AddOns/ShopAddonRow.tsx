@@ -12,6 +12,8 @@ import Link from "next/link";
 import { getAutofillEngine } from "@/scripts/controllers/enginesController";
 import CustomerSelect from "../Library/Select/CustomerSelect";
 import { confirm } from '@tauri-apps/api/dialog';
+import { invoke } from "@tauri-apps/api/tauri";
+import { formatDate } from "@/scripts/tools/stringUtils";
 
 interface Props {
   addOn: AddOn
@@ -23,6 +25,7 @@ export default function ShopAddonRow({ addOn, handleDuplicateAddOn }: Props) {
   const [addOns, setAddons] = useAtom<AddOn[]>(shopAddOnsAtom);
   const [autofillPartNum, setAutofillPartNum] = useState('');
   const [autofillEngineNum, setAutofillEngineNum] = useState('');
+  const [printQty, setPrintQty] = useState(1);
 
   const handleEditAddOn = (newAddOn: AddOn) => {
     const updatedAddOns = addOns.map((a: AddOn) => {
@@ -114,6 +117,22 @@ export default function ShopAddonRow({ addOn, handleDuplicateAddOn }: Props) {
     setAddons(updatedAddOns);
     setAutofillEngineNum('');
   };
+
+  const handlePrint = async () => {
+    const args = {
+      stockNum: addOn.stockNum || '',
+      model: '',
+      serialNum: addOn.serialNum || '',
+      hp: addOn.hp || '',
+      location: addOn.location || '',
+      remarks: addOn.remarks || '',
+      date: formatDate(addOn.entryDate) || '',
+      partNum: addOn.stockNum || '',
+      rating: addOn.rating || '',
+      copies: Number(printQty)
+    };
+    await invoke('print_part_tag', { args });
+  };
   
 
   return (
@@ -138,7 +157,6 @@ export default function ShopAddonRow({ addOn, handleDuplicateAddOn }: Props) {
                   type="number"
                   value={addOn.qty !== null ? addOn.qty : ''}
                   onChange={(e: any) => handleEditAddOn({ ...addOn, qty: Number(e.target.value) })}
-                  required
                 />
               </td>
               <td>
@@ -151,7 +169,6 @@ export default function ShopAddonRow({ addOn, handleDuplicateAddOn }: Props) {
                     handleEditAddOn({ ...addOn, partNum: e.target.value.toUpperCase() });
                     autofillFromPartNum(e.target.value.toUpperCase());
                   }}
-                  required
                 />
               </td>
               <td>
@@ -159,7 +176,6 @@ export default function ShopAddonRow({ addOn, handleDuplicateAddOn }: Props) {
                   variant={['small', 'thin']}
                   value={addOn.desc !== null ? addOn.desc : ''}
                   onChange={(e: any) => handleEditAddOn({ ...addOn, desc: e.target.value })}
-                  required
                 />
               </td>
               <td>
@@ -173,7 +189,6 @@ export default function ShopAddonRow({ addOn, handleDuplicateAddOn }: Props) {
                     handleEditAddOn({ ...addOn, engineNum: e.target.value ? Number(e.target.value) : '' as any });
                     autofillFromEngineNum(Number(e.target.value));
                   }}
-                  required
                 />
               </td>
               <td>
@@ -181,7 +196,6 @@ export default function ShopAddonRow({ addOn, handleDuplicateAddOn }: Props) {
                   variant={['small', 'thin']}
                   value={addOn.stockNum !== null ? addOn.stockNum : ''}
                   onChange={(e: any) => handleEditAddOn({ ...addOn, stockNum: e.target.value })}
-                  required
                 />
               </td>
               <td>
@@ -189,7 +203,6 @@ export default function ShopAddonRow({ addOn, handleDuplicateAddOn }: Props) {
                   variant={['small', 'thin']}
                   value={addOn.location !== null ? addOn.location : ''}
                   onChange={(e: any) => handleEditAddOn({ ...addOn, location: e.target.value })}
-                  required
                 />
               </td>
             </tr>
@@ -236,7 +249,6 @@ export default function ShopAddonRow({ addOn, handleDuplicateAddOn }: Props) {
                   style={{ width: '100%' }}
                   value={addOn.condition}
                   onChange={(e: any) => handleEditAddOn({ ...addOn, condition: e.target.value })}
-                  required
                 >
                   <option value="Core">Core</option>
                   <option value="Good Used">Good Used</option>
@@ -264,7 +276,6 @@ export default function ShopAddonRow({ addOn, handleDuplicateAddOn }: Props) {
                   type="number"
                   value={addOn.rating !== null ? addOn.rating : ''}
                   onChange={(e: any) => handleEditAddOn({ ...addOn, rating: Number(e.target.value) })}
-                  required
                 />
               </td>
               <td>
@@ -297,7 +308,6 @@ export default function ShopAddonRow({ addOn, handleDuplicateAddOn }: Props) {
                   type="number"
                   value={addOn.newPrice !== null ? addOn.newPrice : ''}
                   onChange={(e: any) => handleEditAddOn({ ...addOn, newPrice: Number(e.target.value) })}
-                  required
                 />
               </td>
               <td>
@@ -306,7 +316,6 @@ export default function ShopAddonRow({ addOn, handleDuplicateAddOn }: Props) {
                   type="number"
                   value={addOn.remanPrice !== null ? addOn.remanPrice : ''}
                   onChange={(e: any) => handleEditAddOn({ ...addOn, remanPrice: Number(e.target.value) })}
-                  required
                 />
               </td>
               <td>
@@ -315,7 +324,6 @@ export default function ShopAddonRow({ addOn, handleDuplicateAddOn }: Props) {
                   type="number"
                   value={addOn.dealerPrice !== null ? addOn.dealerPrice : ''}
                   onChange={(e: any) => handleEditAddOn({ ...addOn, dealerPrice: Number(e.target.value) })}
-                  required
                 />
               </td>
               <td>
@@ -323,7 +331,6 @@ export default function ShopAddonRow({ addOn, handleDuplicateAddOn }: Props) {
                   style={{ width: '100%' }}
                   value={addOn.priceStatus}
                   onChange={(e: any) => handleEditAddOn({ ...addOn, priceStatus: e.target.value })}
-                  required
                 >
                   <option>We have pricing</option>
                   <option>No pricing</option>
@@ -354,7 +361,15 @@ export default function ShopAddonRow({ addOn, handleDuplicateAddOn }: Props) {
       <div className="add-ons__list-row-buttons">
         { addOn.po && <Link href={`/po/${addOn.po}`}>View PO</Link> }
         <Button onClick={() => handleDuplicateAddOn(addOn)}>Duplicate</Button>
-        <Button>Print Tag</Button>
+        <Input
+          style={{ width: '3rem' }}
+          variant={['x-small', 'search']}
+          value={printQty}
+          onChange={(e: any) => setPrintQty(e.target.value)}
+          type="number"
+        >
+          <Button variant={['search']} onClick={handlePrint}>Print</Button>
+        </Input>
         <Button variant={['danger']} onClick={handleDeleteAddOn}>Delete</Button>
       </div>
     </div>
