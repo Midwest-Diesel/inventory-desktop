@@ -3,7 +3,7 @@ import Dialog from "../../Library/Dialog";
 import Table from "@/components/Library/Table";
 import Pagination from "@/components/Library/Pagination";
 import { useAtom } from "jotai";
-import { userAtom } from "@/scripts/atoms/state";
+import { showSoldPartsAtom, userAtom } from "@/scripts/atoms/state";
 import Button from "@/components/Library/Button";
 import { getCustomerById } from "@/scripts/controllers/customerController";
 import { getPartById, getPartsQty, getSomeParts } from "@/scripts/controllers/partsController";
@@ -22,6 +22,7 @@ interface Props {
 
 export default function PiggybackQuoteDialog({ open, setOpen, quote, handleChangeQuotesPage, quotesPage }: Props) {
   const [user] = useAtom<User>(userAtom);
+  const [showSoldParts, setShowSoldParts] = useAtom<boolean>(showSoldPartsAtom);
   const [partsData, setPartsData] = useState<Part[]>([]);
   const [parts, setParts] = useState<Part[]>([]);
   const [partCount, setPartCount] = useState<number[]>([]);
@@ -49,9 +50,9 @@ export default function PiggybackQuoteDialog({ open, setOpen, quote, handleChang
   };
 
   const resetPartsList = async () => {
-    const pageCount = await getPartsQty();
+    const pageCount = await getPartsQty(showSoldParts);
     setPartCount(pageCount);
-    const res = await getSomeParts(1, 26);
+    const res = await getSomeParts(1, 26, showSoldParts);
     setPartsData(res);
     setParts(res);
   };
@@ -63,7 +64,7 @@ export default function PiggybackQuoteDialog({ open, setOpen, quote, handleChang
       const end = start + 26;
       setParts(partsData.slice(start, end));
     } else {
-      const res = await getSomeParts(page, 26);
+      const res = await getSomeParts(page, 26, showSoldParts);
       setParts(res);
     }
     setCurrentPage(page);

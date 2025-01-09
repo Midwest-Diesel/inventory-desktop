@@ -4,7 +4,7 @@ import Input from "../../Library/Input";
 import Button from "../../Library/Button";
 import { searchAltParts } from "@/scripts/controllers/partsController";
 import { useAtom } from "jotai";
-import { alertsAtom, lastPartSearchAtom, partsQtyAtom, recentQuotesAtom, userAtom } from "@/scripts/atoms/state";
+import { alertsAtom, lastPartSearchAtom, partsQtyAtom, recentQuotesAtom, showSoldPartsAtom, userAtom } from "@/scripts/atoms/state";
 import { addRecentSearch, getQuotesByPartNum } from "@/scripts/controllers/recentSearchesController";
 import { selectedAlertsAtom } from "@/scripts/atoms/components";
 import { isObjectNull } from "@/scripts/tools/utils";
@@ -24,6 +24,7 @@ export default function AltPartsSearchDialog({ open, setOpen, setParts, setLoadi
   const [selectedAlerts, setSelectedAlerts] = useAtom<Alert[]>(selectedAlertsAtom);
   const [alertsData] = useAtom<Alert[]>(alertsAtom);
   const [user] = useAtom<User>(userAtom);
+  const [showSoldParts] = useAtom<boolean>(showSoldPartsAtom);
   const prevSearches = JSON.parse(localStorage.getItem('altPartSearches'));
   const [partNum, setPartNum] = useState('*');
   const [stockNum, setStockNum] = useState('');
@@ -51,7 +52,7 @@ export default function AltPartsSearchDialog({ open, setOpen, setParts, setLoadi
         handleSearch(partNum, stockNum, desc, location, qty, remarks, rating, purchasedFrom);
       }
     }
-  }, []);
+  }, [showSoldParts]);
 
   useEffect(() => {
     document.getElementById('alt-part-search-input').focus();
@@ -86,7 +87,7 @@ export default function AltPartsSearchDialog({ open, setOpen, setParts, setLoadi
   const handleSearch = async (partNum: string, stockNum: string, desc: string, location: string, qty: number, remarks: string, rating: number, purchasedFrom: string) => {
     setLoading(true);
     setRecentQuoteSearches(await getQuotesByPartNum(partNum));
-    const results = await searchAltParts({ partNum, stockNum, desc, location, qty, remarks, rating, purchasedFrom }) as Part[];
+    const results = await searchAltParts({ partNum, stockNum, desc, location, qty, remarks, rating, purchasedFrom, showSoldParts }) as Part[];
     setPartsQty(results.map((part) => part.qty));
     detectAlerts(results);
     setParts(results);

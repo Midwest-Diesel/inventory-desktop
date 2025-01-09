@@ -6,6 +6,8 @@ import Button from "@/components/Library/Button";
 import { getPartById, getPartsQty, getSomeParts } from "@/scripts/controllers/partsController";
 import Loading from "@/components/Library/Loading";
 import PiggybackPartSearchDialog from "./PiggybackPartSearchDialog";
+import { useAtom } from "jotai";
+import { showSoldPartsAtom } from "@/scripts/atoms/state";
 
 interface Props {
   open: boolean
@@ -15,6 +17,7 @@ interface Props {
 
 
 export default function PartSelectDialog({ open, setOpen, onSubmit }: Props) {
+  const [showSoldParts, setShowSoldParts] = useAtom<boolean>(showSoldPartsAtom);
   const [partsData, setPartsData] = useState<Part[]>([]);
   const [parts, setParts] = useState<Part[]>([]);
   const [partCount, setPartCount] = useState<number[]>([]);
@@ -42,9 +45,9 @@ export default function PartSelectDialog({ open, setOpen, onSubmit }: Props) {
   };
 
   const resetPartsList = async () => {
-    const pageCount = await getPartsQty();
+    const pageCount = await getPartsQty(showSoldParts);
     setPartCount(pageCount);
-    const res = await getSomeParts(1, 26);
+    const res = await getSomeParts(1, 26, showSoldParts);
     setPartsData(res);
     setParts(res);
   };
@@ -56,7 +59,7 @@ export default function PartSelectDialog({ open, setOpen, onSubmit }: Props) {
       const end = start + 26;
       setParts(partsData.slice(start, end));
     } else {
-      const res = await getSomeParts(page, 26);
+      const res = await getSomeParts(page, 26, showSoldParts);
       setParts(res);
     }
     setCurrentPage(page);

@@ -4,7 +4,7 @@ import Table from "../Library/Table";
 import Button from "../Library/Button";
 import { extractStatusColors, formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
 import { useAtom } from "jotai";
-import { partsQtyAtom, quotesAtom, selectedCustomerAtom, userAtom } from "@/scripts/atoms/state";
+import { partsQtyAtom, quotesAtom, selectedCustomerAtom, showSoldPartsAtom, userAtom } from "@/scripts/atoms/state";
 import Pagination from "../Library/Pagination";
 import PartsSearchDialog from "../Dialogs/dashboard/PartsSearchDialog";
 import AltPartsSearchDialog from "../Dialogs/dashboard/AltPartsSearchDialog";
@@ -33,6 +33,7 @@ export default function PartSearch({ selectHandwrittenOpen, setSelectHandwritten
   const [partsQty, setPartsQty] = useAtom<number[]>(partsQtyAtom);
   const [quotesData, setQuotesData] = useAtom<Quote[]>(quotesAtom);
   const [selectedCustomer] = useAtom<Customer>(selectedCustomerAtom);
+  const [showSoldParts, setShowSoldParts] = useAtom<boolean>(showSoldPartsAtom);
   const [partsData, setPartsData] = useState<Part[]>([]);
   const [parts, setParts] = useState<Part[]>([]);
   const [partsOpen, setPartsOpen] = useState(localStorage.getItem('partsOpen') === 'true' || localStorage.getItem('partsOpen') === null ? true : false);
@@ -54,15 +55,28 @@ export default function PartSearch({ selectHandwrittenOpen, setSelectHandwritten
     const fetchData = async () => {
       if (searchInputExists() || pageLoaded) return;
       setLoading(true);
-      const res = await getSomeParts(1, 26);
+      const res = await getSomeParts(1, 26, showSoldParts);
       setPartsData(res);
       setParts(res);
-      setPartsQty((await getPartsQty()));
+      setPartsQty((await getPartsQty(showSoldParts)));
       setLoading(false);
-      setPageLoaded(true);
     };
     fetchData();
+    setPageLoaded(true);
   }, []);
+
+  useEffect(() => {
+    if (searchInputExists() || !pageLoaded) return;
+    const fetchData = async () => {
+      setLoading(true);
+      const res = await getSomeParts(1, 26, showSoldParts);
+      setPartsData(res);
+      setParts(res);
+      setPartsQty((await getPartsQty(showSoldParts)));
+      setLoading(false);
+    };
+    fetchData();
+  }, [showSoldParts]);
 
   const searchInputExists = () => {
     const altSearch = JSON.parse(localStorage.getItem('altPartSearches'));
@@ -75,8 +89,8 @@ export default function PartSearch({ selectHandwrittenOpen, setSelectHandwritten
   const handleSearchData = async (parts: Part[]) => {
     if (!parts) {
       setParts(null);
-      setPartsQty((await getPartsQty()));
-      setParts(await getSomeParts(1, 26));
+      setPartsQty((await getPartsQty(showSoldParts)));
+      setParts(await getSomeParts(1, 26, showSoldParts));
     } else if (parts.length === 0) {
       setParts([]);
       setParts([]);
@@ -148,7 +162,7 @@ export default function PartSearch({ selectHandwrittenOpen, setSelectHandwritten
   const handleChangePage = async (data: any, page: number) => {
     if (page === currentPage || !pageLoaded) return;
     setLoading(true);
-    const res = await getSomeParts(page, 26);
+    const res = await getSomeParts(page, 26, showSoldParts);
     setParts(res);
     setCurrentPage(page);
     setLoading(false);
@@ -159,7 +173,7 @@ export default function PartSearch({ selectHandwrittenOpen, setSelectHandwritten
   };
 
   const partCostStyles = (part: Part) => {
-    return getTotalCostIn(part) === 0.04 && part.stockNum.slice(0, 2) !== 'UP' ? { color: 'var(--orange-1)', fontWeight: 'bold' } : {}
+    return getTotalCostIn(part) === 0.04 && part.stockNum.slice(0, 2) !== 'UP' ? { color: 'var(--orange-1)', fontWeight: 'bold' } : {};
   };
 
 
@@ -208,6 +222,11 @@ export default function PartSearch({ selectHandwrittenOpen, setSelectHandwritten
             >
               Compare / Consist
             </Link>
+            <Button
+              onClick={() => setShowSoldParts(!showSoldParts)}
+            >
+              {showSoldParts ? 'Hide' : 'Show'} Sold Parts
+            </Button>
             {user.accessLevel >= 2 &&
               <Link
                 className="parts-search-top-bar__link"
@@ -238,7 +257,7 @@ export default function PartSearch({ selectHandwrittenOpen, setSelectHandwritten
                   <th>Remarks</th>
                   <th>Our Cost</th>
                   <th>New Price</th>
-                  <th>Remaining Price</th>
+                  <th>Reman Price</th>
                 </tr>
               </thead>
               <tbody className="parts-list">

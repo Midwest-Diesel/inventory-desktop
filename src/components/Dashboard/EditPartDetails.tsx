@@ -7,7 +7,7 @@ import Input from "@/components/Library/Input";
 import { addAltParts, deletePartCostIn, editAltParts, editPart, editPartCostIn, getPartsInfoByPartNum, searchAltParts } from "@/scripts/controllers/partsController";
 import Table from "../Library/Table";
 import { deleteEngineCostOut, editEngineCostOut } from "@/scripts/controllers/enginesController";
-import { userAtom } from "@/scripts/atoms/state";
+import { showSoldPartsAtom, userAtom } from "@/scripts/atoms/state";
 import { useAtom } from "jotai";
 import { confirm } from '@tauri-apps/api/dialog';
 
@@ -24,6 +24,7 @@ interface Props {
 
 export default function PartDetails({ part, setPart, setIsEditingPart, partCostInData, engineCostOutData, setPartCostInData, setEngineCostOutData }: Props) {
   const [user] = useAtom<User>(userAtom);
+  const [showSoldParts] = useAtom<boolean>(showSoldPartsAtom);
   const [desc, setDesc] = useState<string>(part.desc);
   const [qty, setQty] = useState<number>(part.qty);
   const [stockNum, setStockNum] = useState<string>(part.stockNum);
@@ -153,7 +154,7 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
     const removedParts = input.toUpperCase().trim().split(',').map((p) => p.trim());
 
     for (let i = 0; i < removedParts.length; i++) {
-      const res = await searchAltParts({ partNum: `*${removedParts[i]}` });
+      const res = await searchAltParts({ partNum: `*${removedParts[i]}`, showSoldParts });
       for (let j = 0; j < res.length; j++) {
         if (res[j].partNum !== removedParts[i]) {
           const filteredParts = altParts.filter((part) => !removedParts.includes(part));

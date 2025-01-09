@@ -5,7 +5,7 @@ import Button from "../../Library/Button";
 import { searchParts } from "@/scripts/controllers/partsController";
 import { addRecentSearch, getQuotesByPartNum } from "@/scripts/controllers/recentSearchesController";
 import { useAtom } from "jotai";
-import { alertsAtom, lastPartSearchAtom, partsQtyAtom, recentQuotesAtom, userAtom } from "@/scripts/atoms/state";
+import { alertsAtom, lastPartSearchAtom, partsQtyAtom, recentQuotesAtom, showSoldPartsAtom, userAtom } from "@/scripts/atoms/state";
 import { selectedAlertsAtom } from "@/scripts/atoms/components";
 import { isObjectNull } from "@/scripts/tools/utils";
 
@@ -24,6 +24,7 @@ export default function PartsSearchDialog({ open, setOpen, setParts, setLoading 
   const [selectedAlerts, setSelectedAlerts] = useAtom<Alert[]>(selectedAlertsAtom);
   const [alertsData] = useAtom<Alert[]>(alertsAtom);
   const [user] = useAtom<User>(userAtom);
+  const [showSoldParts] = useAtom<boolean>(showSoldPartsAtom);
   const prevSearches = JSON.parse(localStorage.getItem('partSearches'));
   const [partNum, setPartNum] = useState('');
   const [stockNum, setStockNum] = useState('');
@@ -51,7 +52,7 @@ export default function PartsSearchDialog({ open, setOpen, setParts, setLoading 
         handleSearch(partNum, stockNum, desc, location, qty, remarks, rating, purchasedFrom);
       }
     }
-  }, []);
+  }, [showSoldParts]);
 
   useEffect(() => {
     document.getElementById('part-search-input').focus();
@@ -86,7 +87,7 @@ export default function PartsSearchDialog({ open, setOpen, setParts, setLoading 
   const handleSearch = async (partNum: string, stockNum: string, desc: string, location: string, qty: number, remarks: string, rating: number, purchasedFrom: string) => {
     setLoading(true);
     setRecentQuoteSearches(await getQuotesByPartNum(partNum));
-    const results = await searchParts({ partNum, stockNum, desc, location, qty, remarks, rating, purchasedFrom }) as Part[];
+    const results = await searchParts({ partNum, stockNum, desc, location, qty, remarks, rating, purchasedFrom, showSoldParts }) as Part[];
     setPartsQty(results.map((part) => part.qty));
     detectAlerts(results);
     setParts(results);

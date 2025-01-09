@@ -3,6 +3,8 @@ import Dialog from "../../Library/Dialog";
 import Input from "../../Library/Input";
 import Button from "../../Library/Button";
 import { searchAltParts } from "@/scripts/controllers/partsController";
+import { showSoldPartsAtom } from "@/scripts/atoms/state";
+import { useAtom } from "jotai";
 
 
 interface Props {
@@ -13,6 +15,7 @@ interface Props {
 }
 
 export default function PiggybackPartSearchDialog({ open, setOpen, setParts, setLoading }: Props) {
+  const [showSoldParts] = useAtom<boolean>(showSoldPartsAtom);
   const [partNum, setPartNum] = useState('*');
   const [stockNum, setStockNum] = useState('');
   const [desc, setDesc] = useState('');
@@ -46,7 +49,7 @@ export default function PiggybackPartSearchDialog({ open, setOpen, setParts, set
 
   const handleSearch = async (partNum: string) => {
     setLoading(true);
-    const results = await searchAltParts({ partNum, stockNum, desc, location, qty, remarks, rating, purchasedFrom }) as Part[];
+    const results = await searchAltParts({ partNum, stockNum, desc, location, qty, remarks, rating, purchasedFrom, showSoldParts }) as Part[];
     setParts(results);
     setLoading(false);
   };
