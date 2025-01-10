@@ -9,7 +9,7 @@ import { getAutofillPart, getPartByEngineNum, getPartByPartNum } from "@/scripts
 import { useState } from "react";
 import Input from "../Library/Input";
 import Link from "next/link";
-import { getAutofillEngine } from "@/scripts/controllers/enginesController";
+import { getAutofillEngine, getEngineByStockNum } from "@/scripts/controllers/enginesController";
 import CustomerSelect from "../Library/Select/CustomerSelect";
 import { confirm } from '@tauri-apps/api/dialog';
 import { invoke } from "@tauri-apps/api/tauri";
@@ -119,9 +119,10 @@ export default function ShopAddonRow({ addOn, handleDuplicateAddOn }: Props) {
   };
 
   const handlePrint = async () => {
+    const engine = await getEngineByStockNum(addOn.engineNum);
     const args = {
       stockNum: addOn.stockNum || '',
-      model: '',
+      model: engine.model || '',
       serialNum: addOn.serialNum || '',
       hp: addOn.hp || '',
       location: addOn.location || '',

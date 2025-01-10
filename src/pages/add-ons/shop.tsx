@@ -1,13 +1,17 @@
 import ShopAddonRow from "@/components/AddOns/ShopAddonRow";
 import { Layout } from "@/components/Layout";
 import Button from "@/components/Library/Button";
+import { PreventNavigation } from "@/components/PreventNavigation";
 import { shopAddOnsAtom } from "@/scripts/atoms/state";
 import { addAddOn, editAddOn, getAllAddOns } from "@/scripts/controllers/addOnsController";
+import { confirm } from "@tauri-apps/api/dialog";
 import { useAtom } from "jotai";
+import { useRouter } from "next/router";
 import { Fragment, useEffect, useState } from "react";
 
 
 export default function AddOnsShop() {
+  const router = useRouter();
   const [prevAddons, setPrevAddons] = useState<AddOn[]>([]);
   const [addOns, setAddons] = useAtom<AddOn[]>(shopAddOnsAtom);
   const [savedBtnText, setSavedBtnText] = useState('Save');
@@ -20,15 +24,15 @@ export default function AddOnsShop() {
     };
     fetchData();
 
-    function confirmLeave(event) {
-      event.preventDefault();
-      event.returnValue = '';
+    const confirmLeave = (e: any) => {
+      e.preventDefault();
+      e.returnValue = '';
     }
 
-    window.addEventListener('beforeunload', confirmLeave);
-    return () => {
-      window.removeEventListener('beforeunload', confirmLeave);
-    };
+    // window.addEventListener('beforeunload', confirmLeave);
+    // return () => {
+    //   window.removeEventListener('beforeunload', confirmLeave);
+    // };
   }, []);
 
   const handleNewAddOn = async () => {

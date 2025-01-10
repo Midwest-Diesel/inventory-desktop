@@ -1206,7 +1206,7 @@ fn print_part_tag(args: PartTagArgs) -> Result<(), String> {
     Dim doc, sheet1
     Set doc = CreateObject("Word.Application")
     doc.Visible = True
-    Set sheet1 = doc.Documents.Open("\\MWD1-SERVER\Server\Shipping Label.docx")
+    Set sheet1 = doc.Documents.Open("\\MWD1-SERVER\Server\part_tag_template.docx")
 
     Sub ReplaceAndSetColor(sheet, findText, replaceText)
       With sheet.Content.Find
