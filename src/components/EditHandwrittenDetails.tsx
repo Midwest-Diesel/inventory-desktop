@@ -17,6 +17,7 @@ import { confirm } from "@tauri-apps/api/dialog";
 import ShippingListDialog from "./Dialogs/handwrittens/ShippingListDialog";
 import { useRouter } from "next/router";
 import Checkbox from "./Library/Checkbox";
+import { PreventNavigation } from "./PreventNavigation";
 
 interface Props {
   handwritten: Handwritten
@@ -83,21 +84,21 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
     setHandwrittenItems(handwritten.handwrittenItems);
   }, [handwritten]);
 
-  useEffect(() => {
-    if (changesSaved) {
-      window.removeEventListener('beforeunload', confirmLeave);
-      return
-    }
-    function confirmLeave(e: any) {
-      e.preventDefault();
-      e.returnValue = '';
-    }
+  // useEffect(() => {
+  //   if (changesSaved) {
+  //     window.removeEventListener('beforeunload', confirmLeave);
+  //     return
+  //   }
+  //   function confirmLeave(e: any) {
+  //     e.preventDefault();
+  //     e.returnValue = '';
+  //   }
     
-    window.addEventListener('beforeunload', confirmLeave);
-    return () => {
-      window.removeEventListener('beforeunload', confirmLeave);
-    };
-  }, [changesSaved]);
+  //   window.addEventListener('beforeunload', confirmLeave);
+  //   return () => {
+  //     window.removeEventListener('beforeunload', confirmLeave);
+  //   };
+  // }, [changesSaved]);
 
   const saveChanges = async (e: FormEvent) => {
     e.preventDefault();
@@ -220,6 +221,8 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
 
   return (
     <>
+      <PreventNavigation isDirty={!changesSaved} text="Leave without saving changes?" />
+
       {shippingListDialogOpen &&
         <ShippingListDialog
           open={shippingListDialogOpen}

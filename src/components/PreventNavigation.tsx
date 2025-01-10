@@ -4,86 +4,52 @@ import { useRouter } from 'next/router';
 import { useEffect, useRef, useState } from 'react';
 import Alert from './Library/Alert';
 
-type PreventNavigationProps = {
-  isDirty: boolean;
-  backHref: string;
-};
+interface PreventNavigationProps {
+  isDirty?: boolean
+  text?: string
+}
 
-export const PreventNavigation = ({ isDirty, backHref }: PreventNavigationProps) => {
+
+export const PreventNavigation = ({ isDirty = true, text }: PreventNavigationProps) => {
   const [leavingPage, setLeavingPage] = useState(false);
   const router = useRouter();
-
-  /**
-   * Function that will be called when the user selects `yes` in the confirmation modal,
-   * redirected to the selected page.
-   */
   const confirmationFn = useRef<() => void>(() => {});
 
-  // Used to make popstate event trigger when back button is clicked.
-  // Without this, the popstate event will not fire because it needs there to be a href to return.
-  if (typeof window !== 'undefined') {
-    window.history.pushState(null, document.title, window.location.href);
-  }
-
   useEffect(() => {
-    /**
-     * Used to prevent navigation when use click in navigation `<Link />` or `<a />`.
-     * @param e The triggered event.
-     */
-    const handleClick = (event: MouseEvent) => {
-      const target = event.target as HTMLAnchorElement;
-
+    const handleClick = (e: MouseEvent) => {
+      const target = e.target as HTMLAnchorElement;
       if (isDirty) {
-        event.preventDefault();
-
+        e.preventDefault();
         confirmationFn.current = () => {
-          router.push(target.href);
+          router.push(target.href || '/');
         };
-
         setLeavingPage(true);
       }
     };
-    /* ********************************************************************* */
 
-    /**
-     * Used to prevent navigation when use `back` browser buttons.
-     */
-    const handlePopState = () => {
+    const handlePopState = (e: PopStateEvent) => {
+      e.preventDefault();
       if (isDirty) {
-        window.history.pushState(null, document.title, window.location.href);
-
-        confirmationFn.current = () => {
-          router.push(backHref);
-        };
-
+        confirmationFn.current = () => {};
         setLeavingPage(true);
       } else {
-        window.history.back();
-        // router.back();
+        router.back();
       }
     };
-    /* ********************************************************************* */
 
-    /**
-     * Used to prevent navigation when reload page or navigate to another page, in diffenret origin.
-     * @param e The triggered event.
-     */
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
       if (isDirty) {
         e.preventDefault();
-        e.returnValue = true;
+        e.returnValue = '';
       }
     };
-    /* ********************************************************************* */
 
-    /* *************************** Open listeners ************************** */
     document.querySelectorAll('a').forEach((link) => {
       link.addEventListener('click', handleClick);
     });
     window.addEventListener('popstate', handlePopState);
     window.addEventListener('beforeunload', handleBeforeUnload);
 
-    /* ************** Return from useEffect closing listeners ************** */
     return () => {
       document.querySelectorAll('a').forEach((link) => {
         link.removeEventListener('click', handleClick);
@@ -91,13 +57,13 @@ export const PreventNavigation = ({ isDirty, backHref }: PreventNavigationProps)
       window.removeEventListener('popstate', handlePopState);
       window.removeEventListener('beforeunload', handleBeforeUnload);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isDirty]);
+  }, [isDirty, router]);
 
+  
   return (
     <>
       <Alert
-        text="Are you sure you want to leave the page?"
+        text={text || 'Are you sure you want to leave the page?'}
         type="question"
         open={leavingPage}
         setOpen={setLeavingPage}

@@ -8,6 +8,7 @@ import Table from "../Library/Table";
 import { confirm } from '@tauri-apps/api/dialog';
 import { getMapLocationFromCustomer } from "@/scripts/controllers/mapController";
 import EditMapLocDialog from "../Dialogs/customers/EditMapLocDialog";
+import { PreventNavigation } from "../PreventNavigation";
 
 interface Props {
   customer: Customer
@@ -41,10 +42,12 @@ export default function CustomerDetails({ customer, setCustomer, setIsEditing }:
   const [paymentType, setPaymentType] = useState<string>(customer.paymentType);
   const [editLocDialogOpen, setEditLocDialogOpen] = useState(false);
   const [loc, setLoc] = useState<MapLocation>(null);
+  const [changesSaved, setChangesSaved] = useState<boolean>(true);
 
   const saveChanges = async (e: FormEvent) => {
     e.preventDefault();
     if (!await confirm('Are you sure you want to save these changes?')) return;
+    setChangesSaved(false);
     const newCustomer = {
       id: customer.id,
       company,
@@ -85,6 +88,8 @@ export default function CustomerDetails({ customer, setCustomer, setIsEditing }:
   
   return (
     <>
+      <PreventNavigation isDirty={!changesSaved} text="Leave without saving changes?" />
+
       {editLocDialogOpen &&
         <EditMapLocDialog
           open={editLocDialogOpen}
@@ -93,7 +98,7 @@ export default function CustomerDetails({ customer, setCustomer, setIsEditing }:
         />
       }
 
-      <form className="edit-customer-details" onSubmit={(e) => saveChanges(e)}>
+      <form className="edit-customer-details" onSubmit={(e) => saveChanges(e)} onChange={() => setChangesSaved(false)}>
         {customer &&
           <>
             <div className="edit-customer-details__header">

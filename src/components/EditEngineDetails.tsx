@@ -11,6 +11,8 @@ import Select from "./Library/Select/Select";
 import EditEnginePartsTable from "./EditEnginePartsTable";
 import { enginePartsTableAtom } from "@/scripts/atoms/state";
 import { useAtom } from "jotai";
+import { PreventNavigation } from "./PreventNavigation";
+import { confirm } from "@tauri-apps/api/dialog";
 
 interface Props {
   engine: Engine
@@ -54,6 +56,7 @@ export default function EditEngineDetails({ engine, setEngine, setIsEditing, eng
   const [partsPulled, setPartsPulled] = useState<string>(engine.partsPulled);
   const [engineCostIn, setEngineCostIn] = useState<EngineCostIn[]>(engineCostInData);
   const [engineCostOut, setEngineCostOut] = useState<EngineCostOut[]>(engineCostOutData);
+  const [changesSaved, setChangesSaved] = useState(false);
   const enginePartsData = {
     blockReman: engine.blockReman,
     blockNew: engine.blockNew,
@@ -96,6 +99,7 @@ export default function EditEngineDetails({ engine, setEngine, setIsEditing, eng
   const saveChanges = async (e: FormEvent) => {
     e.preventDefault();
     if (!await confirm('Are you sure you want to save these changes?')) return;
+    setChangesSaved(false);
     const newEngine = {
       id: engine.id,
       stockNum: engine.stockNum,
@@ -209,8 +213,10 @@ export default function EditEngineDetails({ engine, setEngine, setIsEditing, eng
 
   return (
     <>
+      <PreventNavigation isDirty={!changesSaved} text="Leave without saving changes?" />
+
       {engine &&
-        <form className="edit-engine-details" onSubmit={(e) => saveChanges(e)}>
+        <form className="edit-engine-details" onSubmit={(e) => saveChanges(e)} onChange={() => setChangesSaved(false)}>
           <div className="edit-engine-details__header">
             <div>
               <h2>Stock Number: { engine.stockNum }</h2>

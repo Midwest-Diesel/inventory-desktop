@@ -7,6 +7,8 @@ import Table from "./Library/Table";
 import { parseDateInputValue } from "@/scripts/tools/stringUtils";
 import { addPurchaseOrderItem, deletePurchaseOrderItem, editPurchaseOrder, editPurchaseOrderItem, getPurchaseOrderById } from "@/scripts/controllers/purchaseOrderController";
 import VendorSelect from "./Library/Select/VendorSelect";
+import { PreventNavigation } from "./PreventNavigation";
+import { confirm } from "@tauri-apps/api/dialog";
 
 interface Props {
   poData: PO
@@ -41,10 +43,12 @@ export default function EditPoDetails({ poData, setPo, setIsEditing }: Props) {
   const [vendorContact, setVendorContact] = useState(poData.vendorContact);
   const [shippingMethod, setShippingMethod] = useState(poData.shippingMethod);
   const [poItems, setPoItems] = useState<POItem[]>(poData.poItems);
+  const [changesSaved, setChangesSaved] = useState<boolean>(true);
 
   const saveChanges = async (e: FormEvent) => {
     e.preventDefault();
     if (!await confirm('Are you sure you want to save these changes?')) return;
+    setChangesSaved(false);
     const newPo = {
       id: poData.id,
       date,
@@ -116,8 +120,10 @@ export default function EditPoDetails({ poData, setPo, setIsEditing }: Props) {
 
   return (
     <>
+      <PreventNavigation isDirty={!changesSaved} text="Leave without saving changes?" />
+
       {poData &&
-        <form className="edit-purchase-order-details" onSubmit={(e) => saveChanges(e)}>
+        <form className="edit-purchase-order-details" onSubmit={(e) => saveChanges(e)} onChange={() => setChangesSaved(false)}>
           <div className="edit-purchase-order-details__header">
             <h2>{ poData.id }</h2>
           

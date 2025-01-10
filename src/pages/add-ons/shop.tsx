@@ -23,16 +23,6 @@ export default function AddOnsShop() {
       setPrevAddons(res);
     };
     fetchData();
-
-    const confirmLeave = (e: any) => {
-      e.preventDefault();
-      e.returnValue = '';
-    }
-
-    // window.addEventListener('beforeunload', confirmLeave);
-    // return () => {
-    //   window.removeEventListener('beforeunload', confirmLeave);
-    // };
   }, []);
 
   const handleNewAddOn = async () => {
@@ -62,6 +52,8 @@ export default function AddOnsShop() {
 
   return (
     <Layout title="Add Ons">
+      <PreventNavigation />
+
       <div className="add-ons">
         <h1>Shop Add Ons</h1>
         <Button

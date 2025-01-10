@@ -28,7 +28,7 @@ export const formatTime = (date: Date): string => {
 };
 
 export const parseDateInputValue = (date: Date): string => {
-  return date && !isNaN(date.getTime()) ? date.toISOString().split('T')[0] : '';
+  return date && typeof date === 'object' && !isNaN(date.getTime()) ? date.toISOString().split('T')[0] : '';
 };
 
 export const cap = (str: string): string => {

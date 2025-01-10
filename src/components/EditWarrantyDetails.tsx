@@ -10,6 +10,7 @@ import Checkbox from "./Library/Checkbox";
 import CustomerSelect from "./Library/Select/CustomerSelect";
 import { getCustomerByName } from "@/scripts/controllers/customerController";
 import { confirm } from '@tauri-apps/api/dialog';
+import { PreventNavigation } from "./PreventNavigation";
 
 interface Props {
   warrantyData: Warranty
@@ -25,10 +26,12 @@ export default function EditWarrantyDetails({ warrantyData, setWarranty, setIsEd
   const [vendorWarrantyNum, setVendorWarrantyNum] = useState(warrantyData.vendorWarrantyNum);
   const [handwrittenId, setHandwrittenId] = useState(warrantyData.handwrittenId);
   const [warrantyItems, setWarrantyItems] = useState<WarrantyItem[]>(warrantyData.warrantyItems);
+  const [changesSaved, setChangesSaved] = useState<boolean>(true);
 
   const saveChanges = async (e: FormEvent) => {
     e.preventDefault();
     if (!await confirm('Are you sure you want to save these changes?')) return;
+    setChangesSaved(false);
     const newCustomer = await getCustomerByName(company);
     const newWarranty = {
       id: Number(warrantyData.id),
@@ -90,8 +93,10 @@ export default function EditWarrantyDetails({ warrantyData, setWarranty, setIsEd
 
   return (
     <>
+      <PreventNavigation isDirty={!changesSaved} text="Leave without saving changes?" />
+
       {warrantyData &&
-        <form className="edit-warranty-details" onSubmit={(e) => saveChanges(e)}>
+        <form className="edit-warranty-details" onSubmit={(e) => saveChanges(e)} onChange={() => setChangesSaved(false)}>
           <div className="edit-warranty-details__header">
             <h2>{ warrantyData.id }</h2>
           

@@ -9,6 +9,7 @@ import CustomerSelect from "./Library/Select/CustomerSelect";
 import SourceSelect from "./Library/Select/SourceSelect";
 import Table from "./Library/Table";
 import { confirm } from '@tauri-apps/api/dialog';
+import { PreventNavigation } from "./PreventNavigation";
 
 interface Props {
   returnData: Return
@@ -42,10 +43,12 @@ export default function EditReturnDetails({ returnData, setReturn, setIsEditing 
   const [returnReason, setReturnReason] = useState<string>(returnData.returnReason);
   const [returnPaymentTerms, setReturnPaymentTerms] = useState<string>(returnData.returnPaymentTerms);
   const [restockFee, setRestockFee] = useState<string>(returnData.restockFee);
-  
+  const [changesSaved, setChangesSaved] = useState<boolean>(true);
+
   const saveChanges = async (e: FormEvent) => {
     e.preventDefault();
     if (!await confirm('Are you sure you want to save these changes?')) return;
+    setChangesSaved(false);
     const newReturn = {
       ...returnData,
       poNum,
@@ -80,8 +83,10 @@ export default function EditReturnDetails({ returnData, setReturn, setIsEditing 
 
   return (
     <>
+      <PreventNavigation isDirty={!changesSaved} text="Leave without saving changes?" />
+
       {returnData &&
-        <form className="edit-return-details" onSubmit={(e) => saveChanges(e)}>
+        <form className="edit-return-details" onSubmit={(e) => saveChanges(e)} onChange={() => setChangesSaved(false)}>
           <div className="edit-return-details__header">
             <h2>{ returnData.id }</h2>
           

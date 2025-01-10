@@ -10,6 +10,7 @@ import { deleteEngineCostOut, editEngineCostOut } from "@/scripts/controllers/en
 import { showSoldPartsAtom, userAtom } from "@/scripts/atoms/state";
 import { useAtom } from "jotai";
 import { confirm } from '@tauri-apps/api/dialog';
+import { PreventNavigation } from "../PreventNavigation";
 
 interface Props {
   part: Part
@@ -45,10 +46,12 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
   const [altParts, setAltParts] = useState<string[]>(part.altParts);
   const [partCostIn, setPartCostIn] = useState<PartCostIn[]>(partCostInData);
   const [engineCostOut, setEngineCostOut] = useState<EngineCostOut[]>(engineCostOutData);
+  const [changesSaved, setChangesSaved] = useState<boolean>(true);
 
   const saveChanges = async (e: FormEvent) => {
     e.preventDefault();
     if (!await confirm('Are you sure you want to save these changes?')) return;
+    setChangesSaved(false);
     const newPart = {
       id: part.id,
       partNum: part.partNum,
@@ -177,239 +180,243 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
 
   
   return (
-    <form className="edit-part-details" onSubmit={(e) => saveChanges(e)}>
-      <div className="edit-part-details__header">
-        <div className="header__btn-container">
-          <Button
-            className="edit-part-details__close-btn"
-            type="button"
-            onClick={() => setIsEditingPart(false)}
-          >
-            Stop Editing
-          </Button>
-          <Button
-            variant={['save']}
-            className="edit-part-details__save-btn"
-            type="submit"
-            data-cy="save-btn"
-          >
-            Save
-          </Button>
+    <>
+      <PreventNavigation isDirty={!changesSaved} text="Leave without saving changes?" />
+      
+      <form className="edit-part-details" onSubmit={(e) => saveChanges(e)} onChange={() => setChangesSaved(false)}>
+        <div className="edit-part-details__header">
+          <div className="header__btn-container">
+            <Button
+              className="edit-part-details__close-btn"
+              type="button"
+              onClick={() => setIsEditingPart(false)}
+            >
+              Stop Editing
+            </Button>
+            <Button
+              variant={['save']}
+              className="edit-part-details__save-btn"
+              type="submit"
+              data-cy="save-btn"
+            >
+              Save
+            </Button>
+          </div>
+
+          <h2>{ part.partNum }</h2>
+          <Input
+            label="Description"
+            variant={['md-text']}
+            value={desc}
+            onChange={(e: any) => setDesc(e.target.value.toUpperCase())}
+            required
+          />
         </div>
 
-        <h2>{ part.partNum }</h2>
-        <Input
-          label="Description"
-          variant={['md-text']}
-          value={desc}
-          onChange={(e: any) => setDesc(e.target.value.toUpperCase())}
-          required
-        />
-      </div>
+        <Grid rows={1} cols={12} gap={1}>
+          <GridItem colStart={1} colEnd={5} rowStart={1} variant={['low-opacity-bg']}>
+            <Table variant={['plain', 'edit-row-details']}>
+              <tbody>
+                <tr>
+                  <th>Qty</th>
+                  <td>
+                    <Input
+                      variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+                      value={qty}
+                      type="number"
+                      onChange={(e: any) => setQty(e.target.value)}
+                      required
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <th>Stock Number</th>
+                  <td>
+                    <Input
+                      variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+                      value={stockNum}
+                      onChange={(e: any) => setStockNum(e.target.value)}
+                      required
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <th>Location</th>
+                  <td>
+                    <Input
+                      variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+                      value={location}
+                      onChange={(e: any) => setLocation(e.target.value)}
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <th>Manufacturer</th>
+                  <td>
+                    <Input
+                      variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+                      value={manufacturer}
+                      onChange={(e: any) => setManufacturer(e.target.value)}
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <th>Purchased From</th>
+                  <td>
+                    <Input
+                      variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+                      value={purchasedFrom}
+                      onChange={(e: any) => setPurchasedFrom(e.target.value)}
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <th>Condition</th>
+                  <td>
+                    <Input
+                      variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+                      value={condition}
+                      onChange={(e: any) => setCondition(e.target.value)}
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <th>Rating</th>
+                  <td>
+                    <Input
+                      variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+                      value={rating}
+                      type="number"
+                      onChange={(e: any) => setRating(e.target.value)}
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <th>Entry Date</th>
+                  <td>
+                    <Input
+                      variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+                      type="date"
+                      value={parseDateInputValue(entryDate)}
+                      onChange={(e: any) => setEntryDate(new Date(e.target.value))}
+                    />
+                  </td>
+                </tr>
+              </tbody>
+            </Table>
+          </GridItem>
 
-      <Grid rows={1} cols={12} gap={1}>
-        <GridItem colStart={1} colEnd={5} rowStart={1} variant={['low-opacity-bg']}>
-          <Table variant={['plain', 'edit-row-details']}>
-            <tbody>
-              <tr>
-                <th>Qty</th>
-                <td>
-                  <Input
-                    variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
-                    value={qty}
-                    type="number"
-                    onChange={(e: any) => setQty(e.target.value)}
-                    required
-                  />
-                </td>
-              </tr>
-              <tr>
-                <th>Stock Number</th>
-                <td>
-                  <Input
-                    variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
-                    value={stockNum}
-                    onChange={(e: any) => setStockNum(e.target.value)}
-                    required
-                  />
-                </td>
-              </tr>
-              <tr>
-                <th>Location</th>
-                <td>
-                  <Input
-                    variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
-                    value={location}
-                    onChange={(e: any) => setLocation(e.target.value)}
-                  />
-                </td>
-              </tr>
-              <tr>
-                <th>Manufacturer</th>
-                <td>
-                  <Input
-                    variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
-                    value={manufacturer}
-                    onChange={(e: any) => setManufacturer(e.target.value)}
-                  />
-                </td>
-              </tr>
-              <tr>
-                <th>Purchased From</th>
-                <td>
-                  <Input
-                    variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
-                    value={purchasedFrom}
-                    onChange={(e: any) => setPurchasedFrom(e.target.value)}
-                  />
-                </td>
-              </tr>
-              <tr>
-                <th>Condition</th>
-                <td>
-                  <Input
-                    variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
-                    value={condition}
-                    onChange={(e: any) => setCondition(e.target.value)}
-                  />
-                </td>
-              </tr>
-              <tr>
-                <th>Rating</th>
-                <td>
-                  <Input
-                    variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
-                    value={rating}
-                    type="number"
-                    onChange={(e: any) => setRating(e.target.value)}
-                  />
-                </td>
-              </tr>
-              <tr>
-                <th>Entry Date</th>
-                <td>
-                  <Input
-                    variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
-                    type="date"
-                    value={parseDateInputValue(entryDate)}
-                    onChange={(e: any) => setEntryDate(new Date(e.target.value))}
-                  />
-                </td>
-              </tr>
-            </tbody>
-          </Table>
-        </GridItem>
+          <GridItem colStart={1} colEnd={5} rowStart={2} variant={['low-opacity-bg']}>
+            <Table variant={['plain', 'edit-row-details']}>
+              <tbody>
+                <tr>
+                  <th>New List Price</th>
+                  <td>
+                    <Input
+                      variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+                      value={listPrice}
+                      type="number"
+                      onChange={(e: any) => setListPrice(e.target.value)}
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <th>New Fleet Price</th>
+                  <td>
+                    <Input
+                      variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+                      value={fleetPrice}
+                      type="number"
+                      onChange={(e: any) => setFleetPrice(e.target.value)}
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <th>Reman List Price</th>
+                  <td></td>
+                </tr>
+                <tr>
+                  <th>Reman Fleet Price</th>
+                  <td></td>
+                </tr>
+                <tr>
+                  <th>Core Price</th>
+                  <td></td>
+                </tr>
+              </tbody>
+            </Table>
+          </GridItem>
 
-        <GridItem colStart={1} colEnd={5} rowStart={2} variant={['low-opacity-bg']}>
-          <Table variant={['plain', 'edit-row-details']}>
-            <tbody>
-              <tr>
-                <th>New List Price</th>
-                <td>
-                  <Input
-                    variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
-                    value={listPrice}
-                    type="number"
-                    onChange={(e: any) => setListPrice(e.target.value)}
-                  />
-                </td>
-              </tr>
-              <tr>
-                <th>New Fleet Price</th>
-                <td>
-                  <Input
-                    variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
-                    value={fleetPrice}
-                    type="number"
-                    onChange={(e: any) => setFleetPrice(e.target.value)}
-                  />
-                </td>
-              </tr>
-              <tr>
-                <th>Reman List Price</th>
-                <td></td>
-              </tr>
-              <tr>
-                <th>Reman Fleet Price</th>
-                <td></td>
-              </tr>
-              <tr>
-                <th>Core Price</th>
-                <td></td>
-              </tr>
-            </tbody>
-          </Table>
-        </GridItem>
+          <GridItem colStart={5} colEnd={10} rowStart={1} variant={['low-opacity-bg']}>
+            <Table variant={['plain', 'edit-row-details']}>
+              <tbody>
+                <tr>
+                  <th>Alt Parts</th>
+                  <td>
+                    {user.accessLevel >= 2 ?
+                      <>
+                        <p style={{ margin: '0.8rem' }}>{ altParts.join(', ') }</p>
+                        <div className="edit-part-details__alt-parts-btn-container">
+                          <Button type="button" onClick={handleAddAltPart}>Add</Button>
+                          <Button variant={['danger']} type="button" onClick={handleRemoveAltPart}>Remove</Button>
+                        </div>
+                      </>
+                      :
+                      <p style={{ marginLeft: '0.8rem' }}>{ altParts.join(', ') }</p>
+                    }
+                  </td>
+                </tr>
+                <tr>
+                  <th>Remarks</th>
+                  <td>
+                    <Input
+                      variant={['label-stack', 'label-bold', 'text-area']}
+                      rows={5}
+                      cols={100}
+                      value={remarks}
+                      onChange={(e: any) => setRemarks(e.target.value)}
+                    />
+                  </td>
+                </tr>
+              </tbody>
+            </Table>
+          </GridItem>
 
-        <GridItem colStart={5} colEnd={10} rowStart={1} variant={['low-opacity-bg']}>
-          <Table variant={['plain', 'edit-row-details']}>
-            <tbody>
-              <tr>
-                <th>Alt Parts</th>
-                <td>
-                  {user.accessLevel >= 2 ?
-                    <>
-                      <p style={{ margin: '0.8rem' }}>{ altParts.join(', ') }</p>
-                      <div className="edit-part-details__alt-parts-btn-container">
-                        <Button type="button" onClick={handleAddAltPart}>Add</Button>
-                        <Button variant={['danger']} type="button" onClick={handleRemoveAltPart}>Remove</Button>
-                      </div>
-                    </>
-                    :
-                    <p style={{ marginLeft: '0.8rem' }}>{ altParts.join(', ') }</p>
-                  }
-                </td>
-              </tr>
-              <tr>
-                <th>Remarks</th>
-                <td>
-                  <Input
-                    variant={['label-stack', 'label-bold', 'text-area']}
-                    rows={5}
-                    cols={100}
-                    value={remarks}
-                    onChange={(e: any) => setRemarks(e.target.value)}
-                  />
-                </td>
-              </tr>
-            </tbody>
-          </Table>
-        </GridItem>
-
-        <GridItem colStart={5} colEnd={10} rowStart={2} variant={['low-opacity-bg']}>
-          <Table variant={['plain', 'edit-row-details']}>
-            <tbody>
-              <tr>
-                <th>Engine Stock #</th>
-                <td>
-                  <Input
-                    variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
-                    value={engineStockNum}
-                    type="number"
-                    onChange={(e: any) => setEngineStockNum(e.target.value)}
-                  />  
-                </td>
-              </tr>
-              <tr>
-                <th>Serial Number</th>
-                <td>
-                  <Input
-                    variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
-                  />  
-                </td>
-              </tr>
-              <tr>
-                <th>Horse Power</th>
-                <td>
-                  <Input
-                    variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
-                  />  
-                </td>
-              </tr>
-            </tbody>
-          </Table>
-        </GridItem>
-      </Grid>
-    </form>
+          <GridItem colStart={5} colEnd={10} rowStart={2} variant={['low-opacity-bg']}>
+            <Table variant={['plain', 'edit-row-details']}>
+              <tbody>
+                <tr>
+                  <th>Engine Stock #</th>
+                  <td>
+                    <Input
+                      variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+                      value={engineStockNum}
+                      type="number"
+                      onChange={(e: any) => setEngineStockNum(e.target.value)}
+                    />  
+                  </td>
+                </tr>
+                <tr>
+                  <th>Serial Number</th>
+                  <td>
+                    <Input
+                      variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+                    />  
+                  </td>
+                </tr>
+                <tr>
+                  <th>Horse Power</th>
+                  <td>
+                    <Input
+                      variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+                    />  
+                  </td>
+                </tr>
+              </tbody>
+            </Table>
+          </GridItem>
+        </Grid>
+      </form>
+    </>
   );
 }
