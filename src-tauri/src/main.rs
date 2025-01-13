@@ -248,29 +248,32 @@ fn create_directories() {
 
 #[tauri::command]
 async fn open_window(app: tauri::AppHandle, window_args: WindowArgs) {
-  let title = window_args.title;
+  let title = window_args.title.clone();
   let base_url = if window_args.is_prod {
     "https://tauri.localhost"
   } else {
     "http://localhost:3000"
   };
-  let url = Url::parse(&base_url).expect("Invalid URL");
+  let url = format!("{}/{}", base_url, window_args.url);
+  let parsed_url = Url::parse(&url).expect("Invalid URL");
 
   let new_window = tauri::WindowBuilder::new(
     &app,
     title.clone(),
-    tauri::WindowUrl::External(url.into())
+    tauri::WindowUrl::External(parsed_url.into())
   )
-    .title(title)
-    .inner_size(1500.0, 800.0)
-    .build()
-    .unwrap();
+  .title(title)
+  .inner_size(1500.0, 800.0)
+  .build()
+  .expect("Failed to create window");
 
-  new_window.clone().on_window_event(move |event| {
-    if let tauri::WindowEvent::Focused(_) = event {
-      app.emit_to("Handwritten", "change-page", window_args.url.to_string()).unwrap();
-    }
-  });
+  if let Err(err) = app.emit_to("Handwritten", "window-created", window_args.url.clone()) {
+    eprintln!("Failed to emit created event: {}", err);
+  }
+  
+  if let Err(err) = new_window.set_focus() {
+    eprintln!("Failed to focus window: {}", err);
+  }
 }
 
 #[tauri::command]
