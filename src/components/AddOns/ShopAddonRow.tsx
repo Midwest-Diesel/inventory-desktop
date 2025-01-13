@@ -128,8 +128,8 @@ export default function ShopAddonRow({ addOn, handleDuplicateAddOn }: Props) {
       location: addOn.location || '',
       remarks: addOn.remarks || '',
       date: formatDate(addOn.entryDate) || '',
-      partNum: addOn.stockNum || '',
-      rating: addOn.rating || '',
+      partNum: addOn.partNum || '',
+      rating: Number(addOn.rating) || 0,
       copies: Number(printQty)
     };
     await invoke('print_part_tag', { args });

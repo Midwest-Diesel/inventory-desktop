@@ -84,22 +84,6 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
     setHandwrittenItems(handwritten.handwrittenItems);
   }, [handwritten]);
 
-  // useEffect(() => {
-  //   if (changesSaved) {
-  //     window.removeEventListener('beforeunload', confirmLeave);
-  //     return
-  //   }
-  //   function confirmLeave(e: any) {
-  //     e.preventDefault();
-  //     e.returnValue = '';
-  //   }
-    
-  //   window.addEventListener('beforeunload', confirmLeave);
-  //   return () => {
-  //     window.removeEventListener('beforeunload', confirmLeave);
-  //   };
-  // }, [changesSaved]);
-
   const saveChanges = async (e: FormEvent) => {
     e.preventDefault();
     if (!await confirm('Are you sure you want to save these changes?')) return;

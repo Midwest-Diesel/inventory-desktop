@@ -713,7 +713,7 @@ fn print_shipping_label(args: ShippingLabelArgs) -> Result<(), String> {
     End With
 
     doc.ActivePrinter = "{}"
-    ' sheet1.PrintOut Copies:={}
+    ' sheet1.PrintOut , , , , , , , {}
     ' doc.Quit
     "#,
     args.company,
@@ -1200,13 +1200,14 @@ fn print_coo() -> Result<(), String> {
 
 #[tauri::command]
 fn print_part_tag(args: PartTagArgs) -> Result<(), String> {
+  // let printer = "Brother MFC-L3770CDW series";
   let printer = "ZDesigner GC420d (EPL)";
   let vbs_script = format!(
     r#"
     Dim doc, sheet1
     Set doc = CreateObject("Word.Application")
     doc.Visible = True
-    Set sheet1 = doc.Documents.Open("\\MWD1-SERVER\Server\part_tag_template.docx")
+    Set sheet1 = doc.Documents.Open("\\MWD1-SERVER\Server\part_tag_template.rtf")
 
     Sub ReplaceAndSetColor(sheet, findText, replaceText)
       With sheet.Content.Find
@@ -1218,20 +1219,44 @@ fn print_part_tag(args: PartTagArgs) -> Result<(), String> {
       End With
     End Sub
 
+    Sub ReplaceTextInShapes(sheet, findText, replaceText)
+      Dim shape
+      For Each shape In sheet.Shapes
+        If Not shape.TextFrame Is Nothing Then
+          If shape.TextFrame.HasText Then
+            With shape.TextFrame.TextRange.Find
+              .Text = findText
+              .Replacement.Text = replaceText
+              .Wrap = 1
+              .MatchWholeWord = True
+              .Execute , , , , , , , , , , 2
+            End With
+          End If
+        If InStr(shape.TextFrame.TextRange.Text, replaceText) > 0 Then
+          If findText = "<STOCK_NUM>" Then
+            shape.TextFrame.TextRange.Font.Name = "IDAutomationHC39M Free Version"
+          End If
+        End If
+        End If
+      Next
+    End Sub
+
     Call ReplaceAndSetColor(sheet1, "<STOCK_NUM>", "{}")
-    Call ReplaceAndSetColor(sheet1, "<MODEL>", "{}")
-    Call ReplaceAndSetColor(sheet1, "<SERIAL_NUM>", "{}")
-    Call ReplaceAndSetColor(sheet1, "<HP>", "{}")
-    Call ReplaceAndSetColor(sheet1, "<LOCATION>", "{}")
-    Call ReplaceAndSetColor(sheet1, "<REMARKS>", "{}")
+    Call ReplaceTextInShapes(sheet1, "<STOCK_NUM>", "{}")
+    Call ReplaceTextInShapes(sheet1, "<MODEL>", "{}")
+    Call ReplaceTextInShapes(sheet1, "<SERIAL_NUM>", "{}")
+    Call ReplaceTextInShapes(sheet1, "<HP>", "{}")
+    Call ReplaceTextInShapes(sheet1, "<LOCATION>", "{}")
+    Call ReplaceTextInShapes(sheet1, "<REMARKS>", "{}")
     Call ReplaceAndSetColor(sheet1, "<DATE>", "{}")
     Call ReplaceAndSetColor(sheet1, "<PART_NUM>", "{}")
     Call ReplaceAndSetColor(sheet1, "<RATING>", "{}")
 
     doc.ActivePrinter = "{}"
-    ' sheet1.PrintOut Copies:={}
+    ' sheet1.PrintOut , , , , , , , {}
     ' doc.Quit
     "#,
+    args.stockNum,
     args.stockNum,
     args.model,
     args.serialNum,

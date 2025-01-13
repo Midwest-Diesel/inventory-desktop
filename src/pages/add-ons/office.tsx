@@ -1,6 +1,7 @@
 import OfficeAddonRow from "@/components/AddOns/OfficeAddonRow";
 import { Layout } from "@/components/Layout";
 import Button from "@/components/Library/Button";
+import { PreventNavigation } from "@/components/PreventNavigation";
 import { shopAddOnsAtom } from "@/scripts/atoms/state";
 import { editAddOn, getAllAddOns } from "@/scripts/controllers/addOnsController";
 import { useAtom } from "jotai";
@@ -19,16 +20,6 @@ export default function AddOnsOffice() {
       setPrevAddons(res);
     };
     fetchData();
-
-    function confirmLeave(event) {
-      event.preventDefault();
-      event.returnValue = '';
-    }
-    
-    window.addEventListener('beforeunload', confirmLeave);
-    return () => {
-      window.removeEventListener('beforeunload', confirmLeave);
-    };
   }, []);
 
   const handleEditAddOns = async (e: FormEvent) => {
@@ -45,6 +36,8 @@ export default function AddOnsOffice() {
 
   return (
     <Layout title="Add Ons">
+      <PreventNavigation />
+
       <div className="add-ons">
         <h1>Office Add Ons</h1>
 

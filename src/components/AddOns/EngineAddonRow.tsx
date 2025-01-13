@@ -4,12 +4,14 @@ import Table from "../Library/Table";
 import Select from "../Library/Select/Select";
 import { useState } from "react";
 import Input from "../Library/Input";
-import { addEngine, getAutofillEngine, getEngineByStockNum } from "@/scripts/controllers/enginesController";
+import { addEngine, getAutofillEngine } from "@/scripts/controllers/enginesController";
 import { deleteEngineAddOn } from "@/scripts/controllers/engineAddOnsController";
 import CustomerSelect from "../Library/Select/CustomerSelect";
 import { useAtom } from "jotai";
 import { engineAddOnsAtom } from "@/scripts/atoms/state";
 import { confirm } from '@tauri-apps/api/dialog';
+import { formatDate } from "@/scripts/tools/stringUtils";
+import { invoke } from "@tauri-apps/api/tauri";
 
 interface Props {
   addOn: EngineAddOn
@@ -20,6 +22,7 @@ interface Props {
 export default function EngineAddOnRow({ addOn, handleDuplicateAddOn }: Props) {
   const [addOns, setAddons] = useAtom<EngineAddOn[]>(engineAddOnsAtom);
   const [autofillEngineNum, setAutofillEngineNum] = useState('');
+  const [printQty, setPrintQty] = useState(1);
 
   const handleEditAddOn = (newAddOn: EngineAddOn) => {
     const updatedAddOns = addOns.map((a: EngineAddOn) => {
@@ -74,6 +77,22 @@ export default function EngineAddOnRow({ addOn, handleDuplicateAddOn }: Props) {
     await addEngine(addOn);
     await deleteEngineAddOn(addOn.id);
     setAddons(addOns.filter((a) => a.id !== addOn.id));
+  };
+
+  const handlePrint = async () => {
+    const args = {
+      stockNum: addOn.engineNum || '',
+      model: addOn.model || '',
+      serialNum: addOn.serialNum || '',
+      hp: addOn.hp || '',
+      location: addOn.location || '',
+      remarks: addOn.notes || '',
+      date: formatDate(addOn.entryDate) || '',
+      partNum: addOn.arrNum || '',
+      rating: 0,
+      copies: Number(printQty)
+    };
+    await invoke('print_part_tag', { args });
   };
   
 
@@ -229,7 +248,15 @@ export default function EngineAddOnRow({ addOn, handleDuplicateAddOn }: Props) {
       <div className="add-ons__list-row-buttons">
         <Button type="button" onClick={handleAddToInventory}>Add to Inventory</Button>
         <Button type="button" onClick={() => handleDuplicateAddOn(addOn)}>Duplicate</Button>
-        <Button type="button">Print Tag</Button>
+        <Input
+          style={{ width: '3rem' }}
+          variant={['x-small', 'search']}
+          value={printQty}
+          onChange={(e: any) => setPrintQty(e.target.value)}
+          type="number"
+        >
+          <Button variant={['search']} onClick={handlePrint}>Print</Button>
+        </Input>
         <Button variant={['danger']} type="button" onClick={handleDeleteAddOn}>Delete</Button>
       </div>
     </div>

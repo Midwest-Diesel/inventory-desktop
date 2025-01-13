@@ -1,6 +1,7 @@
 import EngineAddOnRow from "@/components/AddOns/EngineAddonRow";
 import { Layout } from "@/components/Layout";
 import Button from "@/components/Library/Button";
+import { PreventNavigation } from "@/components/PreventNavigation";
 import { engineAddOnsAtom } from "@/scripts/atoms/state";
 import { addEngineAddOn, editEngineAddOn, getAllEngineAddOns } from "@/scripts/controllers/engineAddOnsController";
 import { useAtom } from "jotai";
@@ -19,16 +20,6 @@ export default function AddOnsEngine() {
       setPrevAddons(res);
     };
     fetchData();
-
-    function confirmLeave(e) {
-      e.preventDefault();
-      e.returnValue = '';
-    }
-    
-    window.addEventListener('beforeunload', confirmLeave);
-    return () => {
-      window.removeEventListener('beforeunload', confirmLeave);
-    };
   }, []);
 
   const handleEditAddOns = async (e: FormEvent) => {
@@ -59,6 +50,8 @@ export default function AddOnsEngine() {
 
   return (
     <Layout title="Add Ons">
+      <PreventNavigation />
+
       <div className="add-ons">
         <h1>Engine Add Ons</h1>
         <Button
