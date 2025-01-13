@@ -29,6 +29,16 @@ export const getUser = async () => {
   }
 };
 
+export const getAllUsers = async () => {
+  try {
+    const auth = { withCredentials: true };
+    const res = await api.get('/api/account/all', auth);
+    return res.data;
+  } catch (err) {
+    console.error(`Unrelated Error: ${err}`);
+  }
+};
+
 const checkSession = async () => {
   try {
     const auth = { withCredentials: true };
