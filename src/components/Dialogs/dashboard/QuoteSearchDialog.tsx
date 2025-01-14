@@ -38,7 +38,7 @@ export default function QuoteSearchDialog({ open, setOpen, setQuotes, setCount, 
     if (prevSearches) {
       const { id, date, salesmanId, source, customer, contact, phone, state, partNum, desc, stockNum, sale } = prevSearches;
       setId(id || '' as any);
-      setDate(date || null);
+      setDate(new Date(date) || null);
       setSalesmanId(salesmanId || '' as any);
       setSource(source || '');
       setCustomer(customer || '');
@@ -71,7 +71,7 @@ export default function QuoteSearchDialog({ open, setOpen, setQuotes, setCount, 
     e.preventDefault();
     const quoteSearch = {
       id: id ? Number(id) : id,
-      date: formatDate(date),
+      date: parseDateInputValue(date),
       salesmanId,
       source,
       customer,
