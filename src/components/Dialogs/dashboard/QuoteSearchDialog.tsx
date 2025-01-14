@@ -1,51 +1,95 @@
 import { FormEvent, useEffect, useState } from "react";
 import Dialog from "../../Library/Dialog";
 import Input from "../../Library/Input";
-import Dropdown from "../../Library/Dropdown/Dropdown";
 import { searchQuotes } from "@/scripts/controllers/quotesController";
 import Button from "../../Library/Button";
+import { formatDate, parseDateInputValue } from "@/scripts/tools/stringUtils";
+import SourceSelect from "@/components/Library/Select/SourceSelect";
+import Select from "@/components/Library/Select/Select";
+import UserSelect from "@/components/Library/Select/UserSelect";
 
 
 interface Props {
-  open: boolean;
-  setOpen: (open: boolean) => void;
-  setQuotes: (quotes: Quote[]) => void;
+  open: boolean
+  setOpen: (open: boolean) => void
+  setQuotes: (quotes: Quote[]) => void
+  setCount: (minItems: number[]) => void
+  setShowingSearchResults: (value: boolean) => void
+  limit: number
+  page: number
 }
 
-export default function QuoteSearchDialog({ open, setOpen, setQuotes }: Props) {
-  const [id, setid] = useState<number | string>('');
-  const [date, setDate] = useState<Date>('' as any);
-  const [salesman, setSalesman] = useState<Date>('' as any);
-  const [source, setSource] = useState<string>('');
-  const [customer, setCustomer] = useState<Customer>('' as any);
-  const [contact, setContact] = useState<string>('');
-  const [state, setState] = useState<string>('');
-  const [partNumber, setPartNumber] = useState<string>('');
-  const [desc, setDesc] = useState<string>('');
-  const [stockNumber, setStockNumber] = useState<string>('');
-  const [sale, setSale] = useState<string>('');
+export default function QuoteSearchDialog({ open, setOpen, setQuotes, setCount, setShowingSearchResults, limit, page }: Props) {
+  const prevSearches = JSON.parse(localStorage.getItem('quoteSearch'));
+  const [id, setId] = useState<number>('' as any);
+  const [date, setDate] = useState<Date>(null);
+  const [salesmanId, setSalesmanId] = useState<number>('' as any);
+  const [source, setSource] = useState('');
+  const [customer, setCustomer] = useState('');
+  const [contact, setContact] = useState('');
+  const [phone, setPhone] = useState('');
+  const [state, setState] = useState('');
+  const [partNum, setPartNum] = useState('');
+  const [desc, setDesc] = useState('');
+  const [stockNum, setStockNum] = useState('');
+  const [sale, setSale] = useState<'' | 'TRUE' | 'FALSE'>('');
 
   useEffect(() => {
-    clearInputs();
-  }, [open]);
+    if (prevSearches) {
+      const { id, date, salesmanId, source, customer, contact, phone, state, partNum, desc, stockNum, sale } = prevSearches;
+      setId(id || '' as any);
+      setDate(date || null);
+      setSalesmanId(salesmanId || '' as any);
+      setSource(source || '');
+      setCustomer(customer || '');
+      setContact(contact || '');
+      setPhone(phone || '');
+      setState(state || '');
+      setPartNum(partNum || '');
+      setDesc(desc || '');
+      setStockNum(stockNum || '');
+      setSale(sale || '');
+    }
+  }, []);
 
   const clearInputs = () => {
-    setid('');
-    setDate('' as any);
-    setSalesman('' as any);
+    setId('' as any);
+    setDate(null);
+    setSalesmanId('' as any);
     setSource('');
-    setCustomer('' as any);
+    setCustomer('');
     setContact('');
+    setPhone('');
     setState('');
-    setPartNumber('');
+    setPartNum('');
     setDesc('');
-    setStockNumber('');
+    setStockNum('');
     setSale('');
   };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    setQuotes(await searchQuotes({ partNum: partNumber, desc: desc, stockNum: stockNumber }));
+    const quoteSearch = {
+      id: id ? Number(id) : id,
+      date: formatDate(date),
+      salesmanId,
+      source,
+      customer,
+      contact,
+      phone: phone.trim(),
+      state,
+      partNum,
+      desc,
+      stockNum,
+      sale,
+      limit,
+      page: (page - 1) * limit
+    };
+    localStorage.setItem('quoteSearch', JSON.stringify(quoteSearch));
+    const res = await searchQuotes(quoteSearch);    
+    setQuotes(res.rows);
+    setCount(res.minItems);
+    setShowingSearchResults(true);
   };
 
 
@@ -55,33 +99,100 @@ export default function QuoteSearchDialog({ open, setOpen, setQuotes }: Props) {
       setOpen={setOpen}
       title="Quote Search"
       width={400}
-      height={520}
+      height={550}
       className="quote-search-dialog"
     >
       <form onSubmit={(e) => handleSubmit(e)}>
         <Input
+          label="Quote ID"
+          variant={['small', 'thin', 'label-no-stack', 'label-space-between']}
+          value={id}
+          onChange={(e: any) => setId(e.target.value)}
+          type="number"
+        />
+
+        <Input
+          label="Date"
+          variant={['small', 'thin', 'label-no-stack', 'label-space-between']}
+          value={parseDateInputValue(date)}
+          onChange={(e: any) => setDate(new Date(e.target.value))}
+          type="date"
+        />
+
+        <UserSelect
+          label="Salesman"
+          variant={['label-space-between', 'label-inline']}
+          value={salesmanId}
+          onChange={(e: any) => setSalesmanId(Number(e.target.value))}
+        />
+
+        <SourceSelect
+          label="Source"
+          variant={['label-space-between', 'label-inline']}
+          value={source}
+          onChange={(e: any) => setSource(e.target.value)}
+        />
+
+        <Input
+          label="Customer"
+          variant={['small', 'thin', 'label-no-stack', 'label-space-between']}
+          value={customer}
+          onChange={(e: any) => setCustomer(e.target.value)}
+        />
+
+        <Input
+          label="Contact"
+          variant={['small', 'thin', 'label-no-stack', 'label-space-between']}
+          value={contact}
+          onChange={(e: any) => setContact(e.target.value)}
+        />
+
+        <Input
+          label="Phone"
+          variant={['small', 'thin', 'label-no-stack', 'label-space-between', 'no-arrows']}
+          value={phone}
+          onChange={(e: any) => setPhone(e.target.value)}
+          type="number"
+        />
+
+        <Input
+          label="State"
+          variant={['small', 'thin', 'label-no-stack', 'label-space-between']}
+          value={state}
+          onChange={(e: any) => setState(e.target.value)}
+        />
+
+        <Input
           label="Part Number"
-          type="string"
-          variant={['x-small', 'thin', 'label-no-stack', 'label-space-between']}
-          value={partNumber}
-          onChange={(e: any) => setPartNumber(e.target.value)}
+          variant={['small', 'thin', 'label-no-stack', 'label-space-between']}
+          value={partNum}
+          onChange={(e: any) => setPartNum(e.target.value)}
         />
 
         <Input
           label="Description"
-          type="string"
-          variant={['x-small', 'thin', 'label-no-stack', 'label-space-between']}
+          variant={['small', 'thin', 'label-no-stack', 'label-space-between']}
           value={desc}
           onChange={(e: any) => setDesc(e.target.value)}
         />
 
         <Input
           label="Stock Number"
-          type="string"
-          variant={['x-small', 'thin', 'label-no-stack', 'label-space-between']}
-          value={stockNumber}
-          onChange={(e: any) => setStockNumber(e.target.value)}
+          variant={['small', 'thin', 'label-no-stack', 'label-space-between']}
+          value={stockNum}
+          onChange={(e: any) => setStockNum(e.target.value)}
         />
+
+        <Select
+          label="Sale"
+          variant={['label-space-between', 'label-inline']}
+          value={sale}
+          onChange={(e: any) => setSale(e.target.value)}
+        >
+          <option value="">Both</option>
+          <option value="TRUE">True</option>
+          <option value="FALSE">False</option>
+        </Select>
 
         <div className="form__footer">
           <Button type="button" variant={['small']} onClick={clearInputs}>Clear</Button>

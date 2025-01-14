@@ -29,3 +29,4 @@ export const enginePartsTableAtom = atom<EnginePartsTable>({} as EnginePartsTabl
 export const shopAddOnsAtom = atom<AddOn[]>([]);
 export const engineAddOnsAtom = atom<EngineAddOn[]>([]);
 export const showSoldPartsAtom = atom<boolean>(true);
+export const usersAtom = atom<{ id: number, username: string, initials: string, type: string, subtype: string }[]>([]);

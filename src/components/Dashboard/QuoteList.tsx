@@ -6,7 +6,7 @@ import QuoteSearchDialog from "../Dialogs/dashboard/QuoteSearchDialog";
 import { useAtom } from "jotai";
 import { lastPartSearchAtom, quotesAtom, selectedCustomerAtom, userAtom } from "@/scripts/atoms/state";
 import EditQuoteDialog from "@/components/Dialogs/dashboard/EditQuoteDialog";
-import { addQuote, deleteQuote, getQuotesCount, getSomeQuotes, toggleAddToEmail, toggleQuoteSold } from "@/scripts/controllers/quotesController";
+import { addQuote, deleteQuote, getQuotesCount, getSomeQuotes, searchQuotes, toggleAddToEmail, toggleQuoteSold } from "@/scripts/controllers/quotesController";
 import Table from "@/components/Library/Table";
 import Pagination from "@/components/Library/Pagination";
 import { formatCurrency, formatDate, formatPhone } from "@/scripts/tools/stringUtils";
@@ -44,8 +44,10 @@ export default function QuoteList({ quotes, setQuotes, setSelectHandwrittenOpen,
   const [piggybackQuoteOpen, setPiggybackQuoteOpen] = useState(false);
   const [piggybackQuote, setPiggybackQuote] = useState<Quote>(null);
   const [endOfDayOpen, setEndOfDayOpen] = useState(false);
-  const [page, setPage] = useState(1);
+  const [showingSearchResults, setShowingSearchResults] = useState(false);
   const search = localStorage.getItem('altPartSearches') || localStorage.getItem('partSearches') || '';
+  const [page, setPage] = useState(1);
+  const LIMIT = 26;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -97,7 +99,7 @@ export default function QuoteList({ quotes, setQuotes, setSelectHandwrittenOpen,
       partId: null
     };
     await addQuote(newQuote);
-    setQuotes(await getSomeQuotes(page, 26, lastSearch, selectedCustomer.id, quoteListType === 'engine'));
+    setQuotes(await getSomeQuotes(page, LIMIT, lastSearch, selectedCustomer.id, quoteListType === 'engine'));
   };
 
   const handleDelete = async (id: number) => {
@@ -195,8 +197,14 @@ export default function QuoteList({ quotes, setQuotes, setSelectHandwrittenOpen,
 
   const handleChangePage = async (data: any, page: number) => {
     if (!selectedCustomer.id && localStorage.getItem('customerId')) return;
-    const res = await getSomeQuotes(page, 26, JSON.parse(search).partNum.replace('*', ''), filterByCustomer ? selectedCustomer.id : null, quoteListType === 'engine');
-    setPaginatedQuotes(res);
+    if (showingSearchResults) {
+      const res = await searchQuotes({ ...JSON.parse(localStorage.getItem('quoteSearch')), page });
+      setPaginatedQuotes(res.rows);
+      setCount(res.minItems);
+    } else {
+      const res = await getSomeQuotes(page, LIMIT, JSON.parse(search).partNum.replace('*', ''), filterByCustomer ? selectedCustomer.id : null, quoteListType === 'engine');
+      setPaginatedQuotes(res);
+    }
     setPage(page);
   };
 
@@ -227,7 +235,15 @@ export default function QuoteList({ quotes, setQuotes, setSelectHandwrittenOpen,
         <h2>Part Quotes</h2>
         <Image src={`/images/icons/arrow-${quotesOpen ? 'up' : 'down'}.svg`} alt="arrow" width={25} height={25} />
       </div>
-      <QuoteSearchDialog open={searchDialogOpen} setOpen={setSearchDialogOpen} setQuotes={setQuotes} />
+      <QuoteSearchDialog
+        open={searchDialogOpen}
+        setOpen={setSearchDialogOpen}
+        setQuotes={setPaginatedQuotes}
+        setCount={setCount}
+        setShowingSearchResults={setShowingSearchResults}
+        limit={LIMIT}
+        page={page}
+      />
       <SalesEndOfDayDialog open={endOfDayOpen} setOpen={setEndOfDayOpen} />
       { quoteEdited && <EditQuoteDialog setQuoteEdited={setQuoteEdited} quote={quoteEdited} setQuote={(q: Quote) => handleEdit(q)} /> }
       { piggybackQuote &&
@@ -382,7 +398,7 @@ export default function QuoteList({ quotes, setQuotes, setSelectHandwrittenOpen,
               data={quotes}
               setData={handleChangePage}
               minData={count}
-              pageSize={26}
+              pageSize={LIMIT}
             />
           </div>
         </>

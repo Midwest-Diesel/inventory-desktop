@@ -2,9 +2,20 @@ import api from "../config/axios";
 import { parseResDate } from "../tools/stringUtils";
 
 interface QuoteSearchData {
-  partNum?: string;
-  desc?: string;
-  stockNum?: string;
+  id?: number
+  date?: string
+  salesmanId?: number
+  source?: string
+  customer?: string
+  contact?: string
+  phone?: string
+  state?: string
+  partNum?: string
+  desc?: string
+  stockNum?: string
+  sale?: string
+  limit: number
+  page: number
 }
 
 interface NewQuote {
@@ -102,8 +113,8 @@ export const getQuotesCountByPartNum = async (isEngineQuote = false, partNum: st
 export const searchQuotes = async (quote: QuoteSearchData) => {
   try {
     const auth = { withCredentials: true };
-    const res = await api.get(`/api/quotes/search/${JSON.stringify(quote)}`, auth);
-    res.data = parseQuotesRes(res.data);
+    const res = await api.get(`/api/quotes/search/${encodeURIComponent(JSON.stringify(quote))}`, auth);
+    res.data = { minItems: res.data.minItems, rows: parseQuotesRes(res.data.rows)};
     return res.data;
   } catch (err) {
     console.error(err);
