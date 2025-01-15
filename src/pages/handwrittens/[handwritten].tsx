@@ -28,6 +28,7 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useRouter } from "next/router";
 import { FormEvent, useEffect, useRef, useState } from "react";
+import { paymentTypes } from ".";
 
 
 export default function Handwritten() {
@@ -54,7 +55,6 @@ export default function Handwritten() {
   const [takeoffItem, setTakeoffItem] = useState<HandwrittenItem | HandwrittenItemChild>(null);
   const [takeoffsOpen, setTakeoffsOpen] = useState(false);
   const ccLabelRef = useRef(null);
-  const paymentTypes = ['Net 30', 'Wire Transfer', 'EBPP - Secure', 'Visa', 'Mastercard', 'AMEX', 'Discover', 'Comchek', 'T-Check', 'Check', 'Cash', 'Card on File', 'Net 10', 'No Charge'].sort();
 
   useEffect(() => {
     const fetchData = async () => {

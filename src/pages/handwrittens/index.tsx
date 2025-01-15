@@ -1,21 +1,24 @@
 import CustomerSelectDialog from "@/components/Dialogs/CustomerSelectDialog";
-import HandwrittensSearchDialog from "@/components/Dialogs/HandwrittensSearchDialog";
+import HandwrittensSearchDialog from "@/components/Dialogs/handwrittens/HandwrittensSearchDialog";
 import HandwrittenItemsTable from "@/components/HandwrittenItemsTable";
 import { Layout } from "@/components/Layout";
 import Button from "@/components/Library/Button";
 import Loading from "@/components/Library/Loading";
 import Pagination from "@/components/Library/Pagination";
 import Table from "@/components/Library/Table";
-import { userAtom } from "@/scripts/atoms/state";
-import { addBlankHandwritten, getHandwrittenCount, getHandwrittensByDate, getSomeHandwrittens } from "@/scripts/controllers/handwrittensController";
+import { handwrittenSearchAtom, userAtom } from "@/scripts/atoms/state";
+import { addBlankHandwritten, getHandwrittenCount, getHandwrittensByDate, getSomeHandwrittens, searchHandwrittens } from "@/scripts/controllers/handwrittensController";
 import { formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
 import { useAtom } from "jotai";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
 
+export const paymentTypes = ['Net 30', 'Wire Transfer', 'EBPP - Secure', 'Visa', 'Mastercard', 'AMEX', 'Discover', 'Comchek', 'T-Check', 'Check', 'Cash', 'Card on File', 'Net 10', 'No Charge'].sort();
+
 export default function Handwrittens() {
   const [user] = useAtom<User>(userAtom);
+  const [handwrittenSearchData] = useAtom(handwrittenSearchAtom);
   const [handwrittensData] = useState<Handwritten[]>([]);
   const [handwrittens, setHandwrittens] = useState<Handwritten[]>([]);
   const [focusedHandwritten, setFocusedHandwritten] = useState<Handwritten>(null);
@@ -25,6 +28,8 @@ export default function Handwrittens() {
   const [customerSelectOpen, setCustomerSelectOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(0);
+  const [searchData, setSearchData] = useState<any>({});
+  const LIMIT = 40;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -39,11 +44,28 @@ export default function Handwrittens() {
     fetchData();
   }, []);
 
+  useEffect(() => setSearchData(handwrittenSearchData), [handwrittenSearchData]);
+
   const handleChangePage = async (data: any, page: number) => {
     if (page === currentPage) return;
     setLoading(true);
-    const res = await getSomeHandwrittens(page, 26);
-    setHandwrittens(res);
+    const hasValidSearchCriteria = (
+      searchData.id ||
+      searchData.date ||
+      (searchData.poNum && searchData.poNum !== '*') ||
+      (searchData.billToCompany && searchData.billToCompany !== '*') ||
+      (searchData.shipToCompany && searchData.shipToCompany !== '*') ||
+      searchData.source ||
+      searchData.payment
+    );
+
+    if (hasValidSearchCriteria) {
+      const res = await searchHandwrittens({ ...searchData, page });
+      setHandwrittens(res.rows);
+    } else{
+      const res = await getSomeHandwrittens(page, LIMIT);
+      setHandwrittens(res);
+    }
     setCurrentPage(page);
     setLoading(false);
   };
@@ -76,7 +98,7 @@ export default function Handwrittens() {
 
   return (
     <Layout title="Handwrittens">
-      <HandwrittensSearchDialog open={openSearch} setOpen={setOpenSearch} setHandwrittens={handleSearch} />
+      <HandwrittensSearchDialog open={openSearch} setOpen={setOpenSearch} setHandwrittens={handleSearch} setMinItems={setHandwrittenCount} limit={LIMIT} page={currentPage} />
       <CustomerSelectDialog open={customerSelectOpen} setOpen={setCustomerSelectOpen} onSubmit={handleNewHandwritten} />
 
       <div className="handwrittens__container">
@@ -133,7 +155,7 @@ export default function Handwrittens() {
                 data={handwrittensData}
                 setData={handleChangePage}
                 minData={handwrittenCount}
-                pageSize={26}
+                pageSize={LIMIT}
               />
             </div>
           }

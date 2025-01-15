@@ -5,9 +5,14 @@ import { getCoresByCustomer, getCoreReturnsByCustomer } from "./coresController"
 
 interface HandwrittenSearchData {
   id?: number
-  customer?: string
-  date?: Date
+  date?: string
   poNum?: string
+  billToCompany?: string,
+  shipToCompany?: string,
+  source?: string,
+  payment?: string,
+  limit: number,
+  page: number
 }
 
 export interface AltShip {
@@ -85,7 +90,7 @@ export const searchHandwrittens = async (invoice: HandwrittenSearchData) => {
   try {
     const auth = { withCredentials: true };
     const res = await api.get(`/api/handwrittens/search/${JSON.stringify(invoice)}`, auth);
-    return await parseHandwrittenRes(res.data);
+    return { minItems: res.data.minItems, rows: await parseHandwrittenRes(res.data.rows) };
   } catch (err) {
     console.error(err);
   }
