@@ -486,7 +486,7 @@ type Engine = {
   askingPrice: number
   purchasePrice: number
   soldDate: Date
-  costRemaining?: number
+  costRemaining: number
   currentStatus: EngineStatus
   loginDate: Date
   warranty: boolean
@@ -496,6 +496,8 @@ type Engine = {
   torque: string
   pan: string
   application: string
+  costIn: EngineCostIn[]
+  costOut: EngineCostOut[]
   turboArr: string
   turboHpNew: string
   turboHpReman: string

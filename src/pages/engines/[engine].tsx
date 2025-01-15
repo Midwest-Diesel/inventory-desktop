@@ -13,7 +13,6 @@ import Table from "@/components/Library/Table";
 import { getEngineByStockNum, getEngineCostIn, getEngineCostOut } from "@/scripts/controllers/enginesController";
 import { formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
 import { setTitle } from "@/scripts/tools/utils";
-import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -33,13 +32,11 @@ export default function EngineDetailsPage() {
       if (!res) return;
       setEngine(res);
       setTitle(`${res.stockNum} Engine`);
-      const costOutRes = await getEngineCostOut(Number(res.stockNum));
-      const upStockNums: EngineCostIn[] = costOutRes
+      const upStockNums: EngineCostIn[] = res.costOut
         .filter((num) => num.stockNum && num.stockNum.includes('UP'))
         .map((num) => ({ ...num, engineStockNum: num.stockNum, vendor: null }));
-      const costInData = await getEngineCostIn(Number(res.stockNum)) || [];
-      setEngineCostIn([...costInData, ...upStockNums]);
-      const filteredCostOut = costOutRes.filter((num) => num.stockNum && !num.stockNum.includes('UP'));
+      setEngineCostIn([...res.costIn, ...upStockNums]);
+      const filteredCostOut = res.costOut.filter((num) => num.stockNum && !num.stockNum.includes('UP'));
       setEngineCostOut(filteredCostOut);
     };
     fetchData();

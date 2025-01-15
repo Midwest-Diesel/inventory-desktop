@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import Table from "./Library/Table";
 import { formatCurrency, formatDate, formatPhone } from "@/scripts/tools/stringUtils";
 import Checkbox from "./Library/Checkbox";
+import Link from "next/link";
 
 interface Props {
   model: string
@@ -20,7 +21,6 @@ export default function NewEnginesQuoteList({ model }: Props) {
     fetchData();
   }, [model]);
   
-
 
   return (
     <div className="new-engines-quotes-list">
@@ -52,7 +52,7 @@ export default function NewEnginesQuoteList({ model }: Props) {
                   <td>{ formatDate(quote.date) }</td>
                   <td>{ quote.salesman }</td>
                   <td>{ quote.source }</td>
-                  <td>{ quote.customer.company }</td>
+                  <td>{ quote.customer && <Link href={`/customer/${quote.customer.id}`}>{quote.customer.company}</Link> }</td>
                   <td>{ quote.contact }</td>
                   <td>{ formatPhone(quote.phone) }</td>
                   <td>{ quote.state }</td>

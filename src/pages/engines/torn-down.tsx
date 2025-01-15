@@ -19,6 +19,7 @@ export default function EnginesTornDown() {
   const [engines, setEngines] = useState<Engine[]>([]);
   const [searchedEngines, setSearchedEngines] = useState<Engine[]>(enginesData);
   const [loading, setLoading] = useState(true);
+  const LIMIT = 40;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -35,10 +36,6 @@ export default function EnginesTornDown() {
     setEngines(data);
   };
 
-  const handleSearch = (results: Engine[]) => {
-    setSearchedEngines(results);
-  };
-
 
   return (
     <Layout>
@@ -48,7 +45,7 @@ export default function EnginesTornDown() {
           <Button onClick={() => setOpenSearch(true)}>Search</Button>
         </div>
 
-        <EngineSearchDialog open={openSearch} setOpen={setOpenSearch} engines={enginesData} setEngines={handleSearch} />
+        <EngineSearchDialog open={openSearch} setOpen={setOpenSearch} engines={enginesData.map((e) => {return { ...e, loginDate: e.toreDownDate }})} setEngines={setSearchedEngines} />
 
         {engines &&
           <div className="engines__table-container">
@@ -90,7 +87,7 @@ export default function EnginesTornDown() {
             <Pagination
               data={searchedEngines}
               setData={handleChangePage}
-              pageSize={35}
+              pageSize={LIMIT}
             />
           </div>
         }

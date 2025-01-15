@@ -7,7 +7,6 @@ import Table from "@/components/Library/Table";
 import NewEnginesQuoteList from "@/components/NewEnginesQuoteList";
 import { enginesAtom } from "@/scripts/atoms/state";
 import { getEnginesByStatus } from "@/scripts/controllers/enginesController";
-import { formatCurrency } from "@/scripts/tools/stringUtils";
 import { useAtom } from "jotai";
 import Link from "next/link";
 import { useEffect, useState } from "react";

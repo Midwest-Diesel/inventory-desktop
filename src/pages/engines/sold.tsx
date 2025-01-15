@@ -19,6 +19,7 @@ export default function SoldEngines() {
   const [engines, setEngines] = useState<Engine[]>([]);
   const [searchedEngines, setSearchedEngines] = useState<Engine[]>(enginesData);
   const [loading, setLoading] = useState(true);
+  const LIMIT = 40;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -35,10 +36,6 @@ export default function SoldEngines() {
     setEngines(data);
   };
 
-  const handleSearch = (results: Engine[]) => {
-    setSearchedEngines(results);
-  };
-
 
   return (
     <Layout>
@@ -48,7 +45,7 @@ export default function SoldEngines() {
           <Button onClick={() => setOpenSearch(true)}>Search</Button>
         </div>
 
-        <EngineSearchDialog open={openSearch} setOpen={setOpenSearch} engines={enginesData} setEngines={handleSearch} />
+        <EngineSearchDialog open={openSearch} setOpen={setOpenSearch} engines={enginesData} setEngines={setSearchedEngines} />
 
         {engines &&
           <div className="engines__table-container">
@@ -100,7 +97,7 @@ export default function SoldEngines() {
             <Pagination
               data={searchedEngines}
               setData={handleChangePage}
-              pageSize={35}
+              pageSize={LIMIT}
             />
           </div>
         }

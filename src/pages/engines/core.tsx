@@ -19,6 +19,7 @@ export default function CoreEngines() {
   const [engines, setEngines] = useState<Engine[]>([]);
   const [searchedEngines, setSearchedEngines] = useState<Engine[]>(enginesData);
   const [loading, setLoading] = useState(true);
+  const LIMIT = 40;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -88,7 +89,7 @@ export default function CoreEngines() {
             <Pagination
               data={searchedEngines}
               setData={handleChangePage}
-              pageSize={35}
+              pageSize={LIMIT}
             />
           </div>
         }
