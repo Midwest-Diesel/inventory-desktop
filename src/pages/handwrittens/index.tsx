@@ -60,7 +60,7 @@ export default function Handwrittens() {
     );
 
     if (hasValidSearchCriteria) {
-      const res = await searchHandwrittens({ ...searchData, page });
+      const res = await searchHandwrittens({ ...searchData, offset: (page - 1) * LIMIT });
       setHandwrittens(res.rows);
     } else{
       const res = await getSomeHandwrittens(page, LIMIT);

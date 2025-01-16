@@ -7,7 +7,7 @@ interface SearchData {
   vendor: string
   status: string
   limit: number
-  page: number
+  offset: number
 }
 
 

@@ -12,7 +12,7 @@ interface HandwrittenSearchData {
   source?: string,
   payment?: string,
   limit: number,
-  page: number
+  offset: number
 }
 
 export interface AltShip {

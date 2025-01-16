@@ -51,7 +51,7 @@ export default function HandwrittensSearchDialog({ open, setOpen, setHandwritten
       source,
       payment,
       limit,
-      page: (page - 1) * limit
+      offset: (page - 1) * limit
     };
     const res = await searchHandwrittens(searchData);
     setHandwrittens(res.rows);

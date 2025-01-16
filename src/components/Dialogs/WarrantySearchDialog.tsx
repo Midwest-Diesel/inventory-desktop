@@ -40,7 +40,7 @@ export default function WarrantySearchDialog({ open, setOpen, setWarranties, set
       vendor,
       status,
       limit,
-      page: (page - 1) * limit
+      offset: (page - 1) * limit
     };
     const res = await searchWarranties(searchData);
     setWarranties(res.rows);

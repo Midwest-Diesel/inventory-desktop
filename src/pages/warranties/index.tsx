@@ -49,7 +49,7 @@ export default function Warranties() {
     );
 
     if (hasValidSearchCriteria) {
-      const res = await searchWarranties({ ...searchData, page });
+      const res = await searchWarranties({ ...searchData, offset: (page - 1) * LIMIT });
       setWarrantiesMin(res.minItems);
       setWarranties(res.rows);
     } else{
