@@ -1,6 +1,16 @@
 import api from "../config/axios";
 import { parseResDate } from "../tools/stringUtils";
 
+interface SearchData {
+  poNum: number
+  purchasedFrom: string
+  purchasedFor: string
+  isItemReceived: string
+  orderedBy: string
+  limit: number
+  offset: number
+}
+
 
 const parsePoDataRes = (data: any) => {
   return data.map((d: PO) => {
@@ -20,11 +30,31 @@ export const getPurchaseOrderById = async (id: number) => {
   }
 };
 
+export const getPurchaseOrderByPoNum = async (id: number) => {
+  try {
+    const auth = { withCredentials: true };
+    const res = await api.get(`/api/po/poNum/${id}`, auth);
+    return parsePoDataRes(res.data)[0];
+  } catch (err) {
+    console.error(err);
+  }
+};
+
 export const getSomePurchaseOrders = async (page: number, limit: number, showIncomming: boolean) => {
   try {
     const auth = { withCredentials: true };
     const res = await api.get(`/api/po/limit/${JSON.stringify({ page: (page - 1) * limit, limit, showIncomming })}`, auth);
     return parsePoDataRes(res.data);
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+export const searchPurchaseOrders = async (searchData: SearchData) => {
+  try {
+    const auth = { withCredentials: true };
+    const res = await api.get(`/api/po/search/${JSON.stringify(searchData)}`, auth);
+    return { minItems: res.data.minItems, rows: parsePoDataRes(res.data.rows) };
   } catch (err) {
     console.error(err);
   }

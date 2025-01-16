@@ -32,3 +32,4 @@ export const showSoldPartsAtom = atom<boolean>(true);
 export const usersAtom = atom<{ id: number, username: string, initials: string, type: string, subtype: string }[]>([]);
 export const handwrittenSearchAtom = atom<any>({});
 export const warrantySearchAtom = atom<any>({});
+export const POSearchAtom = atom<any>({});

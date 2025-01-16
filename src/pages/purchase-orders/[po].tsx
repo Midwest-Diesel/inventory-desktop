@@ -7,7 +7,7 @@ import Loading from "@/components/Library/Loading";
 import Table from "@/components/Library/Table";
 import PurchaseOrderItemsTable from "@/components/PurchaseOrderItemsTable";
 import { userAtom } from "@/scripts/atoms/state";
-import { deletePurchaseOrder, getPurchaseOrderById, togglePurchaseOrderReceived } from "@/scripts/controllers/purchaseOrderController";
+import { deletePurchaseOrder, getPurchaseOrderByPoNum, togglePurchaseOrderReceived } from "@/scripts/controllers/purchaseOrderController";
 import { formatDate } from "@/scripts/tools/stringUtils";
 import { setTitle } from "@/scripts/tools/utils";
 import { useAtom } from "jotai";
@@ -26,7 +26,7 @@ export default function PurchaseOrder() {
   useEffect(() => {
     const fetchData = async () => {
       if (!params) return;
-      const res = await getPurchaseOrderById(Number(params.po));
+      const res = await getPurchaseOrderByPoNum(Number(params.po));
       setTitle(`${res.purchasedFrom} PO`);
       setPoData(res);
     };
@@ -46,7 +46,7 @@ export default function PurchaseOrder() {
   const handleReceivedItem = async () => {
     if (!await confirm('Are you sure you want to do this?')) return;
     await togglePurchaseOrderReceived(poData.id, !poData.isItemReceived);
-    const res = await getPurchaseOrderById(Number(params.po));
+    const res = await getPurchaseOrderByPoNum(Number(params.po));
     setPoData(res);
   };
 
@@ -60,7 +60,7 @@ export default function PurchaseOrder() {
           <>
             <div className="purchase-order-details__header">
               <div>
-                <h2>{ poData.id } Purchase Order</h2>
+                <h2>{ poData.poNum } Purchase Order</h2>
                 <div className="purchase-order-details__top-bar">
                   <Button onClick={handlePrint}>Print Report</Button>
                   <Button onClick={handleReceivedItem}>{ poData.isItemReceived ? 'Unmark' : 'Mark' } as Received</Button>
