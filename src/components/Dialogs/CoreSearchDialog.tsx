@@ -2,6 +2,7 @@ import { FormEvent, useState } from "react";
 import Dialog from "../Library/Dialog";
 import Input from "../Library/Input";
 import Button from "../Library/Button";
+import Select from "../Library/Select/Select";
 
 interface Props {
   open: boolean
@@ -14,7 +15,7 @@ interface Props {
 export default function CoreSearchDialog({ open, setOpen, cores, setCores }: Props) {
   const [partNum, setPartNum] = useState('');
   const [desc, setDesc] = useState('');
-  const [priority, setPriority] = useState('');
+  const [priority, setPriority] = useState<'' | 'HIGH' | 'LOW'>('');
   const [salesperson, setSalesperson] = useState('');
 
   const clearInputs = () => {
@@ -24,19 +25,22 @@ export default function CoreSearchDialog({ open, setOpen, cores, setCores }: Pro
     setSalesperson('');
   };
 
-  const handleSubmit = async (e: FormEvent) => {
+  const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    const results = searchCores();
-    setCores(results);
+    setCores(searchCores());
   };
 
   const searchCores  = () => {
-    if (!partNum && !desc && !priority && !salesperson) return cores;
-    if (partNum.includes('*')) {
-      return cores.filter((core: Core) => core.partNum.includes(partNum.replace('*', '')));
-    } else {
-      return cores.filter((core: Core) => core.partNum.toString() === partNum);
-    }
+    return cores.filter((core) => {
+      if (
+        (!partNum || partNum.includes('*') ? core.partNum.toUpperCase().includes(partNum.replace('*', '').toUpperCase()) : core.partNum.toUpperCase() === partNum.toUpperCase()) &&
+        (!desc || desc.includes('*') ? core.desc.toUpperCase().includes(desc.replace('*', '').toUpperCase()) : core.desc.toUpperCase() === desc.toUpperCase()) &&
+        (!priority || core.priority.toUpperCase() === priority) &&
+        (!salesperson || salesperson.includes('*') ? core.initials.toUpperCase().includes(salesperson.replace('*', '').toUpperCase()) : core.initials.toUpperCase() === salesperson.toUpperCase())
+      ) {
+        return core;
+      }
+    });
   };
 
 
@@ -46,16 +50,41 @@ export default function CoreSearchDialog({ open, setOpen, cores, setCores }: Pro
       setOpen={setOpen}
       title="Cores Search"
       width={350}
-      height={200}
+      height={280}
       y={-250}
       className="cores-search-dialog"
     >
-      <form onSubmit={(e) => handleSubmit(e)}>
+      <form onSubmit={handleSubmit}>
         <Input
           label="Part Number"
           variant={['small', 'thin', 'label-no-stack', 'label-space-between']}
           value={partNum}
           onChange={(e: any) => setPartNum(e.target.value)}
+        />
+
+        <Input
+          label="Description"
+          variant={['small', 'thin', 'label-no-stack', 'label-space-between']}
+          value={desc}
+          onChange={(e: any) => setDesc(e.target.value)}
+        />
+
+        <Select
+          variant={['label-space-between', 'label-inline']}
+          label="Priority"
+          value={priority}
+          onChange={(e: any) => setPriority(e.target.value)}
+        >
+          <option value="">Both</option>
+          <option value="HIGH">High</option>
+          <option value="LOW">Low</option>
+        </Select>
+
+        <Input
+          label="Salesperson"
+          variant={['small', 'thin', 'label-no-stack', 'label-space-between']}
+          value={salesperson}
+          onChange={(e: any) => setSalesperson(e.target.value)}
         />
 
         <div className="form__footer">

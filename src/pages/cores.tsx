@@ -25,9 +25,9 @@ export default function Cores() {
 
   return (
     <Layout title="Cores">
-      <div className="cores-page">
-        <CoreSearchDialog open={isCoreSearchOpen} setOpen={setIsOpenCoreSearchOpen} cores={coresData} setCores={setCores} />
+      <CoreSearchDialog open={isCoreSearchOpen} setOpen={setIsOpenCoreSearchOpen} cores={coresData} setCores={setCores} />
 
+      <div className="cores-page">
         <h1>Cores</h1>
         <div className="cores-page__top-bar">
           <Button onClick={() => setIsOpenCoreSearchOpen(true)}>Search</Button>
