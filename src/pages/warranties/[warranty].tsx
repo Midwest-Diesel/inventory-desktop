@@ -41,7 +41,7 @@ export default function Warranty() {
   };
 
   const handleCompleteWarranty = async () => {
-    if (!confirm(`${warrantyData.completed ? 'Open' : 'Close'} warranty?`)) return;
+    if (!await confirm(`${warrantyData.completed ? 'Open' : 'Close'} warranty?`)) return;
     const newWarranty = {
       id: Number(warrantyData.id),
       completed: !warrantyData.completed,

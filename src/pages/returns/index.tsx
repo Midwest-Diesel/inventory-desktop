@@ -70,7 +70,7 @@ export default function Returns() {
                 <tr>
                   <th></th>
                   <th>Return</th>
-                  <th>Invoice</th>
+                  <th>Handwritten</th>
                   <th>Date</th>
                   <th>By</th>
                   <th>Company</th>
@@ -144,7 +144,7 @@ export default function Returns() {
               <thead>
                 <tr>
                   <th>Return</th>
-                  <th>Invoice</th>
+                  <th>Handwritten</th>
                   <th>Date</th>
                   <th>By</th>
                   <th>Company</th>
@@ -213,7 +213,7 @@ export default function Returns() {
               <thead>
                 <tr>
                   <th>Return</th>
-                  <th>Invoice</th>
+                  <th>Handwritten</th>
                   <th>Date</th>
                   <th>By</th>
                   <th>Company</th>

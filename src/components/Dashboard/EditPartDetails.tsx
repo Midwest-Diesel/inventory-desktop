@@ -140,7 +140,7 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
   const handleAddAltPart = async () => {
     const input = prompt('Enter part numbers seperated by comma');
     const value = input && input.toUpperCase().trim().split(',');
-    if (!input || !confirm(`Are you sure you want to ADD: ${value.join(', ')}?`)) return;
+    if (!input || !await confirm(`Are you sure you want to ADD: ${value.join(', ')}?`)) return;
     const altRes = await getPartsInfoByPartNum(value[0]);
     const altString = altRes[0].altParts;
     await editAltParts(part.partNum, [...altParts, altString]);
@@ -152,7 +152,7 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
     const input = prompt('Enter part numbers seperated by comma');
     let altsToDelete = [];
     const deletedParts = [];
-    if (!input || !confirm(`Are you sure you want to REMOVE: ${input.toUpperCase().trim().split(',').join(', ')}?`)) return;
+    if (!input || !await confirm(`Are you sure you want to REMOVE: ${input.toUpperCase().trim().split(',').join(', ')}?`)) return;
     // Remove alt parts from currently edited part record
     const removedParts = input.toUpperCase().trim().split(',').map((p) => p.trim());
 

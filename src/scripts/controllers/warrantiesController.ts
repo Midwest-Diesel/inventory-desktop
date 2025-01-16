@@ -1,6 +1,15 @@
 import api from "../config/axios";
 import { parseResDate } from "../tools/stringUtils";
 
+interface SearchData {
+  id: number
+  partNum: string
+  vendor: string
+  status: string
+  limit: number
+  page: number
+}
+
 
 const parseWarrantyRes = (data: any) => {  
   return data.map((warrantyData: any) => {
@@ -41,6 +50,16 @@ export const getSomeWarranties = async (page: number, limit: number) => {
     const auth = { withCredentials: true };
     const res = await api.get(`/api/warranties/limit/${JSON.stringify({ page: (page - 1) * limit, limit })}`, auth);
     return parseWarrantyRes(res.data);
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+export const searchWarranties = async (search: SearchData) => {
+  try {
+    const auth = { withCredentials: true };
+    const res = await api.get(`/api/warranties/search/${JSON.stringify(search)}`, auth);
+    return { minItems: res.data.minItems, rows: parseWarrantyRes(res.data.rows)};
   } catch (err) {
     console.error(err);
   }

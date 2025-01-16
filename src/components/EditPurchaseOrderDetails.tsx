@@ -6,7 +6,7 @@ import Input from "./Library/Input";
 import Table from "./Library/Table";
 import { parseDateInputValue } from "@/scripts/tools/stringUtils";
 import { addPurchaseOrderItem, deletePurchaseOrderItem, editPurchaseOrder, editPurchaseOrderItem, getPurchaseOrderById } from "@/scripts/controllers/purchaseOrderController";
-import VendorSelect from "./Library/Select/VendorSelect";
+import VendorDropdown from "./Library/Dropdown/VendorDropdown";
 import { PreventNavigation } from "./PreventNavigation";
 import { confirm } from "@tauri-apps/api/dialog";
 
@@ -173,7 +173,7 @@ export default function EditPoDetails({ poData, setPo, setIsEditing }: Props) {
                   <tr>
                     <th>Vendor</th>
                     <td>
-                      <VendorSelect
+                      <VendorDropdown
                         variant={['label-full-width', 'no-margin', 'label-full-height', 'fill']}
                         value={purchasedFrom}
                         onChange={(vendor: Vendor) => handleChangeVendor(vendor)}
