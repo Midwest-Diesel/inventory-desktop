@@ -6,12 +6,12 @@ import Table from "../Library/Table";
 import Select from "../Library/Select/Select";
 import { deleteAddOn } from "@/scripts/controllers/addOnsController";
 import { addPart, getAutofillPart, getPartByEngineNum, getPartByPartNum, getPartsInfoByPartNum } from "@/scripts/controllers/partsController";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Input from "../Library/Input";
 import { getAutofillEngine } from "@/scripts/controllers/enginesController";
 import Loading from "../Library/Loading";
-import CustomerSelect from "../Library/Select/CustomerSelect";
 import { confirm } from '@tauri-apps/api/dialog';
+import VendorSelect from "../Library/Select/VendorSelect";
 
 interface Props {
   addOn: AddOn
@@ -24,6 +24,16 @@ export default function OfficeAddonRow({ addOn }: Props) {
   const [autofillEngineNum, setAutofillEngineNum] = useState('');
   const [loading, setLoading] = useState(false);
   const [loadingProgress, setLoadingProgress] = useState('');
+  const [showVendorSelect, setShowVendorSelect] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!showVendorSelect) return;
+    setTimeout(() => {
+      const select = ref.current.querySelectorAll('select');
+      select.length > 0 && select[select.length - 1].focus();
+    }, 30);
+  }, [showVendorSelect]);
 
   const handleEditAddOn = (newAddOn: AddOn) => {
     const updatedAddOns = addOns.map((a: AddOn) => {
@@ -63,24 +73,24 @@ export default function OfficeAddonRow({ addOn }: Props) {
     const res = await getPartByPartNum(value);
     const newAddOn = {
       ...addOn,
-      qty: res.qty,
+      qty: Number(res.qty),
       partNum: res.partNum,
       desc: res.desc,
       stockNum: res.stockNum,
       location: res.location,
       remarks: res.remarks,
       entryDate: res.entryDate,
-      rating: res.rating,
-      engineNum: res.engineNum,
+      rating: Number(res.rating),
+      engineNum: Number(res.engineNum),
       condition: res.condition,
-      purchasePrice: res.purchasePrice,
+      purchasePrice: Number(res.purchasePrice),
       purchasedFrom: res.purchasedFrom,
-      po: res.po,
+      po: Number(res.po),
       manufacturer: res.manufacturer,
       isSpecialCost: res.isSpecialCost,
-      newPrice: res.newPrice,
-      remanPrice: res.remanPrice,
-      dealerPrice: res.dealerPrice,
+      newPrice: Number(res.newPrice),
+      remanPrice: Number(res.remanPrice),
+      dealerPrice: Number(res.dealerPrice),
       pricingType: res.pricingType,
       priceStatus: res.priceStatus,
       hp: res.hp,
@@ -102,7 +112,7 @@ export default function OfficeAddonRow({ addOn }: Props) {
     const newAddOn = {
       ...addOn,
       stockNum: part && part.stockNum,
-      engineNum: res.stockNum,
+      engineNum: Number(res.stockNum),
       hp: res.horsePower,
       serialNum: res.serialNum,
     } as AddOn;
@@ -137,7 +147,7 @@ export default function OfficeAddonRow({ addOn }: Props) {
 
 
   return (
-    <div className="add-ons__list-row">
+    <div className="add-ons__list-row" ref={ref}>
       <div className="add-ons__list-row-content">
         <Table variant={['plain', 'edit-row-details']} style={{ width: 'fit-content' }}>
           <thead>
@@ -157,7 +167,7 @@ export default function OfficeAddonRow({ addOn }: Props) {
                   variant={['x-small', 'thin']}
                   type="number"
                   value={addOn.qty !== null ? addOn.qty : ''}
-                  onChange={(e: any) => handleEditAddOn({ ...addOn, qty: Number(e.target.value) })}
+                  onChange={(e: any) => handleEditAddOn({ ...addOn, qty: e.target.value })}
                   required
                 />
               </td>
@@ -190,7 +200,7 @@ export default function OfficeAddonRow({ addOn }: Props) {
                   onAutofill={(value) => updateAutofillEngineNumData(Number(value))}
                   value={addOn.engineNum !== null ? addOn.engineNum : ''}
                   onChange={(e: any) => {
-                    handleEditAddOn({ ...addOn, engineNum: e.target.value ? Number(e.target.value) : '' as any });
+                    handleEditAddOn({ ...addOn, engineNum: e.target.value ? e.target.value : '' as any });
                     autofillFromEngineNum(Number(e.target.value));
                   }}
                   required
@@ -283,7 +293,7 @@ export default function OfficeAddonRow({ addOn }: Props) {
                   variant={['small', 'thin', 'text-area']}
                   type="number"
                   value={addOn.rating !== null ? addOn.rating : ''}
-                  onChange={(e: any) => handleEditAddOn({ ...addOn, rating: Number(e.target.value) })}
+                  onChange={(e: any) => handleEditAddOn({ ...addOn, rating: e.target.value })}
                   required
                 />
               </td>
@@ -292,7 +302,7 @@ export default function OfficeAddonRow({ addOn }: Props) {
                   variant={['small', 'thin', 'text-area']}
                   type="number"
                   value={addOn.po !== null ? addOn.po : ''}
-                  onChange={(e: any) => handleEditAddOn({ ...addOn, po: Number(e.target.value) })}
+                  onChange={(e: any) => handleEditAddOn({ ...addOn, po: e.target.value })}
                 />
               </td>
             </tr>
@@ -316,7 +326,7 @@ export default function OfficeAddonRow({ addOn }: Props) {
                   variant={['small', 'thin']}
                   type="number"
                   value={addOn.newPrice !== null ? addOn.newPrice : ''}
-                  onChange={(e: any) => handleEditAddOn({ ...addOn, newPrice: Number(e.target.value) })}
+                  onChange={(e: any) => handleEditAddOn({ ...addOn, newPrice: e.target.value })}
                   required
                 />
               </td>
@@ -325,7 +335,7 @@ export default function OfficeAddonRow({ addOn }: Props) {
                   variant={['small', 'thin']}
                   type="number"
                   value={addOn.remanPrice !== null ? addOn.remanPrice : ''}
-                  onChange={(e: any) => handleEditAddOn({ ...addOn, remanPrice: Number(e.target.value) })}
+                  onChange={(e: any) => handleEditAddOn({ ...addOn, remanPrice: e.target.value })}
                   required
                 />
               </td>
@@ -334,7 +344,7 @@ export default function OfficeAddonRow({ addOn }: Props) {
                   variant={['small', 'thin']}
                   type="number"
                   value={addOn.dealerPrice !== null ? addOn.dealerPrice : ''}
-                  onChange={(e: any) => handleEditAddOn({ ...addOn, dealerPrice: Number(e.target.value) })}
+                  onChange={(e: any) => handleEditAddOn({ ...addOn, dealerPrice: e.target.value })}
                   required
                 />
               </td>
@@ -351,12 +361,22 @@ export default function OfficeAddonRow({ addOn }: Props) {
               </td>
               <td>
                 <div style={{ width: '21rem' }}>
-                  <CustomerSelect
-                    variant={['label-full-width', 'no-margin', 'label-full-height', 'fill']}
-                    value={addOn.purchasedFrom}
-                    onChange={(value: string) => handleEditAddOn({ ...addOn, purchasedFrom: value })}
-                    maxHeight="14rem"
-                  />
+                  {showVendorSelect ?
+                    <VendorSelect
+                      variant={['label-full-width']}
+                      value={addOn.purchasedFrom}
+                      onChange={(e: any) => handleEditAddOn({ ...addOn, purchasedFrom: e.target.value })}
+                      onBlur={() => setShowVendorSelect(false)}
+                    />
+                    :
+                    <Button
+                      style={{ marginLeft: '0.3rem', width: '100%', textAlign: 'start' }}
+                      variant={['no-style', 'x-small']}
+                      onFocus={() => setShowVendorSelect(true)}
+                    >
+                      { addOn.purchasedFrom || 'Select Vendor' }
+                    </Button>
+                  }
                 </div>
               </td>
             </tr>

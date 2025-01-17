@@ -4,14 +4,11 @@ import Button from "@/components/Library/Button";
 import { PreventNavigation } from "@/components/PreventNavigation";
 import { shopAddOnsAtom } from "@/scripts/atoms/state";
 import { addAddOn, editAddOn, getAllAddOns } from "@/scripts/controllers/addOnsController";
-import { confirm } from "@tauri-apps/api/dialog";
 import { useAtom } from "jotai";
-import { useRouter } from "next/router";
 import { Fragment, useEffect, useState } from "react";
 
 
 export default function AddOnsShop() {
-  const router = useRouter();
   const [prevAddons, setPrevAddons] = useState<AddOn[]>([]);
   const [addOns, setAddons] = useAtom<AddOn[]>(shopAddOnsAtom);
   const [savedBtnText, setSavedBtnText] = useState('Save');

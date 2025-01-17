@@ -733,7 +733,6 @@ fn print_shipping_label(args: ShippingLabelArgs) -> Result<(), String> {
   let mut cmd = Command::new("wscript.exe");
   cmd.arg(vbs_path);
   cmd.output().expect("Failed to update shipping list");
-  let _ = std::fs::remove_file(vbs_path);
   Ok(())
 }
 
@@ -803,7 +802,6 @@ fn print_cc_label(args: CCLabelArgs) -> Result<(), String> {
   let mut cmd = Command::new("wscript.exe");
   cmd.arg(vbs_path);
   cmd.output().expect("Failed to update ccLabel");
-  let _ = std::fs::remove_file(vbs_path);
   Ok(())
 }
 
@@ -930,7 +928,6 @@ fn print_bol(args: BOLArgs) -> Result<(), String> {
   let mut cmd = Command::new("wscript.exe");
   cmd.arg(vbs_path);
   cmd.output().expect("Failed to update shipping list");
-  let _ = std::fs::remove_file(vbs_path);
   Ok(())
 }
 
@@ -1125,7 +1122,6 @@ fn print_shipping_invoice(args: ShippingInvoiceArgs) -> Result<(), String> {
   let mut cmd = Command::new("wscript.exe");
   cmd.arg(vbs_path);
   cmd.output().expect("Failed to update content");
-  let _ = std::fs::remove_file(vbs_path);
   Ok(())
 }
 
@@ -1173,7 +1169,6 @@ fn print_ci(args: CIArgs) -> Result<(), String> {
   let mut cmd = Command::new("wscript.exe");
   cmd.arg(vbs_path);
   cmd.output().expect("Failed to update shipping list");
-  let _ = std::fs::remove_file(vbs_path);
   Ok(())
 }
 
@@ -1197,7 +1192,6 @@ fn print_coo() -> Result<(), String> {
   let mut cmd = Command::new("wscript.exe");
   cmd.arg(vbs_path);
   cmd.output().expect("Failed to update shipping list");
-  let _ = std::fs::remove_file(vbs_path);
   Ok(())
 }
 
@@ -1279,6 +1273,5 @@ fn print_part_tag(args: PartTagArgs) -> Result<(), String> {
   let mut cmd = Command::new("wscript.exe");
   cmd.arg(vbs_path);
   cmd.output().expect("Failed to update shipping list");
-  let _ = std::fs::remove_file(vbs_path);
   Ok(())
 }

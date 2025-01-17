@@ -72,10 +72,10 @@ export const getPurchaseOrdersCount = async (showIncomming: boolean) => {
 
 // === POST routes === //
 
-export const addBlankPurchaseOrder = async () => {
+export const addBlankPurchaseOrder = async (poNum: number) => {
   try {
     const auth = { withCredentials: true };
-    await api.post('/api/po', {}, auth);
+    await api.post('/api/po', { poNum }, auth);
   } catch (err) {
     console.error(err);
   }

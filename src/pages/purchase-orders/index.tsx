@@ -71,7 +71,9 @@ export default function PurchaseOrders() {
   };
 
   const handleNewPurchaseOrder = async () => {
-    await addBlankPurchaseOrder();
+    const poNum = prompt('Enter PO Number');
+    if (!poNum) return;
+    await addBlankPurchaseOrder(Number(poNum));
     location.reload();
   };
 
@@ -139,7 +141,7 @@ export default function PurchaseOrders() {
           }
         </div>
 
-        { focusedPurchaseOrder && <PurchaseOrderItemsTable poItems={focusedPurchaseOrder.poItems} /> }
+        { focusedPurchaseOrder && <PurchaseOrderItemsTable poItems={focusedPurchaseOrder.poItems} poReceivedItems={focusedPurchaseOrder.poReceivedItems} /> }
       </div>
     </Layout>
   );

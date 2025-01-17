@@ -57,6 +57,7 @@ export default function Returns() {
       <div className="returns">
         <h1>{ `${cap(displayedPanel)} Returns` }</h1>
         <div className="returns__top-bar">
+          {/* <Button onClick={() => setOpenSearch(true)}>Search</Button> */}
           <Button onClick={() => setDisplayedPanel('shop')}>Shop Returns</Button>
           <Button onClick={() => setDisplayedPanel('accounting')}>Accounting Returns</Button>
           <Button onClick={() => setDisplayedPanel('completed')}>Completed Returns</Button>

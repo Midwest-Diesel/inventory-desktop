@@ -2,7 +2,7 @@ import Button from "../Library/Button";
 import Checkbox from "../Library/Checkbox";
 import Table from "../Library/Table";
 import Select from "../Library/Select/Select";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Input from "../Library/Input";
 import { addEngine, getAutofillEngine } from "@/scripts/controllers/enginesController";
 import { deleteEngineAddOn } from "@/scripts/controllers/engineAddOnsController";
@@ -12,6 +12,7 @@ import { engineAddOnsAtom } from "@/scripts/atoms/state";
 import { confirm } from '@tauri-apps/api/dialog';
 import { formatDate } from "@/scripts/tools/stringUtils";
 import { invoke } from "@tauri-apps/api/tauri";
+import VendorSelect from "../Library/Select/VendorSelect";
 
 interface Props {
   addOn: EngineAddOn
@@ -22,8 +23,18 @@ interface Props {
 export default function EngineAddOnRow({ addOn, handleDuplicateAddOn }: Props) {
   const [addOns, setAddons] = useAtom<EngineAddOn[]>(engineAddOnsAtom);
   const [autofillEngineNum, setAutofillEngineNum] = useState('');
+  const [showVendorSelect, setShowVendorSelect] = useState(false);
   const [printQty, setPrintQty] = useState(1);
+  const ref = useRef<HTMLDivElement>(null);
 
+  useEffect(() => {
+    if (!showVendorSelect) return;
+    setTimeout(() => {
+      const select = ref.current.querySelectorAll('select');
+      select.length > 0 && select[select.length - 2].focus();
+    }, 30);
+  }, [showVendorSelect]);
+  
   const handleEditAddOn = (newAddOn: EngineAddOn) => {
     const updatedAddOns = addOns.map((a: EngineAddOn) => {
       if (a.id === newAddOn.id) {
@@ -97,7 +108,7 @@ export default function EngineAddOnRow({ addOn, handleDuplicateAddOn }: Props) {
   
 
   return (
-    <div className="add-ons__list-row">
+    <div className="add-ons__list-row" ref={ref}>
       <div className="add-ons__list-row-content">
         <Table variant={['plain', 'edit-row-details']} style={{ width: 'fit-content' }}>
           <thead>
@@ -123,7 +134,6 @@ export default function EngineAddOnRow({ addOn, handleDuplicateAddOn }: Props) {
                     handleEditAddOn({ ...addOn, engineNum: e.target.value });
                     autofillFromEngineNum(Number(e.target.value));
                   }}
-                  required
                 />
               </td>
               <td>
@@ -131,7 +141,6 @@ export default function EngineAddOnRow({ addOn, handleDuplicateAddOn }: Props) {
                   variant={['small', 'thin']}
                   value={addOn.model !== null ? addOn.model.trim() : ''}
                   onChange={(e: any) => handleEditAddOn({ ...addOn, model: e.target.value })}
-                  required
                 />
               </td>
               <td>
@@ -139,7 +148,6 @@ export default function EngineAddOnRow({ addOn, handleDuplicateAddOn }: Props) {
                   variant={['small', 'thin']}
                   value={addOn.serialNum !== null ? addOn.serialNum : ''}
                   onChange={(e: any) => handleEditAddOn({ ...addOn, serialNum: e.target.value })}
-                  required
                 />
               </td>
               <td>
@@ -154,7 +162,6 @@ export default function EngineAddOnRow({ addOn, handleDuplicateAddOn }: Props) {
                   variant={['small', 'thin']}
                   value={addOn.location !== null ? addOn.location.trim() : ''}
                   onChange={(e: any) => handleEditAddOn({ ...addOn, location: e.target.value })}
-                  required
                 />
               </td>
               <td>
@@ -162,7 +169,6 @@ export default function EngineAddOnRow({ addOn, handleDuplicateAddOn }: Props) {
                   variant={['small', 'thin']}
                   value={addOn.hp !== null ? addOn.hp : ''}
                   onChange={(e: any) => handleEditAddOn({ ...addOn, hp: e.target.value })}
-                  required
                 />
               </td>
             </tr>
@@ -185,7 +191,6 @@ export default function EngineAddOnRow({ addOn, handleDuplicateAddOn }: Props) {
                   style={{ width: '100%' }}
                   value={addOn.currentStatus ? addOn.currentStatus.trim() : ''}
                   onChange={(e: any) => handleEditAddOn({ ...addOn, currentStatus: e.target.value })}
-                  required
                 >
                   <option>ToreDown</option>
                   <option>RunnerReady</option>
@@ -199,12 +204,22 @@ export default function EngineAddOnRow({ addOn, handleDuplicateAddOn }: Props) {
               </td>
               <td>
                 <div style={{ width: '21rem' }}>
-                  <CustomerSelect
-                    variant={['label-full-width', 'no-margin', 'label-full-height', 'fill']}
-                    value={addOn.purchasedFrom}
-                    onChange={(value: string) => handleEditAddOn({ ...addOn, purchasedFrom: value })}
-                    maxHeight="14rem"
-                  />
+                  {showVendorSelect ?
+                    <VendorSelect
+                      variant={['label-full-width']}
+                      value={addOn.purchasedFrom}
+                      onChange={(e: any) => handleEditAddOn({ ...addOn, purchasedFrom: e.target.value })}
+                      onBlur={() => setShowVendorSelect(false)}
+                    />
+                    :
+                    <Button
+                      style={{ marginLeft: '0.3rem', width: '100%', textAlign: 'start' }}
+                      variant={['no-style', 'x-small']}
+                      onFocus={() => setShowVendorSelect(true)}
+                    >
+                      { addOn.purchasedFrom || 'Select Vendor' }
+                    </Button>
+                  }
                 </div>
               </td>
               <td>
@@ -220,7 +235,6 @@ export default function EngineAddOnRow({ addOn, handleDuplicateAddOn }: Props) {
                   style={{ width: '100%' }}
                   value={addOn.oilPan}
                   onChange={(e: any) => handleEditAddOn({ ...addOn, oilPan: e.target.value })}
-                  required
                 >
                   <option>FS</option>
                   <option>RS</option>

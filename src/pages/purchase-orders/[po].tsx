@@ -211,7 +211,7 @@ export default function PurchaseOrder() {
               </GridItem>
 
               <GridItem variant={['no-style']} colStart={1} colEnd={12}>
-                <PurchaseOrderItemsTable poItems={poData.poItems} className="purchase-order-items-table--details-page" />
+                <PurchaseOrderItemsTable poItems={poData.poItems} poReceivedItems={poData.poReceivedItems} className="purchase-order-items-table--details-page" />
               </GridItem>
             </Grid>
           </>

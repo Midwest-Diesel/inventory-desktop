@@ -709,6 +709,7 @@ type PO = {
   vendorContact: string
   shippingMethod: string
   poItems: POItem[]
+  poReceivedItems: POReceivedItem[]
 };
 
 type POItem = {
@@ -718,6 +719,16 @@ type POItem = {
   unitPrice: number
   totalPrice: number
   isReceived: boolean
+};
+
+type POReceivedItem = {
+  id: number
+  partNum: string
+  desc: string
+  stockNum: string
+  cost: number
+  qty: number
+  POItemId: number
 };
 
 type EmailStuff = {

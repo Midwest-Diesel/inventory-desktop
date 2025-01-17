@@ -3,7 +3,7 @@ import { parseResDate } from "../tools/stringUtils";
 import { isObjectNull } from "../tools/utils";
 
 interface ReturnSearchData {
-  id?: number
+  id: number
 }
 
 
@@ -66,7 +66,7 @@ export const searchReturns = async (returnData: ReturnSearchData) => {
   try {
     const auth = { withCredentials: true };
     const res = await api.get(`/api/returns/search/${JSON.stringify(returnData)}`, auth);
-    return parseReturnRes(res.data);
+    return { minItems: res.data.minItems, rows: parseReturnRes(res.data.rows) };
   } catch (err) {
     console.error(err);
   }
