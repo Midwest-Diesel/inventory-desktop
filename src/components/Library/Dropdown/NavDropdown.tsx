@@ -19,6 +19,7 @@ export default function NavDropdown({ children, className, label }: Props) {
   }, []);
 
   const handleScreenClick = (e: any) => {
+    if (e.target.classList[1] === 'alert__btn--primary') return;
     const clickedDropdown = e.target.closest('.nav-dropdown');
     if (!clickedDropdown) setIsOpen(false);
   };
@@ -26,10 +27,10 @@ export default function NavDropdown({ children, className, label }: Props) {
 
   return (
     <div onClick={() => setIsOpen(!isOpen)} className={`nav-dropdown${className ? className : ''}`}>
-      <p>{ label }</p>
-      <div className="nav-dropdown__list">
+      <span className="nav-dropdown__label">{ label }</span>
+      <div className="nav-dropdown__list" style={isOpen ? {} : { display: 'none' }}>
         <div className="nav-dropdown__list--container">
-          { isOpen && children }
+          { children }
         </div>
       </div>
     </div>

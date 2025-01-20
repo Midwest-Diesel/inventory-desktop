@@ -4,16 +4,17 @@ import { useRouter } from 'next/router';
 import { useEffect, useRef, useState } from 'react';
 import Alert from './Library/Alert';
 
-interface PreventNavigationProps {
+interface Props {
   isDirty?: boolean
   text?: string
 }
 
 
-export const PreventNavigation = ({ isDirty = true, text }: PreventNavigationProps) => {
+export const PreventNavigation = ({ isDirty = true, text }: Props) => {
   const [leavingPage, setLeavingPage] = useState(false);
   const router = useRouter();
   const confirmationFn = useRef<() => void>(() => {});
+  const cancelFn = useRef<() => void>(() => {});
 
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {
@@ -27,10 +28,24 @@ export const PreventNavigation = ({ isDirty = true, text }: PreventNavigationPro
       }
     };
 
+    const handleDropdownClick = (e: MouseEvent) => {
+      const target = e.target as HTMLDivElement;
+      if (target.classList[0] === 'nav__link') setLeavingPage(true);
+    };
+
+    const handleKeydown = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape') return;
+      setLeavingPage(false);
+      cancelFn.current();
+      confirmationFn.current = () => {};
+      cancelFn.current = () => {};
+    };
+
     const handlePopState = (e: PopStateEvent) => {
       e.preventDefault();
       if (isDirty) {
         confirmationFn.current = () => {};
+        cancelFn.current = () => {};
         setLeavingPage(true);
       } else {
         router.back();
@@ -44,16 +59,24 @@ export const PreventNavigation = ({ isDirty = true, text }: PreventNavigationPro
       }
     };
 
+    document.querySelectorAll('.nav-dropdown').forEach((elmt) => {
+      elmt.addEventListener('click', handleDropdownClick);
+    });
     document.querySelectorAll('a').forEach((link) => {
       link.addEventListener('click', handleClick);
     });
+    window.addEventListener('keydown', handleKeydown);
     window.addEventListener('popstate', handlePopState);
     window.addEventListener('beforeunload', handleBeforeUnload);
 
     return () => {
+      document.querySelectorAll('.nav-dropdown').forEach((elmt) => {
+        elmt.removeEventListener('click', handleDropdownClick);
+      });
       document.querySelectorAll('a').forEach((link) => {
         link.removeEventListener('click', handleClick);
       });
+      window.removeEventListener('keydown', handleKeydown);
       window.removeEventListener('popstate', handlePopState);
       window.removeEventListener('beforeunload', handleBeforeUnload);
     };
@@ -61,20 +84,21 @@ export const PreventNavigation = ({ isDirty = true, text }: PreventNavigationPro
 
   
   return (
-    <>
-      <Alert
-        text={text || 'Are you sure you want to leave the page?'}
-        type="question"
-        open={leavingPage}
-        setOpen={setLeavingPage}
-        noCallback={() => {
-          confirmationFn.current = () => {};
-        }}
-        yesCallback={() => {
-          confirmationFn.current();
-          confirmationFn.current = () => {};
-        }}
-      />
-    </>
+    <Alert
+      text={text || 'Are you sure you want to leave the page?'}
+      type="question"
+      open={leavingPage}
+      setOpen={setLeavingPage}
+      noCallback={() => {
+        cancelFn.current();
+        confirmationFn.current = () => {};
+        cancelFn.current = () => {};
+      }}
+      yesCallback={() => {
+        confirmationFn.current();
+        confirmationFn.current = () => {};
+        cancelFn.current = () => {};
+      }}
+    />
   );
 };
