@@ -1,4 +1,4 @@
-import { ChangeEvent, FormEvent, useState } from "react";
+import { FormEvent, useState } from "react";
 import Button from "./Library/Button";
 import Grid from "./Library/Grid/Grid";
 import GridItem from "./Library/Grid/GridItem";
@@ -40,7 +40,6 @@ export default function EditPoDetails({ poData, setPo, setIsEditing }: Props) {
   const [purchasedFor, setPurchasedFor] = useState(poData.purchasedFor);
   const [isItemReceived, setIsItemReceived] = useState(poData.isItemReceived);
   const [orderedBy, setOrderedBy] = useState(poData.orderedBy);
-  const [salesmanId, setSalesmanId] = useState(poData.salesmanId);
   const [vendorContact, setVendorContact] = useState(poData.vendorContact);
   const [shippingMethod, setShippingMethod] = useState(poData.shippingMethod);
   const [poItems, setPoItems] = useState<POItem[]>(poData.poItems);
@@ -106,12 +105,15 @@ export default function EditPoDetails({ poData, setPo, setIsEditing }: Props) {
   const handleNewItem = async () => {
     const newItem = {
       purchaseOrderId: poData.id,
+      poNum: poData.poNum,
+      desc: '',
       qty: 1,
       unitPrice: 0,
       totalPrice: 0,
+      isReceived: false
     } as any;
-    await addPurchaseOrderItem(newItem);
-    setPoItems([...poData.poItems, newItem]);
+    const id = await addPurchaseOrderItem(newItem);
+    setPoItems([...poItems, { ...newItem, id }]);
   };
 
   const handleChangeVendor = async (vendor: Vendor) => {
@@ -405,6 +407,7 @@ export default function EditPoDetails({ poData, setPo, setIsEditing }: Props) {
             </GridItem>
 
             <GridItem colStart={1} colEnd={12} variant={['no-style']} style={{ marginTop: '1rem' }}>
+              <h3>PO Items</h3>
               <Table>
                 <thead>
                   <tr>
@@ -423,8 +426,8 @@ export default function EditPoDetails({ poData, setPo, setIsEditing }: Props) {
                         <td>
                           <Input
                             value={item.qty}
-                            type="number"
                             onChange={(e: any) => handleEditItem({ ...item, qty: e.target.value }, i)}
+                            type="number"
                             required
                           />
                         </td>
@@ -437,16 +440,16 @@ export default function EditPoDetails({ poData, setPo, setIsEditing }: Props) {
                         <td>
                           <Input
                             value={item.unitPrice}
-                            type="number"
                             onChange={(e: any) => handleEditItem({ ...item, unitPrice: e.target.value }, i)}
+                            type="number"
                             required
                           />
                         </td>
                         <td>
                           <Input
                             value={item.totalPrice}
-                            type="number"
                             onChange={(e: any) => handleEditItem({ ...item, totalPrice: e.target.value }, i)}
+                            type="number"
                             required
                           />
                         </td>
@@ -456,9 +459,9 @@ export default function EditPoDetails({ poData, setPo, setIsEditing }: Props) {
                             onChange={(e: any) => handleEditItem({ ...item, isReceived: e.target.checked }, i)}
                           />
                         </td>
-                        <td>
+                        <td style={{ textAlign: 'center' }}>
                           <Button
-                            variant={['red-color']}
+                            variant={['danger', 'center']}
                             onClick={() => handleDeleteItem(item.id)}
                             type="button"
                           >

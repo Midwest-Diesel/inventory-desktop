@@ -84,7 +84,8 @@ export const addBlankPurchaseOrder = async (poNum: number) => {
 export const addPurchaseOrderItem = async (newItem: POItem) => {
   try {
     const auth = { withCredentials: true };
-    await api.post('/api/po/item', newItem, auth);
+    const res = await api.post('/api/po/item', newItem, auth);
+    return res.data.id;
   } catch (err) {
     console.error(err);
   }
