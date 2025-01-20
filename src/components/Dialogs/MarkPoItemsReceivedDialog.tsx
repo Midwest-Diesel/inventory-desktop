@@ -1,7 +1,7 @@
 import Dialog from "../Library/Dialog";
 import Table from "../Library/Table";
 import { formatCurrency } from "@/scripts/tools/stringUtils";
-import { addPurchaseOrderReceivedItem, togglePurchaseOrderItemReceived } from "@/scripts/controllers/purchaseOrderController";
+import { addPurchaseOrderReceivedItem, togglePurchaseOrderItemReceived, togglePurchaseOrderReceived } from "@/scripts/controllers/purchaseOrderController";
 import { useEffect, useState } from "react";
 import Button from "../Library/Button";
 
@@ -24,10 +24,13 @@ export default function MarkPoItemsReceivedDialog({ open, setOpen, purchaseOrder
   const handleReceivedItem = async (item: POItem) => {
     if (item.isReceived) return;
     await togglePurchaseOrderItemReceived(item.id, true);
-    setItems(items.map((i) => {
+    const newItemsList = items.map((i) => {
       if (i.id === item.id) return { ...i, isReceived: true };
       return i;
-    }));
+    });
+    setItems(newItemsList);
+
+    if (!newItemsList.find((i) => !i.isReceived)) await togglePurchaseOrderReceived(purchaseOrder.id, true);
 
     const newItem = {
       partNum: addOn.partNum,
@@ -66,7 +69,7 @@ export default function MarkPoItemsReceivedDialog({ open, setOpen, purchaseOrder
                 <td>{ formatCurrency(item.unitPrice) }</td>
                 <td>{ formatCurrency(item.totalPrice) }</td>
                 <td className="cbx-td">
-                  <Button onClick={() => handleReceivedItem(item)}>Received</Button>
+                  <Button onClick={() => handleReceivedItem(item)} disabled={item.isReceived}>Received</Button>
                 </td>
               </tr>
             );

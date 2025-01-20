@@ -125,7 +125,7 @@ export const editPurchaseOrderItem = async (po: POItem) => {
 export const togglePurchaseOrderReceived = async (id: number, isReceived: boolean) => {
   try {
     const auth = { withCredentials: true };
-    await api.patch(`/api/po/received/${id}`, { isReceived }, auth);
+    await api.patch(`/api/po/received`, { id, isReceived }, auth);
   } catch (err) {
     console.error(err);
   }
