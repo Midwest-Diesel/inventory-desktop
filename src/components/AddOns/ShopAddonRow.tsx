@@ -24,7 +24,7 @@ interface Props {
 
 
 export default function ShopAddonRow({ addOn, handleDuplicateAddOn }: Props) {
-  const [selectedPoData, setSelectedPoData] = useAtom<{ selectedPoAddOn: PO, receivedItemsDialogOpen: boolean }>(selectedPoAddOnAtom);
+  const [selectedPoData, setSelectedPoData] = useAtom<{ selectedPoAddOn: PO, addOn: AddOn, receivedItemsDialogOpen: boolean }>(selectedPoAddOnAtom);
   const [addOns, setAddons] = useAtom<AddOn[]>(shopAddOnsAtom);
   const [poLink, setPoLink] = useState<string>(addOn.po ? `${addOn.po}` : '');
   const [autofillPartNum, setAutofillPartNum] = useState('');
@@ -154,7 +154,7 @@ export default function ShopAddonRow({ addOn, handleDuplicateAddOn }: Props) {
     const po: PO = await getPurchaseOrderByPoNum(Number(e.target.value));
     if (po) {
       setPoLink(`${po.poNum}`);
-      setSelectedPoData({ selectedPoAddOn: po, receivedItemsDialogOpen: true });
+      setSelectedPoData({ selectedPoAddOn: po, addOn, receivedItemsDialogOpen: true });
     }
   };
   

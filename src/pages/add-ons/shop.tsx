@@ -11,11 +11,11 @@ import { Fragment, useEffect, useState } from "react";
 
 
 export default function AddOnsShop() {
-  const [selectedPoData, setSelectedPoData] = useAtom<{ selectedPoAddOn: PO, receivedItemsDialogOpen: boolean }>(selectedPoAddOnAtom);
+  const [selectedPoData, setSelectedPoData] = useAtom<{ selectedPoAddOn: PO, addOn: AddOn, receivedItemsDialogOpen: boolean }>(selectedPoAddOnAtom);
   const [prevAddons, setPrevAddons] = useState<AddOn[]>([]);
   const [addOns, setAddons] = useAtom<AddOn[]>(shopAddOnsAtom);
   const [savedBtnText, setSavedBtnText] = useState('Save');
-  const { selectedPoAddOn, receivedItemsDialogOpen } = selectedPoData;
+  const { selectedPoAddOn, addOn, receivedItemsDialogOpen } = selectedPoData;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -59,6 +59,7 @@ export default function AddOnsShop() {
           open={receivedItemsDialogOpen}
           setOpen={(value: boolean) => setSelectedPoData({ ...selectedPoData, receivedItemsDialogOpen: value })}
           purchaseOrder={selectedPoAddOn}
+          addOn={addOn}
         /> : '' }
 
       <div className="add-ons">

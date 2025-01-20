@@ -65,10 +65,11 @@ export default function PurchaseOrderItemsTable({ className, poItems, poReceived
           <Table>
             <thead>
               <tr>
-                <th>Qty</th>
+                <th>Part Number</th>
+                <th>Stock Number</th>
                 <th>Description</th>
-                <th>Unit Price</th>
-                <th>Total Price</th>
+                <th>Qty</th>
+                <th>Cost</th>
               </tr>
             </thead>
             <tbody>
@@ -76,10 +77,10 @@ export default function PurchaseOrderItemsTable({ className, poItems, poReceived
                 return (
                   <tr key={i}>
                     <td>{ item.partNum }</td>
-                    <td>{ item.desc }</td>
                     <td>{ item.stockNum }</td>
-                    <td>{ item.cost }</td>
+                    <td>{ item.desc }</td>
                     <td>{ item.qty }</td>
+                    <td>{ formatCurrency(item.cost) }</td>
                   </tr>
                 );
               })}

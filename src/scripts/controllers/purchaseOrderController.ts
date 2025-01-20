@@ -91,6 +91,15 @@ export const addPurchaseOrderItem = async (newItem: POItem) => {
   }
 };
 
+export const addPurchaseOrderReceivedItem = async (newItem: POReceivedItem) => {
+  try {
+    const auth = { withCredentials: true };
+    await api.post('/api/po/received-item', newItem, auth);
+  } catch (err) {
+    console.error(err);
+  }
+};
+
 // === PUT routes === //
 
 export const editPurchaseOrder = async (po: PO) => {

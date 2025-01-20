@@ -1,18 +1,19 @@
 import Dialog from "../Library/Dialog";
 import Table from "../Library/Table";
 import { formatCurrency } from "@/scripts/tools/stringUtils";
-import { togglePurchaseOrderItemReceived } from "@/scripts/controllers/purchaseOrderController";
+import { addPurchaseOrderReceivedItem, togglePurchaseOrderItemReceived } from "@/scripts/controllers/purchaseOrderController";
 import { useEffect, useState } from "react";
-import Checkbox from "../Library/Checkbox";
+import Button from "../Library/Button";
 
 interface Props {
   open: boolean
   setOpen: (open: boolean) => void
   purchaseOrder: PO
+  addOn: AddOn
 }
 
 
-export default function MarkPoItemsReceivedDialog({ open, setOpen, purchaseOrder }: Props) {
+export default function MarkPoItemsReceivedDialog({ open, setOpen, purchaseOrder, addOn }: Props) {
   const [items, setItems] = useState<POItem[]>([]);
 
   useEffect(() => {
@@ -21,11 +22,22 @@ export default function MarkPoItemsReceivedDialog({ open, setOpen, purchaseOrder
   }, [open, purchaseOrder]);
 
   const handleReceivedItem = async (item: POItem) => {
-    await togglePurchaseOrderItemReceived(item.id, !item.isReceived);
+    if (item.isReceived) return;
+    await togglePurchaseOrderItemReceived(item.id, true);
     setItems(items.map((i) => {
-      if (i.id === item.id) return { ...i, isReceived: !i.isReceived };
+      if (i.id === item.id) return { ...i, isReceived: true };
       return i;
     }));
+
+    const newItem = {
+      partNum: addOn.partNum,
+      desc: addOn.desc,
+      stockNum: addOn.stockNum,
+      cost: addOn.newPrice,
+      qty: addOn.qty,
+      POItemId: item.id
+    } as any;
+    await addPurchaseOrderReceivedItem(newItem);
   };
 
   
@@ -54,10 +66,7 @@ export default function MarkPoItemsReceivedDialog({ open, setOpen, purchaseOrder
                 <td>{ formatCurrency(item.unitPrice) }</td>
                 <td>{ formatCurrency(item.totalPrice) }</td>
                 <td className="cbx-td">
-                  <Checkbox
-                    checked={item.isReceived}
-                    onChange={() => handleReceivedItem(item)}
-                  />
+                  <Button onClick={() => handleReceivedItem(item)}>Received</Button>
                 </td>
               </tr>
             );
