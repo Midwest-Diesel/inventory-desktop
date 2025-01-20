@@ -12,6 +12,8 @@ import { getAutofillEngine } from "@/scripts/controllers/enginesController";
 import Loading from "../Library/Loading";
 import { confirm } from '@tauri-apps/api/dialog';
 import VendorSelect from "../Library/Select/VendorSelect";
+import Link from "next/link";
+import { getPurchaseOrderByPoNum } from "@/scripts/controllers/purchaseOrderController";
 
 interface Props {
   addOn: AddOn
@@ -20,12 +22,17 @@ interface Props {
 
 export default function OfficeAddonRow({ addOn }: Props) {
   const [addOns, setAddons] = useAtom<AddOn[]>(shopAddOnsAtom);
+  const [poLink, setPoLink] = useState<number>(addOn.po);
   const [autofillPartNum, setAutofillPartNum] = useState('');
   const [autofillEngineNum, setAutofillEngineNum] = useState('');
   const [loading, setLoading] = useState(false);
   const [loadingProgress, setLoadingProgress] = useState('');
   const [showVendorSelect, setShowVendorSelect] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    handlePoLink(Number(addOn.po));
+  }, []);
 
   useEffect(() => {
     if (!showVendorSelect) return;
@@ -143,6 +150,12 @@ export default function OfficeAddonRow({ addOn }: Props) {
 
   const updateLoading = (i: number, total: number) => {
     setLoadingProgress(`${i}/${total}`);
+  };
+
+  const handlePoLink = async (poNum: number) => {
+    const po: PO = await getPurchaseOrderByPoNum(poNum);
+    if (!po) return;
+    setPoLink(po.poNum);
   };
 
 
@@ -303,6 +316,7 @@ export default function OfficeAddonRow({ addOn }: Props) {
                   type="number"
                   value={addOn.po !== null ? addOn.po : ''}
                   onChange={(e: any) => handleEditAddOn({ ...addOn, po: e.target.value })}
+                  onBlur={(e: any) => handlePoLink(Number(e.target.value))}
                 />
               </td>
             </tr>
@@ -399,7 +413,10 @@ export default function OfficeAddonRow({ addOn }: Props) {
             <Loading />
           </>
           :
-          <Button onClick={handleAddToInventory}>Add to Inventory</Button>
+          <>
+            { poLink && <Link href={`/purchase-orders/${poLink}`}>View PO</Link> }
+            <Button onClick={handleAddToInventory}>Add to Inventory</Button>
+          </>
         }
         <Button variant={['danger']} onClick={handleDeleteAddOn}>Delete</Button>
       </div>

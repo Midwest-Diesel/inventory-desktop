@@ -22,6 +22,7 @@ export default function Alert({ text, open, setOpen, yesCallback, noCallback, cl
               <>
                 <button
                   className="alert__btn alert__btn--primary"
+                  autoFocus
                   onClick={() => {
                     setOpen(false);
                     yesCallback && yesCallback();
@@ -44,6 +45,7 @@ export default function Alert({ text, open, setOpen, yesCallback, noCallback, cl
               <>
                 <button
                   className="alert__btn alert__btn--primary"
+                  autoFocus
                   onClick={() => {
                     setOpen(false);
                     yesCallback && yesCallback();

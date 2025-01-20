@@ -9,6 +9,7 @@ import PurchaseOrderItemsTable from "@/components/PurchaseOrderItemsTable";
 import { POSearchAtom } from "@/scripts/atoms/state";
 import { addBlankPurchaseOrder, getPurchaseOrdersCount, getSomePurchaseOrders, searchPurchaseOrders, togglePurchaseOrderReceived } from "@/scripts/controllers/purchaseOrderController";
 import { formatDate } from "@/scripts/tools/stringUtils";
+import { confirm } from "@tauri-apps/api/dialog";
 import { useAtom } from "jotai";
 import Link from "next/link";
 import { ChangeEvent, useEffect, useState } from "react";
@@ -64,6 +65,7 @@ export default function PurchaseOrders() {
   };
 
   const handleReceivedItem = async (id: number, e: ChangeEvent<HTMLInputElement>) => {
+    if (!await confirm(`Mark PO as ${e.target.checked ? 'closed' : 'open'}`)) return;
     await togglePurchaseOrderReceived(id, e.target.checked);
     const res = await getSomePurchaseOrders(currentPage, LIMIT, showIncomming);
     setPurchaseOrdersData(res);
@@ -101,7 +103,7 @@ export default function PurchaseOrders() {
                     <th>Date</th>
                     <th>Purchased From</th>
                     <th>Purchased For</th>
-                    <th>Item Received</th>
+                    <th>Items Received</th>
                     <th>Ordered By</th>
                     <th>Shipping</th>
                     <th>Special Instructions</th>
@@ -141,7 +143,14 @@ export default function PurchaseOrders() {
           }
         </div>
 
-        { focusedPurchaseOrder && <PurchaseOrderItemsTable poItems={focusedPurchaseOrder.poItems} poReceivedItems={focusedPurchaseOrder.poReceivedItems} /> }
+        { focusedPurchaseOrder &&
+          <PurchaseOrderItemsTable
+            poItems={focusedPurchaseOrder.poItems}
+            poReceivedItems={focusedPurchaseOrder.poReceivedItems}
+            setPoItems={() => location.reload()}
+            po={focusedPurchaseOrder}
+          />
+        }
       </div>
     </Layout>
   );

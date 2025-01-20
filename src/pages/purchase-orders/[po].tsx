@@ -63,7 +63,7 @@ export default function PurchaseOrder() {
                 <h2>{ poData.poNum } Purchase Order</h2>
                 <div className="purchase-order-details__top-bar">
                   <Button onClick={handlePrint}>Print Report</Button>
-                  <Button onClick={handleReceivedItem}>{ poData.isItemReceived ? 'Unmark' : 'Mark' } as Received</Button>
+                  <Button onClick={handleReceivedItem}>{ poData.isItemReceived ? 'Unmark' : 'Mark' } as Closed</Button>
                 </div>
               </div>
 
@@ -211,7 +211,13 @@ export default function PurchaseOrder() {
               </GridItem>
 
               <GridItem variant={['no-style']} colStart={1} colEnd={12}>
-                <PurchaseOrderItemsTable poItems={poData.poItems} poReceivedItems={poData.poReceivedItems} className="purchase-order-items-table--details-page" />
+                <PurchaseOrderItemsTable
+                  poItems={poData.poItems}
+                  poReceivedItems={poData.poReceivedItems}
+                  setPoItems={setPoData}
+                  po={poData}
+                  className="purchase-order-items-table--details-page"
+                />
               </GridItem>
             </Grid>
           </>

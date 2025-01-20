@@ -14,6 +14,8 @@ import { confirm } from '@tauri-apps/api/dialog';
 import { invoke } from "@tauri-apps/api/tauri";
 import { formatDate } from "@/scripts/tools/stringUtils";
 import VendorSelect from "../Library/Select/VendorSelect";
+import { getPurchaseOrderByPoNum } from "@/scripts/controllers/purchaseOrderController";
+import { selectedPoAddOnAtom } from "@/scripts/atoms/components";
 
 interface Props {
   addOn: AddOn
@@ -22,7 +24,9 @@ interface Props {
 
 
 export default function ShopAddonRow({ addOn, handleDuplicateAddOn }: Props) {
+  const [selectedPoData, setSelectedPoData] = useAtom<{ selectedPoAddOn: PO, receivedItemsDialogOpen: boolean }>(selectedPoAddOnAtom);
   const [addOns, setAddons] = useAtom<AddOn[]>(shopAddOnsAtom);
+  const [poLink, setPoLink] = useState<string>(addOn.po ? `${addOn.po}` : '');
   const [autofillPartNum, setAutofillPartNum] = useState('');
   const [autofillEngineNum, setAutofillEngineNum] = useState('');
   const [showVendorSelect, setShowVendorSelect] = useState(false);
@@ -143,6 +147,15 @@ export default function ShopAddonRow({ addOn, handleDuplicateAddOn }: Props) {
       copies: Number(printQty)
     };
     await invoke('print_part_tag', { args });
+  };
+
+  const handleOpenPO = async (e: any) => {
+    if (!e.target.value) return;
+    const po: PO = await getPurchaseOrderByPoNum(Number(e.target.value));
+    if (po) {
+      setPoLink(`${po.poNum}`);
+      setSelectedPoData({ selectedPoAddOn: po, receivedItemsDialogOpen: true });
+    }
   };
   
 
@@ -295,6 +308,7 @@ export default function ShopAddonRow({ addOn, handleDuplicateAddOn }: Props) {
                   type="number"
                   value={addOn.po !== null ? addOn.po : ''}
                   onChange={(e: any) => handleEditAddOn({ ...addOn, po: e.target.value })}
+                  onBlur={(e: any) => handleOpenPO(e)}
                 />
               </td>
             </tr>
@@ -380,7 +394,7 @@ export default function ShopAddonRow({ addOn, handleDuplicateAddOn }: Props) {
       </div>
 
       <div className="add-ons__list-row-buttons">
-        { addOn.po && <Link href={`/po/${addOn.po}`}>View PO</Link> }
+        { poLink && <Link href={`/purchase-orders/${poLink}`}>View PO</Link> }
         <Button onClick={() => handleDuplicateAddOn(addOn)}>Duplicate</Button>
         <Input
           style={{ width: '3rem' }}

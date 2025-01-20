@@ -9,6 +9,7 @@ import { addPurchaseOrderItem, deletePurchaseOrderItem, editPurchaseOrder, editP
 import VendorDropdown from "./Library/Dropdown/VendorDropdown";
 import { PreventNavigation } from "./PreventNavigation";
 import { confirm } from "@tauri-apps/api/dialog";
+import Checkbox from "./Library/Checkbox";
 
 interface Props {
   poData: PO
@@ -411,6 +412,7 @@ export default function EditPoDetails({ poData, setPo, setIsEditing }: Props) {
                     <th>Description</th>
                     <th>Unit Price</th>
                     <th>Total Price</th>
+                    <th>Received</th>
                     <th></th>
                   </tr>
                 </thead>
@@ -446,6 +448,12 @@ export default function EditPoDetails({ poData, setPo, setIsEditing }: Props) {
                             type="number"
                             onChange={(e: any) => handleEditItem({ ...item, totalPrice: e.target.value }, i)}
                             required
+                          />
+                        </td>
+                        <td className="cbx-td">
+                          <Checkbox
+                            checked={item.isReceived}
+                            onChange={(e: any) => handleEditItem({ ...item, isReceived: e.target.checked }, i)}
                           />
                         </td>
                         <td>

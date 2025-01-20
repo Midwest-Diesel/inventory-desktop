@@ -121,6 +121,14 @@ export const togglePurchaseOrderReceived = async (id: number, isReceived: boolea
   }
 };
 
+export const togglePurchaseOrderItemReceived = async (id: number, isReceived: boolean) => {
+  try {
+    const auth = { withCredentials: true };
+    await api.patch(`/api/po/received/item/${id}`, { isReceived }, auth);
+  } catch (err) {
+    console.error(err);
+  }
+};
 
 // === DELETE routes === //
 
