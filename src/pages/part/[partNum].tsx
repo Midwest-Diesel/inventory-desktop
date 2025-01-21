@@ -27,7 +27,7 @@ export default function PartDetails() {
   const router = useRouter();
   const params = useParams();
   const [user] = useAtom<User>(userAtom);
-  const [part, setPart] = useState<Part>();
+  const [part, setPart] = useState<Part>(null);
   const [picturesOpen, setPicturesOpen] = useState(false);
   const [snPicturesOpen, setSnPicturesOpen] = useState(false);
   const [pictures, setPictures] = useState<Picture[]>([]);
@@ -141,8 +141,8 @@ export default function PartDetails() {
           </div>
 
           <div className="part-details__top-bar">
-            <Button variant={['link']} disabled={part.engineNum === 0}>
-              {part.engineNum != 0 ?
+            <Button variant={['link']} disabled={Number(part.engineNum) <= 1}>
+              {part.engineNum > 1 ?
                 <Link href={`/engines/${part.engineNum}`} style={{ padding: '0.4rem' }}>Engine Details</Link>
                 :
                 <p style={{ padding: '0.4rem' }}>Engine Details</p>
@@ -155,7 +155,7 @@ export default function PartDetails() {
           { part.snImageExists && <StockNumPicturesDialog open={snPicturesOpen} setOpen={setSnPicturesOpen} pictures={snPictures} /> }
 
           <Grid rows={1} cols={12} gap={1}>
-            <GridItem colStart={1} colEnd={5} rowStart={1} variant={['low-opacity-bg']}>
+            <GridItem colStart={1} colEnd={7} rowStart={1} variant={['low-opacity-bg']}>
               <Table variant={['plain', 'row-details']}>
                 <tbody>
                   <tr>
@@ -212,7 +212,7 @@ export default function PartDetails() {
               </Table>
             </GridItem>
 
-            <GridItem colStart={1} colEnd={5} rowStart={2} variant={['low-opacity-bg']}>
+            <GridItem colStart={1} colEnd={7} rowStart={2} variant={['low-opacity-bg']}>
               <Table variant={['plain', 'row-details']}>
                 <tbody>
                   <tr>
@@ -225,15 +225,15 @@ export default function PartDetails() {
                   </tr>
                   <tr>
                     <th>Reman List Price</th>
-                    <td></td>
+                    <td>{ formatCurrency(part.remanListPrice) }</td>
                   </tr>
                   <tr>
                     <th>Reman Fleet Price</th>
-                    <td></td>
+                    <td>{ formatCurrency(part.remanFleetPrice) }</td>
                   </tr>
                   <tr>
                     <th>Core Price</th>
-                    <td></td>
+                    <td>{ formatCurrency(part.corePrice) }</td>
                   </tr>
                   <tr>
                     <th>Our Cost</th>
@@ -243,7 +243,7 @@ export default function PartDetails() {
               </Table>
             </GridItem>
 
-            <GridItem rowStart={1} colStart={5} colEnd={10} variant={['low-opacity-bg']}>
+            <GridItem rowStart={1} colStart={7} colEnd={12} variant={['low-opacity-bg']}>
               <Table variant={['plain', 'row-details']}>
                 <tbody>
                   <tr style={{ height: '4rem' }}>
@@ -258,7 +258,7 @@ export default function PartDetails() {
               </Table>
             </GridItem>
 
-            <GridItem colStart={5} colEnd={10} rowStart={2} variant={['low-opacity-bg']}>
+            <GridItem colStart={7} colEnd={12} rowStart={2} variant={['low-opacity-bg']}>
               <Table variant={['plain', 'row-details']}>
                 <tbody>
                   <tr>
@@ -290,8 +290,23 @@ export default function PartDetails() {
               </Table>
             </GridItem>
 
+            <GridItem colStart={1} colEnd={7} rowStart={3} variant={['low-opacity-bg']}>
+              <Table variant={['plain', 'row-details']}>
+                <tbody>
+                  <tr>
+                    <th>Shipping Weights/Dims</th>
+                    <td>{ part.weightDims }</td>
+                  </tr>
+                  <tr style={{ height: '4rem' }}>
+                    <th>Sales Notes</th>
+                    <td>{ part.specialNotes }</td>
+                  </tr>
+                </tbody>
+              </Table>
+            </GridItem>
+
             {part.partsCostIn && part.partsCostIn.length > 0 &&
-              <GridItem variant={['no-style']} rowStart={2} colStart={1} colEnd={10}>
+              <GridItem variant={['no-style']} rowStart={3} colStart={1} colEnd={12}>
                 <h2>Parts Cost In</h2>
                 <Table>
                   <thead>
@@ -320,7 +335,7 @@ export default function PartDetails() {
               </GridItem>
             }
 
-            <GridItem variant={['no-style']} rowStart={3} colStart={1} colEnd={6}>
+            <GridItem variant={['no-style']} rowStart={4} colStart={1} colEnd={6}>
               <h2>Part Cost In</h2>
               {partCostIn.length > 0 ?
                 <PartCostIn partCostInData={partCostIn} />
@@ -329,7 +344,7 @@ export default function PartDetails() {
               }
             </GridItem>
 
-            <GridItem variant={['no-style']} rowStart={3} colStart={6} colEnd={12}>
+            <GridItem variant={['no-style']} rowStart={4} colStart={6} colEnd={12}>
               <h2>Engine Cost Out</h2>
               {engineCostOut.length > 0 ?
                 <EngineCostOutTable engineCostOut={engineCostOut} />

@@ -39,14 +39,19 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
   const [remainingPrice, setRemainingPrice] = useState<number>(part.remainingPrice);
   const [listPrice, setListPrice] = useState<number>(part.listPrice);
   const [fleetPrice, setFleetPrice] = useState<number>(part.fleetPrice);
+  const [remanListPrice, setRemanListPrice] = useState<number>(part.remanListPrice);
+  const [remanFleetPrice, setRemanFleetPrice] = useState<number>(part.remanFleetPrice);
+  const [corePrice, setCorePrice] = useState<number>(part.corePrice);
   const [engineStockNum, setEngineStockNum] = useState<number>(part.engineNum);
-  // const [serialNum, setSerialNum] = useState<string>(part.serialNum);
-  // const [horsePower, setHorsePower] = useState<string>(part.horsePower);
+  const [serialNum, setSerialNum] = useState<string>(null);
+  const [horsePower, setHorsePower] = useState<string>(null);
   const [purchasePrice, setPurchasePrice] = useState<number>(part.purchasePrice);
   const [altParts, setAltParts] = useState<string[]>(part.altParts);
+  const [weightDims, setWeightDims] = useState<string>(part.weightDims);
+  const [specialNotes, setSpecialNotes] = useState<string>(part.specialNotes);
   const [partCostIn, setPartCostIn] = useState<PartCostIn[]>(partCostInData);
   const [engineCostOut, setEngineCostOut] = useState<EngineCostOut[]>(engineCostOutData);
-  const [changesSaved, setChangesSaved] = useState<boolean>(true);
+  const [changesSaved, setChangesSaved] = useState(true);
 
   const saveChanges = async (e: FormEvent) => {
     e.preventDefault();
@@ -56,7 +61,7 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
       id: part.id,
       partNum: part.partNum,
       desc,
-      qty,
+      qty: Number(qty),
       stockNum,
       location,
       manufacturer,
@@ -66,16 +71,18 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
       entryDate,
       remarks,
       remainingPrice: Number(remainingPrice),
-      listPrice,
-      fleetPrice,
+      listPrice: Number(listPrice),
+      fleetPrice: Number(fleetPrice),
+      remanListPrice: Number(remanListPrice),
+      remanFleetPrice: Number(remanFleetPrice),
+      corePrice: Number(corePrice),
       purchasePrice: Number(purchasePrice),
       engineNum: engineStockNum,
-      altParts: altParts,
+      altParts,
+      weightDims,
+      specialNotes
     } as Part;
     await editPart(newPart);
-    // if (JSON.stringify(altParts) !== JSON.stringify(part.altParts)) {
-    //   await editAltParts(newPart.partNum, altParts, part.altParts);
-    // }
     if (JSON.stringify(partCostIn) !== JSON.stringify(partCostInData)) {
       for (let i = 0; i < partCostIn.length; i++) {
         const item = partCostIn[i];
@@ -99,7 +106,7 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
           ...item,
           id: item.id,
           stockNum: item.stockNum,
-          cost: item.cost,
+          cost: Number(item.cost),
           costType: item.costType,
           note: item.note,
         } as EngineCostOut;
@@ -214,7 +221,7 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
         </div>
 
         <Grid rows={1} cols={12} gap={1}>
-          <GridItem colStart={1} colEnd={5} rowStart={1} variant={['low-opacity-bg']}>
+          <GridItem colStart={1} colEnd={7} rowStart={1} variant={['low-opacity-bg']}>
             <Table variant={['plain', 'edit-row-details']}>
               <tbody>
                 <tr>
@@ -306,7 +313,7 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
             </Table>
           </GridItem>
 
-          <GridItem colStart={1} colEnd={5} rowStart={2} variant={['low-opacity-bg']}>
+          <GridItem colStart={1} colEnd={7} rowStart={2} variant={['low-opacity-bg']}>
             <Table variant={['plain', 'edit-row-details']}>
               <tbody>
                 <tr>
@@ -315,8 +322,8 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
                     <Input
                       variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                       value={listPrice}
-                      type="number"
                       onChange={(e: any) => setListPrice(e.target.value)}
+                      type="number"
                     />
                   </td>
                 </tr>
@@ -326,28 +333,49 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
                     <Input
                       variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                       value={fleetPrice}
-                      type="number"
                       onChange={(e: any) => setFleetPrice(e.target.value)}
+                      type="number"
                     />
                   </td>
                 </tr>
                 <tr>
                   <th>Reman List Price</th>
-                  <td></td>
+                  <td>
+                    <Input
+                      variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+                      value={remanListPrice}
+                      onChange={(e: any) => setRemanListPrice(e.target.value)}
+                      type="number"
+                    />
+                  </td>
                 </tr>
                 <tr>
                   <th>Reman Fleet Price</th>
-                  <td></td>
+                  <td>
+                    <Input
+                      variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+                      value={remanFleetPrice}
+                      onChange={(e: any) => setRemanFleetPrice(e.target.value)}
+                      type="number"
+                    />
+                  </td>
                 </tr>
                 <tr>
                   <th>Core Price</th>
-                  <td></td>
+                  <td>
+                    <Input
+                      variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+                      value={corePrice}
+                      onChange={(e: any) => setCorePrice(e.target.value)}
+                      type="number"
+                    />
+                  </td>
                 </tr>
               </tbody>
             </Table>
           </GridItem>
 
-          <GridItem colStart={5} colEnd={10} rowStart={1} variant={['low-opacity-bg']}>
+          <GridItem colStart={7} colEnd={12} rowStart={1} variant={['low-opacity-bg']}>
             <Table variant={['plain', 'edit-row-details']}>
               <tbody>
                 <tr>
@@ -382,7 +410,7 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
             </Table>
           </GridItem>
 
-          <GridItem colStart={5} colEnd={10} rowStart={2} variant={['low-opacity-bg']}>
+          <GridItem colStart={7} colEnd={12} rowStart={2} variant={['low-opacity-bg']}>
             <Table variant={['plain', 'edit-row-details']}>
               <tbody>
                 <tr>
@@ -391,9 +419,9 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
                     <Input
                       variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                       value={engineStockNum}
-                      type="number"
                       onChange={(e: any) => setEngineStockNum(e.target.value)}
-                    />  
+                      type="number"
+                    />
                   </td>
                 </tr>
                 <tr>
@@ -410,6 +438,35 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
                     <Input
                       variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                     />  
+                  </td>
+                </tr>
+              </tbody>
+            </Table>
+          </GridItem>
+
+          <GridItem colStart={1} colEnd={7} rowStart={3} variant={['low-opacity-bg']}>
+            <Table variant={['plain', 'edit-row-details']}>
+              <tbody>
+                <tr>
+                  <th>Shipping Weights/Dims</th>
+                  <td>
+                    <Input
+                      variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+                      value={weightDims}
+                      onChange={(e: any) => setWeightDims(e.target.value)}
+                    />  
+                  </td>
+                </tr>
+                <tr>
+                  <th>Sales Notes</th>
+                  <td>
+                    <Input
+                      variant={['label-stack', 'label-bold', 'text-area']}
+                      rows={5}
+                      cols={100}
+                      value={specialNotes}
+                      onChange={(e: any) => setSpecialNotes(e.target.value)}
+                    />
                   </td>
                 </tr>
               </tbody>

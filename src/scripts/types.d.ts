@@ -340,9 +340,12 @@ type Part = {
   purchasePrice: number
   dealerPrice: number
   listPrice: number
+  remanListPrice: number
   remainingPrice: number
   fleetPrice: number
+  remanFleetPrice: number
   endUserPrice: number
+  corePrice: number
   soldTo: string
   qtySold: number
   sellingPrice: number
@@ -358,6 +361,8 @@ type Part = {
   pictures?: Picture[]
   imageExists: boolean
   snImageExists: boolean
+  weightDims: string
+  specialNotes: string
 };
 
 type RecentPartSearch = {
