@@ -1,4 +1,4 @@
-.alert {
+.popup {
   padding: 1rem;
   background-color: var(--grey-dark-3);
   border-radius: 0.5rem;
@@ -7,6 +7,8 @@
   top: 1rem;
   left: 38%;
   z-index: 10;
+  max-width: 35rem;
+  min-width: 540px;
 
   &__buttons {
     display: flex;

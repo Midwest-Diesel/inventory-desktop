@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/router';
 import { useEffect, useRef, useState } from 'react';
-import Alert from './Library/Alert';
+import Popup from './Library/Popup';
 
 interface Props {
   isDirty?: boolean
@@ -84,7 +84,7 @@ export const PreventNavigation = ({ isDirty = true, text }: Props) => {
 
   
   return (
-    <Alert
+    <Popup
       text={text || 'Are you sure you want to leave the page?'}
       type="question"
       open={leavingPage}

@@ -9,19 +9,19 @@ interface Props {
 }
 
 
-export default function Alert({ text, open, setOpen, yesCallback, noCallback, className = '', type = 'confirm' }: Props) {
+export default function Popup({ text, open, setOpen, yesCallback, noCallback, className = '', type = 'confirm' }: Props) {
   return (
     <>
       {open &&
         <div
-          className={`alert${className ? ' ' : ''}${className}`}
+          className={`popup${className ? ' ' : ''}${className}`}
         >
           <p>{ text }</p>
-          <div className="alert__buttons">
+          <div className="popup__buttons">
             {type === 'confirm' &&
               <>
                 <button
-                  className="alert__btn alert__btn--primary"
+                  className="popup__btn popup__btn--primary"
                   autoFocus
                   onClick={() => {
                     setOpen(false);
@@ -31,7 +31,7 @@ export default function Alert({ text, open, setOpen, yesCallback, noCallback, cl
                   Ok
                 </button>
                 <button
-                  className="alert__btn alert__btn--secondary"
+                  className="popup__btn popup__btn--secondary"
                   onClick={() => {
                     setOpen(false);
                     noCallback && noCallback();
@@ -44,7 +44,7 @@ export default function Alert({ text, open, setOpen, yesCallback, noCallback, cl
             {type === 'question' &&
               <>
                 <button
-                  className="alert__btn alert__btn--primary"
+                  className="popup__btn popup__btn--primary"
                   autoFocus
                   onClick={() => {
                     setOpen(false);
@@ -54,7 +54,7 @@ export default function Alert({ text, open, setOpen, yesCallback, noCallback, cl
                   Yes
                 </button>
                 <button
-                  className="alert__btn alert__btn--secondary"
+                  className="popup__btn popup__btn--secondary"
                   onClick={() => {
                     setOpen(false);
                     noCallback && noCallback();
