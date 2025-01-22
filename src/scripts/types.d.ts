@@ -338,7 +338,6 @@ type Part = {
   qty: number
   stockNum: string
   purchasePrice: number
-  dealerPrice: number
   listPrice: number
   remanListPrice: number
   remainingPrice: number

@@ -15,9 +15,9 @@ import { getAllSources } from "@/scripts/controllers/sourcesController";
 import { deleteCoreByItemId, editCoreCustomer } from "@/scripts/controllers/coresController";
 import { confirm } from "@tauri-apps/api/dialog";
 import ShippingListDialog from "./Dialogs/handwrittens/ShippingListDialog";
-import { useRouter } from "next/router";
 import Checkbox from "./Library/Checkbox";
 import { PreventNavigation } from "./PreventNavigation";
+import ChangeCustomerInfoDialog from "./Dialogs/handwrittens/ChangeCustomerInfoDialog";
 
 interface Props {
   handwritten: Handwritten
@@ -27,7 +27,6 @@ interface Props {
 
 
 export default function EditHandwrittenDetails({ handwritten, setHandwritten, setIsEditing }: Props) {
-  const router = useRouter();
   const [sourcesData, setSourcesData] = useAtom<string[]>(sourcesAtom);
   const [date, setDate] = useState<Date>(handwritten.date);
   const [poNum, setPoNum] = useState<string>(handwritten.poNum);
@@ -72,6 +71,8 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
   const [isCollect, setIsCollect] = useState<boolean>(handwritten.isCollect);
   const [isSetup, setIsSetup] = useState<boolean>(handwritten.isSetup);
   const [changesSaved, setChangesSaved] = useState<boolean>(true);
+  const [changeCustomerDialogOpen, setChangeCustomerDialogOpen] = useState(false);
+  const [changeCustomerDialogData, setChangeCustomerDialogData] = useState<Handwritten>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -157,12 +158,39 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
         await editHandwrittenItems(newItem);
       }
     }
+
     if (invoiceStatus === 'SENT TO ACCOUNTING' && handwritten.invoiceStatus !== 'SENT TO ACCOUNTING') {
       if (await confirm('Add this to shipping list?')) {
         setShippingListDialogOpen(true);
       }
     }
-    setIsEditing(false);
+
+    // Prompt to change customer info if data has changed
+    const handwrittenBillTo = JSON.stringify({
+      billToCompany: newInvoice.billToCompany || '',
+      billToAddress: newInvoice.billToAddress || '',
+      billToAddress2: newInvoice.billToAddress2 || '',
+      billToCity: newInvoice.billToCity || '',
+      billToState: newInvoice.billToState || '',
+      billToZip: newInvoice.billToZip || '',
+      billToPhone: newInvoice.billToPhone || ''
+    });
+    const customerBillTo = JSON.stringify({
+      billToCompany: newInvoice.customer.company || '',
+      billToAddress: newInvoice.customer.billToAddress || '',
+      billToAddress2: newInvoice.customer.billToAddress2 || '',
+      billToCity: newInvoice.customer.billToCity || '',
+      billToState: newInvoice.customer.billToState || '',
+      billToZip: newInvoice.customer.billToZip || '',
+      billToPhone: newInvoice.customer.billToPhone || ''
+    });
+
+    if (handwrittenBillTo !== customerBillTo) {
+      setChangeCustomerDialogData(newInvoice);
+      setChangeCustomerDialogOpen(true);
+    } else {
+      setIsEditing(false);
+    }
   };
 
   const handleAltShip = async () => {
@@ -206,6 +234,15 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
   return (
     <>
       <PreventNavigation isDirty={!changesSaved} text="Leave without saving changes?" />
+      {changeCustomerDialogOpen &&
+        <ChangeCustomerInfoDialog
+          open={changeCustomerDialogOpen}
+          setOpen={setChangeCustomerDialogOpen}
+          customer={handwritten.customer}
+          handwritten={changeCustomerDialogData}
+          setIsEditing={setIsEditing}
+        />
+      }
 
       {shippingListDialogOpen &&
         <ShippingListDialog
@@ -546,7 +583,7 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
               </div>
             </GridItem>
 
-            <GridItem colStart={1} colEnd={12} variant={['no-style']}>
+            <GridItem colStart={1} colEnd={12} variant={['low-opacity-bg']}>
               <div style={{ display: 'flex', gap: '2rem', marginTop: '1rem' }}>
                 <Select
                   label="Sales Status"
@@ -589,17 +626,18 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
 
             <GridItem colStart={1} colEnd={8} variant={['no-style']} style={{ marginTop: '1rem' }}>
               <h3>Handwritten Items</h3> 
-              <Table>
+              <Table variant={['plain', 'edit-row-details']}>
                 <thead>
                   <tr>
-                    <th>Stock Number</th>
-                    <th>Location</th>
-                    <th>Cost</th>
-                    <th>Qty</th>
-                    <th>Part Number</th>
-                    <th>Description</th>
-                    <th>Unit Price</th>
-                    <th>Date</th>
+                    <th style={{ color: 'white' }}>Stock Number</th>
+                    <th style={{ color: 'white' }}>Location</th>
+                    <th style={{ color: 'white' }}>Cost</th>
+                    <th style={{ color: 'white' }}>Qty</th>
+                    <th style={{ color: 'white' }}>Part Number</th>
+                    <th style={{ color: 'white' }}>Description</th>
+                    <th style={{ color: 'white' }}>Unit Price</th>
+                    <th style={{ color: 'white' }}>Date</th>
+                    <th style={{ color: 'white' }}></th>
                   </tr>
                 </thead>
                 <tbody>

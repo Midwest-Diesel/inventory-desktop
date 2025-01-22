@@ -7,12 +7,11 @@ import Pagination from "@/components/Library/Pagination";
 import Table from "@/components/Library/Table";
 import PurchaseOrderItemsTable from "@/components/PurchaseOrderItemsTable";
 import { POSearchAtom } from "@/scripts/atoms/state";
-import { addBlankPurchaseOrder, getPurchaseOrdersCount, getSomePurchaseOrders, searchPurchaseOrders, togglePurchaseOrderReceived } from "@/scripts/controllers/purchaseOrderController";
+import { addBlankPurchaseOrder, getPurchaseOrdersCount, getSomePurchaseOrders, searchPurchaseOrders } from "@/scripts/controllers/purchaseOrderController";
 import { formatDate } from "@/scripts/tools/stringUtils";
-import { confirm } from "@tauri-apps/api/dialog";
 import { useAtom } from "jotai";
 import Link from "next/link";
-import { ChangeEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 
 export default function PurchaseOrders() {
@@ -64,14 +63,6 @@ export default function PurchaseOrders() {
     setLoading(false);
   };
 
-  const handleReceivedItem = async (id: number, e: ChangeEvent<HTMLInputElement>) => {
-    if (!await confirm(`Mark PO as ${e.target.checked ? 'closed' : 'open'}`)) return;
-    await togglePurchaseOrderReceived(id, e.target.checked);
-    const res = await getSomePurchaseOrders(currentPage, LIMIT, showIncomming);
-    setPurchaseOrdersData(res);
-    setPurchaseOrders(res);
-  };
-
   const handleNewPurchaseOrder = async () => {
     const poNum = prompt('Enter PO Number');
     if (!poNum) return;
@@ -121,7 +112,7 @@ export default function PurchaseOrders() {
                         <td className="cbx-td">
                           <Checkbox
                             checked={po.isItemReceived}
-                            onChange={(e: any) => handleReceivedItem(po.id, e)}
+                            disabled
                           />
                         </td>
                         <td>{ po.orderedBy }</td>

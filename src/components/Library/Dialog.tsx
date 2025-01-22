@@ -12,6 +12,7 @@ interface Props {
   title?: string
   closeOnOutsideClick?: boolean
   exitWithEsc?: boolean
+  hasCloseBtn?: boolean
   width?: number
   height?: number
   maxHeight?: string
@@ -21,7 +22,7 @@ interface Props {
   y?: number
 }
 
-export default function Dialog({ children, className, variant, title, closeOnOutsideClick, exitWithEsc = true, width, height, maxHeight, open, setOpen, x, y, ...props }: Props) {
+export default function Dialog({ children, className, variant, title, closeOnOutsideClick, exitWithEsc = true, hasCloseBtn = true, width, height, maxHeight, open, setOpen, x, y, ...props }: Props) {
   const [dialogs, setDialogs] = useAtom<{ order: number, div: HTMLDivElement }[]>(dialogsAtom);
   const container = useRef<HTMLDivElement>(null);
   const ref = useRef<HTMLDialogElement>(null);
@@ -99,7 +100,7 @@ export default function Dialog({ children, className, variant, title, closeOnOut
           <div className="dialog__handlebar draggable"></div>
           <div {...props}>
             <h3 className="dialog__title">{title}</h3>
-            <Button variant={["X"]} onClick={closeDialog}>X</Button>
+            { hasCloseBtn && <Button variant={["X"]} onClick={closeDialog}>X</Button> }
             <div className="dialog__content" style={{ maxHeight: maxHeight }}>
               {children}
             </div>
