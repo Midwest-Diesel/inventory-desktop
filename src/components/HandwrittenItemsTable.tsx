@@ -91,7 +91,7 @@ export default function HandwrittenItemsTable({ className, handwritten, handwrit
       handwrittenItemId: newItemId
     } as any;
     await addCore(newCore);
-    setHandwritten({ ...handwritten, cores: [...handwritten.cores, newCore], handwrittenItems: [...handwritten.handwrittenItems, newItem] });
+    handwritten.cores && setHandwritten({ ...handwritten, cores: [...handwritten.cores, newCore], handwrittenItems: [newItem, ...handwritten.handwrittenItems] });
   };
 
   const handleOpenStockNums = (children: HandwrittenItemChild[]) => {

@@ -343,7 +343,6 @@ type Part = {
   remainingPrice: number
   fleetPrice: number
   remanFleetPrice: number
-  endUserPrice: number
   corePrice: number
   soldTo: string
   qtySold: number

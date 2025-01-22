@@ -33,7 +33,6 @@ export default function Karmak() {
   };
 
   const handleChangePage = async (_: any, page: number) => {
-    setLoading(true);
     if (currentStatus === 'all') {
       setCurrentPage(page);
       const res = await getSomeHandwrittens(page, LIMIT);
@@ -41,7 +40,6 @@ export default function Karmak() {
     } else {
       await handleFilterStatus(currentStatus as AccountingStatus, page);
     }
-    setLoading(false);
   };
   
   const handleFilterStatus = async (status: AccountingStatus, page: number) => {
@@ -65,7 +63,7 @@ export default function Karmak() {
   return (
     <Layout title="Karmak">
       <div className="karmak-page">
-        <h1>Karmak</h1>
+        <h1>Accounting</h1>
         <div className="karmak-page__top-buttons">
           <Button>End of Day</Button>
           <Button>Email Netcom Inventory</Button>

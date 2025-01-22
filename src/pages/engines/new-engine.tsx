@@ -161,9 +161,9 @@ export default function NewEnginesList() {
             </tbody>
           </Table>
         </div>
-  
-        <NewEnginesQuoteList model={engineModel} />
       </div>
+
+      <NewEnginesQuoteList model={engineModel} />
     </Layout>
   );
 }

@@ -27,7 +27,7 @@ export function Layout({ children, title }: Props) {
 
 
   return (
-    <div style={{ height: '100%' }}>
+    <div>
       { alert && <AlertModal alerts={alerts} setAlerts={setAlerts} /> }
       { user && <Navbar /> }
       <div className="layout__container">

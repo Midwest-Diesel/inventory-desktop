@@ -30,7 +30,7 @@ export default function OfficeNavbar() {
       </NavDropdown>
       <Link href="/email-stuff" className="navbar__link">Email Stuff</Link>
       <Link href="/performance" className="navbar__link">Performance</Link>
-      <Link href="/karmak" className="navbar__link">Karmak</Link>
+      <Link href="/karmak" className="navbar__link">Accounting</Link>
       <Link href="/reports" className="navbar__link">Reports</Link>
       <Link href="/alerts" className="navbar__link">Alerts</Link>
       <Link href="/image-upload" className="navbar__link">Image Upload</Link>
