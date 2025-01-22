@@ -176,6 +176,15 @@ export const editEnginePartsTable = async (parts: EnginePartsTable, id: number) 
 
 // === DELETE routes === //
 
+export const deleteEngine = async (id: number) => {
+  try {
+    const auth = { withCredentials: true };
+    await api.delete(`/api/engines/${id}`, auth);
+  } catch (err) {
+    console.error(err);
+  }
+};
+
 export const deleteEngineCostIn = async (id: number) => {
   try {
     const auth = { withCredentials: true };

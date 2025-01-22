@@ -10,15 +10,20 @@ import Grid from "@/components/Library/Grid/Grid";
 import GridItem from "@/components/Library/Grid/GridItem";
 import Loading from "@/components/Library/Loading";
 import Table from "@/components/Library/Table";
-import { getEngineByStockNum, getEngineCostIn, getEngineCostOut } from "@/scripts/controllers/enginesController";
+import { userAtom } from "@/scripts/atoms/state";
+import { deleteEngine, getEngineByStockNum, getEngineCostIn, getEngineCostOut } from "@/scripts/controllers/enginesController";
 import { formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
 import { setTitle } from "@/scripts/tools/utils";
+import { useAtom } from "jotai";
 import { useParams } from "next/navigation";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
 
 export default function EngineDetailsPage() {
+  const router = useRouter();
   const params = useParams();
+  const [user] = useAtom<User>(userAtom);
   const [engine, setEngine] = useState<Engine>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [engineCostIn, setEngineCostIn] = useState<EngineCostIn[]>([]);
@@ -52,6 +57,12 @@ export default function EngineDetailsPage() {
 
   const getPurchaseCost = () => {
     return engineCostIn.filter((en) => en.costType = 'PurchasePrice').reduce((acc, val) => acc + val.cost, 0);
+  };
+
+  const handleDelete = async () => {
+    if (user.accessLevel <= 1 || prompt('Type "confirm" to delete this engine') !== 'confirm') return;
+    await deleteEngine(engine.id);
+    router.replace('/engines');
   };
 
 
@@ -92,6 +103,15 @@ export default function EngineDetailsPage() {
                 >
                   Close
                 </Button>
+                {user.accessLevel > 1 &&
+                  <Button
+                    variant={['danger']}
+                    className="engine-details__delete-btn"
+                    onClick={handleDelete}
+                  >
+                    Delete
+                  </Button>
+                }
               </div>
             </div>
 

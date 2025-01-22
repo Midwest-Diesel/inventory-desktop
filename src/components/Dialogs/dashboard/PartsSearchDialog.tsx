@@ -79,7 +79,7 @@ export default function PartsSearchDialog({ open, setOpen, setParts, setLoading 
       window.location.reload();
     } else {
       await handleSearch(partNum, stockNum, desc, location, qty, remarks, rating, purchasedFrom);
-      if (partNum) await addRecentSearch({ partNum, salespersonId: user.id });
+      if (partNum) await addRecentSearch({ partNum: partNum.replace('*', ''), salespersonId: user.id });
     }
     setLastSearch(partNum.replace('*', ''));
   };
