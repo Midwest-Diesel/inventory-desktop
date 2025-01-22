@@ -57,7 +57,7 @@ export default function PartDetails() {
         setToastOpen(true);
       }
     };
-    throw new Error('sAFAFAFadsad');
+    throw new Error('Did a goof', { cause: 'Server error' });
     fetchData();
   }, [params]);
 
