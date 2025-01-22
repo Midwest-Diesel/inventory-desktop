@@ -40,11 +40,15 @@ export default function SelectHandwrittenDialog({ open, setOpen, part, customer,
   const [customWar, setCustomWar] = useState(false);
   const [search, setSearch] = useState('');
   const [toastOpen, setToastOpen] = useState(false);
+  const [prevSearch, setPrevSearch] = useState(null);
+  const LIMIT = 26;
   
   useEffect(() => {
+    if (!open) return;
     const fetchData = async () => {
-      resetHandwrittensList();
+      await resetHandwrittensList();
     };
+    setSearch('');
     setDesc(part.desc);
     setQty(part.qty);
     fetchData();
@@ -55,16 +59,22 @@ export default function SelectHandwrittenDialog({ open, setOpen, part, customer,
   const resetHandwrittensList = async () => {
     const pageCount = await getHandwrittenCount();
     setHandwrittenCount(pageCount);
-
-    const res = await getSomeHandwrittens(1, 26);
+    const res = await getSomeHandwrittens(1, LIMIT);
     setHandwrittensData(res);
     setHandwrittens(res);
+    setPrevSearch(null);
   };
   
   const handleChangePage = async (_: any, page: number) => {
     if (page === currentPage) return;
-    const res = await getSomeHandwrittens(page, 26);
-    setHandwrittens(res);
+    if (prevSearch) {
+      const res = await searchHandwrittens({ ...prevSearch, offset: (page - 1) * LIMIT });
+      setHandwrittens(res.rows);
+      setHandwrittenCount(res.minItems);
+    } else {
+      const res = await getSomeHandwrittens(page, LIMIT);
+      setHandwrittens(res);
+    }
     setCurrentPage(page);
   };
 
@@ -75,9 +85,15 @@ export default function SelectHandwrittenDialog({ open, setOpen, part, customer,
 
   const handleSearch = async () => {
     if (search) {
-      const res = await searchHandwrittens({ customer: search });
-      setHandwrittens(res);
-      setHandwrittenCount([]);
+      const searchData = {
+        billToCompany: search,
+        limit: LIMIT,
+        offset: (currentPage - 1) * LIMIT
+      };
+      const res = await searchHandwrittens(searchData);
+      setHandwrittens(res.rows);
+      setHandwrittenCount(res.minItems);
+      setPrevSearch(searchData);
     } else {
       resetHandwrittensList();
     }
@@ -273,7 +289,7 @@ export default function SelectHandwrittenDialog({ open, setOpen, part, customer,
             data={handwrittensData}
             setData={handleChangePage}
             minData={handwrittenCount}
-            pageSize={26}
+            pageSize={LIMIT}
           />
         </div>
       </Dialog>
