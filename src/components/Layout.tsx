@@ -3,7 +3,7 @@ import Navbar from "./Navbar/Navbar";
 import AlertModal from "./Modals/AlertModal";
 import { useAtom } from "jotai";
 import { selectedAlertsAtom } from "@/scripts/atoms/components";
-import { alertPopupTextAtom, userAtom } from "@/scripts/atoms/state";
+import { userAtom } from "@/scripts/atoms/state";
 
 interface Props {
   children: React.ReactNode

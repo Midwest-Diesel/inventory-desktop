@@ -45,7 +45,14 @@ export default function EnginesTornDown() {
           <Button onClick={() => setOpenSearch(true)}>Search</Button>
         </div>
 
-        <EngineSearchDialog open={openSearch} setOpen={setOpenSearch} engines={enginesData.map((e) => {return { ...e, loginDate: e.toreDownDate }})} setEngines={setSearchedEngines} />
+        <EngineSearchDialog
+          open={openSearch}
+          setOpen={setOpenSearch}
+          engines={enginesData.map((e) => {
+            return { ...e, loginDate: e.toreDownDate };
+          })}
+          setEngines={setSearchedEngines}
+        />
 
         {engines &&
           <div className="engines__table-container">
