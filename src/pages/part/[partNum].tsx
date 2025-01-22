@@ -57,6 +57,7 @@ export default function PartDetails() {
         setToastOpen(true);
       }
     };
+    throw new Error('sAFAFAFadsad');
     fetchData();
   }, [params]);
 
