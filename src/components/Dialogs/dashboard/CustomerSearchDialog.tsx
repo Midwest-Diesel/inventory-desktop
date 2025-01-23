@@ -71,6 +71,7 @@ export default function CustomerSearchDialog({ open, setOpen, searchTerm }: Prop
       setOpen={setOpen}
       title="Customers"
       maxHeight="20rem"
+      width={600}
       data-cy="customer-search-dialog"
     >
       <h3>Selected Customer: { selectedCustomer.company || 'none' }</h3>

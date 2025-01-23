@@ -7,7 +7,7 @@ import Grid from "@/components/Library/Grid/Grid";
 import GridItem from "@/components/Library/Grid/GridItem";
 import Loading from "@/components/Library/Loading";
 import Table from "@/components/Library/Table";
-import { userAtom } from "@/scripts/atoms/state";
+import { selectedCustomerAtom, userAtom } from "@/scripts/atoms/state";
 import { deleteCustomer, getCustomerById, getCustomerSalesHistory } from "@/scripts/controllers/customerController";
 import { deleteMapLocationByCustomer, getMapLocationFromCustomer } from "@/scripts/controllers/mapController";
 import { formatCurrency, formatPhone } from "@/scripts/tools/stringUtils";
@@ -21,6 +21,7 @@ export default function Customer() {
   const router = useRouter();
   const params = useParams();
   const [user] = useAtom<User>(userAtom);
+  const [selectedCustomer, setSelectedCustomer] = useAtom<Customer>(selectedCustomerAtom);
   const [customer, setCustomer] = useState<Customer>(null);
   const [salesHistory, setSalesHistory] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
@@ -42,9 +43,10 @@ export default function Customer() {
 
   const handleDelete = async () => {
     if (user.accessLevel <= 1 || prompt('Type "confirm" to delete this customer') !== 'confirm') return;
+    localStorage.removeItem('customerId');
+    setSelectedCustomer({} as Customer);
     await deleteCustomer(customer.id);
     await deleteMapLocationByCustomer(customer.id);
-    localStorage.removeItem('customerId');
     router.replace('/');
   };
 
@@ -123,7 +125,7 @@ export default function Customer() {
                     </tr>
                     <tr>
                       <th>Source</th>
-                      <td></td>
+                      <td>{ customer.source }</td>
                     </tr>
                     <tr>
                       <th>Fax</th>
@@ -245,7 +247,7 @@ export default function Customer() {
               </GridItem>
 
               <GridItem variant={['no-style']} colStart={5} colEnd={9} rowStart={2}>
-                { customer.contacts && customer.contacts.length > 0 ? <CustomerContactsBlock customer={customer} setCustomer={setCustomer} /> : <p>Empty</p> }
+                { customer.contacts && customer.contacts.length > 0 ? <CustomerContactsBlock customer={customer} setCustomer={setCustomer} /> : <p>No Contacts</p> }
               </GridItem>
             </Grid>
           </>

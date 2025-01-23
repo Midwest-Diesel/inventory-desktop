@@ -9,6 +9,8 @@ import { confirm } from '@tauri-apps/api/dialog';
 import { getMapLocationFromCustomer } from "@/scripts/controllers/mapController";
 import EditMapLocDialog from "../Dialogs/customers/EditMapLocDialog";
 import { PreventNavigation } from "../PreventNavigation";
+import SourceSelect from "../Library/Select/SourceSelect";
+import CustomerContactsBlock from "../CustomerContactsBlock";
 
 interface Props {
   customer: Customer
@@ -40,6 +42,7 @@ export default function CustomerDetails({ customer, setCustomer, setIsEditing }:
   const [serviceManager, setServiceManager] = useState<string>(customer.serviceManager);
   const [serviceManagerEmail, setServiceManagerEmail] = useState<string>(customer.serviceManagerEmail);
   const [paymentType, setPaymentType] = useState<string>(customer.paymentType);
+  const [source, setSource] = useState<string>(customer.source);
   const [editLocDialogOpen, setEditLocDialogOpen] = useState(false);
   const [loc, setLoc] = useState<MapLocation>(null);
   const [changesSaved, setChangesSaved] = useState<boolean>(true);
@@ -49,12 +52,14 @@ export default function CustomerDetails({ customer, setCustomer, setIsEditing }:
     if (!await confirm('Are you sure you want to save these changes?')) return;
     setChangesSaved(false);
     const newCustomer = {
+      ...customer,
       id: customer.id,
       company,
       contact,
       phone,
       email,
       customerType,
+      source,
       fax,
       billToAddress,
       billToAddress2,
@@ -77,7 +82,11 @@ export default function CustomerDetails({ customer, setCustomer, setIsEditing }:
     setCustomer(newCustomer);
 
     const location = await getMapLocationFromCustomer(customer.id);
-    if (Boolean(location) && await confirm('Do you want to update the map location?')) {
+    const isLocationChanged = (
+      JSON.stringify({ company: customer.company, billToAddress: customer.billToAddress, billToAddress2: customer.billToAddress2, billToCity: customer.billToCity, billToState: customer.billToState, billToZip: customer.billToZip }) !==
+      JSON.stringify({ company: newCustomer.company, billToAddress: newCustomer.billToAddress, billToAddress2: newCustomer.billToAddress2, billToCity: newCustomer.billToCity, billToState: newCustomer.billToState, billToZip: newCustomer.billToZip })
+    );
+    if (Boolean(location) && isLocationChanged && await confirm('Do you want to update the map location?')) {
       setLoc(location);
       setEditLocDialogOpen(true);
     } else {
@@ -132,15 +141,6 @@ export default function CustomerDetails({ customer, setCustomer, setIsEditing }:
                 <Table variant={['plain', 'row-details', 'edit-row-details']}>
                   <tbody>
                     <tr>
-                      <th>Contact</th>
-                      <td>
-                        <Input
-                          value={contact}
-                          onChange={(e: any) => setContact(e.target.value)}
-                        />
-                      </td>
-                    </tr>
-                    <tr>
                       <th>Phone</th>
                       <td>
                         <Input
@@ -170,7 +170,12 @@ export default function CustomerDetails({ customer, setCustomer, setIsEditing }:
                     </tr>
                     <tr>
                       <th>Source</th>
-                      <td></td>
+                      <td>
+                        <SourceSelect
+                          value={source}
+                          onChange={(e: any) => setSource(e.target.value)}
+                        />
+                      </td>
                     </tr>
                     <tr>
                       <th>Fax</th>
@@ -194,7 +199,7 @@ export default function CustomerDetails({ customer, setCustomer, setIsEditing }:
                 </Table>
               </GridItem>
 
-              <GridItem colStart={1} colEnd={6} variant={['low-opacity-bg']}>
+              <GridItem colStart={1} colEnd={5} variant={['low-opacity-bg']}>
                 <Table variant={['plain', 'row-details', 'edit-row-details']}>
                   <tbody>
                     <tr>
@@ -255,7 +260,11 @@ export default function CustomerDetails({ customer, setCustomer, setIsEditing }:
                 </Table>
               </GridItem>
 
-              <GridItem colStart={6} colEnd={12} variant={['low-opacity-bg']}>
+              <GridItem variant={['no-style']} colStart={5} colEnd={9} rowStart={2}>
+                { customer.contacts && customer.contacts.length > 0 ? <CustomerContactsBlock customer={customer} setCustomer={setCustomer} /> : <p>No Contacts</p> }
+              </GridItem>
+
+              <GridItem colStart={1} colEnd={5} variant={['low-opacity-bg']}>
                 <Table variant={['plain', 'row-details', 'edit-row-details']}>
                   <tbody>
                     <tr>
@@ -307,7 +316,7 @@ export default function CustomerDetails({ customer, setCustomer, setIsEditing }:
                 </Table>
               </GridItem>
 
-              <GridItem colStart={5} colEnd={10} rowStart={1} variant={['low-opacity-bg']}>
+              <GridItem colStart={5} colEnd={10} variant={['low-opacity-bg']}>
                 <Table variant={['plain', 'row-details', 'edit-row-details']}>
                   <tbody>
                     <tr>

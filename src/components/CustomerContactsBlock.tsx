@@ -15,7 +15,7 @@ export default function CustomerContactsBlock({ customer, setCustomer }: Props) 
   const [contact, setContact] = useState<Contact>(customer.contacts[contactPage]);
   const [isEditing, setIsEditing] = useState(false);
   const [contactsData, setContactsData] = useState<Contact[]>(customer.contacts);
-
+  
   useEffect(() => {
     setContact(customer.contacts[contactPage]);
   }, [contactPage, customer]);
@@ -66,7 +66,7 @@ export default function CustomerContactsBlock({ customer, setCustomer }: Props) 
   const handleDeleteContact = async () => {
     if (!await confirm('Are you sure you want to delete this?')) return;
     await deleteContact(contactsData[contactPage].id);
-    await editCustomer({ ...customer, contact: null });
+    if (contactsData[contactPage].name === customer.contact) await editCustomer({ ...customer, contact: null });
     location.reload();
   };
 
@@ -75,18 +75,18 @@ export default function CustomerContactsBlock({ customer, setCustomer }: Props) 
     <div>
       <div className="contacts-block__header">
         <h3>Contacts</h3>
-        <Button onClick={handleNewContact}>Add</Button>
-        {!isEditing && <Button onClick={() => setIsEditing(true)} variant={['blue']}>Edit</Button>}
+        <Button type="button" onClick={handleNewContact}>Add</Button>
+        {!isEditing && <Button type="button" onClick={() => setIsEditing(true)} variant={['blue']}>Edit</Button>}
         {isEditing &&
           <>
-            <Button onClick={handleEditContact} variant={['save']}>Save</Button>
-            <Button onClick={handleCancelEdit} variant={['danger']}>Cancel</Button>
+            <Button type="button" onClick={handleEditContact} variant={['save']}>Save</Button>
+            <Button type="button" onClick={handleCancelEdit} variant={['danger']}>Cancel</Button>
           </>
         }
       </div>
 
       <div className="contacts-block">
-        <Button onClick={handleDeleteContact} variant={['danger']} style={{ marginBottom: '0.5rem' }}>Delete</Button>
+        <Button type="button" onClick={handleDeleteContact} variant={['danger']} style={{ marginBottom: '0.5rem' }}>Delete</Button>
         {isEditing ?
           <>
             <div className="contacts-block__row">
@@ -183,13 +183,9 @@ export default function CustomerContactsBlock({ customer, setCustomer }: Props) 
         }
 
         <div className="contacts-block__buttons">
-          {customer.contacts.length > 1 &&
-            <>
-              <Button onClick={() => handlePrevPage()}>Previous</Button>
-              <Button onClick={handleSetContact}>Set as Contact</Button>
-              <Button onClick={() => handleNextPage()}>Next</Button>
-            </>
-          }
+          { customer.contacts.length > 1 && <Button type="button" onClick={() => handlePrevPage()}>Previous</Button> }
+          { customer.contacts.length > 0 && <Button type="button" onClick={handleSetContact}>Set as Contact</Button> }
+          { customer.contacts.length > 1 && <Button type="button" onClick={() => handleNextPage()}>Next</Button> }
         </div>
       </div>
     </div>

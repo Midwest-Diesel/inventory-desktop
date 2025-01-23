@@ -17,6 +17,7 @@ import PiggybackQuoteDialog from "../Dialogs/dashboard/PiggybackQuoteDialog";
 import Link from "next/link";
 import { confirm } from '@tauri-apps/api/dialog';
 import SalesEndOfDayDialog from "../Dialogs/dashboard/SalesEndOfDayDialog";
+import Toast from "../Library/Toast";
 
 interface Props {
   quotes: Quote[]
@@ -45,13 +46,14 @@ export default function QuoteList({ quotes, setQuotes, setSelectHandwrittenOpen,
   const [piggybackQuote, setPiggybackQuote] = useState<Quote>(null);
   const [endOfDayOpen, setEndOfDayOpen] = useState(false);
   const [showingSearchResults, setShowingSearchResults] = useState(false);
-  const search = localStorage.getItem('altPartSearches') || localStorage.getItem('partSearches') || '';
+  const [toastOpen, setToastOpen] = useState(false);
+  const search = localStorage.getItem('altPartSearches') || localStorage.getItem('partSearches') || null;
   const [page, setPage] = useState(1);
   const LIMIT = 26;
 
   useEffect(() => {
     const fetchData = async () => {
-      const pageCount = await getQuotesCount(JSON.parse(search).partNum.replace('*', ''), selectedCustomer.id, quoteListType === 'engine');
+      const pageCount = await getQuotesCount(search && JSON.parse(search).length > 1 ? JSON.parse(search).partNum : '', selectedCustomer.id, quoteListType === 'engine');
       setCount(pageCount);
       await handleChangePage(null, 1);
     };
@@ -61,7 +63,7 @@ export default function QuoteList({ quotes, setQuotes, setSelectHandwrittenOpen,
 
   useEffect(() => {
     const fetchData = async () => {
-      const pageCount = await getQuotesCount(JSON.parse(search).partNum.replace('*', ''), filterByCustomer ? selectedCustomer.id : null, quoteListType === 'engine');
+      const pageCount = await getQuotesCount(search && JSON.parse(search).length > 1 ? JSON.parse(search).partNum : '', filterByCustomer ? selectedCustomer.id : null, quoteListType === 'engine');
       setCount(pageCount);
       await handleChangePage(null, 1);
     };
@@ -100,6 +102,7 @@ export default function QuoteList({ quotes, setQuotes, setSelectHandwrittenOpen,
     };
     await addQuote(newQuote);
     setQuotes(await getSomeQuotes(page, LIMIT, lastSearch, selectedCustomer.id, quoteListType === 'engine'));
+    setToastOpen(true);
   };
 
   const handleDelete = async (id: number) => {
@@ -202,8 +205,9 @@ export default function QuoteList({ quotes, setQuotes, setSelectHandwrittenOpen,
       setPaginatedQuotes(res.rows);
       setCount(res.minItems);
     } else {
-      const res = await getSomeQuotes(page, LIMIT, JSON.parse(search).partNum.replace('*', ''), filterByCustomer ? selectedCustomer.id : null, quoteListType === 'engine');
+      const res = await getSomeQuotes(page, LIMIT, search ? JSON.parse(search).partNum : '', filterByCustomer ? selectedCustomer.id : null, quoteListType === 'engine');
       setPaginatedQuotes(res);
+      if (res.length === 0 && filterByCustomer) setFilterByCustomer(false);
     }
     setPage(page);
   };
@@ -231,6 +235,8 @@ export default function QuoteList({ quotes, setQuotes, setSelectHandwrittenOpen,
 
   return (
     <div className="quote-list">
+      <Toast msg="Created quote" type="success" open={toastOpen} setOpen={setToastOpen} />
+
       <div className="quote-list__header no-select" onClick={toggleQuotesOpen}>
         <h2>Part Quotes</h2>
         <Image src={`/images/icons/arrow-${quotesOpen ? 'up' : 'down'}.svg`} alt="arrow" width={25} height={25} />

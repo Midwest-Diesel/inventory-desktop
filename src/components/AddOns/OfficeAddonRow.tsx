@@ -181,7 +181,6 @@ export default function OfficeAddonRow({ addOn }: Props) {
                   type="number"
                   value={addOn.qty !== null ? addOn.qty : ''}
                   onChange={(e: any) => handleEditAddOn({ ...addOn, qty: e.target.value })}
-                  required
                 />
               </td>
               <td>
@@ -194,7 +193,6 @@ export default function OfficeAddonRow({ addOn }: Props) {
                     handleEditAddOn({ ...addOn, partNum: e.target.value.toUpperCase() });
                     autofillFromPartNum(e.target.value.toUpperCase());
                   }}
-                  required
                 />
               </td>
               <td>
@@ -202,7 +200,6 @@ export default function OfficeAddonRow({ addOn }: Props) {
                   variant={['small', 'thin']}
                   value={addOn.desc !== null ? addOn.desc : ''}
                   onChange={(e: any) => handleEditAddOn({ ...addOn, desc: e.target.value })}
-                  required
                 />
               </td>
               <td>
@@ -216,7 +213,6 @@ export default function OfficeAddonRow({ addOn }: Props) {
                     handleEditAddOn({ ...addOn, engineNum: e.target.value ? e.target.value : '' as any });
                     autofillFromEngineNum(Number(e.target.value));
                   }}
-                  required
                 />
               </td>
               <td>
@@ -224,7 +220,6 @@ export default function OfficeAddonRow({ addOn }: Props) {
                   variant={['small', 'thin']}
                   value={addOn.stockNum !== null ? addOn.stockNum : ''}
                   onChange={(e: any) => handleEditAddOn({ ...addOn, stockNum: e.target.value })}
-                  required
                 />
               </td>
               <td>
@@ -232,7 +227,6 @@ export default function OfficeAddonRow({ addOn }: Props) {
                   variant={['small', 'thin']}
                   value={addOn.location !== null ? addOn.location : ''}
                   onChange={(e: any) => handleEditAddOn({ ...addOn, location: e.target.value })}
-                  required
                 />
               </td>
             </tr>
@@ -279,7 +273,6 @@ export default function OfficeAddonRow({ addOn }: Props) {
                   style={{ width: '100%' }}
                   value={addOn.condition}
                   onChange={(e: any) => handleEditAddOn({ ...addOn, condition: e.target.value })}
-                  required
                 >
                   <option value="Core">Core</option>
                   <option value="Good Used">Good Used</option>
@@ -307,7 +300,6 @@ export default function OfficeAddonRow({ addOn }: Props) {
                   type="number"
                   value={addOn.rating !== null ? addOn.rating : ''}
                   onChange={(e: any) => handleEditAddOn({ ...addOn, rating: e.target.value })}
-                  required
                 />
               </td>
               <td>
@@ -341,7 +333,6 @@ export default function OfficeAddonRow({ addOn }: Props) {
                   type="number"
                   value={addOn.newPrice !== null ? addOn.newPrice : ''}
                   onChange={(e: any) => handleEditAddOn({ ...addOn, newPrice: e.target.value })}
-                  required
                 />
               </td>
               <td>
@@ -350,7 +341,6 @@ export default function OfficeAddonRow({ addOn }: Props) {
                   type="number"
                   value={addOn.remanPrice !== null ? addOn.remanPrice : ''}
                   onChange={(e: any) => handleEditAddOn({ ...addOn, remanPrice: e.target.value })}
-                  required
                 />
               </td>
               <td>
@@ -359,7 +349,6 @@ export default function OfficeAddonRow({ addOn }: Props) {
                   type="number"
                   value={addOn.dealerPrice !== null ? addOn.dealerPrice : ''}
                   onChange={(e: any) => handleEditAddOn({ ...addOn, dealerPrice: e.target.value })}
-                  required
                 />
               </td>
               <td>
@@ -367,7 +356,6 @@ export default function OfficeAddonRow({ addOn }: Props) {
                   style={{ width: '100%' }}
                   value={addOn.priceStatus}
                   onChange={(e: any) => handleEditAddOn({ ...addOn, priceStatus: e.target.value })}
-                  required
                 >
                   <option>We have pricing</option>
                   <option>No pricing</option>
