@@ -15,6 +15,7 @@ export default function AddOnsShop() {
   const [prevAddons, setPrevAddons] = useState<AddOn[]>([]);
   const [addOns, setAddons] = useAtom<AddOn[]>(shopAddOnsAtom);
   const [savedBtnText, setSavedBtnText] = useState('Save');
+  const [shouldPreventLeave, setShouldPreventLeave] = useState(false);
   const { selectedPoAddOn, addOn, receivedItemsDialogOpen } = selectedPoData;
 
   useEffect(() => {
@@ -42,6 +43,7 @@ export default function AddOnsShop() {
 
   const handleEditAddOns = async () => {
     setSavedBtnText('Saved!');
+    setShouldPreventLeave(false);
     for (let i = 0; i < addOns.length; i++) {
       if (JSON.stringify(prevAddons[i]) !== JSON.stringify(addOns[i])) {
         await editAddOn(addOns[i]);
@@ -53,7 +55,8 @@ export default function AddOnsShop() {
 
   return (
     <Layout title="Add Ons">
-      <PreventNavigation />
+      <PreventNavigation shouldPrevent={shouldPreventLeave} />
+
       { selectedPoAddOn ?
         <MarkPoItemsReceivedDialog
           open={receivedItemsDialogOpen}
@@ -80,7 +83,7 @@ export default function AddOnsShop() {
           </Button>
         </div>
 
-        <div className="add-ons__list">
+        <form className="add-ons__list" onChange={() => setShouldPreventLeave(true)}>
           {addOns.map((addOn) => {
             return (
               <Fragment key={addOn.id}>
@@ -88,7 +91,7 @@ export default function AddOnsShop() {
               </Fragment>
             );
           })}
-        </div>
+        </form>
       </div>
     </Layout>
   );

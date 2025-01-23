@@ -5,12 +5,12 @@ import { useEffect, useRef, useState } from 'react';
 import Popup from './Library/Popup';
 
 interface Props {
-  isDirty?: boolean
+  shouldPrevent?: boolean
   text?: string
 }
 
 
-export const PreventNavigation = ({ isDirty = true, text }: Props) => {
+export const PreventNavigation = ({ shouldPrevent = true, text }: Props) => {
   const [leavingPage, setLeavingPage] = useState(false);
   const router = useRouter();
   const confirmationFn = useRef<() => void>(() => {});
@@ -19,7 +19,7 @@ export const PreventNavigation = ({ isDirty = true, text }: Props) => {
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {
       const target = e.target as HTMLAnchorElement;
-      if (isDirty) {
+      if (shouldPrevent) {
         e.preventDefault();
         confirmationFn.current = () => {
           router.push(target.href || '/');
@@ -30,7 +30,7 @@ export const PreventNavigation = ({ isDirty = true, text }: Props) => {
 
     const handleDropdownClick = (e: MouseEvent) => {
       const target = e.target as HTMLDivElement;
-      if (target.classList[0] === 'nav__link') setLeavingPage(true);
+      if (shouldPrevent && target.classList[0] === 'nav__link') setLeavingPage(true);
     };
 
     const handleKeydown = (e: KeyboardEvent) => {
@@ -43,7 +43,7 @@ export const PreventNavigation = ({ isDirty = true, text }: Props) => {
 
     const handlePopState = (e: PopStateEvent) => {
       e.preventDefault();
-      if (isDirty) {
+      if (shouldPrevent) {
         confirmationFn.current = () => {};
         cancelFn.current = () => {};
         setLeavingPage(true);
@@ -53,7 +53,7 @@ export const PreventNavigation = ({ isDirty = true, text }: Props) => {
     };
 
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-      if (isDirty) {
+      if (shouldPrevent) {
         e.preventDefault();
         e.returnValue = '';
       }
@@ -80,7 +80,7 @@ export const PreventNavigation = ({ isDirty = true, text }: Props) => {
       window.removeEventListener('popstate', handlePopState);
       window.removeEventListener('beforeunload', handleBeforeUnload);
     };
-  }, [isDirty, router]);
+  }, [shouldPrevent, router]);
 
   
   return (

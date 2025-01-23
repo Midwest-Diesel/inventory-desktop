@@ -6,7 +6,6 @@ import { useEffect, useRef, useState } from "react";
 import Input from "../Library/Input";
 import { addEngine, getAutofillEngine } from "@/scripts/controllers/enginesController";
 import { deleteEngineAddOn } from "@/scripts/controllers/engineAddOnsController";
-import CustomerSelect from "../Library/Select/CustomerSelect";
 import { useAtom } from "jotai";
 import { engineAddOnsAtom } from "@/scripts/atoms/state";
 import { confirm } from '@tauri-apps/api/dialog';
@@ -213,6 +212,7 @@ export default function EngineAddOnRow({ addOn, handleDuplicateAddOn }: Props) {
                     />
                     :
                     <Button
+                      type="button"
                       style={{ marginLeft: '0.3rem', width: '100%', textAlign: 'start' }}
                       variant={['no-style', 'x-small']}
                       onFocus={() => setShowVendorSelect(true)}
@@ -269,7 +269,7 @@ export default function EngineAddOnRow({ addOn, handleDuplicateAddOn }: Props) {
           onChange={(e: any) => setPrintQty(e.target.value)}
           type="number"
         >
-          <Button variant={['search']} onClick={handlePrint}>Print</Button>
+          <Button type="button" variant={['search']} onClick={handlePrint}>Print</Button>
         </Input>
         <Button variant={['danger']} type="button" onClick={handleDeleteAddOn}>Delete</Button>
       </div>

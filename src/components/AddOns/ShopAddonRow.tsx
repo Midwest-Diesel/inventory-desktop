@@ -91,7 +91,7 @@ export default function ShopAddonRow({ addOn, handleDuplicateAddOn }: Props) {
       condition: res.condition,
       purchasePrice: Number(res.purchasePrice),
       purchasedFrom: res.purchasedFrom,
-      po: Number(res.po),
+      po: res.po ? Number(res.po) : res.po,
       manufacturer: res.manufacturer,
       isSpecialCost: res.isSpecialCost,
       newPrice: Number(res.newPrice),
@@ -372,6 +372,7 @@ export default function ShopAddonRow({ addOn, handleDuplicateAddOn }: Props) {
                     />
                     :
                     <Button
+                      type="button"
                       style={{ marginLeft: '0.3rem', width: '100%', textAlign: 'start' }}
                       variant={['no-style', 'x-small']}
                       onFocus={() => setShowVendorSelect(true)}
@@ -395,7 +396,7 @@ export default function ShopAddonRow({ addOn, handleDuplicateAddOn }: Props) {
 
       <div className="add-ons__list-row-buttons">
         { poLink && <Link href={`/purchase-orders/${poLink}`}>View PO</Link> }
-        <Button onClick={() => handleDuplicateAddOn(addOn)}>Duplicate</Button>
+        <Button type="button" onClick={() => handleDuplicateAddOn(addOn)}>Duplicate</Button>
         <Input
           style={{ width: '3rem' }}
           variant={['x-small', 'search']}
@@ -403,9 +404,9 @@ export default function ShopAddonRow({ addOn, handleDuplicateAddOn }: Props) {
           onChange={(e: any) => setPrintQty(e.target.value)}
           type="number"
         >
-          <Button variant={['search']} onClick={handlePrint}>Print</Button>
+          <Button type="button" variant={['search']} onClick={handlePrint}>Print</Button>
         </Input>
-        <Button variant={['danger']} onClick={handleDeleteAddOn}>Delete</Button>
+        <Button type="button" variant={['danger']} onClick={handleDeleteAddOn}>Delete</Button>
       </div>
     </div>
   );

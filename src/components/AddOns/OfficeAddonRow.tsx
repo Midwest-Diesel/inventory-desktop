@@ -372,6 +372,7 @@ export default function OfficeAddonRow({ addOn }: Props) {
                     />
                     :
                     <Button
+                      type="button"
                       style={{ marginLeft: '0.3rem', width: '100%', textAlign: 'start' }}
                       variant={['no-style', 'x-small']}
                       onFocus={() => setShowVendorSelect(true)}
@@ -403,10 +404,10 @@ export default function OfficeAddonRow({ addOn }: Props) {
           :
           <>
             { poLink && <Link href={`/purchase-orders/${poLink}`}>View PO</Link> }
-            <Button onClick={handleAddToInventory}>Add to Inventory</Button>
+            <Button type="button" onClick={handleAddToInventory}>Add to Inventory</Button>
           </>
         }
-        <Button variant={['danger']} onClick={handleDeleteAddOn}>Delete</Button>
+        <Button type="button" variant={['danger']} onClick={handleDeleteAddOn}>Delete</Button>
       </div>
     </div>
   );

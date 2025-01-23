@@ -12,6 +12,7 @@ export default function AddOnsEngine() {
   const [addOns, setAddons] = useAtom<EngineAddOn[]>(engineAddOnsAtom);
   const [prevAddons, setPrevAddons] = useState<EngineAddOn[]>([]);
   const [savedBtnText, setSavedBtnText] = useState('Save');
+  const [shouldPreventLeave, setShouldPreventLeave] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -25,6 +26,7 @@ export default function AddOnsEngine() {
   const handleEditAddOns = async (e: FormEvent) => {
     e.preventDefault();
     setSavedBtnText('Saved!');
+    setShouldPreventLeave(false);
     for (let i = 0; i < addOns.length; i++) {
       if (JSON.stringify(prevAddons[i]) !== JSON.stringify(addOns[i])) {
         await editEngineAddOn(addOns[i]);
@@ -50,7 +52,7 @@ export default function AddOnsEngine() {
 
   return (
     <Layout title="Add Ons">
-      <PreventNavigation />
+      <PreventNavigation shouldPrevent={shouldPreventLeave} />
 
       <div className="add-ons">
         <h1>Engine Add Ons</h1>
@@ -61,7 +63,7 @@ export default function AddOnsEngine() {
           New Engine
         </Button>
 
-        <form onSubmit={handleEditAddOns}>
+        <form onSubmit={handleEditAddOns} onChange={() => setShouldPreventLeave(true)}>
           <div className="header__btn-container">
             <Button
               variant={['save']}

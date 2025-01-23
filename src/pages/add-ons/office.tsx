@@ -12,6 +12,7 @@ export default function AddOnsOffice() {
   const [prevAddons, setPrevAddons] = useState<AddOn[]>([]);
   const [addOns, setAddons] = useAtom<AddOn[]>(shopAddOnsAtom);
   const [savedBtnText, setSavedBtnText] = useState('Save');
+  const [shouldPreventLeave, setShouldPreventLeave] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -25,6 +26,7 @@ export default function AddOnsOffice() {
   const handleEditAddOns = async (e: FormEvent) => {
     e.preventDefault();
     setSavedBtnText('Saved!');
+    setShouldPreventLeave(false);
     for (let i = 0; i < addOns.length; i++) {
       if (JSON.stringify(prevAddons[i]) !== JSON.stringify(addOns[i])) {
         await editAddOn(addOns[i]);
@@ -36,7 +38,7 @@ export default function AddOnsOffice() {
 
   return (
     <Layout title="Add Ons">
-      <PreventNavigation />
+      <PreventNavigation shouldPrevent={shouldPreventLeave} />
 
       <div className="add-ons">
         <h1>Office Add Ons</h1>
@@ -51,7 +53,7 @@ export default function AddOnsOffice() {
             </Button>
           </div>
 
-          <div className="add-ons__list">
+          <form className="add-ons__list" onChange={() => setShouldPreventLeave(true)}>
             {addOns.map((addOn) => {
               return (
                 <Fragment key={addOn.id}>
@@ -59,7 +61,7 @@ export default function AddOnsOffice() {
                 </Fragment>
               );
             })}
-          </div>
+          </form>
         </form>
       </div>
     </Layout>
