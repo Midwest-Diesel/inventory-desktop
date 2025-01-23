@@ -507,7 +507,6 @@ fn new_email_draft(email_args: EmailArgs) {
   let mut cmd = Command::new("wscript.exe");
   cmd.arg(temp_vbs_path);
   cmd.output().expect("Failed to create new draft");
-  let _ = std::fs::remove_file(temp_vbs_path);
 }
 
 #[tauri::command]
@@ -547,7 +546,6 @@ fn attach_to_existing_email(attachments: String) {
   let mut cmd = Command::new("wscript.exe");
   cmd.arg(temp_vbs_path);
   cmd.output().expect("Failed to attach files to the existing draft");
-  let _ = std::fs::remove_file(temp_vbs_path);
 }
 
 #[tauri::command]
@@ -665,7 +663,6 @@ fn add_to_shipping_list(new_shipping_list_row: ShippingListRow) {
   let mut cmd = Command::new("wscript.exe");
   cmd.arg(temp_vbs_path);
   cmd.output().expect("Failed to update shipping list");
-  let _ = std::fs::remove_file(temp_vbs_path);
 }
 
 #[tauri::command]

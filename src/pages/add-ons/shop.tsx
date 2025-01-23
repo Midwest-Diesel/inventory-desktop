@@ -30,14 +30,14 @@ export default function AddOnsShop() {
     await addAddOn();
     const res = await getAllAddOns();
     setAddons(res);
-    setPrevAddons([res[0], ...prevAddons]);
+    setPrevAddons(res);
   };
 
   const handleDuplicateAddOn = async (duplicateAddOn: AddOn) => {
     await addAddOn(duplicateAddOn);
     const res = await getAllAddOns();
     setAddons(res);
-    setPrevAddons([res[0], ...prevAddons]);
+    setPrevAddons(res);
   };
 
   const handleEditAddOns = async () => {

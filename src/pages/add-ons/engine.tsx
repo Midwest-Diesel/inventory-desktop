@@ -37,14 +37,14 @@ export default function AddOnsEngine() {
     await addEngineAddOn(duplicateAddOn);
     const res = await getAllEngineAddOns();
     setAddons(res);
-    setPrevAddons([res[0], ...prevAddons]);
+    setPrevAddons(res);
   };
 
   const handleNewAddOn = async () => {
     await addEngineAddOn();
     const res = await getAllEngineAddOns();
     setAddons(res);
-    setPrevAddons([res[0], ...prevAddons]);
+    setPrevAddons(res);
   };
 
 
