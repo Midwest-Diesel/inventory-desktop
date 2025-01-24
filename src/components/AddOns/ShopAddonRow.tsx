@@ -16,6 +16,7 @@ import { formatDate } from "@/scripts/tools/stringUtils";
 import VendorSelect from "../Library/Select/VendorSelect";
 import { getPurchaseOrderByPoNum } from "@/scripts/controllers/purchaseOrderController";
 import { selectedPoAddOnAtom } from "@/scripts/atoms/components";
+import { getRatingFromRemarks } from "@/scripts/tools/utils";
 
 interface Props {
   addOn: AddOn
@@ -86,7 +87,7 @@ export default function ShopAddonRow({ addOn, handleDuplicateAddOn }: Props) {
       location: res.location,
       remarks: res.remarks,
       entryDate: res.entryDate,
-      rating: Number(res.rating),
+      rating: res.rating,
       engineNum: Number(res.engineNum),
       condition: res.condition,
       purchasePrice: Number(res.purchasePrice),
@@ -252,6 +253,7 @@ export default function ShopAddonRow({ addOn, handleDuplicateAddOn }: Props) {
                   variant={['small', 'thin', 'text-area']}
                   value={addOn.remarks !== null ? addOn.remarks : ''}
                   onChange={(e: any) => handleEditAddOn({ ...addOn, remarks: e.target.value })}
+                  onBlur={(e: any) => handleEditAddOn({ ...addOn, rating: getRatingFromRemarks(e.target.value) })}
                 />
               </td>
               <td>

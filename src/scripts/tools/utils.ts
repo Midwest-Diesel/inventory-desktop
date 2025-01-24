@@ -51,3 +51,17 @@ export const isDateInCurrentOrNextWeek = (date: Date) => {
     return "other";
   }
 };
+
+export const getRatingFromRemarks = (string: string): string => {
+  const str = string.trim();
+  const start = str.indexOf('(') + 1;
+  const end = str.indexOf(')');
+  if (start !== 1 || end < 0) return '0.0';
+  
+  const rating = str.slice(start, end);
+  if (rating.split('.').length > 1) {
+    return rating;
+  } else {
+    return `${rating.replaceAll('.', '')}.0`;
+  }
+};

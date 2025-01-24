@@ -1,5 +1,5 @@
 import { expect } from '@jest/globals';
-import { filterNullObjValuesArr, generateClasses, isObjectNull, parseClasses } from "@/scripts/tools/utils";
+import { filterNullObjValuesArr, generateClasses, getRatingFromRemarks, isObjectNull, parseClasses } from "@/scripts/tools/utils";
 
 
 describe('Generate classes', () => {
@@ -58,5 +58,33 @@ describe('filterNullObjValuesArr', () => {
     const arr = [{ a: 'test', b: null }, { a: '', b: null }];
     const result = filterNullObjValuesArr(arr);
     expect(result).toEqual([{ a: 'test', b: null }]);
+  });
+});
+
+describe('getRatingFromString', () => {
+  it ('should return rating from decimal', () => {
+    const rating1 = getRatingFromRemarks('(8.0) T/O LOOKS OK W/ CAM # 9Y0266 W/ TIMING ADVANCE');
+    expect(rating1).toEqual('8.0');
+    const rating2 = getRatingFromRemarks('(8.0)T/O LOOKS OK W/ CAM # 9Y0266 W/ TIMING ADVANCE');
+    expect(rating2).toEqual('8.0');
+  });
+
+  it ('should return 0.0', () => {
+    const rating = getRatingFromRemarks('FUEL PUMP CORE, RACK BAR STUCK, HSNG #7W3906, CAM #7W3103');
+    expect(rating).toEqual('0.0');
+  });
+
+  it ('should return 0.0 when not at start', () => {
+    const rating1 = getRatingFromRemarks('FUEL PUMP CORE, (6.5) RACK BAR STUCK, HSNG #7W3906, CAM #7W3103');
+    expect(rating1).toEqual('0.0');
+    const rating2 = getRatingFromRemarks('FUEL PUMP CORE, RACK BAR STUCK, HSNG #7W3906, (6.5)CAM #7W3103');
+    expect(rating2).toEqual('0.0');
+  });
+
+  it ('should return rating from integer', () => {
+    const rating1 = getRatingFromRemarks('(10) NTO, ECM MOUNTING BRACKET, YELLOW, LOOKS VERY NICE');
+    expect(rating1).toEqual('10.0');
+    const rating2 = getRatingFromRemarks('(10)NTO, ECM MOUNTING BRACKET, YELLOW, LOOKS VERY NICE');
+    expect(rating2).toEqual('10.0');
   });
 });

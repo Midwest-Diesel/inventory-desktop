@@ -261,7 +261,7 @@ type AddOn = {
   location: string
   remarks: string
   entryDate: Date
-  rating: number
+  rating: string
   engineNum: number
   condition: string
   purchasePrice: number
