@@ -8,6 +8,7 @@ import { useAtom } from "jotai";
 import { alertsAtom, lastPartSearchAtom, partsQtyAtom, recentQuotesAtom, showSoldPartsAtom, userAtom } from "@/scripts/atoms/state";
 import { selectedAlertsAtom } from "@/scripts/atoms/components";
 import { isObjectNull } from "@/scripts/tools/utils";
+import { detectAlerts } from "@/scripts/controllers/alertsController";
 
 
 interface Props {
@@ -58,7 +59,6 @@ export default function PartsSearchDialog({ open, setOpen, setParts, setLoading 
     document.getElementById('part-search-input').focus();
   }, [open]);
 
-
   const clearInputs = () => {
     setPartNum('');
     setStockNum('');
@@ -89,20 +89,10 @@ export default function PartsSearchDialog({ open, setOpen, setParts, setLoading 
     setRecentQuoteSearches(await getQuotesByPartNum(partNum));
     const results = await searchParts({ partNum, stockNum, desc, location, qty, remarks, rating, purchasedFrom, showSoldParts }) as Part[];
     setPartsQty(results.map((part) => part.qty));
-    detectAlerts(results);
+    const alerts = await detectAlerts(partNum);
+    setSelectedAlerts([...selectedAlerts, ...alerts]);
     setParts(results);
     setLoading(false);
-  };
-
-  const detectAlerts = (results: Part[]) => {
-    if (!results) return;
-    const alertQue = new Array<Alert>();
-    alertsData.forEach((alert: Alert) => {
-      if (alert.partNum === partNum || results.some((part) => part.altParts.includes(alert.partNum))) {
-        alertQue.push(alert);
-      }
-    });
-    setSelectedAlerts([...selectedAlerts, ...alertQue]);
   };
 
 

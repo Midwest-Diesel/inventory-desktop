@@ -8,6 +8,7 @@ import { alertsAtom, lastPartSearchAtom, partsQtyAtom, recentQuotesAtom, showSol
 import { addRecentSearch, getQuotesByPartNum } from "@/scripts/controllers/recentSearchesController";
 import { selectedAlertsAtom } from "@/scripts/atoms/components";
 import { isObjectNull } from "@/scripts/tools/utils";
+import { detectAlerts } from "@/scripts/controllers/alertsController";
 
 
 interface Props {
@@ -89,20 +90,10 @@ export default function AltPartsSearchDialog({ open, setOpen, setParts, setLoadi
     setRecentQuoteSearches(await getQuotesByPartNum(partNum));
     const results = await searchAltParts({ partNum, stockNum, desc, location, qty, remarks, rating, purchasedFrom, showSoldParts }) as Part[];
     setPartsQty(results.map((part) => part.qty));
-    detectAlerts(results);
+    const alerts = await detectAlerts(partNum);
+    setSelectedAlerts([...selectedAlerts, ...alerts]);
     setParts(results);
     setLoading(false);
-  };
-
-  const detectAlerts = (results: Part[]) => {
-    if (!results) return;
-    const alertQue = new Array<Alert>();
-    alertsData.forEach((alert: Alert) => {
-      if (alert.partNum === partNum.replace('*', '') || results.some((part) => part.altParts.includes(alert.partNum)) && !selectedAlerts.includes(alert)) {
-        alertQue.push(alert);
-      }
-    });
-    setSelectedAlerts([...selectedAlerts, ...alertQue]);
   };
 
 

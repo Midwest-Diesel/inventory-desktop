@@ -15,7 +15,18 @@ export const getAlerts = async () => {
     const auth = { withCredentials: true };
     const res = await api.get('/api/alerts', auth);
     res.data = parseAlertDataRes(res.data);
-    return res.data.reverse();
+    return res.data;
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+export const detectAlerts = async (partNum: string) => {
+  try {
+    const auth = { withCredentials: true };
+    const res = await api.get(`/api/alerts/${partNum}`, auth);
+    res.data = parseAlertDataRes(res.data);
+    return res.data;
   } catch (err) {
     console.error(err);
   }

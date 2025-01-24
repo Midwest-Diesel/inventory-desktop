@@ -236,6 +236,12 @@ export default function QuoteList({ quotes, setQuotes, setSelectHandwrittenOpen,
     setPiggybackQuote(quote);
   };
 
+  const handleQuoteSale = async (e: any, quote: Quote) => {
+    toggleQuoteSold({ ...quote, sale: e.target.checked });
+    setQuotes(quotes.map((q) => q.id === quote.id ? { ...q, sale: e.target.checked } : q));
+    setQuotesData(quotesData.map((q) => q.id === quote.id ? { ...q, sale: e.target.checked } : q));
+  };
+
 
   return (
     <div className="quote-list">
@@ -356,11 +362,7 @@ export default function QuoteList({ quotes, setQuotes, setSelectHandwrittenOpen,
                         <td className="cbx-td" style={ quote.sale ? { backgroundColor: 'var(--green-dark-2)' } : null}>
                           <Checkbox
                             checked={quote.sale}
-                            onChange={(e: any) => {
-                              toggleQuoteSold({ ...quote, sale: e.target.checked });
-                              setQuotes(quotes.map((q) => q.id === quote.id ? { ...q, sale: e.target.checked } : q));
-                              setQuotesData(quotesData.map((q) => q.id === quote.id ? { ...q, sale: e.target.checked } : q));
-                            }}
+                            onChange={(e) => handleQuoteSale(e, quote)}
                           />
                         </td>
                       </tr>
