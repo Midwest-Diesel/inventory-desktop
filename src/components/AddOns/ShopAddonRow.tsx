@@ -5,7 +5,7 @@ import Checkbox from "../Library/Checkbox";
 import Table from "../Library/Table";
 import Select from "../Library/Select/Select";
 import { deleteAddOn } from "@/scripts/controllers/addOnsController";
-import { getAutofillPart, getPartByEngineNum, getPartByPartNum } from "@/scripts/controllers/partsController";
+import { checkForNewPartNum, getAutofillPart, getPartByEngineNum, getPartByPartNum } from "@/scripts/controllers/partsController";
 import { useEffect, useRef, useState } from "react";
 import Input from "../Library/Input";
 import Link from "next/link";
@@ -32,6 +32,7 @@ export default function ShopAddonRow({ addOn, handleDuplicateAddOn }: Props) {
   const [autofillEngineNum, setAutofillEngineNum] = useState('');
   const [showVendorSelect, setShowVendorSelect] = useState(false);
   const [printQty, setPrintQty] = useState(1);
+  const [isNewPart, setIsNewPart] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -41,6 +42,13 @@ export default function ShopAddonRow({ addOn, handleDuplicateAddOn }: Props) {
       select.length > 0 && select[select.length - 1].focus();
     }, 30);
   }, [showVendorSelect]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      await handlePartNumBlur(addOn.partNum);
+    };
+    fetchData();
+  }, []);
 
   const handleEditAddOn = (newAddOn: AddOn) => {
     const updatedAddOns = addOns.map((a: AddOn) => {
@@ -158,6 +166,14 @@ export default function ShopAddonRow({ addOn, handleDuplicateAddOn }: Props) {
       setSelectedPoData({ selectedPoAddOn: po, addOn, receivedItemsDialogOpen: true });
     }
   };
+
+  const handlePartNumBlur = async (partNum: string) => {
+    if (!await checkForNewPartNum(partNum)) {
+      setIsNewPart(true);
+    } else {
+      setIsNewPart(false);
+    }
+  };
   
 
   return (
@@ -186,6 +202,7 @@ export default function ShopAddonRow({ addOn, handleDuplicateAddOn }: Props) {
               </td>
               <td>
                 <Input
+                  style={isNewPart ? { backgroundColor: 'var(--red-1)', color: 'white' } : {}}
                   variant={['small', 'thin', 'autofill-input']}
                   value={addOn.partNum !== null ? addOn.partNum : ''}
                   autofill={autofillPartNum}
@@ -194,6 +211,7 @@ export default function ShopAddonRow({ addOn, handleDuplicateAddOn }: Props) {
                     handleEditAddOn({ ...addOn, partNum: e.target.value.toUpperCase() });
                     autofillFromPartNum(e.target.value.toUpperCase());
                   }}
+                  onBlur={(e: any) => handlePartNumBlur(e.target.value.toUpperCase())}
                 />
               </td>
               <td>
