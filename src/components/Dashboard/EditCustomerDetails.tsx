@@ -97,7 +97,7 @@ export default function CustomerDetails({ customer, setCustomer, setIsEditing }:
   
   return (
     <>
-      <PreventNavigation isDirty={!changesSaved} text="Leave without saving changes?" />
+      <PreventNavigation shouldPrevent={!changesSaved} text="Leave without saving changes?" />
 
       {editLocDialogOpen &&
         <EditMapLocDialog

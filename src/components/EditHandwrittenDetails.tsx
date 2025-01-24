@@ -233,7 +233,8 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
 
   return (
     <>
-      <PreventNavigation isDirty={!changesSaved} text="Leave without saving changes?" />
+      <PreventNavigation shouldPrevent={!changesSaved} text="Leave without saving changes?" />
+
       {changeCustomerDialogOpen &&
         <ChangeCustomerInfoDialog
           open={changeCustomerDialogOpen}

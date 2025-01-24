@@ -188,7 +188,7 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
   
   return (
     <>
-      <PreventNavigation isDirty={!changesSaved} text="Leave without saving changes?" />
+      <PreventNavigation shouldPrevent={!changesSaved} text="Leave without saving changes?" />
       
       <form className="edit-part-details" onSubmit={(e) => saveChanges(e)} onChange={() => setChangesSaved(false)}>
         <div className="edit-part-details__header">

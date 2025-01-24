@@ -123,7 +123,7 @@ export default function EditPoDetails({ poData, setPo, setIsEditing }: Props) {
 
   return (
     <>
-      <PreventNavigation isDirty={!changesSaved} text="Leave without saving changes?" />
+      <PreventNavigation shouldPrevent={!changesSaved} text="Leave without saving changes?" />
 
       {poData &&
         <form className="edit-purchase-order-details" onSubmit={(e) => saveChanges(e)} onChange={() => setChangesSaved(false)}>

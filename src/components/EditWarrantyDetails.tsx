@@ -93,7 +93,7 @@ export default function EditWarrantyDetails({ warrantyData, setWarranty, setIsEd
 
   return (
     <>
-      <PreventNavigation isDirty={!changesSaved} text="Leave without saving changes?" />
+      <PreventNavigation shouldPrevent={!changesSaved} text="Leave without saving changes?" />
 
       {warrantyData &&
         <form className="edit-warranty-details" onSubmit={(e) => saveChanges(e)} onChange={() => setChangesSaved(false)}>

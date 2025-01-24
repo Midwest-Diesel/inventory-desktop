@@ -58,7 +58,11 @@ export default function QuoteList({ quotes, setQuotes, setSelectHandwrittenOpen,
       await handleChangePage(null, 1);
     };
     fetchData();
-    if (!localStorage.getItem('customerId')) setFilterByCustomer(false);
+    if (!localStorage.getItem('customerId')) {
+      setFilterByCustomer(false);
+    } else {
+      setFilterByCustomer(true);
+    }
   }, [lastSearch, selectedCustomer, quotesData]);
 
   useEffect(() => {

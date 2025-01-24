@@ -213,7 +213,7 @@ export default function EditEngineDetails({ engine, setEngine, setIsEditing, eng
 
   return (
     <>
-      <PreventNavigation isDirty={!changesSaved} text="Leave without saving changes?" />
+      <PreventNavigation shouldPrevent={!changesSaved} text="Leave without saving changes?" />
 
       {engine &&
         <form className="edit-engine-details" onSubmit={(e) => saveChanges(e)} onChange={() => setChangesSaved(false)}>
