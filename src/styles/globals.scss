@@ -98,14 +98,14 @@ body {
 
 h1 {
   font-size: var(--font-xl);
-  margin: 0 0 1rem 0;
+  margin: 0 0 1rem;
 }
 
 p, h2, h3, h4, h5, h6 {
   margin: 0;
 }
 
-input[type=checkbox] {
+input[type="checkbox"] {
   box-shadow: none;
 }
 

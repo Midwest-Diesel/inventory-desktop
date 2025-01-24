@@ -8,6 +8,7 @@ td {
   border: 2px solid black;
   padding: 0.3rem;
   font-size: var(--font-sm);
+  text-align: start;
 }
 
 th {
@@ -15,10 +16,6 @@ th {
   border-width: 2.5px;
   background-color: var(--grey-dark-3);
   padding: 0.8rem;
-}
-
-td {
-  text-align: start;
 }
 
 tr:nth-child(even) {

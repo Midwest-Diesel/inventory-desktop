@@ -53,6 +53,7 @@
   img {
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
     margin: 0.5rem;
+    background-color: var(--grey-light-1);
     width: 100%;
     max-width: fit-content;
     height: fit-content;
@@ -102,20 +103,6 @@
     width: fit-content;
     padding: 0.3rem;
     border-radius: 0.5rem;
-  }
-}
-
-.part-pictures-dialog {
-  .dialog__content {
-    text-align: center;
-    overflow-y: auto;
-    max-height: 27.5rem;
-  }
-
-  img {
-    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
-    margin: 0.5rem;
-    background-color: var(--grey-light-1);
   }
 }
 
