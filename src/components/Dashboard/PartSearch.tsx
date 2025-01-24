@@ -273,7 +273,7 @@ export default function PartSearch({ selectHandwrittenOpen, setSelectHandwritten
                         <div className="parts-list__left-content">
                           {part.imageExists &&
                             <Button
-                              variant={['plain','hover-move']}
+                              variant={['plain', 'hover-move']}
                               style={{ padding: '0.1rem' }}
                               onClick={() => openPartImages(part)}
                             >
@@ -290,7 +290,7 @@ export default function PartSearch({ selectHandwrittenOpen, setSelectHandwritten
                         <div className="parts-list__left-content">
                           {part.snImageExists &&
                             <Button
-                              variant={['plain','hover-move']}
+                              variant={['plain', 'hover-move']}
                               style={{ padding: '0.1rem' }}
                               onClick={() => openStockNumImages(part)}
                             >

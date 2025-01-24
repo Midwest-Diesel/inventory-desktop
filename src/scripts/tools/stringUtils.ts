@@ -98,7 +98,9 @@ export const parsePhone = (value: string) => {
 
 export const extractStatusColors = (text: string): string => {
   if (!text || text === '') return '';
-  if (text.toLowerCase().includes('new')) {
+  if (text.toLowerCase().includes('sold')) {
+    return 'sold';
+  } else if (text.toLowerCase().includes('new')) {
     return 'new';
   } else if (text.toLowerCase().includes('rebuilt')) {
     return 'rebuilt';
@@ -108,8 +110,6 @@ export const extractStatusColors = (text: string): string => {
     return 'special';
   } else if (text.toLowerCase().includes('nto')) {
     return 'NTO';
-  } else if (text.toLowerCase().includes('sold')) {
-    return 'sold';
   } else if (text.toLowerCase().includes('humpy')) {
     return 'humpy';
   } else {
