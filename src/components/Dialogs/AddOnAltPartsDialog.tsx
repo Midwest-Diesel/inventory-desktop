@@ -1,8 +1,9 @@
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import Dialog from "../Library/Dialog";
 import { getAutofillPart, getPartsInfoByPartNum } from "@/scripts/controllers/partsController";
 import Input from "../Library/Input";
 import Button from "../Library/Button";
+import { editAddOnAltParts } from "@/scripts/controllers/addOnsController";
 
 interface Props {
   open: boolean
@@ -16,6 +17,12 @@ export default function AddOnAltPartsDialog({ open, setOpen, addOn }: Props) {
   const [addOnPartNum, setAddOnPartNum] = useState<string>(addOn.partNum);
   const [partNum, setPartNum] = useState('');
   const [alts, setAlts] = useState<string[]>([]);
+  const [savedBtnText, setSavedBtnText] = useState('Save');
+
+  useEffect(() => {
+    if (!open) return;
+    setAlts(addOn.altParts);
+  }, [open]);
 
   const autofillFromPartNum = async (partNum: string) => {
     if (!partNum) {
@@ -29,13 +36,20 @@ export default function AddOnAltPartsDialog({ open, setOpen, addOn }: Props) {
   const handleNewAlt = async (e: FormEvent) => {
     e.preventDefault();
     const res = (await getPartsInfoByPartNum(partNum))[0];
-    if (!res || alts.some((alt: string) => alt === res.altParts)) return;
-    setAlts([...alts, res.altParts]);
+    if (!res || alts.some((alt: string) => res.altParts.split(', ').includes(alt))) return;
+    setAlts([...alts, ...res.altParts.split(', ')]);
     setPartNum('');
   };
 
-  const handleSave = () => {
-    setOpen(false);
+  const handleRemoveAlt = (alt: string) => {
+    const altParts = alts.filter((a) => alt !== a);
+    setAlts(altParts);
+  };
+
+  const handleSave = async () => {
+    setSavedBtnText('Saved!');
+    await editAddOnAltParts(addOn.id, alts.join(', '));
+    setTimeout(() => setSavedBtnText('Save'), 1000);
   };
 
 
@@ -45,7 +59,6 @@ export default function AddOnAltPartsDialog({ open, setOpen, addOn }: Props) {
       setOpen={setOpen}
       title="Add Alt Parts"
       width={500}
-      y={-200}
       x={800}
       maxHeight="29rem"
       className="addon-alt-parts-dialog"
@@ -54,12 +67,12 @@ export default function AddOnAltPartsDialog({ open, setOpen, addOn }: Props) {
         <h2>{ addOnPartNum }</h2>
         <ul>
           <li>{ addOnPartNum }</li>
-          {alts.map((alt) => {
+          {alts && alts.map((alt) => {
             return (
               <li key={alt}>
                 <div className="addon-alt-parts-dialog__list-item">
                   { alt }
-                  <Button variant={['x-small', 'red-color']}>X</Button>
+                  <Button variant={['x-small', 'red-color']} type="button" onClick={() => handleRemoveAlt(alt)}>X</Button>
                 </div>
               </li>
             );
@@ -82,7 +95,7 @@ export default function AddOnAltPartsDialog({ open, setOpen, addOn }: Props) {
       </form>
 
       <div className="form__footer">
-        <Button onClick={handleSave}>Save</Button>
+        <Button onClick={handleSave}>{ savedBtnText }</Button>
       </div>
     </Dialog>
   );

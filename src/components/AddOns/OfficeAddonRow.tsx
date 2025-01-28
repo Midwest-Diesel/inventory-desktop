@@ -4,7 +4,7 @@ import Button from "../Library/Button";
 import Checkbox from "../Library/Checkbox";
 import Table from "../Library/Table";
 import Select from "../Library/Select/Select";
-import { deleteAddOn } from "@/scripts/controllers/addOnsController";
+import { deleteAddOn, editAddOnAltParts, getAddOnById } from "@/scripts/controllers/addOnsController";
 import { addPart, checkForNewPartNum, getAutofillPart, getPartByEngineNum, getPartByPartNum, getPartsInfoByPartNum } from "@/scripts/controllers/partsController";
 import { useEffect, useRef, useState } from "react";
 import Input from "../Library/Input";
@@ -53,7 +53,8 @@ export default function OfficeAddonRow({ addOn }: Props) {
     }, 30);
   }, [showVendorSelect]);
 
-  const handleEditAddOn = (newAddOn: AddOn) => {
+  const handleEditAddOn = async (newAddOn: AddOn) => {
+    if (addOn.partNum !== newAddOn.partNum) await editAddOnAltParts(addOn.id, '');
     const updatedAddOns = addOns.map((a: AddOn) => {
       if (a.id === newAddOn.id) {
         return newAddOn;
@@ -145,16 +146,18 @@ export default function OfficeAddonRow({ addOn }: Props) {
   };
 
   const handleAddToInventory = async () => {
-    if (!await confirm('Are you sure you want to add this item?')) return;
+    const updatedAddOn = await getAddOnById(addOn.id);
+    const partsInfo = await getPartsInfoByPartNum(updatedAddOn.partNum);
+    const altParts = [...updatedAddOn.altParts, ...partsInfo.length > 0 ? partsInfo[0].altParts.split(', ') : []];
+    if (!await confirm(`Are you sure you want to add this item?\n\nAlt Parts:\n${altParts.join(', ')}`)) return;
     setLoading(true);
-    const partsInfo = await getPartsInfoByPartNum(addOn.partNum);
     const newPart = {
-      ...addOn,
-      altParts: partsInfo.length > 0 ? partsInfo[0].altParts.split(', ') : [],
+      ...updatedAddOn,
+      altParts,
     } as any;
     await addPart(newPart, partsInfo.length > 0, updateLoading);
-    await deleteAddOn(addOn.id);
-    setAddons(addOns.filter((a) => a.id !== addOn.id));
+    await deleteAddOn(updatedAddOn.id);
+    setAddons(addOns.filter((a) => a.id !== updatedAddOn.id));
     setLoading(false);
   };
 

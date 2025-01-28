@@ -276,6 +276,7 @@ type AddOn = {
   priceStatus: 'We have pricing' | 'No pricing'
   hp: string
   serialNum: string
+  altParts: string[]
 };
 
 type EngineAddOn = {

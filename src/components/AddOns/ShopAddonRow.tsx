@@ -4,7 +4,7 @@ import Button from "../Library/Button";
 import Checkbox from "../Library/Checkbox";
 import Table from "../Library/Table";
 import Select from "../Library/Select/Select";
-import { deleteAddOn } from "@/scripts/controllers/addOnsController";
+import { deleteAddOn, editAddOnAltParts } from "@/scripts/controllers/addOnsController";
 import { getAutofillPart, getPartByEngineNum, getPartByPartNum } from "@/scripts/controllers/partsController";
 import { useEffect, useRef, useState } from "react";
 import Input from "../Library/Input";
@@ -42,7 +42,8 @@ export default function ShopAddonRow({ addOn, handleDuplicateAddOn }: Props) {
     }, 30);
   }, [showVendorSelect]);
 
-  const handleEditAddOn = (newAddOn: AddOn) => {
+  const handleEditAddOn = async (newAddOn: AddOn) => {
+    if (addOn.partNum !== newAddOn.partNum) await editAddOnAltParts(addOn.id, '');
     const updatedAddOns = addOns.map((a: AddOn) => {
       if (a.id === newAddOn.id) {
         return newAddOn;

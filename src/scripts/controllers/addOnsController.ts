@@ -4,7 +4,7 @@ import { parseResDate } from "../tools/stringUtils";
 
 const parseAddOnDataRes = (data: any) => {
   return data.map((d: AddOn) => {
-    return { ...d, entryDate: parseResDate(`${d.entryDate}`) };
+    return { ...d, entryDate: parseResDate(`${d.entryDate}`), altParts: d.altParts || [] };
   });
 };
 
@@ -20,12 +20,33 @@ export const getAllAddOns = async () => {
   }
 };
 
+export const getAddOnById = async (id: number) => {
+  try {
+    const auth = { withCredentials: true };
+    const res = await api.get(`/api/add-ons/${id}`, auth);
+    return parseAddOnDataRes(res.data)[0];
+  } catch (err) {
+    console.error(err);
+  }
+};
+
 // === POST routes === //
 
 export const addAddOn = async (addOn?: AddOn) => {
   try {
     const auth = { withCredentials: true };
     await api.post('/api/add-ons', addOn, auth);
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+// === PATCH routes === //
+
+export const editAddOnAltParts = async (id: number, altParts: string) => {
+  try {
+    const auth = { withCredentials: true };
+    await api.patch('/api/add-ons/alt-parts', { id, altParts }, auth);
   } catch (err) {
     console.error(err);
   }
