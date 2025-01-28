@@ -10,7 +10,7 @@ import Grid from "@/components/Library/Grid/Grid";
 import GridItem from "@/components/Library/Grid/GridItem";
 import { useAtom } from "jotai";
 import { userAtom } from "@/scripts/atoms/state";
-import { deletePart, getPartById, getPartCostIn, getPartEngineCostOut } from "@/scripts/controllers/partsController";
+import { deletePart, editPart, getPartById, getPartCostIn, getPartEngineCostOut } from "@/scripts/controllers/partsController";
 import PartPicturesDialog from "@/components/Dialogs/PartPicturesDialog";
 import EditPartDetails from "@/components/Dashboard/EditPartDetails";
 import EngineCostOutTable from "@/components/EngineCostOut";
@@ -50,7 +50,8 @@ export default function PartDetails() {
       setPart(part);
       setEngine(engine);
 
-      setPictures(await getImagesFromPart(part.partNum));
+      const pictures = await getImagesFromPart(part.partNum);
+      setPictures(pictures);
       setSnPictures(await getImagesFromStockNum(part.stockNum));
       if (pictures.length > 0) return;
 
@@ -67,7 +68,7 @@ export default function PartDetails() {
   }, [params]);
 
   useEffect(() => {}, [pictures, snPictures, part]);
-  
+
   const getTotalCostIn = () => {
     return partCostIn.reduce((acc, val) => acc + val.cost, 0);
   };
@@ -79,7 +80,9 @@ export default function PartDetails() {
   };
 
   const handleAddToUP = async () => {
-
+    const qty = Number(prompt('Enter qty to add'));
+    await editPart({ ...part, qty: qty + part.qty });
+    await handlePrint();
   };
 
   const handlePrint = async () => {

@@ -388,7 +388,7 @@ async fn get_part_num_images(picture_args: PictureArgs) -> Result<Vec<Picture>, 
       }
       Ok(pictures)
     }
-    Err(e) => Err(format!("Error accessing directory {}: {}", target_dir, e)),
+    Err(e) => Ok(vec![]),
   }
 }
 

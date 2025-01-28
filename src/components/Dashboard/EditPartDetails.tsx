@@ -420,22 +420,6 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
                     />
                   </td>
                 </tr>
-                <tr>
-                  <th>Serial Number</th>
-                  <td>
-                    <Input
-                      variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
-                    />  
-                  </td>
-                </tr>
-                <tr>
-                  <th>Horse Power</th>
-                  <td>
-                    <Input
-                      variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
-                    />  
-                  </td>
-                </tr>
               </tbody>
             </Table>
           </GridItem>
