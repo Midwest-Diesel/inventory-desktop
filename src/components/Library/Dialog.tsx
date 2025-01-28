@@ -42,7 +42,7 @@ export default function Dialog({ children, className, variant, title, closeOnOut
     const dialogElements = Array.from(document.querySelectorAll('.dialog__container'));
     const updatedDialogs = dialogElements.map((div, i) => {
       const zIndex = Number((div as HTMLDivElement).style.zIndex);
-      const order = zIndex > 1 ? zIndex : i + 1;
+      const order = zIndex > 2 ? zIndex : i + 2;
       return { order, div: div as HTMLDivElement };
     });
     setDialogs(updatedDialogs);
@@ -72,22 +72,22 @@ export default function Dialog({ children, className, variant, title, closeOnOut
     const maxOrder = Math.max(...dialogs.map((dialog) => dialog.order));
     const updatedDialogs = dialogs.map((dialog) => {
       if (dialog.div === currentDialog) {
-        return { order: maxOrder + 1, div: dialog.div };
+        return { order: maxOrder + 2, div: dialog.div };
       } else if (dialog.order > Number(currentDialog.style.zIndex)) {
-        return { order: dialog.order - 1, div: dialog.div };
+        return { order: dialog.order - 2, div: dialog.div };
       } else {
         return dialog;
       }
     }).sort((a, b) => a.order - b.order);
 
     updatedDialogs.forEach((dialog, index) => {
-      dialog.div.style.zIndex = String(index + 1);
+      dialog.div.style.zIndex = String(index + 2);
     });
     setDialogs(updatedDialogs);
   };
 
   return (
-    <div ref={container} style={{ zIndex: '1', position: 'absolute', top: 0, left: 0, height: '100%' }} className="dialog__container">
+    <div ref={container} style={{ zIndex: 2, position: 'absolute', top: 0, left: 0, height: '100%' }} className="dialog__container">
       <Draggable handle=".dialog__handlebar" y={y} x={x}>
         <dialog
           open={open}
