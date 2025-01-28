@@ -16,11 +16,12 @@ import EditPartDetails from "@/components/Dashboard/EditPartDetails";
 import EngineCostOutTable from "@/components/EngineCostOut";
 import Loading from "@/components/Library/Loading";
 import Link from "next/link";
-import { getEngineCostRemaining } from "@/scripts/controllers/enginesController";
+import { getEngineByStockNum, getEngineCostRemaining } from "@/scripts/controllers/enginesController";
 import PartCostIn from "@/components/PartCostIn";
 import Toast from "@/components/Library/Toast";
 import StockNumPicturesDialog from "@/components/Dialogs/StockNumPicturesDialog";
 import { setTitle } from "@/scripts/tools/utils";
+import { invoke } from "@tauri-apps/api/tauri";
 
 
 export default function PartDetails() {
@@ -28,6 +29,7 @@ export default function PartDetails() {
   const params = useParams();
   const [user] = useAtom<User>(userAtom);
   const [part, setPart] = useState<Part>(null);
+  const [engine, setEngine] = useState<Engine>(null);
   const [picturesOpen, setPicturesOpen] = useState(false);
   const [snPicturesOpen, setSnPicturesOpen] = useState(false);
   const [pictures, setPictures] = useState<Picture[]>([]);
@@ -43,11 +45,15 @@ export default function PartDetails() {
     const fetchData = async () => {
       if (!params) return;
       const part = await getPartById(Number(params.partNum));
+      const engine = await getEngineByStockNum(part.engineNum);
       setTitle(`${part.partNum} ${part.desc}`);
       setPart(part);
+      setEngine(engine);
+
       setPictures(await getImagesFromPart(part.partNum));
       setSnPictures(await getImagesFromStockNum(part.stockNum));
       if (pictures.length > 0) return;
+
       const costRes = await getEngineCostRemaining(part.engineNum);
       setCostRemaining(costRes);
       setPartCostIn(await getPartCostIn(part.stockNum));
@@ -70,6 +76,28 @@ export default function PartDetails() {
     if (user.accessLevel <= 1 || prompt('Type "confirm" to delete this part') !== 'confirm') return;
     await deletePart(part.id);
     router.replace('/');
+  };
+
+  const handleAddToUP = async () => {
+
+  };
+
+  const handlePrint = async () => {
+    const copies = Number(prompt('How many tags do you want to print?', '1'));
+    if (copies <= 0) return;
+    const args = {
+      stockNum: part.stockNum || '',
+      model: engine.model || '',
+      serialNum: engine.serialNum || '',
+      hp: engine.horsePower || '',
+      location: part.location || '',
+      remarks: part.remarks || '',
+      date: formatDate(part.entryDate) || '',
+      partNum: part.partNum || '',
+      rating: Number(part.rating) || 0,
+      copies
+    };
+    await invoke('print_part_tag', { args });
   };
 
 
@@ -148,6 +176,8 @@ export default function PartDetails() {
                 <p style={{ padding: '0.4rem' }}>Engine Details</p>
               }
             </Button>
+            <Button onClick={handleAddToUP}>Add to UP</Button>
+            <Button onClick={handlePrint}>Print Tag</Button>
           </div>
 
 
@@ -267,11 +297,11 @@ export default function PartDetails() {
                   </tr>
                   <tr>
                     <th>Serial Number</th>
-                    <td></td>
+                    <td>{ engine.serialNum }</td>
                   </tr>
                   <tr>
                     <th>Horse Power</th>
-                    <td></td>
+                    <td>{ engine.horsePower }</td>
                   </tr>
                   <tr>
                     {costRemaining !== null ?

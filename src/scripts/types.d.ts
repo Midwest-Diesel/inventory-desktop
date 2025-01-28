@@ -341,7 +341,6 @@ type Part = {
   purchasePrice: number
   listPrice: number
   remanListPrice: number
-  remainingPrice: number
   fleetPrice: number
   remanFleetPrice: number
   corePrice: number

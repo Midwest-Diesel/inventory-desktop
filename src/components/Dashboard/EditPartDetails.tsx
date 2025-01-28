@@ -36,15 +36,12 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
   const [rating, setRating] = useState<number>(part.rating);
   const [entryDate, setEntryDate] = useState<Date>(part.entryDate);
   const [remarks, setRemarks] = useState<string>(part.remarks);
-  const [remainingPrice, setRemainingPrice] = useState<number>(part.remainingPrice);
   const [listPrice, setListPrice] = useState<number>(part.listPrice);
   const [fleetPrice, setFleetPrice] = useState<number>(part.fleetPrice);
   const [remanListPrice, setRemanListPrice] = useState<number>(part.remanListPrice);
   const [remanFleetPrice, setRemanFleetPrice] = useState<number>(part.remanFleetPrice);
   const [corePrice, setCorePrice] = useState<number>(part.corePrice);
   const [engineStockNum, setEngineStockNum] = useState<number>(part.engineNum);
-  const [serialNum, setSerialNum] = useState<string>(null);
-  const [horsePower, setHorsePower] = useState<string>(null);
   const [purchasePrice, setPurchasePrice] = useState<number>(part.purchasePrice);
   const [altParts, setAltParts] = useState<string[]>(part.altParts);
   const [weightDims, setWeightDims] = useState<string>(part.weightDims);
@@ -70,7 +67,6 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
       rating: Number(rating),
       entryDate,
       remarks,
-      remainingPrice: Number(remainingPrice),
       listPrice: Number(listPrice),
       fleetPrice: Number(fleetPrice),
       remanListPrice: Number(remanListPrice),
