@@ -15,9 +15,9 @@ import { getPartById, getPartByPartNum } from "@/scripts/controllers/partsContro
 import { invoke } from "@tauri-apps/api/tauri";
 import PiggybackQuoteDialog from "../Dialogs/dashboard/PiggybackQuoteDialog";
 import Link from "next/link";
-import { confirm } from '@tauri-apps/api/dialog';
 import SalesEndOfDayDialog from "../Dialogs/dashboard/SalesEndOfDayDialog";
 import Toast from "../Library/Toast";
+import { confirm } from "@tauri-apps/api/dialog";
 
 interface Props {
   quotes: Quote[]
@@ -237,9 +237,10 @@ export default function QuoteList({ quotes, setQuotes, setSelectHandwrittenOpen,
   };
 
   const handleQuoteSale = async (e: any, quote: Quote) => {
-    toggleQuoteSold({ ...quote, sale: e.target.checked });
-    setQuotes(quotes.map((q) => q.id === quote.id ? { ...q, sale: e.target.checked } : q));
-    setQuotesData(quotesData.map((q) => q.id === quote.id ? { ...q, sale: e.target.checked } : q));
+    if (!await confirm(`Mark quote as ${e.target.checked ? 'Sold' : 'Unsold'}`)) return;
+    await toggleQuoteSold({ ...quote, sale: !e.target.checked });
+    setQuotes(quotes.map((q) => q.id === quote.id ? { ...q, sale: !e.target.checked } : q));
+    setQuotesData(quotesData.map((q) => q.id === quote.id ? { ...q, sale: !e.target.checked } : q));
   };
 
 
