@@ -5,7 +5,7 @@ import Checkbox from "../Library/Checkbox";
 import Table from "../Library/Table";
 import Select from "../Library/Select/Select";
 import { deleteAddOn } from "@/scripts/controllers/addOnsController";
-import { addPart, getAutofillPart, getPartByEngineNum, getPartByPartNum, getPartsInfoByPartNum } from "@/scripts/controllers/partsController";
+import { addPart, checkForNewPartNum, getAutofillPart, getPartByEngineNum, getPartByPartNum, getPartsInfoByPartNum } from "@/scripts/controllers/partsController";
 import { useEffect, useRef, useState } from "react";
 import Input from "../Library/Input";
 import { getAutofillEngine } from "@/scripts/controllers/enginesController";
@@ -15,6 +15,7 @@ import VendorSelect from "../Library/Select/VendorSelect";
 import Link from "next/link";
 import { getPurchaseOrderByPoNum } from "@/scripts/controllers/purchaseOrderController";
 import { getRatingFromRemarks } from "@/scripts/tools/utils";
+import { selectedAddOnAtom } from "@/scripts/atoms/components";
 
 interface Props {
   addOn: AddOn
@@ -23,16 +24,25 @@ interface Props {
 
 export default function OfficeAddonRow({ addOn }: Props) {
   const [addOns, setAddons] = useAtom<AddOn[]>(shopAddOnsAtom);
-  const [poLink, setPoLink] = useState<number>(addOn.po);
+  const [selectedAddOnData, setSelectedAddOnData] = useAtom<{ addOn: AddOn, dialogOpen: boolean }>(selectedAddOnAtom);
+  const [poLink, setPoLink] = useState<string>(addOn.po ? `${addOn.po}` : '');
   const [autofillPartNum, setAutofillPartNum] = useState('');
   const [autofillEngineNum, setAutofillEngineNum] = useState('');
   const [loading, setLoading] = useState(false);
   const [loadingProgress, setLoadingProgress] = useState('');
   const [showVendorSelect, setShowVendorSelect] = useState(false);
+  const [isNewPart, setIsNewPart] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     handlePoLink(Number(addOn.po));
+  }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      await handlePartNumBlur(addOn.partNum);
+    };
+    fetchData();
   }, []);
 
   useEffect(() => {
@@ -142,8 +152,7 @@ export default function OfficeAddonRow({ addOn }: Props) {
       ...addOn,
       altParts: partsInfo.length > 0 ? partsInfo[0].altParts.split(', ') : [],
     } as any;
-    const testSearch = await getPartsInfoByPartNum(addOn.partNum);
-    await addPart(newPart, testSearch.length > 0, updateLoading);
+    await addPart(newPart, partsInfo.length > 0, updateLoading);
     await deleteAddOn(addOn.id);
     setAddons(addOns.filter((a) => a.id !== addOn.id));
     setLoading(false);
@@ -156,7 +165,15 @@ export default function OfficeAddonRow({ addOn }: Props) {
   const handlePoLink = async (poNum: number) => {
     const po: PO = await getPurchaseOrderByPoNum(poNum);
     if (!po) return;
-    setPoLink(po.poNum);
+    setPoLink(`${po.poNum}`);
+  };
+
+  const handlePartNumBlur = async (partNum: string) => {
+    if (partNum && !await checkForNewPartNum(partNum)) {
+      setIsNewPart(true);
+    } else {
+      setIsNewPart(false);
+    }
   };
 
 
@@ -186,6 +203,7 @@ export default function OfficeAddonRow({ addOn }: Props) {
               </td>
               <td>
                 <Input
+                  style={isNewPart ? { backgroundColor: 'var(--red-1)', color: 'white' } : {}}
                   variant={['small', 'thin', 'autofill-input']}
                   value={addOn.partNum !== null ? addOn.partNum : ''}
                   autofill={autofillPartNum}
@@ -194,6 +212,8 @@ export default function OfficeAddonRow({ addOn }: Props) {
                     handleEditAddOn({ ...addOn, partNum: e.target.value.toUpperCase() });
                     autofillFromPartNum(e.target.value.toUpperCase());
                   }}
+                  onBlur={(e: any) => handlePartNumBlur(e.target.value.toUpperCase())}
+                  onClick={() => isNewPart && setSelectedAddOnData({ addOn, dialogOpen: true })}
                 />
               </td>
               <td>

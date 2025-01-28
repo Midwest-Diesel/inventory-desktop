@@ -207,7 +207,6 @@ export const checkForNewPartNum = async (partNum: string) => {
   try {
     const auth = { withCredentials: true };
     const res = await api.get(`/api/parts/check-new/${partNum}`, auth);
-    console.log(partNum, res.data);
     return res.data;
   } catch (err) {
     console.error(err);
