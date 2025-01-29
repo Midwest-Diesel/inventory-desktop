@@ -309,7 +309,7 @@ export default function PartSearch({ selectHandwrittenOpen, setSelectHandwritten
                         <strong>List:</strong> { formatCurrency(part.listPrice) }<br />
                         <strong>Fleet:</strong> { formatCurrency(part.fleetPrice) }
                       </td>
-                      <td>{ formatCurrency(part.remainingPrice) }</td>
+                      <td>{ formatCurrency(part.remanListPrice) }</td>
                     </tr>
                   );
                 })}

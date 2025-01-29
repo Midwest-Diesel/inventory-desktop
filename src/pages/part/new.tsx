@@ -25,18 +25,14 @@ export default function NewPart() {
   const [rating, setRating] = useState<number>(0);
   const [entryDate, setEntryDate] = useState<Date>(new Date());
   const [remarks, setRemarks] = useState<string>('');
-  const [remainingPrice, setRemainingPrice] = useState<number>(0);
   const [listPrice, setListPrice] = useState<number>(0);
   const [fleetPrice, setFleetPrice] = useState<number>(0);
   const [engineStockNum, setEngineStockNum] = useState<number>(0);
-  // const [serialNum, setSerialNum] = useState<string>(part.serialNum);
-  // const [horsePower, setHorsePower] = useState<string>(part.horsePower);
   const [purchasePrice, setPurchasePrice] = useState<number>(0);
   const [altParts, setAltParts] = useState<string[]>([]);
   const [partCostIn, setPartCostIn] = useState<PartCostIn[]>([]);
   const [engineCostOut, setEngineCostOut] = useState<EngineCostOut[]>([]);
   const [error, setError] = useState('');
-
 
   const saveChanges = async (e: FormEvent) => {
     e.preventDefault();
@@ -53,7 +49,6 @@ export default function NewPart() {
       rating,
       entryDate,
       remarks,
-      remainingPrice,
       listPrice,
       fleetPrice,
       purchasePrice,
