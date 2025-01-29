@@ -4,6 +4,7 @@ import Button from "./Button";
 
 interface Props {
   children: React.ReactNode
+  style?: any
   className?: string
   variant?: ('default')[]
   title?: string

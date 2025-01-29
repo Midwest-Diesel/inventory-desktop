@@ -18,10 +18,10 @@ import Loading from "@/components/Library/Loading";
 import Link from "next/link";
 import { getEngineByStockNum, getEngineCostRemaining } from "@/scripts/controllers/enginesController";
 import PartCostIn from "@/components/PartCostIn";
-import Toast from "@/components/Library/Toast";
 import StockNumPicturesDialog from "@/components/Dialogs/StockNumPicturesDialog";
 import { setTitle } from "@/scripts/tools/utils";
 import { invoke } from "@tauri-apps/api/tauri";
+import Modal from "@/components/Library/Modal";
 
 
 export default function PartDetails() {
@@ -38,8 +38,8 @@ export default function PartDetails() {
   const [costRemaining, setCostRemaining] = useState(null);
   const [partCostIn, setPartCostIn] = useState<PartCostIn[]>([]);
   const [engineCostOut, setEngineCostOut] = useState<EngineCostOut[]>([]);
-  const [toastMsg, setToastMsg] = useState('');
-  const [toastOpen, setToastOpen] = useState(false);
+  const [costAlertMsg, setCostAlertMsg] = useState('');
+  const [costAlertOpen, setCostAlertOpen] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -53,15 +53,14 @@ export default function PartDetails() {
       const pictures = await getImagesFromPart(part.partNum);
       setPictures(pictures);
       setSnPictures(await getImagesFromStockNum(part.stockNum));
-      if (pictures.length > 0) return;
 
       const costRes = await getEngineCostRemaining(part.engineNum);
       setCostRemaining(costRes);
       setPartCostIn(await getPartCostIn(part.stockNum));
       setEngineCostOut(await getPartEngineCostOut(part.stockNum));
       if (costRes > 0) {
-        setToastMsg(`${formatCurrency(costRes)} remaining on engine`);
-        setToastOpen(true);
+        setCostAlertMsg(`${formatCurrency(costRes)} remaining on engine`);
+        setCostAlertOpen(true);
       }
     };
     fetchData();
@@ -106,12 +105,16 @@ export default function PartDetails() {
 
   return (
     <Layout title="Part">
-      <Toast
-        msg={toastMsg}
-        type="warning"
-        open={toastOpen}
-        setOpen={setToastOpen}
-      />
+      {costAlertOpen &&
+        <Modal
+          style={{ backgroundColor: 'var(--orange-1)' }}
+          open={costAlertOpen}
+          setOpen={setCostAlertOpen}
+        >
+          <h1>Cost Remaining</h1>
+          <h2>{ costAlertMsg }</h2>
+        </Modal>
+      }
 
       {part ? isEditingPart ?
         <EditPartDetails
