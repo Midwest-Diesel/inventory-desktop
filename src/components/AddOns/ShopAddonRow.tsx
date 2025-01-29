@@ -81,28 +81,9 @@ export default function ShopAddonRow({ addOn, handleDuplicateAddOn }: Props) {
     const res = await getPartByPartNum(value);
     const newAddOn = {
       ...addOn,
-      qty: Number(res.qty),
       partNum: res.partNum,
       desc: res.desc,
-      stockNum: res.stockNum,
-      location: res.location,
-      remarks: res.remarks,
-      entryDate: res.entryDate,
-      rating: res.rating,
-      engineNum: Number(res.engineNum),
-      condition: res.condition,
-      purchasePrice: Number(res.purchasePrice),
-      purchasedFrom: res.purchasedFrom,
-      po: res.po ? Number(res.po) : res.po,
-      manufacturer: res.manufacturer,
-      isSpecialCost: res.isSpecialCost,
-      newPrice: Number(res.newPrice),
-      remanPrice: Number(res.remanPrice),
-      dealerPrice: Number(res.dealerPrice),
-      pricingType: res.pricingType,
-      priceStatus: res.priceStatus,
-      hp: res.hp,
-      serialNum: res.serialNum,
+      manufacturer: res.manufacturer
     } as AddOn;
     const updatedAddOns = addOns.map((a: AddOn) => {
       if (a.id === addOn.id) {

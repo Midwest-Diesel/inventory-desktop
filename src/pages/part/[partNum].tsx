@@ -175,13 +175,6 @@ export default function PartDetails() {
           </div>
 
           <div className="part-details__top-bar">
-            <Button variant={['link']} disabled={Number(part.engineNum) <= 1}>
-              {part.engineNum > 1 ?
-                <Link href={`/engines/${part.engineNum}`} style={{ padding: '0.4rem' }}>Engine Details</Link>
-                :
-                <p style={{ padding: '0.4rem' }}>Engine Details</p>
-              }
-            </Button>
             <Button onClick={handleAddToUP}>Add to UP</Button>
             <Button onClick={handlePrint}>Print Tag</Button>
           </div>
@@ -299,7 +292,13 @@ export default function PartDetails() {
                 <tbody>
                   <tr>
                     <th>Engine Stock #</th>
-                    <td>{ part.engineNum }</td>
+                    <td>
+                    {engine && part.engineNum > 1 ?
+                      <Link href={`/engines/${part.engineNum}`}>{ part.engineNum }</Link>
+                      :
+                      <p>{ part.engineNum }</p>
+                    }
+                    </td>
                   </tr>
                   <tr>
                     <th>Serial Number</th>
