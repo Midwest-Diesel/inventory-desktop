@@ -22,6 +22,7 @@ export const getAlerts = async () => {
 };
 
 export const detectAlerts = async (partNum: string) => {
+  if (!partNum || partNum === '*') return [];
   try {
     const auth = { withCredentials: true };
     const res = await api.get(`/api/alerts/${partNum}`, auth);
