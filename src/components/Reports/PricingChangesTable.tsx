@@ -2,6 +2,7 @@ import { formatCurrency } from "@/scripts/tools/stringUtils";
 import Button from "../Library/Button";
 import Loading from "../Library/Loading";
 import Table from "../Library/Table";
+import { getSupabaseFile } from "@/scripts/config/supabase";
 
 interface Props {
   setTableOpen: (open: boolean) => void
@@ -16,10 +17,19 @@ export default function PricingChangesTable({ setTableOpen, data, setReportsOpen
     setReportsOpen(true);
   };
 
+  const handleDownload = async () => {
+    const url = await getSupabaseFile('files', 'pricing_changes.xlsx');
+    window.open(url);
+  };
+
 
   return (
     <div className="reports-table">
-      <Button onClick={handleGoBack}>Back</Button>
+      <div className="reports-table__top-bar">
+        <Button onClick={handleGoBack}>Back</Button>
+        <Button onClick={handleDownload}>Download Spreadsheet</Button>
+      </div>
+
       <Table>
         <thead>
           <tr>
@@ -39,7 +49,7 @@ export default function PricingChangesTable({ setTableOpen, data, setReportsOpen
                 <td>{ row.partNum }</td>
                 <td>{ row.desc }</td>
                 <td>{ row.qty }</td>
-                <td>{ row.salesModel }</td>
+                <td>{ `${row.salesModel}`.split(';').join(', ') }</td>
                 <td>{ row.classCode }</td>
                 <td>{ formatCurrency(row.price) }</td>
                 <td>{ row.percent }%</td>

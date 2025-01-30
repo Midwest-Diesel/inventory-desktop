@@ -1,6 +1,5 @@
 import { $, browser } from '@wdio/globals';
 
-
 export const login = async () => {
   await browser.url('/');
   const usernameInput = browser.$('[data-id="username"]');

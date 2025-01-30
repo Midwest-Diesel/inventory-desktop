@@ -18,16 +18,33 @@ export default function PricingChangesDialog({ open, setOpen, setTableOpen, setT
   const [file, setFile] = useState<File>(null);
   const [list, setList] = useState<PricingChangesReport[]>([]);
 
-  const handleSearch = async (e: FormEvent) => {
+  const showPreviousResults = async () => {
+    setTableOpen(true);
+    setReportsOpen(false);
+    setOpen(false);
+    const url = await getSupabaseFile('files', 'prev_pricing_changes.json');
+    const prevResults = await readJson(url);
+    setTableData(prevResults);
+  };
+
+  const handleResults = async (e: FormEvent) => {
     e.preventDefault();
     setTableOpen(true);
     setReportsOpen(false);
     setOpen(false);
 
     const url = await getSupabaseFile('files', 'pricing_changes.xlsx');
-    const oldFile = await readFile(url);
-    await uploadSupabaseFile('files', file, { upsert: true });
-    setTableData(oldFile);
+    const oldList = await readFile(url);
+    await uploadSupabaseFile('files', file, 'pricing_changes.xlsx', { upsert: true });
+    const filteredList = getModifiedRows(oldList);
+    await uploadSupabaseFile('files', new File([JSON.stringify(filteredList)], { type: 'application/json' } as any), 'prev_pricing_changes.json', { upsert: true });
+    setTableData(filteredList);
+  };
+
+  const getModifiedRows = (oldList: PricingChangesReport[]) => {
+    return list.filter((row) => {
+      return JSON.stringify(row) !== JSON.stringify(oldList.find((oldRow) => oldRow.partNum === row.partNum));
+    });
   };
 
   const readFile = async (url: string): Promise<PricingChangesReport[]> => {
@@ -64,6 +81,17 @@ export default function PricingChangesDialog({ open, setOpen, setTableOpen, setT
     });
   };
 
+  const readJson = async (url: string): Promise<PricingChangesReport[]> => {
+    try {
+      const res = await fetch(url);
+      const json = await res.json();
+      return json;
+    } catch (error) {
+      console.error(error);
+      return [];
+    }
+  };  
+
   const formatFile = (jsonData: string[][]): PricingChangesReport[] => {
     const formattedData: PricingChangesReport[] = [];
     for (const row of jsonData.slice(1)) {
@@ -92,7 +120,7 @@ export default function PricingChangesDialog({ open, setOpen, setTableOpen, setT
       const firstSheetName = workbook.SheetNames[0];
       const worksheet = workbook.Sheets[firstSheetName];
       const jsonData: any = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
-      setList(formatFile(jsonData));
+      setList(formatFile(jsonData).filter((row) => row.partNum));
     };
     reader.readAsArrayBuffer(file);
   };
@@ -102,12 +130,12 @@ export default function PricingChangesDialog({ open, setOpen, setTableOpen, setT
     <Dialog
       open={open}
       setOpen={setOpen}
-      title="Gonculator"
+      title="Pricing Changes"
       width={400}
       y={-100}
       className="reports-dialog"
     >
-      <form onSubmit={handleSearch}>
+      <form onSubmit={handleResults}>
         <Input
           label="Upload Spreadsheet"
           variant={['label-bold']}
@@ -118,6 +146,7 @@ export default function PricingChangesDialog({ open, setOpen, setTableOpen, setT
 
         <br />
         <div className="form__footer">
+          <Button type="button" onClick={showPreviousResults}>Show Previous Results</Button>
           <Button type="submit">Get Results</Button>
         </div>
       </form>

@@ -293,11 +293,11 @@ export default function PartDetails() {
                   <tr>
                     <th>Engine Stock #</th>
                     <td>
-                    {engine && part.engineNum > 1 ?
-                      <Link href={`/engines/${part.engineNum}`}>{ part.engineNum }</Link>
-                      :
-                      <p>{ part.engineNum }</p>
-                    }
+                      {engine && part.engineNum > 1 ?
+                        <Link href={`/engines/${part.engineNum}`}>{ part.engineNum }</Link>
+                        :
+                        <p>{ part.engineNum }</p>
+                      }
                     </td>
                   </tr>
                   <tr>

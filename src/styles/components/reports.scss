@@ -28,4 +28,9 @@
   button {
     margin-bottom: 0.5rem;
   }
+
+  &__top-bar {
+    display: flex;
+    gap: 0.3rem;
+  }
 }
