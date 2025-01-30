@@ -1034,3 +1034,13 @@ interface OutstandingCoresReport {
   billToCompany: string
   charge: number
 }
+
+interface PricingChangesReport {
+  partNum: string
+  desc: string
+  qty: number
+  salesModel: string
+  classCode: string
+  price: number
+  percent: number
+}

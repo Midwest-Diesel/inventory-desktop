@@ -7,6 +7,7 @@ import ArielSalesDialog from "@/components/Dialogs/reports/ArielSalesDialog";
 import EmailsDialog from "@/components/Dialogs/reports/EmailDialog";
 import HandwrittenCompanyDialog from "@/components/Dialogs/reports/HandwrittenCompanyDialog";
 import PartDescDialog from "@/components/Dialogs/reports/PartDescDialog";
+import PricingChangesDialog from "@/components/Dialogs/reports/PricingChangesDialog";
 import RecentSearchesDialog from "@/components/Dialogs/reports/RecentSearchesDialog";
 import SingleCompanyDialog from "@/components/Dialogs/reports/SingleCompanyDialog";
 import SingleCompanyEnginesDialog from "@/components/Dialogs/reports/SingleCompanyEnginesDialog";
@@ -26,6 +27,7 @@ import NoLocationPartsTable from "@/components/Reports/NoLocationPartsTable";
 import OutstandingCoresTable from "@/components/Reports/OutstandingCoresTable";
 import PartDescTable from "@/components/Reports/PartDescTable";
 import PBBTable from "@/components/Reports/PBBTable";
+import PricingChangesTable from "@/components/Reports/PricingChangesTable";
 import RecentSearchesTable from "@/components/Reports/RecentSearchesTable";
 import SingleCompanyEnginesTable from "@/components/Reports/SingleCompanyEnginesTable";
 import SingleCompanyPartsTable from "@/components/Reports/SingleCompanyPartsTable";
@@ -85,6 +87,9 @@ export default function Reports() {
   const [outstandingHighCoresOpen, setOutstandingHighCoresOpen] = useState(false);
   const [outstandingHighCoresTableOpen, setOutstandingHighCoresTableOpen] = useState(false);
   const [outstandingHighCoresData, setOutstandingHighCoresData] = useState<OutstandingCoresReport[]>([]);
+  const [pricingChangesOpen, setPricingChangesOpen] = useState(false);
+  const [pricingChangesTableOpen, setPricingChangesTableOpen] = useState(false);
+  const [pricingChangesData, setPricingChangesData] = useState<PricingChangesReport[]>([]);
   const [reportsPageOpen, setReportsPageOpen] = useState(true);
 
   const handleSearchPBB = async () => {
@@ -148,6 +153,7 @@ export default function Reports() {
                 <Button onClick={() => setRecentSearchesOpen(!recentSearchesOpen)}>Recent Searches</Button>
                 {/* <Button onClick={() => setEmailAddressesOpen(!emailAddressesOpen)}>Email Addresses</Button> */}
                 <Button onClick={handleSearchOutstandingCores}>Outstanding High Cores</Button>
+                <Button onClick={() => setPricingChangesOpen(!pricingChangesOpen)}>Pricing Changes</Button>
               </div>
             </div>
           </div>
@@ -269,6 +275,15 @@ export default function Reports() {
               setReportsOpen={setReportsPageOpen}
             />
           }
+          {pricingChangesOpen &&
+            <PricingChangesDialog
+              open={pricingChangesOpen}
+              setOpen={setPricingChangesOpen}
+              setTableOpen={setPricingChangesTableOpen}
+              setTableData={setPricingChangesData}
+              setReportsOpen={setReportsPageOpen}
+            />
+          }
           {/* {emailAddressesOpen &&
             <EmailsDialog
               open={emailAddressesOpen}
@@ -298,6 +313,7 @@ export default function Reports() {
           { recentSearchesTableOpen && <RecentSearchesTable setTableOpen={setRecentSearchesTableOpen} data={recentSearchesData} setReportsOpen={setReportsPageOpen} /> }
           {/* { emailAddressesTableOpen && <EmailsTable setTableOpen={setEmailAddressesTableOpen} data={emailAddressesData} setReportsOpen={setReportsPageOpen} /> } */}
           { outstandingHighCoresTableOpen && <OutstandingCoresTable setTableOpen={setOutstandingHighCoresTableOpen} data={outstandingHighCoresData} setReportsOpen={setReportsPageOpen} /> }
+          { pricingChangesTableOpen && <PricingChangesTable setTableOpen={setPricingChangesTableOpen} data={pricingChangesData} setReportsOpen={setReportsPageOpen} /> }
         </>
       }
     </Layout>
