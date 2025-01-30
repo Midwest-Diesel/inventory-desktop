@@ -200,7 +200,7 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
               variant={['save']}
               className="edit-part-details__save-btn"
               type="submit"
-              data-cy="save-btn"
+              data-id="save-btn"
             >
               Save
             </Button>

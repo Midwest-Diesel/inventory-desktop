@@ -94,23 +94,23 @@ export default function SelectedCustomerInfo({ customerData, setCustomerData }: 
 
 
   return (
-    <div className="selected-customer-info" data-cy="selected-customer-info">
+    <div className="selected-customer-info" data-id="selected-customer-info">
       <Toast msg="Created handwritten" type="success" open={toastOpen} setOpen={setToastOpen} />
 
       <div className="selected-customer-info__buttons">
         <Button variant={['x-small']} onClick={handleAddCustomer}>Add Customer</Button>
-        <Button variant={['x-small']} onClick={deselectCustomer} data-cy="unselect">Unselect</Button>
-        <Button variant={['x-small']} onClick={() => setExpandedDetailsOpen(!expandedDetailsOpen)} data-cy="expand">{ expandedDetailsOpen ? 'Collapse' : 'Expand' }</Button>
+        <Button variant={['x-small']} onClick={deselectCustomer} data-id="unselect">Unselect</Button>
+        <Button variant={['x-small']} onClick={() => setExpandedDetailsOpen(!expandedDetailsOpen)} data-id="expand">{ expandedDetailsOpen ? 'Collapse' : 'Expand' }</Button>
         <Button variant={['x-small']} onClick={handleNewHandwritten}>New Handwritten</Button>
       </div>
 
       {!expandedDetailsOpen ?
         <div>
-          <p><strong>Selected Customer:</strong> <Link href={`customer/${customer.id}`} style={{ fontSize: 'var(--font-md)' }} data-cy="customer-link">{ customer.company }</Link> <em>{ customerInfo.length > 0 && `(${customerInfo})` }</em></p>
+          <p><strong>Selected Customer:</strong> <Link href={`customer/${customer.id}`} style={{ fontSize: 'var(--font-md)' }} data-id="customer-link">{ customer.company }</Link> <em>{ customerInfo.length > 0 && `(${customerInfo})` }</em></p>
           <p><strong>Contact:</strong> { customer.contact }</p>
         </div>
         :
-        <div data-cy="customer-details">
+        <div data-id="customer-details">
           <p><strong>Selected Customer:</strong> <Link href={`customer/${customer.id}`} style={{ fontSize: 'var(--font-md)' }}>{ customer.company }</Link></p>
           <Grid rows={1} cols={12} gap={1}>
             <GridItem colStart={1} colEnd={4} variant={['low-opacity-bg']}>

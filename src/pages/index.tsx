@@ -38,6 +38,7 @@ export default function Home() {
   }, [user]);
 
   useEffect(() => {
+    if (!window.__TAURI_IPC__) return;
     listen<string>('change-page', (e) => {
       router.replace(e.payload);
     });

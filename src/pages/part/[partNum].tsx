@@ -134,7 +134,7 @@ export default function PartDetails() {
                 variant={['blue']}
                 className="part-details__edit-btn"
                 onClick={() => setIsEditingPart(true)}
-                data-cy="edit-btn"
+                data-id="edit-btn"
               >
                 Edit
               </Button>
@@ -149,7 +149,7 @@ export default function PartDetails() {
                   variant={['danger']}
                   className="part-details__delete-btn"
                   onClick={handleDelete}
-                  data-cy="delete-btn"
+                  data-id="delete-btn"
                 >
                   Delete
                 </Button>
@@ -277,7 +277,7 @@ export default function PartDetails() {
                 <tbody>
                   <tr style={{ height: '4rem' }}>
                     <th>Alt Parts</th>
-                    <td data-cy="alt-parts">{ part.altParts.join(', ') }</td>
+                    <td data-id="alt-parts">{ part.altParts.join(', ') }</td>
                   </tr>
                   <tr style={{ height: '4rem' }}>
                     <th>Remarks</th>

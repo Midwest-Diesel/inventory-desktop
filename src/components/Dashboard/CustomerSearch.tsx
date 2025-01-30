@@ -49,9 +49,9 @@ export default function CustomerSearch() {
           variant={['search']}
           onChange={(e: any) => setSearchTerm(e.target.value)}
           value={searchTerm}
-          data-cy="customer-input"
+          data-id="customer-input"
         >
-          <Button variant={['search', 'small']} data-cy="customer-search">Search</Button>
+          <Button variant={['search', 'small']} data-id="customer-search">Search</Button>
         </Input>
       </form>
 

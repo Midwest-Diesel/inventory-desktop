@@ -104,7 +104,7 @@ export default function PartsSearchDialog({ open, setOpen, setParts, setLoading 
       width={400}
       height={520}
       className="parts-search-dialog"
-      data-cy="part-serch-dialog"
+      data-id="part-serch-dialog"
     >
       <form onSubmit={(e) => handleSubmit(e)}>
         <Input

@@ -84,7 +84,7 @@ export default function NewPart() {
             variant={['X', 'save']}
             className="edit-part-details__save-btn"
             type="submit"
-            data-cy="save-btn"
+            data-id="save-btn"
           >
             Save
           </Button>
@@ -94,7 +94,7 @@ export default function NewPart() {
             variant={['md-text']}
             value={partNum}
             onChange={(e: any) => setPartNum(e.target.value.toUpperCase())}
-            data-cy="part-num"
+            data-id="part-num"
             required
           />
           <Input
@@ -102,7 +102,7 @@ export default function NewPart() {
             variant={['md-text']}
             value={desc}
             onChange={(e: any) => setDesc(e.target.value.toUpperCase())}
-            data-cy="desc"
+            data-id="desc"
             required
           />
         </div>
@@ -130,7 +130,7 @@ export default function NewPart() {
                       variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                       value={stockNum}
                       onChange={(e: any) => setStockNum(e.target.value)}
-                      data-cy="stock-num"
+                      data-id="stock-num"
                       required
                     />
                   </td>
@@ -254,7 +254,7 @@ export default function NewPart() {
                       cols={100}
                       value={altParts.join(', ')}
                       onChange={(e: any) => setAltParts(e.target.value.split(', '))}
-                      data-cy="alt-parts"
+                      data-id="alt-parts"
                     />
                   </td>
                 </tr>

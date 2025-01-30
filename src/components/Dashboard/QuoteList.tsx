@@ -291,7 +291,7 @@ export default function QuoteList({ quotes, setQuotes, setSelectHandwrittenOpen,
           </div>
 
           <div style={{ height: '21.5rem', width: 'fit-content', overflow: 'auto' }}>
-            <Table data-cy="part-quotes">
+            <Table data-id="part-quotes">
               <thead>
                 <tr>
                   <th></th>
@@ -335,10 +335,10 @@ export default function QuoteList({ quotes, setQuotes, setSelectHandwrittenOpen,
                           <Button variant={['fit']} onClick={() => handleEmail(quote)}>
                             <Image alt="Email" src="/images/icons/email.svg" width={17} height={17} />
                           </Button>
-                          <Button variant={['fit']} onClick={() => invoiceQuote(quote)} data-cy="invoice-btn">
+                          <Button variant={['fit']} onClick={() => invoiceQuote(quote)} data-id="invoice-btn">
                             <Image alt="Add to handwritten" src="/images/icons/invoice.svg" width={17} height={17} />
                           </Button>
-                          <Button variant={['fit', 'danger']} onClick={() => handleDelete(quote.id)} data-cy="delete-quote">
+                          <Button variant={['fit', 'danger']} onClick={() => handleDelete(quote.id)} data-id="delete-quote">
                             <Image alt="Delete" src="/images/icons/delete.svg" width={17} height={17} />
                           </Button>
                         </td>

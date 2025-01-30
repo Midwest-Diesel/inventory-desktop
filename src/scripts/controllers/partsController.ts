@@ -27,8 +27,8 @@ const parsePartsData = async (parts: any) => {
       altParts: part.altParts ? part.altParts.split(',').map((p: any) => p.trim()) : [],
       partsCostIn: part.partsCostIn ? part.partsCostIn.filter((part: any) => !isObjectNull(part)) : [],
       engineCostOut: part.engineCostOut ? part.engineCostOut.filter((part: any) => !isObjectNull(part)) : [],
-      imageExists: await checkImageExists(part.partNum, 'part'),
-      snImageExists: await checkImageExists(part.stockNum, 'stock'),
+      imageExists: window.__TAURI_IPC__ && await checkImageExists(part.partNum, 'part'),
+      snImageExists: window.__TAURI_IPC__ && await checkImageExists(part.stockNum, 'stock'),
     };
   }));
   return partsWithImages;

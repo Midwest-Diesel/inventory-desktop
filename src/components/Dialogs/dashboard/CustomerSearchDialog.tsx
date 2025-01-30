@@ -72,7 +72,7 @@ export default function CustomerSearchDialog({ open, setOpen, searchTerm }: Prop
       title="Customers"
       maxHeight="20rem"
       width={600}
-      data-cy="customer-search-dialog"
+      data-id="customer-search-dialog"
     >
       <h3>Selected Customer: { selectedCustomer.company || 'none' }</h3>
       <Table width="500px">

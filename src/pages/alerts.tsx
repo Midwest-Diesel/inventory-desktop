@@ -34,7 +34,7 @@ export default function Alerts() {
     <Layout title="Alerts">
       <div className="alerts-page">
         <h1>Alerts</h1>
-        <Button onClick={() => setNewAlertOpen(!newAlertOpen)} data-cy="new-alert-btn">Create Alert</Button>
+        <Button onClick={() => setNewAlertOpen(!newAlertOpen)} data-id="new-alert-btn">Create Alert</Button>
         <CreateAlertDialog open={newAlertOpen} setOpen={setNewAlertOpen} />
         { isEditing && <EditAlertDialog open={isEditing} setOpen={setIsEditing} alert={alertEdited} /> }
 
@@ -50,19 +50,19 @@ export default function Alerts() {
                 <th>Note</th>
               </tr>
             </thead>
-            <tbody data-cy="alerts-table-body">
+            <tbody>
               {alertsData && alertsData.map((alert: Alert) => {
                 return (
                   <tr key={alert.id}>
                     <td>
-                      <Button variant={['x-small', 'blue']} onClick={() => handleEdit(alert)} data-cy="edit-alert-btn">Edit</Button>
-                      <Button variant={['x-small']} onClick={() => handleDelete(alert.id)} data-cy="delete-alert-btn">Delete</Button>
+                      <Button variant={['x-small', 'blue']} onClick={() => handleEdit(alert)} data-id="edit-btn">Edit</Button>
+                      <Button variant={['x-small']} onClick={() => handleDelete(alert.id)} data-id="delete-btn">Delete</Button>
                     </td>
                     <td>{ formatDate(alert.date) }</td>
                     <td>{ alert.addedBy }</td>
-                    <td data-cy="part-num">{ alert.partNum }</td>
-                    <td><span onClick={() => setSelectedAlerts([...selectedAlerts, alert])} data-cy="open-alert-btn">{ alert.type }</span></td>
-                    <td data-cy="note">{ alert.note }</td>
+                    <td data-id="part-num">{ alert.partNum }</td>
+                    <td><span onClick={() => setSelectedAlerts([...selectedAlerts, alert])} data-id="open-btn">{ alert.type }</span></td>
+                    <td data-id="note">{ alert.note }</td>
                   </tr>
                 );
               })}
