@@ -12,12 +12,12 @@ import Pagination from "@/components/Library/Pagination";
 import { formatCurrency, formatDate, formatPhone } from "@/scripts/tools/stringUtils";
 import Checkbox from "@/components/Library/Checkbox";
 import { getPartById, getPartByPartNum } from "@/scripts/controllers/partsController";
-import { invoke } from "@tauri-apps/api/tauri";
+import { invoke } from "@/scripts/config/tauri";
 import PiggybackQuoteDialog from "../Dialogs/dashboard/PiggybackQuoteDialog";
 import Link from "next/link";
 import SalesEndOfDayDialog from "../Dialogs/dashboard/SalesEndOfDayDialog";
 import Toast from "../Library/Toast";
-import { confirm } from "@tauri-apps/api/dialog";
+import { confirm } from "@/scripts/config/tauri";
 
 interface Props {
   quotes: Quote[]

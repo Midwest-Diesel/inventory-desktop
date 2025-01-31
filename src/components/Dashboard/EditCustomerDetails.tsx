@@ -5,7 +5,7 @@ import { FormEvent, useState } from "react";
 import Input from "@/components/Library/Input";
 import { editCustomer } from "@/scripts/controllers/customerController";
 import Table from "../Library/Table";
-import { confirm } from '@tauri-apps/api/dialog';
+import { confirm } from "@/scripts/config/tauri";
 import { getMapLocationFromCustomer } from "@/scripts/controllers/mapController";
 import EditMapLocDialog from "../Dialogs/customers/EditMapLocDialog";
 import { PreventNavigation } from "../PreventNavigation";

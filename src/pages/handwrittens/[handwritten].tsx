@@ -21,8 +21,7 @@ import { AltShip, deleteHandwritten, editHandwrittenPaymentType, getAltShipByHan
 import { formatDate, formatPhone, parseResDate } from "@/scripts/tools/stringUtils";
 import { setTitle } from "@/scripts/tools/utils";
 import { RealtimePostgresInsertPayload, RealtimePostgresUpdatePayload } from "@supabase/supabase-js";
-import { confirm } from "@tauri-apps/api/dialog";
-import { invoke } from "@tauri-apps/api/tauri";
+import { invoke, confirm } from "@/scripts/config/tauri";
 import { useAtom } from "jotai";
 import Link from "next/link";
 import { useParams } from "next/navigation";

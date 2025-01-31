@@ -1,6 +1,6 @@
 import { Layout } from "@/components/Layout";
 import Button from "@/components/Library/Button";
-import { invoke } from "@tauri-apps/api/tauri";
+import { invoke } from "@/scripts/config/tauri";
 import { getVersion } from "@tauri-apps/api/app";
 import { checkUpdate } from "@tauri-apps/api/updater";
 import { useEffect, useState } from "react";

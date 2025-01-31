@@ -1,4 +1,4 @@
-import { invoke } from "@tauri-apps/api/tauri";
+import { invoke } from "@/scripts/config/tauri";
 
 
 export const getImagesFromPart = async (partNum: string) => {

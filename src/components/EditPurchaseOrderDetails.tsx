@@ -8,7 +8,7 @@ import { parseDateInputValue } from "@/scripts/tools/stringUtils";
 import { addPurchaseOrderItem, deletePurchaseOrderItem, editPurchaseOrder, editPurchaseOrderItem, getPurchaseOrderById } from "@/scripts/controllers/purchaseOrderController";
 import VendorDropdown from "./Library/Dropdown/VendorDropdown";
 import { PreventNavigation } from "./PreventNavigation";
-import { confirm } from "@tauri-apps/api/dialog";
+import { confirm } from "@/scripts/config/tauri";
 import Checkbox from "./Library/Checkbox";
 
 interface Props {

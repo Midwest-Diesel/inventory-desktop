@@ -13,7 +13,7 @@ import CustomerSelect from "./Library/Select/CustomerSelect";
 import { getCustomerByName } from "@/scripts/controllers/customerController";
 import { getAllSources } from "@/scripts/controllers/sourcesController";
 import { deleteCoreByItemId, editCoreCustomer } from "@/scripts/controllers/coresController";
-import { confirm } from "@tauri-apps/api/dialog";
+import { confirm } from "@/scripts/config/tauri";
 import ShippingListDialog from "./Dialogs/handwrittens/ShippingListDialog";
 import Checkbox from "./Library/Checkbox";
 import { PreventNavigation } from "./PreventNavigation";

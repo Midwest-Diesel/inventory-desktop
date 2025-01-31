@@ -9,7 +9,7 @@ import Table from "../Library/Table";
 import { deleteEngineCostOut, editEngineCostOut } from "@/scripts/controllers/enginesController";
 import { showSoldPartsAtom, userAtom } from "@/scripts/atoms/state";
 import { useAtom } from "jotai";
-import { confirm } from '@tauri-apps/api/dialog';
+import { confirm } from "@/scripts/config/tauri";
 import { PreventNavigation } from "../PreventNavigation";
 
 interface Props {

@@ -3,8 +3,7 @@ import { Layout } from "@/components/Layout";
 import Button from "@/components/Library/Button";
 import Loading from "@/components/Library/Loading";
 import { deleteEmailStuffItem, getAllEmailStuff } from "@/scripts/controllers/emailStuffController";
-import { confirm } from '@tauri-apps/api/dialog';
-import { invoke } from "@tauri-apps/api/tauri";
+import { invoke, confirm } from "@/scripts/config/tauri";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 

@@ -1,6 +1,6 @@
 import Modal from "../Library/Modal";
 import Button from "../Library/Button";
-import { invoke } from "@tauri-apps/api/tauri";
+import { invoke } from "@/scripts/config/tauri";
 
 interface Props {
   open: boolean

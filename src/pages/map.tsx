@@ -2,7 +2,7 @@ import { Layout } from "@/components/Layout";
 import Button from "@/components/Library/Button";
 import Input from "@/components/Library/Input";
 import { addMapLocation, deleteMapLocation, getGeoLocation, getMapLocations } from "@/scripts/controllers/mapController";
-import { confirm } from "@tauri-apps/api/dialog";
+import { confirm } from "@/scripts/config/tauri";
 import { Map, Marker, InfoWindow } from "@vis.gl/react-google-maps";
 import { FormEvent, Fragment, useEffect, useState } from "react";
 

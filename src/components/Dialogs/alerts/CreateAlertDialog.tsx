@@ -56,7 +56,7 @@ export default function CreateAlertDialog({ open, setOpen }: Props) {
           variant={['label-space-between', 'label-full-width', 'small', 'thin', 'label-bold']}
           value={type}
           onChange={(e: any) => setType(e.target.value)}
-          data-id="alert-type"
+          data-id="alert-type-input"
           placeholder="ALERT!!!"
           required
         />
@@ -66,7 +66,7 @@ export default function CreateAlertDialog({ open, setOpen }: Props) {
           variant={['label-space-between', 'label-full-width', 'small', 'thin', 'label-bold']}
           value={partNum}
           onChange={(e: any) => setPartNum(e.target.value)}
-          data-id="part-num"
+          data-id="part-num-input"
           required
         />
 
@@ -77,7 +77,7 @@ export default function CreateAlertDialog({ open, setOpen }: Props) {
           cols={100}
           value={note}
           onChange={(e: any) => setNote(e.target.value)}
-          data-id="note"
+          data-id="note-input"
         />
 
         <div className="form__footer">

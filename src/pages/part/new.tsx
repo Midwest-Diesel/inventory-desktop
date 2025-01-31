@@ -8,7 +8,7 @@ import { Layout } from "@/components/Layout";
 import { addPart, getPartsInfoByPartNum } from "@/scripts/controllers/partsController";
 import Error from "@/components/Errors/Error";
 import Input from "@/components/Library/Input";
-import { confirm } from '@tauri-apps/api/dialog';
+import { confirm } from "@/scripts/config/tauri";
 import { useRouter } from "next/router";
 
 

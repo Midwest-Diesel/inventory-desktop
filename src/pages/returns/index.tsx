@@ -9,7 +9,7 @@ import { editReturn, getReturnCount, getSomeCompletedReturns, getSomeReturns } f
 import { cap, formatDate } from "@/scripts/tools/stringUtils";
 import Checkbox from "@/components/Library/Checkbox";
 import Image from "next/image";
-import { confirm } from '@tauri-apps/api/dialog';
+import { confirm } from "@/scripts/config/tauri";
 
 
 export default function Returns() {

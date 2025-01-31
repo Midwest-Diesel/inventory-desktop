@@ -1,6 +1,6 @@
 import { FormEvent, useState } from "react";
 import Dialog from "../../Library/Dialog";
-import { invoke } from "@tauri-apps/api/tauri";
+import { invoke } from "@/scripts/config/tauri";
 import Checkbox from "@/components/Library/Checkbox";
 import Button from "@/components/Library/Button";
 import { formatCurrency, formatDate } from "@/scripts/tools/stringUtils";

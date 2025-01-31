@@ -7,7 +7,7 @@ import Button from "@/components/Library/Button";
 import { addReturn, addReturnItems, getSomeReturns } from "@/scripts/controllers/returnsController";
 import { useAtom } from "jotai";
 import { userAtom } from "@/scripts/atoms/state";
-import { confirm } from '@tauri-apps/api/dialog';
+import { confirm } from "@/scripts/config/tauri";
 
 interface Props {
   open: boolean

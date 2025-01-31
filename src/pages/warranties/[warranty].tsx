@@ -14,7 +14,7 @@ import { useAtom } from "jotai";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { confirm } from '@tauri-apps/api/dialog';
+import { confirm } from "@/scripts/config/tauri";
 
 
 export default function Warranty() {

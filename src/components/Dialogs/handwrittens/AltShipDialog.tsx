@@ -1,7 +1,7 @@
 import Dialog from "../../Library/Dialog";
 import Button from "@/components/Library/Button";
 import { AltShip, deleteAltShipAddress, editHandwritten, getHandwrittenById } from "@/scripts/controllers/handwrittensController";
-import { confirm } from '@tauri-apps/api/dialog';
+import { confirm } from "@/scripts/config/tauri";
 
 interface Props {
   open: boolean

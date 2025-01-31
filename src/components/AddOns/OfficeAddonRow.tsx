@@ -10,7 +10,7 @@ import { useEffect, useRef, useState } from "react";
 import Input from "../Library/Input";
 import { getAutofillEngine } from "@/scripts/controllers/enginesController";
 import Loading from "../Library/Loading";
-import { confirm } from '@tauri-apps/api/dialog';
+import { confirm } from "@/scripts/config/tauri";
 import VendorSelect from "../Library/Select/VendorSelect";
 import Link from "next/link";
 import { getPurchaseOrderByPoNum } from "@/scripts/controllers/purchaseOrderController";

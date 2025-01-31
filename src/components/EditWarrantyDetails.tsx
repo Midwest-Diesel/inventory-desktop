@@ -9,7 +9,7 @@ import { addWarrantyItem, deleteWarrantyItem, editWarranty, editWarrantyItem, ge
 import Checkbox from "./Library/Checkbox";
 import CustomerSelect from "./Library/Select/CustomerSelect";
 import { getCustomerByName } from "@/scripts/controllers/customerController";
-import { confirm } from '@tauri-apps/api/dialog';
+import { confirm } from "@/scripts/config/tauri";
 import { PreventNavigation } from "./PreventNavigation";
 
 interface Props {

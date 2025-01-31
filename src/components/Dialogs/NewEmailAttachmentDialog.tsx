@@ -2,7 +2,7 @@ import { FormEvent, useState } from "react";
 import Dialog from "../Library/Dialog";
 import Input from "../Library/Input";
 import Button from "../Library/Button";
-import { invoke } from "@tauri-apps/api/tauri";
+import { invoke } from "@/scripts/config/tauri";
 import { addEmailStuffItem, getAllEmailStuff } from "@/scripts/controllers/emailStuffController";
 
 interface Props {

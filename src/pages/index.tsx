@@ -13,7 +13,7 @@ import { addHandwrittenItem, addHandwrittenItemChild, editHandwrittenItems, edit
 import SelectHandwrittenDialog from "@/components/Dialogs/dashboard/SelectHandwrittenDialog";
 import { listen } from '@tauri-apps/api/event';
 import { useRouter } from 'next/router';
-import { confirm } from "@tauri-apps/api/dialog";
+import { confirm } from "@/scripts/config/tauri";
 import { toggleQuoteSold } from "@/scripts/controllers/quotesController";
 
 

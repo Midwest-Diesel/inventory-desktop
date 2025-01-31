@@ -5,11 +5,11 @@ import Button from "@/components/Library/Button";
 import Table from "@/components/Library/Table";
 import { selectedAlertsAtom } from "@/scripts/atoms/components";
 import { alertsAtom } from "@/scripts/atoms/state";
+import { confirm } from "@/scripts/config/tauri";
 import { deleteAlert } from "@/scripts/controllers/alertsController";
 import { formatDate } from "@/scripts/tools/stringUtils";
 import { useAtom } from "jotai";
 import { useState } from "react";
-import { confirm } from '@tauri-apps/api/dialog';
 
 export default function Alerts() {
   const [selectedAlerts, setSelectedAlerts] = useAtom<Alert[]>(selectedAlertsAtom);
@@ -61,7 +61,7 @@ export default function Alerts() {
                     <td>{ formatDate(alert.date) }</td>
                     <td>{ alert.addedBy }</td>
                     <td data-id="part-num">{ alert.partNum }</td>
-                    <td><span onClick={() => setSelectedAlerts([...selectedAlerts, alert])} data-id="open-btn">{ alert.type }</span></td>
+                    <td><span onClick={() => setSelectedAlerts([...selectedAlerts, alert])} data-id="type">{ alert.type }</span></td>
                     <td data-id="note">{ alert.note }</td>
                   </tr>
                 );

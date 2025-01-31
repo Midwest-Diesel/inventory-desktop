@@ -2,7 +2,7 @@ import { Layout } from "@/components/Layout";
 import Button from "@/components/Library/Button";
 import Input from "@/components/Library/Input";
 import Loading from "@/components/Library/Loading";
-import { invoke } from "@tauri-apps/api/tauri";
+import { invoke } from "@/scripts/config/tauri";
 import { FormEvent, useState } from "react";
 
 

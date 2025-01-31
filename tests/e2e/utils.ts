@@ -10,5 +10,5 @@ export const login = async () => {
 
 export const changeRoute = async (url: string) => {
   await browser.url(url);
-  await browser.pause(800);
+  await $('.navbar').waitForExist();
 };

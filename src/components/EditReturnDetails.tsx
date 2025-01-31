@@ -8,7 +8,7 @@ import Grid from "./Library/Grid/Grid";
 import CustomerSelect from "./Library/Select/CustomerSelect";
 import SourceSelect from "./Library/Select/SourceSelect";
 import Table from "./Library/Table";
-import { confirm } from '@tauri-apps/api/dialog';
+import { confirm } from "@/scripts/config/tauri";
 import { PreventNavigation } from "./PreventNavigation";
 
 interface Props {

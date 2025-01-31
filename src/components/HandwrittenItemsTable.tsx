@@ -6,7 +6,7 @@ import { addCore } from "@/scripts/controllers/coresController";
 import HandwrittenChildrenDialog from "./Dialogs/handwrittens/HandwrittenChildrenDialog";
 import { useEffect, useState } from "react";
 import Toast from "./Library/Toast";
-import { confirm } from '@tauri-apps/api/dialog';
+import { confirm } from "@/scripts/config/tauri";
 
 interface Props {
   className?: string

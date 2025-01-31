@@ -13,7 +13,7 @@ import { setTitle } from "@/scripts/tools/utils";
 import { useAtom } from "jotai";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { confirm } from '@tauri-apps/api/dialog';
+import { confirm } from "@/scripts/config/tauri";
 
 
 export default function PurchaseOrder() {

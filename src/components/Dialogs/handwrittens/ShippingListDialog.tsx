@@ -3,7 +3,7 @@ import Dialog from "../../Library/Dialog";
 import { FormEvent, useState } from "react";
 import { parseDateInputValue } from "@/scripts/tools/stringUtils";
 import Checkbox from "@/components/Library/Checkbox";
-import { invoke } from "@tauri-apps/api/tauri";
+import { invoke } from "@/scripts/config/tauri";
 import { isDateInCurrentOrNextWeek } from "@/scripts/tools/utils";
 import Button from "@/components/Library/Button";
 import Loading from "@/components/Library/Loading";

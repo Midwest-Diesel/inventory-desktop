@@ -6,7 +6,7 @@ import { deleteCore, removeQtyFromCore } from "@/scripts/controllers/coresContro
 import { addHandwritten, addHandwrittenItem } from "@/scripts/controllers/handwrittensController";
 import { useAtom } from "jotai";
 import { userAtom } from "@/scripts/atoms/state";
-import { confirm } from '@tauri-apps/api/dialog';
+import { confirm } from "@/scripts/config/tauri";
 import { useRouter } from "next/router";
 import { FormEvent, useState } from "react";
 import Checkbox from "@/components/Library/Checkbox";

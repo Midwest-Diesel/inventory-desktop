@@ -7,7 +7,7 @@ import Pagination from "@/components/Library/Pagination";
 import Input from "@/components/Library/Input";
 import Button from "@/components/Library/Button";
 import Checkbox from "@/components/Library/Checkbox";
-import { invoke } from "@tauri-apps/api/tauri";
+import { invoke } from "@/scripts/config/tauri";
 import Toast from "@/components/Library/Toast";
 import { useAtom } from "jotai";
 import { selectedCustomerAtom, userAtom } from "@/scripts/atoms/state";

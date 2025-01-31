@@ -20,7 +20,7 @@ import { getEngineByStockNum, getEngineCostRemaining } from "@/scripts/controlle
 import PartCostIn from "@/components/PartCostIn";
 import StockNumPicturesDialog from "@/components/Dialogs/StockNumPicturesDialog";
 import { setTitle } from "@/scripts/tools/utils";
-import { invoke } from "@tauri-apps/api/tauri";
+import { invoke } from "@/scripts/config/tauri";
 import Modal from "@/components/Library/Modal";
 
 

@@ -7,7 +7,7 @@ import { formatCurrency } from "@/scripts/tools/stringUtils";
 import { addQuote } from "@/scripts/controllers/quotesController";
 import { useAtom } from "jotai";
 import { userAtom } from "@/scripts/atoms/state";
-import { invoke } from "@tauri-apps/api/tauri";
+import { invoke } from "@/scripts/config/tauri";
 import { useRouter } from "next/router";
 
 interface Props {

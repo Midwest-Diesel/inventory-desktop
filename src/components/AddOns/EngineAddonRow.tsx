@@ -8,10 +8,9 @@ import { addEngine, getAutofillEngine } from "@/scripts/controllers/enginesContr
 import { deleteEngineAddOn } from "@/scripts/controllers/engineAddOnsController";
 import { useAtom } from "jotai";
 import { engineAddOnsAtom } from "@/scripts/atoms/state";
-import { confirm } from '@tauri-apps/api/dialog';
 import { formatDate } from "@/scripts/tools/stringUtils";
-import { invoke } from "@tauri-apps/api/tauri";
 import VendorSelect from "../Library/Select/VendorSelect";
+import { invoke, confirm } from "@/scripts/config/tauri";
 
 interface Props {
   addOn: EngineAddOn

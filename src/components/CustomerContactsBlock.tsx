@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Button from "./Library/Button";
 import { addCustomerContact, deleteContact, editContact, editCustomer, getCustomerById } from "@/scripts/controllers/customerController";
 import Input from "./Library/Input";
-import { confirm } from "@tauri-apps/api/dialog";
+import { confirm } from "@/scripts/config/tauri";
 
 interface Props {
   customer: Customer

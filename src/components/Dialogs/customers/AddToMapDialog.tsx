@@ -3,7 +3,7 @@ import Dialog from "@/components/Library/Dialog";
 import Input from "@/components/Library/Input";
 import Select from "@/components/Library/Select/Select";
 import { addMapLocation, getGeoLocation } from "@/scripts/controllers/mapController";
-import { confirm } from "@tauri-apps/api/dialog";
+import { confirm } from "@/scripts/config/tauri";
 import { FormEvent, useEffect, useState } from "react";
 
 interface Props {
