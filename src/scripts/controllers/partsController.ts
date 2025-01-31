@@ -49,7 +49,17 @@ export const getPartById = async (id: number) => {
 export const getPartsInfoByPartNum = async (partNum: string) => {
   try {
     const auth = { withCredentials: true };
-    const res = await api.get(`/api/parts/parts-info/${partNum}`, auth);
+    const res = await api.get(`/api/parts/parts-info/part-num/${partNum}`, auth);
+    return res.data;
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+export const getPartsInfoByAltParts = async (partNum: string) => {
+  try {
+    const auth = { withCredentials: true };
+    const res = await api.get(`/api/parts/parts-info/alt-parts/${partNum}`, auth);
     return res.data;
   } catch (err) {
     console.error(err);

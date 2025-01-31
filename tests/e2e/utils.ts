@@ -12,3 +12,10 @@ export const changeRoute = async (url: string) => {
   await browser.url(url);
   await $('.navbar').waitForExist();
 };
+
+export const partSearch = async (partNum: string) => {
+  await $('[data-id="part-search-btn"]').click();
+  await $('#part-search-input').waitForClickable();
+  await $('#part-search-input').setValue(partNum);
+  await $('[data-id="part-search-submit"]').click();
+};

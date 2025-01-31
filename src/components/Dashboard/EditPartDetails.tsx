@@ -4,7 +4,7 @@ import Grid from "../Library/Grid/Grid";
 import GridItem from "../Library/Grid/GridItem";
 import { FormEvent, useState } from "react";
 import Input from "@/components/Library/Input";
-import { addAltParts, deletePartCostIn, editAltParts, editPart, editPartCostIn, getPartsInfoByPartNum, searchAltParts } from "@/scripts/controllers/partsController";
+import { addAltParts, deletePartCostIn, editAltParts, editPart, editPartCostIn, getPartsInfoByAltParts, getPartsInfoByPartNum, searchAltParts } from "@/scripts/controllers/partsController";
 import Table from "../Library/Table";
 import { deleteEngineCostOut, editEngineCostOut } from "@/scripts/controllers/enginesController";
 import { showSoldPartsAtom, userAtom } from "@/scripts/atoms/state";
@@ -160,31 +160,23 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
 
   const handleRemoveAltPart = async () => {
     const input = prompt('Enter part numbers seperated by comma');
-    let altsToDelete = [];
-    const deletedParts = [];
-    const removedParts = input.toUpperCase().trim().replace(/\s*,\s*/g, ',').split(',');
+    const removedParts = input && input.toUpperCase().trim().replace(/\s*,\s*/g, ',').split(',');
     if (!input || !await confirm(`Are you sure you want to REMOVE: ${removedParts.join(', ')}?`)) return;
 
-    // Remove alt parts from currently edited part record
-    for (let i = 0; i < removedParts.length; i++) {
-      const res = await searchAltParts({ partNum: removedParts[i], showSoldParts: true });
-      for (let j = 0; j < res.length; j++) {
-        if (res[j].partNum !== removedParts[i]) {
-          const filteredParts = altParts.filter((part) => !removedParts.includes(part));
-          await editAltParts(res[j].partNum, filteredParts);
-          altsToDelete.push(...filteredParts);
-        } else {
-          deletedParts.push(res[j]);
-        }
+    const partsInfo = await getPartsInfoByAltParts(removedParts[0]);
+    for (let i = 0; i < partsInfo.length; i++) {
+      if (removedParts.includes(partsInfo[i].partNum)) {
+        const filteredParts = partsInfo[i].altParts.split(', ').filter((alt) => !altParts.includes(alt) || alt === partsInfo[i].partNum);
+        await editAltParts(partsInfo[i].partNum, filteredParts);
+      } else {
+        const filteredParts = altParts.filter((part) => !removedParts.includes(part));
+        await editAltParts(partsInfo[i].partNum, filteredParts);
       }
     }
-    altsToDelete = Array.from(new Set(altsToDelete));
 
-    // Remove alt parts from connected part records
-    for (let i = 0; i < deletedParts.length; i++) {
-      const filteredParts = altParts.filter((part) => !altsToDelete.includes(part));
-      await editAltParts(deletedParts[i].partNum, filteredParts);
-    }
+    const newAltParts = (await getPartsInfoByPartNum(part.partNum))[0].altParts.split(', ');
+    setAltParts(newAltParts);
+    setPart({ ...part, altParts: newAltParts });
   };
 
   
