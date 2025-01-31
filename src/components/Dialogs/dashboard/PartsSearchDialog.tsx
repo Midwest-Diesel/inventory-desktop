@@ -104,7 +104,7 @@ export default function PartsSearchDialog({ open, setOpen, setParts, setLoading 
       width={400}
       height={520}
       className="parts-search-dialog"
-      data-id="part-serch-dialog"
+      data-id="part-search-dialog"
     >
       <form onSubmit={(e) => handleSubmit(e)}>
         <Input
@@ -168,7 +168,7 @@ export default function PartsSearchDialog({ open, setOpen, setParts, setLoading 
 
         <div className="form__footer">
           <Button type="button" variant={['small']} onClick={clearInputs}>Clear</Button>
-          <Button type="submit" variant={['small']}>Submit</Button>
+          <Button type="submit" variant={['small']} data-id="part-search-submit">Submit</Button>
         </div>
       </form>
     </Dialog>

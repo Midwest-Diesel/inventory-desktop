@@ -142,25 +142,32 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
 
   const handleAddAltPart = async () => {
     const input = prompt('Enter part numbers seperated by comma');
-    const value = input && input.toUpperCase().trim().split(',');
+    const value: string[] = input && input.toUpperCase().trim().replace(/\s*,\s*/g, ',').split(',');
     if (!input || !await confirm(`Are you sure you want to ADD: ${value.join(', ')}?`)) return;
-    const altRes = await getPartsInfoByPartNum(value[0]);
-    const altString = altRes[0].altParts;
-    await editAltParts(part.partNum, [...altParts, altString]);
-    await addAltParts(part.partNum, [...altParts, ...value]);
-    setAltParts([...altParts, altString]);
+    
+    let altsToAdd = [];
+    for (let i = 0; i < value.length; i++) {
+      const partInfo = await getPartsInfoByPartNum(value[i]);
+      altsToAdd.push(...partInfo[0].altParts.split(', '));
+    }
+    altsToAdd = Array.from(new Set(altsToAdd)).filter((a) => a !== part.partNum && !part.altParts.includes(a));
+
+    await editAltParts(part.partNum, [...altParts, ...altsToAdd]);
+    await addAltParts(part.partNum, [...altParts, ...altsToAdd]);
+    setAltParts([...altParts, ...altsToAdd]);
+    setPart({ ...part, altParts: [...altParts, ...altsToAdd] });
   };
 
   const handleRemoveAltPart = async () => {
     const input = prompt('Enter part numbers seperated by comma');
     let altsToDelete = [];
     const deletedParts = [];
-    if (!input || !await confirm(`Are you sure you want to REMOVE: ${input.toUpperCase().trim().split(',').join(', ')}?`)) return;
-    // Remove alt parts from currently edited part record
-    const removedParts = input.toUpperCase().trim().split(',').map((p) => p.trim());
+    const removedParts = input.toUpperCase().trim().replace(/\s*,\s*/g, ',').split(',');
+    if (!input || !await confirm(`Are you sure you want to REMOVE: ${removedParts.join(', ')}?`)) return;
 
+    // Remove alt parts from currently edited part record
     for (let i = 0; i < removedParts.length; i++) {
-      const res = await searchAltParts({ partNum: `*${removedParts[i]}`, showSoldParts });
+      const res = await searchAltParts({ partNum: removedParts[i], showSoldParts: true });
       for (let j = 0; j < res.length; j++) {
         if (res[j].partNum !== removedParts[i]) {
           const filteredParts = altParts.filter((part) => !removedParts.includes(part));
@@ -178,7 +185,6 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
       const filteredParts = altParts.filter((part) => !altsToDelete.includes(part));
       await editAltParts(deletedParts[i].partNum, filteredParts);
     }
-    window.location.reload();
   };
 
   
@@ -193,6 +199,7 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
               className="edit-part-details__close-btn"
               type="button"
               onClick={() => setIsEditingPart(false)}
+              data-id="stop-editing"
             >
               Stop Editing
             </Button>
@@ -381,8 +388,8 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
                       <>
                         <p style={{ margin: '0.8rem' }}>{ altParts.join(', ') }</p>
                         <div className="edit-part-details__alt-parts-btn-container">
-                          <Button type="button" onClick={handleAddAltPart}>Add</Button>
-                          <Button variant={['danger']} type="button" onClick={handleRemoveAltPart}>Remove</Button>
+                          <Button type="button" onClick={handleAddAltPart} data-id="add-alts">Add</Button>
+                          <Button variant={['danger']} type="button" onClick={handleRemoveAltPart} data-id="remove-alts">Remove</Button>
                         </div>
                       </>
                       :
