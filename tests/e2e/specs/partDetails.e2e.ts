@@ -30,19 +30,19 @@ describe('Part Details', () => {
   it('Add alt parts', async () => {
     await $('[data-id="edit-btn"]').click();
     await $('[data-id="add-alts"]').click();
-    await browser.sendAlertText('123, 456');
+    await browser.sendAlertText('3055280, C15PK');
     await browser.acceptAlert();
     await $('[data-id="stop-editing"]').click();
 
     await browser.pause(300);
     const altParts = $('[data-id="alt-parts"]');
-    expect(await altParts.getText()).toEqual('123123, 123, 456');
+    expect(await altParts.getText()).toEqual('123123, 3055280, 3070499, C15PK');
   });
 
   it('Remove alt parts', async () => {
     await $('[data-id="edit-btn"]').click();
     await $('[data-id="remove-alts"]').click();
-    await browser.sendAlertText('123, 456');
+    await browser.sendAlertText('123123, C15PK');
     await browser.acceptAlert();
     await $('[data-id="stop-editing"]').click();
 
