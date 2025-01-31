@@ -223,7 +223,7 @@ export const addPart = async (part: Part, partInfoExists: boolean, updateLoading
 
     // Create new part record
     const auth = { withCredentials: true };
-    const data = { ...part, altParts: part.altParts.join(','), partInfoExists };
+    const data = { ...part, altParts: filteredAlts.reverse().join(','), partInfoExists };
     await api.post('/api/parts', data, auth);
 
     // Adds this part to all connected part records
