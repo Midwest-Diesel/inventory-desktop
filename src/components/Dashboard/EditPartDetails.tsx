@@ -11,6 +11,7 @@ import { showSoldPartsAtom, userAtom } from "@/scripts/atoms/state";
 import { useAtom } from "jotai";
 import { confirm } from "@/scripts/config/tauri";
 import { PreventNavigation } from "../PreventNavigation";
+import Loading from "../Library/Loading";
 
 interface Props {
   part: Part
@@ -49,6 +50,8 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
   const [partCostIn, setPartCostIn] = useState<PartCostIn[]>(partCostInData);
   const [engineCostOut, setEngineCostOut] = useState<EngineCostOut[]>(engineCostOutData);
   const [changesSaved, setChangesSaved] = useState(true);
+  const [loadingAlts, isLoadingAlts] = useState(false);
+  const [loadingProgress, setLoadingProgress] = useState('');
 
   const saveChanges = async (e: FormEvent) => {
     e.preventDefault();
@@ -157,9 +160,11 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
     const uniqueAlts = [...altsToAdd].filter((a) => a !== part.partNum && !part.altParts.includes(a));
     if (!await confirm(`Are you sure you want to ADD: ${uniqueAlts.join(', ')}?`)) return;
     if (uniqueAlts.length === 0) return;
+    isLoadingAlts(true);
     await editAltParts(part.partNum, [...altParts, ...uniqueAlts]);
-    await addAltParts(part.partNum, [...altParts, ...uniqueAlts]);
+    await addAltParts(part.partNum, [...altParts, ...uniqueAlts], updateLoading);
   
+    isLoadingAlts(false);
     setAltParts([...altParts, ...uniqueAlts]);
     setPart({ ...part, altParts: [...altParts, ...uniqueAlts] });
   };
@@ -183,6 +188,10 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
     const newAltParts = (await getPartsInfoByPartNum(part.partNum))[0].altParts.split(', ');
     setAltParts(newAltParts);
     setPart({ ...part, altParts: newAltParts });
+  };
+
+  const updateLoading = (i: number, total: number) => {
+    setLoadingProgress(`${i}/${total}`);
   };
 
   
@@ -382,16 +391,23 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
                 <tr>
                   <th>Alt Parts</th>
                   <td>
-                    {user.accessLevel >= 2 ?
-                      <>
-                        <p style={{ margin: '0.8rem' }}>{ altParts.join(', ') }</p>
-                        <div className="edit-part-details__alt-parts-btn-container">
-                          <Button type="button" onClick={handleAddAltPart} data-id="add-alts">Add</Button>
-                          <Button variant={['danger']} type="button" onClick={handleRemoveAltPart} data-id="remove-alts">Remove</Button>
-                        </div>
-                      </>
+                    {!loadingAlts ?
+                      user.accessLevel >= 2 ?
+                        <>
+                          <p style={{ margin: '0.8rem' }}>{ altParts.join(', ') }</p>
+                          <div className="edit-part-details__alt-parts-btn-container">
+                            <Button type="button" onClick={handleAddAltPart} data-id="add-alts">Add</Button>
+                            <Button variant={['danger']} type="button" onClick={handleRemoveAltPart} data-id="remove-alts">Remove</Button>
+                          </div>
+                        </>
+                        :
+                        <p style={{ marginLeft: '0.8rem' }}>{ altParts.join(', ') }</p>
                       :
-                      <p style={{ marginLeft: '0.8rem' }}>{ altParts.join(', ') }</p>
+                      <>
+                        <p>Modifying Alts, DO NOT exit</p>
+                        <p>{ loadingProgress }</p>
+                        <Loading />
+                      </>
                     }
                   </td>
                 </tr>

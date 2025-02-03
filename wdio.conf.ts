@@ -15,9 +15,12 @@ const config = {
         application: '../../target/release/hello-tauri-webdriver',
       },
       browserName: 'chrome',
+      'goog:chromeOptions': {
+        args: process.argv.includes('--headless') ? ['--headless', '--disable-gpu', '--no-sandbox'] : [],
+      },
     },
   ],
-  logLevel: 'debug',
+  logLevel: 'error',
   reporters: ['spec'],
   framework: 'mocha',
   mochaOpts: {
