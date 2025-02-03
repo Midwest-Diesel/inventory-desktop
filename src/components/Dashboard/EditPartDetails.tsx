@@ -144,18 +144,18 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
     const input = prompt('Enter part numbers separated by a comma');
     if (!input) return;
     const values = input.toUpperCase().trim().replace(/\s*,\s*/g, ',').split(',');
-    if (!await confirm(`Are you sure you want to ADD: ${values.join(', ')}?`)) return;
   
     let altsToAdd: any = new Set();
     for (const value of values) {
       const partInfo = await getPartsInfoByPartNum(value);
       if (partInfo.length > 0) {
-        partInfo[0].altParts.split(', ').forEach(alt => altsToAdd.add(alt));
+        partInfo[0].altParts.split(', ').forEach((alt) => altsToAdd.add(alt));
       }
     }
     altsToAdd = Array.from(altsToAdd);
   
     const uniqueAlts = [...altsToAdd].filter((a) => a !== part.partNum && !part.altParts.includes(a));
+    if (!await confirm(`Are you sure you want to ADD: ${uniqueAlts.join(', ')}?`)) return;
     if (uniqueAlts.length === 0) return;
     await editAltParts(part.partNum, [...altParts, ...uniqueAlts]);
     await addAltParts(part.partNum, [...altParts, ...uniqueAlts]);
@@ -167,7 +167,8 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
   const handleRemoveAltPart = async () => {
     const input = prompt('Enter part numbers seperated by comma');
     const removedParts = input && input.toUpperCase().trim().replace(/\s*,\s*/g, ',').split(',');
-    if (!input || !await confirm(`Are you sure you want to REMOVE: ${removedParts.join(', ')}?`)) return;
+    const updatedAltString = altParts.filter((a) => !removedParts.includes(a));
+    if (!input || !await confirm(`Are you sure you want to REMOVE: ${removedParts.join(', ')}?\n\n New Alt Parts:\n${updatedAltString.join(', ')}`)) return;
 
     const partsInfo = await getPartsInfoByAltParts(removedParts[0]);
     for (let i = 0; i < partsInfo.length; i++) {

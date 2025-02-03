@@ -80,6 +80,7 @@ export default function PartDetails() {
 
   const handleAddToUP = async () => {
     const qty = Number(prompt('Enter qty to add'));
+    if (!qty) return;
     await editPart({ ...part, qty: qty + part.qty });
     await handlePrint();
   };

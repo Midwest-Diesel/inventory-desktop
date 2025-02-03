@@ -14,9 +14,10 @@ const config = {
       'tauri:options': {
         application: '../../target/release/hello-tauri-webdriver',
       },
-      browserName: 'chrome'
+      browserName: 'chrome',
     },
   ],
+  logLevel: 'debug',
   reporters: ['spec'],
   framework: 'mocha',
   mochaOpts: {

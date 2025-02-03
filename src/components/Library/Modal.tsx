@@ -63,7 +63,7 @@ export default function Modal({ children, className, variant, title, closeOnOuts
         {...props}
       >
         <h3 className="modal__title">{ title }</h3>
-        { showCloseBtn && <Button variant={["X"]} onClick={closeModal}>X</Button> }
+        { showCloseBtn && <Button variant={["X"]} onClick={closeModal} data-id="alert-close-btn">X</Button> }
         <div className="modal__content" style={{ maxHeight: maxHeight }}>
           { children }
         </div>
