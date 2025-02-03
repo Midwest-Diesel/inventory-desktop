@@ -19,7 +19,7 @@
     "paths": {
       "@/*": ["./src/*"]
     },
-    "types": ["webdriverio", "jest", "wdio/globals"]
+    "types": ["webdriverio", "jest", "@wdio/globals"]
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/pages/_error.tsx", "tests/e2e/specs/alerts.e2e.ts"],
   "exclude": [

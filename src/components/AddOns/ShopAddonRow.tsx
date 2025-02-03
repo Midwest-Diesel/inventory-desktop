@@ -42,7 +42,6 @@ export default function ShopAddonRow({ addOn, handleDuplicateAddOn }: Props) {
   }, [showVendorSelect]);
 
   const handleEditAddOn = async (newAddOn: AddOn) => {
-    if (addOn.partNum !== newAddOn.partNum) await editAddOnAltParts(addOn.id, '');
     const updatedAddOns = addOns.map((a: AddOn) => {
       if (a.id === newAddOn.id) {
         return newAddOn;

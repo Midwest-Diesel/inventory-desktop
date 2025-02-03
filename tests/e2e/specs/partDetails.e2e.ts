@@ -29,7 +29,7 @@ describe('Part Details', () => {
   
       await browser.pause(300);
       const altParts = $('[data-id="alt-parts"]');
-      expect(await altParts.getText()).toEqual('123123, 3055280, 3070499, C15PK');
+      expect(await altParts.getText()).toEqual('123123, 3070499, 3055280, C15PK');
     });
   
     it('Remove alt parts', async () => {
