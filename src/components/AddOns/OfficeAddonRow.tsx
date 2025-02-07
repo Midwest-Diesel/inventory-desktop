@@ -5,7 +5,7 @@ import Checkbox from "../Library/Checkbox";
 import Table from "../Library/Table";
 import Select from "../Library/Select/Select";
 import { deleteAddOn, editAddOnAltParts, getAddOnById } from "@/scripts/controllers/addOnsController";
-import { addPart, checkForNewPartNum, getAutofillPart, getPartByEngineNum, getPartByPartNum, getPartsInfoByPartNum } from "@/scripts/controllers/partsController";
+import { addPart, checkForNewPartNum, getPartByEngineNum, getPartsInfoByPartNum } from "@/scripts/controllers/partsController";
 import { useEffect, useRef, useState } from "react";
 import Input from "../Library/Input";
 import { getAutofillEngine } from "@/scripts/controllers/enginesController";
@@ -19,10 +19,12 @@ import { selectedAddOnAtom } from "@/scripts/atoms/components";
 
 interface Props {
   addOn: AddOn
+  partNumList: string[]
+  engineNumList: string[]
 }
 
 
-export default function OfficeAddonRow({ addOn }: Props) {
+export default function OfficeAddonRow({ addOn, partNumList, engineNumList }: Props) {
   const [addOns, setAddons] = useAtom<AddOn[]>(shopAddOnsAtom);
   const [selectedAddOnData, setSelectedAddOnData] = useAtom<{ addOn: AddOn, dialogOpen: boolean }>(selectedAddOnAtom);
   const [poLink, setPoLink] = useState<string>(addOn.po ? `${addOn.po}` : '');
@@ -70,26 +72,24 @@ export default function OfficeAddonRow({ addOn }: Props) {
     setAddons(addOns.filter((a) => a.id !== addOn.id));
   };
 
-  const autofillFromPartNum = async (partNum: string) => {
+  const autofillFromPartNum = (partNum: string) => {
     if (!partNum) {
       setAutofillPartNum('');
-      return;
+    } else {
+      setAutofillPartNum(partNumList.find((p) => p.startsWith(partNum)));
     }
-    const autofill = await getAutofillPart(partNum);
-    setAutofillPartNum(autofill);
   };
 
   const autofillFromEngineNum = async (engineNum: number) => {
     if (!engineNum) {
       setAutofillEngineNum('');
-      return;
+    } else {
+      setAutofillEngineNum(engineNumList.find((p) => p.startsWith(`${engineNum}`)));
     }
-    const autofill = await getAutofillEngine(engineNum);
-    setAutofillEngineNum(autofill && autofill.stockNum);
   };
 
   const updateAutofillPartNumData = async (value: string) => {
-    const res = await getPartByPartNum(value);
+    const res = (await getPartsInfoByPartNum(value))[0];
     const newAddOn = {
       ...addOn,
       partNum: res.partNum,

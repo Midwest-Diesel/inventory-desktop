@@ -403,11 +403,12 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
                         :
                         <p style={{ marginLeft: '0.8rem' }}>{ altParts.join(', ') }</p>
                       :
-                      <>
-                        <p>Modifying Alts, DO NOT exit</p>
+                      <center>
+                        <p>Modifying Alts</p>
+                        <p>DO NOT exit</p>
                         <p>{ loadingProgress }</p>
                         <Loading />
-                      </>
+                      </center>
                     }
                   </td>
                 </tr>

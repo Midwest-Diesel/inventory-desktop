@@ -4,8 +4,8 @@ import Button from "../Library/Button";
 import Checkbox from "../Library/Checkbox";
 import Table from "../Library/Table";
 import Select from "../Library/Select/Select";
-import { deleteAddOn, editAddOnAltParts } from "@/scripts/controllers/addOnsController";
-import { getAutofillPart, getPartByEngineNum, getPartByPartNum } from "@/scripts/controllers/partsController";
+import { deleteAddOn } from "@/scripts/controllers/addOnsController";
+import { getPartByEngineNum, getPartsInfoByPartNum } from "@/scripts/controllers/partsController";
 import { useEffect, useRef, useState } from "react";
 import Input from "../Library/Input";
 import Link from "next/link";
@@ -20,10 +20,12 @@ import { getRatingFromRemarks } from "@/scripts/tools/utils";
 interface Props {
   addOn: AddOn
   handleDuplicateAddOn: (addOn: AddOn) => void
+  partNumList: string[]
+  engineNumList: string[]
 }
 
 
-export default function ShopAddonRow({ addOn, handleDuplicateAddOn }: Props) {
+export default function ShopAddonRow({ addOn, handleDuplicateAddOn, partNumList, engineNumList }: Props) {
   const [selectedPoData, setSelectedPoData] = useAtom<{ selectedPoAddOn: PO, addOn: AddOn, receivedItemsDialogOpen: boolean }>(selectedPoAddOnAtom);
   const [addOns, setAddons] = useAtom<AddOn[]>(shopAddOnsAtom);
   const [poLink, setPoLink] = useState<string>(addOn.po ? `${addOn.po}` : '');
@@ -57,26 +59,24 @@ export default function ShopAddonRow({ addOn, handleDuplicateAddOn }: Props) {
     setAddons(addOns.filter((a) => a.id !== addOn.id));
   };
 
-  const autofillFromPartNum = async (partNum: string) => {
+  const autofillFromPartNum = (partNum: string) => {
     if (!partNum) {
       setAutofillPartNum('');
-      return;
+    } else {
+      setAutofillPartNum(partNumList.find((p) => p.startsWith(partNum)));
     }
-    const autofill = await getAutofillPart(partNum);
-    setAutofillPartNum(autofill);
   };
 
   const autofillFromEngineNum = async (engineNum: number) => {
     if (!engineNum) {
       setAutofillEngineNum('');
-      return;
+    } else {
+      setAutofillEngineNum(engineNumList.find((p) => p.startsWith(`${engineNum}`)));
     }
-    const autofill = await getAutofillEngine(engineNum);
-    setAutofillEngineNum(autofill && autofill.stockNum);
   };
 
   const updateAutofillPartNumData = async (value: string) => {
-    const res = await getPartByPartNum(value);
+    const res = (await getPartsInfoByPartNum(value))[0];
     const newAddOn = {
       ...addOn,
       partNum: res.partNum,
@@ -191,7 +191,7 @@ export default function ShopAddonRow({ addOn, handleDuplicateAddOn }: Props) {
                   onAutofill={(value) => updateAutofillEngineNumData(Number(value))}
                   value={addOn.engineNum !== null ? addOn.engineNum : ''}
                   onChange={(e: any) => {
-                    handleEditAddOn({ ...addOn, engineNum: e.target.value ? e.target.value : 1 as any });
+                    handleEditAddOn({ ...addOn, engineNum: e.target.value });
                     autofillFromEngineNum(Number(e.target.value));
                   }}
                 />

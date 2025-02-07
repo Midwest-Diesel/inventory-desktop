@@ -96,12 +96,11 @@ export const getPartByStockNum = async (stockNum: string) => {
   }
 };
 
-export const getAutofillPart = async (partNum: string) => {
+export const getAllPartNums = async () => {
   try {
     const auth = { withCredentials: true };
-    const res = await api.get(`/api/parts/autofill/${partNum}`, auth);
-    const data = (await parsePartsData(res.data))[0];
-    return data ? data.partNum : '';
+    const res = await api.get(`/api/parts/all-part-num`, auth);
+    return res.data;
   } catch (err) {
     console.error(err);
   }

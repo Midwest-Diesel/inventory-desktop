@@ -6,12 +6,16 @@ import { PreventNavigation } from "@/components/PreventNavigation";
 import { selectedPoAddOnAtom } from "@/scripts/atoms/components";
 import { shopAddOnsAtom } from "@/scripts/atoms/state";
 import { addAddOn, editAddOn, getAllAddOns } from "@/scripts/controllers/addOnsController";
+import { getAllEngineNums } from "@/scripts/controllers/enginesController";
+import { getAllPartNums } from "@/scripts/controllers/partsController";
 import { useAtom } from "jotai";
 import { Fragment, useEffect, useState } from "react";
 
 
 export default function AddOnsShop() {
   const [selectedPoData, setSelectedPoData] = useAtom<{ selectedPoAddOn: PO, addOn: AddOn, receivedItemsDialogOpen: boolean }>(selectedPoAddOnAtom);
+  const [partNumList, setPartNumList] = useState<string[]>([]);
+  const [engineNumList, setEngineNumList] = useState<string[]>([]);
   const [prevAddons, setPrevAddons] = useState<AddOn[]>([]);
   const [addOns, setAddons] = useAtom<AddOn[]>(shopAddOnsAtom);
   const [savedBtnText, setSavedBtnText] = useState('Save');
@@ -23,6 +27,11 @@ export default function AddOnsShop() {
       const res = await getAllAddOns();
       setAddons(res);
       setPrevAddons(res);
+
+      const parts = await getAllPartNums();
+      setPartNumList(parts.map((p) => p.partNum));
+      const engines = await getAllEngineNums();
+      setEngineNumList(engines.map((e) => `${e.stockNum}`));
     };
     fetchData();
   }, []);
@@ -87,7 +96,7 @@ export default function AddOnsShop() {
           {addOns.map((addOn) => {
             return (
               <Fragment key={addOn.id}>
-                <ShopAddonRow addOn={addOn} handleDuplicateAddOn={handleDuplicateAddOn} />
+                <ShopAddonRow addOn={addOn} handleDuplicateAddOn={handleDuplicateAddOn} partNumList={partNumList} engineNumList={engineNumList} />
               </Fragment>
             );
           })}

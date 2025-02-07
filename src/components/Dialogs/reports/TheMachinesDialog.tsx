@@ -52,9 +52,15 @@ export default function TheMachinesDialog({ open, setOpen, setTableOpen, setTabl
 
   const handleSetPartData = async () => {
     if (partList.length === 0) return;
+    const chunkSize = 100;
     await deleteGonculatorData();
-    await addGonculatorData(partList);
+  
+    for (let i = 0; i < partList.length; i += chunkSize) {
+      const chunk = partList.slice(i, i + chunkSize);
+      await addGonculatorData(chunk);
+    }
   };
+  
 
 
   return (

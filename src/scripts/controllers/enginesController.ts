@@ -30,6 +30,16 @@ export const getAllEngines = async () => {
   }
 };
 
+export const getAllEngineNums = async () => {
+  try {
+    const auth = { withCredentials: true };
+    const res = await api.get('/api/engines/all-engine-nums', auth);
+    return res.data;
+  } catch (err) {
+    console.error(err);
+  }
+};
+
 export const getAutofillEngine = async (engineNum: number) => {
   try {
     const auth = { withCredentials: true };

@@ -6,11 +6,15 @@ import { PreventNavigation } from "@/components/PreventNavigation";
 import { selectedAddOnAtom } from "@/scripts/atoms/components";
 import { shopAddOnsAtom } from "@/scripts/atoms/state";
 import { editAddOn, getAllAddOns } from "@/scripts/controllers/addOnsController";
+import { getAllEngineNums } from "@/scripts/controllers/enginesController";
+import { getAllPartNums } from "@/scripts/controllers/partsController";
 import { useAtom } from "jotai";
 import { FormEvent, Fragment, useEffect, useState } from "react";
 
 
 export default function AddOnsOffice() {
+  const [partNumList, setPartNumList] = useState<string[]>([]);
+  const [engineNumList, setEngineNumList] = useState<string[]>([]);
   const [prevAddons, setPrevAddons] = useState<AddOn[]>([]);
   const [addOns, setAddons] = useAtom<AddOn[]>(shopAddOnsAtom);
   const [selectedAddOnData, setSelectedAddOnData] = useAtom<{ addOn: AddOn, dialogOpen: boolean }>(selectedAddOnAtom);
@@ -22,6 +26,11 @@ export default function AddOnsOffice() {
       const res = await getAllAddOns();
       setAddons(res);
       setPrevAddons(res);
+
+      const partNums = await getAllPartNums();
+      setPartNumList(partNums.map((p) => p.partNum));
+      const engines = await getAllEngineNums();
+      setEngineNumList(engines.map((e) => `${e.stockNum}`));
     };
     fetchData();
   }, []);
@@ -67,7 +76,7 @@ export default function AddOnsOffice() {
             {addOns.map((addOn) => {
               return (
                 <Fragment key={addOn.id}>
-                  <OfficeAddonRow addOn={addOn} />
+                  <OfficeAddonRow addOn={addOn} partNumList={partNumList} engineNumList={engineNumList} />
                 </Fragment>
               );
             })}
