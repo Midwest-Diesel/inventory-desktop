@@ -56,6 +56,7 @@ export default function AddOnsOffice() {
           open={selectedAddOnData.dialogOpen}
           setOpen={(value) => setSelectedAddOnData({ ...selectedAddOnData, dialogOpen: value })}
           addOn={selectedAddOnData.addOn}
+          partNumList={partNumList}
         />
       }
 

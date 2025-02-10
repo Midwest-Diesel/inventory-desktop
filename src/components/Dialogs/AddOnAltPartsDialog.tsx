@@ -1,6 +1,6 @@
 import { FormEvent, useEffect, useState } from "react";
 import Dialog from "../Library/Dialog";
-import { getAutofillPart, getPartsInfoByPartNum } from "@/scripts/controllers/partsController";
+import { getPartsInfoByPartNum } from "@/scripts/controllers/partsController";
 import Input from "../Library/Input";
 import Button from "../Library/Button";
 import { editAddOnAltParts } from "@/scripts/controllers/addOnsController";
@@ -9,10 +9,11 @@ interface Props {
   open: boolean
   setOpen: (open: boolean) => void
   addOn: AddOn
+  partNumList: string[]
 }
 
 
-export default function AddOnAltPartsDialog({ open, setOpen, addOn }: Props) {
+export default function AddOnAltPartsDialog({ open, setOpen, addOn, partNumList }: Props) {
   const [autofillPartNum, setAutofillPartNum] = useState('');
   const [addOnPartNum, setAddOnPartNum] = useState<string>(addOn.partNum);
   const [partNum, setPartNum] = useState('');
@@ -24,13 +25,12 @@ export default function AddOnAltPartsDialog({ open, setOpen, addOn }: Props) {
     setAlts(addOn.altParts);
   }, [open]);
 
-  const autofillFromPartNum = async (partNum: string) => {
+  const autofillFromPartNum = (partNum: string) => {
     if (!partNum) {
       setAutofillPartNum('');
-      return;
+    } else {
+      setAutofillPartNum(partNumList.find((p) => p.startsWith(partNum)));
     }
-    const autofill = await getAutofillPart(partNum);
-    setAutofillPartNum(autofill);
   };
 
   const handleNewAlt = async (e: FormEvent) => {

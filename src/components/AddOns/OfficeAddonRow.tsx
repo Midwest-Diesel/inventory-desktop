@@ -107,23 +107,39 @@ export default function OfficeAddonRow({ addOn, partNumList, engineNumList }: Pr
   };
 
   const updateAutofillEngineNumData = async (value: number) => {
-    const res = await getAutofillEngine(value);
-    const part = await getPartByEngineNum(value);
-    const newAddOn = {
-      ...addOn,
-      stockNum: part && part.stockNum,
-      engineNum: Number(res.stockNum),
-      hp: res.horsePower,
-      serialNum: res.serialNum,
-    } as AddOn;
-    const updatedAddOns = addOns.map((a: AddOn) => {
-      if (a.id === addOn.id) {
-        return newAddOn;
+    if (value === 0 || value === 1 || value === 99) {
+      console.warn("Engine number is invalid:", value);
+      return;
+    }
+  
+    try {
+      const res = await getAutofillEngine(value);
+      const part = await getPartByEngineNum(value);
+      if (!res) {
+        alert("Engine not in inventory, please notify Matt!");
+        return;
       }
-      return a;
-    });
-    setAddons(updatedAddOns);
-    setAutofillEngineNum('');
+  
+      const newAddOn = {
+        ...addOn,
+        stockNum: part.stockNum || '',
+        engineNum: Number(res.stockNum) || null,
+        hp: res.horsePower || '',
+        serialNum: res.serialNum || '',
+      } as AddOn;
+
+      const isDuplicate = addOns.some((a) => a.stockNum === newAddOn.stockNum);
+      if (isDuplicate) {
+        alert("Duplicate StockNumber, already added to add-on sheet or in inventory");
+        return;
+      }
+  
+      const updatedAddOns = addOns.map((a: AddOn) => (a.id === addOn.id ? newAddOn : a));
+      setAddons(updatedAddOns);
+      setAutofillEngineNum('');
+    } catch (error) {
+      console.error("Error updating autofill engine number:", error);
+    }
   };
 
   const handleAddToInventory = async () => {
