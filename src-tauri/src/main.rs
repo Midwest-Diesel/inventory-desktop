@@ -679,7 +679,7 @@ fn upload_file(file_args: FileArgs) -> Result<(), String> {
 
 #[tauri::command]
 fn print_shipping_label(args: ShippingLabelArgs) -> Result<(), String> {
-  let printer = "Brother HL-L5200DW series";
+  let printer = "\\\\FRONT-DESK\\Zebra  ZP 450-200 dpi";
   let vbs_script = format!(
     r#"
     Dim doc, sheet1
@@ -713,8 +713,8 @@ fn print_shipping_label(args: ShippingLabelArgs) -> Result<(), String> {
     End With
 
     doc.ActivePrinter = "{}"
-    ' sheet1.PrintOut , , , , , , , {}
-    ' doc.Quit
+    sheet1.PrintOut , , , , , , , {}
+    doc.Quit
     "#,
     args.company,
     args.address,
@@ -735,7 +735,7 @@ fn print_shipping_label(args: ShippingLabelArgs) -> Result<(), String> {
 
 #[tauri::command]
 fn print_cc_label(args: CCLabelArgs) -> Result<(), String> {
-  let printer = "Brother HL-L5200DW series";
+  let printer = "\\\\FRONT-DESK\\ZDesigner GC420d";
   let vbs_script = format!(
     r#"
     Dim doc, sheet1
@@ -781,8 +781,9 @@ fn print_cc_label(args: CCLabelArgs) -> Result<(), String> {
     End With
 
     doc.ActivePrinter = "{}"
-    ' sheet1.PrintOut
-    ' doc.Quit
+    sheet1.PrintOut
+    sheet1.Close False
+    doc.Quit
     "#,
     args.cardNum,
     args.expDate,
@@ -930,7 +931,7 @@ fn print_bol(args: BOLArgs) -> Result<(), String> {
 
 #[tauri::command]
 fn print_shipping_invoice(args: ShippingInvoiceArgs) -> Result<(), String> {
-  let printer = "Brother MFC-L3770CDW series";
+  let printer = "Brother HL-L3290CDW series";
   let json_data = to_string(&args.items).unwrap();
   let vbs_script = format!(
     r#"
@@ -1070,8 +1071,9 @@ fn print_shipping_invoice(args: ShippingInvoiceArgs) -> Result<(), String> {
     End If
 
     doc.ActivePrinter = "{}"
-    ' sheet1.PrintOut
-    ' doc.Close
+    sheet1.PrintOut
+    sheet1.Close False
+    doc.Quit
     "#,
     args.billToCompany,
     args.billToAddress,
@@ -1194,8 +1196,7 @@ fn print_coo() -> Result<(), String> {
 
 #[tauri::command]
 fn print_part_tag(args: PartTagArgs) -> Result<(), String> {
-  // let printer = "Brother MFC-L3770CDW series";
-  let printer = "ZDesigner GC420d (EPL)";
+  let printer = "ZDesigner LP 2844";
   let vbs_script = format!(
     r#"
     Dim doc, sheet1
@@ -1247,8 +1248,9 @@ fn print_part_tag(args: PartTagArgs) -> Result<(), String> {
     Call ReplaceAndSetColor(sheet1, "<RATING>", "{}")
 
     doc.ActivePrinter = "{}"
-    ' sheet1.PrintOut , , , , , , , {}
-    ' doc.Quit
+    sheet1.PrintOut , , , , , , , {}
+    sheet1.Close False
+    doc.Quit
     "#,
     args.stockNum,
     args.stockNum,
