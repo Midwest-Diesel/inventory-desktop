@@ -42,31 +42,32 @@ export default function PartDetails() {
   const [costAlertOpen, setCostAlertOpen] = useState(false);
 
   useEffect(() => {
-    const fetchData = async () => {
-      if (!params) return;
-      const part = await getPartById(Number(params.partNum));
-      const engine = await getEngineByStockNum(part.engineNum);
-      setTitle(`${part.partNum} ${part.desc}`);
-      setPart(part);
-      setEngine(engine);
-
-      const pictures = await getImagesFromPart(part.partNum);
-      setPictures(pictures);
-      setSnPictures(await getImagesFromStockNum(part.stockNum));
-
-      const costRes = await getEngineCostRemaining(part.engineNum);
-      setCostRemaining(costRes);
-      setPartCostIn(await getPartCostIn(part.stockNum));
-      setEngineCostOut(await getPartEngineCostOut(part.stockNum));
-      if (costRes > 0) {
-        setCostAlertMsg(`${formatCurrency(costRes)} remaining on engine`);
-        setCostAlertOpen(true);
-      }
-    };
     fetchData();
   }, [params]);
 
   useEffect(() => {}, [pictures, snPictures, part]);
+
+  const fetchData = async () => {
+    if (!params) return;
+    const part = await getPartById(Number(params.partNum));
+    const engine = await getEngineByStockNum(part.engineNum);
+    setTitle(`${part.partNum} ${part.desc}`);
+    setPart(part);
+    setEngine(engine);
+
+    const pictures = await getImagesFromPart(part.partNum);
+    setPictures(pictures);
+    setSnPictures(await getImagesFromStockNum(part.stockNum));
+
+    const costRes = await getEngineCostRemaining(part.engineNum);
+    setCostRemaining(costRes);
+    setPartCostIn(await getPartCostIn(part.stockNum));
+    setEngineCostOut(await getPartEngineCostOut(part.stockNum));
+    if (costRes > 0) {
+      setCostAlertMsg(`${formatCurrency(costRes)} remaining on engine`);
+      setCostAlertOpen(true);
+    }
+  };
 
   const getTotalCostIn = () => {
     return partCostIn.reduce((acc, val) => acc + val.cost, 0);
@@ -82,6 +83,7 @@ export default function PartDetails() {
     const qty = Number(prompt('Enter qty to add'));
     if (!qty) return;
     await editPart({ ...part, qty: qty + part.qty });
+    await fetchData();
     await handlePrint();
   };
 
@@ -176,7 +178,7 @@ export default function PartDetails() {
           </div>
 
           <div className="part-details__top-bar">
-            <Button onClick={handleAddToUP}>Add to UP</Button>
+            <Button onClick={handleAddToUP} data-id="add-to-up-btn">Add to UP</Button>
             <Button onClick={handlePrint}>Print Tag</Button>
           </div>
 
