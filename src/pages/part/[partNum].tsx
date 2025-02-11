@@ -192,7 +192,7 @@ export default function PartDetails() {
                 <tbody>
                   <tr>
                     <th>Qty</th>
-                    <td>{ part.qty }</td>
+                    <td data-id="qty">{ part.qty }</td>
                   </tr>
                   <tr>
                     <th>Stock Number</th>

@@ -3,56 +3,44 @@ import { changeRoute, createPart, login, partSearch } from '../utils';
 
 
 describe('Part Details', () => {
-  describe('PartNum: 123123', () => {
-    it('Navigate to page', async () => {
-      await login();
-      await changeRoute('/');
-    });
-  
-    it('Create new part', async () => {
-      await createPart('123123', 'TEST', '4D56');
-      await partSearch('123123');
-      const table = $('[data-id="part-search-table"]');
-      await table.$('a').click();
-  
-      await browser.pause(500);
-      expect(await $('h2').getText()).toEqual('123123');
-      expect(await $('[data-id="alt-parts"]').getText()).toEqual('123123');
-    });
-  
-    it('Add alt parts', async () => {
-      await $('[data-id="edit-btn"]').click();
-      await $('[data-id="add-alts"]').click();
-      await browser.sendAlertText('3055280, C15PK');
-      await browser.acceptAlert();
-      await $('[data-id="stop-editing"]').click();
-  
-      await browser.pause(600);
-      const altParts = $('[data-id="alt-parts"]');
-      expect(await altParts.getText()).toEqual('123123, 3070499, 3055280, C15PK');
-    });
-  
-    it('Remove alt parts', async () => {
-      await $('[data-id="edit-btn"]').click();
-      await $('[data-id="remove-alts"]').click();
-      await browser.sendAlertText('123123, C15PK');
-      await browser.acceptAlert();
-      await $('[data-id="stop-editing"]').click();
-  
-      await browser.pause(300);
-      const altParts = $('[data-id="alt-parts"]');
-      expect(await altParts.getText()).toEqual('123123');
-    });
-  
-    it('Delete part', async () => {
-      await $('[data-id="delete-btn"]').click();
-      await browser.sendAlertText('confirm');
-      await browser.acceptAlert();
-      await browser.pause(300);
-      await partSearch('123123');
-      const tableRows = $('[data-id="part-search-table"] tr td');
-      expect(tableRows).not.toExist();
-    });
+  it('Navigate to page', async () => {
+    await login();
+    await changeRoute('/');
+  });
+
+  it('Create new part', async () => {
+    await createPart('123123', 'TEST', '4D56');
+    await partSearch('123123');
+    const table = $('[data-id="part-search-table"]');
+    await table.$('a').click();
+
+    await browser.pause(500);
+    expect(await $('h2').getText()).toEqual('123123');
+    expect(await $('[data-id="alt-parts"]').getText()).toEqual('123123');
+  });
+
+  it('Add alt parts', async () => {
+    await $('[data-id="edit-btn"]').click();
+    await $('[data-id="add-alts"]').click();
+    await browser.sendAlertText('3055280, C15PK');
+    await browser.acceptAlert();
+    await $('[data-id="stop-editing"]').click();
+
+    await browser.pause(600);
+    const altParts = $('[data-id="alt-parts"]');
+    expect(await altParts.getText()).toEqual('123123, 3070499, 3055280, C15PK');
+  });
+
+  it('Remove alt parts', async () => {
+    await $('[data-id="edit-btn"]').click();
+    await $('[data-id="remove-alts"]').click();
+    await browser.sendAlertText('123123, C15PK');
+    await browser.acceptAlert();
+    await $('[data-id="stop-editing"]').click();
+
+    await browser.pause(300);
+    const altParts = $('[data-id="alt-parts"]');
+    expect(await altParts.getText()).toEqual('123123');
   });
   
   // describe('PartNum: 456456', () => {
@@ -147,4 +135,24 @@ describe('Part Details', () => {
   //     expect(tableRows).not.toExist();
   //   });
   // });
+
+  it('Add to UP button', async () => {
+    await $('[data-id="add-to-up-btn"]').click();
+    await browser.sendAlertText('3');
+    await browser.acceptAlert();
+    await browser.pause(500);
+
+    const qty = await $('[data-id="qty"]').getText();
+    await expect(Number(qty)).toEqual(4);
+  });
+
+  it('Delete part', async () => {
+    await $('[data-id="delete-btn"]').click();
+    await browser.sendAlertText('confirm');
+    await browser.acceptAlert();
+    await browser.pause(300);
+    await partSearch('123123');
+    const tableRows = $('[data-id="part-search-table"] tr td');
+    expect(tableRows).not.toExist();
+  });
 });
