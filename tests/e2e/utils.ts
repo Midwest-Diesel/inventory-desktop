@@ -18,7 +18,7 @@ export const partSearch = async (partNum: string) => {
   await $('#part-search-input').waitForClickable();
   await $('#part-search-input').setValue(partNum);
   await $('[data-id="part-search-submit"]').click();
-  await browser.pause(300);
+  await browser.pause(500);
 };
 
 export const createPart = async (partNum: string, desc: string, stockNum: string, altParts?: string) => {
@@ -33,4 +33,5 @@ export const createPart = async (partNum: string, desc: string, stockNum: string
     await stockNumInput.setValue(stockNum);
     if (altParts) await altPartsInput.setValue(altParts);
     await $('[data-id="save-btn"]').click();
+    await browser.pause(1500);
 };

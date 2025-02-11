@@ -24,6 +24,7 @@ describe('Alerts', () => {
     await partNumInput.setValue('123123');
     await noteInput.setValue('Test');
     await saveBtn.click();
+    await browser.pause(300);
 
     const type = await $('[data-id="type"]').getText();
     const partNum = await $('[data-id="part-num"]').getText();
