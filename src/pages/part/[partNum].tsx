@@ -46,6 +46,16 @@ export default function PartDetails() {
     fetchData();
   }, [params]);
 
+  
+  useEffect(() => {
+    if (!part || isEditingPart) return;
+    const fetchTables = async () => {
+      setPartCostIn(await getPartCostIn(part.stockNum));
+      setEngineCostOut(await getPartEngineCostOut(part.stockNum));
+    };
+    fetchTables();
+  }, [isEditingPart]);
+
   useEffect(() => {}, [pictures, snPictures, part]);
 
   const fetchData = async () => {
@@ -141,6 +151,7 @@ export default function PartDetails() {
                 variant={['blue']}
                 className="part-details__edit-btn"
                 onClick={() => setIsEditingPart(true)}
+                disabled={costRemaining === null}
                 data-id="edit-btn"
               >
                 Edit

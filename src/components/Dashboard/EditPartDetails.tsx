@@ -6,7 +6,7 @@ import { FormEvent, useState } from "react";
 import Input from "@/components/Library/Input";
 import { addAltParts, addPartCostIn, deletePartCostIn, editAltParts, editPart, editPartCostIn, getPartsInfoByAltParts, getPartsInfoByPartNum } from "@/scripts/controllers/partsController";
 import Table from "../Library/Table";
-import { deleteEngineCostOut, editEngineCostOut } from "@/scripts/controllers/enginesController";
+import { addEngineCostOut, deleteEngineCostOut, editEngineCostOut } from "@/scripts/controllers/enginesController";
 import { showSoldPartsAtom, userAtom } from "@/scripts/atoms/state";
 import { useAtom } from "jotai";
 import { confirm } from "@/scripts/config/tauri";
@@ -58,6 +58,14 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
     invoiceNum: '',
     cost: '',
     vendor: '',
+    costType: '',
+    note: ''
+  });
+  const [newEngineCostOutRow, setNewEngineCostOutRow] = useState<any>({
+    id: 0,
+    stockNum: '',
+    engineStockNum: '',
+    cost: '',
     costType: '',
     note: ''
   });
@@ -134,6 +142,14 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
         }
       }
     }
+    if (engineCostOutData.length !== engineCostOut.length) {
+      for (let i = 0; i < engineCostOut.length; i++) {
+        const item = engineCostOut[i];
+        if (item.id === 0) {
+          await addEngineCostOut(part.stockNum, item.engineStockNum, item.cost, item.costType, item.note);
+        }
+      }
+    }
 
     setPart(newPart);
     setIsEditingPart(false);
@@ -145,7 +161,16 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
 
   const handleAddPartCostInRow = () => {
     setPartCostIn([...partCostIn, newPartCostInRow]);
-    setNewPartCostInRow({ id: 0, cost: '', costType: '', vendor: '', invoiceNum: '', note: '' });
+    setNewPartCostInRow({ id: 0, stockNum: '', cost: '', costType: '', vendor: '', invoiceNum: '', note: '' });
+  };
+
+  const handleNewEngineCostOutRowChange = (field: keyof EngineCostOut, value: string | number) => {
+    setNewEngineCostOutRow((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleAddEngineCostOutRow = () => {
+    setEngineCostOut([...engineCostOut, newEngineCostOutRow]);
+    setNewEngineCostOutRow({ id: 0, stockNum: '', engineStockNum: '', cost: '', costType: '', note: '' });
   };
 
   const handleChangePartCostIn = (item: PartCostIn, i: number) => {
@@ -160,18 +185,28 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
     setEngineCostOut(newItems);
   };
 
-  const handleDeleteCostInItem = async (id: number) => {
+  const handleDeleteCostInItem = async (id: number, index: number) => {
     if (!await confirm('Are you sure you want to delete this item?')) return;
-    const newItems = partCostIn.filter((i: PartCostIn) => i.id !== id);
-    await deletePartCostIn(id);
-    setPartCostIn(newItems);
+    if (id > 0) {
+      const newItems = partCostIn.filter((costin: PartCostIn) => costin.id !== id);
+      await deletePartCostIn(id);
+      setPartCostIn(newItems);
+    } else {
+      const newItems = partCostIn.filter((_: PartCostIn, i) => i !== index);
+      setPartCostIn(newItems);
+    }
   };
 
-  const handleDeleteCostOutItem = async (id: number) => {
+  const handleDeleteCostOutItem = async (id: number, index: number) => {
     if (!await confirm('Are you sure you want to delete this item?')) return;
-    const newItems = engineCostOut.filter((i: EngineCostOut) => i.id !== id);
-    await deleteEngineCostOut(id);
-    setEngineCostOut(newItems);
+    if (id > 0) {
+      const newItems = engineCostOut.filter((costin: EngineCostOut) => costin.id !== id);
+      await deleteEngineCostOut(id);
+      setEngineCostOut(newItems);
+    } else {
+      const newItems = engineCostOut.filter((_: EngineCostOut, i) => i !== index);
+      setEngineCostOut(newItems);
+    }
   };
 
   const handleAddAltPart = async () => {
@@ -563,7 +598,7 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
                       <td>
                         <Button
                           variant={['danger']}
-                          onClick={() => handleDeleteCostInItem(i)}
+                          onClick={() => handleDeleteCostInItem(item.id, i)}
                           type="button"
                         >
                           Delete
@@ -635,6 +670,7 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
                   <th>Stock Number</th>
                   <th>Cost Type</th>
                   <th>Note</th>
+                  <th></th>
                 </tr>
               </thead>
               <tbody>
@@ -678,9 +714,67 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
                           onChange={(e: any) => handleChangeEngineCostOut({ ...item, note: e.target.value }, i)}
                         />
                       </td>
+                      <td>
+                        <Button
+                          variant={['danger']}
+                          onClick={() => handleDeleteCostOutItem(item.id, i)}
+                          type="button"
+                        >
+                          Delete
+                        </Button>
+                      </td>
                     </tr>
                   );
                 })}
+
+                {/* Blank row for new entry */}
+                <tr>
+                  <td>
+                    <Input
+                      variant={['x-small', 'thin', 'label-bold']}
+                      value={newEngineCostOutRow.cost}
+                      onChange={(e: any) => handleNewEngineCostOutRowChange('cost', e.target.value)}
+                      type="number"
+                    />
+                  </td>
+                  <td>
+                    <Input
+                      variant={['x-small', 'thin', 'label-bold']}
+                      value={newEngineCostOutRow.engineStockNum}
+                      onChange={(e: any) => handleNewEngineCostOutRowChange('engineStockNum', e.target.value)}
+                    />
+                  </td>
+                  <td>
+                    <Input
+                      variant={['x-small', 'thin', 'label-bold']}
+                      value={newEngineCostOutRow.stockNum}
+                      onChange={(e: any) => handleNewEngineCostOutRowChange('stockNum', e.target.value)}
+                    />
+                  </td>
+                  <td>
+                    <Input
+                      variant={['x-small', 'thin', 'label-bold']}
+                      value={newEngineCostOutRow.costType}
+                      onChange={(e: any) => handleNewEngineCostOutRowChange('costType', e.target.value)}
+                      type="number"
+                    />
+                  </td>
+                  <td>
+                    <Input
+                      variant={['x-small', 'thin', 'label-bold']}
+                      value={newEngineCostOutRow.note}
+                      onChange={(e: any) => handleNewEngineCostOutRowChange('note', e.target.value)}
+                    />
+                  </td>
+                  <td>
+                    <Button
+                      onClick={() => handleAddEngineCostOutRow()}
+                      type="button"
+                    >
+                      Add
+                    </Button>
+                  </td>
+                </tr>
               </tbody>
             </Table>
           </GridItem>
