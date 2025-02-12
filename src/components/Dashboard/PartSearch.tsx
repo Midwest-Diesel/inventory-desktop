@@ -173,7 +173,7 @@ export default function PartSearch({ selectHandwrittenOpen, setSelectHandwritten
   };
 
   const partCostStyles = (part: Part) => {
-    return getTotalCostIn(part) === 0.04 && part.stockNum.slice(0, 2) !== 'UP' ? { color: 'var(--orange-1)', fontWeight: 'bold' } : {};
+    return getTotalCostIn(part) > 0.01 && part.stockNum.slice(0, 2) !== 'UP' ? { color: 'var(--orange-1)', fontWeight: 'bold' } : {};
   };
 
 
