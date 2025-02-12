@@ -1196,7 +1196,7 @@ fn print_coo() -> Result<(), String> {
 
 #[tauri::command]
 fn print_part_tag(args: PartTagArgs) -> Result<(), String> {
-  let printer = "ZDesigner LP 2844";
+  let printer = "ZDesigner GC420d (EPL)";
   let vbs_script = format!(
     r#"
     Dim doc, sheet1

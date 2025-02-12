@@ -12,8 +12,9 @@ export default function EngineCostOutTable({ engineCostOut }: Props) {
       <Table>
         <thead>
           <tr>
-            <th>Stock Number</th>
             <th>Cost</th>
+            <th>Engine Stock Number</th>
+            <th>Stock Number</th>
             <th>Cost Type</th>
             <th>Note</th>
           </tr>
@@ -22,8 +23,9 @@ export default function EngineCostOutTable({ engineCostOut }: Props) {
           {engineCostOut.map((item: EngineCostOut, i) => {
             return (
               <tr key={i}>
-                <td>{ item.stockNum }</td>
                 <td>{ formatCurrency(item.cost) }</td>
+                <td>{ item.engineStockNum }</td>
+                <td>{ item.stockNum }</td>
                 <td>{ item.costType }</td>
                 <td>{ item.note }</td>
               </tr>

@@ -22,6 +22,7 @@ import StockNumPicturesDialog from "@/components/Dialogs/StockNumPicturesDialog"
 import { setTitle } from "@/scripts/tools/utils";
 import { invoke } from "@/scripts/config/tauri";
 import Modal from "@/components/Library/Modal";
+import { getSurplusCostRemaining } from "@/scripts/controllers/surplusController";
 
 
 export default function PartDetails() {
@@ -61,10 +62,13 @@ export default function PartDetails() {
 
     const costRes = await getEngineCostRemaining(part.engineNum);
     setCostRemaining(costRes);
+
     setPartCostIn(await getPartCostIn(part.stockNum));
     setEngineCostOut(await getPartEngineCostOut(part.stockNum));
-    if (costRes > 0) {
-      setCostAlertMsg(`${formatCurrency(costRes)} remaining on engine`);
+
+    const costRemaining = await getSurplusCostRemaining(part.purchasedFrom);
+    if (costRemaining > 0) {
+      setCostAlertMsg(`${formatCurrency(costRemaining)} remaining on ${part.purchasedFrom}`);
       setCostAlertOpen(true);
     }
   };
@@ -240,6 +244,10 @@ export default function PartDetails() {
                     <th>Entry Date</th>
                     <td>{ formatDate(part.entryDate) }</td>
                   </tr>
+                  <tr>
+                    <th>Purchase Price</th>
+                    <td>{ formatCurrency(getTotalCostIn()) }</td>
+                  </tr>
                 </tbody>
               </Table>
             </GridItem>
@@ -266,10 +274,6 @@ export default function PartDetails() {
                   <tr>
                     <th>Core Price</th>
                     <td>{ formatCurrency(part.corePrice) }</td>
-                  </tr>
-                  <tr>
-                    <th>Our Cost</th>
-                    <td>{ formatCurrency(getTotalCostIn()) }</td>
                   </tr>
                 </tbody>
               </Table>
@@ -382,7 +386,7 @@ export default function PartDetails() {
               }
             </GridItem>
 
-            <GridItem variant={['no-style']} rowStart={4} colStart={6} colEnd={12}>
+            <GridItem variant={['no-style']} rowStart={4} colStart={7} colEnd={12}>
               <h2>Engine Cost Out</h2>
               {engineCostOut.length > 0 ?
                 <EngineCostOutTable engineCostOut={engineCostOut} />

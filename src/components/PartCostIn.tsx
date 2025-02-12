@@ -11,10 +11,10 @@ export default function PartCostIn({ partCostInData }: Props) {
     <Table>
       <thead>
         <tr>
-          <th>Invoice Number</th>
           <th>Cost</th>
           <th>Cost Type</th>
           <th>Vendor</th>
+          <th>Handwritten ID</th>
           <th>Note</th>
         </tr>
       </thead>
@@ -22,10 +22,10 @@ export default function PartCostIn({ partCostInData }: Props) {
         {partCostInData.map((item) => {
           return (
             <tr key={item.id}>
-              <td>{ item.invoiceNum }</td>
               <td>{ formatCurrency(item.cost) }</td>
               <td>{ item.costType }</td>
               <td>{ item.vendor }</td>
+              <td>{ item.invoiceNum }</td>
               <td>{ item.note }</td>
             </tr>
           );

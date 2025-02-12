@@ -58,6 +58,16 @@ export const getSurplusRemainingParts = async (code: string) => {
   }
 };
 
+export const getSurplusCostRemaining = async (code: string) => {
+  try {
+    const auth = { withCredentials: true };
+    const res = await api.get(`/api/surplus/cost-remaining/${code}`, auth);
+    return res.data.costRemaining;
+  } catch (err) {
+    console.error(err);
+  }
+};
+
 // === POST routes === //
 
 export const addSurplus = async (surplus: Surplus) => {

@@ -4,7 +4,7 @@ import Grid from "../Library/Grid/Grid";
 import GridItem from "../Library/Grid/GridItem";
 import { FormEvent, useState } from "react";
 import Input from "@/components/Library/Input";
-import { addAltParts, deletePartCostIn, editAltParts, editPart, editPartCostIn, getPartsInfoByAltParts, getPartsInfoByPartNum, searchAltParts } from "@/scripts/controllers/partsController";
+import { addAltParts, addPartCostIn, deletePartCostIn, editAltParts, editPart, editPartCostIn, getPartsInfoByAltParts, getPartsInfoByPartNum } from "@/scripts/controllers/partsController";
 import Table from "../Library/Table";
 import { deleteEngineCostOut, editEngineCostOut } from "@/scripts/controllers/enginesController";
 import { showSoldPartsAtom, userAtom } from "@/scripts/atoms/state";
@@ -52,6 +52,15 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
   const [changesSaved, setChangesSaved] = useState(true);
   const [loadingAlts, isLoadingAlts] = useState(false);
   const [loadingProgress, setLoadingProgress] = useState('');
+  const [newPartCostInRow, setNewPartCostInRow] = useState<any>({
+    id: 0,
+    stockNum: '',
+    invoiceNum: '',
+    cost: '',
+    vendor: '',
+    costType: '',
+    note: ''
+  });
 
   const saveChanges = async (e: FormEvent) => {
     e.preventDefault();
@@ -82,6 +91,8 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
       specialNotes
     } as Part;
     await editPart(newPart);
+
+    // Edit rows
     if (JSON.stringify(partCostIn) !== JSON.stringify(partCostInData)) {
       for (let i = 0; i < partCostIn.length; i++) {
         const item = partCostIn[i];
@@ -113,8 +124,28 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
         setEngineCostOutData(engineCostOut);
       }
     }
+
+    // Add new rows
+    if (partCostInData.length !== partCostIn.length) {
+      for (let i = 0; i < partCostIn.length; i++) {
+        const item = partCostIn[i];
+        if (item.id === 0) {
+          await addPartCostIn(part.stockNum, Number(item.cost), Number(item.invoiceNum), item.vendor, item.costType, item.note);
+        }
+      }
+    }
+
     setPart(newPart);
     setIsEditingPart(false);
+  };
+
+  const handleNewPartCostInRowChange = (field: keyof PartCostIn, value: string | number) => {
+    setNewPartCostInRow((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleAddPartCostInRow = () => {
+    setPartCostIn([...partCostIn, newPartCostInRow]);
+    setNewPartCostInRow({ id: 0, cost: '', costType: '', vendor: '', invoiceNum: '', note: '' });
   };
 
   const handleChangePartCostIn = (item: PartCostIn, i: number) => {
@@ -471,6 +502,185 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
                     />
                   </td>
                 </tr>
+              </tbody>
+            </Table>
+          </GridItem>
+
+          <GridItem variant={['no-style']} rowStart={4} colStart={1} colEnd={6}>
+            <h2>Part Cost In</h2>
+            <Table variant={['plain', 'edit-row-details']}>
+              <thead>
+                <tr>
+                  <th>Cost</th>
+                  <th>Cost Type</th>
+                  <th>Vendor</th>
+                  <th>Handwritten ID</th>
+                  <th>Note</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                {partCostIn.map((item, i) => {
+                  return (
+                    <tr key={item.id}>
+                      <td>
+                        <Input
+                          variant={['x-small', 'thin', 'label-bold']}
+                          value={item.cost}
+                          onChange={(e: any) => handleChangePartCostIn({ ...item, cost: e.target.value }, i)}
+                          type="number"
+                        />
+                      </td>
+                      <td>
+                        <Input
+                          variant={['x-small', 'thin', 'label-bold']}
+                          value={item.costType}
+                          onChange={(e: any) => handleChangePartCostIn({ ...item, costType: e.target.value }, i)}
+                        />
+                      </td>
+                      <td>
+                        <Input
+                          variant={['x-small', 'thin', 'label-bold']}
+                          value={item.vendor}
+                          onChange={(e: any) => handleChangePartCostIn({ ...item, vendor: e.target.value }, i)}
+                        />
+                      </td>
+                      <td>
+                        <Input
+                          variant={['x-small', 'thin', 'label-bold']}
+                          value={item.invoiceNum}
+                          onChange={(e: any) => handleChangePartCostIn({ ...item, invoiceNum: e.target.value }, i)}
+                          type="number"
+                        />
+                      </td>
+                      <td>
+                        <Input
+                          variant={['x-small', 'thin', 'label-bold']}
+                          value={item.note}
+                          onChange={(e: any) => handleChangePartCostIn({ ...item, note: e.target.value }, i)}
+                        />
+                      </td>
+                      <td>
+                        <Button
+                          variant={['danger']}
+                          onClick={() => handleDeleteCostInItem(i)}
+                          type="button"
+                        >
+                          Delete
+                        </Button>
+                      </td>
+                    </tr>
+                  );
+                })}
+
+                {/* Blank row for new entry */}
+                <tr>
+                  <td>
+                    <Input
+                      variant={['x-small', 'thin', 'label-bold']}
+                      value={newPartCostInRow.cost}
+                      onChange={(e: any) => handleNewPartCostInRowChange('cost', e.target.value)}
+                      type="number"
+                    />
+                  </td>
+                  <td>
+                    <Input
+                      variant={['x-small', 'thin', 'label-bold']}
+                      value={newPartCostInRow.costType}
+                      onChange={(e: any) => handleNewPartCostInRowChange('costType', e.target.value)}
+                    />
+                  </td>
+                  <td>
+                    <Input
+                      variant={['x-small', 'thin', 'label-bold']}
+                      value={newPartCostInRow.vendor}
+                      onChange={(e: any) => handleNewPartCostInRowChange('vendor', e.target.value)}
+                    />
+                  </td>
+                  <td>
+                    <Input
+                      variant={['x-small', 'thin', 'label-bold']}
+                      value={newPartCostInRow.invoiceNum}
+                      onChange={(e: any) => handleNewPartCostInRowChange('invoiceNum', e.target.value)}
+                      type="number"
+                    />
+                  </td>
+                  <td>
+                    <Input
+                      variant={['x-small', 'thin', 'label-bold']}
+                      value={newPartCostInRow.note}
+                      onChange={(e: any) => handleNewPartCostInRowChange('note', e.target.value)}
+                    />
+                  </td>
+                  <td>
+                    <Button
+                      onClick={() => handleAddPartCostInRow()}
+                      type="button"
+                    >
+                      Add
+                    </Button>
+                  </td>
+                </tr>
+              </tbody>
+            </Table>
+          </GridItem>
+
+          <GridItem variant={['no-style']} rowStart={4} colStart={8} colEnd={12}>
+            <h2>Engine Cost Out</h2>
+            <Table variant={['plain', 'edit-row-details']}>
+              <thead>
+                <tr>
+                  <th>Cost</th>
+                  <th>Engine Stock Number</th>
+                  <th>Stock Number</th>
+                  <th>Cost Type</th>
+                  <th>Note</th>
+                </tr>
+              </thead>
+              <tbody>
+                {engineCostOut.map((item: EngineCostOut, i) => {
+                  return (
+                    <tr key={i}>
+                      <td>
+                        <Input
+                          variant={['x-small', 'thin', 'label-bold']}
+                          value={item.cost}
+                          onChange={(e: any) => handleChangeEngineCostOut({ ...item, cost: e.target.value }, i)}
+                          type="number"
+                        />
+                      </td>
+                      <td>
+                        <Input
+                          variant={['x-small', 'thin', 'label-bold']}
+                          value={item.engineStockNum}
+                          onChange={(e: any) => handleChangeEngineCostOut({ ...item, engineStockNum: e.target.value }, i)}
+                          type="number"
+                        />
+                      </td>
+                      <td>
+                        <Input
+                          variant={['x-small', 'thin', 'label-bold']}
+                          value={item.stockNum}
+                          onChange={(e: any) => handleChangeEngineCostOut({ ...item, stockNum: e.target.value }, i)}
+                        />
+                      </td>
+                      <td>
+                        <Input
+                          variant={['x-small', 'thin', 'label-bold']}
+                          value={item.costType}
+                          onChange={(e: any) => handleChangeEngineCostOut({ ...item, costType: e.target.value }, i)}
+                        />
+                      </td>
+                      <td>
+                        <Input
+                          variant={['x-small', 'thin', 'label-bold']}
+                          value={item.note}
+                          onChange={(e: any) => handleChangeEngineCostOut({ ...item, note: e.target.value }, i)}
+                        />
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </Table>
           </GridItem>

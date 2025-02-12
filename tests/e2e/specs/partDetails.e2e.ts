@@ -43,7 +43,28 @@ describe('Part Details', () => {
     expect(await altParts.getText()).toEqual('123123');
   });
   
-  // describe('PartNum: 456456', () => {
+  it('Add to UP button', async () => {
+    await $('[data-id="add-to-up-btn"]').click();
+    await browser.sendAlertText('3');
+    await browser.acceptAlert();
+    await browser.pause(500);
+
+    const qty = await $('[data-id="qty"]').getText();
+    await expect(Number(qty)).toEqual(4);
+  });
+
+  it('Delete part', async () => {
+    await $('[data-id="delete-btn"]').click();
+    await browser.sendAlertText('confirm');
+    await browser.acceptAlert();
+    await browser.pause(300);
+    await partSearch('123123');
+    const tableRows = $('[data-id="part-search-table"] tr td');
+    expect(tableRows).not.toExist();
+  });
+});
+
+  // describe('Part Details: 456456', () => {
   //   it('Create new part', async () => {
   //     await changeRoute('/');
   //     await createPart('456456', 'TEST', '4D56');
@@ -135,24 +156,3 @@ describe('Part Details', () => {
   //     expect(tableRows).not.toExist();
   //   });
   // });
-
-  it('Add to UP button', async () => {
-    await $('[data-id="add-to-up-btn"]').click();
-    await browser.sendAlertText('3');
-    await browser.acceptAlert();
-    await browser.pause(500);
-
-    const qty = await $('[data-id="qty"]').getText();
-    await expect(Number(qty)).toEqual(4);
-  });
-
-  it('Delete part', async () => {
-    await $('[data-id="delete-btn"]').click();
-    await browser.sendAlertText('confirm');
-    await browser.acceptAlert();
-    await browser.pause(300);
-    await partSearch('123123');
-    const tableRows = $('[data-id="part-search-table"] tr td');
-    expect(tableRows).not.toExist();
-  });
-});
