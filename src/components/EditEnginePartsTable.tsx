@@ -47,8 +47,22 @@ export default function EditEnginePartsTable() {
               onChange={handleChange}
             />
           </td>
-          <td></td>
-          <td></td>
+          <td>
+            <Input
+              variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+              name="blockCasting"
+              value={engineParts.blockCasting}
+              onChange={handleChange}
+            />
+          </td>
+          <td>
+            <Input
+              variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+              name="blockActual"
+              value={engineParts.blockActual}
+              onChange={handleChange}
+            />
+          </td>
         </tr>
         <tr>
           <th>Crankshaft</th>
@@ -69,7 +83,14 @@ export default function EditEnginePartsTable() {
             />
           </td>
           <td></td>
-          <td></td>
+          <td>
+            <Input
+              variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+              name="crankActual"
+              value={engineParts.crankActual}
+              onChange={handleChange}
+            />
+          </td>
         </tr>
         <tr>
           <th>Camshaft</th>
@@ -90,7 +111,14 @@ export default function EditEnginePartsTable() {
             />
           </td>
           <td></td>
-          <td></td>
+          <td>
+            <Input
+              variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+              name="camActual"
+              value={engineParts.camActual}
+              onChange={handleChange}
+            />
+          </td>
         </tr>
         <tr>
           <th>Injector</th>
@@ -111,7 +139,14 @@ export default function EditEnginePartsTable() {
             />
           </td>
           <td></td>
-          <td></td>
+          <td>
+            <Input
+              variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+              name="injActual"
+              value={engineParts.injActual}
+              onChange={handleChange}
+            />
+          </td>
         </tr>
         <tr>
           <th>Turbo</th>
@@ -132,7 +167,14 @@ export default function EditEnginePartsTable() {
             />
           </td>
           <td></td>
-          <td></td>
+          <td>
+            <Input
+              variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+              name="turboActual"
+              value={engineParts.turboActual}
+              onChange={handleChange}
+            />
+          </td>
         </tr>
         <tr>
           <th>Turbo HP</th>
@@ -153,7 +195,14 @@ export default function EditEnginePartsTable() {
             />
           </td>
           <td></td>
-          <td></td>
+          <td>
+            <Input
+              variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+              name="turboHpActual"
+              value={engineParts.turboHpActual}
+              onChange={handleChange}
+            />
+          </td>
         </tr>
         <tr>
           <th>Turbo LP</th>
@@ -174,7 +223,14 @@ export default function EditEnginePartsTable() {
             />
           </td>
           <td></td>
-          <td></td>
+          <td>
+            <Input
+              variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+              name="turboLpActual"
+              value={engineParts.turboLpActual}
+              onChange={handleChange}
+            />
+          </td>
         </tr>
         <tr>
           <th>Head</th>
@@ -195,7 +251,14 @@ export default function EditEnginePartsTable() {
             />
           </td>
           <td></td>
-          <td></td>
+          <td>
+            <Input
+              variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+              name="headActual"
+              value={engineParts.headActual}
+              onChange={handleChange}
+            />
+          </td>
         </tr>
         <tr>
           <th>Pist./Cyl Pk</th>
@@ -216,7 +279,14 @@ export default function EditEnginePartsTable() {
             />
           </td>
           <td></td>
-          <td></td>
+          <td>
+            <Input
+              variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+              name="pistonActual"
+              value={engineParts.pistonActual}
+              onChange={handleChange}
+            />
+          </td>
         </tr>
         <tr>
           <th>Flywheel Hsng</th>
@@ -237,7 +307,14 @@ export default function EditEnginePartsTable() {
             />
           </td>
           <td></td>
-          <td></td>
+          <td>
+            <Input
+              variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+              name="fwhActual"
+              value={engineParts.fwhActual}
+              onChange={handleChange}
+            />
+          </td>
         </tr>
         <tr>
           <th>Flywheel</th>
@@ -251,7 +328,14 @@ export default function EditEnginePartsTable() {
           </td>
           <td></td>
           <td></td>
-          <td></td>
+          <td>
+            <Input
+              variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+              name="flywheelActual"
+              value={engineParts.flywheelActual}
+              onChange={handleChange}
+            />
+          </td>
         </tr>
         <tr>
           <th>Oil Pan</th>
@@ -272,7 +356,14 @@ export default function EditEnginePartsTable() {
             />
           </td>
           <td></td>
-          <td></td>
+          <td>
+            <Input
+              variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+              name="oilPanActual"
+              value={engineParts.oilPanActual}
+              onChange={handleChange}
+            />
+          </td>
         </tr>
         <tr>
           <th>Oil Cooler</th>
@@ -293,7 +384,14 @@ export default function EditEnginePartsTable() {
             />
           </td>
           <td></td>
-          <td></td>
+          <td>
+            <Input
+              variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+              name="oilCoolerActual"
+              value={engineParts.oilCoolerActual}
+              onChange={handleChange}
+            />
+          </td>
         </tr>
         <tr>
           <th>Front Hsng</th>
@@ -307,7 +405,14 @@ export default function EditEnginePartsTable() {
           </td>
           <td></td>
           <td></td>
-          <td></td>
+          <td>
+            <Input
+              variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+              name="frontHsngActual"
+              value={engineParts.frontHsngActual}
+              onChange={handleChange}
+            />
+          </td>
         </tr>
         <tr>
           <th>RA Group</th>
@@ -321,7 +426,14 @@ export default function EditEnginePartsTable() {
           </td>
           <td></td>
           <td></td>
-          <td></td>
+          <td>
+            <Input
+              variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+              name="ragActual"
+              value={engineParts.ragActual}
+              onChange={handleChange}
+            />
+          </td>
         </tr>
         <tr>
           <th>Heui Pump</th>
@@ -342,7 +454,14 @@ export default function EditEnginePartsTable() {
             />
           </td>
           <td></td>
-          <td></td>
+          <td>
+            <Input
+              variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+              name="heuiPumpActual"
+              value={engineParts.heuiPumpActual}
+              onChange={handleChange}
+            />
+          </td>
         </tr>
         <tr>
           <th>Oil Pump</th>
@@ -363,7 +482,14 @@ export default function EditEnginePartsTable() {
             />
           </td>
           <td></td>
-          <td></td>
+          <td>
+            <Input
+              variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+              name="oilPumpActual"
+              value={engineParts.oilPumpActual}
+              onChange={handleChange}
+            />
+          </td>
         </tr>
         <tr>
           <th>Water Pump</th>
@@ -384,7 +510,14 @@ export default function EditEnginePartsTable() {
             />
           </td>
           <td></td>
-          <td></td>
+          <td>
+            <Input
+              variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+              name="waterPumpActual"
+              value={engineParts.waterPumpActual}
+              onChange={handleChange}
+            />
+          </td>
         </tr>
         <tr>
           <th>Exh Manifold</th>
@@ -405,7 +538,14 @@ export default function EditEnginePartsTable() {
             />
           </td>
           <td></td>
-          <td></td>
+          <td>
+            <Input
+              variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+              name="exhMnfldActual"
+              value={engineParts.exhMnfldActual}
+              onChange={handleChange}
+            />
+          </td>
         </tr>
       </tbody>
     </Table>

@@ -535,7 +535,7 @@ type Engine = {
   turboActual: string
   pistonNew: string
   pistonReman: string
-  pistonsActual: string
+  pistonActual: string
   cylPacksNew: string
   cylPacksReman: string
   cylPacksActual: string
@@ -556,7 +556,7 @@ type Engine = {
   ragActual: string
   heuiPumpNew: string
   heuiPumpReman: string
-  heuiActual: string
+  heuiPumpActual: string
   exhMnfldNew: string
   exhMnfldReman: string
   exhMnfldActual: string
@@ -866,38 +866,58 @@ interface CustomerEngineData {
 interface EnginePartsTable {
   blockReman: string
   blockNew: string
+  blockCasting: string
+  blockActual: string
   crankReman: string
   crankNew: string
+  crankActual: string
   camReman: string
   camNew: string
+  camActual: string
   injReman: string
   injNew: string
+  injActual: string
   turboReman: string
   turboNew: string
+  turboActual: string
   turboHpReman: string
   turboHpNew: string
+  turboHpActual: string
   turboLpReman: string
   turboLpNew: string
+  turboLpActual: string
   headReman: string
   headNew: string
+  headActual: string
   pistonReman: string
   pistonNew: string
+  pistonActual: string
   fwhNew: string
+  fwhActual: string
   fwhReman: string
   flywheelNew: string
+  flywheelActual: string
   ragNew: string
+  ragActual: string
   oilPanReman: string
   oilPanNew: string
+  oilPanActual: string
   oilCoolerReman: string
   oilCoolerNew: string
+  oilCoolerActual: string
   frontHsngNew: string
+  frontHsngActual: string
   heuiPumpReman: string
   heuiPumpNew: string
+  heuiPumpActual: string
   oilPumpReman: string
   oilPumpNew: string
+  oilPumpActual: string
   waterPumpReman: string
   waterPump: string
+  waterPumpActual: string
   exhMnfldNew: string
+  exhMnfldActual: string
   exhMnfldReman: string
 }
 

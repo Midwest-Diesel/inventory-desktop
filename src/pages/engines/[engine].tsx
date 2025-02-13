@@ -12,7 +12,6 @@ import Loading from "@/components/Library/Loading";
 import Table from "@/components/Library/Table";
 import { userAtom } from "@/scripts/atoms/state";
 import { deleteEngine, getEngineByStockNum } from "@/scripts/controllers/enginesController";
-import { getEngineImages } from "@/scripts/controllers/imagesController";
 import { formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
 import { setTitle } from "@/scripts/tools/utils";
 import { useAtom } from "jotai";
@@ -30,7 +29,7 @@ export default function EngineDetailsPage() {
   const [engineCostIn, setEngineCostIn] = useState<EngineCostIn[]>([]);
   const [engineCostOut, setEngineCostOut] = useState<EngineCostOut[]>([]);
   const [engineProfitOpen, setEngineProfitOpen] = useState(false);
-  
+
   useEffect(() => {
     if (isEditing) return;
     const fetchData = async () => {

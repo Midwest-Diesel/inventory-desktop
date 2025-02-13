@@ -79,7 +79,7 @@ export default function EnginePartsTable({ engine }: Props) {
           <td>{ engine.pistonNew }</td>
           <td>{ engine.pistonReman }</td>
           <td></td>
-          <td>{ engine.pistonsActual }</td>
+          <td>{ engine.pistonActual }</td>
         </tr>
         <tr>
           <th>Flywheel Hsng</th>
@@ -128,7 +128,7 @@ export default function EnginePartsTable({ engine }: Props) {
           <td>{ engine.heuiPumpNew }</td>
           <td>{ engine.heuiPumpReman }</td>
           <td></td>
-          <td>{ engine.heuiActual }</td>
+          <td>{ engine.heuiPumpActual }</td>
         </tr>
         <tr>
           <th>Oil Pump</th>
