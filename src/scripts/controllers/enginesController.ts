@@ -146,6 +146,15 @@ export const addEngine = async (engine: EngineAddOn) => {
   }
 };
 
+export const addEngineCostIn = async (engineStockNum: number, cost: number, invoiceNum: number, vendor: string, costType: string, note: string) => {
+  try {
+    const auth = { withCredentials: true };
+    await api.post('/api/engines/cost-in', { engineStockNum, cost, invoiceNum, vendor, costType, note }, auth);
+  } catch (err) {
+    console.error(err);
+  }
+};
+
 export const addEngineCostOut = async (stockNum: string, engineStockNum: number, cost: number, costType: string, note: string) => {
   try {
     const auth = { withCredentials: true };

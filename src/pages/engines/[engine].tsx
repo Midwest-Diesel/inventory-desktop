@@ -31,6 +31,7 @@ export default function EngineDetailsPage() {
   const [engineProfitOpen, setEngineProfitOpen] = useState(false);
 
   useEffect(() => {
+    if (isEditing) return;
     const fetchData = async () => {
       if (!params) return;
       const res = await getEngineByStockNum(Number(params.engine));
@@ -45,18 +46,24 @@ export default function EngineDetailsPage() {
       setEngineCostOut(filteredCostOut);
     };
     fetchData();
-  }, [params]);
+  }, [params, isEditing]);
 
   const getTotalCostIn = () => {
-    return engineCostIn.filter((num) => num.cost !== 0.04 && num.cost !== 0.01 && num.costType !== 'ReconPrice' && !num.engineStockNum.toString().includes('UP')).reduce((acc, val) => acc + val.cost, 0);
+    return engineCostIn
+      .filter((num) => num.cost !== 0.04 && num.cost !== 0.01 && num.costType !== 'ReconPrice' && !num.engineStockNum.toString().includes('UP'))
+      .reduce((acc, val) => acc + Number(val.cost), 0);
   };
 
   const getTotalCostOut = () => {
-    return engineCostOut.filter((num) => num.cost !== 0.04 && num.cost !== 0.01 && num.costType !== 'ReconPrice').reduce((acc, val) => acc + val.cost, 0);
+    return engineCostOut
+      .filter((num) => num.cost !== 0.04 && num.cost !== 0.01 && num.costType !== 'ReconPrice' && !num.stockNum.toString().includes('UP'))
+      .reduce((acc, val) => acc + val.cost, 0);
   };
 
   const getPurchaseCost = () => {
-    return engineCostIn.filter((en) => en.costType === 'PurchasePrice').reduce((acc, val) => acc + val.cost, 0);
+    return engineCostIn
+      .filter((en) => en.costType === 'PurchasePrice' && !en.engineStockNum.toString().includes('UP'))
+      .reduce((acc, val) => acc + val.cost, 0);
   };
 
   const handleDelete = async () => {
