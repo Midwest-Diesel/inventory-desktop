@@ -219,6 +219,7 @@ async fn main() {
       open_window,
       get_part_num_images,
       get_stock_num_images,
+      get_engine_images,
       get_all_pictures,
       attach_to_existing_email,
       convert_img_to_base64,
@@ -395,6 +396,39 @@ async fn get_part_num_images(picture_args: PictureArgs) -> Result<Vec<Picture>, 
 #[tauri::command]
 async fn get_stock_num_images(picture_args: PictureArgs) -> Result<Vec<Picture>, String> {
   let path = "\\\\MWD1-SERVER/Server/Pictures/sn_specific";
+  let target_dir = format!("{}/{}", path, picture_args.stock_num.as_deref().unwrap_or(""));
+  let mut pictures = Vec::new();
+
+  match std::fs::read_dir(&target_dir) {
+    Ok(entries) => {
+      for entry in entries {
+        let pic_entry = match entry {
+          Ok(entry) => entry,
+          Err(e) => return Err(format!("Error reading entry: {}", e)),
+        };
+        let pic_name = pic_entry.file_name().into_string().map_err(|_| "Invalid file name")?;
+        let pic_path = pic_entry.path();
+
+        let data = match std::fs::read(&pic_path) {
+          Ok(data) => data,
+          Err(e) => return Err(format!("Error reading image data: {}", e)),
+        };
+
+        let base64_data = BASE64_STANDARD.encode(&data);
+        pictures.push(Picture {
+          url: base64_data,
+          name: pic_name,
+        });
+      }
+      Ok(pictures)
+    }
+    Err(e) => Err(format!("Error accessing directory {}: {}", target_dir, e)),
+  }
+}
+
+#[tauri::command]
+async fn get_engine_images(picture_args: PictureArgs) -> Result<Vec<Picture>, String> {
+  let path = "\\\\MWD1-SERVER/Server/Engines Pictures/StockPhotos";
   let target_dir = format!("{}/{}", path, picture_args.stock_num.as_deref().unwrap_or(""));
   let mut pictures = Vec::new();
 

@@ -882,7 +882,10 @@ interface EnginePartsTable {
   headNew: string
   pistonReman: string
   pistonNew: string
+  fwhNew: string
+  fwhReman: string
   flywheelNew: string
+  ragNew: string
   oilPanReman: string
   oilPanNew: string
   oilCoolerReman: string

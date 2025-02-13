@@ -80,7 +80,10 @@ export default function EditEngineDetails({ engine, setEngine, setIsEditing, eng
     headNew: engine.headNew,
     pistonReman: engine.pistonReman,
     pistonNew: engine.pistonNew,
+    fwhNew: engine.fwhNew,
+    fwhReman: engine.fwhReman,
     flywheelNew: engine.flywheelNew,
+    ragNew: engine.ragNew,
     oilPanReman: engine.oilPanReman,
     oilPanNew: engine.oilPanNew,
     oilCoolerReman: engine.oilCoolerReman,
@@ -581,7 +584,7 @@ export default function EditEngineDetails({ engine, setEngine, setIsEditing, eng
               <br />
 
               <GridItem colStart={5} colEnd={12} variant={['low-opacity-bg']}>
-                <EditEnginePartsTable engine={engine} />
+                <EditEnginePartsTable />
               </GridItem>
             </GridItem>
 

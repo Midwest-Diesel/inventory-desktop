@@ -11,7 +11,8 @@ import GridItem from "@/components/Library/Grid/GridItem";
 import Loading from "@/components/Library/Loading";
 import Table from "@/components/Library/Table";
 import { userAtom } from "@/scripts/atoms/state";
-import { deleteEngine, getEngineByStockNum, getEngineCostIn, getEngineCostOut } from "@/scripts/controllers/enginesController";
+import { deleteEngine, getEngineByStockNum } from "@/scripts/controllers/enginesController";
+import { getEngineImages } from "@/scripts/controllers/imagesController";
 import { formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
 import { setTitle } from "@/scripts/tools/utils";
 import { useAtom } from "jotai";
@@ -29,19 +30,22 @@ export default function EngineDetailsPage() {
   const [engineCostIn, setEngineCostIn] = useState<EngineCostIn[]>([]);
   const [engineCostOut, setEngineCostOut] = useState<EngineCostOut[]>([]);
   const [engineProfitOpen, setEngineProfitOpen] = useState(false);
-
+  
   useEffect(() => {
     if (isEditing) return;
     const fetchData = async () => {
       if (!params) return;
       const res = await getEngineByStockNum(Number(params.engine));
       if (!res) return;
+
       setEngine(res);
       setTitle(`${res.stockNum} Engine`);
+
       const upStockNums: EngineCostIn[] = res.costOut
         .filter((num) => num.stockNum && num.stockNum.includes('UP'))
         .map((num) => ({ ...num, engineStockNum: num.stockNum, vendor: null }));
       setEngineCostIn([...res.costIn, ...upStockNums]);
+
       const filteredCostOut = res.costOut.filter((num) => num.stockNum && !num.stockNum.includes('UP'));
       setEngineCostOut(filteredCostOut);
     };
