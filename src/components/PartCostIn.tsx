@@ -14,12 +14,12 @@ export default function PartCostIn({ partCostInData }: Props) {
           <th>Cost</th>
           <th>Cost Type</th>
           <th>Vendor</th>
-          <th>Handwritten ID</th>
+          <th>Invoice Number</th>
           <th>Note</th>
         </tr>
       </thead>
       <tbody>
-        {partCostInData.map((item) => {
+        {partCostInData.sort((a, b) => b.cost - a.cost).map((item) => {
           return (
             <tr key={item.id}>
               <td>{ formatCurrency(item.cost) }</td>

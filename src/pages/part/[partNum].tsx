@@ -50,6 +50,8 @@ export default function PartDetails() {
   useEffect(() => {
     if (!part || isEditingPart) return;
     const fetchTables = async () => {
+      const costRes = await getEngineCostRemaining(part.engineNum);
+      setCostRemaining(costRes);
       setPartCostIn(await getPartCostIn(part.stockNum));
       setEngineCostOut(await getPartEngineCostOut(part.stockNum));
     };

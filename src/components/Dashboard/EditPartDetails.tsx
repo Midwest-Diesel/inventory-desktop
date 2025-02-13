@@ -52,23 +52,10 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
   const [changesSaved, setChangesSaved] = useState(true);
   const [loadingAlts, isLoadingAlts] = useState(false);
   const [loadingProgress, setLoadingProgress] = useState('');
-  const [newPartCostInRow, setNewPartCostInRow] = useState<any>({
-    id: 0,
-    stockNum: '',
-    invoiceNum: '',
-    cost: '',
-    vendor: '',
-    costType: '',
-    note: ''
-  });
-  const [newEngineCostOutRow, setNewEngineCostOutRow] = useState<any>({
-    id: 0,
-    stockNum: '',
-    engineStockNum: '',
-    cost: '',
-    costType: '',
-    note: ''
-  });
+  const blankPartCostIn = { id: 0, stockNum: part.stockNum, invoiceNum: '', cost: '', vendor: '', costType: '', note: '' };
+  const blankEngineCostOut = { id: 0, stockNum: part.stockNum, engineStockNum: Number(part.engineNum), cost: '', costType: '', note: '' };
+  const [newPartCostInRow, setNewPartCostInRow] = useState<any>(blankPartCostIn);
+  const [newEngineCostOutRow, setNewEngineCostOutRow] = useState<any>(blankEngineCostOut);
 
   const saveChanges = async (e: FormEvent) => {
     e.preventDefault();
@@ -161,7 +148,7 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
 
   const handleAddPartCostInRow = () => {
     setPartCostIn([...partCostIn, newPartCostInRow]);
-    setNewPartCostInRow({ id: 0, stockNum: '', cost: '', costType: '', vendor: '', invoiceNum: '', note: '' });
+    setNewPartCostInRow(blankPartCostIn);
   };
 
   const handleNewEngineCostOutRowChange = (field: keyof EngineCostOut, value: string | number) => {
@@ -170,7 +157,7 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
 
   const handleAddEngineCostOutRow = () => {
     setEngineCostOut([...engineCostOut, newEngineCostOutRow]);
-    setNewEngineCostOutRow({ id: 0, stockNum: '', engineStockNum: '', cost: '', costType: '', note: '' });
+    setNewEngineCostOutRow(blankEngineCostOut);
   };
 
   const handleChangePartCostIn = (item: PartCostIn, i: number) => {

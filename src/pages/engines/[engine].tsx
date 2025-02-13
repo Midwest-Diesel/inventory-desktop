@@ -56,7 +56,7 @@ export default function EngineDetailsPage() {
   };
 
   const getPurchaseCost = () => {
-    return engineCostIn.filter((en) => en.costType = 'PurchasePrice').reduce((acc, val) => acc + val.cost, 0);
+    return engineCostIn.filter((en) => en.costType === 'PurchasePrice').reduce((acc, val) => acc + val.cost, 0);
   };
 
   const handleDelete = async () => {
