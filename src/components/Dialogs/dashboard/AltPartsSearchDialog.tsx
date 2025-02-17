@@ -106,12 +106,13 @@ export default function AltPartsSearchDialog({ open, setOpen, setParts, setLoadi
       height={520}
       className="parts-search-dialog"
     >
-      <form onSubmit={(e) => handleSubmit(e)}>
+      <form onSubmit={handleSubmit}>
         <Input
           label="Alternate Part Number"
           variant={['small', 'thin', 'label-no-stack', 'label-space-between']}
           value={partNum}
-          onChange={(e: any) => setPartNum(e.target.value.toUpperCase())}
+          onChange={(e: any) => setPartNum(`*${e.target.value.toUpperCase().replace('*', '')}`)}
+          autoComplete="off"
           id="alt-part-search-input"
         />
 
