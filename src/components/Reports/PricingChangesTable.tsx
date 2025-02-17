@@ -3,6 +3,7 @@ import Button from "../Library/Button";
 import Loading from "../Library/Loading";
 import Table from "../Library/Table";
 import { getSupabaseFile } from "@/scripts/config/supabase";
+import { useEffect } from "react";
 
 interface Props {
   setTableOpen: (open: boolean) => void
@@ -12,6 +13,8 @@ interface Props {
 
 
 export default function PricingChangesTable({ setTableOpen, data, setReportsOpen }: Props) {
+  useEffect(() => {}, [data]);
+
   const handleGoBack = () => {
     setTableOpen(false);
     setReportsOpen(true);
@@ -45,15 +48,87 @@ export default function PricingChangesTable({ setTableOpen, data, setReportsOpen
         </thead>
         <tbody>
           {data && data.map((row, i) => {
+            const isAddingRow = row.oldPartNum === 'ADD' as any;
+            const isDeletingRow = row.oldPartNum === 'DELETE' as any;
+
             return (
               <tr key={i}>
-                <td>{ row.partNum }</td>
-                <td>{ row.desc }</td>
-                <td>{ row.qty }</td>
-                <td>{ `${row.salesModel}`.split(';').join(', ') }</td>
-                <td>{ row.classCode }</td>
-                <td>{ formatCurrency(row.price) }</td>
-                <td>{ row.percent }%</td>
+                {row.oldPartNum && row.oldPartNum !== row.partNum ?
+                  <td style={{ backgroundColor: 'var(--grey-light-5)', fontWeight: 'bold' }}>
+                    <span style={{ color: !isDeletingRow ? 'var(--green-light-1)' : 'var(--red-2)' }}>{ row.partNum } </span>
+                    { !isAddingRow && !isDeletingRow && <span style={{ color: 'var(--red-2)', textDecoration: 'line-through' }}>{ row.oldPartNum }</span> }
+                  </td>
+                  :
+                  <td>
+                    { row.partNum }
+                  </td>
+                }
+                
+                {row.oldDesc && row.oldDesc !== row.desc ?
+                  <td style={{ backgroundColor: 'var(--grey-light-5)', fontWeight: 'bold' }}>
+                    <span style={{ color: !isDeletingRow ? 'var(--green-light-1)' : 'var(--red-2)' }}>{ row.desc } </span>
+                    { !isAddingRow && !isDeletingRow && <span style={{ color: 'var(--red-2)', textDecoration: 'line-through' }}>{ row.oldDesc }</span> }
+                  </td>
+                  :
+                  <td>
+                    { row.desc }
+                  </td>
+                }
+                
+                {row.oldQty && row.oldQty !== row.qty ?
+                  <td style={{ backgroundColor: 'var(--grey-light-5)', fontWeight: 'bold' }}>
+                    <span style={{ color: !isDeletingRow ? 'var(--green-light-1)' : 'var(--red-2)' }}>{ row.qty } </span>
+                    { !isAddingRow && !isDeletingRow && <span style={{ color: 'var(--red-2)', textDecoration: 'line-through' }}>{ row.oldQty }</span> }
+                  </td>
+                  :
+                  <td>
+                    { row.qty }
+                  </td>
+                }
+                
+                {row.oldSalesModel && row.oldSalesModel !== row.salesModel ?
+                  <td style={{ backgroundColor: 'var(--grey-light-5)', fontWeight: 'bold' }}>
+                    <span style={{ color: !isDeletingRow ? 'var(--green-light-1)' : 'var(--red-2)' }}>{ `${row.salesModel}`.split('*').join(', ') } </span>
+                    { !isAddingRow && !isDeletingRow && <span style={{ color: 'var(--red-2)', textDecoration: 'line-through' }}>{ `${row.oldSalesModel}`.split('*').join(', ') }</span> }
+                  </td>
+                  :
+                  <td>
+                    { `${row.salesModel}`.split('*').join(', ') }
+                  </td>
+                }
+                
+                {row.oldClassCode && row.oldClassCode !== row.classCode ?
+                  <td style={{ backgroundColor: 'var(--grey-light-5)', fontWeight: 'bold' }}>
+                    <span style={{ color: !isDeletingRow ? 'var(--green-light-1)' : 'var(--red-2)' }}>{ row.classCode } </span>
+                    { !isAddingRow && !isDeletingRow && <span style={{ color: 'var(--red-2)', textDecoration: 'line-through' }}>{ row.oldClassCode }</span>}
+                  </td>
+                  :
+                  <td>
+                    { row.classCode }
+                  </td>
+                }
+                
+                {row.oldPrice && row.oldPrice !== row.price ?
+                  <td style={{ backgroundColor: 'var(--grey-light-5)', fontWeight: 'bold' }}>
+                    <span style={{ color: !isDeletingRow ? 'var(--green-light-1)' : 'var(--red-2)' }}>{ formatCurrency(row.price) } </span>
+                    { !isAddingRow && !isDeletingRow && <span style={{ color: 'var(--red-2)', textDecoration: 'line-through' }}>{ formatCurrency(row.oldPrice) }</span> }
+                  </td>
+                  :
+                  <td>
+                    { formatCurrency(row.price) }
+                  </td>
+                }
+                
+                {row.oldPercent && row.oldPercent !== row.percent ?
+                  <td style={{ backgroundColor: 'var(--grey-light-5)', fontWeight: 'bold' }}>
+                    <span style={{ color: !isDeletingRow ? 'var(--green-light-1)' : 'var(--red-2)' }}>{ row.percent }% </span>
+                    { !isAddingRow && !isDeletingRow && <span style={{ color: 'var(--red-2)', textDecoration: 'line-through' }}>{ row.oldPercent }%</span> }
+                  </td>
+                  :
+                  <td>
+                    { row.percent }%
+                  </td>
+                }
               </tr>
             );
           })}

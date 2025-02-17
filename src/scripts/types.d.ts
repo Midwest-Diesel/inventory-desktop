@@ -1065,4 +1065,11 @@ interface PricingChangesReport {
   classCode: string
   price: number
   percent: number
+  oldPartNum?: string
+  oldDesc?: string
+  oldQty?: number
+  oldSalesModel?: string
+  oldClassCode?: string
+  oldPrice?: number
+  oldPercent?: number
 }

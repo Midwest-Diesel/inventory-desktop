@@ -42,16 +42,56 @@ export default function PricingChangesDialog({ open, setOpen, setTableOpen, setT
   };
 
   const getModifiedRows = (oldList: PricingChangesReport[]) => {
-    return list.filter((row) => {
-      return JSON.stringify(row) !== JSON.stringify(oldList.find((oldRow) => oldRow.partNum === row.partNum));
+    const deletedRows = oldList.filter((r) => !list.some((row) => row.partNum === r.partNum));
+    const addedRows = list.filter((row) => !oldList.some((r) => r.partNum === row.partNum));
+    const newList = list.map((row) => {
+      const oldRow = oldList.find((r) => r.partNum === row.partNum);
+      if (!oldRow || JSON.stringify(row) === JSON.stringify(oldRow)) return row;
+      return {
+        ...row,
+        oldPartNum: oldRow.partNum,
+        oldDesc: oldRow.desc,
+        oldQty: Number(oldRow.qty),
+        oldSalesModel: oldRow.salesModel,
+        oldClassCode: oldRow.classCode,
+        oldPrice: Number(oldRow.price),
+        oldPercent: Number(oldRow.percent)
+      };
     });
+    
+    return [
+      ...deletedRows.map((row) => {
+        return {
+          ...row,
+          oldPartNum: 'DELETE',
+          oldDesc: 'DELETE',
+          oldQty: 'DELETE' as any,
+          oldSalesModel: 'DELETE',
+          oldClassCode: 'DELETE',
+          oldPrice: 'DELETE' as any,
+          oldPercent: 'DELETE' as any
+        }
+      }),
+      ...addedRows.map((row) => {
+        return {
+          ...row,
+          oldPartNum: 'ADD',
+          oldDesc: 'ADD',
+          oldQty: 'ADD' as any,
+          oldSalesModel: 'ADD',
+          oldClassCode: 'ADD',
+          oldPrice: 'ADD' as any,
+          oldPercent: 'ADD' as any
+        }
+      }),
+      ...newList
+    ];
   };
 
   const readFile = async (url: string): Promise<PricingChangesReport[]> => {
     const res = await fetch(url);
     const blob = await res.blob();
     const reader = new FileReader();
-  
     return new Promise((resolve, reject) => {
       reader.onload = (e: any) => {
         try {
@@ -61,13 +101,13 @@ export default function PricingChangesDialog({ open, setOpen, setTableOpen, setT
           const worksheet = workbook.Sheets[sheetName];
           const jsonData = XLSX.utils.sheet_to_json(worksheet).map((row: any) => {
             return {
-              partNum: row.PART_NUMBER,
-              desc: row.PART_DESCRIPTION,
-              qty: Number(row.AVAILABLE_QTY),
-              salesModel: row.SALES_MODEL,
-              classCode: row.MAJOR_CLASS_CODE,
-              price: Number(row.DISC_PRICE),
-              percent: Number(row.DISC_PERCENT)
+              partNum: `${row['Part Number']}`.trim(),
+              desc: row['Part Name'],
+              qty: Number(row['Avl Quantity']),
+              salesModel: row['Sales Model'],
+              classCode: row['MAJOR_CLASS'],
+              price: Number(row['Disc. Price']),
+              percent: Number(row['% Disc. from D/N'])
             };
           }).filter((row) => row.partNum);
           resolve(jsonData);
@@ -96,7 +136,7 @@ export default function PricingChangesDialog({ open, setOpen, setTableOpen, setT
     const formattedData: PricingChangesReport[] = [];
     for (const row of jsonData.slice(1)) {
       const formattedRow = {
-        partNum: row[0],
+        partNum: `${row[0]}`.trim(),
         desc: row[1],
         qty: Number(row[2]),
         salesModel: row[3],
