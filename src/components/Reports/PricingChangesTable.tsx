@@ -29,6 +29,7 @@ export default function PricingChangesTable({ setTableOpen, data, setReportsOpen
         <Button onClick={handleGoBack}>Back</Button>
         <Button onClick={handleDownload}>Download Spreadsheet</Button>
       </div>
+      <h3>Rows: {data.length}</h3>
 
       <Table>
         <thead>

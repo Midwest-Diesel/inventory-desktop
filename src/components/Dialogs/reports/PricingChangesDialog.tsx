@@ -90,7 +90,7 @@ export default function PricingChangesDialog({ open, setOpen, setTableOpen, setT
       console.error(error);
       return [];
     }
-  };  
+  };
 
   const formatFile = (jsonData: string[][]): PricingChangesReport[] => {
     const formattedData: PricingChangesReport[] = [];

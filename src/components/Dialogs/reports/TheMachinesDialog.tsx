@@ -1,6 +1,7 @@
 import Button from "@/components/Library/Button";
 import Dialog from "@/components/Library/Dialog";
 import Input from "@/components/Library/Input";
+import Loading from "@/components/Library/Loading";
 import { addGonculatorData, deleteGonculatorData, reportTheMachines } from "@/scripts/controllers/reportsController";
 import { FormEvent, useState } from "react";
 import * as XLSX from "xlsx";
@@ -16,6 +17,7 @@ interface Props {
 
 export default function TheMachinesDialog({ open, setOpen, setTableOpen, setTableData, setReportsOpen }: Props) {
   const [partList, setPartList] = useState<string[]>([]);
+  const [loading, setLoading] = useState(false);
 
   const handleSearch = async (e: FormEvent) => {
     e.preventDefault();
@@ -33,7 +35,7 @@ export default function TheMachinesDialog({ open, setOpen, setTableOpen, setTabl
       formattedData.push(formattedRow);
     }
     return formattedData;
-  };  
+  };
 
   const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files[0];
@@ -52,6 +54,7 @@ export default function TheMachinesDialog({ open, setOpen, setTableOpen, setTabl
 
   const handleSetPartData = async () => {
     if (partList.length === 0) return;
+    setLoading(true);
     const chunkSize = 100;
     await deleteGonculatorData();
   
@@ -59,8 +62,8 @@ export default function TheMachinesDialog({ open, setOpen, setTableOpen, setTabl
       const chunk = partList.slice(i, i + chunkSize);
       await addGonculatorData(chunk);
     }
+    setLoading(false);
   };
-  
 
 
   return (
@@ -81,7 +84,11 @@ export default function TheMachinesDialog({ open, setOpen, setTableOpen, setTabl
             type="file"
             onChange={(e: any) => handleFile(e)}
           />
-          <Button style={{ height: 'fit-content', alignSelf: 'center' }} type="button" onClick={handleSetPartData}>Set Part Data</Button>
+          {loading ?
+            <Loading />
+            :
+            <Button style={{ height: 'fit-content', alignSelf: 'center' }} type="button" onClick={handleSetPartData}>Set Part Data</Button>
+          }
         </div>
 
         <br />
