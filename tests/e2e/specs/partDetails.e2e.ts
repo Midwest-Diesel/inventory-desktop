@@ -47,6 +47,8 @@ describe('Part Details', () => {
     await $('[data-id="add-to-up-btn"]').click();
     await browser.sendAlertText('3');
     await browser.acceptAlert();
+    await browser.pause(100);
+    await browser.dismissAlert();
     await browser.pause(500);
 
     const qty = await $('[data-id="qty"]').getText();

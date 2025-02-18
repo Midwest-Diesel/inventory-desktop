@@ -34,7 +34,7 @@ export default function CustomerSearchDialog({ open, setOpen, searchTerm }: Prop
 
   useEffect(() => {
     const fetchData = async () => {
-      if (searchTerm) {
+      if (searchTerm && open) {
         setIsSearching(true);
         const results = await searchCustomers(searchTerm);
         setSearchedCustomers(results);
@@ -44,7 +44,7 @@ export default function CustomerSearchDialog({ open, setOpen, searchTerm }: Prop
       }
     };
     fetchData();
-  }, [searchTerm, customersData]);
+  }, [searchTerm, customersData, open]);
 
   const selectCustomer = (customer: Customer) => {
     localStorage.setItem('customerId', customer.id.toString());
