@@ -12,7 +12,9 @@ const parseEngineRes = (data: any) => {
       jakeBrake: Boolean(engine.jakeBrake),
       warranty: Boolean(engine.warranty),
       testRun: Boolean(engine.testRun),
-      ecm: Boolean(engine.ecm)
+      ecm: Boolean(engine.ecm),
+      costOut: engine.costOut ? engine.costOut.filter((cost) => cost) : [],
+      costIn: engine.costOut ? engine.costIn.filter((cost) => cost) : []
     };
   }).sort((a: any, b: any) => b.loginDate - a.loginDate);
 };

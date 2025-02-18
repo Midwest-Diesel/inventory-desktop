@@ -14,8 +14,7 @@ const parseReturnRes = (data: any) => {
       dateCalled: parseResDate(returnData.dateCalled),
       dateReceived: parseResDate(returnData.dateReceived),
       invoiceDate: parseResDate(returnData.invoiceDate),
-      creditIssued: parseResDate(returnData.creditIssued),
-      returnItems: isObjectNull(returnData.returnItems[0]) ? [] : returnData.returnItems
+      creditIssued: parseResDate(returnData.creditIssued)
     };
   }).sort((a: any, b: any) => b.id - a.id);
 };
@@ -108,6 +107,17 @@ export const editReturn = async (returnData: Return) => {
   try {
     const auth = { withCredentials: true };
     await api.put('/api/returns', returnData, auth);
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+// === DELETE routes === //
+
+export const deleteReturn = async (id: number) => {
+  try {
+    const auth = { withCredentials: true };
+    await api.delete(`/api/returns/${id}`, auth);
   } catch (err) {
     console.error(err);
   }

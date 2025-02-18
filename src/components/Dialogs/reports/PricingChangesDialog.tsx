@@ -70,7 +70,7 @@ export default function PricingChangesDialog({ open, setOpen, setTableOpen, setT
           oldClassCode: 'DELETE',
           oldPrice: 'DELETE' as any,
           oldPercent: 'DELETE' as any
-        }
+        };
       }),
       ...addedRows.map((row) => {
         return {
@@ -82,7 +82,7 @@ export default function PricingChangesDialog({ open, setOpen, setTableOpen, setT
           oldClassCode: 'ADD',
           oldPrice: 'ADD' as any,
           oldPercent: 'ADD' as any
-        }
+        };
       }),
       ...newList
     ];

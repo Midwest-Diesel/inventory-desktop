@@ -6,15 +6,16 @@ import GridItem from "@/components/Library/Grid/GridItem";
 import Loading from "@/components/Library/Loading";
 import Table from "@/components/Library/Table";
 import ReturnItemsTable from "@/components/ReturnItemsTable";
-import { getReturnById } from "@/scripts/controllers/returnsController";
+import { deleteReturn, getReturnById } from "@/scripts/controllers/returnsController";
 import { formatDate, formatPhone } from "@/scripts/tools/stringUtils";
 import { setTitle } from "@/scripts/tools/utils";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 
 export default function Return() {
+  const router = useRouter();
   const params = useParams();
   const [returnData, setReturnData] = useState<Return>(null);
   const [isEditing, setIsEditing] = useState(false);
@@ -29,8 +30,10 @@ export default function Return() {
     fetchData();
   }, [params]);
 
-  const handleDelete = () => {
-
+  const handleDelete = async () => {
+    if (prompt('Type "confirm" to delete this return') !== 'confirm') return;
+    await deleteReturn(returnData.id);
+    router.back();
   };
 
 

@@ -815,7 +815,7 @@ fn print_cc_label(args: CCLabelArgs) -> Result<(), String> {
     End With
 
     doc.ActivePrinter = "{}"
-    sheet1.PrintOut
+    sheet1.PrintOut , , , , , , , {}
     sheet1.Close False
     doc.Quit
     "#,
@@ -825,7 +825,8 @@ fn print_cc_label(args: CCLabelArgs) -> Result<(), String> {
     args.cardZip,
     args.cardName,
     args.cardAddress,
-    printer
+    printer,
+    1
   );
 
   let vbs_path = "C:\\MWD\\scripts\\generate_cc_label.vbs";
