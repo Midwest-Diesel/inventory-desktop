@@ -8,7 +8,7 @@ import { partsQtyAtom, quotesAtom, selectedCustomerAtom, showSoldPartsAtom, user
 import Pagination from "../Library/Pagination";
 import PartsSearchDialog from "../Dialogs/dashboard/PartsSearchDialog";
 import AltPartsSearchDialog from "../Dialogs/dashboard/AltPartsSearchDialog";
-import { getAltsByPartNum, getPartsQty, getSomeParts } from "@/scripts/controllers/partsController";
+import { getAltsByPartNum, getPartsQty, getSomeParts, searchAltParts, searchParts } from "@/scripts/controllers/partsController";
 import { getImagesFromPart, getImagesFromStockNum } from "@/scripts/controllers/imagesController";
 import SalesInfoDialog from "../Dialogs/dashboard/SalesInfoDialog";
 import Link from "next/link";
@@ -47,15 +47,16 @@ export default function PartSearch({ selectHandwrittenOpen, setSelectHandwritten
   const [snImagesOpen, setSnImagesOpen] = useState(false);
   const [partsOnEngsOpen, setPartsOnEngsOpen] = useState(false);
   const [partsOnEngs, setPartsOnEngs] = useState<{ partNum: string, engines: Engine[] }[]>([]);
-  const [currentPage, setCurrentPage] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
   const [pageLoaded, setPageLoaded] = useState(false);
   const getTotalQty = () => partsQty.reduce((acc, part) => acc + part, 0);
+  const LIMIT = 26;
 
   useEffect(() => {
     const fetchData = async () => {
       if (searchInputExists() || pageLoaded) return;
       setLoading(true);
-      const res = await getSomeParts(1, 26, showSoldParts);
+      const res = await getSomeParts(1, LIMIT, showSoldParts);
       setPartsData(res);
       setParts(res);
       setPartsQty((await getPartsQty(showSoldParts)));
@@ -69,7 +70,7 @@ export default function PartSearch({ selectHandwrittenOpen, setSelectHandwritten
     if (searchInputExists() || !pageLoaded) return;
     const fetchData = async () => {
       setLoading(true);
-      const res = await getSomeParts(1, 26, showSoldParts);
+      const res = await getSomeParts(1, LIMIT, showSoldParts);
       setPartsData(res);
       setParts(res);
       setPartsQty((await getPartsQty(showSoldParts)));
@@ -90,15 +91,15 @@ export default function PartSearch({ selectHandwrittenOpen, setSelectHandwritten
     if (!parts) {
       setParts(null);
       setPartsQty((await getPartsQty(showSoldParts)));
-      setParts(await getSomeParts(1, 26, showSoldParts));
+      setParts(await getSomeParts(1, LIMIT, showSoldParts));
     } else if (parts.length === 0) {
       setParts([]);
       setParts([]);
       setPartsQty([]);
     } else {
-      setParts(parts);
+      setPartsData(parts);
       setPartsQty(parts.map((part) => part.qty));
-      setParts(parts);
+      setParts(parts.slice((currentPage - 1) * LIMIT, LIMIT));
     }
     setLoading(false);
   };
@@ -159,11 +160,18 @@ export default function PartSearch({ selectHandwrittenOpen, setSelectHandwritten
     setSelectedHandwrittenPart(part);
   };
 
-  const handleChangePage = async (data: any, page: number) => {
+  const handleChangePage = async (_: any, page: number) => {
     if (page === currentPage || !pageLoaded) return;
     setLoading(true);
-    const res = await getSomeParts(page, 26, showSoldParts);
-    setParts(res);
+    const altSearch = JSON.parse(localStorage.getItem('altPartSearches'));
+    const partSearch = JSON.parse(localStorage.getItem('partSearches'));
+
+    if (!isObjectNull(altSearch ? { ...altSearch, partNum: altSearch.partNum.replace('*', '')} : {}) || !isObjectNull(partSearch || {})) {
+      setParts(partsData.slice((page - 1) * LIMIT, (page - 1) * LIMIT + LIMIT));
+    } else {
+      const res = await getSomeParts(page, LIMIT, showSoldParts);
+      setParts(res);
+    }
     setCurrentPage(page);
     setLoading(false);
   };
@@ -320,7 +328,7 @@ export default function PartSearch({ selectHandwrittenOpen, setSelectHandwritten
               data={partsData}
               setData={handleChangePage}
               minData={partsQty}
-              pageSize={26}
+              pageSize={LIMIT}
             />
           </div>
           { parts.length === 0 && <p>No parts data found...</p> }
