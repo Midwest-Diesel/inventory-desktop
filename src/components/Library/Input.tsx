@@ -55,6 +55,7 @@ export default function Input({ children, className = '', labelClass = '', autof
           {...props as any}
           cols={cols}
           rows={rows}
+          autoComplete="off"
         />
         :
         <>
@@ -62,6 +63,7 @@ export default function Input({ children, className = '', labelClass = '', autof
             <input
               {...parseClasses(classes)}
               {...props}
+              autoComplete="off"
             />
             :
             <div style={{ position: 'relative' }}>
@@ -69,6 +71,7 @@ export default function Input({ children, className = '', labelClass = '', autof
                 {...parseClasses(classes)}
                 {...props}
                 ref={inputRef}
+                autoComplete="off"
               />
               <Input variant={['small', 'thin']} style={{ opacity: '0.5' }} value={autofill} onChange={() => {}} tabIndex={-1} />
             </div>

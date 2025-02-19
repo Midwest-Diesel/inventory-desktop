@@ -112,7 +112,6 @@ export default function AltPartsSearchDialog({ open, setOpen, setParts, setLoadi
           variant={['small', 'thin', 'label-no-stack', 'label-space-between']}
           value={partNum}
           onChange={(e: any) => setPartNum(`*${e.target.value.toUpperCase().replace('*', '')}`)}
-          autoComplete="off"
           id="alt-part-search-input"
         />
 
