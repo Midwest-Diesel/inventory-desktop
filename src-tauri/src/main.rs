@@ -748,6 +748,7 @@ fn print_shipping_label(args: ShippingLabelArgs) -> Result<(), String> {
 
     doc.ActivePrinter = "{}"
     sheet1.PrintOut , , , , , , , {}
+    sheet1.Close False
     doc.Quit
     "#,
     args.company,
@@ -774,7 +775,7 @@ fn print_cc_label(args: CCLabelArgs) -> Result<(), String> {
     r#"
     Dim doc, sheet1
     Set doc = CreateObject("Word.Application")
-    doc.Visible = True
+    doc.Visible = False
     Set sheet1 = doc.Documents.Open("\\MWD1-SERVER\Server\ccLabelTemplate.docx")
 
     With sheet1.Content.Find

@@ -32,8 +32,7 @@ export const getQuotesByPartNum = async (partNum: string) => {
     res.data = res.data.map((search: any) => {
       return {
         ...search,
-        date: parseResDate(search.date),
-        price: Number(search.price),
+        date: parseResDate(search.date)
       };
     });
     return res.data;

@@ -57,7 +57,7 @@ export default function Return() {
                 </Button>
                 <Button
                   className="return-details__close-btn"
-                  onClick={() => window.history.back()}
+                  onClick={() => router.back()}
                 >
                   Close
                 </Button>
