@@ -616,7 +616,27 @@ export default function Handwritten() {
               </GridItem>
 
               <GridItem variant={['no-style']} colStart={1} colEnd={8}>
-                <HandwrittenItemsTable className="handwritten-items-table--handwrittens-page" handwritten={handwritten} handwrittenItems={handwritten.handwrittenItems} setHandwritten={setHandwritten} />
+                <HandwrittenItemsTable
+                  className="handwritten-items-table--handwrittens-page"
+                  handwritten={handwritten}
+                  handwrittenItems={handwritten.handwrittenItems}
+                  setHandwritten={setHandwritten}
+                />
+              </GridItem>
+
+              <GridItem variant={['no-style']} colStart={8} colEnd={12}>
+                {handwritten.trackingNumbers.length > 0 &&
+                  <>
+                    <h3>Tracking Numbers</h3>
+                    <ul>
+                      {handwritten.trackingNumbers.map((num: string) => {
+                        return (
+                          <li>{ num }</li>
+                        );
+                      })}
+                    </ul>
+                  </>
+                }
               </GridItem>
 
               <GridItem variant={['low-opacity-bg']} colStart={1} colEnd={7}>

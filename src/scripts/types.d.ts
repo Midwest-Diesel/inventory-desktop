@@ -214,6 +214,7 @@ type Handwritten = {
   isThirdParty: boolean
   isTaxable: boolean
   isSetup: boolean
+  trackingNumbers: string[]
 };
 
 type InvoiceStatus = 'INVOICE PENDING' | 'SENT TO ACCOUNTING' | 'CANCELLED' | 'STOP - HOLD' | 'HOLD AS FAVOR';
