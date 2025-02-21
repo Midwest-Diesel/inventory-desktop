@@ -82,6 +82,11 @@
     justify-content: space-between;
     margin: auto 1rem;
   }
+
+  &__tracking-numbers {
+    display: flex;
+    flex-direction: column;
+  }
 }
 
 .alt-ship-dialog {

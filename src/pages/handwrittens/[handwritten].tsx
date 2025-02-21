@@ -629,9 +629,9 @@ export default function Handwritten() {
                   <>
                     <h3>Tracking Numbers</h3>
                     <ul>
-                      {handwritten.trackingNumbers.map((num: string) => {
+                      {handwritten.trackingNumbers.map((num: TrackingNumber) => {
                         return (
-                          <li>{ num }</li>
+                          <li key={num.id}>{ num.trackingNumber }</li>
                         );
                       })}
                     </ul>

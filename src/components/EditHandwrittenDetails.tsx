@@ -1,7 +1,7 @@
 import { sourcesAtom } from "@/scripts/atoms/state";
 import { addAltShipAddress, deleteHandwrittenItem, editHandwritten, editHandwrittenItems, getHandwrittenById } from "@/scripts/controllers/handwrittensController";
 import { useAtom } from "jotai";
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, Fragment, useEffect, useState } from "react";
 import GridItem from "./Library/Grid/GridItem";
 import Input from "./Library/Input";
 import Grid from "./Library/Grid/Grid";
@@ -18,6 +18,7 @@ import ShippingListDialog from "./Dialogs/handwrittens/ShippingListDialog";
 import Checkbox from "./Library/Checkbox";
 import { PreventNavigation } from "./PreventNavigation";
 import ChangeCustomerInfoDialog from "./Dialogs/handwrittens/ChangeCustomerInfoDialog";
+import { addTrackingNumber, deleteTrackingNumber, editTrackingNumber } from "@/scripts/controllers/trackingNumbersController";
 
 interface Props {
   handwritten: Handwritten
@@ -62,6 +63,8 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
   const [cap, setCap] = useState<number>(handwritten.cap);
   const [br, setBr] = useState<number>(handwritten.br);
   const [fl, setFl] = useState<number>(handwritten.fl);
+  const [trackingNumbers, setTrackingNumbers] = useState<TrackingNumber[]>(handwritten.trackingNumbers);
+  const [blankTrackingNumber, setBlankTrackingNumber] = useState('');
   const [shippingListDialogOpen, setShippingListDialogOpen] = useState(false);
   const [newShippingListRow, setNewShippingListRow] = useState<Handwritten>(null);
   const [isTaxable, setIsTaxable] = useState<boolean>(handwritten.isTaxable);
@@ -165,6 +168,25 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
       }
     }
 
+    // Tracking numbers
+    let deletedNumbers = [];
+    for (let i = 0; i < handwritten.trackingNumbers.length; i++) {
+      const id = handwritten.trackingNumbers[i].id;
+      if (!trackingNumbers.some((num) => num.id === id)) {
+        await deleteTrackingNumber(id);
+        deletedNumbers.push(id);
+      }
+    }
+
+    for (let i = 0; i < trackingNumbers.length; i++) {
+      if (deletedNumbers.some((num) => num.id === deletedNumbers)) continue;
+      if (!handwritten.trackingNumbers.some((num) => num.id === trackingNumbers[i].id)) {
+        await addTrackingNumber(handwritten.id, trackingNumbers[i].trackingNumber);
+      } else if (trackingNumbers[i].trackingNumber !== handwritten.trackingNumbers[i].trackingNumber) {
+        await editTrackingNumber(trackingNumbers[i].id, trackingNumbers[i].trackingNumber);
+      }
+    }
+
     // Prompt to change customer info if data has changed
     const handwrittenBillTo = JSON.stringify({
       billToCompany: newInvoice.billToCompany || '',
@@ -228,6 +250,23 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
     await deleteHandwrittenItem(item.id);
     if (item.location && item.location.includes('CORE DEPOSIT')) await deleteCoreByItemId(item.id);
     setHandwrittenItems(newItems);
+  };
+
+  const editTrackingNumbers = (trackingNumber: string, index: number) => {
+    setTrackingNumbers(trackingNumbers.map((num, i) => {
+      if (i === index) return { ...num, trackingNumber };
+      return num;
+    }));
+  };
+
+  const handleAddTrackingNumber = () => {
+    if (!blankTrackingNumber) return;
+    setTrackingNumbers([...trackingNumbers, { id: 0, handwrittenId: handwritten.id, trackingNumber: blankTrackingNumber }]);
+    setBlankTrackingNumber('');
+  };
+
+  const handleDeleteTrackingNumber = (id: number) => {
+    setTrackingNumbers(trackingNumbers.filter((num) => num.id !== id));
   };
 
 
@@ -693,8 +732,8 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
                         <td>
                           <Input
                             value={parseDateInputValue(item.date)}
-                            type="date"
                             onChange={(e: any) => editHandwrittenItem({ ...item, date: new Date(e.target.value) }, i)}
+                            type="date"
                           />
                         </td>
                         <td>
@@ -711,6 +750,41 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
                   })}
                 </tbody>
               </Table>
+            </GridItem>
+
+            <GridItem colStart={9} colEnd={12} variant={['no-style']} style={{ marginTop: '1rem' }}>
+              <h3>Tracking Numbers</h3>
+              <div className="edit-handwritten-details__tracking-numbers">
+                {trackingNumbers.map((num, i) => {
+                  return (
+                    <Fragment key={i}>
+                      <div>
+                        <Input
+                          variant={['small', 'thin']}
+                          value={num.trackingNumber}
+                          onChange={(e: any) => editTrackingNumbers(e.target.value, i)}
+                        />
+                        <Button
+                          variant={['danger']}
+                          type="button"
+                          onClick={() => handleDeleteTrackingNumber(num.id)}
+                        >
+                          Delete
+                        </Button>
+                      </div>
+                    </Fragment>
+                  );
+                })}
+
+                <div>
+                  <Input
+                    variant={['small', 'thin']}
+                    value={blankTrackingNumber}
+                    onChange={(e: any) => setBlankTrackingNumber(e.target.value)}
+                  />
+                  <Button type="button" onClick={handleAddTrackingNumber}>Add</Button>
+                </div>
+              </div>
             </GridItem>
 
             <GridItem variant={['low-opacity-bg']} colStart={1} colEnd={7}>

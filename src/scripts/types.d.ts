@@ -214,7 +214,7 @@ type Handwritten = {
   isThirdParty: boolean
   isTaxable: boolean
   isSetup: boolean
-  trackingNumbers: string[]
+  trackingNumbers: TrackingNumber[]
 };
 
 type InvoiceStatus = 'INVOICE PENDING' | 'SENT TO ACCOUNTING' | 'CANCELLED' | 'STOP - HOLD' | 'HOLD AS FAVOR';
@@ -812,6 +812,12 @@ type Country = {
   id: number
   name: string
   continent: string
+};
+
+type TrackingNumber = {
+  id: number
+  handwrittenId: number
+  trackingNumber: string
 };
 
 interface Performance {
