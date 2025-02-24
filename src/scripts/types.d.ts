@@ -631,7 +631,7 @@ type CompareConsist = {
 type Return = {
   id: number
   customer: Customer
-  invoiceId: number
+  handwrittenId: number
   invoiceDate: Date
   createdBy: string
   dateCalled: Date

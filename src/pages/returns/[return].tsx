@@ -52,6 +52,7 @@ export default function Return() {
                   variant={['blue']}
                   className="return-details__edit-btn"
                   onClick={() => setIsEditing(true)}
+                  data-id="edit-btn"
                 >
                   Edit
                 </Button>
@@ -64,6 +65,7 @@ export default function Return() {
                 <Button
                   variant={['danger']}
                   onClick={handleDelete}
+                  data-id="delete-btn"
                 >
                   Delete
                 </Button>
@@ -76,7 +78,7 @@ export default function Return() {
                   <tbody>
                     <tr>
                       <th>Handwritten</th>
-                      <td><Link href={`/handwrittens/${returnData.invoiceId}`}>{ returnData.invoiceId }</Link></td>
+                      <td><Link href={`/handwrittens/${returnData.handwrittenId}`}>{ returnData.handwrittenId }</Link></td>
                     </tr>
                     <tr>
                       <th>Customer</th>
@@ -84,7 +86,7 @@ export default function Return() {
                     </tr>
                     <tr>
                       <th>PO Number</th>
-                      <td>{ returnData.poNum }</td>
+                      <td data-id="po-num">{ returnData.poNum }</td>
                     </tr>
                     <tr>
                       <th>Payment</th>

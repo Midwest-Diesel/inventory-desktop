@@ -8,6 +8,7 @@ import { addReturn, addReturnItems, getSomeReturns } from "@/scripts/controllers
 import { useAtom } from "jotai";
 import { userAtom } from "@/scripts/atoms/state";
 import { confirm } from "@/scripts/config/tauri";
+import { useRouter } from "next/navigation";
 
 interface Props {
   open: boolean
@@ -17,6 +18,7 @@ interface Props {
 
 
 export default function NewReturnDialog({ open, setOpen, handwritten }: Props) {
+  const router = useRouter();
   const [user] = useAtom<User>(userAtom);
   const [handwrittenItems, setHandwrittenItems] = useState<HandwrittenItem[]>(handwritten.handwrittenItems);
   const [returnNotes, setReturnNotes] = useState('');
@@ -36,10 +38,10 @@ export default function NewReturnDialog({ open, setOpen, handwritten }: Props) {
     if (!await confirm('Are you sure you want to create a new return?')) return;
     const newReturn = {
       customer: handwritten.customer,
-      invoiceId: handwritten.id,
+      handwrittenId: handwritten.id,
       invoiceDate: handwritten.date,
       createdBy: user.initials,
-      dateCalled: null,
+      dateCalled: new Date(),
       dateReceived: null,
       creditIssued: null,
       returnNotes: returnNotes,
@@ -89,6 +91,8 @@ export default function NewReturnDialog({ open, setOpen, handwritten }: Props) {
     for (let i = 0; i < newReturnItems.length; i++) {
       await addReturnItems(newReturnItems[i]);
     }
+
+    router.push('/returns');
   };
 
 
@@ -98,6 +102,7 @@ export default function NewReturnDialog({ open, setOpen, handwritten }: Props) {
       setOpen={setOpen}
       title="New Return"
       maxHeight="44rem"
+      data-id="new-return-dialog"
     >
       <Table>
         <thead>
@@ -138,7 +143,7 @@ export default function NewReturnDialog({ open, setOpen, handwritten }: Props) {
       </Table>
 
       <div className="form__footer">
-        <Button onClick={submitNewReturn}>Submit</Button>
+        <Button onClick={submitNewReturn} data-id="submit-btn">Submit</Button>
       </div>
     </Dialog>
   );

@@ -293,7 +293,7 @@ export default function Handwritten() {
             <div className="handwritten-details__top-bar">
               <Button onClick={() => setCoreCreditsOpen(!coreCreditsOpen)} disabled={handwritten.cores.length === 0}>Core Credit</Button>
               <Button onClick={() => setAltShipOpen(!altShipOpen)} disabled={altShipData.length === 0}>Alt Ship</Button>
-              <Button onClick={() => setReturnsOpen(!returnsOpen)}>New Return</Button>
+              <Button onClick={() => setReturnsOpen(!returnsOpen)} data-id="new-return-btn">New Return</Button>
             </div>
 
             <CoreCreditsDialog open={coreCreditsOpen} setOpen={setCoreCreditsOpen} cores={handwritten.cores} handwritten={handwritten} />

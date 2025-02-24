@@ -43,14 +43,6 @@ export default function Returns() {
     }
   };
 
-  const markReceived = async (ret: Return) => {
-    if (!await confirm('Mark this return as received?')) return;
-    const newReturn = { ...ret, dateReceived: new Date(), customerId: ret.customer.id };
-    setLoading(true);
-    await editReturn(newReturn);
-    await fetchData();
-  };
-
 
   return (
     <Layout>
@@ -69,7 +61,6 @@ export default function Returns() {
             <Table>
               <thead>
                 <tr>
-                  <th></th>
                   <th>Return</th>
                   <th>Handwritten</th>
                   <th>Date</th>
@@ -91,13 +82,8 @@ export default function Returns() {
                   const part = ret.returnItems[0];
                   return (
                     <tr key={ret.id}>
-                      <td>
-                        <Button variant={['x-small', 'green']} onClick={() => markReceived(ret)}>
-                          <Image src="/images/check.svg" alt="Checkmark" width={12} height={12} />
-                        </Button>
-                      </td>
-                      <td><Link href={`/returns/${ret.id}`}>{ ret.id }</Link></td>
-                      <td><Link href={`/handwrittens/${ret.invoiceId}`}>{ ret.invoiceId }</Link></td>
+                      <td><Link href={`/returns/${ret.id}`} data-id="return-link">{ ret.id }</Link></td>
+                      <td><Link href={`/handwrittens/${ret.handwrittenId}`} data-id="handwritten-link">{ ret.handwrittenId }</Link></td>
                       <td>{ formatDate(ret.dateCalled) }</td>
                       <td>{ ret.createdBy }</td>
                       <td>{ ret.billToCompany }</td>
@@ -166,7 +152,7 @@ export default function Returns() {
                   return (
                     <tr key={ret.id}>
                       <td><Link href={`/returns/${ret.id}`}>{ ret.id }</Link></td>
-                      <td><Link href={`/handwrittens/${ret.invoiceId}`}>{ ret.invoiceId }</Link></td>
+                      <td><Link href={`/handwrittens/${ret.handwrittenId}`}>{ ret.handwrittenId }</Link></td>
                       <td>{ formatDate(ret.dateCalled) }</td>
                       <td>{ ret.createdBy }</td>
                       <td>{ ret.billToCompany }</td>
@@ -235,7 +221,7 @@ export default function Returns() {
                   return (
                     <tr key={ret.id}>
                       <td><Link href={`/returns/${ret.id}`}>{ ret.id }</Link></td>
-                      <td><Link href={`/handwrittens/${ret.invoiceId}`}>{ ret.invoiceId }</Link></td>
+                      <td><Link href={`/handwrittens/${ret.handwrittenId}`}>{ ret.handwrittenId }</Link></td>
                       <td>{ formatDate(ret.dateCalled) }</td>
                       <td>{ ret.createdBy }</td>
                       <td>{ ret.billToCompany }</td>
