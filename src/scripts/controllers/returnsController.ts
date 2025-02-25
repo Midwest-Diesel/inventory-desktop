@@ -120,6 +120,17 @@ export const editReturnItem = async (item: ReturnItem) => {
   }
 };
 
+// === PATCH routes === //
+
+export const issueReturnCredit = async (id: number) => {
+  try {
+    const auth = { withCredentials: true };
+    await api.patch('/api/returns/credit-issued', { id }, auth);
+  } catch (err) {
+    console.error(err);
+  }
+};
+
 // === DELETE routes === //
 
 export const deleteReturn = async (id: number) => {

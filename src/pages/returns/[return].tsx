@@ -6,7 +6,8 @@ import GridItem from "@/components/Library/Grid/GridItem";
 import Loading from "@/components/Library/Loading";
 import Table from "@/components/Library/Table";
 import ReturnItemsTable from "@/components/ReturnItemsTable";
-import { deleteReturn, getReturnById } from "@/scripts/controllers/returnsController";
+import { confirm } from "@/scripts/config/tauri";
+import { deleteReturn, getReturnById, issueReturnCredit } from "@/scripts/controllers/returnsController";
 import { formatDate, formatPhone } from "@/scripts/tools/stringUtils";
 import { setTitle } from "@/scripts/tools/utils";
 import Link from "next/link";
@@ -34,6 +35,12 @@ export default function Return() {
     if (prompt('Type "confirm" to delete this return') !== 'confirm') return;
     await deleteReturn(returnData.id);
     router.back();
+  };
+
+  const handleCreditIssued = async () => {
+    if (!await confirm('Are you sure you want to credit this?')) return;
+    await issueReturnCredit(returnData.id);
+    setReturnData({ ...returnData, creditIssued: new Date() });
   };
 
 
@@ -70,6 +77,10 @@ export default function Return() {
                   Delete
                 </Button>
               </div>
+            </div>
+
+            <div className="handwritten-details__top-bar">
+              <Button onClick={handleCreditIssued} data-id="credit-issued-btn">Credit Issued</Button>
             </div>
 
             <Grid rows={1} cols={12} gap={1}>
@@ -117,7 +128,7 @@ export default function Return() {
                     </tr>
                     <tr>
                       <th>Credit Issued</th>
-                      <td>{ formatDate(returnData.creditIssued) }</td>
+                      <td data-id="credit-issued">{ formatDate(returnData.creditIssued) }</td>
                     </tr>
 
                     <tr>

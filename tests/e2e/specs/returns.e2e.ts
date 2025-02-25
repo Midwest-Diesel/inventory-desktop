@@ -1,8 +1,9 @@
 import { $, $$, browser, expect } from '@wdio/globals';
 import { changeRoute, login } from '../utils';
+import { formatDate } from '@/scripts/tools/stringUtils';
 
 
-describe('Alerts', () => {
+describe('Returns', () => {
   it('Navigate to page', async () => {
     await login();
     await changeRoute('/returns');
@@ -29,6 +30,16 @@ describe('Alerts', () => {
     await $('[data-id="save-btn"]').click();
     const poNum = await $('[data-id="po-num"]').getText();
     expect(poNum).toBe('123');
+  });
+
+  it('Can issue credit', async () => {
+    await $('[data-id="credit-issued-btn"]').click();
+    const date = await $('[data-id="credit-issued"]').getText();
+    expect(date).toBe(formatDate(new Date()));
+  });
+
+  it('Can return item', async () => {
+
   });
 
   it('Can delete return', async () => {
