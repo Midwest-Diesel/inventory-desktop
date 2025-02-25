@@ -38,12 +38,12 @@ export default function Return() {
   };
 
   const handleCreditIssued = async () => {
-    if (!await confirm('Are you sure you want to credit this?')) return;
+    if (returnData.creditIssued || !await confirm('Are you sure you want to credit this?')) return;
     await issueReturnCredit(returnData.id);
     setReturnData({ ...returnData, creditIssued: new Date() });
   };
 
-
+  
   return (
     <Layout title="Return Details">
       <div className="return-details">
@@ -52,7 +52,7 @@ export default function Return() {
           :
           <>
             <div className="return-details__header">
-              <h2>{ returnData.id } Return</h2>
+              <h2>Return { returnData.id }</h2>
 
               <div className="header__btn-container">
                 <Button
@@ -79,8 +79,9 @@ export default function Return() {
               </div>
             </div>
 
-            <div className="handwritten-details__top-bar">
-              <Button onClick={handleCreditIssued} data-id="credit-issued-btn">Credit Issued</Button>
+            <div className="return-details__top-bar">
+              <Button onClick={handleCreditIssued} data-id="credit-issued-btn" disabled={Boolean(returnData.creditIssued)}>Credit Issued</Button>
+              <Button onClick={() => router.push(`/warranties/${returnData.warrantyId}`)} disabled={!returnData.warrantyId}>Warranty</Button>
             </div>
 
             <Grid rows={1} cols={12} gap={1}>

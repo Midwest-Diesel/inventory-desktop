@@ -272,6 +272,15 @@ export const handlePartTakeoff = async (partId: number, qty: number) => {
   }
 };
 
+export const editPartQty = async (partId: number, qty: number) => {
+  try {
+    const auth = { withCredentials: true };
+    await api.patch('/api/parts/qty', { partId, qty }, auth);
+  } catch (err) {
+    console.error(err);
+  }
+};
+
 // === PUT routes === //
 
 export const editPart = async (part: Part) => {

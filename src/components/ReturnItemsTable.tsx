@@ -1,5 +1,6 @@
-import { formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
+import { formatCurrency } from "@/scripts/tools/stringUtils";
 import Table from "./Library/Table";
+import Link from "next/link";
 
 interface Props {
   className?: string
@@ -11,14 +12,13 @@ export default function ReturnItemsTable({ className, returnItems }: Props) {
   const getTotalPrice = (): number => {
     return returnItems.reduce((acc, item) => item.cost !== 0.04 && item.cost !== 0.01 && acc + (item.unitPrice * item.qty), 0);
   };
-  const colorStyle = getTotalPrice() < 0 ? { color: 'var(--red-2)' } : '';
 
 
   return (
     <div className={`return-items-table ${className && className}`}>
       {returnItems &&
         <>
-          <p><strong>Return Total: </strong><span style={{ ...colorStyle }}>{ formatCurrency(getTotalPrice()) }</span></p>
+          <p><strong>Return Total: </strong>{ formatCurrency(getTotalPrice()) }</p>
           <Table>
             <thead>
               <tr>
@@ -37,7 +37,13 @@ export default function ReturnItemsTable({ className, returnItems }: Props) {
                     <td>{ ret.stockNum }</td>
                     <td>{ formatCurrency(ret.cost) }</td>
                     <td>{ ret.qty }</td>
-                    <td>{ ret.partNum }</td>
+                    <td>
+                      {ret.part && ret.part.id ?
+                        <Link href={`/part/${ret.part.id}`}>{ ret.partNum }</Link>
+                        :
+                        <>{ ret.partNum }</>
+                      }
+                    </td>
                     <td>{ ret.desc }</td>
                     <td>{ formatCurrency(ret.unitPrice) }</td>
                   </tr>

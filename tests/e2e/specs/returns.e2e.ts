@@ -38,10 +38,6 @@ describe('Returns', () => {
     expect(date).toBe(formatDate(new Date()));
   });
 
-  it('Can return item', async () => {
-
-  });
-
   it('Can delete return', async () => {
     await $('[data-id="delete-btn"]').click();
     await browser.sendAlertText('confirm');

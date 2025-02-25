@@ -70,16 +70,6 @@ export const searchReturns = async (returnData: ReturnSearchData) => {
   }
 };
 
-export const getReturnCount = async () => {
-  try {
-    const auth = { withCredentials: true };
-    const res = await api.get(`/api/returns/count`, auth);
-    return res.data;
-  } catch (err) {
-    console.error(err);
-  }
-};
-
 // === POST routes === //
 
 export const addReturn = async (returnData: Return) => {

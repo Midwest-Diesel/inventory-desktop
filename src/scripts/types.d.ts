@@ -632,6 +632,7 @@ type Return = {
   id: number
   customer: Customer
   handwrittenId: number
+  warrantyId: number
   invoiceDate: Date
   createdBy: string
   dateCalled: Date
@@ -675,6 +676,7 @@ type ReturnItem = {
   isReturnAsDescribed: boolean
   isReturnPutAway: boolean
   notes: string
+  part: Part
 };
 
 type ReturnPart = {
