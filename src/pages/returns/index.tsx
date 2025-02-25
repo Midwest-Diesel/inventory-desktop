@@ -5,42 +5,83 @@ import Table from "@/components/Library/Table";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Loading from "@/components/Library/Loading";
-import { editReturn, getReturnCount, getSomeCompletedReturns, getSomeReturns } from "@/scripts/controllers/returnsController";
+import { editReturnItem, getSomeCompletedReturns, getSomeReturns } from "@/scripts/controllers/returnsController";
 import { cap, formatDate } from "@/scripts/tools/stringUtils";
 import Checkbox from "@/components/Library/Checkbox";
-import Image from "next/image";
-import { confirm } from "@/scripts/config/tauri";
 
 
 export default function Returns() {
-  const [returnsData, setReturnsData] = useState<Return[]>();
+  const [returnsData, setReturnsData] = useState<Return[]>([]);
   const [returns, setReturns] = useState<Return[]>(returnsData);
   const [returnMin, setReturnMin] = useState<number[]>([]);
   const [openSearch, setOpenSearch] = useState(false);
   const [displayedPanel, setDisplayedPanel] = useState<string>('shop');
   const [loading, setLoading] = useState(true);
+  const LIMIT = 26;
 
   useEffect(() => {
-    fetchData();
+    if (returnsData.length === 0) fetchData();
   }, []);
 
   const fetchData = async () => {
-    const pageCount = await getReturnCount();
-    setReturnMin(pageCount);
-
-    const res = await getSomeReturns(1, 26);
-    setReturnsData(res);
+    const res = await getSomeReturns(1, LIMIT, true);
+    setReturnsData(res.rows);
+    setReturnMin(res.minItems);
     setLoading(false);
   };
 
-  const handleChangePage = async (data: any, page: number) => {
+  const handleChangePage = async (_: any, page: number) => {
     if (displayedPanel === 'completed') {
-      const res = await getSomeCompletedReturns(page, 26);
-      setReturns(res);
+      const res = await getSomeCompletedReturns(page, LIMIT);
+      setReturns(res.rows);
+      setReturnMin(res.minItems);
     } else {
-      const res = await getSomeReturns(page, 26, displayedPanel === 'shop' ? true : false);
-      setReturns(res);
+      const res = await getSomeReturns(page, LIMIT, displayedPanel === 'shop' ? true : false);
+      setReturns(res.rows);
+      setReturnMin(res.minItems);
     }
+  };
+
+  const handleToggleIsReceived = async (part: ReturnItem, value: boolean) => {
+    await editReturnItem({ ...part, isReturnReceived: value });
+    setReturns(returns.map((ret, i) => {
+      if (ret.id === part.returnId) return {
+        ...ret,
+        returnItems: returns[i].returnItems.map((item) => {
+          if (item.id === part.id) return { ...item, isReturnReceived: value };
+          return item;
+        })
+      };
+      return ret;
+    }));
+  };
+
+  const handleToggleAsDescribed = async (part: ReturnItem, value: boolean) => {
+    await editReturnItem({ ...part, isReturnAsDescribed: value });
+    setReturns(returns.map((ret, i) => {
+      if (ret.id === part.returnId) return {
+        ...ret,
+        returnItems: returns[i].returnItems.map((item) => {
+          if (item.id === part.id) return { ...item, isReturnAsDescribed: value };
+          return item;
+        })
+      };
+      return ret;
+    }));
+  };
+
+  const handleToggleIsPutAway = async (part: ReturnItem, value: boolean) => {
+    await editReturnItem({ ...part, isReturnPutAway: value });
+    setReturns(returns.map((ret, i) => {
+      if (ret.id === part.returnId) return {
+        ...ret,
+        returnItems: returns[i].returnItems.map((item) => {
+          if (item.id === part.id) return { ...item, isReturnPutAway: value };
+          return item;
+        })
+      };
+      return ret;
+    }));
   };
 
 
@@ -95,19 +136,19 @@ export default function Returns() {
                       <td className="cbx-td">
                         <Checkbox
                           checked={part && part.isReturnReceived}
-                          disabled
+                          onChange={(e: any) => handleToggleIsReceived(part, e.target.checked)}
                         />
                       </td>
                       <td className="cbx-td">
                         <Checkbox
                           checked={part && part.isReturnAsDescribed}
-                          disabled
+                          onChange={(e: any) => handleToggleAsDescribed(part, e.target.checked)}
                         />
                       </td>
                       <td className="cbx-td">
                         <Checkbox
                           checked={part && part.isReturnPutAway}
-                          disabled
+                          onChange={(e: any) => handleToggleIsPutAway(part, e.target.checked)}
                         />
                       </td>
                       <td>{ part && part.notes }</td>
@@ -119,8 +160,8 @@ export default function Returns() {
             <Pagination
               data={returnsData}
               setData={handleChangePage}
-              minData={returnMin.filter((min: any) => !min.dateReceived)}
-              pageSize={26}
+              minData={returnMin}
+              pageSize={LIMIT}
             />
           </>
         }
@@ -164,19 +205,19 @@ export default function Returns() {
                       <td className="cbx-td">
                         <Checkbox
                           checked={part && part.isReturnReceived}
-                          disabled
+                          onChange={(e: any) => handleToggleIsReceived(part, e.target.checked)}
                         />
                       </td>
                       <td className="cbx-td">
                         <Checkbox
                           checked={part && part.isReturnAsDescribed}
-                          disabled
+                          onChange={(e: any) => handleToggleAsDescribed(part, e.target.checked)}
                         />
                       </td>
                       <td className="cbx-td">
                         <Checkbox
                           checked={part && part.isReturnPutAway}
-                          disabled
+                          onChange={(e: any) => handleToggleIsPutAway(part, e.target.checked)}
                         />
                       </td>
                       <td>{ part && part.notes }</td>
@@ -188,8 +229,8 @@ export default function Returns() {
             <Pagination
               data={returnsData}
               setData={handleChangePage}
-              minData={returnMin.filter((min: any) => min.dateReceived)}
-              pageSize={26}
+              minData={returnMin}
+              pageSize={LIMIT}
             />
           </>
         }
@@ -233,19 +274,19 @@ export default function Returns() {
                       <td className="cbx-td">
                         <Checkbox
                           checked={part && part.isReturnReceived}
-                          disabled
+                          onChange={(e: any) => handleToggleIsReceived(part, e.target.checked)}
                         />
                       </td>
                       <td className="cbx-td">
                         <Checkbox
                           checked={part && part.isReturnAsDescribed}
-                          disabled
+                          onChange={(e: any) => handleToggleAsDescribed(part, e.target.checked)}
                         />
                       </td>
                       <td className="cbx-td">
                         <Checkbox
                           checked={part && part.isReturnPutAway}
-                          disabled
+                          onChange={(e: any) => handleToggleIsPutAway(part, e.target.checked)}
                         />
                       </td>
                       <td>{ part && part.notes }</td>
@@ -257,8 +298,8 @@ export default function Returns() {
             <Pagination
               data={returnsData}
               setData={handleChangePage}
-              minData={returnMin.filter((min: any) => min.dateReceived)}
-              pageSize={26}
+              minData={returnMin}
+              pageSize={LIMIT}
             />
           </>
         }

@@ -1,6 +1,5 @@
 import api from "../config/axios";
 import { parseResDate } from "../tools/stringUtils";
-import { isObjectNull } from "../tools/utils";
 
 interface ReturnSearchData {
   id: number
@@ -41,11 +40,11 @@ export const getReturnById = async (id: number) => {
   }
 };
 
-export const getSomeReturns = async (page: number, limit: number, notReceived?: boolean) => {
+export const getSomeReturns = async (page: number, limit: number, isShopPanel: boolean) => {
   try {
     const auth = { withCredentials: true };
-    const res = await api.get(`/api/returns/limit/${JSON.stringify({ page: (page - 1) * limit, limit, notReceived })}`, auth);
-    return parseReturnRes(res.data);
+    const res = await api.get(`/api/returns/limit/${JSON.stringify({ page: (page - 1) * limit, limit, isShopPanel })}`, auth);
+    return { minItems: res.data.minItems, rows: parseReturnRes(res.data.rows) };
   } catch (err) {
     console.error(err);
   }
@@ -55,7 +54,7 @@ export const getSomeCompletedReturns = async (page: number, limit: number) => {
   try {
     const auth = { withCredentials: true };
     const res = await api.get(`/api/returns/limit/completed/${JSON.stringify({ page: (page - 1) * limit, limit })}`, auth);
-    return parseReturnRes(res.data);
+    return { minItems: res.data.minItems, rows: parseReturnRes(res.data.rows) };
   } catch (err) {
     console.error(err);
   }
@@ -107,6 +106,15 @@ export const editReturn = async (returnData: Return) => {
   try {
     const auth = { withCredentials: true };
     await api.put('/api/returns', returnData, auth);
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+export const editReturnItem = async (item: ReturnItem) => {
+  try {
+    const auth = { withCredentials: true };
+    await api.put('/api/returns/item', item, auth);
   } catch (err) {
     console.error(err);
   }

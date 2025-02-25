@@ -70,7 +70,7 @@ export default function NewReturnDialog({ open, setOpen, handwritten }: Props) {
     } as Return;
     await addReturn(newReturn);
 
-    const res = (await getSomeReturns(1, 2))[0] as ReturnItem;
+    const res = (await getSomeReturns(1, 2, true)).rows[0] as ReturnItem;
     const newReturnItems = handwrittenItems.map((item) => {
       if (item.return) {
         return {
