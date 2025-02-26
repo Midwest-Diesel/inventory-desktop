@@ -64,17 +64,11 @@ export default function Returns() {
                   <th>Date</th>
                   <th>By</th>
                   <th>Bill to Company</th>
-                  <th>Part Number</th>
-                  <th>Description</th>
                   <th>Return Notes</th>
-                  <th>Stock Number</th>
-                  <th>Qty</th>
-                  <th>Notes</th>
                 </tr>
               </thead>
               <tbody>
                 {returns && returns.map((ret: Return) => {
-                  const part = ret.returnItems[0];
                   return (
                     <tr key={ret.id}>
                       <td><Link href={`/returns/${ret.id}`} data-id="return-link">{ ret.id }</Link></td>
@@ -82,12 +76,7 @@ export default function Returns() {
                       <td>{ formatDate(ret.dateCalled) }</td>
                       <td>{ ret.createdBy }</td>
                       <td>{ ret.billToCompany }</td>
-                      <td>{ part && part.partNum }</td>
-                      <td>{ part && part.desc }</td>
                       <td>{ ret.returnNotes }</td>
-                      <td>{ part && part.stockNum }</td>
-                      <td>{ part && part.qty }</td>
-                      <td>{ part && part.notes }</td>
                     </tr>
                   );
                 })}
@@ -112,17 +101,12 @@ export default function Returns() {
                   <th>Date</th>
                   <th>By</th>
                   <th>Bill to Company</th>
-                  <th>Part Number</th>
-                  <th>Description</th>
                   <th>Return Notes</th>
-                  <th>Stock Number</th>
-                  <th>Qty</th>
                   <th>Date Credited</th>
                 </tr>
               </thead>
               <tbody>
                 {returns && returns.map((ret: Return) => {
-                  const part = ret.returnItems[0];
                   return (
                     <tr key={ret.id}>
                       <td><Link href={`/returns/${ret.id}`}>{ ret.id }</Link></td>
@@ -130,11 +114,7 @@ export default function Returns() {
                       <td>{ formatDate(ret.dateCalled) }</td>
                       <td>{ ret.createdBy }</td>
                       <td>{ ret.billToCompany }</td>
-                      <td>{ part && part.partNum }</td>
-                      <td>{ part && part.desc }</td>
                       <td>{ ret.returnNotes }</td>
-                      <td>{ part && part.stockNum }</td>
-                      <td>{ part && part.qty }</td>
                       <td>{ formatDate(ret.creditIssued) }</td>
                     </tr>
                   );
@@ -160,17 +140,12 @@ export default function Returns() {
                   <th>Date</th>
                   <th>By</th>
                   <th>Bill to Company</th>
-                  <th>Part Number</th>
-                  <th>Description</th>
                   <th>Return Notes</th>
-                  <th>Stock Number</th>
-                  <th>Qty</th>
                   <th>Date Credited</th>
                 </tr>
               </thead>
               <tbody>
                 {returns && returns.map((ret: Return) => {
-                  const part = ret.returnItems[0];
                   return (
                     <tr key={ret.id}>
                       <td><Link href={`/returns/${ret.id}`}>{ ret.id }</Link></td>
@@ -178,11 +153,7 @@ export default function Returns() {
                       <td>{ formatDate(ret.dateCalled) }</td>
                       <td>{ ret.createdBy }</td>
                       <td>{ ret.billToCompany }</td>
-                      <td>{ part && part.partNum }</td>
-                      <td>{ part && part.desc }</td>
                       <td>{ ret.returnNotes }</td>
-                      <td>{ part && part.stockNum }</td>
-                      <td>{ part && part.qty }</td>
                       <td>{ formatDate(ret.creditIssued) }</td>
                     </tr>
                   );

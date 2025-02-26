@@ -216,7 +216,7 @@ export default function Return() {
               </GridItem>
 
               <GridItem variant={['no-style']} colStart={1} colEnd={12}>
-                <ReturnItemsTable returnItems={returnData.returnItems} />
+                <ReturnItemsTable returnItems={returnData.returnItems} returnData={returnData} setReturnData={setReturnData}  />
               </GridItem>
             </Grid>
           </>

@@ -75,16 +75,17 @@ export const searchReturns = async (returnData: ReturnSearchData) => {
 export const addReturn = async (returnData: Return) => {
   try {
     const auth = { withCredentials: true };
-    await api.post('/api/returns', returnData, auth);
+    const res: any = await api.post('/api/returns', returnData, auth);
+    return Number(res.data.id);
   } catch (err) {
     console.error(err);
   }
 };
 
-export const addReturnItems = async (returnItems: ReturnItem) => {
+export const addReturnItem = async (returnItem: ReturnItem) => {
   try {
     const auth = { withCredentials: true };
-    await api.post('/api/returns/items', returnItems, auth);
+    await api.post('/api/returns/items', returnItem, auth);
   } catch (err) {
     console.error(err);
   }

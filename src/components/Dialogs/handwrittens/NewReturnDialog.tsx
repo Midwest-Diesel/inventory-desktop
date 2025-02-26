@@ -4,7 +4,7 @@ import Table from "../../Library/Table";
 import Checkbox from "@/components/Library/Checkbox";
 import { useState } from "react";
 import Button from "@/components/Library/Button";
-import { addReturn, addReturnItems, getSomeReturns } from "@/scripts/controllers/returnsController";
+import { addReturn, addReturnItem } from "@/scripts/controllers/returnsController";
 import { useAtom } from "jotai";
 import { userAtom } from "@/scripts/atoms/state";
 import { confirm } from "@/scripts/config/tauri";
@@ -35,7 +35,7 @@ export default function NewReturnDialog({ open, setOpen, handwritten }: Props) {
   };
 
   const submitNewReturn = async () => {
-    if (!await confirm('Are you sure you want to create a new return?')) return;
+    if (!handwrittenItems.some((i) => i.return) || !await confirm('Are you sure you want to create a new return?')) return;
     const newReturn = {
       customer: handwritten.customer,
       handwrittenId: handwritten.id,
@@ -68,13 +68,13 @@ export default function NewReturnDialog({ open, setOpen, handwritten }: Props) {
       returnItems: [],
       returnPart: null
     } as Return;
-    await addReturn(newReturn);
+    const id = await addReturn(newReturn);
 
-    const res = (await getSomeReturns(1, 2, true)).rows[0] as ReturnItem;
     const newReturnItems = handwrittenItems.map((item) => {
       if (item.return) {
         return {
-          returnId: res.id,
+          returnId: id,
+          partId: item.partId,
           qty: item.qty,
           partNum: item.partNum,
           desc: item.desc,
@@ -85,11 +85,11 @@ export default function NewReturnDialog({ open, setOpen, handwritten }: Props) {
           isReturnAsDescribed: false,
           isReturnPutAway: false,
           notes: '',
-        } as ReturnItem;
+        } as any;
       }
     });
     for (let i = 0; i < newReturnItems.length; i++) {
-      await addReturnItems(newReturnItems[i]);
+      if (newReturnItems[i]) await addReturnItem(newReturnItems[i]);
     }
 
     router.push('/returns');
@@ -143,7 +143,7 @@ export default function NewReturnDialog({ open, setOpen, handwritten }: Props) {
       </Table>
 
       <div className="form__footer">
-        <Button onClick={submitNewReturn} data-id="submit-btn">Submit</Button>
+        <Button onClick={submitNewReturn} data-id="submit-btn" disabled={!handwrittenItems.some((i) => i.return)}>Submit</Button>
       </div>
     </Dialog>
   );
