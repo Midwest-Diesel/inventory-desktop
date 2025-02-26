@@ -6,6 +6,7 @@ use tauri::Manager;
 use std::process::Command;
 use std::fs::{write};
 use std::{fs::File, io::copy};
+use std::io::{self, Write};
 use reqwest::Client;
 use std::path::{Path};
 use zip::read::ZipArchive;
@@ -280,11 +281,16 @@ async fn open_window(app: tauri::AppHandle, window_args: WindowArgs) {
 #[tauri::command]
 fn install_update() {
   println!("Update detected");
+  io::stdout().flush().unwrap();
+
   tokio::spawn(async move {
     if let Err(e) = download_update().await {
       println!("Error downloading the update: {}", e);
+      io::stdout().flush().unwrap();
     } else {
       println!("Update successful, restarting app...");
+      io::stdout().flush().unwrap();
+
       let batch_script = r#"
       @echo off
       echo Installing update...
