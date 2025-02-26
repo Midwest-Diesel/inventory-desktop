@@ -15,7 +15,7 @@ const parseReturnRes = (data: any) => {
       invoiceDate: parseResDate(returnData.invoiceDate),
       creditIssued: parseResDate(returnData.creditIssued)
     };
-  }).sort((a: any, b: any) => b.id - a.id);
+  });
 };
 
 // === GET routes === //

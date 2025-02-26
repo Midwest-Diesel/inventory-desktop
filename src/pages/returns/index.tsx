@@ -5,9 +5,8 @@ import Table from "@/components/Library/Table";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Loading from "@/components/Library/Loading";
-import { editReturnItem, getSomeCompletedReturns, getSomeReturns } from "@/scripts/controllers/returnsController";
+import { getSomeCompletedReturns, getSomeReturns } from "@/scripts/controllers/returnsController";
 import { cap, formatDate } from "@/scripts/tools/stringUtils";
-import Checkbox from "@/components/Library/Checkbox";
 
 
 export default function Returns() {
@@ -42,48 +41,6 @@ export default function Returns() {
     }
   };
 
-  const handleToggleIsReceived = async (part: ReturnItem, value: boolean) => {
-    await editReturnItem({ ...part, isReturnReceived: value });
-    setReturns(returns.map((ret, i) => {
-      if (ret.id === part.returnId) return {
-        ...ret,
-        returnItems: returns[i].returnItems.map((item) => {
-          if (item.id === part.id) return { ...item, isReturnReceived: value };
-          return item;
-        })
-      };
-      return ret;
-    }));
-  };
-
-  const handleToggleAsDescribed = async (part: ReturnItem, value: boolean) => {
-    await editReturnItem({ ...part, isReturnAsDescribed: value });
-    setReturns(returns.map((ret, i) => {
-      if (ret.id === part.returnId) return {
-        ...ret,
-        returnItems: returns[i].returnItems.map((item) => {
-          if (item.id === part.id) return { ...item, isReturnAsDescribed: value };
-          return item;
-        })
-      };
-      return ret;
-    }));
-  };
-
-  const handleToggleIsPutAway = async (part: ReturnItem, value: boolean) => {
-    await editReturnItem({ ...part, isReturnPutAway: value });
-    setReturns(returns.map((ret, i) => {
-      if (ret.id === part.returnId) return {
-        ...ret,
-        returnItems: returns[i].returnItems.map((item) => {
-          if (item.id === part.id) return { ...item, isReturnPutAway: value };
-          return item;
-        })
-      };
-      return ret;
-    }));
-  };
-
 
   return (
     <Layout>
@@ -106,15 +63,12 @@ export default function Returns() {
                   <th>Handwritten</th>
                   <th>Date</th>
                   <th>By</th>
-                  <th>Company</th>
+                  <th>Bill to Company</th>
                   <th>Part Number</th>
                   <th>Description</th>
                   <th>Return Notes</th>
                   <th>Stock Number</th>
                   <th>Qty</th>
-                  <th>Received</th>
-                  <th>As Described</th>
-                  <th>Put Away</th>
                   <th>Notes</th>
                 </tr>
               </thead>
@@ -133,24 +87,6 @@ export default function Returns() {
                       <td>{ ret.returnNotes }</td>
                       <td>{ part && part.stockNum }</td>
                       <td>{ part && part.qty }</td>
-                      <td className="cbx-td">
-                        <Checkbox
-                          checked={part && part.isReturnReceived}
-                          onChange={(e: any) => handleToggleIsReceived(part, e.target.checked)}
-                        />
-                      </td>
-                      <td className="cbx-td">
-                        <Checkbox
-                          checked={part && part.isReturnAsDescribed}
-                          onChange={(e: any) => handleToggleAsDescribed(part, e.target.checked)}
-                        />
-                      </td>
-                      <td className="cbx-td">
-                        <Checkbox
-                          checked={part && part.isReturnPutAway}
-                          onChange={(e: any) => handleToggleIsPutAway(part, e.target.checked)}
-                        />
-                      </td>
                       <td>{ part && part.notes }</td>
                     </tr>
                   );
@@ -175,16 +111,13 @@ export default function Returns() {
                   <th>Handwritten</th>
                   <th>Date</th>
                   <th>By</th>
-                  <th>Company</th>
+                  <th>Bill to Company</th>
                   <th>Part Number</th>
                   <th>Description</th>
                   <th>Return Notes</th>
                   <th>Stock Number</th>
                   <th>Qty</th>
-                  <th>Received</th>
-                  <th>As Described</th>
-                  <th>Put Away</th>
-                  <th>Notes</th>
+                  <th>Date Credited</th>
                 </tr>
               </thead>
               <tbody>
@@ -202,25 +135,7 @@ export default function Returns() {
                       <td>{ ret.returnNotes }</td>
                       <td>{ part && part.stockNum }</td>
                       <td>{ part && part.qty }</td>
-                      <td className="cbx-td">
-                        <Checkbox
-                          checked={part && part.isReturnReceived}
-                          onChange={(e: any) => handleToggleIsReceived(part, e.target.checked)}
-                        />
-                      </td>
-                      <td className="cbx-td">
-                        <Checkbox
-                          checked={part && part.isReturnAsDescribed}
-                          onChange={(e: any) => handleToggleAsDescribed(part, e.target.checked)}
-                        />
-                      </td>
-                      <td className="cbx-td">
-                        <Checkbox
-                          checked={part && part.isReturnPutAway}
-                          onChange={(e: any) => handleToggleIsPutAway(part, e.target.checked)}
-                        />
-                      </td>
-                      <td>{ part && part.notes }</td>
+                      <td>{ formatDate(ret.creditIssued) }</td>
                     </tr>
                   );
                 })}
@@ -244,16 +159,13 @@ export default function Returns() {
                   <th>Handwritten</th>
                   <th>Date</th>
                   <th>By</th>
-                  <th>Company</th>
+                  <th>Bill to Company</th>
                   <th>Part Number</th>
                   <th>Description</th>
                   <th>Return Notes</th>
                   <th>Stock Number</th>
                   <th>Qty</th>
-                  <th>Received</th>
-                  <th>As Described</th>
-                  <th>Put Away</th>
-                  <th>Notes</th>
+                  <th>Date Credited</th>
                 </tr>
               </thead>
               <tbody>
@@ -271,25 +183,7 @@ export default function Returns() {
                       <td>{ ret.returnNotes }</td>
                       <td>{ part && part.stockNum }</td>
                       <td>{ part && part.qty }</td>
-                      <td className="cbx-td">
-                        <Checkbox
-                          checked={part && part.isReturnReceived}
-                          onChange={(e: any) => handleToggleIsReceived(part, e.target.checked)}
-                        />
-                      </td>
-                      <td className="cbx-td">
-                        <Checkbox
-                          checked={part && part.isReturnAsDescribed}
-                          onChange={(e: any) => handleToggleAsDescribed(part, e.target.checked)}
-                        />
-                      </td>
-                      <td className="cbx-td">
-                        <Checkbox
-                          checked={part && part.isReturnPutAway}
-                          onChange={(e: any) => handleToggleIsPutAway(part, e.target.checked)}
-                        />
-                      </td>
-                      <td>{ part && part.notes }</td>
+                      <td>{ formatDate(ret.creditIssued) }</td>
                     </tr>
                   );
                 })}
