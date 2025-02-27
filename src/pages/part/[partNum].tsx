@@ -273,7 +273,7 @@ export default function PartDetails() {
                     <td>{ formatCurrency(part.listPrice) }</td>
                   </tr>
                   <tr>
-                    <th>New Fleet Price</th>
+                    <th>Dealer Price</th>
                     <td>{ formatCurrency(part.fleetPrice) }</td>
                   </tr>
                   <tr>

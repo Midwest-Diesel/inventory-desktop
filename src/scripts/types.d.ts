@@ -245,7 +245,7 @@ type HandwrittenItem = {
 
 type HandwrittenItemChild = {
   id: number
-  partId: number
+  part: Part
   qty: number
   cost: number
   partNum: string

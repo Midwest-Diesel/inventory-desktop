@@ -186,6 +186,7 @@ export default function Handwritten() {
   };
 
   const handlePrintShippingLabel = async (copies = 1) => {
+    if (!await confirm(`Do you want to print ${copies} shipping label${copies > 1 ? 's' : ''}?`)) return;
     const cityStateZip = [handwritten.shipToCity, `${handwritten.shipToState} ${handwritten.shipToZip}`].join(', ');
     const args = {
       company: handwritten.shipToCompany || '',
@@ -231,6 +232,7 @@ export default function Handwritten() {
   };
 
   const handlePrintCCLabel = async () => {
+    if (!await confirm('Print a CC label?')) return;
     if (!cardNum || !expDate || !cvv) return;
     await invoke('print_cc_label', { args: { cardNum: Number(cardNum), expDate, cvv: Number(cvv), cardZip, cardName, cardAddress } });
   };

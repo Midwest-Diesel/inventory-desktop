@@ -67,13 +67,20 @@ export default function PrintInvoiceDialog({ open, setOpen, handwritten }: Props
           partNum: item.partNum || '',
           desc: item.desc || '',
           unitPrice: formatCurrency(item.unitPrice) || '$0.00',
-          total: formatCurrency(item.qty * item.unitPrice) || '$0.00'
+          total: formatCurrency(item.qty * item.unitPrice) || '$0.00',
+          itemChildren: item.invoiceItemChildren
         };
       }))
     };
+    const itemChildren = handwritten.handwrittenItems.map((item) => {
+      if (item.invoiceItemChildren.length > 0) return item.invoiceItemChildren.map((child) => {
+        return { cost: formatCurrency(child.cost) || '$0.00', qty: child.qty, partNum: child.partNum, desc: child.part.desc, stockNum: child.stockNum, location: child.part.location, unitPrice: formatCurrency(item.unitPrice) || '$0.00', total: formatCurrency(item.qty * item.unitPrice) || '$0.00' };
+      });
+    }).filter((item) => item).flat();
+    const itemsWithChildren = JSON.stringify([...JSON.parse(args.items).filter((item) => item.itemChildren.length === 0), ...itemChildren ]);
 
     if (accounting) await invoke('print_accounting_invoice', { args });
-    if (shipping) await invoke('print_shipping_invoice', { args });
+    if (shipping) await invoke('print_shipping_invoice', { args: { ...args, items: itemsWithChildren } });
     if (coreDeposit) await invoke('print_core_invoice', { args });
   };
 

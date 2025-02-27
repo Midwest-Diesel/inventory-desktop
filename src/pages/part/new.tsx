@@ -216,7 +216,7 @@ export default function NewPart() {
                   </td>
                 </tr>
                 <tr>
-                  <th>New Fleet Price</th>
+                  <th>Dealer Price</th>
                   <td>
                     <Input
                       variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
