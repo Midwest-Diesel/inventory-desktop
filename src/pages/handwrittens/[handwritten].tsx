@@ -265,13 +265,14 @@ export default function Handwritten() {
           :
           <>
             <div className="handwritten-details__header">
-              <h2>Handwritten { handwritten.id }</h2>
+              <h2>Handwritten <span data-id="id">{ handwritten.id }</span></h2>
 
               <div className="header__btn-container">
                 <Button
                   variant={['blue']}
                   className="handwritten-details__edit-btn"
                   onClick={() => setIsEditing(true)}
+                  data-id="edit-btn"
                 >
                   Edit
                 </Button>
@@ -285,6 +286,7 @@ export default function Handwritten() {
                   <Button
                     variant={['danger']}
                     onClick={handleDelete}
+                    data-id="delete-btn"
                   >
                     Delete
                   </Button>
@@ -323,15 +325,15 @@ export default function Handwritten() {
                     </tr>
                     <tr>
                       <th><strong>PO Number</strong></th>
-                      <td>{ handwritten.poNum }</td>
+                      <td data-id="po-num">{ handwritten.poNum }</td>
                     </tr>
                     <tr>
                       <th><strong>Source</strong></th>
                       <td>{ handwritten.source }</td>
                     </tr>
                     <tr>
-                      <th><strong>Salesperson</strong></th>
-                      <td>{ handwritten.initials }</td>
+                      <th><strong>Created By</strong></th>
+                      <td>{ handwritten.createdBy }</td>
                     </tr>
                   </tbody>
                 </Table>
@@ -604,7 +606,7 @@ export default function Handwritten() {
                 <div style={{ display: 'flex', gap: '2rem' }}>
                   <div>
                     <p style={{ fontSize: 'var(--font-md)' }}><strong>Sales Status</strong></p>
-                    <p style={{ color: 'var(--yellow-1)' }}>{ handwritten.invoiceStatus }</p>
+                    <p style={{ color: 'var(--yellow-1)' }} data-id="sales-status">{ handwritten.invoiceStatus }</p>
                   </div>
                   <div>
                     <p style={{ fontSize: 'var(--font-md)' }}><strong>Accounting Status</strong></p>

@@ -29,7 +29,7 @@ export default function CoreCreditsDialog({ open, setOpen, cores, handwritten }:
 
   const handleCredit = async () => {
     if (selectedCores.length === 0 || !await confirm('Are you sure?')) return;
-    const id = await addHandwritten({ date: new Date(), salesmanId: user.id, ...handwritten });
+    const id = await addHandwritten({ date: new Date(), createdBy: user.id, ...handwritten });
 
     for (let i = 0; i < selectedCores.length; i++) {
       const core = selectedCores[i];

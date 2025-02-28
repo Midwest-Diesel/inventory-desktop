@@ -35,7 +35,7 @@ export default function CustomerSelectDialog({ open, setOpen, onSubmit }: Props)
         maxHeight="16rem"
       />
       <div className="form__footer">
-        <Button onClick={handleSubmit}>Submit</Button>
+        <Button onClick={handleSubmit} data-id="customer-submit-btn">Submit</Button>
       </div>
     </Dialog>
   );

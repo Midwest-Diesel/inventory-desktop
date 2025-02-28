@@ -10,7 +10,7 @@ interface Props {
 
 export default function DropdownOption({ children, value, data, className, defaultOption, onClick, disabled = false }: Props) {
   return (
-    <li className={`dropdown__option ${className || ''}${disabled ? ' dropdown__option--disabled' : ''}`} onClick={() => (onClick && !disabled) && onClick()}>
+    <li className={`dropdown__option ${className || ''}${disabled ? ' dropdown__option--disabled' : ''}`} onClick={() => (onClick && !disabled) && onClick()} data-value={value}>
       { children }
     </li>
   );

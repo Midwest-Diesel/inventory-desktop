@@ -163,7 +163,8 @@ type Handwritten = {
   invoiceId: number
   customer: Customer
   handwrittenItems: HandwrittenItem[]
-  initials: string
+  createdBy: string
+  soldBy: string
   date: Date
   poNum: string
   billToAddress: string
@@ -186,7 +187,6 @@ type Handwritten = {
   shipToContact: string
   source: string
   payment: string
-  salesmanId: number
   phone: string
   cell: string
   engineSerialNum: string
@@ -245,6 +245,7 @@ type HandwrittenItem = {
 
 type HandwrittenItemChild = {
   id: number
+  partId: number
   part: Part
   qty: number
   cost: number

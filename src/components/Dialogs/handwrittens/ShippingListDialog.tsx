@@ -37,7 +37,7 @@ export default function ShippingListDialog({ open, setOpen, handwrittenItems, ne
       const { length, width, height } = handwrittenItems[0];
       const new_shipping_list_row = {
         handwritten_id: Number(newShippingListRow.id),
-        initials: newShippingListRow.initials,
+        initials: newShippingListRow.createdBy,
         ship_via: newShippingListRow.shipVia,
         ship_type: shipType,
         customer: newShippingListRow.customer.company,
@@ -65,7 +65,7 @@ export default function ShippingListDialog({ open, setOpen, handwrittenItems, ne
         const { length, width, height } = handwrittenItems[i];
         const new_shipping_list_row = {
           handwritten_id: Number(newShippingListRow.id),
-          initials: newShippingListRow.initials,
+          initials: newShippingListRow.createdBy,
           ship_via: newShippingListRow.shipVia,
           ship_type: shipType,
           customer: newShippingListRow.customer.company,

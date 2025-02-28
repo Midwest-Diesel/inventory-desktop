@@ -97,7 +97,7 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
     const newInvoice = {
       id: handwritten.id,
       shipVia,
-      initials: handwritten.initials,
+      initials: handwritten.createdBy,
       handwrittenItems: handwrittenItems,
       customer: newCustomer,
       date,
@@ -139,7 +139,7 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
       isThirdParty,
       isCollect,
       isSetup
-    } as Handwritten;
+    } as any;
     setNewShippingListRow(newInvoice);
     await editHandwritten(newInvoice);
     await editCoreCustomer(handwritten.id, newCustomer.id);
@@ -206,6 +206,8 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
       billToZip: newInvoice.customer.billToZip || '',
       billToPhone: newInvoice.customer.billToPhone || ''
     });
+    console.log(handwrittenBillTo, customerBillTo);
+    
 
     if (handwrittenBillTo !== customerBillTo) {
       setChangeCustomerDialogData(newInvoice);
@@ -303,6 +305,7 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
                 variant={['save']}
                 className="edit-handwritten-details__save-btn"
                 type="submit"
+                data-id="save-btn"
               >
                 Save
               </Button>
@@ -310,6 +313,7 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
                 className="edit-handwritten-details__close-btn"
                 type="button"
                 onClick={() => setIsEditing(false)}
+                data-id="stop-edit-btn"
               >
                 Stop Editing
               </Button>
@@ -349,6 +353,7 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
                         variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                         value={poNum}
                         onChange={(e: any) => setPoNum(e.target.value)}
+                        data-id="po-num"
                       />
                     </td>
                   </tr>
@@ -630,6 +635,7 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
                   variant={['label-stack']}
                   value={invoiceStatus}
                   onChange={(e: any) => setInvoiceStatus(e.target.value)}
+                  data-id="sales-status"
                 >
                   <option value="INVOICE PENDING">INVOICE PENDING</option>
                   <option value="SENT TO ACCOUNTING">SENT TO ACCOUNTING</option>

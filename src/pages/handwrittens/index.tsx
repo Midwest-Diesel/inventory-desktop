@@ -7,7 +7,7 @@ import Loading from "@/components/Library/Loading";
 import Pagination from "@/components/Library/Pagination";
 import Table from "@/components/Library/Table";
 import { handwrittenSearchAtom, userAtom } from "@/scripts/atoms/state";
-import { addBlankHandwritten, getHandwrittenCount, getHandwrittensByDate, getSomeHandwrittens, searchHandwrittens } from "@/scripts/controllers/handwrittensController";
+import { addBlankHandwritten, addHandwritten, getHandwrittenCount, getHandwrittensByDate, getSomeHandwrittens, searchHandwrittens } from "@/scripts/controllers/handwrittensController";
 import { formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
 import { useAtom } from "jotai";
 import Link from "next/link";
@@ -91,8 +91,47 @@ export default function Handwrittens() {
   };
 
   const handleNewHandwritten = async (customer: Customer) => {
-    await addBlankHandwritten({ date: new Date(), userId: user.id, customerId: customer.id });
-    location.reload();
+    const newHandwritten = {
+      customer,
+      poNum: null,
+      billToAddress: customer.billToAddress,
+      billToAddress2: customer.billToAddress2,
+      billToCity: customer.billToCity,
+      billToState: customer.billToState,
+      billToZip: customer.billToZip,
+      billToCountry: null,
+      billToPhone: customer.billToPhone,
+      fax: customer.fax,
+      shipToAddress: null,
+      shipToAddress2: null,
+      shipToCity: null,
+      shipToState: null,
+      shipToZip: null,
+      source: null,
+      contactName: customer.contact,
+      payment: null,
+      salesmanId: user.id,
+      phone: customer.phone,
+      cell: null,
+      engineSerialNum: null,
+      isBlindShipment: false,
+      isNoPriceInvoice: false,
+      shipVia: null,
+      cardNum: null,
+      expDate: null,
+      cvv: null,
+      cardZip: null,
+      cardName: null,
+      invoiceStatus: 'INVOICE PENDING',
+      accountingStatus: null,
+      shippingStatus: null,
+      billToCompany: customer.company,
+      shipToCompany: null
+    } as any;
+    await addHandwritten(newHandwritten);
+    const res = await getSomeHandwrittens(1, LIMIT);
+    setCurrentPage(1);
+    setHandwrittens(res);
   };
 
 
@@ -106,7 +145,7 @@ export default function Handwrittens() {
           <h1>Handwrittens</h1>
           <div className="handwrittens__top-buttons">
             <Button onClick={() => setOpenSearch(true)}>Search</Button>
-            { user.type === 'office' && <Button onClick={() => setCustomerSelectOpen(true)}>New</Button> }
+            { user.type === 'office' && <Button onClick={() => setCustomerSelectOpen(true)} data-id="new-btn">New</Button> }
           </div>
           <div className="handwrittens__top-bar">
             <div className="handwrittens__top-bar--count-block">
