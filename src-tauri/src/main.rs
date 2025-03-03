@@ -183,6 +183,44 @@ struct ShippingInvoiceArgs {
 }
 
 #[derive(Deserialize, Serialize)]
+struct AccountingInvoiceArgs {
+  billToCompany: String,
+  billToAddress: String,
+  billToAddress2: String,
+  billToCity: String,
+  billToState: String,
+  billToZip: String,
+  billToCountry: String,
+  shipToCompany: String,
+  shipToAddress: String,
+  shipToAddress2: String,
+  shipToCity: String,
+  shipToState: String,
+  shipToZip: String,
+  shipToContact: String,
+  shipToCountry: String,
+  accountNum: String,
+  paymentType: String,
+  createdBy: String,
+  soldBy: String,
+  handwrittenId: i32,
+  date: String,
+  contact: String,
+  poNum: String,
+  shipVia: String,
+  items: String,
+  invoiceNotes: String,
+  shippingNotes: String,
+  handwrittenTotal: String,
+  setup: bool,
+  taxable: bool,
+  blind: bool,
+  npi: bool,
+  collect: bool,
+  thirdParty: bool
+}
+
+#[derive(Deserialize, Serialize)]
 struct CIArgs {
   company: String,
   address: String,
@@ -974,15 +1012,15 @@ fn print_bol(args: BOLArgs) -> Result<(), String> {
 }
 
 #[tauri::command]
-fn print_accounting_invoice(args: ShippingInvoiceArgs) -> Result<(), String> {
-  let printer = "Brother HL-L3290CDW series";
+fn print_accounting_invoice(args: AccountingInvoiceArgs) -> Result<(), String> {
+  let printer = "Brother HL-L5200DW series";
   let json_data = to_string(&args.items).unwrap();
   let vbs_script = format!(
     r#"
     Dim doc, sheet1
     Set doc = CreateObject("Word.Application")
     doc.Visible = True
-    Set sheet1 = doc.Documents.Open("\\MWD1-SERVER\Server\handwrittenShippingTemplate.docx")
+    Set sheet1 = doc.Documents.Open("\\MWD1-SERVER\Server\handwrittenAccountingTemplate.docx")
 
     Sub ReplaceAndSetColor(sheet, findText, replaceText)
       If Len(replaceText) > 0 Then
@@ -1044,10 +1082,7 @@ fn print_accounting_invoice(args: ShippingInvoiceArgs) -> Result<(), String> {
     Call ReplaceAndSetColor(sheet1, "SHIP VIA", "{}")
     Call ReplaceAndSetColor(sheet1, "INVOICE NOTES", "{}")
     Call ReplaceAndSetColor(sheet1, "SHIPPING NOTES", "{}")
-    Call ReplaceAndSetColor(sheet1, "Mousepads", "{}")
-    Call ReplaceAndSetColor(sheet1, "Hats", "{}")
-    Call ReplaceAndSetColor(sheet1, "Brochures", "{}")
-    Call ReplaceAndSetColor(sheet1, "Flashlights", "{}")
+    Call ReplaceAndSetColor(sheet1, "HANDWRITTEN_TOTAL", "{}")
 
     Dim cc
     For Each cc In sheet1.ContentControls
@@ -1093,7 +1128,10 @@ fn print_accounting_invoice(args: ShippingInvoiceArgs) -> Result<(), String> {
 
           Select Case keyValue(0)
             Case "cost"
-              row.Cells(1).Range.Text = keyValue(1)
+              Dim cost
+              cost = keyValue(1)
+              cost = Replace(cost, "|", ",")
+              row.Cells(1).Range.Text = cost
               row.Cells(1).Range.Font.Bold = False
             Case "qty"
               row.Cells(2).Range.Text = keyValue(1)
@@ -1106,9 +1144,15 @@ fn print_accounting_invoice(args: ShippingInvoiceArgs) -> Result<(), String> {
             Case "location"
               row.Cells(6).Range.Text = keyValue(1)
             Case "unitPrice"
-              row.Cells(7).Range.Text = keyValue(1)
+              Dim unitPrice
+              unitPrice = keyValue(1)
+              unitPrice = Replace(unitPrice, "|", ",")
+              row.Cells(7).Range.Text = unitPrice
             Case "total"
-              row.Cells(8).Range.Text = keyValue(1)
+              Dim total
+              total = keyValue(1)
+              total = Replace(total, "|", ",")
+              row.Cells(8).Range.Text = total
           End Select
         Next
       Next
@@ -1145,10 +1189,7 @@ fn print_accounting_invoice(args: ShippingInvoiceArgs) -> Result<(), String> {
     args.shipVia,
     args.invoiceNotes,
     args.shippingNotes,
-    args.mp,
-    args.cap,
-    args.br,
-    args.fl,
+    args.handwrittenTotal,
     if args.taxable {"True"} else {"False"},
     if args.blind {"True"} else {"False"},
     if args.npi {"True"} else {"False"},
@@ -1159,7 +1200,7 @@ fn print_accounting_invoice(args: ShippingInvoiceArgs) -> Result<(), String> {
     printer
   );
 
-  let vbs_path = "C:\\MWD\\scripts\\generate_shipping_invoice.vbs";
+  let vbs_path = "C:\\MWD\\scripts\\generate_accounting_invoice.vbs";
   write(&vbs_path, vbs_script).expect("Failed to create VBS script");
 
   let mut cmd = Command::new("wscript.exe");
@@ -1170,7 +1211,7 @@ fn print_accounting_invoice(args: ShippingInvoiceArgs) -> Result<(), String> {
 
 #[tauri::command]
 fn print_shipping_invoice(args: ShippingInvoiceArgs) -> Result<(), String> {
-  let printer = "Brother MFC-L3770CDW series";
+  let printer = "\\\\JIM-PC\\HP LaserJet Pro M402-M403 n-dne PCL 6";
   let json_data = to_string(&args.items).unwrap();
   let vbs_script = format!(
     r#"
@@ -1288,7 +1329,10 @@ fn print_shipping_invoice(args: ShippingInvoiceArgs) -> Result<(), String> {
 
           Select Case keyValue(0)
             Case "cost"
-              row.Cells(1).Range.Text = keyValue(1)
+              Dim cost
+              cost = keyValue(1)
+              cost = Replace(cost, "|", ",")
+              row.Cells(1).Range.Text = cost
               row.Cells(1).Range.Font.Bold = False
             Case "qty"
               row.Cells(2).Range.Text = keyValue(1)
@@ -1301,9 +1345,15 @@ fn print_shipping_invoice(args: ShippingInvoiceArgs) -> Result<(), String> {
             Case "location"
               row.Cells(6).Range.Text = keyValue(1)
             Case "unitPrice"
-              row.Cells(7).Range.Text = keyValue(1)
+              Dim unitPrice
+              unitPrice = keyValue(1)
+              unitPrice = Replace(unitPrice, "|", ",")
+              row.Cells(7).Range.Text = unitPrice
             Case "total"
-              row.Cells(8).Range.Text = keyValue(1)
+              Dim total
+              total = keyValue(1)
+              total = Replace(total, "|", ",")
+              row.Cells(8).Range.Text = total
           End Select
         Next
       Next
@@ -1365,14 +1415,14 @@ fn print_shipping_invoice(args: ShippingInvoiceArgs) -> Result<(), String> {
 
 #[tauri::command]
 fn print_core_invoice(args: ShippingInvoiceArgs) -> Result<(), String> {
-  let printer = "Brother HL-L3290CDW series";
+  let printer = "Brother HL-L5200DW series";
   let json_data = to_string(&args.items).unwrap();
   let vbs_script = format!(
     r#"
     Dim doc, sheet1
     Set doc = CreateObject("Word.Application")
     doc.Visible = True
-    Set sheet1 = doc.Documents.Open("\\MWD1-SERVER\Server\handwrittenShippingTemplate.docx")
+    Set sheet1 = doc.Documents.Open("\\MWD1-SERVER\Server\handwrittenCoreTemplate.docx")
 
     Sub ReplaceAndSetColor(sheet, findText, replaceText)
       If Len(replaceText) > 0 Then
@@ -1459,7 +1509,7 @@ fn print_core_invoice(args: ShippingInvoiceArgs) -> Result<(), String> {
     Dim handwrittenItems, jsonData, item, table, row, i
     jsonData = {:?}
 
-    If Len(jsonData) > 2 Then
+If Len(jsonData) > 2 Then
       Dim items
       items = Split(jsonData, "}},")
       Set table = sheet1.Tables(1)
@@ -1483,7 +1533,10 @@ fn print_core_invoice(args: ShippingInvoiceArgs) -> Result<(), String> {
 
           Select Case keyValue(0)
             Case "cost"
-              row.Cells(1).Range.Text = keyValue(1)
+              Dim cost
+              cost = keyValue(1)
+              cost = Replace(cost, "|", ",")
+              row.Cells(1).Range.Text = cost
               row.Cells(1).Range.Font.Bold = False
             Case "qty"
               row.Cells(2).Range.Text = keyValue(1)
@@ -1496,9 +1549,15 @@ fn print_core_invoice(args: ShippingInvoiceArgs) -> Result<(), String> {
             Case "location"
               row.Cells(6).Range.Text = keyValue(1)
             Case "unitPrice"
-              row.Cells(7).Range.Text = keyValue(1)
+              Dim unitPrice
+              unitPrice = keyValue(1)
+              unitPrice = Replace(unitPrice, "|", ",")
+              row.Cells(7).Range.Text = unitPrice
             Case "total"
-              row.Cells(8).Range.Text = keyValue(1)
+              Dim total
+              total = keyValue(1)
+              total = Replace(total, "|", ",")
+              row.Cells(8).Range.Text = total
           End Select
         Next
       Next
@@ -1549,7 +1608,7 @@ fn print_core_invoice(args: ShippingInvoiceArgs) -> Result<(), String> {
     printer
   );
 
-  let vbs_path = "C:\\MWD\\scripts\\generate_shipping_invoice.vbs";
+  let vbs_path = "C:\\MWD\\scripts\\generate_core_invoice.vbs";
   write(&vbs_path, vbs_script).expect("Failed to create VBS script");
 
   let mut cmd = Command::new("wscript.exe");

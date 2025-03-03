@@ -20,6 +20,8 @@ export default function PrintInvoiceDialog({ open, setOpen, handwritten }: Props
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setOpen(false);
+    const itemTotals: number[] = handwritten.handwrittenItems.map((item) => item.qty * item.unitPrice);
+    const handwrittenTotal = formatCurrency(itemTotals.reduce((acc, cur) => acc + cur));
     const args = {
       billToCompany: handwritten.billToCompany || '',
       billToAddress: handwritten.billToAddress || '',
@@ -58,28 +60,43 @@ export default function PrintInvoiceDialog({ open, setOpen, handwritten }: Props
       npi: handwritten.isNoPriceInvoice || false,
       collect: handwritten.isCollect || false,
       thirdParty: handwritten.isThirdParty || false,
+      handwrittenTotal,
       items: JSON.stringify(handwritten.handwrittenItems.map((item) => {
         return {
           stockNum: item.stockNum || '',
           location: item.location || '',
-          cost: formatCurrency(item.cost) || '$0.00',
+          cost: formatCurrency(item.cost).replaceAll(',', '|') || '$0.00',
           qty: item.qty,
           partNum: item.partNum || '',
           desc: item.desc || '',
-          unitPrice: formatCurrency(item.unitPrice) || '$0.00',
-          total: formatCurrency(item.qty * item.unitPrice) || '$0.00',
+          unitPrice: formatCurrency(item.unitPrice).replaceAll(',', '|') || '$0.00',
+          total: formatCurrency(item.qty * item.unitPrice).replaceAll(',', '|') || '$0.00',
           itemChildren: item.invoiceItemChildren
         };
       }))
     };
     const itemChildren = handwritten.handwrittenItems.map((item) => {
       if (item.invoiceItemChildren.length > 0) return item.invoiceItemChildren.map((child) => {
-        return { cost: formatCurrency(child.cost) || '$0.00', qty: child.qty, partNum: child.partNum, desc: child.part.desc, stockNum: child.stockNum, location: child.part.location, unitPrice: formatCurrency(item.unitPrice) || '$0.00', total: formatCurrency(item.qty * item.unitPrice) || '$0.00' };
+        return {
+          cost: formatCurrency(child.cost).replaceAll(',', '|') || '$0.00',
+          qty: child.qty,
+          partNum: child.partNum,
+          desc: child.part.desc,
+          stockNum: child.stockNum,
+          location: child.part.location,
+          unitPrice: formatCurrency(item.unitPrice).replaceAll(',', '|') || '$0.00',
+          total: formatCurrency(child.qty * item.unitPrice).replaceAll(',', '|') || '$0.00'
+        };
       });
     }).filter((item) => item).flat();
     const itemsWithChildren = JSON.stringify([...JSON.parse(args.items).filter((item) => item.itemChildren.length === 0), ...itemChildren ]);
+    const filteredItems = JSON.parse(args.items).map((item) => {
+      const { itemChildren, ...rest } = item;
+      return { ...rest };
+    });
+    console.log(filteredItems);
 
-    if (accounting) await invoke('print_accounting_invoice', { args });
+    if (accounting) await invoke('print_accounting_invoice', { args: { ...args, items: JSON.stringify(filteredItems) } });
     if (shipping) await invoke('print_shipping_invoice', { args: { ...args, items: itemsWithChildren } });
     if (coreDeposit) await invoke('print_core_invoice', { args });
   };
