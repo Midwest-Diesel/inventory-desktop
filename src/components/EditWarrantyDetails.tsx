@@ -1,4 +1,4 @@
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import Button from "./Library/Button";
 import Grid from "./Library/Grid/Grid";
 import GridItem from "./Library/Grid/GridItem";
@@ -27,6 +27,8 @@ export default function EditWarrantyDetails({ warrantyData, setWarranty, setIsEd
   const [handwrittenId, setHandwrittenId] = useState(warrantyData.handwrittenId);
   const [warrantyItems, setWarrantyItems] = useState<WarrantyItem[]>(warrantyData.warrantyItems);
   const [changesSaved, setChangesSaved] = useState<boolean>(true);
+
+  useEffect(() => setWarrantyItems(warrantyData.warrantyItems), [warrantyData]);
 
   const saveChanges = async (e: FormEvent) => {
     e.preventDefault();
@@ -87,7 +89,8 @@ export default function EditWarrantyDetails({ warrantyData, setWarranty, setIsEd
       isCustomerCredited: false,
     } as any;
     await addWarrantyItem(newItem);
-    setWarrantyItems([...warrantyData.warrantyItems, newItem]);
+    const res = await getWarrantyById(warrantyData.id);
+    setWarranty(res);
   };
 
 
