@@ -55,7 +55,7 @@ export default function WarrantyItemsTableDetails({ className, warrantyItems }: 
                     <td>{ formatDate(item.returnedVendorDate) }</td>
                     <td>{ item.claimReason }</td>
                     <td>{ item.vendorReport }</td>
-                    <td>{ item.vendorCredit }</td>
+                    <td>{ formatCurrency(item.vendorCredit) }</td>
                     <td className="cbx-td">
                       <Checkbox
                         checked={item.hasVendorReplacedPart}

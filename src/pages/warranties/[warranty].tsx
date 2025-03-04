@@ -8,13 +8,13 @@ import Table from "@/components/Library/Table";
 import WarrantyItemsTableDetails from "@/components/WarrantyItemsTableDetails";
 import { userAtom } from "@/scripts/atoms/state";
 import { deleteWarranty, editWarranty, getWarrantyById } from "@/scripts/controllers/warrantiesController";
-import { formatDate } from "@/scripts/tools/stringUtils";
+import { formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
 import { setTitle } from "@/scripts/tools/utils";
 import { useAtom } from "jotai";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { confirm } from "@/scripts/config/tauri";
+import { confirm, invoke } from "@/scripts/config/tauri";
 
 
 export default function Warranty() {
@@ -57,8 +57,37 @@ export default function Warranty() {
     setWarrantyData(await getWarrantyById(warrantyData.id));
   };
 
-  const handlePrint = () => {
-    window.print();
+  const handlePrint = async () => {
+    let claimReason = [];
+    let vendorReport = [];
+    const args = {
+      vendor: warrantyData.vendor || '',
+      createdDate: formatDate(warrantyData.date),
+      id: Number(warrantyData.id),
+      vendorWarrantyId: Number(warrantyData.vendorWarrantyNum),
+      completed: warrantyData.completed ? `Claim Completed: ${formatDate(warrantyData.completedDate)}` : '',
+      billToAddress: warrantyData.customer.billToAddress || '',
+      shipToAddress: warrantyData.customer.shipToAddress || '',
+      paymentTerms: warrantyData.return.returnPaymentTerms || ' ',
+      restockFee: warrantyData.return.restockFee || ' ',
+      items: JSON.stringify(warrantyData.warrantyItems.map((item, i) => {
+        claimReason.push(`[Row ${i + 1}] ${item.claimReason.replaceAll('"', `'`)}`);
+        vendorReport.push(`[Row ${i + 1}] ${item.vendorReport.replaceAll('"', `'`)}`);
+
+        return {
+          qty: item.qty || '',
+          partNum: item.partNum || '',
+          desc: item.desc || '',
+          stockNum: item.stockNum || '',
+          cost: formatCurrency(item.cost).replaceAll(',', '|') || '$0.00',
+          price: formatCurrency(item.price).replaceAll(',', '|') || '$0.00',
+          hasVendorReplacedPart: item.hasVendorReplacedPart,
+          isCustomerCredited: item.isCustomerCredited,
+          vendorCredit: formatCurrency(item.vendorCredit).replaceAll(',', '|') || '$0.00'
+        };
+      })) || '[]'
+    };
+    await invoke('print_warranty', { args: { ...args, claimReason: claimReason.join('|||'), vendorReport: vendorReport.join('|||') }});
   };
 
 
@@ -73,7 +102,7 @@ export default function Warranty() {
               <div>
                 <h2>{ warrantyData.id } Warranty</h2>
                 <div className="warranty-details__top-bar">
-                  <Button onClick={handlePrint}>Print Report</Button>
+                  <Button onClick={handlePrint}>Print</Button>
                   <Button onClick={handleCompleteWarranty}>{ warrantyData.completed ? 'Open' : 'Complete' } Claim</Button>
                 </div>
               </div>
@@ -146,6 +175,12 @@ export default function Warranty() {
                       <th>Connected Handwritten</th>
                       <td>
                         <Link href={`/handwrittens/${warrantyData.handwrittenId}`}>{ warrantyData.handwrittenId }</Link>
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>Connected Return</th>
+                      <td>
+                        <Link href={`/returns/${warrantyData.return.id}`}>{ warrantyData.return.id }</Link>
                       </td>
                     </tr>
                   </tbody>

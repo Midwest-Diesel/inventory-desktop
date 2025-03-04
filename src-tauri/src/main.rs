@@ -268,6 +268,21 @@ struct PrintReturnArgs {
   items: String
 }
 
+#[derive(Deserialize, Serialize)]
+struct PrintWarrantyArgs {
+  vendor: String,
+  createdDate: String,
+  id: i16,
+  vendorWarrantyId: i16,
+  completed: String,
+  billToAddress: String,
+  shipToAddress: String,
+  claimReason: String,
+  paymentTerms: String,
+  restockFee: String,
+  vendorReport: String,
+  items: String
+}
 
 #[tokio::main]
 async fn main() {
@@ -298,7 +313,8 @@ async fn main() {
       print_ci,
       print_coo,
       print_part_tag,
-      print_return
+      print_return,
+      print_warranty
     ])
     .run(tauri::generate_context!())
     .expect("error while running tauri application");
@@ -1714,7 +1730,7 @@ fn print_part_tag(args: PartTagArgs) -> Result<(), String> {
     Dim doc, sheet1
     Set doc = CreateObject("Word.Application")
     doc.Visible = True
-    Set sheet1 = doc.Documents.Open("\\MWD1-SERVER\Server\part_tag_template.docx")
+    Set sheet1 = doc.Documents.Open("\\MWD1-SERVER\Server\part_tag_template.rtf")
 
     Sub ReplaceAndSetColor(sheet, findText, replaceText)
       With sheet.Content.Find
@@ -1937,3 +1953,173 @@ fn print_return(args: PrintReturnArgs) -> Result<(), String> {
   Ok(())
 }
 
+#[tauri::command]
+fn print_warranty(args: PrintWarrantyArgs) -> Result<(), String> {
+  let printer = "Brother MFC-L3770CDW series";
+  let vbs_script = format!(
+    r#"
+    Dim doc, sheet1
+    Set doc = CreateObject("Word.Application")
+    doc.Visible = True
+    Set sheet1 = doc.Documents.Open("\\MWD1-SERVER\Server\warrantyTemplate.docx")
+
+    Sub ReplaceTextAndColor(sheet, findText, replaceText)
+      If InStr(replaceText, "Claim Completed") > 0 Then
+        With sheet.Content.Find
+          .Text = findText
+          .Replacement.Text = replaceText
+          .Replacement.Font.Color = RGB(214, 0, 0)
+          .Wrap = 1
+          .MatchWholeWord = True
+          .Execute , , , , , , , , , , 2
+        End With
+      Else
+        With sheet.Content.Find
+          .Text = findText
+          .Replacement.Text = replaceText
+          .Wrap = 1
+          .MatchWholeWord = True
+          .Execute , , , , , , , , , , 2
+        End With
+      End If
+    End Sub
+
+    Sub ReplaceTextInShapes(sheet, findText, replaceText)
+      Dim footer
+      Set footer = sheet.Sections(1).Footers(1)
+      Dim shape
+      Dim parts
+      Dim part
+      Dim i
+      parts = Split(replaceText, "|||")
+
+      For Each shape In footer.Range.ShapeRange
+        If Not shape.TextFrame Is Nothing Then
+          If shape.TextFrame.HasText Then
+            For i = 0 To UBound(parts)
+              part = Trim(parts(i))
+              If i < UBound(parts) Then
+                part = part & Chr(11) & findText
+              End If
+
+              With shape.TextFrame.TextRange.Find
+                .Text = findText
+                .Replacement.Text = part
+                .Wrap = 1
+                .MatchWholeWord = True
+                .Execute , , , , , , , , , , 2
+              End With
+            Next
+          End If
+        End If
+      Next
+    End Sub
+
+    Call ReplaceTextAndColor(sheet1, "<VENDOR>", "{}")
+    Call ReplaceTextAndColor(sheet1, "<CREATED_DATE>", "{}")
+    Call ReplaceTextAndColor(sheet1, "<ID>", "{}")
+    Call ReplaceTextAndColor(sheet1, "<VENDOR_WARRANTY_ID>", "{}")
+    Call ReplaceTextAndColor(sheet1, "Claim Completed: <DATE>", "{}")
+    Call ReplaceTextAndColor(sheet1, "<BILL_TO_ADDRESS>", "{}")
+    Call ReplaceTextAndColor(sheet1, "<SHIP_TO_ADDRESS>", "{}")
+    Call ReplaceTextInShapes(sheet1, "<REASON>", Replace("{}", "…", ""))
+    Call ReplaceTextInShapes(sheet1, "<PAYMENT_TERMS>", "{}")
+    Call ReplaceTextInShapes(sheet1, "<RESTOCK_FEE>", "{}")
+    Call ReplaceTextInShapes(sheet1, "<VENDOR_REPORT>", Replace("{}", "…", ""))
+
+    Dim jsonData, item, table, row, i
+    jsonData = {:?}
+
+    If Len(jsonData) > 2 Then
+      Dim items
+      items = Split(jsonData, "}},")
+      Set table = sheet1.Tables(1)
+
+      For i = LBound(items) To UBound(items)
+        Dim fields, keyValue, j
+        If i > 0 Or table.Rows.Count = 1 Then
+          table.Rows.Add
+        End If
+
+        Set row = table.Rows(table.Rows.Count)
+        fields = Split(items(i), ",")
+
+        For j = LBound(fields) To UBound(fields)
+          keyValue = Split(fields(j), ":")
+          keyValue(0) = Replace(keyValue(0), "[{{", "")
+          keyValue(0) = Replace(keyValue(0), "{{", "")
+          If UBound(keyValue) >= 1 Then
+            keyValue(1) = Replace(keyValue(1), "}}]", "")
+          End If
+
+          Select Case keyValue(0)
+            Case "qty"
+              row.Cells(1).Range.Text = keyValue(1)
+              row.Cells(1).Range.Font.Bold = False
+            Case "partNum"
+              row.Cells(2).Range.Text = keyValue(1)
+            Case "desc"
+              row.Cells(3).Range.Text = keyValue(1)
+            Case "stockNum"
+              row.Cells(4).Range.Text = keyValue(1)
+            Case "cost"
+              Dim cost
+              cost = keyValue(1)
+              cost = Replace(cost, "|", ",")
+              row.Cells(5).Range.Text = cost
+            Case "price"
+              Dim price
+              price = keyValue(1)
+              price = Replace(price, "|", ",")
+              row.Cells(6).Range.Text = price
+            Case "hasVendorReplacedPart"
+              If LCase(Trim(keyValue(1))) = "true" Then
+                row.Cells(7).Range.Text = ChrW(&H2705)
+              Else
+                row.Cells(7).Range.Text = ChrW(&H274C)
+              End If
+            Case "isCustomerCredited"
+              If LCase(Trim(keyValue(1))) = "true" Then
+                row.Cells(8).Range.Text = ChrW(&H2705)
+              Else
+                row.Cells(8).Range.Text = ChrW(&H274C)
+              End If
+            Case "vendorCredit"
+              Dim vendorCredit
+              vendorCredit = keyValue(1)
+              vendorCredit = Replace(vendorCredit, "|", ",")
+              row.Cells(9).Range.Text = vendorCredit
+          End Select
+        Next
+      Next
+    End If
+
+    doc.ActivePrinter = "{}"
+    sheet1.PrintOut , , , , , , , {}
+    sheet1.Close False
+    doc.Quit
+    "#,
+    args.vendor,
+    args.createdDate,
+    args.id,
+    args.vendorWarrantyId,
+    args.completed,
+    args.billToAddress,
+    args.shipToAddress,
+    args.claimReason,
+    args.paymentTerms,
+    args.restockFee,
+    args.vendorReport,
+    args.items.replace("\"", "").replace("\\", ""),
+    printer,
+    1
+  );
+
+  let vbs_path = "C:\\MWD\\scripts\\print_warranty.vbs";
+  write(&vbs_path, vbs_script).expect("Failed to create VBS script");
+
+  let mut cmd = Command::new("wscript.exe");
+  cmd.arg(vbs_path);
+  cmd.output().expect("Failed to update shipping list");
+  Ok(())
+}

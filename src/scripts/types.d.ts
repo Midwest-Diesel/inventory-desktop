@@ -310,6 +310,7 @@ type Warranty = {
   vendorWarrantyNum: number
   warrantyItems: WarrantyItem[]
   handwrittenId: number
+  return: Return
 };
 
 type WarrantyItem = {

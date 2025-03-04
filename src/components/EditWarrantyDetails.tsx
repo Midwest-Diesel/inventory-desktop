@@ -4,7 +4,7 @@ import Grid from "./Library/Grid/Grid";
 import GridItem from "./Library/Grid/GridItem";
 import Input from "./Library/Input";
 import Table from "./Library/Table";
-import { parseDateInputValue } from "@/scripts/tools/stringUtils";
+import { parseDateInputValue, parseResDate } from "@/scripts/tools/stringUtils";
 import { addWarrantyItem, deleteWarrantyItem, editWarranty, editWarrantyItem, getWarrantyById } from "@/scripts/controllers/warrantiesController";
 import Checkbox from "./Library/Checkbox";
 import CustomerSelect from "./Library/Select/CustomerSelect";
@@ -41,6 +41,7 @@ export default function EditWarrantyDetails({ warrantyData, setWarranty, setIsEd
       vendorWarrantyNum,
       warrantyItems,
       handwrittenId,
+      completedDate: parseResDate(parseDateInputValue(warrantyData.completedDate))
     } as Warranty;
     await editWarranty(newWarranty);
     if (JSON.stringify(warrantyItems) !== JSON.stringify(warrantyData.warrantyItems)) {
@@ -250,7 +251,7 @@ export default function EditWarrantyDetails({ warrantyData, setWarranty, setIsEd
                           <Input
                             type="date"
                             value={parseDateInputValue(item.returnedVendorDate)}
-                            onChange={(e: any) => handleEditItem({ ...item, returnedVendorDate: e.target.value }, i)}
+                            onChange={(e: any) => handleEditItem({ ...item, returnedVendorDate: new Date(e.target.value) }, i)}
                           />
                         </td>
                         <td>
