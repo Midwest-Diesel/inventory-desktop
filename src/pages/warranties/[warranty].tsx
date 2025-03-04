@@ -47,6 +47,7 @@ export default function Warranty() {
   };
 
   const handlePrint = async () => {
+    if (!await confirm('Print warranty?')) return;
     let claimReason = [];
     let vendorReport = [];
     const args = {

@@ -20,13 +20,13 @@ interface Props {
 
 
 export default function EditWarrantyDetails({ warrantyData, setWarranty, setIsEditing }: Props) {
-  const [company, setCompany] = useState(warrantyData.customer.company);
+  const [company, setCompany] = useState<string>(warrantyData.customer.company);
   const [date, setDate] = useState<Date>(warrantyData.date);
-  const [vendor, setVendor] = useState(warrantyData.vendor);
-  const [vendorWarrantyNum, setVendorWarrantyNum] = useState(warrantyData.vendorWarrantyNum);
-  const [handwrittenId, setHandwrittenId] = useState(warrantyData.handwrittenId);
+  const [vendor, setVendor] = useState<string>(warrantyData.vendor);
+  const [vendorWarrantyNum, setVendorWarrantyNum] = useState<number>(warrantyData.vendorWarrantyNum);
+  const [handwrittenId, setHandwrittenId] = useState<number>(warrantyData.handwrittenId);
   const [warrantyItems, setWarrantyItems] = useState<WarrantyItem[]>(warrantyData.warrantyItems);
-  const [changesSaved, setChangesSaved] = useState<boolean>(true);
+  const [changesSaved, setChangesSaved] = useState(true);
 
   useEffect(() => setWarrantyItems(warrantyData.warrantyItems), [warrantyData]);
 
@@ -40,19 +40,15 @@ export default function EditWarrantyDetails({ warrantyData, setWarranty, setIsEd
       customer: newCustomer,
       date,
       vendor,
-      vendorWarrantyNum,
+      vendorWarrantyNum: vendorWarrantyNum || null,
       warrantyItems,
-      handwrittenId,
+      handwrittenId
     } as Warranty;
     await editWarranty(newWarranty);
     if (JSON.stringify(warrantyItems) !== JSON.stringify(warrantyData.warrantyItems)) {
       for (let i = 0; i < warrantyItems.length; i++) {
         const item = warrantyItems[i];
-        const newItem = {
-          id: item.id,
-          ...item
-        } as WarrantyItem;
-        await editWarrantyItem(newItem);
+        await editWarrantyItem(item);
       }
     }
     setWarranty(await getWarrantyById(warrantyData.id));
