@@ -115,6 +115,17 @@ export const editWarrantyItem = async (item: WarrantyItem) => {
   }
 };
 
+// === PATCH routes === //
+
+export const editWarrantyCompleted = async (id: number, date: Date | null) => {
+  try {
+    const auth = { withCredentials: true };
+    await api.patch('/api/warranties/completed', { id, date }, auth);
+  } catch (err) {
+    console.error(err);
+  }
+};
+
 // === DELETE routes === //
 
 export const deleteWarranty = async (id: number) => {

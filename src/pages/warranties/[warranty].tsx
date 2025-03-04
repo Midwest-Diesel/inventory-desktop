@@ -7,7 +7,7 @@ import Loading from "@/components/Library/Loading";
 import Table from "@/components/Library/Table";
 import WarrantyItemsTableDetails from "@/components/WarrantyItemsTableDetails";
 import { userAtom } from "@/scripts/atoms/state";
-import { deleteWarranty, editWarranty, getWarrantyById } from "@/scripts/controllers/warrantiesController";
+import { deleteWarranty, editWarrantyCompleted, getWarrantyById } from "@/scripts/controllers/warrantiesController";
 import { formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
 import { setTitle } from "@/scripts/tools/utils";
 import { useAtom } from "jotai";
@@ -42,18 +42,7 @@ export default function Warranty() {
 
   const handleCompleteWarranty = async () => {
     if (!await confirm(`${warrantyData.completed ? 'Open' : 'Close'} warranty?`)) return;
-    const newWarranty = {
-      id: Number(warrantyData.id),
-      completed: !warrantyData.completed,
-      completedDate: warrantyData.completedDate ? null : new Date(),
-      customer: warrantyData.customer,
-      date: warrantyData.date,
-      vendor: warrantyData.vendor,
-      vendorWarrantyNum: warrantyData.vendorWarrantyNum,
-      warrantyItems: warrantyData.warrantyItems,
-      handwrittenId: warrantyData.handwrittenId,
-    } as Warranty;
-    await editWarranty(newWarranty);
+    await editWarrantyCompleted(warrantyData.id, warrantyData.completedDate ? null : new Date());
     setWarrantyData(await getWarrantyById(warrantyData.id));
   };
 
