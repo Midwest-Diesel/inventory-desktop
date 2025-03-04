@@ -86,7 +86,7 @@ export default function HandwrittenItemsTable({ className, handwritten, handwrit
       shipToCompany: handwritten.shipToCompany,
       charge: item.cost,
       priority,
-      salesmanId: handwritten.salesmanId,
+      salesmanId: handwritten.createdBy,
       partId: item.partId,
       handwrittenItemId: newItemId
     } as any;

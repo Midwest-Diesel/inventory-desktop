@@ -6,10 +6,12 @@ import GridItem from "@/components/Library/Grid/GridItem";
 import Loading from "@/components/Library/Loading";
 import Table from "@/components/Library/Table";
 import ReturnItemsTable from "@/components/ReturnItemsTable";
-import { confirm } from "@/scripts/config/tauri";
+import { userAtom } from "@/scripts/atoms/state";
+import { confirm, invoke } from "@/scripts/config/tauri";
 import { deleteReturn, getReturnById, issueReturnCredit } from "@/scripts/controllers/returnsController";
-import { formatDate, formatPhone } from "@/scripts/tools/stringUtils";
+import { formatCurrency, formatDate, formatPhone } from "@/scripts/tools/stringUtils";
 import { setTitle } from "@/scripts/tools/utils";
+import { useAtom } from "jotai";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -18,6 +20,7 @@ import { useEffect, useState } from "react";
 export default function Return() {
   const router = useRouter();
   const params = useParams();
+  const [user] = useAtom<User>(userAtom);
   const [returnData, setReturnData] = useState<Return>(null);
   const [isEditing, setIsEditing] = useState(false);
 
@@ -41,6 +44,43 @@ export default function Return() {
     if (returnData.creditIssued || !await confirm('Are you sure you want to credit this?')) return;
     await issueReturnCredit(returnData.id);
     setReturnData({ ...returnData, creditIssued: new Date() });
+  };
+
+  const handlePrint = async () => {
+    if (!await confirm('Print return?')) return;
+    const args = {
+      createdBy: returnData.createdBy || '',
+      date: formatDate(new Date()),
+      poNum: returnData.poNum || '',
+      id: returnData.id,
+      invoiceDate: formatDate(returnData.invoiceDate),
+      billToCompany: returnData.billToCompany || '',
+      shipToCompany: returnData.shipToCompany || '',
+      billToAddress: returnData.billToAddress || '',
+      billToCity: returnData.billToCity || '',
+      billToState: returnData.billToState || '',
+      billToZip: returnData.billToZip || '',
+      billToPhone: returnData.billToPhone || '',
+      dateCalled: formatDate(returnData.dateCalled),
+      salesman: user.initials || '',
+      returnReason: returnData.returnReason || '',
+      returnNotes: returnData.returnNotes || '',
+      returnPaymentTerms: returnData.returnPaymentTerms || '',
+      payment: returnData.payment || '',
+      restockFee: returnData.restockFee || '',
+      items: JSON.stringify(returnData.returnItems.map((item) => {
+        return {
+          cost: formatCurrency(item.cost).replaceAll(',', '|') || '$0.00',
+          stockNum: item.stockNum || '',
+          qty: item.qty,
+          partNum: item.partNum || '',
+          desc: item.desc || '',
+          unitPrice: formatCurrency(item.unitPrice).replaceAll(',', '|') || '$0.00',
+          total: formatCurrency(item.qty * item.unitPrice).replaceAll(',', '|') || '$0.00'
+        };
+      })) || '[]'
+    };
+    await invoke('print_return', { args });
   };
 
   
@@ -82,6 +122,7 @@ export default function Return() {
             <div className="return-details__top-bar">
               <Button onClick={handleCreditIssued} data-id="credit-issued-btn" disabled={Boolean(returnData.creditIssued)}>Credit Issued</Button>
               <Button onClick={() => router.push(`/warranties/${returnData.warrantyId}`)} disabled={!returnData.warrantyId}>Warranty</Button>
+              <Button onClick={handlePrint}>Print</Button>
             </div>
 
             <Grid rows={1} cols={12} gap={1}>

@@ -244,6 +244,30 @@ struct PartTagArgs {
   copies: i8
 }
 
+#[derive(Deserialize, Serialize)]
+struct PrintReturnArgs {
+  createdBy: String,
+  date: String,
+  poNum: String,
+  id: i16,
+  invoiceDate: String,
+  billToCompany: String,
+  shipToCompany: String,
+  billToAddress: String,
+  billToCity: String,
+  billToState: String,
+  billToZip: String,
+  billToPhone: String,
+  dateCalled: String,
+  salesman: String,
+  returnReason: String,
+  returnNotes: String,
+  returnPaymentTerms: String,
+  payment: String,
+  restockFee: String,
+  items: String
+}
+
 
 #[tokio::main]
 async fn main() {
@@ -273,7 +297,8 @@ async fn main() {
       print_core_invoice,
       print_ci,
       print_coo,
-      print_part_tag
+      print_part_tag,
+      print_return
     ])
     .run(tauri::generate_context!())
     .expect("error while running tauri application");
@@ -1414,7 +1439,7 @@ fn print_shipping_invoice(args: ShippingInvoiceArgs) -> Result<(), String> {
 }
 
 #[tauri::command]
-fn print_core_invoice(args: ShippingInvoiceArgs) -> Result<(), String> {
+fn print_core_invoice(args: AccountingInvoiceArgs) -> Result<(), String> {
   let printer = "Brother HL-L5200DW series";
   let json_data = to_string(&args.items).unwrap();
   let vbs_script = format!(
@@ -1484,10 +1509,7 @@ fn print_core_invoice(args: ShippingInvoiceArgs) -> Result<(), String> {
     Call ReplaceAndSetColor(sheet1, "SHIP VIA", "{}")
     Call ReplaceAndSetColor(sheet1, "INVOICE NOTES", "{}")
     Call ReplaceAndSetColor(sheet1, "SHIPPING NOTES", "{}")
-    Call ReplaceAndSetColor(sheet1, "Mousepads", "{}")
-    Call ReplaceAndSetColor(sheet1, "Hats", "{}")
-    Call ReplaceAndSetColor(sheet1, "Brochures", "{}")
-    Call ReplaceAndSetColor(sheet1, "Flashlights", "{}")
+    Call ReplaceAndSetColor(sheet1, "HANDWRITTEN_TOTAL", "{}")
 
     Dim cc
     For Each cc In sheet1.ContentControls
@@ -1594,10 +1616,7 @@ If Len(jsonData) > 2 Then
     args.shipVia,
     args.invoiceNotes,
     args.shippingNotes,
-    args.mp,
-    args.cap,
-    args.br,
-    args.fl,
+    args.handwrittenTotal,
     if args.taxable {"True"} else {"False"},
     if args.blind {"True"} else {"False"},
     if args.npi {"True"} else {"False"},
@@ -1689,13 +1708,14 @@ fn print_coo() -> Result<(), String> {
 
 #[tauri::command]
 fn print_part_tag(args: PartTagArgs) -> Result<(), String> {
-  let printer = "ZDesigner GC420d (EPL)";
+  // let printer = "ZDesigner GC420d (EPL)";
+  let printer = "Brother MFC-L3770CDW series";
   let vbs_script = format!(
     r#"
     Dim doc, sheet1
     Set doc = CreateObject("Word.Application")
     doc.Visible = True
-    Set sheet1 = doc.Documents.Open("\\MWD1-SERVER\Server\part_tag_template.rtf")
+    Set sheet1 = doc.Documents.Open("\\MWD1-SERVER\Server\part_tag_template.docx")
 
     Sub ReplaceAndSetColor(sheet, findText, replaceText)
       With sheet.Content.Find
@@ -1767,3 +1787,154 @@ fn print_part_tag(args: PartTagArgs) -> Result<(), String> {
   cmd.output().expect("Failed to update shipping list");
   Ok(())
 }
+
+#[tauri::command]
+fn print_return(args: PrintReturnArgs) -> Result<(), String> {
+  let printer = "Brother MFC-L3770CDW series";
+  let vbs_script = format!(
+    r#"
+    Dim doc, sheet1
+    Set doc = CreateObject("Word.Application")
+    doc.Visible = True
+    Set sheet1 = doc.Documents.Open("\\MWD1-SERVER\Server\returnTemplate.rtf")
+
+    Sub ReplaceTextAndColor(sheet, findText, replaceText)
+      With sheet.Content.Find
+        .Text = findText
+        .Replacement.Text = replaceText
+        .Wrap = 1
+        .MatchWholeWord = True
+        .Execute , , , , , , , , , , 2
+      End With
+    End Sub
+
+    Sub ReplaceTextInShapes(sheet, findText, replaceText)
+      Dim shape
+      For Each shape In sheet.Shapes
+        If Not shape.TextFrame Is Nothing Then
+          If shape.TextFrame.HasText Then
+            With shape.TextFrame.TextRange.Find
+              .Text = findText
+              .Replacement.Text = replaceText
+              .Wrap = 1
+              .MatchWholeWord = True
+              .Execute , , , , , , , , , , 2
+            End With
+          End If
+        End If
+      Next
+    End Sub
+
+    Call ReplaceTextAndColor(sheet1, "<CREATED_BY>", "{}")
+    Call ReplaceTextAndColor(sheet1, "<DATE>", "{}")
+    Call ReplaceTextAndColor(sheet1, "<PO_NUM>", "{}")
+    Call ReplaceTextAndColor(sheet1, "<ID>", "{}")
+    Call ReplaceTextAndColor(sheet1, "<INVOICE_DATE>", "{}")
+    Call ReplaceTextAndColor(sheet1, "<BILL_TO_COMPANY>", "{}")
+    Call ReplaceTextAndColor(sheet1, "<SHIP_TO_COMPANY>", "{}")
+    Call ReplaceTextAndColor(sheet1, "<BILL_TO_ADDRESS>", "{}")
+    Call ReplaceTextAndColor(sheet1, "<BILL_TO_CITY>", "{}")
+    Call ReplaceTextAndColor(sheet1, "<BILL_TO_STATE>", "{}")
+    Call ReplaceTextAndColor(sheet1, "<BILL_TO_ZIP>", "{}")
+    Call ReplaceTextAndColor(sheet1, "<BILL_TO_PHONE>", "{}")
+    Call ReplaceTextAndColor(sheet1, "<DATE_CALLED>", "{}")
+    Call ReplaceTextAndColor(sheet1, "<SALESMAN>", "{}")
+    Call ReplaceTextInShapes(sheet1, "<RETURN_REASON>", "{}")
+    Call ReplaceTextInShapes(sheet1, "<RETURN_NOTES>", "{}")
+    Call ReplaceTextInShapes(sheet1, "<RETURN_PAYMENT_TERMS>", "{}")
+    Call ReplaceTextAndColor(sheet1, "<PAYMENT>", "{}")
+    Call ReplaceTextAndColor(sheet1, "<RESTOCK_FEE>", "{}")
+
+    Dim jsonData, item, table, row, i
+    jsonData = {:?}
+
+    If Len(jsonData) > 2 Then
+      Dim items
+      items = Split(jsonData, "}},")
+      Set table = sheet1.Tables(1)
+
+      For i = LBound(items) To UBound(items)
+        Dim fields, keyValue, j
+        If i > 0 Or table.Rows.Count = 1 Then
+          table.Rows.Add
+        End If
+
+        Set row = table.Rows(table.Rows.Count)
+        fields = Split(items(i), ",")
+
+        For j = LBound(fields) To UBound(fields)
+          keyValue = Split(fields(j), ":")
+          keyValue(0) = Replace(keyValue(0), "[{{", "")
+          keyValue(0) = Replace(keyValue(0), "{{", "")
+          If UBound(keyValue) >= 1 Then
+            keyValue(1) = Replace(keyValue(1), "}}]", "")
+          End If
+
+          Select Case keyValue(0)
+            Case "cost"
+              Dim cost
+              cost = keyValue(1)
+              cost = Replace(cost, "|", ",")
+              row.Cells(1).Range.Text = cost
+              row.Cells(1).Range.Font.Bold = False
+            Case "stockNum"
+              row.Cells(2).Range.Text = keyValue(1)
+            Case "qty"
+              row.Cells(3).Range.Text = keyValue(1)
+            Case "partNum"
+              row.Cells(4).Range.Text = keyValue(1)
+            Case "desc"
+              row.Cells(5).Range.Text = keyValue(1)
+            Case "unitPrice"
+              Dim unitPrice
+              unitPrice = keyValue(1)
+              unitPrice = Replace(unitPrice, "|", ",")
+              row.Cells(6).Range.Text = unitPrice
+            Case "total"
+              Dim total
+              total = keyValue(1)
+              total = Replace(total, "|", ",")
+              row.Cells(7).Range.Text = total
+          End Select
+        Next
+      Next
+    End If
+
+    doc.ActivePrinter = "{}"
+    sheet1.PrintOut , , , , , , , {}
+    sheet1.Close False
+    doc.Quit
+    "#,
+    args.createdBy,
+    args.date,
+    args.poNum,
+    args.id,
+    args.invoiceDate,
+    args.billToCompany,
+    args.shipToCompany,
+    args.billToAddress,
+    args.billToCity,
+    args.billToState,
+    args.billToZip,
+    args.billToPhone,
+    args.dateCalled,
+    args.salesman,
+    args.returnReason,
+    args.returnNotes,
+    args.returnPaymentTerms,
+    args.payment,
+    args.restockFee,
+    args.items.replace("\"", "").replace("\\", ""),
+    printer,
+    1
+  );
+
+  let vbs_path = "C:\\MWD\\scripts\\print_return.vbs";
+  write(&vbs_path, vbs_script).expect("Failed to create VBS script");
+
+  let mut cmd = Command::new("wscript.exe");
+  cmd.arg(vbs_path);
+  cmd.output().expect("Failed to update shipping list");
+  Ok(())
+}
+

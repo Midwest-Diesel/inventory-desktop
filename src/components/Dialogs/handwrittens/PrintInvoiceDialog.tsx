@@ -21,7 +21,7 @@ export default function PrintInvoiceDialog({ open, setOpen, handwritten }: Props
     e.preventDefault();
     setOpen(false);
     const itemTotals: number[] = handwritten.handwrittenItems.map((item) => item.qty * item.unitPrice);
-    const handwrittenTotal = formatCurrency(itemTotals.reduce((acc, cur) => acc + cur));
+    const handwrittenTotal = formatCurrency(itemTotals.reduce((acc, cur) => acc + cur, 0));
     const args = {
       billToCompany: handwritten.billToCompany || '',
       billToAddress: handwritten.billToAddress || '',
@@ -73,7 +73,7 @@ export default function PrintInvoiceDialog({ open, setOpen, handwritten }: Props
           total: formatCurrency(item.qty * item.unitPrice).replaceAll(',', '|') || '$0.00',
           itemChildren: item.invoiceItemChildren
         };
-      }))
+      })) || '[]'
     };
     const itemChildren = handwritten.handwrittenItems.map((item) => {
       if (item.invoiceItemChildren.length > 0) return item.invoiceItemChildren.map((child) => {
@@ -94,7 +94,6 @@ export default function PrintInvoiceDialog({ open, setOpen, handwritten }: Props
       const { itemChildren, ...rest } = item;
       return { ...rest };
     });
-    console.log(filteredItems);
 
     if (accounting) await invoke('print_accounting_invoice', { args: { ...args, items: JSON.stringify(filteredItems) } });
     if (shipping) await invoke('print_shipping_invoice', { args: { ...args, items: itemsWithChildren } });
