@@ -19,6 +19,7 @@ import Checkbox from "./Library/Checkbox";
 import { PreventNavigation } from "./PreventNavigation";
 import ChangeCustomerInfoDialog from "./Dialogs/handwrittens/ChangeCustomerInfoDialog";
 import { addTrackingNumber, deleteTrackingNumber, editTrackingNumber } from "@/scripts/controllers/trackingNumbersController";
+import FreightCarrierSelect from "./Library/Select/FreightCarrierSelect";
 
 interface Props {
   handwritten: Handwritten
@@ -46,7 +47,7 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
   const [shipToState, setShipToState] = useState<string>(handwritten.shipToState);
   const [shipToZip, setShipToZip] = useState<string>(handwritten.shipToZip);
   const [shipToCompany, setShipToCompany] = useState<string>(handwritten.shipToCompany);
-  const [shipVia, setShipVia] = useState<string>(handwritten.shipVia);
+  const [shipViaId, setShipViaId] = useState<number>(handwritten.shipVia && handwritten.shipVia.id);
   const [payment, setPayment] = useState<string>(handwritten.payment);
   const [contact, setContact] = useState<string>(handwritten.contactName);
   const [contactPhone, setContactPhone] = useState<string>(handwritten.phone);
@@ -96,7 +97,7 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
     const newCustomer = await getCustomerByName(company);
     const newInvoice = {
       id: handwritten.id,
-      shipVia,
+      shipViaId,
       initials: handwritten.createdBy,
       handwrittenItems: handwrittenItems,
       customer: newCustomer,
@@ -519,10 +520,10 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
                   <tr>
                     <th>Ship Via</th>
                     <td>
-                      <Input
-                        variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
-                        value={shipVia}
-                        onChange={(e: any) => setShipVia(e.target.value)}
+                      <FreightCarrierSelect
+                        variant={['label-bold']}
+                        value={shipViaId}
+                        onChange={(e: any) => setShipViaId(e.target.value)}
                       />
                     </td>
                   </tr>

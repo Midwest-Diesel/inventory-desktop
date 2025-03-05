@@ -192,7 +192,7 @@ type Handwritten = {
   engineSerialNum: string
   isBlindShipment: boolean
   isNoPriceInvoice: boolean
-  shipVia: string
+  shipVia: FreightCarrier
   cardNum: number
   expDate: string
   cvv: number
@@ -822,6 +822,13 @@ type TrackingNumber = {
   id: number
   handwrittenId: number
   trackingNumber: string
+};
+
+type FreightCarrier = {
+  id: number
+  name: string
+  type: string
+  isSkidRateApplied: boolean
 };
 
 interface Performance {

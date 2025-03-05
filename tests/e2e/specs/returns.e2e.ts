@@ -35,6 +35,7 @@ describe('Returns', () => {
   it('Can issue credit', async () => {
     await $('[data-id="credit-issued-btn"]').click();
     const date = await $('[data-id="credit-issued"]').getText();
+    await browser.pause(500);
     expect(date).toBe(formatDate(new Date()));
   });
 

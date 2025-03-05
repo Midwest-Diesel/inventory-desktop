@@ -26,7 +26,6 @@ export default function ShippingListDialog({ open, setOpen, handwrittenItems, ne
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    const shipType = await getFreightCarrierFromShipVia(newShippingListRow.shipVia);
     const path = (isDateInCurrentOrNextWeek(date) === 'current' ?
       '\\\\MWD1-SERVER/Server/shipping_list_current_week.xlsx'
       :
@@ -38,8 +37,8 @@ export default function ShippingListDialog({ open, setOpen, handwrittenItems, ne
       const new_shipping_list_row = {
         handwritten_id: Number(newShippingListRow.id),
         initials: newShippingListRow.createdBy,
-        ship_via: newShippingListRow.shipVia,
-        ship_type: shipType,
+        ship_via: newShippingListRow.shipVia ? newShippingListRow.shipVia.name : '',
+        ship_type: newShippingListRow.shipVia ? newShippingListRow.shipVia.type : '',
         customer: newShippingListRow.customer.company,
         attn_to: '',
         part_num: 'Multiple',
@@ -66,8 +65,8 @@ export default function ShippingListDialog({ open, setOpen, handwrittenItems, ne
         const new_shipping_list_row = {
           handwritten_id: Number(newShippingListRow.id),
           initials: newShippingListRow.createdBy,
-          ship_via: newShippingListRow.shipVia,
-          ship_type: shipType,
+          ship_via: newShippingListRow.shipVia ? newShippingListRow.shipVia.name : '',
+          ship_type: newShippingListRow.shipVia ? newShippingListRow.shipVia.type : '',
           customer: newShippingListRow.customer.company,
           attn_to: '',
           part_num: handwrittenItems[i].partNum,

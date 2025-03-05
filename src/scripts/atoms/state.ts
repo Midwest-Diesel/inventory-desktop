@@ -34,3 +34,4 @@ export const handwrittenSearchAtom = atom<any>({});
 export const warrantySearchAtom = atom<any>({});
 export const POSearchAtom = atom<any>({});
 export const ReturnSearchAtom = atom<any>({});
+export const FreightCarriersAtom = atom<FreightCarrier[]>([]);

@@ -23,7 +23,7 @@ const parseWarrantyRes = (data: any) => {
         return {
           ...item,
           returnedVendorDate: parseResDate(item.returnedVendorDate)
-        }
+        };
       })
     };
   });

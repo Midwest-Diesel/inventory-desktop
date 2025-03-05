@@ -46,7 +46,7 @@ export default function PrintInvoiceDialog({ open, setOpen, handwritten }: Props
       date: formatDate(handwritten.date) || '',
       contact: handwritten.contactName || '',
       poNum: handwritten.poNum || '',
-      shipVia: handwritten.shipVia || '',
+      shipVia: handwritten.shipVia.name || '',
       source: handwritten.source || '',
       invoiceNotes: handwritten.orderNotes ? handwritten.orderNotes.replace(/[\n\r]/g, '  ').replaceAll('…', '...') : '',
       shippingNotes: handwritten.shippingNotes ? handwritten.shippingNotes.replace(/[\n\r]/g, '  ').replaceAll('…', '...') : '',

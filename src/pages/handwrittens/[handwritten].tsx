@@ -18,7 +18,7 @@ import Print from "@/components/Print";
 import { userAtom } from "@/scripts/atoms/state";
 import { supabase } from "@/scripts/config/supabase";
 import { AltShip, deleteHandwritten, editHandwrittenPaymentType, getAltShipByHandwritten, getHandwrittenById } from "@/scripts/controllers/handwrittensController";
-import { formatDate, formatPhone, parseResDate } from "@/scripts/tools/stringUtils";
+import { formatCurrency, formatDate, formatPhone, parseResDate } from "@/scripts/tools/stringUtils";
 import { setTitle } from "@/scripts/tools/utils";
 import { RealtimePostgresInsertPayload, RealtimePostgresUpdatePayload } from "@supabase/supabase-js";
 import { invoke, confirm } from "@/scripts/config/tauri";
@@ -160,29 +160,53 @@ export default function Handwritten() {
   };
 
   const handlePrintShipDocs = async () => {
-    if (handwritten.shipVia.toLowerCase().includes('freight')) {
+    if (handwritten.shipVia.type === 'Truck Line') {
       const copies = Number(prompt('How many shipping labels do you want to print?'));
       if (copies > 0) await handlePrintShippingLabel(copies);
-    } else if (await confirm('Print shipping label?')) {
-      await handlePrintShippingLabel();
-    }
 
-    const cityStateZip = `${handwritten.shipToCity} ${handwritten.shipToState} ${handwritten.shipToZip}`;
-    const args = {
-      shipToCompany: handwritten.shipToCompany || '',
-      shipToAddress: handwritten.shipToAddress || '',
-      shipToAddress2: handwritten.shipToAddress2 || '',
-      shipToCityStateZip: cityStateZip || '',
-      shipFromCompany: 'MIDWEST DIESEL',
-      shipFromAddress: '3051 82ND LANE NE',
-      shipFromAddress2: '',
-      shipFromCityStateZip: 'MINNEAPOLIS MN 55449',
-      shipVia: handwritten.shipVia || '',
-      prepaid: (!handwritten.isCollect && !handwritten.isThirdParty),
-      collect: handwritten.isCollect,
-      thirdParty: handwritten.isThirdParty
-    };
-    await invoke('print_bol', { args });
+      const cityStateZip = `${handwritten.shipToCity} ${handwritten.shipToState} ${handwritten.shipToZip}`;
+      const args = {
+        shipToCompany: handwritten.shipToCompany || '',
+        shipToAddress: handwritten.shipToAddress || '',
+        shipToAddress2: `, ${handwritten.shipToAddress2}`,
+        shipToCityStateZip: cityStateZip || '',
+        shipFromCompany: 'MIDWEST DIESEL',
+        shipFromAddress: '3051 82ND LANE NE',
+        shipFromAddress2: '',
+        shipFromCityStateZip: 'MINNEAPOLIS MN 55449',
+        shipVia: handwritten.shipVia || '',
+        prepaid: (!handwritten.isCollect && !handwritten.isThirdParty),
+        collect: handwritten.isCollect,
+        thirdParty: handwritten.isThirdParty
+      };
+      await invoke('print_bol', { args });
+    } else if (await confirm('Print packing slip?')) {
+      const billToCityStateZip = `${handwritten.billToCity}${handwritten.billToCity ? ',' : ''} ${handwritten.billToState} ${handwritten.billToZip}`;
+      const shipToCityStateZip = `${handwritten.shipToCity}${handwritten.shipToCity ? ',' : ''} ${handwritten.shipToState} ${handwritten.shipToZip}`;
+      const args = {
+        invoiceDate: formatDate(handwritten.date) || '',
+        poNum: handwritten.poNum || '',
+        billToCompany: handwritten.billToCompany || '',
+        billToAddress: handwritten.billToAddress || '',
+        billToAddress2: handwritten.billToAddress2 ? `"${handwritten.billToAddress2}" & Chr(11)` : '',
+        billToCityStateZip,
+        shipToCompany: handwritten.shipToCompany || '',
+        shipToContact: handwritten.shipToContact ? `"${handwritten.shipToContact}" & Chr(11)` : '""',
+        shipToAddress: handwritten.shipToAddress || '',
+        shipToAddress2: handwritten.shipToAddress2 ? `"${handwritten.shipToAddress2}" & Chr(11)` : '',
+        shipToCityStateZip,
+        items: JSON.stringify(handwritten.handwrittenItems.map((item) => {
+          return {
+            qty: item.qty || '',
+            partNum: item.partNum || '',
+            desc: item.desc || '',
+            price: formatCurrency(item.unitPrice).replaceAll(',', '|') || '$0.00',
+            total: formatCurrency(item.unitPrice * item.qty).replaceAll(',', '|') || '$0.00'
+          };
+        })) || '[]'
+      };
+      await invoke('print_packing_slip', { args });
+    }
   };
 
   const handlePrintShippingLabel = async (copies = 1) => {
@@ -403,7 +427,7 @@ export default function Handwritten() {
                     </tr>
                     <tr>
                       <th><strong>Ship Via</strong></th>
-                      <td>{ handwritten.shipVia }</td>
+                      <td>{ handwritten.shipVia && handwritten.shipVia.name }</td>
                     </tr>
                   </tbody>
                 </Table>
