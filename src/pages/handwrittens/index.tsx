@@ -157,7 +157,7 @@ export default function Handwrittens() {
               <p>{ yesterdayInvoices && formatCurrency(getTotalSales()) }</p>
             </div>
           </div>
-          {loading && <Loading />}
+          { loading && <Loading /> }
           {handwrittens &&
             <div className="handwrittens__table-container">
               <Table>

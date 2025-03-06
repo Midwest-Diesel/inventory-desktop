@@ -322,7 +322,7 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
           </div>
 
           <Grid rows={1} cols={12} gap={1}>
-            <GridItem colStart={1} colEnd={6} breakpoints={[{ width: 1600, colStart: 1, colEnd: 8 }]} variant={['low-opacity-bg']}>
+            <GridItem colStart={1} colEnd={4} breakpoints={[{ width: 1600, colStart: 1, colEnd: 8 }]} variant={['low-opacity-bg']}>
               <Table variant={['plain', 'edit-row-details']}>
                 <tbody>
                   <tr>
@@ -377,7 +377,7 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
               </Table>
             </GridItem>
 
-            <GridItem colStart={6} colEnd={9} breakpoints={[{ width: 1600, colStart: 1, colEnd: 6 }]} variant={['low-opacity-bg']}>
+            <GridItem colStart={4} colEnd={8} breakpoints={[{ width: 1600, colStart: 1, colEnd: 6 }]} variant={['low-opacity-bg']}>
               <Table variant={['plain', 'edit-row-details']}>
                 <tbody>
                   <tr>
@@ -454,7 +454,7 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
               </Table>
             </GridItem>
 
-            <GridItem colStart={9} colEnd={12} breakpoints={[{ width: 1600, colStart: 6, colEnd: 12 }]} variant={['low-opacity-bg']}>
+            <GridItem colStart={8} colEnd={12} breakpoints={[{ width: 1600, colStart: 6, colEnd: 12 }]} variant={['low-opacity-bg']}>
               <Table variant={['plain', 'edit-row-details']}>
                 <tbody>
                   <tr>

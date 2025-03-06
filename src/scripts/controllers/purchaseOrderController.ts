@@ -30,10 +30,10 @@ export const getPurchaseOrderById = async (id: number) => {
   }
 };
 
-export const getPurchaseOrderByPoNum = async (id: number) => {
+export const getPurchaseOrderByPoNum = async (poNum: string) => {
   try {
     const auth = { withCredentials: true };
-    const res = await api.get(`/api/po/poNum/${id}`, auth);
+    const res = await api.get(`/api/po/poNum/${poNum}`, auth);
     return parsePoDataRes(res.data)[0];
   } catch (err) {
     console.error(err);

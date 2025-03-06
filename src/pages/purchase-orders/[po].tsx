@@ -8,12 +8,12 @@ import Table from "@/components/Library/Table";
 import PurchaseOrderItemsTable from "@/components/PurchaseOrderItemsTable";
 import { userAtom } from "@/scripts/atoms/state";
 import { deletePurchaseOrder, getPurchaseOrderByPoNum, togglePurchaseOrderReceived } from "@/scripts/controllers/purchaseOrderController";
-import { formatDate } from "@/scripts/tools/stringUtils";
+import { formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
 import { setTitle } from "@/scripts/tools/utils";
 import { useAtom } from "jotai";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { confirm } from "@/scripts/config/tauri";
+import { confirm, invoke } from "@/scripts/config/tauri";
 
 
 export default function PurchaseOrder() {
@@ -26,7 +26,7 @@ export default function PurchaseOrder() {
   useEffect(() => {
     const fetchData = async () => {
       if (!params) return;
-      const res = await getPurchaseOrderByPoNum(Number(params.po));
+      const res = await getPurchaseOrderByPoNum(params.po.toString());
       setTitle(`${res.purchasedFrom} PO`);
       setPoData(res);
     };
@@ -39,15 +39,40 @@ export default function PurchaseOrder() {
     router.replace('/purchase-orders');
   };
 
-  const handlePrint = () => {
-    window.print();
-  };
-
   const handleReceivedItem = async () => {
     if (!await confirm('Are you sure you want to do this?')) return;
     await togglePurchaseOrderReceived(poData.id, !poData.isItemReceived);
-    const res = await getPurchaseOrderByPoNum(Number(params.po));
+    const res = await getPurchaseOrderByPoNum(params.po.toString());
     setPoData(res);
+  };
+
+  const handlePrint = async () => {
+    if (!await confirm('Print purchase order?')) return;
+    const args = {
+      id: poData.id,
+      vendor: poData.purchasedFrom || '',
+      address: poData.vendorAddress || '',
+      city: poData.vendorCity || '',
+      state: poData.vendorState || '',
+      zip: poData.vendorZip.toString() || '',
+      phone: poData.vendorPhone || '',
+      fax: poData.vendorFax || '',
+      paymentTerms: poData.paymentTerms || '',
+      purchasedFor: poData.purchasedFor || '',
+      specialInstructions: poData.specialInstructions || '',
+      comments: poData.comments || '',
+      date: formatDate(poData.date) || '',
+      orderedBy: poData.orderedBy || '',
+      items: JSON.stringify(poData.poItems.map((item) => {
+        return {
+          qty: item.qty || '',
+          desc: item.desc || '',
+          price: formatCurrency(item.unitPrice).replaceAll(',', '|') || '$0.00',
+          total: formatCurrency(item.unitPrice * item.qty).replaceAll(',', '|') || '$0.00',
+        };
+      })) || '[]'
+    };
+    await invoke('print_po', { args });
   };
 
 
@@ -62,7 +87,7 @@ export default function PurchaseOrder() {
               <div>
                 <h2>{ poData.poNum } Purchase Order</h2>
                 <div className="purchase-order-details__top-bar">
-                  <Button onClick={handlePrint}>Print Report</Button>
+                  <Button onClick={handlePrint}>Print</Button>
                   <Button onClick={handleReceivedItem}>{ poData.isItemReceived ? 'Unmark' : 'Mark' } as Closed</Button>
                 </div>
               </div>

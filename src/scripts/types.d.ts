@@ -696,14 +696,14 @@ type PO = {
   vendorAddress: string
   vendorCity: string
   vendorState: string
-  vendorZip: number
+  vendorZip: string
   vendorPhone: string
   vendorFax: string
   shipToCompany: string
   shipToAddress: string
   shipToCity: string
   shipToState: string
-  shipToZip: number
+  shipToZip: string
   shipToPhone: string
   shipToFax: string
   paymentTerms: string
