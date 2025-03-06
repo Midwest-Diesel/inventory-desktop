@@ -174,7 +174,7 @@ export default function Handwritten() {
         shipFromAddress: '3051 82ND LANE NE',
         shipFromAddress2: '',
         shipFromCityStateZip: 'MINNEAPOLIS MN 55449',
-        shipVia: handwritten.shipVia || '',
+        shipVia: handwritten.shipVia.name || '',
         prepaid: (!handwritten.isCollect && !handwritten.isThirdParty),
         collect: handwritten.isCollect,
         thirdParty: handwritten.isThirdParty
@@ -188,20 +188,23 @@ export default function Handwritten() {
         poNum: handwritten.poNum || '',
         billToCompany: handwritten.billToCompany || '',
         billToAddress: handwritten.billToAddress || '',
-        billToAddress2: handwritten.billToAddress2 ? `"${handwritten.billToAddress2}" & Chr(11)` : '',
+        billToAddress2: handwritten.billToAddress2 ? `"${handwritten.billToAddress2}" & Chr(11)` : '""',
         billToCityStateZip,
         shipToCompany: handwritten.shipToCompany || '',
         shipToContact: handwritten.shipToContact ? `"${handwritten.shipToContact}" & Chr(11)` : '""',
         shipToAddress: handwritten.shipToAddress || '',
-        shipToAddress2: handwritten.shipToAddress2 ? `"${handwritten.shipToAddress2}" & Chr(11)` : '',
+        shipToAddress2: handwritten.shipToAddress2 ? `"${handwritten.shipToAddress2}" & Chr(11)` : '""',
         shipToCityStateZip,
         items: JSON.stringify(handwritten.handwrittenItems.map((item) => {
+          const price = formatCurrency(item.unitPrice).replaceAll(',', '|') || '$0.00';
+          const total = formatCurrency(item.unitPrice * item.qty).replaceAll(',', '|') || '$0.00';
+
           return {
             qty: item.qty || '',
             partNum: item.partNum || '',
             desc: item.desc || '',
-            price: formatCurrency(item.unitPrice).replaceAll(',', '|') || '$0.00',
-            total: formatCurrency(item.unitPrice * item.qty).replaceAll(',', '|') || '$0.00'
+            price: handwritten.isNoPriceInvoice ? '-9999' : price,
+            total: handwritten.isNoPriceInvoice ? '-9999' : total
           };
         })) || '[]'
       };
@@ -209,17 +212,85 @@ export default function Handwritten() {
     }
   };
 
-  const handlePrintShippingLabel = async (copies = 1) => {
+  const handlePrintShipDocsBlind = async () => {
+    if (handwritten.shipVia.type === 'Truck Line') {
+      const copies = Number(prompt('How many shipping labels do you want to print?'));
+      if (copies > 0) await handlePrintShippingLabel(copies);
+
+      const cityStateZip = `${handwritten.shipToCity} ${handwritten.shipToState} ${handwritten.shipToZip}`;
+      const args = {
+        shipToCompany: handwritten.shipToCompany || '',
+        shipToAddress: handwritten.shipToAddress || '',
+        shipToAddress2: `, ${handwritten.shipToAddress2}`,
+        shipToCityStateZip: cityStateZip || '',
+        shipFromCompany: '',
+        shipFromAddress: '',
+        shipFromAddress2: '',
+        shipFromCityStateZip: '',
+        shipVia: handwritten.shipVia.name || '',
+        prepaid: (!handwritten.isCollect && !handwritten.isThirdParty),
+        collect: handwritten.isCollect,
+        thirdParty: handwritten.isThirdParty
+      };
+      await invoke('print_bol', { args });
+    } else if (await confirm('Print packing slip?')) {
+      const billToCityStateZip = `${handwritten.billToCity}${handwritten.billToCity ? ',' : ''} ${handwritten.billToState} ${handwritten.billToZip}`;
+      const shipToCityStateZip = `${handwritten.shipToCity}${handwritten.shipToCity ? ',' : ''} ${handwritten.shipToState} ${handwritten.shipToZip}`;
+      const args = {
+        invoiceDate: formatDate(handwritten.date) || '',
+        billToCompany: handwritten.billToCompany || '',
+        billToAddress: handwritten.billToAddress || '',
+        billToAddress2: handwritten.billToAddress2 ? `"${handwritten.billToAddress2}" & Chr(11)` : '""',
+        billToCityStateZip,
+        shipToCompany: handwritten.shipToCompany || '',
+        shipToContact: handwritten.shipToContact ? `"${handwritten.shipToContact}" & Chr(11)` : '""',
+        shipToAddress: handwritten.shipToAddress || '',
+        shipToAddress2: handwritten.shipToAddress2 ? `"${handwritten.shipToAddress2}" & Chr(11)` : '""',
+        shipToCityStateZip,
+        items: JSON.stringify(handwritten.handwrittenItems.map((item) => {
+          return {
+            qty: item.qty || '',
+            partNum: item.partNum || '',
+            desc: item.desc || ''
+          };
+        })) || '[]'
+      };
+      await invoke('print_packing_slip_blind', { args });
+    }
+  };
+
+  const handlePrintShippingLabel = async (copies: number) => {
     if (!await confirm(`Do you want to print ${copies} shipping label${copies > 1 ? 's' : ''}?`)) return;
-    const cityStateZip = [handwritten.shipToCity, `${handwritten.shipToState} ${handwritten.shipToZip}`].join(', ');
-    const args = {
-      company: handwritten.shipToCompany || '',
-      address: handwritten.shipToAddress || '',
-      address2: (handwritten.shipToAddress2 ? handwritten.shipToAddress2 : cityStateZip) || '',
-      cityStateZip: cityStateZip && handwritten.shipToAddress2 ? cityStateZip : '',
-      copies
-    };
-    await invoke('print_shipping_label', { args });
+    if (handwritten.isBlindShipment) {
+      const shipFromCityStateZip = [handwritten.billToCity, `${handwritten.billToState} ${handwritten.billToZip}`].join(', ');
+      const shipToCityStateZip = [handwritten.shipToCity, `${handwritten.shipToState} ${handwritten.shipToZip}`].join(', ');
+      const args = {
+        shipFromCompany: handwritten.billToCompany || '',
+        shipFromAddress: handwritten.billToAddress || '',
+        shipFromAddress2: handwritten.billToAddress2 ? `"${handwritten.billToAddress2}" & Chr(11)` : '""',
+        shipFromCityStateZip: shipFromCityStateZip || '',
+        shipToCompany: handwritten.shipToCompany || '',
+        shipToAddress: handwritten.shipToAddress || '',
+        shipToAddress2: handwritten.shipToAddress2 ? `"${handwritten.shipToAddress2}" & Chr(11)` : '""',
+        shipToCityStateZip: shipToCityStateZip || '',
+        copies
+      };
+      await invoke('print_shipping_label', { args });
+    } else {
+      const shipToCityStateZip = [handwritten.shipToCity, `${handwritten.shipToState} ${handwritten.shipToZip}`].join(', ');
+      const args = {
+        shipFromCompany: 'MIDWEST DIESEL',
+        shipFromAddress: '3051 82ND LANE NE',
+        shipFromAddress2: '""',
+        shipFromCityStateZip: 'BLAINE, MN 55449',
+        shipToCompany: handwritten.shipToCompany || '',
+        shipToAddress: handwritten.shipToAddress || '',
+        shipToAddress2: handwritten.shipToAddress2 ? `"${handwritten.shipToAddress2}" & Chr(11)` : '""',
+        shipToCityStateZip: shipToCityStateZip || '',
+        copies
+      };
+      await invoke('print_shipping_label', { args });
+    }
   };
 
   const handlePrintCI = async () => {
@@ -247,7 +318,7 @@ export default function Handwritten() {
       shipToAddress: '3051 82ND LANE NE',
       shipToAddress2: '',
       shipToCityStateZip: 'MINNEAPOLIS MN 55449',
-      shipVia: handwritten.shipVia || '',
+      shipVia: handwritten.shipVia.name || '',
       prepaid: (!handwritten.isCollect && !handwritten.isThirdParty),
       collect: handwritten.isCollect,
       thirdParty: handwritten.isThirdParty
@@ -568,9 +639,19 @@ export default function Handwritten() {
 
               <GridItem colStart={10} colEnd={12} variant={['low-opacity-bg']} className="no-print">
                 <div className="handwritten-details__btn-row">
-                  <Button variant={['x-small']} onClick={handlePrintShipDocs}>Print Ship Docs</Button>
+                  <Button
+                    variant={['x-small']}
+                    onClick={() => {
+                      if (handwritten.isBlindShipment) {
+                        handlePrintShipDocsBlind();
+                      } else {
+                        handlePrintShipDocs();
+                      }
+                    }}>
+                      Print Ship Docs
+                  </Button>
                   <Button variant={['x-small']} onClick={() => setPrintInvoiceOpen(true)}>Print Invoice</Button>
-                  <Button variant={['x-small']} onClick={() => handlePrintShippingLabel()}>Print Ship Label</Button>
+                  <Button variant={['x-small']} onClick={() => handlePrintShippingLabel(1)}>Print Ship Label</Button>
                   <Button variant={['x-small']} onClick={handlePrintCI}>Print CI and COO</Button>
                   <Button variant={['x-small']} onClick={handlePrintReturnBOL}>Print Return BOL</Button>
                   <Button

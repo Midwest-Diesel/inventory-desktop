@@ -207,8 +207,6 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
       billToZip: newInvoice.customer.billToZip || '',
       billToPhone: newInvoice.customer.billToPhone || ''
     });
-    console.log(handwrittenBillTo, customerBillTo);
-    
 
     if (handwrittenBillTo !== customerBillTo) {
       setChangeCustomerDialogData(newInvoice);
@@ -600,7 +598,10 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
                   variant={['label-bold', 'label-align-center']}
                   label="BLIND"
                   checked={isBlindShipment}
-                  onChange={(e: any) => setIsBlind(e.target.checked)}
+                  onChange={(e: any) => {
+                    setIsBlind(e.target.checked);
+                    if (e.target.checked) setIsNoPriceInvoice(true);
+                  }}
                 />
                 <Checkbox
                   variant={['label-bold', 'label-align-center']}

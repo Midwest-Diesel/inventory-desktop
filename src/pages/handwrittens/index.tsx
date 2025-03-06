@@ -46,7 +46,7 @@ export default function Handwrittens() {
 
   useEffect(() => setSearchData(handwrittenSearchData), [handwrittenSearchData]);
 
-  const handleChangePage = async (data: any, page: number) => {
+  const handleChangePage = async (_: any, page: number) => {
     if (page === currentPage) return;
     setLoading(true);
     const hasValidSearchCriteria = (

@@ -108,10 +108,14 @@ struct FileArgs {
 
 #[derive(Deserialize, Serialize)]
 struct ShippingLabelArgs {
-  company: String,
-  address: String,
-  address2: String,
-  cityStateZip: String,
+  shipFromCompany: String,
+  shipFromAddress: String,
+  shipFromAddress2: String,
+  shipFromCityStateZip: String,
+  shipToCompany: String,
+  shipToAddress: String,
+  shipToAddress2: String,
+  shipToCityStateZip: String,
   copies: i8
 }
 
@@ -301,6 +305,21 @@ struct PrintPackingSlipArgs {
 }
 
 #[derive(Deserialize, Serialize)]
+struct PrintPackingSlipBlindArgs {
+  invoiceDate: String,
+  billToCompany: String,
+  billToAddress: String,
+  billToAddress2: String,
+  billToCityStateZip: String,
+  shipToCompany: String,
+  shipToContact: String,
+  shipToAddress: String,
+  shipToAddress2: String,
+  shipToCityStateZip: String,
+  items: String
+}
+
+#[derive(Deserialize, Serialize)]
 struct PrintPOArgs {
   id: i16,
   vendor: String,
@@ -351,7 +370,8 @@ async fn main() {
       print_return,
       print_warranty,
       print_packing_slip,
-      print_po
+      print_po,
+      print_packing_slip_blind
     ])
     .run(tauri::generate_context!())
     .expect("error while running tauri application");
@@ -843,42 +863,40 @@ fn print_shipping_label(args: ShippingLabelArgs) -> Result<(), String> {
     Dim doc, sheet1
     Set doc = CreateObject("Word.Application")
     doc.Visible = True
-    Set sheet1 = doc.Documents.Open("\\MWD1-SERVER\Server\Shipping Label.docx")
+    Set sheet1 = doc.Documents.Open("\\MWD1-SERVER\Server\shippingLabelTemplate.docx")
 
-    With sheet1.Content.Find
-      .Text = "PAI INDUSTRIES"
-      .Replacement.Text = "{}"
-      .Wrap = 1
-      .Execute , , , , , , , , , , 2
-    End With
-    With sheet1.Content.Find
-      .Text = "630 OLD PEACHTREE RD"
-      .Replacement.Text = "{}"
-      .Wrap = 1
-      .Execute , , , , , , , , , , 2
-    End With
-    With sheet1.Content.Find
-      .Text = "BUILDING C"
-      .Replacement.Text = "{}"
-      .Wrap = 1
-      .Execute , , , , , , , , , , 2
-    End With
-    With sheet1.Content.Find
-      .Text = "SUWANEE, GA 30024"
-      .Replacement.Text = "{}"
-      .Wrap = 1
-      .Execute , , , , , , , , , , 2
-    End With
+    Sub ReplaceTextAndColor(sheet, findText, replaceText)
+      With sheet.Content.Find
+        .Text = findText
+        .Replacement.Text = replaceText
+        .Wrap = 1
+        .MatchWholeWord = True
+        .Execute , , , , , , , , , , 2
+      End With
+    End Sub
+
+    Call ReplaceTextAndColor(sheet1, "<SHIP_FROM_COMPANY>", "{}")
+    Call ReplaceTextAndColor(sheet1, "<SHIP_FROM_ADDRESS>", "{}")
+    Call ReplaceTextAndColor(sheet1, "<SHIP_FROM_ADDRESS_2>", {})
+    Call ReplaceTextAndColor(sheet1, "<SHIP_FROM_CITY_STATE_ZIP>", "{}")
+    Call ReplaceTextAndColor(sheet1, "<SHIP_TO_COMPANY>", "{}")
+    Call ReplaceTextAndColor(sheet1, "<SHIP_TO_ADDRESS>", "{}")
+    Call ReplaceTextAndColor(sheet1, "<SHIP_TO_ADDRESS_2>", {})
+    Call ReplaceTextAndColor(sheet1, "<SHIP_TO_CITY_STATE_ZIP>", "{}")
 
     doc.ActivePrinter = "{}"
     sheet1.PrintOut , , , , , , , {}
     sheet1.Close False
     doc.Quit
     "#,
-    args.company,
-    args.address,
-    args.address2,
-    args.cityStateZip,
+    args.shipFromCompany,
+    args.shipFromAddress,
+    args.shipFromAddress2,
+    args.shipFromCityStateZip,
+    args.shipToCompany,
+    args.shipToAddress,
+    args.shipToAddress2,
+    args.shipToCityStateZip,
     printer,
     args.copies
   );
@@ -2185,12 +2203,12 @@ fn print_packing_slip(args: PrintPackingSlipArgs) -> Result<(), String> {
     Call ReplaceTextAndColor(sheet1, "<PO_NUM>", "{}")
     Call ReplaceTextAndColor(sheet1, "<BILL_TO_COMPANY>", "{}")
     Call ReplaceTextAndColor(sheet1, "<BILL_TO_ADDRESS>", "{}")
-    Call ReplaceTextAndColor(sheet1, "<BILL_TO_ADDRESS_2>", "{}")
+    Call ReplaceTextAndColor(sheet1, "<BILL_TO_ADDRESS_2>", {})
     Call ReplaceTextAndColor(sheet1, "<BILL_TO_CITY_STATE_ZIP>", "{}")
     Call ReplaceTextAndColor(sheet1, "<SHIP_TO_COMPANY>", "{}")
     Call ReplaceTextAndColor(sheet1, "<SHIP_TO_CONTACT>", {})
     Call ReplaceTextAndColor(sheet1, "<SHIP_TO_ADDRESS>", "{}")
-    Call ReplaceTextAndColor(sheet1, "<SHIP_TO_ADDRESS_2>", "{}")
+    Call ReplaceTextAndColor(sheet1, "<SHIP_TO_ADDRESS_2>", {})
     Call ReplaceTextAndColor(sheet1, "<SHIP_TO_CITY_STATE_ZIP>", "{}")
 
     Dim jsonData, item, table, row, i
@@ -2227,15 +2245,17 @@ fn print_packing_slip(args: PrintPackingSlipArgs) -> Result<(), String> {
             Case "desc"
               row.Cells(3).Range.Text = keyValue(1)
             Case "price"
-              Dim price
-              price = keyValue(1)
-              price = Replace(price, "|", ",")
-              row.Cells(4).Range.Text = price
+              If keyValue(1) = "-9999" Then
+                If row.Parent.Columns.Count >= 4 Then row.Parent.Columns(4).Delete
+              Else
+                row.Cells(4).Range.Text = Replace(keyValue(1), "|", ",")
+              End If
             Case "total"
-              Dim total
-              total = keyValue(1)
-              total = Replace(total, "|", ",")
-              row.Cells(5).Range.Text = total
+              If keyValue(1) = "-9999" Then
+                If row.Parent.Columns.Count >= 5 Then row.Parent.Columns(5).Delete
+              Else
+                row.Cells(5).Range.Text = Replace(keyValue(1), "|", ",")
+              End If
           End Select
         Next
       Next
@@ -2263,6 +2283,104 @@ fn print_packing_slip(args: PrintPackingSlipArgs) -> Result<(), String> {
   );
 
   let vbs_path = "C:\\MWD\\scripts\\print_packing_slip.vbs";
+  write(&vbs_path, vbs_script).expect("Failed to create VBS script");
+
+  let mut cmd = Command::new("wscript.exe");
+  cmd.arg(vbs_path);
+  cmd.output().expect("Failed to update shipping list");
+  Ok(())
+}
+
+#[tauri::command]
+fn print_packing_slip_blind(args: PrintPackingSlipBlindArgs) -> Result<(), String> {
+  let printer = "Brother MFC-L3770CDW series";
+  let vbs_script = format!(
+    r#"
+    Dim doc, sheet1
+    Set doc = CreateObject("Word.Application")
+    doc.Visible = True
+    Set sheet1 = doc.Documents.Open("\\MWD1-SERVER\Server\packingSlipBlindTemplate.docx")
+
+    Sub ReplaceTextAndColor(sheet, findText, replaceText)
+      With sheet.Content.Find
+        .Text = findText
+        .Replacement.Text = replaceText
+        .Wrap = 1
+        .MatchWholeWord = True
+        .Execute , , , , , , , , , , 2
+      End With
+    End Sub
+
+    Call ReplaceTextAndColor(sheet1, "<INVOICE_DATE>", "{}")
+    Call ReplaceTextAndColor(sheet1, "<BILL_TO_COMPANY>", "{}")
+    Call ReplaceTextAndColor(sheet1, "<BILL_TO_ADDRESS>", "{}")
+    Call ReplaceTextAndColor(sheet1, "<BILL_TO_ADDRESS_2>", {})
+    Call ReplaceTextAndColor(sheet1, "<BILL_TO_CITY_STATE_ZIP>", "{}")
+    Call ReplaceTextAndColor(sheet1, "<SHIP_TO_COMPANY>", "{}")
+    Call ReplaceTextAndColor(sheet1, "<SHIP_TO_CONTACT>", {})
+    Call ReplaceTextAndColor(sheet1, "<SHIP_TO_ADDRESS>", "{}")
+    Call ReplaceTextAndColor(sheet1, "<SHIP_TO_ADDRESS_2>", {})
+    Call ReplaceTextAndColor(sheet1, "<SHIP_TO_CITY_STATE_ZIP>", "{}")
+
+    Dim jsonData, item, table, row, i
+    jsonData = {:?}
+
+    If Len(jsonData) > 2 Then
+      Dim items
+      items = Split(jsonData, "}},")
+      Set table = sheet1.Tables(1)
+
+      For i = LBound(items) To UBound(items)
+        Dim fields, keyValue, j
+        If i > 0 Or table.Rows.Count = 1 Then
+          table.Rows.Add
+        End If
+
+        Set row = table.Rows(table.Rows.Count)
+        fields = Split(items(i), ",")
+
+        For j = LBound(fields) To UBound(fields)
+          keyValue = Split(fields(j), ":")
+          keyValue(0) = Replace(keyValue(0), "[{{", "")
+          keyValue(0) = Replace(keyValue(0), "{{", "")
+          If UBound(keyValue) >= 1 Then
+            keyValue(1) = Replace(keyValue(1), "}}]", "")
+          End If
+
+          Select Case keyValue(0)
+            Case "qty"
+              row.Cells(1).Range.Text = keyValue(1)
+              row.Cells(1).Range.Font.Bold = False
+            Case "partNum"
+              row.Cells(2).Range.Text = keyValue(1)
+            Case "desc"
+              row.Cells(3).Range.Text = keyValue(1)
+          End Select
+        Next
+      Next
+    End If
+
+    doc.ActivePrinter = "{}"
+    sheet1.PrintOut , , , , , , , {}
+    sheet1.Close False
+    doc.Quit
+    "#,
+    args.invoiceDate,
+    args.billToCompany,
+    args.billToAddress,
+    args.billToAddress2,
+    args.billToCityStateZip,
+    args.shipToCompany,
+    args.shipToContact,
+    args.shipToAddress,
+    args.shipToAddress2,
+    args.shipToCityStateZip,
+    args.items.replace("\"", "").replace("\\", ""),
+    printer,
+    1
+  );
+
+  let vbs_path = "C:\\MWD\\scripts\\print_packing_slip_blind.vbs";
   write(&vbs_path, vbs_script).expect("Failed to create VBS script");
 
   let mut cmd = Command::new("wscript.exe");
