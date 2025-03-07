@@ -137,7 +137,7 @@ export default function Handwrittens() {
 
   return (
     <Layout title="Handwrittens">
-      <HandwrittensSearchDialog open={openSearch} setOpen={setOpenSearch} setHandwrittens={handleSearch} setMinItems={setHandwrittenCount} limit={LIMIT} page={currentPage} />
+      <HandwrittensSearchDialog open={openSearch} setOpen={setOpenSearch} setHandwrittens={handleSearch} setMinItems={setHandwrittenCount} limit={LIMIT} />
       <CustomerSelectDialog open={customerSelectOpen} setOpen={setCustomerSelectOpen} onSubmit={handleNewHandwritten} />
 
       <div className="handwrittens__container">

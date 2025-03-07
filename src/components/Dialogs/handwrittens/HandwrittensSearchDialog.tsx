@@ -16,11 +16,10 @@ interface Props {
   setHandwrittens: (invoices: Handwritten[]) => void
   setMinItems: (minItems: number[]) => void
   limit: number
-  page: number
 }
 
 
-export default function HandwrittensSearchDialog({ open, setOpen, setHandwrittens, setMinItems, limit, page }: Props) {
+export default function HandwrittensSearchDialog({ open, setOpen, setHandwrittens, setMinItems, limit }: Props) {
   const [handwrittenSearchData, setHandwrittenSearchData] = useAtom(handwrittenSearchAtom);
   const [id, setId] = useState<number>('' as any);
   const [date, setDate] = useState<Date>(null);
@@ -51,7 +50,7 @@ export default function HandwrittensSearchDialog({ open, setOpen, setHandwritten
       source,
       payment,
       limit,
-      offset: (page - 1) * limit
+      offset: 0
     };
     const res = await searchHandwrittens(searchData);
     setHandwrittens(res.rows);

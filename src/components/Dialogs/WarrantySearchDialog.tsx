@@ -14,11 +14,10 @@ interface Props {
   setWarranties: (warranties: Warranty[]) => void
   setMinItems: (minItems: number[]) => void
   limit: number
-  page: number
 }
 
 
-export default function WarrantySearchDialog({ open, setOpen, setWarranties, setMinItems, limit, page }: Props) {
+export default function WarrantySearchDialog({ open, setOpen, setWarranties, setMinItems, limit }: Props) {
   const [searchData, setSearchData] = useAtom(warrantySearchAtom);
   const [id, setId] = useState<number>('' as any);
   const [partNum, setPartNum] = useState('');
@@ -40,7 +39,7 @@ export default function WarrantySearchDialog({ open, setOpen, setWarranties, set
       vendor,
       status,
       limit,
-      offset: (page - 1) * limit
+      offset: 0
     };
     const res = await searchWarranties(searchData);
     setWarranties(res.rows);
