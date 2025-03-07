@@ -1,5 +1,5 @@
 import { sourcesAtom } from "@/scripts/atoms/state";
-import { addAltShipAddress, deleteHandwrittenItem, editHandwritten, editHandwrittenItems, getHandwrittenById } from "@/scripts/controllers/handwrittensController";
+import { addAltShipAddress, addHandwrittenItem, deleteHandwrittenItem, editHandwritten, editHandwrittenItems, editHandwrittenTaxable, getHandwrittenById } from "@/scripts/controllers/handwrittensController";
 import { useAtom } from "jotai";
 import { FormEvent, Fragment, useEffect, useState } from "react";
 import GridItem from "./Library/Grid/GridItem";
@@ -78,6 +78,7 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
   const [changesSaved, setChangesSaved] = useState<boolean>(true);
   const [changeCustomerDialogOpen, setChangeCustomerDialogOpen] = useState(false);
   const [changeCustomerDialogData, setChangeCustomerDialogData] = useState<Handwritten>(null);
+  const TAX_RATE = 0.08375;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -270,6 +271,39 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
 
   const handleDeleteTrackingNumber = (id: number) => {
     setTrackingNumbers(trackingNumbers.filter((num) => num.id !== id));
+  };
+
+  const toggleTaxable = async (value: boolean) => {
+    if (!await confirm(`${value ? 'Make this' : 'Remove this as'} taxable?`)) return;
+    setIsTaxable(value);
+    await editHandwrittenTaxable(handwritten.id, value);
+
+    if (value) {
+      if (handwrittenItems.length === 0) {
+        await confirm('Error: No handwritten items');
+        return;
+      }
+      const items = handwrittenItems.map((item) => item.qty * item.unitPrice);
+      const taxTotal = items.reduce((acc, cur) => acc + cur, 0);
+      const item = {
+        handwrittenId: handwritten.id,
+        date: new Date(),
+        desc: 'TAX',
+        partNum: 'TAX',
+        stockNum: '',
+        unitPrice: Number((taxTotal * TAX_RATE).toFixed(2)),
+        qty: 1,
+        cost: 0,
+        location: '',
+        partId: null
+      } as any;
+      const id = await addHandwrittenItem(item);
+      setHandwrittenItems([...handwrittenItems, { id, ...item }]);
+    } else {
+      const item = handwrittenItems.find((item) => item.partNum === 'TAX');
+      if (item) await deleteHandwrittenItem(item.id);
+      setHandwrittenItems(handwrittenItems.filter((i) => i.id !== item.id))
+    }
   };
 
 
@@ -623,7 +657,7 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
                   variant={['label-bold', 'label-align-center']}
                   label="TAXABLE"
                   checked={isTaxable}
-                  onChange={(e: any) => setIsTaxable(e.target.checked)}
+                  onChange={(e: any) => toggleTaxable(e.target.checked)}
                 />
                 <Checkbox
                   variant={['label-bold', 'label-align-center']}
