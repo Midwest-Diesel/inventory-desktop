@@ -635,6 +635,24 @@ export default function Handwritten() {
                     </tr>
                   </tbody>
                 </Table>
+
+                <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.3rem' }}>
+                  <Checkbox
+                    variant={['label-bold', 'label-align-center']}
+                    label="3RD PARTY BILL"
+                    checked={handwritten.isThirdParty}
+                    disabled
+                  />
+                  <Checkbox
+                    variant={['label-bold', 'label-align-center']}
+                    label="COLLECT"
+                    checked={handwritten.isCollect}
+                    disabled
+                  />
+                </div>
+                {(handwritten.isCollect || handwritten.isThirdParty) &&
+                  <p><strong>Account Number:</strong> { handwritten.thirdPartyAccount }</p>
+                }
               </GridItem>
 
               <GridItem colStart={10} colEnd={12} variant={['low-opacity-bg']} className="no-print">
@@ -688,20 +706,14 @@ export default function Handwritten() {
                   />
                   <Checkbox
                     variant={['label-bold', 'label-align-center']}
-                    label="3RD PARTY BILL"
-                    checked={handwritten.isThirdParty}
-                    disabled
-                  />
-                  <Checkbox
-                    variant={['label-bold', 'label-align-center']}
-                    label="COLLECT"
-                    checked={handwritten.isCollect}
-                    disabled
-                  />
-                  <Checkbox
-                    variant={['label-bold', 'label-align-center']}
                     label="SETUP"
                     checked={handwritten.isSetup}
+                    disabled
+                  />
+                  <Checkbox
+                    variant={['label-bold', 'label-align-center']}
+                    label="Email Invoice EOD"
+                    checked={handwritten.isIncludedInEOD}
                     disabled
                   />
                 </div>

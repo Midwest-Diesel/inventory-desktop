@@ -74,6 +74,7 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
   const [isNoPriceInvoice, setIsNoPriceInvoice] = useState<boolean>(handwritten.isNoPriceInvoice);
   const [isCollect, setIsCollect] = useState<boolean>(handwritten.isCollect);
   const [isSetup, setIsSetup] = useState<boolean>(handwritten.isSetup);
+  const [thirdPartyAccount, setThirdPartyAccount] = useState<string>(handwritten.thirdPartyAccount);
   const [changesSaved, setChangesSaved] = useState<boolean>(true);
   const [changeCustomerDialogOpen, setChangeCustomerDialogOpen] = useState(false);
   const [changeCustomerDialogData, setChangeCustomerDialogData] = useState<Handwritten>(null);
@@ -139,7 +140,8 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
       isNoPriceInvoice,
       isThirdParty,
       isCollect,
-      isSetup
+      isSetup,
+      thirdPartyAccount
     } as any;
     setNewShippingListRow(newInvoice);
     await editHandwritten(newInvoice);
@@ -584,6 +586,35 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
                   </tr>
                 </tbody>
               </Table>
+
+              <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.3rem' }}>
+                <Checkbox
+                  variant={['label-bold', 'label-align-center']}
+                  label="3RD PARTY BILL"
+                  checked={isThirdParty}
+                  onChange={(e: any) => {
+                    setIsThirdParty(e.target.checked);
+                    setIsCollect(false);
+                  }}
+                />
+                <Checkbox
+                  variant={['label-bold', 'label-align-center']}
+                  label="COLLECT"
+                  checked={isCollect}
+                  onChange={(e: any) => {
+                    setIsCollect(e.target.checked);
+                    setIsThirdParty(false);
+                  }}
+                />
+              </div>
+              {(isCollect || isThirdParty) &&
+                <Input
+                  variant={['small', 'thin', 'label-bold']}
+                  label="Account Number "
+                  value={thirdPartyAccount}
+                  onChange={(e: any) => setThirdPartyAccount(e.target.value)}
+                />
+              }
             </GridItem>
 
             <GridItem colStart={1} colEnd={12} variant={['no-style']}>
@@ -608,18 +639,6 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
                   label="NPI"
                   checked={isNoPriceInvoice}
                   onChange={(e: any) => setIsNoPriceInvoice(e.target.checked)}
-                />
-                <Checkbox
-                  variant={['label-bold', 'label-align-center']}
-                  label="3RD PARTY BILL"
-                  checked={isThirdParty}
-                  onChange={(e: any) => setIsThirdParty(e.target.checked)}
-                />
-                <Checkbox
-                  variant={['label-bold', 'label-align-center']}
-                  label="COLLECT"
-                  checked={isCollect}
-                  onChange={(e: any) => setIsCollect(e.target.checked)}
                 />
                 <Checkbox
                   variant={['label-bold', 'label-align-center']}
