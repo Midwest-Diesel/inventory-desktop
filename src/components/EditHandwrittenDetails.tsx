@@ -302,7 +302,7 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
     } else {
       const item = handwrittenItems.find((item) => item.partNum === 'TAX');
       if (item) await deleteHandwrittenItem(item.id);
-      setHandwrittenItems(handwrittenItems.filter((i) => i.id !== item.id))
+      setHandwrittenItems(handwrittenItems.filter((i) => i.id !== item.id));
     }
   };
 

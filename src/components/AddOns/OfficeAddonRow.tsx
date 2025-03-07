@@ -37,7 +37,7 @@ export default function OfficeAddonRow({ addOn, partNumList, engineNumList }: Pr
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    handlePoLink(Number(addOn.po));
+    handlePoLink(addOn.po);
   }, []);
 
   useEffect(() => {
@@ -162,7 +162,7 @@ export default function OfficeAddonRow({ addOn, partNumList, engineNumList }: Pr
     setLoadingProgress(`${i}/${total}`);
   };
 
-  const handlePoLink = async (poNum: number) => {
+  const handlePoLink = async (poNum: string) => {
     const po: PO = await getPurchaseOrderByPoNum(poNum);
     if (!po) return;
     setPoLink(`${po.poNum}`);
@@ -330,7 +330,7 @@ export default function OfficeAddonRow({ addOn, partNumList, engineNumList }: Pr
                   type="number"
                   value={addOn.po !== null ? addOn.po : ''}
                   onChange={(e: any) => handleEditAddOn({ ...addOn, po: e.target.value })}
-                  onBlur={(e: any) => handlePoLink(Number(e.target.value))}
+                  onBlur={(e: any) => handlePoLink(e.target.value)}
                 />
               </td>
             </tr>

@@ -271,7 +271,7 @@ type AddOn = {
   condition: string
   purchasePrice: number
   purchasedFrom: string
-  po: number
+  po: string
   manufacturer: string
   isSpecialCost: boolean
   newPrice: number

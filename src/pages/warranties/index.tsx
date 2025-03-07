@@ -92,7 +92,7 @@ export default function Warranties() {
 
   return (
     <Layout title="Warranties">
-      <WarrantySearchDialog open={warrantySearchOpen} setOpen={setWarrantySearchOpen} setWarranties={setWarranties} limit={LIMIT} page={page} setMinItems={setWarrantiesMin} />
+      <WarrantySearchDialog open={warrantySearchOpen} setOpen={setWarrantySearchOpen} setWarranties={setWarranties} limit={LIMIT} setMinItems={setWarrantiesMin} />
 
       <div className="warranties__container">
         <div className="warranties">
