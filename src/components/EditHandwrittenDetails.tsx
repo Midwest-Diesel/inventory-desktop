@@ -99,7 +99,7 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
     const newInvoice = {
       id: handwritten.id,
       shipViaId,
-      initials: handwritten.createdBy,
+      soldById: handwritten.soldById,
       handwrittenItems: handwrittenItems,
       customer: newCustomer,
       date,

@@ -164,7 +164,9 @@ type Handwritten = {
   customer: Customer
   handwrittenItems: HandwrittenItem[]
   createdBy: string
+  createdById: number
   soldBy: string
+  soldById: number
   date: Date
   poNum: string
   billToAddress: string
