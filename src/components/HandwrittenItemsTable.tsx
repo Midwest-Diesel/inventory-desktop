@@ -24,7 +24,7 @@ export default function HandwrittenItemsTable({ className, handwritten, handwrit
   const [toastOpen, setToastOpen] = useState(false);
 
   useEffect(() => {
-    const itemsWithChildren = handwrittenItems.filter((item) => item.invoiceItemChildren.length > 0);
+    const itemsWithChildren = handwrittenItems.filter((item) => item.invoiceItemChildren && item.invoiceItemChildren.length > 0);
     itemsWithChildren.forEach((item) => {
       const res = item.invoiceItemChildren.find((child) => child.cost === 0.04);
       if (res) {
