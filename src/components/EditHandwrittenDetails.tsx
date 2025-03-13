@@ -20,6 +20,7 @@ import { PreventNavigation } from "./PreventNavigation";
 import ChangeCustomerInfoDialog from "./Dialogs/handwrittens/ChangeCustomerInfoDialog";
 import { addTrackingNumber, deleteTrackingNumber, editTrackingNumber } from "@/scripts/controllers/trackingNumbersController";
 import FreightCarrierSelect from "./Library/Select/FreightCarrierSelect";
+import { getFreightCarrierById } from "@/scripts/controllers/freightCarriersController";
 
 interface Props {
   handwritten: Handwritten
@@ -75,7 +76,7 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
   const [isCollect, setIsCollect] = useState<boolean>(handwritten.isCollect);
   const [isSetup, setIsSetup] = useState<boolean>(handwritten.isSetup);
   const [thirdPartyAccount, setThirdPartyAccount] = useState<string>(handwritten.thirdPartyAccount);
-  const [changesSaved, setChangesSaved] = useState<boolean>(true);
+  const [changesSaved, setChangesSaved] = useState(true);
   const [changeCustomerDialogOpen, setChangeCustomerDialogOpen] = useState(false);
   const [changeCustomerDialogData, setChangeCustomerDialogData] = useState<Handwritten>(null);
   const [taxTotal, setTaxTotal] = useState(0);
@@ -303,6 +304,33 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
       const item = handwrittenItems.find((item) => item.partNum === 'TAX');
       if (item) await deleteHandwrittenItem(item.id);
       setHandwrittenItems(handwrittenItems.filter((i) => i.id !== item.id));
+    }
+  };
+
+  const handleEditShipVia = async (id: number) => {
+    setShipViaId(id);
+    const shipVia = await getFreightCarrierById(id);
+    const row = handwrittenItems.find((item) => item.partNum === 'FREIGHT');
+    const item = {
+      id: row && row.id,
+      handwrittenId: handwritten.id,
+      date: new Date(),
+      desc: shipVia.name,
+      partNum: 'FREIGHT',
+      stockNum: '',
+      unitPrice: 0,
+      qty: 1,
+      cost: 0,
+      location: '',
+      partId: null,
+      invoiceItemChildren: []
+    } as any;
+
+    if (row === null || row === undefined) {
+      const id = await addHandwrittenItem(item);
+      setHandwrittenItems([...handwrittenItems, { id, ...item }]);
+    } else {
+      await editHandwrittenItems(item);
     }
   };
 
@@ -557,7 +585,7 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
                       <FreightCarrierSelect
                         variant={['label-bold']}
                         value={shipViaId}
-                        onChange={(e: any) => setShipViaId(e.target.value)}
+                        onChange={(e: any) => handleEditShipVia(e.target.value)}
                       />
                     </td>
                   </tr>
@@ -749,14 +777,14 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
                           <Input
                             value={item.stockNum}
                             onChange={(e: any) => editHandwrittenItem({ ...item, stockNum: e.target.value }, i)}
-                            disabled={item.desc === 'TAX'}
+                            disabled={item.desc === 'TAX' || item.partNum === 'FREIGHT'}
                           />
                         </td>
                         <td>
                           <Input
                             value={item.location}
                             onChange={(e: any) => editHandwrittenItem({ ...item, location: e.target.value }, i)}
-                            disabled={item.desc === 'TAX'}
+                            disabled={item.desc === 'TAX' || item.partNum === 'FREIGHT'}
                           />
                         </td>
                         <td>
@@ -764,7 +792,7 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
                             value={item.cost}
                             type="number"
                             onChange={(e: any) => editHandwrittenItem({ ...item, cost: e.target.value }, i)}
-                            disabled={item.desc === 'TAX'}
+                            disabled={item.desc === 'TAX' || item.partNum === 'FREIGHT'}
                           />
                         </td>
                         <td>
@@ -772,21 +800,21 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
                             value={item.qty}
                             type="number"
                             onChange={(e: any) => editHandwrittenItem({ ...item, qty: e.target.value }, i)}
-                            disabled={item.desc === 'TAX'}
+                            disabled={item.desc === 'TAX' || item.partNum === 'FREIGHT'}
                           />
                         </td>
                         <td>
                           <Input
                             value={item.partNum}
                             onChange={(e: any) => editHandwrittenItem({ ...item, partNum: e.target.value }, i)}
-                            disabled={item.desc === 'TAX'}
+                            disabled={item.desc === 'TAX' || item.partNum === 'FREIGHT'}
                           />
                         </td>
                         <td>
                           <Input
                             value={item.desc}
                             onChange={(e: any) => editHandwrittenItem({ ...item, desc: e.target.value }, i)}
-                            disabled={item.desc === 'TAX'}
+                            disabled={item.desc === 'TAX' || item.partNum === 'FREIGHT'}
                           />
                         </td>
                         <td>
@@ -794,14 +822,14 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
                             value={item.desc === 'TAX' ? taxTotal : item.unitPrice}
                             type="number"
                             onChange={(e: any) => editHandwrittenItem({ ...item, unitPrice: e.target.value }, i)}
-                            disabled={item.desc === 'TAX'}
+                            disabled={item.desc === 'TAX' || item.partNum === 'FREIGHT'}
                           />
                         </td>
                         <td>
                           <Input
                             value={parseDateInputValue(item.date)}
                             onChange={(e: any) => editHandwrittenItem({ ...item, date: new Date(e.target.value) }, i)}
-                            disabled={item.desc === 'TAX'}
+                            disabled={item.desc === 'TAX' || item.partNum === 'FREIGHT'}
                             type="date"
                           />
                         </td>
