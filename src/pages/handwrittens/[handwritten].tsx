@@ -53,7 +53,9 @@ export default function Handwritten() {
   const [takeoff, setTakeoff] = useState('');
   const [takeoffItem, setTakeoffItem] = useState<HandwrittenItem | HandwrittenItemChild>(null);
   const [takeoffsOpen, setTakeoffsOpen] = useState(false);
+  const [taxTotal, setTaxTotal] = useState(0);
   const ccLabelRef = useRef(null);
+  const TAX_RATE = 0.08375;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -78,6 +80,9 @@ export default function Handwritten() {
   }, [isEditing]);
 
   useEffect(() => {
+    const taxItemsAmount = handwritten && handwritten.handwrittenItems.map((item) => item.qty * item.unitPrice).reduce((acc, cur) => acc + cur, 0);
+    setTaxTotal(Number((taxItemsAmount * TAX_RATE).toFixed(2)));
+
     const fetchData = async () => {
       if (handwritten) {
         const altShip = await getAltShipByHandwritten(handwritten.id);
@@ -742,6 +747,7 @@ export default function Handwritten() {
                   handwritten={handwritten}
                   handwrittenItems={handwritten.handwrittenItems}
                   setHandwritten={setHandwritten}
+                  taxTotal={taxTotal}
                 />
               </GridItem>
 

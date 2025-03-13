@@ -78,6 +78,7 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
   const [changesSaved, setChangesSaved] = useState<boolean>(true);
   const [changeCustomerDialogOpen, setChangeCustomerDialogOpen] = useState(false);
   const [changeCustomerDialogData, setChangeCustomerDialogData] = useState<Handwritten>(null);
+  const [taxTotal, setTaxTotal] = useState(0);
   const TAX_RATE = 0.08375;
 
   useEffect(() => {
@@ -90,6 +91,11 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
   useEffect(() => {
     setHandwrittenItems(handwritten.handwrittenItems);
   }, [handwritten]);
+
+  useEffect(() => {
+    const taxItemsAmount = handwrittenItems.map((item) => item.qty * item.unitPrice).reduce((acc, cur) => acc + cur, 0);
+    setTaxTotal(Number((taxItemsAmount * TAX_RATE).toFixed(2)));
+  }, [handwrittenItems]);
 
   const saveChanges = async (e: FormEvent) => {
     e.preventDefault();
@@ -277,25 +283,19 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
     if (!await confirm(`${value ? 'Make this' : 'Remove this as'} taxable?`)) return;
     setIsTaxable(value);
     await editHandwrittenTaxable(handwritten.id, value);
-
     if (value) {
-      if (handwrittenItems.length === 0) {
-        await confirm('Error: No handwritten items');
-        return;
-      }
-      const items = handwrittenItems.map((item) => item.qty * item.unitPrice);
-      const taxTotal = items.reduce((acc, cur) => acc + cur, 0);
       const item = {
         handwrittenId: handwritten.id,
         date: new Date(),
         desc: 'TAX',
         partNum: 'TAX',
         stockNum: '',
-        unitPrice: Number((taxTotal * TAX_RATE).toFixed(2)),
+        unitPrice: taxTotal,
         qty: 1,
         cost: 0,
         location: '',
-        partId: null
+        partId: null,
+        invoiceItemChildren: []
       } as any;
       const id = await addHandwrittenItem(item);
       setHandwrittenItems([...handwrittenItems, { id, ...item }]);
@@ -749,12 +749,14 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
                           <Input
                             value={item.stockNum}
                             onChange={(e: any) => editHandwrittenItem({ ...item, stockNum: e.target.value }, i)}
+                            disabled={item.desc === 'TAX'}
                           />
                         </td>
                         <td>
                           <Input
                             value={item.location}
                             onChange={(e: any) => editHandwrittenItem({ ...item, location: e.target.value }, i)}
+                            disabled={item.desc === 'TAX'}
                           />
                         </td>
                         <td>
@@ -762,6 +764,7 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
                             value={item.cost}
                             type="number"
                             onChange={(e: any) => editHandwrittenItem({ ...item, cost: e.target.value }, i)}
+                            disabled={item.desc === 'TAX'}
                           />
                         </td>
                         <td>
@@ -769,31 +772,36 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
                             value={item.qty}
                             type="number"
                             onChange={(e: any) => editHandwrittenItem({ ...item, qty: e.target.value }, i)}
+                            disabled={item.desc === 'TAX'}
                           />
                         </td>
                         <td>
                           <Input
                             value={item.partNum}
                             onChange={(e: any) => editHandwrittenItem({ ...item, partNum: e.target.value }, i)}
+                            disabled={item.desc === 'TAX'}
                           />
                         </td>
                         <td>
                           <Input
                             value={item.desc}
                             onChange={(e: any) => editHandwrittenItem({ ...item, desc: e.target.value }, i)}
+                            disabled={item.desc === 'TAX'}
                           />
                         </td>
                         <td>
                           <Input
-                            value={item.unitPrice}
+                            value={item.desc === 'TAX' ? taxTotal : item.unitPrice}
                             type="number"
                             onChange={(e: any) => editHandwrittenItem({ ...item, unitPrice: e.target.value }, i)}
+                            disabled={item.desc === 'TAX'}
                           />
                         </td>
                         <td>
                           <Input
                             value={parseDateInputValue(item.date)}
                             onChange={(e: any) => editHandwrittenItem({ ...item, date: new Date(e.target.value) }, i)}
+                            disabled={item.desc === 'TAX'}
                             type="date"
                           />
                         </td>

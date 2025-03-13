@@ -13,10 +13,11 @@ interface Props {
   handwritten: Handwritten
   handwrittenItems: HandwrittenItem[]
   setHandwritten: (handwritten: Handwritten) => void
+  taxTotal: number
 }
 
 
-export default function HandwrittenItemsTable({ className, handwritten, handwrittenItems, setHandwritten }: Props) {
+export default function HandwrittenItemsTable({ className, handwritten, handwrittenItems, setHandwritten, taxTotal }: Props) {
   const [childrenOpen, setChildrenOpen] = useState(false);
   const [stockNumChildren, setStockNumChildren] = useState<HandwrittenItemChild[]>([]);
   const [msg, setToastMsg] = useState('');
@@ -139,7 +140,7 @@ export default function HandwrittenItemsTable({ className, handwritten, handwrit
                       { item.partNum }
                     </td>
                     <td>{ item.desc }</td>
-                    <td>{ formatCurrency(item.unitPrice) }</td>
+                    <td>{ item.desc === 'TAX' ? formatCurrency(taxTotal) : formatCurrency(item.unitPrice) }</td>
                     <td>{ formatDate(item.date) }</td>
                   </tr>
                 );
