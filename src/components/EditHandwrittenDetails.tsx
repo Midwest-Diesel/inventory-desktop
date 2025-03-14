@@ -53,8 +53,8 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
   const [contact, setContact] = useState<string>(handwritten.contactName);
   const [contactPhone, setContactPhone] = useState<string>(handwritten.phone);
   const [contactCell, setContactCell] = useState<string>(handwritten.cell);
-  const [contactFax, setContactFax] = useState<string>(handwritten.customer.fax);
-  const [contactEmail, setContactEmail] = useState<string>(handwritten.customer.email);
+  const [contactFax, setContactFax] = useState<string>(handwritten.fax);
+  const [contactEmail, setContactEmail] = useState<string>(handwritten.email);
   const [invoiceStatus, setInvoiceStatus] = useState<InvoiceStatus>(handwritten.invoiceStatus);
   const [accountingStatus, setAccountingStatus] = useState<AccountingStatus>(handwritten.accountingStatus);
   const [shippingStatus, setShippingStatus] = useState<ShippingStatus>(handwritten.shippingStatus);

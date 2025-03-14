@@ -338,6 +338,19 @@ struct PrintPOArgs {
   items: String
 }
 
+#[derive(Deserialize, Serialize)]
+struct EmailEndOfDayArgs {
+  id: i32,
+  email: String,
+  company: String,
+  date: String,
+  year: String,
+  month: String,
+  day: String,
+  shipVia: String,
+  trackingNumbers: Vec<String>
+}
+
 #[tokio::main]
 async fn main() {
   tauri::Builder::default()
@@ -371,7 +384,8 @@ async fn main() {
       print_warranty,
       print_packing_slip,
       print_po,
-      print_packing_slip_blind
+      print_packing_slip_blind,
+      email_end_of_day
     ])
     .run(tauri::generate_context!())
     .expect("error while running tauri application");
@@ -2501,4 +2515,71 @@ fn print_po(args: PrintPOArgs) -> Result<(), String> {
   cmd.arg(vbs_path);
   cmd.output().expect("Failed to update shipping list");
   Ok(())
+}
+
+#[tauri::command]
+fn email_end_of_day(args: EmailEndOfDayArgs) {
+  let body = format!(
+    "\"<h2>{}</h2>\" & vbCrLf & _\n\
+    \"<strong>Invoice Date: </strong> {}<br />\" & vbCrLf & _\n\
+    {}\
+    {}\
+    \"<br /><br />\" & vbCrLf & _\n\
+    \"www.midwestdiesel.com<br />\" & vbCrLf & _\n\
+    \"<strong>Phone:</strong> (888) 866-3406<br />\" & vbCrLf & _\n\
+    \"<strong>Fax:</strong> (763) 450-2197\"",
+    args.company.replace("\"", "\"\""),
+    args.date,
+    if !args.shipVia.is_empty() {
+      format!("\"<strong>Ship Via: </strong> {}<br />\" & vbCrLf & _\n", args.shipVia.replace("\"", "\"\""))
+    } else {
+      "".to_string()
+    },
+    if !args.trackingNumbers.is_empty() {
+      if args.trackingNumbers.len() > 1 {
+        format!(
+          "\"<strong>Tracking Numbers:</strong><ul>{}</ul>\" & vbCrLf & _\n",
+          args.trackingNumbers.join("").replace("\"", "\"\"")
+        )
+      } else {
+        format!(
+          "\"<strong>Tracking Number:</strong><ul>{}</ul>\" & vbCrLf & _\n",
+          args.trackingNumbers[0].replace("\"", "\"\"")
+        )
+      }
+    } else {
+      "".to_string()
+    }
+  );
+
+  let vbs_script = format!(
+    r#"
+    Dim OutlookApp
+    Set OutlookApp = CreateObject("Outlook.Application")
+    Dim MailItem
+    Set MailItem = OutlookApp.CreateItem(0)
+    MailItem.Subject = "Midwest Diesel Invoice - {}"
+    MailItem.HTMLBody = {}
+    MailItem.To = "{}"
+    
+    Dim attachmentPath
+    attachmentPath = Trim("{}")
+    If attachmentPath <> "" Then
+      MailItem.Attachments.Add attachmentPath
+    End If
+
+    MailItem.Display
+    "#,
+    args.date,
+    body,
+    args.email,
+    format!("\\\\MWD1-SERVER\\Server\\InvoiceScans\\Archives\\{}\\{}\\{}\\{}.pdf", args.year, args.month, args.day, args.id)
+  );
+
+  let temp_vbs_path = "C:/mwd/scripts/email_end_of_day.vbs";
+  write(&temp_vbs_path, vbs_script).expect("Failed to create VBS script");
+
+  let mut cmd = Command::new("wscript.exe");
+  cmd.arg(temp_vbs_path);
+  cmd.output().expect("Failed to create new draft");
 }

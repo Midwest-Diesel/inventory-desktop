@@ -171,6 +171,16 @@ export const getSomeUnsoldItems = async (page: number, limit: number, salesmanId
   }
 };
 
+export const getEndOfDayHandwrittens = async () => {
+  try {
+    const auth = { withCredentials: true };
+    const res = await api.get(`/api/handwrittens/end-of-day`, auth);
+    return parseHandwrittenRes(res.data);
+  } catch (err) {
+    console.error(err);
+  }
+};
+
 // === POST routes === //
 
 export const addHandwritten = async (invoice: Handwritten) => {

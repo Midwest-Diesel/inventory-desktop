@@ -3,7 +3,8 @@ import Button from "@/components/Library/Button";
 import Loading from "@/components/Library/Loading";
 import Pagination from "@/components/Library/Pagination";
 import Table from "@/components/Library/Table";
-import { getHandwrittenCount, getHandwrittenCountByStatus, getSomeHandwrittens, getSomeHandwrittensByStatus } from "@/scripts/controllers/handwrittensController";
+import { invoke } from "@/scripts/config/tauri";
+import { getEndOfDayHandwrittens, getHandwrittenCount, getHandwrittenCountByStatus, getSomeHandwrittens, getSomeHandwrittensByStatus } from "@/scripts/controllers/handwrittensController";
 import { formatDate } from "@/scripts/tools/stringUtils";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -59,15 +60,33 @@ export default function Karmak() {
     await fetchData();
   };
 
+  const handleEndOfDay = async () => {
+    const res = await getEndOfDayHandwrittens();
+    for (let i = 0; i < res.length; i++) {
+      const handwritten: Handwritten = res[i];
+      const args = {
+        id: Number((handwritten as any).legacyId),
+        email: handwritten.email || '',
+        company: handwritten.customer.company,
+        date: formatDate(handwritten.date),
+        year: handwritten.date.getFullYear().toString(),
+        month: (handwritten.date.getMonth() + 1).toString(),
+        day: handwritten.date.getDay().toString(),
+        shipVia: handwritten.shipVia.name || '',
+        trackingNumbers: handwritten.trackingNumbers.map((num) => `<li style='margin: 0;'>${num.trackingNumber}</li>`)
+      };
+      await invoke('email_end_of_day', { args });
+    }
+  };
+
 
   return (
     <Layout title="Karmak">
       <div className="karmak-page">
         <h1>Accounting</h1>
         <div className="karmak-page__top-buttons">
-          <Button>End of Day</Button>
+          <Button onClick={handleEndOfDay}>End of Day</Button>
           <Button>Email Netcom Inventory</Button>
-          <Button>FedEx Sync</Button>
         </div>
         <hr />
         <div className="karmak-page__top-buttons">

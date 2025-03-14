@@ -632,11 +632,11 @@ export default function Handwritten() {
                     </tr>
                     <tr>
                       <th><strong>Contact Fax</strong></th>
-                      <td>{ formatPhone(handwritten.customer.fax) }</td>
+                      <td>{ formatPhone(handwritten.fax) }</td>
                     </tr>
                     <tr>
                       <th><strong>Contact Email</strong></th>
-                      <td>{ handwritten.customer.email }</td>
+                      <td>{ handwritten.email }</td>
                     </tr>
                   </tbody>
                 </Table>
