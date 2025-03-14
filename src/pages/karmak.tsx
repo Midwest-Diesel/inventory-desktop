@@ -65,7 +65,7 @@ export default function Karmak() {
     for (let i = 0; i < res.length; i++) {
       const handwritten: Handwritten = res[i];
       const args = {
-        id: Number((handwritten as any).legacyId),
+        id: Number(handwritten.id),
         email: handwritten.email || '',
         company: handwritten.customer.company,
         date: formatDate(handwritten.date),
@@ -86,7 +86,6 @@ export default function Karmak() {
         <h1>Accounting</h1>
         <div className="karmak-page__top-buttons">
           <Button onClick={handleEndOfDay}>End of Day</Button>
-          <Button>Email Netcom Inventory</Button>
         </div>
         <hr />
         <div className="karmak-page__top-buttons">

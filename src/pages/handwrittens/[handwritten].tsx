@@ -718,7 +718,7 @@ export default function Handwritten() {
                   <Checkbox
                     variant={['label-bold', 'label-align-center']}
                     label="Email Invoice EOD"
-                    checked={handwritten.isIncludedInEOD}
+                    checked={handwritten.isEndOfDay}
                     disabled
                   />
                 </div>

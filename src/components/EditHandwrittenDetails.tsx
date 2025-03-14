@@ -75,6 +75,7 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
   const [isNoPriceInvoice, setIsNoPriceInvoice] = useState<boolean>(handwritten.isNoPriceInvoice);
   const [isCollect, setIsCollect] = useState<boolean>(handwritten.isCollect);
   const [isSetup, setIsSetup] = useState<boolean>(handwritten.isSetup);
+  const [isEndOfDay, setIsEndOfDay] = useState<boolean>(handwritten.isEndOfDay);
   const [thirdPartyAccount, setThirdPartyAccount] = useState<string>(handwritten.thirdPartyAccount);
   const [changesSaved, setChangesSaved] = useState(true);
   const [changeCustomerDialogOpen, setChangeCustomerDialogOpen] = useState(false);
@@ -149,6 +150,7 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
       isThirdParty,
       isCollect,
       isSetup,
+      isEndOfDay,
       thirdPartyAccount
     } as any;
     setNewShippingListRow(newInvoice);
@@ -707,6 +709,12 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
                   label="SETUP"
                   checked={isSetup}
                   onChange={(e: any) => setIsSetup(e.target.checked)}
+                />
+                <Checkbox
+                  variant={['label-bold', 'label-align-center']}
+                  label="Email Invoice EOD"
+                  checked={isEndOfDay}
+                  onChange={(e: any) => setIsEndOfDay(e.target.checked)}
                 />
               </div>
             </GridItem>

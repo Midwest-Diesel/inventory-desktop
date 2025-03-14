@@ -216,7 +216,7 @@ type Handwritten = {
   isThirdParty: boolean
   isTaxable: boolean
   isSetup: boolean
-  isIncludedInEOD: boolean
+  isEndOfDay: boolean
   trackingNumbers: TrackingNumber[]
   thirdPartyAccount: string
 };
