@@ -36,7 +36,7 @@ export default function TakeoffsDialog({ open, setOpen, item, setHandwritten }: 
     await editHandwrittenTakeoffState(item.id, true);
     const surplus: Surplus = await getSurplusByCode(part.purchasedFrom);
     if (surplus) {
-      await editSurplusPrice(surplus.id, surplus.price - Number(cost));
+      await editSurplusPrice(surplus.id, surplus.price - Number(cost), surplus.code);
     }
     if (part.qty - Number(qty) <= 0) {
       const partCostIn = (await getPartCostIn(part.stockNum)).find((p: PartCostIn) => p.vendor === part.purchasedFrom);

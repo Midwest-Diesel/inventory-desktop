@@ -81,11 +81,11 @@ export const addSurplus = async (surplus: Surplus) => {
 
 // === PATCH routes === //
 
-export const editSurplusPrice = async (id: number, price: number) => {
+export const editSurplusPrice = async (id: number, price: number, vendor: string) => {
   try {
     const auth = { withCredentials: true };
     await api.patch('/api/surplus/price', { id, price }, auth);
-    if (price <= 0) console.log('SET ALL COSTS TO $0.01');
+    if (price <= 0) await zeroAllSurplusItems(vendor);
   } catch (err) {
     console.error(err);
   }
@@ -97,6 +97,15 @@ export const editSurplus = async (surplus: Surplus) => {
   try {
     const auth = { withCredentials: true };
     await api.put('/api/surplus', surplus, auth);
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+const zeroAllSurplusItems = async (vendor: string) => {
+  try {
+    const auth = { withCredentials: true };
+    await api.put('/api/surplus/zero-all', { vendor }, auth);
   } catch (err) {
     console.error(err);
   }
