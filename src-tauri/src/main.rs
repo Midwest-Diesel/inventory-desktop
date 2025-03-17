@@ -1833,8 +1833,35 @@ fn print_part_tag(args: PartTagArgs) -> Result<(), String> {
       Next
     End Sub
 
+    Sub ReplaceTextAndFont(sheet, findText, replaceText, fontName)
+      With sheet.Content.Find
+        .Text = findText
+        .Replacement.Text = replaceText
+        .Replacement.Font.Name = fontName
+        .Wrap = 1
+        .MatchWholeWord = True
+        .Execute , , , , , , , , , , 2
+      End With
+
+      Dim shape
+      For Each shape In sheet.Shapes
+        If Not shape.TextFrame Is Nothing Then
+          If shape.TextFrame.HasText Then
+            With shape.TextFrame.TextRange.Find
+              .Text = findText
+              .Replacement.Text = replaceText
+              .Replacement.Font.Name = fontName
+              .Wrap = 1
+              .MatchWholeWord = True
+              .Execute , , , , , , , , , , 2
+            End With
+          End If
+        End If
+      Next
+    End Sub
+
     Call ReplaceAndSetColor(sheet1, "<STOCK_NUM>", "{}")
-    Call ReplaceTextInShapes(sheet1, "<STOCK_NUM>", "{}")
+    Call ReplaceTextAndFont(sheet1, "<BARCODE>", "*{}*", "IDAutomationHC39M Free Version")
     Call ReplaceTextInShapes(sheet1, "<MODEL>", "{}")
     Call ReplaceTextInShapes(sheet1, "<SERIAL_NUM>", "{}")
     Call ReplaceTextInShapes(sheet1, "<HP>", "{}")

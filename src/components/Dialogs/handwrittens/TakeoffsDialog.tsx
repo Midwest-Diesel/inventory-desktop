@@ -67,7 +67,7 @@ export default function TakeoffsDialog({ open, setOpen, item, setHandwritten }: 
           variant={['x-small', 'label-bold', 'label-stack']}
           label="Qty"
           value={qty}
-          onChange={(e: any) => setQty(e.target.value)}
+          onChange={(e: any) => setQty(Math.max(Math.min(e.target.value, item.qty), 1))}
           type="number"
         />
         {changeCost &&

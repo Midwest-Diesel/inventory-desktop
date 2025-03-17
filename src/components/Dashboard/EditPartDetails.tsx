@@ -743,7 +743,6 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
                       variant={['x-small', 'thin', 'label-bold']}
                       value={newEngineCostOutRow.costType}
                       onChange={(e: any) => handleNewEngineCostOutRowChange('costType', e.target.value)}
-                      type="number"
                     />
                   </td>
                   <td>
