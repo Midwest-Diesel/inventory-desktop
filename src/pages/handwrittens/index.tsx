@@ -29,6 +29,8 @@ export default function Handwrittens() {
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(0);
   const [searchData, setSearchData] = useState<any>({});
+  const [taxTotal, setTaxTotal] = useState(0);
+  const TAX_RATE = 0.08375;
   const LIMIT = 40;
 
   useEffect(() => {
@@ -134,6 +136,12 @@ export default function Handwrittens() {
     setHandwrittens(res);
   };
 
+  const handleFocusHandwritten = (handwritten: Handwritten) => {
+    setFocusedHandwritten(handwritten);
+    const taxItemsAmount = handwritten && handwritten.handwrittenItems.map((item) => item.qty * item.unitPrice).reduce((acc, cur) => acc + cur, 0);
+    setTaxTotal(Number((taxItemsAmount * TAX_RATE).toFixed(2)));
+  };
+
 
   return (
     <Layout title="Handwrittens">
@@ -176,7 +184,7 @@ export default function Handwrittens() {
                 <tbody>
                   {handwrittens.map((handwritten: Handwritten) => {
                     return (
-                      <tr key={handwritten.id} onClick={() => setFocusedHandwritten(handwritten)} style={ focusedHandwritten && handwritten.id === focusedHandwritten.id ? { border: 'solid 3px var(--yellow-2)' } : {} }>
+                      <tr key={handwritten.id} onClick={() => handleFocusHandwritten(handwritten)} style={ focusedHandwritten && handwritten.id === focusedHandwritten.id ? { border: 'solid 3px var(--yellow-2)' } : {} }>
                         <td><Link href={`/handwrittens/${handwritten.id}`}>{ handwritten.id }</Link></td>
                         <td>{ formatDate(handwritten.date) }</td>
                         <td>{ handwritten.billToCompany }</td>
@@ -200,7 +208,15 @@ export default function Handwrittens() {
           }
         </div>
 
-        {focusedHandwritten && <HandwrittenItemsTable className="handwritten-items-table--handwrittens-page" handwritten={focusedHandwritten} handwrittenItems={focusedHandwritten.handwrittenItems} setHandwritten={setFocusedHandwritten} /> }
+        {focusedHandwritten &&
+          <HandwrittenItemsTable
+            className="handwritten-items-table--handwrittens-page"
+            handwritten={focusedHandwritten}
+            handwrittenItems={focusedHandwritten.handwrittenItems}
+            setHandwritten={setFocusedHandwritten}
+            taxTotal={taxTotal}
+          />
+        }
       </div>
     </Layout>
   );
