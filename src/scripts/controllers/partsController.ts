@@ -110,7 +110,7 @@ export const getPartCostIn = async (stockNum: string) => {
   try {
     const auth = { withCredentials: true };
     const encodedParam = encodeURIComponent(stockNum);
-    const res = await api.get(`/api/parts/part-cost-in/${encodedParam}`, auth);
+    const res = await api.get(`/api/parts/part-cost-in/${encodedParam}`, auth);  
     return res.data;
   } catch (err) {
     console.error(err);
@@ -286,8 +286,7 @@ export const editPartQty = async (partId: number, qty: number) => {
 export const editPart = async (part: Part) => {
   try {
     const auth = { withCredentials: true };
-    const data = { ...part, altParts: part.altParts.join(',') };
-    await api.put('/api/parts', data, auth);
+    await api.put('/api/parts', part, auth);
   } catch (err) {
     console.error(err);
   }

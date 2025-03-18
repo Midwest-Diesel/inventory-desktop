@@ -23,6 +23,7 @@ export default function Error({ statusCode, error }: Props) {
           <p>{ error?.stack }</p>
 
           <button style={{ width: 'fit-content' }} onClick={() => location.reload()}>Reload</button>
+          <button style={{ width: 'fit-content' }} onClick={() => location.replace('/')}>Home</button>
         </main>
       </body>
     </html>

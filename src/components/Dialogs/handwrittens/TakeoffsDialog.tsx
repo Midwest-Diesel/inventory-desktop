@@ -3,7 +3,7 @@ import Dialog from "@/components/Library/Dialog";
 import Input from "@/components/Library/Input";
 import { editHandwrittenItemQty, editHandwrittenTakeoffState, getHandwrittenById } from "@/scripts/controllers/handwrittensController";
 import { addPart, addPartCostIn, editPartCostIn, getPartById, getPartCostIn, handlePartTakeoff } from "@/scripts/controllers/partsController";
-import { getSurplusByCode, editSurplusPrice } from "@/scripts/controllers/surplusController";
+import { getSurplusByCode, editSurplusPrice, zeroAllSurplusItems } from "@/scripts/controllers/surplusController";
 import { formatDate } from "@/scripts/tools/stringUtils";
 import { useParams } from "next/navigation";
 import { FormEvent, useEffect, useState } from "react";
@@ -35,9 +35,7 @@ export default function TakeoffsDialog({ open, setOpen, item, setHandwritten }: 
     await handlePartTakeoff(item.partId, Number(qty));
     await editHandwrittenTakeoffState(item.id, true);
     const surplus: Surplus = await getSurplusByCode(part.purchasedFrom);
-    if (surplus) {
-      await editSurplusPrice(surplus.id, surplus.price - Number(cost), surplus.code);
-    }
+    if (surplus && surplus.price - Number(cost) <= 0) await zeroAllSurplusItems(surplus.code);
     if (part.qty - Number(qty) <= 0) {
       const partCostIn = (await getPartCostIn(part.stockNum)).find((p: PartCostIn) => p.vendor === part.purchasedFrom);
       await editPartCostIn({ ...partCostIn, cost: Number(cost) });

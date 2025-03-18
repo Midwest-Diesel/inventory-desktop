@@ -74,7 +74,7 @@ export default function PartDetails() {
 
     const costRes = await getEngineCostRemaining(part.engineNum);
     setCostRemaining(costRes);
-
+    
     setPartCostIn(await getPartCostIn(part.stockNum));
     setEngineCostOut(await getPartEngineCostOut(part.stockNum));
 

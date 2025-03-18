@@ -1,10 +1,11 @@
 import { formatCurrency } from "@/scripts/tools/stringUtils";
 import Table from "./Library/Table";
-import Link from "next/link";
 import Checkbox from "./Library/Checkbox";
 import { editReturnItem } from "@/scripts/controllers/returnsController";
 import Button from "./Library/Button";
 import { useRouter } from "next/navigation";
+import { confirm } from "@/scripts/config/tauri";
+import { editPart } from "@/scripts/controllers/partsController";
 
 interface Props {
   className?: string
@@ -43,6 +44,13 @@ export default function ReturnItemsTable({ className, returnItems, returnData, s
       if (item.id === part.id) return { ...item, isReturnPutAway: value };
       return item;
     })});
+  };
+
+  const handleOpenPart = async (item: ReturnItem) => {
+    if (item.part.purchasedFrom && await confirm('Set "Qty Sold" to 0?')) {
+      await editPart({ ...item.part, qtySold: 0 });
+    }
+    router.push(`/part/${item.part.id}`);
   };
 
 
@@ -95,7 +103,7 @@ export default function ReturnItemsTable({ className, returnItems, returnData, s
                       />
                     </td>
                     <td>
-                      { ret.part.id && <Button onClick={() => router.push(`/part/${ret.part.id}`)}>Open Part</Button> }
+                      { ret.part.id && <Button onClick={() => handleOpenPart(ret)}>Open Part</Button> }
                     </td>
                   </tr>
                 );
