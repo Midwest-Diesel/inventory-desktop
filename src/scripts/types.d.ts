@@ -10,6 +10,7 @@ type User = {
   initials: string
   accessLevel: number
   type: 'office' | 'shop'
+  subtype?: 'sales' | 'frontDesk' | 'dev'
 };
 
 type Picture = {

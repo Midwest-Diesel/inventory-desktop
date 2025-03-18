@@ -65,3 +65,14 @@ export const getRatingFromRemarks = (string: string): string => {
     return `${rating.replaceAll('.', '')}.0`;
   }
 };
+
+export const dateDiffInDays = (a: Date, b: Date, numbersOnly = false) => {
+  const _MS_PER_DAY = 1000 * 60 * 60 * 24;
+  const utc1 = Date.UTC(a.getFullYear(), a.getMonth(), a.getDate());
+  const utc2 = Date.UTC(b.getFullYear(), b.getMonth(), b.getDate());
+  const days = Math.abs(Math.floor((utc2 - utc1) / _MS_PER_DAY));
+  if (numbersOnly)
+    return days;
+  else
+    return days !== 0 ? days > 1 ? `${days} days ago` : 'yesterday' : 'today';
+};

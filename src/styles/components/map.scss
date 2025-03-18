@@ -1,3 +1,16 @@
+.map-page-filters {
+  &__inputs {
+    display: flex;
+    gap: 0.8rem;
+  }
+
+  &__buttons {
+    display: flex;
+    gap: 0.2rem;
+    margin-top: 0.5rem;
+  }
+}
+
 .map-page {
   border: none;
   height: 90%;
@@ -17,7 +30,7 @@
     &-search {
       display: flex;
       gap: 0.3rem;
-      align-items: end;
+      align-items: flex-end;
 
       button {
         margin-bottom: 0.4rem;
@@ -33,6 +46,7 @@
     padding: 0.5rem;
     overflow-y: auto;
     height: 100%;
+    max-height: 42rem;
 
     &__item {
       p {
@@ -46,18 +60,37 @@
     }
   }
 
-  .gm-style-iw-a {
-    color: var(--black-1);
+  &__pagination-container {
+    width: 100%;
+    height: 100%;
 
-    button[title="Close"] {
-      position: absolute !important;
-      top: -0.9rem;
-      right: -0.9rem;
-      transform: scale(0.75);
+    .pagination {
+      border-color: transparent;
+      border-bottom-left-radius: 0;
     }
   }
 
-  .gm-style-iw-ch {
-    padding-top: 22px;
+  &__info-window {
+    color: var(--black-1);
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    max-width: 20rem;
+    
+    hr {
+      width: 100%;
+      margin: 0 0 0.2rem 0;
+    }
+  }
+
+  .gm-style-iw-a button[title="Close"] {
+    position: absolute !important;
+    top: -0.9rem;
+    right: -0.9rem;
+    transform: scale(0.75);
+  }
+
+  .GMAMP-maps-pin-view text {
+    font-size: var(--font-xxxsm) !important;
   }
 }
