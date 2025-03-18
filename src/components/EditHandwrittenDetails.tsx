@@ -21,6 +21,7 @@ import ChangeCustomerInfoDialog from "./Dialogs/handwrittens/ChangeCustomerInfoD
 import { addTrackingNumber, deleteTrackingNumber, editTrackingNumber } from "@/scripts/controllers/trackingNumbersController";
 import FreightCarrierSelect from "./Library/Select/FreightCarrierSelect";
 import { getFreightCarrierById } from "@/scripts/controllers/freightCarriersController";
+import { getAllUsers } from "@/scripts/controllers/userController";
 
 interface Props {
   handwritten: Handwritten
@@ -77,15 +78,18 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
   const [isSetup, setIsSetup] = useState<boolean>(handwritten.isSetup);
   const [isEndOfDay, setIsEndOfDay] = useState<boolean>(handwritten.isEndOfDay);
   const [thirdPartyAccount, setThirdPartyAccount] = useState<string>(handwritten.thirdPartyAccount);
+  const [soldBy, setSoldBy] = useState<number>(handwritten.soldById);
   const [changesSaved, setChangesSaved] = useState(true);
   const [changeCustomerDialogOpen, setChangeCustomerDialogOpen] = useState(false);
   const [changeCustomerDialogData, setChangeCustomerDialogData] = useState<Handwritten>(null);
   const [taxTotal, setTaxTotal] = useState(0);
+  const [users, setUsers] = useState<User[]>([]);
   const TAX_RATE = 0.08375;
 
   useEffect(() => {
     const fetchData = async () => {
       if (sourcesData.length === 0) setSourcesData(await getAllSources());
+      setUsers(await getAllUsers());
     };
     fetchData();
   }, []);
@@ -108,7 +112,6 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
     const newInvoice = {
       id: handwritten.id,
       shipViaId,
-      soldById: handwritten.soldById,
       handwrittenItems: handwrittenItems,
       customer: newCustomer,
       date,
@@ -151,7 +154,8 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
       isCollect,
       isSetup,
       isEndOfDay,
-      thirdPartyAccount
+      thirdPartyAccount,
+      soldBy
     } as any;
     setNewShippingListRow(newInvoice);
     await editHandwritten(newInvoice);
@@ -433,6 +437,20 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
                         <option value="">-- SELECT A SOURCE --</option>
                         {sourcesData.map((source: string, i) => {
                           return <option key={i} value={source}>{source}</option>;
+                        })}
+                      </Select>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>Sold By</th>
+                    <td>
+                      <Select
+                        variant={['label-space-between']}
+                        value={soldBy}
+                        onChange={(e: any) => setSoldBy(Number(e.target.value))}
+                      >
+                        {users.map((user: User) => {
+                          return <option key={user.id} value={user.id}>{ user.initials }</option>;
                         })}
                       </Select>
                     </td>

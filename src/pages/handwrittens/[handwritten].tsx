@@ -435,6 +435,10 @@ export default function Handwritten() {
                       <th><strong>Created By</strong></th>
                       <td>{ handwritten.createdBy }</td>
                     </tr>
+                    <tr>
+                      <th><strong>Sold By</strong></th>
+                      <td>{ handwritten.soldBy }</td>
+                    </tr>
                   </tbody>
                 </Table>
               </GridItem>
