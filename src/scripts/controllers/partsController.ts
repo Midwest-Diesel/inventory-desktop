@@ -189,24 +189,32 @@ export const searchAltParts = async (part: PartSearchData) => {
     );
     const auth = { withCredentials: true };
     const res = await api.get(`/api/parts/searchAlt/${JSON.stringify(filteredPart)}`, auth);
-    return await parsePartsData(res.data);
+    return await parsePartsData(res.data) || [];
   } catch (err) {
     console.error(err);
   }
 };
 
-export const getSalesInfo = async (partNum: string) => {
+export const getSalesInfo = async (altParts: string) => {
   try {
-    if (!partNum) return;
+    if (!altParts) return;
     const auth = { withCredentials: true };
-    const res = await api.get(`/api/parts/sales-info/${partNum}`, auth);
-    res.data.sales = res.data.sales.map((s) => {
-      return { ...s, soldToDate: parseResDate(s.soldToDate) };
-    }).sort((a, b) => b.soldToDate - a.soldToDate);
-    res.data.quotes = res.data.quotes.map((q) => {
-      return { ...q, date: parseResDate(q.date) };
-    }).sort((a, b) => b.date - a.date);
-    return res.data;
+    const res = await api.get(`/api/parts/sales-info/${altParts}`, auth);
+    return {
+      ...res.data,
+      sales: res.data.sales.map((part) => {
+        return {
+          ...part,
+          soldToDate: parseResDate(part.soldToDate)
+        };
+      }),
+      quotes: res.data.quotes.map((quote) => {
+        return {
+          ...quote,
+          date: parseResDate(quote.date)
+        };
+      })
+    };
   } catch (err) {
     console.error(err);
   }

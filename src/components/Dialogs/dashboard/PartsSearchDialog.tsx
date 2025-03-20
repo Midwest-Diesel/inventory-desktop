@@ -87,7 +87,7 @@ export default function PartsSearchDialog({ open, setOpen, setParts, setLoading 
   const handleSearch = async (partNum: string, stockNum: string, desc: string, location: string, qty: number, remarks: string, rating: number, purchasedFrom: string) => {
     setLoading(true);
     setRecentQuoteSearches(await getQuotesByPartNum(partNum));
-    const results = await searchParts({ partNum, stockNum, desc, location, qty, remarks, rating, purchasedFrom, showSoldParts }) as Part[];
+    const results = await searchParts({ partNum, stockNum, desc, location, qty, remarks, rating, purchasedFrom, showSoldParts }) as Part[] || [];
     setPartsQty(results.map((part) => part.qty));
     const alerts = await detectAlerts(partNum);
     setSelectedAlerts([...selectedAlerts, ...alerts]);

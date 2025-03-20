@@ -15,14 +15,25 @@
     }
   }
 
+  &__sales-history {
+    overflow-y: auto;
+    max-height: 17rem;
+  }
+
+  &__quotes-history {
+    overflow-y: auto;
+    max-height: 11rem;
+  }
+
   &__sales-by-year {
     border: 2px solid;
-    margin: 1.58rem;
+    margin: 1.58rem 0 0 1.58rem;
     padding: 0.5rem;
     border-radius: 0.3rem;
     overflow-y: auto;
-    max-height: 10rem;
-    width: 10rem;
+    max-height: 11rem;
+    min-width: 10rem;
+    max-width: 10rem;
 
     &--row {
       display: flex;

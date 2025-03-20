@@ -49,6 +49,7 @@ export default function PartSearch({ selectHandwrittenOpen, setSelectHandwritten
   const [partsOnEngs, setPartsOnEngs] = useState<{ partNum: string, engines: Engine[] }[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageLoaded, setPageLoaded] = useState(false);
+  const [isValidSearch, setIsValidSearch] = useState(false);
   const getTotalQty = () => partsQty.reduce((acc, part) => acc + part, 0);
   const LIMIT = 26;
 
@@ -78,6 +79,15 @@ export default function PartSearch({ selectHandwrittenOpen, setSelectHandwritten
     };
     fetchData();
   }, [showSoldParts]);
+
+  useEffect(() => {
+    const prevSearches = JSON.parse(localStorage.getItem('altPartSearches')) || JSON.parse(localStorage.getItem('partSearches'));
+    if (!prevSearches) {
+      setIsValidSearch(false);
+      return;
+    }
+    setIsValidSearch(Object.values(prevSearches).map((value: string) => value.replace('*', '')).some((value) => value));
+  }, [parts]);
 
   const searchInputExists = () => {
     const altSearch = JSON.parse(localStorage.getItem('altPartSearches'));
@@ -209,7 +219,7 @@ export default function PartSearch({ selectHandwrittenOpen, setSelectHandwritten
             </Button>
             <Button
               onClick={() => setSalesInfoOpen(true)}
-              disabled={!getSearchedPartNum()}
+              disabled={!isValidSearch}
             >
               Sales Info
             </Button>
@@ -247,7 +257,7 @@ export default function PartSearch({ selectHandwrittenOpen, setSelectHandwritten
           </div>
 
           {/* Dialogs */}
-          <SalesInfoDialog open={salesInfoOpen} setOpen={setSalesInfoOpen} />
+          { isValidSearch && <SalesInfoDialog open={salesInfoOpen} setOpen={setSalesInfoOpen} /> }
           <PartsSearchDialog open={partsSearchOpen} setOpen={setPartsSearchOpen} setParts={handleSearchData} setLoading={setLoading} />
           <AltPartsSearchDialog open={altPartsSearchOpen} setOpen={setAltPartsSearchOpen} setParts={handleSearchData} setLoading={setLoading} />
 
