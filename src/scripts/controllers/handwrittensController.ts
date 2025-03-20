@@ -183,10 +183,10 @@ export const getEndOfDayHandwrittens = async () => {
 
 // === POST routes === //
 
-export const addHandwritten = async (invoice: Handwritten) => {
+export const addHandwritten = async (handwritten: Handwritten) => {
   try {
     const auth = { withCredentials: true };
-    const res = await api.post('/api/handwrittens', invoice, auth);
+    const res = await api.post('/api/handwrittens', handwritten, auth);
     return (res as any).data.id;
   } catch (err) {
     console.error(err);

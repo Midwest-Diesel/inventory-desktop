@@ -50,7 +50,7 @@ export default function CustomerSearch() {
 
   const handleNewHandwritten = async () => {
     const newHandwritten = {
-      selectedCustomer,
+      customer: selectedCustomer,
       date: new Date(),
       poNum: '',
       billToCompany: selectedCustomer.company,
