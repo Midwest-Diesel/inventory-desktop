@@ -1,30 +1,22 @@
 import Link from "next/link";
-import Button from "../Library/Button";
 import { useEffect, useState } from "react";
 import GridItem from "../Library/Grid/GridItem";
 import Grid from "../Library/Grid/Grid";
 import { formatCurrency, formatPhone } from "@/scripts/tools/stringUtils";
 import Table from "../Library/Table";
-import { addCustomer, getCustomerSalesHistory } from "@/scripts/controllers/customerController";
+import { getCustomerSalesHistory } from "@/scripts/controllers/customerController";
 import CustomerContactsBlock from "../CustomerContactsBlock";
-import { useAtom } from "jotai";
-import { selectedCustomerAtom, userAtom } from "@/scripts/atoms/state";
-import { addHandwritten } from "@/scripts/controllers/handwrittensController";
-import Toast from "../Library/Toast";
 
 interface Props {
   customerData: Customer
   setCustomerData: (customer: Customer) => void
+  expandedDetailsOpen: boolean
 }
 
 
-export default function SelectedCustomerInfo({ customerData, setCustomerData }: Props) {
-  const [user] = useAtom<User>(userAtom);
-  const [selectedCustomer, setSelectedCustomer] = useAtom<Customer>(selectedCustomerAtom);
+export default function SelectedCustomerInfo({ customerData, setCustomerData, expandedDetailsOpen }: Props) {
   const [customer, setCustomer] = useState<Customer>(customerData);
-  const [expandedDetailsOpen, setExpandedDetailsOpen] = useState(false);
   const [salesHistory, setSalesHistory] = useState([]);
-  const [toastOpen, setToastOpen] = useState(false);
   const customerInfo = [formatPhone(customer.phone, true), customer.email, customer.billToState, customer.billToCity].filter((v) => v).join(', ');
 
   useEffect(() => {
@@ -38,72 +30,9 @@ export default function SelectedCustomerInfo({ customerData, setCustomerData }: 
     setCustomer(customerData);
   }, [customerData]);
 
-  const deselectCustomer = () => {
-    localStorage.removeItem('customerId');
-    setSelectedCustomer({} as Customer);
-  };
-
-  const handleAddCustomer = async () => {
-    const name = prompt('Enter customer name');
-    if (!name) return;
-    await addCustomer(name);
-  };
-
-  const handleNewHandwritten = async () => {
-    const newHandwritten = {
-      customer,
-      date: new Date(),
-      poNum: '',
-      billToCompany: customer.company,
-      billToAddress: customer.billToAddress,
-      billToAddress2: customer.billToAddress2,
-      billToCity: customer.billToCity,
-      billToState: customer.billToState,
-      billToZip: customer.billToZip,
-      billToCountry: null,
-      billToPhone: customer.billToPhone,
-      fax: customer.fax,
-      shipToCompany: customer.company,
-      shipToAddress: customer.shipToAddress,
-      shipToAddress2: customer.shipToAddress2,
-      shipToCity: customer.shipToCity,
-      shipToState: customer.shipToState,
-      shipToZip: customer.shipToZip,
-      source: null,
-      contactName: customer.contact || '',
-      payment: customer.paymentType,
-      salesmanId: user.id,
-      phone: customer.phone,
-      cell: null,
-      engineSerialNum: '',
-      isBlindShipment: false,
-      isNoPriceInvoice: false,
-      shipVia: '',
-      cardNum: '',
-      expDate: '',
-      cvv: null,
-      cardZip: null,
-      cardName: '',
-      invoiceStatus: 'INVOICE PENDING',
-      accountingStatus: '',
-      shippingStatus: '',
-    } as any;
-    await addHandwritten(newHandwritten);
-    setToastOpen(true);
-  };
-
 
   return (
     <div className="selected-customer-info" data-id="selected-customer-info">
-      <Toast msg="Created handwritten" type="success" open={toastOpen} setOpen={setToastOpen} />
-
-      <div className="selected-customer-info__buttons">
-        <Button variant={['x-small']} onClick={handleAddCustomer}>Add Customer</Button>
-        <Button variant={['x-small']} onClick={deselectCustomer} data-id="unselect">Unselect</Button>
-        <Button variant={['x-small']} onClick={() => setExpandedDetailsOpen(!expandedDetailsOpen)} data-id="expand">{ expandedDetailsOpen ? 'Collapse' : 'Expand' }</Button>
-        <Button variant={['x-small']} onClick={handleNewHandwritten}>New Handwritten</Button>
-      </div>
-
       {!expandedDetailsOpen ?
         <div>
           <p><strong>Selected Customer:</strong> <Link href={`customer/${customer.id}`} style={{ fontSize: 'var(--font-md)' }} data-id="customer-link">{ customer.company }</Link> <em>{ customerInfo.length > 0 && `(${customerInfo})` }</em></p>

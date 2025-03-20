@@ -1,5 +1,13 @@
 .customer-search {
   width: 100%;
+  display: flex;
+
+  &__buttons {
+    display: flex;
+    gap: 0.25rem;
+    height: fit-content;
+    margin: 0.3rem 0.5rem 0 0.5rem;
+  }
 
   form {
     display: flex;

@@ -1,7 +1,6 @@
 import Image from "next/image";
 import NavDropdown from "../Library/Dropdown/NavDropdown";
 import Link from 'next/link';
-import Button from "../Library/Button";
 
 
 export default function ShopNavbar() {
@@ -30,11 +29,6 @@ export default function ShopNavbar() {
       </NavDropdown>
       <Link href="/image-upload" className="navbar__link">Image Upload</Link>
       <Link href="/about" className="navbar__link">About</Link>
-
-      <div className="nav-buttons">
-        <Button onClick={() => window.history.back()}>&lt;</Button>
-        <Button onClick={() => window.history.forward()}>&gt;</Button>
-      </div>
     </>
   );
 }
