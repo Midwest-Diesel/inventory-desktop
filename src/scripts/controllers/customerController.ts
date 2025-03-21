@@ -45,12 +45,11 @@ export const getCustomersCount = async () => {
   }
 };
 
-export const searchCustomers = async (name: string) => {
+export const searchCustomers = async (data: { name: string, phone: string, state: string, zip: string, country: string, customerType: string }) => {
   try {
     const auth = { withCredentials: true };
-    const res = await api.get(`/api/customers/search/${name}`, auth);
-    res.data = parseCustomerRes(res.data);
-    return res.data;
+    const res = await api.get(`/api/customers/search/${JSON.stringify(data)}`, auth);
+    return parseCustomerRes(res.data);
   } catch (err) {
     console.error(err);
   }
@@ -97,6 +96,17 @@ export const getCustomerSalesHistory = async (id: number) => {
     console.error(err);
   }
 };
+
+export const getCustomerTypes = async () => {
+  try {
+    const auth = { withCredentials: true };
+    const res = await api.get(`/api/customers/types/all`, auth);
+    return res.data;
+  } catch (err) {
+    console.error(err);
+  }
+};
+
 
 // === POST routes === //
 

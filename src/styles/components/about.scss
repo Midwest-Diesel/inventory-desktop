@@ -1,4 +1,7 @@
 .about-page {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
   margin-left: 2rem;
 
   h3 {

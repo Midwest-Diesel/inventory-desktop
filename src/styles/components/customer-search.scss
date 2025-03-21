@@ -26,3 +26,17 @@
     cursor: default;
   }
 }
+
+.customer-search-dialog {
+  form {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    gap: 0.3rem;
+
+    button[type=submit] {
+      align-self: end;
+      margin-bottom: 0.1rem;
+    }
+  }
+}

@@ -34,16 +34,22 @@ export default function About() {
     }
   };
 
+  const clearSavedPartSearch = () => {
+    localStorage.removeItem("altPartSearches");
+    localStorage.removeItem("partSearches");
+  };
+
 
   return (
     <Layout title="About">
       <div className="about-page">
         <h3>v{ version }</h3>
         <p className="about-page__username">Logged in as <span>{ cap(user.username) }</span></p>
-        { !status && <Button onClick={checkForUpdates}>Check For Updates</Button> }
-        <p className="about-page__status-text">{ status }</p>
+        { !status && <Button variant={['fit']} onClick={checkForUpdates}>Check For Updates</Button> }
+        { status && <p className="about-page__status-text">{ status }</p> }
 
-        <Button onClick={logout}>Logout</Button>
+        <Button variant={['fit']} onClick={clearSavedPartSearch}>Clear Saved Part Search</Button>
+        <Button variant={['fit']} onClick={logout}>Logout</Button>
       </div>
     </Layout>
   );
