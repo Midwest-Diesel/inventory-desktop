@@ -95,7 +95,7 @@ export default function CustomerSearchDialog({ open, setOpen, searchTerm, setSea
       className="customer-search-dialog"
       data-id="customer-search-dialog"
     >
-      <form onSubmit={(e) => handleCustomerSearch(e)}>
+      <form onSubmit={(e) => handleCustomerSearch(e)} autoComplete="off">
         <Input
           label="Name"
           variant={['label-bold', 'label-stack', 'thin', 'small', 'label-fit-content']}

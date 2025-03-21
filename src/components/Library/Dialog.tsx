@@ -84,6 +84,7 @@ export default function Dialog({ children, className, variant, title, closeOnOut
       dialog.div.style.zIndex = String(index + 2);
     });
     setDialogs(updatedDialogs);
+    ref.current.focus();
   };
 
   return (
