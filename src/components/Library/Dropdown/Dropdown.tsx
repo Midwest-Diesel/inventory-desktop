@@ -45,6 +45,11 @@ export default function Dropdown({ children, className = '', variant = [], label
   }, []);
 
   useEffect(() => {
+    window.removeEventListener('keydown', (e: any) => handleTyping(e))
+    if (isOpen) window.addEventListener('keydown', (e: any) => handleTyping(e));
+  }, [isOpen]);
+
+  useEffect(() => {
     setSelectedOption(defaultValue);
   }, [defaultValue]);
   
@@ -59,6 +64,20 @@ export default function Dropdown({ children, className = '', variant = [], label
       if (clickedId !== id) setIsOpen(false);
     } else {
       setIsOpen(false);
+    }
+  };
+
+  const handleTyping = (e: KeyboardEvent) => {
+    if (!isOpen) return;
+    const key = e.key.toLowerCase();
+    if (key.length === 1 && key.match(/[a-z0-9]/i)) {
+      const match = dropdownOptions.find((child: any) =>
+        child.props.value.toLowerCase().startsWith(key)
+      );
+  
+      if (match) {
+        selectOption(match.props.value, match.props.data);
+      }
     }
   };
 
