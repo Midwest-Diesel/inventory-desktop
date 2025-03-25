@@ -104,30 +104,7 @@ export default function SelectedCustomerInfo({ customerData, setCustomerData, ex
               </Table>
             </GridItem>
 
-            <GridItem colStart={1} colEnd={4} rowStart={2} variant={['low-opacity-bg']}>
-              <Table variant={['plain', 'row-details']}>
-                <tbody>
-                  <tr>
-                    <th>Parts Manager</th>
-                    <td>{ customer.partsManager }</td>
-                  </tr>
-                  <tr>
-                    <th>Parts Manager Email</th>
-                    <td>{ customer.partsManagerEmail }</td>
-                  </tr>
-                  <tr>
-                    <th>Service Manager</th>
-                    <td>{ customer.serviceManager }</td>
-                  </tr>
-                  <tr>
-                    <th>Service Manager Email</th>
-                    <td>{ customer.serviceManagerEmail }</td>
-                  </tr>
-                </tbody>
-              </Table>
-            </GridItem>
-
-            <GridItem colStart={4} colEnd={8} variant={['low-opacity-bg']}>
+            <GridItem colStart={8} colEnd={12} rowStart={1} variant={['low-opacity-bg']}>
               <Table variant={['plain', 'row-details']}>
                 <tbody>
                   <tr>
@@ -154,7 +131,34 @@ export default function SelectedCustomerInfo({ customerData, setCustomerData, ex
               </Table>
             </GridItem>
 
-            <GridItem variant={['no-style']} colStart={8} colEnd={12} rowStart={1} className="customer-details__sales-history">
+            <GridItem variant={['no-style']} colStart={12} rowStart={1}>
+              { customer.contacts.length > 0 && <CustomerContactsBlock customer={customer} setCustomer={setCustomerData} /> }
+            </GridItem>
+
+            <GridItem colStart={1} colEnd={4} variant={['low-opacity-bg']}>
+              <Table variant={['plain', 'row-details']}>
+                <tbody>
+                  <tr>
+                    <th>Parts Manager</th>
+                    <td>{ customer.partsManager }</td>
+                  </tr>
+                  <tr>
+                    <th>Parts Manager Email</th>
+                    <td>{ customer.partsManagerEmail }</td>
+                  </tr>
+                  <tr>
+                    <th>Service Manager</th>
+                    <td>{ customer.serviceManager }</td>
+                  </tr>
+                  <tr>
+                    <th>Service Manager Email</th>
+                    <td>{ customer.serviceManagerEmail }</td>
+                  </tr>
+                </tbody>
+              </Table>
+            </GridItem>
+
+            <GridItem variant={['no-style']} colStart={4} colEnd={8} rowStart={2} className="customer-details__sales-history">
               <h3>Sales History</h3>
               {salesHistory.length > 0 ?
                 <Table>
@@ -178,10 +182,6 @@ export default function SelectedCustomerInfo({ customerData, setCustomerData, ex
                 :
                 <p>Empty</p>
               }
-            </GridItem>
-
-            <GridItem variant={['no-style']} colStart={8} colEnd={12} rowStart={2}>
-              { customer.contacts.length > 0 && <CustomerContactsBlock customer={customer} setCustomer={setCustomerData} /> }
             </GridItem>
           </Grid>
         </div>

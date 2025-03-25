@@ -1,13 +1,13 @@
 .contacts-block {
   background-color: #585858;
-  padding: 1rem;
+  padding: 0.3rem;
   border: 2px solid black;
   border-radius: 0.3rem;
 
   &__header {
     display: flex;
     gap: 0.4rem;
-    margin-bottom: 0.2rem;
+    margin: -2.07rem 0 0.2rem 0;
   }
 
   &__row {
