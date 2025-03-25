@@ -14,7 +14,6 @@ import Input from "@/components/Library/Input";
 import Loading from "@/components/Library/Loading";
 import Select from "@/components/Library/Select/Select";
 import Table from "@/components/Library/Table";
-import Print from "@/components/Print";
 import { userAtom } from "@/scripts/atoms/state";
 import { supabase } from "@/scripts/config/supabase";
 import { AltShip, deleteHandwritten, editHandwrittenPaymentType, getAltShipByHandwritten, getHandwrittenById } from "@/scripts/controllers/handwrittensController";
@@ -46,7 +45,6 @@ export default function Handwritten() {
   const [cardZip, setCardZip] = useState('');
   const [cardName, setCardName] = useState('');
   const [cardAddress, setCardAddress] = useState('');
-  const [showCCLabel, setShowCCLabel] = useState(false);
   const [payment, setPayment] = useState('');
   const [promptLeaveWindow, setPromptLeaveWindow] = useState(false);
   const [printInvoiceOpen, setPrintInvoiceOpen] = useState(false);
@@ -161,6 +159,26 @@ export default function Handwritten() {
       setPromptLeaveWindow(true);
     } else {
       setPromptLeaveWindow(false);
+    }
+  };
+
+  const handleDetectPaymentType = async (num: string) => {
+    if (!num) return;
+    switch (Number(num)) {
+      case 3:
+        await handleChangePayment(handwritten.id, 'AMEX');
+        break;
+      case 4:
+        await handleChangePayment(handwritten.id, 'Visa');
+        break;
+      case 5:
+        await handleChangePayment(handwritten.id, 'Mastercard');
+        break;
+      case 6:
+        await handleChangePayment(handwritten.id, 'Discover');
+        break;
+      default:
+        break;
     }
   };
 
@@ -355,7 +373,6 @@ export default function Handwritten() {
 
   return (
     <Layout title="Handwritten Details">
-      { showCCLabel && <Print html={ccLabelRef.current.innerHTML} styles={{ width: '30rem' }} onPrint={() => setShowCCLabel(false)} /> }
       <PrintInvoiceDialog open={printInvoiceOpen} setOpen={setPrintInvoiceOpen} handwritten={handwritten} />
       { takeoffItem && <TakeoffsDialog open={takeoffsOpen} setOpen={setTakeoffsOpen} item={takeoffItem} setHandwritten={setHandwritten} /> }
 
@@ -559,6 +576,9 @@ export default function Handwritten() {
                             onChange={(e: any) => {
                               setCardNum(e.target.value);
                               handleChangeCard();
+                              if (e.target.value.length === 1 || `${cardNum}`.charAt(0) !== e.target.value.trim().charAt(0)) {
+                                handleDetectPaymentType(e.target.value.trim().charAt(0));
+                              }
                             }}
                           />
                         </td>
