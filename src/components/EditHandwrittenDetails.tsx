@@ -51,6 +51,7 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
   const [shipToCompany, setShipToCompany] = useState<string>(handwritten.shipToCompany);
   const [shipViaId, setShipViaId] = useState<number>(handwritten.shipVia && handwritten.shipVia.id);
   const [payment, setPayment] = useState<string>(handwritten.payment);
+  const [shipToContact, setShipToContact] = useState<string>(handwritten.shipToContact);
   const [contact, setContact] = useState<string>(handwritten.contactName);
   const [contactPhone, setContactPhone] = useState<string>(handwritten.phone);
   const [contactCell, setContactCell] = useState<string>(handwritten.cell);
@@ -111,7 +112,7 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
     const newCustomer = await getCustomerByName(company);
     const newInvoice = {
       id: handwritten.id,
-      shipViaId,
+      shipViaId: Number(shipViaId),
       handwrittenItems: handwrittenItems,
       customer: newCustomer,
       date,
@@ -136,6 +137,7 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
       cell: contactCell,
       email: contactEmail,
       contactName: contact,
+      shipToContact,
       invoiceStatus,
       accountingStatus,
       shippingStatus,
@@ -227,7 +229,7 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
     if (handwrittenBillTo !== customerBillTo) {
       setChangeCustomerDialogData(newInvoice);
       setChangeCustomerDialogOpen(true);
-    } else {
+    } else if (invoiceStatus !== 'SENT TO ACCOUNTING' || handwritten.invoiceStatus === 'SENT TO ACCOUNTING') {
       setIsEditing(false);
     }
   };
@@ -361,13 +363,14 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
           setOpen={setShippingListDialogOpen}
           handwrittenItems={handwrittenItems}
           newShippingListRow={newShippingListRow}
+          setIsEditing={setIsEditing}
         />
       }
 
       {handwritten &&
         <form className="edit-handwritten-details" onSubmit={(e) => saveChanges(e)} onChange={() => setChangesSaved(false)}>
           <div className="edit-handwritten-details__header">
-            <h2>{ handwritten.id }</h2>
+            <h2>Handwritten { handwritten.id }</h2>
           
             <div className="header__btn-container">
               <Button
@@ -450,7 +453,22 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
                         onChange={(e: any) => setSoldBy(Number(e.target.value))}
                       >
                         {users.map((user: User) => {
-                          return <option key={user.id} value={user.id}>{ user.initials }</option>;
+                          if (user.subtype === 'sales') return <option key={user.id} value={user.id}>{ user.initials }</option>;
+                        })}
+                      </Select>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>Contact</th>
+                    <td>
+                      <Select
+                        variant={['label-space-between']}
+                        value={contact}
+                        onChange={(e: any) => setContact(e.target.value)}
+                      >
+                        <option value="">-- SELECT CONTACT --</option>
+                        {handwritten.customer.contacts && handwritten.customer.contacts.map((contact: Contact) => {
+                          return <option key={contact.id} value={contact.name}>{ contact.name }</option>;
                         })}
                       </Select>
                     </td>
@@ -613,16 +631,16 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
               </Table>
             </GridItem>
 
-            <GridItem colStart={1} colEnd={6} variant={['low-opacity-bg']}>
+            <GridItem colStart={7} colEnd={11} variant={['low-opacity-bg']}>
               <Table variant={['plain', 'edit-row-details']}>
                 <tbody>
                   <tr>
-                    <th>Contact</th>
+                    <th>Attn To / Contact</th>
                     <td>
                       <Input
                         variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
-                        value={contact}
-                        onChange={(e: any) => setContact(e.target.value)}
+                        value={shipToContact}
+                        onChange={(e: any) => setShipToContact(e.target.value)}
                       />
                     </td>
                   </tr>
@@ -633,26 +651,6 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
                         variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                         value={contactPhone}
                         onChange={(e: any) => setContactPhone(e.target.value)}
-                      />
-                    </td>
-                  </tr>
-                  <tr>
-                    <th>Contact Cell</th>
-                    <td>
-                      <Input
-                        variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
-                        value={contactCell}
-                        onChange={(e: any) => setContactCell(e.target.value)}
-                      />
-                    </td>
-                  </tr>
-                  <tr>
-                    <th>Contact Fax</th>
-                    <td>
-                      <Input
-                        variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
-                        value={contactFax}
-                        onChange={(e: any) => setContactFax(e.target.value)}
                       />
                     </td>
                   </tr>

@@ -44,7 +44,7 @@ export default function PrintInvoiceDialog({ open, setOpen, handwritten }: Props
       soldBy: handwritten.soldBy || '',
       handwrittenId: Number(handwritten.id),
       date: formatDate(handwritten.date) || '',
-      contact: handwritten.contactName || '',
+      contact: handwritten.shipToContact || '',
       poNum: handwritten.poNum || '',
       shipVia: handwritten.shipVia.name || '',
       source: handwritten.source || '',

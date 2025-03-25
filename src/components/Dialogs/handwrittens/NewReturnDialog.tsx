@@ -54,7 +54,7 @@ export default function NewReturnDialog({ open, setOpen, handwritten }: Props) {
       billToCity: handwritten.billToCity,
       billToState: handwritten.billToState,
       billToZip: handwritten.billToZip,
-      billToContact: handwritten.customer.contact,
+      billToContact: handwritten.contactName,
       billToPhone: handwritten.billToPhone,
       shipToCompany: handwritten.shipToCompany,
       shipToAddress: handwritten.shipToAddress,

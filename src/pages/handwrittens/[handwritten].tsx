@@ -439,6 +439,10 @@ export default function Handwritten() {
                       <th><strong>Sold By</strong></th>
                       <td>{ handwritten.soldBy }</td>
                     </tr>
+                    <tr>
+                      <th><strong>Contact</strong></th>
+                      <td>{ handwritten.contactName }</td>
+                    </tr>
                   </tbody>
                 </Table>
               </GridItem>
@@ -513,7 +517,36 @@ export default function Handwritten() {
                 </Table>
               </GridItem>
 
-              <GridItem colStart={5} colEnd={10} rowEnd={3} variant={['low-opacity-bg']} className="no-print">
+              <GridItem colStart={1} colEnd={3} variant={['low-opacity-bg']} className="no-print">
+                <div className="handwritten-details__btn-row">
+                  <Button
+                    variant={['x-small']}
+                    onClick={() => {
+                      if (handwritten.isBlindShipment) {
+                        handlePrintShipDocsBlind();
+                      } else {
+                        handlePrintShipDocs();
+                      }
+                    }}>
+                      Print Ship Docs
+                  </Button>
+                  <Button variant={['x-small']} onClick={() => setPrintInvoiceOpen(true)}>Print Invoice</Button>
+                  <Button variant={['x-small']} onClick={() => handlePrintShippingLabel(1)}>Print Ship Label</Button>
+                  <Button variant={['x-small']} onClick={handlePrintCI}>Print CI and COO</Button>
+                  <Button variant={['x-small']} onClick={handlePrintReturnBOL}>Print Return BOL</Button>
+                  <Button
+                    variant={['x-small']}
+                    onClick={() => {
+                      setPromptLeaveWindow(false);
+                      handlePrintCCLabel();
+                    }}
+                  >
+                    Print CC Label
+                  </Button>
+                </div>
+              </GridItem>
+
+              <GridItem colStart={3} colEnd={7} rowEnd={3} variant={['low-opacity-bg']} className="no-print">
                 <div ref={ccLabelRef}>
                   <Table variant={['plain', 'edit-row-details']}>
                     <tbody>
@@ -619,24 +652,16 @@ export default function Handwritten() {
                 </div>
               </GridItem>
 
-              <GridItem colStart={1} colEnd={5} variant={['low-opacity-bg']}>
+              <GridItem colStart={7} colEnd={11} variant={['low-opacity-bg']}>
                 <Table variant={['plain', 'row-details']}>
                   <tbody>
                     <tr>
-                      <th><strong>Contact</strong></th>
-                      <td>{ handwritten.contactName }</td>
+                      <th><strong>Attn To / Contact</strong></th>
+                      <td>{ handwritten.shipToContact }</td>
                     </tr>
                     <tr>
                       <th><strong>Contact Phone</strong></th>
                       <td>{ formatPhone(handwritten.phone) }</td>
-                    </tr>
-                    <tr>
-                      <th><strong>Contact Cell</strong></th>
-                      <td>{ formatPhone(handwritten.cell) }</td>
-                    </tr>
-                    <tr>
-                      <th><strong>Contact Fax</strong></th>
-                      <td>{ formatPhone(handwritten.fax) }</td>
                     </tr>
                     <tr>
                       <th><strong>Contact Email</strong></th>
@@ -662,35 +687,6 @@ export default function Handwritten() {
                 {(handwritten.isCollect || handwritten.isThirdParty) &&
                   <p><strong>Account Number:</strong> { handwritten.thirdPartyAccount }</p>
                 }
-              </GridItem>
-
-              <GridItem colStart={10} colEnd={12} variant={['low-opacity-bg']} className="no-print">
-                <div className="handwritten-details__btn-row">
-                  <Button
-                    variant={['x-small']}
-                    onClick={() => {
-                      if (handwritten.isBlindShipment) {
-                        handlePrintShipDocsBlind();
-                      } else {
-                        handlePrintShipDocs();
-                      }
-                    }}>
-                      Print Ship Docs
-                  </Button>
-                  <Button variant={['x-small']} onClick={() => setPrintInvoiceOpen(true)}>Print Invoice</Button>
-                  <Button variant={['x-small']} onClick={() => handlePrintShippingLabel(1)}>Print Ship Label</Button>
-                  <Button variant={['x-small']} onClick={handlePrintCI}>Print CI and COO</Button>
-                  <Button variant={['x-small']} onClick={handlePrintReturnBOL}>Print Return BOL</Button>
-                  <Button
-                    variant={['x-small']}
-                    onClick={() => {
-                      setPromptLeaveWindow(false);
-                      handlePrintCCLabel();
-                    }}
-                  >
-                    Print CC Label
-                  </Button>
-                </div>
               </GridItem>
 
               <GridItem colStart={1} colEnd={12} variant={['no-style']}>
