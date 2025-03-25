@@ -276,6 +276,8 @@ export default function PartSearch({ selectHandwrittenOpen, setSelectHandwritten
                   <th>Our Cost</th>
                   <th>New Price</th>
                   <th>Reman Price</th>
+                  <th>Serial Number</th>
+                  <th>HP</th>
                 </tr>
               </thead>
               <tbody className="parts-list">
@@ -328,6 +330,8 @@ export default function PartSearch({ selectHandwrittenOpen, setSelectHandwritten
                         <strong>Fleet:</strong> { formatCurrency(part.fleetPrice) }
                       </td>
                       <td>{ formatCurrency(part.remanListPrice) }</td>
+                      <td>{ (part as any).serialNum }</td>
+                      <td>{ (part as any).horsePower }</td>
                     </tr>
                   );
                 })}

@@ -14,6 +14,8 @@ interface PartSearchData {
   ourCost?: number
   entryDate?: Date
   purchasedFrom?: string
+  serialNum?: string
+  hp?: string
   showSoldParts: boolean
 }
 

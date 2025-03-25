@@ -35,10 +35,12 @@ export default function PartsSearchDialog({ open, setOpen, setParts, setLoading 
   const [remarks, setRemarks] = useState('');
   const [rating, setRating] = useState<number>('' as any);
   const [purchasedFrom, setPurchasedFrom] = useState('');
+  const [serialNum, setSerialNum] = useState('');
+  const [hp, setHp] = useState('');
 
   useEffect(() => {
     if (prevSearches){
-      const { partNum, stockNum, desc, location, qty, remarks, rating, purchasedFrom } = prevSearches;
+      const { partNum, stockNum, desc, location, qty, remarks, rating, purchasedFrom, serialNum, hp } = prevSearches;
       setPartNum(partNum);
       setStockNum(stockNum);
       setDesc(desc);
@@ -47,10 +49,12 @@ export default function PartsSearchDialog({ open, setOpen, setParts, setLoading 
       setRemarks(remarks);
       setRating(rating);
       setPurchasedFrom(purchasedFrom);
+      setSerialNum(serialNum);
+      setHp(hp);
 
-      const hasValidSearchCriteria = (partNum && partNum !== '*') || stockNum || desc || location || qty || remarks || rating || purchasedFrom;
+      const hasValidSearchCriteria = (partNum && partNum !== '*') || stockNum || desc || location || qty || remarks || rating || purchasedFrom || serialNum || hp;
       if (hasValidSearchCriteria) {
-        handleSearch(partNum, stockNum, desc, location, qty, remarks, rating, purchasedFrom);
+        handleSearch(partNum, stockNum, desc, location, qty, remarks, rating, purchasedFrom, serialNum, hp);
       }
     }
   }, [showSoldParts]);
@@ -68,26 +72,28 @@ export default function PartsSearchDialog({ open, setOpen, setParts, setLoading 
     setRemarks('');
     setRating('' as any);
     setPurchasedFrom('');
+    setSerialNum('');
+    setHp('');
   };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setOpen(false);
-    localStorage.setItem('partSearches', JSON.stringify({ partNum, stockNum, desc, location, qty, remarks, rating, purchasedFrom }));
+    localStorage.setItem('partSearches', JSON.stringify({ partNum, stockNum, desc, location, qty, remarks, rating, purchasedFrom, serialNum, hp }));
     localStorage.removeItem('altPartSearches');
-    if (isObjectNull({ partNum, stockNum, desc, location, qty, remarks, rating, purchasedFrom })) {
+    if (isObjectNull({ partNum, stockNum, desc, location, qty, remarks, rating, purchasedFrom, serialNum, hp })) {
       window.location.reload();
     } else {
-      await handleSearch(partNum, stockNum, desc, location, qty, remarks, rating, purchasedFrom);
+      await handleSearch(partNum, stockNum, desc, location, qty, remarks, rating, purchasedFrom, serialNum, hp);
       if (partNum) await addRecentSearch({ partNum: partNum.replace('*', ''), salespersonId: user.id });
     }
     setLastSearch(partNum.replace('*', ''));
   };
   
-  const handleSearch = async (partNum: string, stockNum: string, desc: string, location: string, qty: number, remarks: string, rating: number, purchasedFrom: string) => {
+  const handleSearch = async (partNum: string, stockNum: string, desc: string, location: string, qty: number, remarks: string, rating: number, purchasedFrom: string, serialNum: string, hp: string) => {
     setLoading(true);
     setRecentQuoteSearches(await getQuotesByPartNum(partNum));
-    const results = await searchParts({ partNum, stockNum, desc, location, qty, remarks, rating, purchasedFrom, showSoldParts }) as Part[] || [];
+    const results = await searchParts({ partNum, stockNum, desc, location, qty, remarks, rating, purchasedFrom, serialNum, hp, showSoldParts }) as Part[] || [];
     setPartsQty(results.map((part) => part.qty));
     const alerts = await detectAlerts(partNum);
     setSelectedAlerts([...selectedAlerts, ...alerts]);
@@ -166,6 +172,20 @@ export default function PartsSearchDialog({ open, setOpen, setParts, setLoading 
           onChange={(e: any) => setPurchasedFrom(e.target.value)}
         />
 
+        <Input
+          label="Serial Number"
+          variant={['small', 'thin', 'label-no-stack', 'label-space-between']}
+          value={serialNum}
+          onChange={(e: any) => setSerialNum(e.target.value)}
+        />
+
+        <Input
+          label="HP"
+          variant={['small', 'thin', 'label-no-stack', 'label-space-between']}
+          value={hp}
+          onChange={(e: any) => setHp(e.target.value)}
+        />
+        
         <div className="form__footer">
           <Button type="button" variant={['small']} onClick={clearInputs}>Clear</Button>
           <Button type="submit" variant={['small']} data-id="part-search-submit">Submit</Button>

@@ -112,7 +112,7 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
     const newCustomer = await getCustomerByName(company);
     const newInvoice = {
       id: handwritten.id,
-      shipViaId: Number(shipViaId),
+      shipViaId,
       handwrittenItems: handwrittenItems,
       customer: newCustomer,
       date,
