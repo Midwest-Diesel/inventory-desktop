@@ -342,6 +342,15 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
     }
   };
 
+  const handleSameAsBillTo = () => {
+    setShipToAddress(billToAddress);
+    setShipToAddress2(billToAddress2);
+    setShipToCity(billToCity);
+    setShipToState(billToState);
+    setShipToZip(billToZip);
+    setShipToCompany(billToCompany);
+  };
+
 
   return (
     <>
@@ -629,6 +638,10 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
                   </tr>
                 </tbody>
               </Table>
+            </GridItem>
+
+            <GridItem colStart={12} colEnd={14} variant={['no-style']}>
+              <Button variant={['xx-small']} onClick={handleSameAsBillTo} type="button">Same as Bill To</Button>
             </GridItem>
 
             <GridItem colStart={7} colEnd={11} variant={['low-opacity-bg']}>

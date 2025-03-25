@@ -233,6 +233,15 @@ export const addHandwrittenItemChild = async (handwrittenId: number, item: Handw
 
 // === PATCH routes === //
 
+export const editHandwrittenShipTo = async (handwritten: Handwritten) => {
+  try {
+    const auth = { withCredentials: true };
+    await api.patch('/api/handwrittens/ship-to', handwritten, auth);
+  } catch (err) {
+    console.error(err);
+  }
+};
+
 export const editHandwrittenPaymentType = async (id: number, payment: string) => {
   try {
     const auth = { withCredentials: true };

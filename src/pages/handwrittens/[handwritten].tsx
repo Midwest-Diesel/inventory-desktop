@@ -16,7 +16,7 @@ import Select from "@/components/Library/Select/Select";
 import Table from "@/components/Library/Table";
 import { userAtom } from "@/scripts/atoms/state";
 import { supabase } from "@/scripts/config/supabase";
-import { AltShip, deleteHandwritten, editHandwrittenPaymentType, getAltShipByHandwritten, getHandwrittenById } from "@/scripts/controllers/handwrittensController";
+import { AltShip, deleteHandwritten, editHandwritten, editHandwrittenPaymentType, editHandwrittenShipTo, getAltShipByHandwritten, getHandwrittenById } from "@/scripts/controllers/handwrittensController";
 import { formatCurrency, formatDate, formatPhone, parseResDate } from "@/scripts/tools/stringUtils";
 import { setTitle } from "@/scripts/tools/utils";
 import { RealtimePostgresInsertPayload, RealtimePostgresUpdatePayload } from "@supabase/supabase-js";
@@ -369,6 +369,31 @@ export default function Handwritten() {
     setTakeoffsOpen(true);
     setTakeoffItem(itemChild || item);
   };
+
+  const handleSameAsBillTo = async () => {
+    const { shipToAddress, shipToAddress2, shipToCity, shipToState, shipToZip, shipToCompany } = handwritten;
+    const isBlank = [shipToAddress, shipToAddress2, shipToCity, shipToState, shipToZip, shipToCompany].filter((h) => h).length === 0;
+    if (!isBlank && !await confirm('Replace Ship To Data?')) return;
+    const data = {
+      id: handwritten.id,
+      shipToAddress: handwritten.billToAddress || '',
+      shipToAddress2: handwritten.billToAddress2 || '',
+      shipToCity: handwritten.billToCity || '',
+      shipToState: handwritten.billToState || '',
+      shipToZip: handwritten.billToZip || '',
+      shipToCompany: handwritten.billToCompany || ''
+    } as any;
+    setHandwritten({
+      ...handwritten,
+      shipToAddress: handwritten.billToAddress,
+      shipToAddress2: handwritten.billToAddress2,
+      shipToCity: handwritten.billToCity,
+      shipToState: handwritten.billToState,
+      shipToZip: handwritten.billToZip,
+      shipToCompany: handwritten.billToCompany
+    });
+    await editHandwrittenShipTo(data);
+  };
   
 
   return (
@@ -533,6 +558,10 @@ export default function Handwritten() {
                   </tbody>
                 </Table>
               </GridItem>
+
+              {/* <GridItem colStart={12} colEnd={14} variant={['no-style']}>
+                <Button variant={['xx-small']} onClick={handleSameAsBillTo}>Same as Bill To</Button>
+              </GridItem> */}
 
               <GridItem colStart={1} colEnd={3} variant={['low-opacity-bg']} className="no-print">
                 <div className="handwritten-details__btn-row">
