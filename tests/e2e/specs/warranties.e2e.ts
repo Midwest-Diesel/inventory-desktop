@@ -9,6 +9,7 @@ describe('Warranties', () => {
   });
 
   it('Display warranties', async () => {
+    await browser.pause(300);
     const rowCount = await $$('table tr').length;
     expect(rowCount > 0).toBe(true);
     await $('[data-id="warranty-link"]').click();
