@@ -181,6 +181,16 @@ export const getEndOfDayHandwrittens = async () => {
   }
 };
 
+export const getMostRecentHandwrittenDate = async () => {
+  try {
+    const auth = { withCredentials: true };
+    const res = await api.get(`/api/handwrittens/most-recent-date`, auth);
+    return parseResDate(res.data.date);
+  } catch (err) {
+    console.error(err);
+  }
+};
+
 // === POST routes === //
 
 export const addHandwritten = async (handwritten: Handwritten) => {

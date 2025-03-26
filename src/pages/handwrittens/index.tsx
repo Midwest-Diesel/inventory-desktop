@@ -7,7 +7,7 @@ import Loading from "@/components/Library/Loading";
 import Pagination from "@/components/Library/Pagination";
 import Table from "@/components/Library/Table";
 import { handwrittenSearchAtom, userAtom } from "@/scripts/atoms/state";
-import { addBlankHandwritten, addHandwritten, getHandwrittenCount, getHandwrittensByDate, getSomeHandwrittens, searchHandwrittens } from "@/scripts/controllers/handwrittensController";
+import { addBlankHandwritten, addHandwritten, getHandwrittenCount, getHandwrittensByDate, getMostRecentHandwrittenDate, getSomeHandwrittens, searchHandwrittens } from "@/scripts/controllers/handwrittensController";
 import { formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
 import { useAtom } from "jotai";
 import Link from "next/link";
@@ -38,9 +38,14 @@ export default function Handwrittens() {
       const pageCount = await getHandwrittenCount();
       setHandwrittenCount(pageCount);
       
-      const yesterday = new Date();
-      yesterday.setDate(yesterday.getDate() - 1);
-      setYesterdayInvoices(await getHandwrittensByDate(yesterday));
+      const date = await getMostRecentHandwrittenDate();
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      date.setHours(0, 0, 0, 0);
+      if (date.getTime() === today.getTime()) {
+        date.setDate(date.getDate() - 1);
+      }
+      setYesterdayInvoices(await getHandwrittensByDate(date));
       setLoading(false);
     };
     fetchData();
@@ -77,11 +82,11 @@ export default function Handwrittens() {
   };
 
   const sumInvoiceCosts = (handwrittenItems: HandwrittenItem[]): number => {
-    return handwrittenItems.reduce((acc, item) => acc + (item.cost * item.qty), 0);
+    return handwrittenItems.filter((item) => item.cost > 0.04).reduce((acc, item) => acc + (item.cost * item.qty), 0);
   };
 
   const sumHandwrittenItems = (handwrittenItems: HandwrittenItem[]): number => {
-    return handwrittenItems.reduce((acc, item) => acc + (item.unitPrice * item.qty), 0);
+    return handwrittenItems.filter((item) => item.unitPrice > 0.04).reduce((acc, item) => acc + (item.unitPrice * item.qty), 0);
   };
 
   const getTotalCogs = (): number => {
