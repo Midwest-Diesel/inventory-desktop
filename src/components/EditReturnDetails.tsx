@@ -3,7 +3,7 @@ import { FormEvent, useState } from "react";
 import Input from "./Library/Input";
 import Button from "./Library/Button";
 import GridItem from "./Library/Grid/GridItem";
-import { parseDateInputValue } from "@/scripts/tools/stringUtils";
+import { formatDate, parseDateInputValue, parseResDate } from "@/scripts/tools/stringUtils";
 import Grid from "./Library/Grid/Grid";
 import CustomerSelect from "./Library/Select/CustomerSelect";
 import SourceSelect from "./Library/Select/SourceSelect";
@@ -76,7 +76,12 @@ export default function EditReturnDetails({ returnData, setReturn, setIsEditing 
       restockFee
     };
     await editReturn(newReturn);
-    setReturn(newReturn);
+    setReturn({
+      ...newReturn,
+      dateCalled: parseResDate(parseDateInputValue(dateCalled)),
+      dateReceived: parseResDate(parseDateInputValue(dateReceived)),
+      creditIssued: parseResDate(parseDateInputValue(creditIssued))
+    });
     setIsEditing(false);
   };
   
