@@ -140,7 +140,9 @@ export const getSomeHandwrittensByStatus = async (page: number, limit: number, s
   try {
     const auth = { withCredentials: true };
     const res = await api.get(`/api/handwrittens/status/${JSON.stringify({ page: (page - 1) * limit, limit, status })}`, auth);
-    return await parseHandwrittenRes(res.data);
+    return res.data.map((row) => {
+      return { ...row, date: parseResDate(row.date), };
+    });
   } catch (err) {
     console.error(err);
   }
