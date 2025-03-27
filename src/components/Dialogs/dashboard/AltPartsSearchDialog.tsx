@@ -116,7 +116,7 @@ export default function AltPartsSearchDialog({ open, setOpen, setParts, setLoadi
         <Input
           label="Alternate Part Number"
           variant={['small', 'thin', 'label-no-stack', 'label-space-between']}
-          value={partNum}
+          value={partNum.replaceAll(' ', '')}
           onChange={(e: any) => setPartNum(`*${e.target.value.toUpperCase().replace('*', '')}`)}
           id="alt-part-search-input"
         />

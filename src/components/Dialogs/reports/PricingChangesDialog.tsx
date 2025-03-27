@@ -44,7 +44,7 @@ export default function PricingChangesDialog({ open, setOpen, setTableOpen, setT
   const getModifiedRows = (oldList: PricingChangesReport[]) => {
     const deletedRows = oldList.filter((r) => !list.some((row) => row.partNum === r.partNum));
     const addedRows = list.filter((row) => !oldList.some((r) => r.partNum === row.partNum));
-    const newList = list.map((row) => {
+    let newList = list.map((row) => {
       const oldRow = oldList.find((r) => r.partNum === row.partNum);
       if (!oldRow || JSON.stringify(row) === JSON.stringify(oldRow)) return row;
       return {
@@ -58,6 +58,11 @@ export default function PricingChangesDialog({ open, setOpen, setTableOpen, setT
         oldPercent: Number(oldRow.percent)
       };
     });
+
+    // Filter out ADDED rows from existing list
+    newList = newList.filter((row) => (
+      !addedRows.some((addedRow) => row.partNum === addedRow.partNum)
+    ));
     
     return [
       ...deletedRows.map((row) => {

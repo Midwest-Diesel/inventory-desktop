@@ -116,7 +116,7 @@ export default function PartsSearchDialog({ open, setOpen, setParts, setLoading 
         <Input
           label="Part Number"
           variant={['small', 'thin', 'label-no-stack', 'label-space-between']}
-          value={partNum}
+          value={partNum.replaceAll(' ', '')}
           onChange={(e: any) => setPartNum(e.target.value.toUpperCase())}
           id="part-search-input"
         />
