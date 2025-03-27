@@ -470,16 +470,11 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
                   <tr>
                     <th>Contact</th>
                     <td>
-                      <Select
-                        variant={['label-space-between']}
+                      <Input
+                        variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                         value={contact}
                         onChange={(e: any) => setContact(e.target.value)}
-                      >
-                        <option value="">-- SELECT CONTACT --</option>
-                        {handwritten.customer.contacts && handwritten.customer.contacts.map((contact: Contact) => {
-                          return <option key={contact.id} value={contact.name}>{ contact.name }</option>;
-                        })}
-                      </Select>
+                      />
                     </td>
                   </tr>
                 </tbody>
