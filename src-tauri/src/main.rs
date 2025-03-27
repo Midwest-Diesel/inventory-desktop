@@ -244,7 +244,8 @@ struct PartTagArgs {
   remarks: String,
   date: String,
   partNum: String,
-  rating: u8,
+  rating: String,
+  hasPictures: bool,
   copies: i8
 }
 
@@ -580,7 +581,7 @@ async fn get_stock_num_images(picture_args: PictureArgs) -> Result<Vec<Picture>,
       }
       Ok(pictures)
     }
-    Err(e) => Err(format!("Error accessing directory {}: {}", target_dir, e)),
+    Err(e) => Ok(vec![]),
   }
 }
 
@@ -613,7 +614,7 @@ async fn get_engine_images(picture_args: PictureArgs) -> Result<Vec<Picture>, St
       }
       Ok(pictures)
     }
-    Err(e) => Err(format!("Error accessing directory {}: {}", target_dir, e)),
+    Err(e) => Ok(vec![]),
   }
 }
 
@@ -1860,6 +1861,22 @@ fn print_part_tag(args: PartTagArgs) -> Result<(), String> {
       Next
     End Sub
 
+Sub HideAllImages(sheet, hasPictures)
+    Dim shape
+    ' Hide all Shapes (if the image is a Shape)
+    For Each shape In sheet.Shapes
+        If shape.Type = msoPicture Then
+            shape.Visible = Not hasPictures
+        End If
+    Next
+
+    Dim inlineShape
+    ' Hide all InlineShapes (if the image is an InlineShape)
+    For Each inlineShape In sheet.InlineShapes
+        inlineShape.Range.Font.Hidden = hasPictures
+    Next
+End Sub
+
     Call ReplaceAndSetColor(sheet1, "<STOCK_NUM>", "{}")
     Call ReplaceTextAndFont(sheet1, "<BARCODE>", "*{}*", "IDAutomationHC39M Free Version")
     Call ReplaceTextInShapes(sheet1, "<MODEL>", "{}")
@@ -1870,6 +1887,7 @@ fn print_part_tag(args: PartTagArgs) -> Result<(), String> {
     Call ReplaceAndSetColor(sheet1, "<DATE>", "{}")
     Call ReplaceAndSetColor(sheet1, "<PART_NUM>", "{}")
     Call ReplaceAndSetColor(sheet1, "<RATING>", "{}")
+    Call HideAllImages(sheet1, {})
 
     doc.ActivePrinter = "{}"
     sheet1.PrintOut , , , , , , , {}
@@ -1886,6 +1904,7 @@ fn print_part_tag(args: PartTagArgs) -> Result<(), String> {
     args.date,
     args.partNum,
     args.rating,
+    if args.hasPictures { "True" } else { "False" },
     printer,
     args.copies
   );

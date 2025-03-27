@@ -668,7 +668,7 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
                     </td>
                   </tr>
                   <tr>
-                    <th>Contact Email</th>
+                    <th>EOD Email</th>
                     <td>
                       <Input
                         variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}

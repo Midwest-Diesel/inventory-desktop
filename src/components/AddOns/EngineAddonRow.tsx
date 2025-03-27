@@ -11,6 +11,7 @@ import { engineAddOnsAtom } from "@/scripts/atoms/state";
 import { formatDate } from "@/scripts/tools/stringUtils";
 import VendorSelect from "../Library/Select/VendorSelect";
 import { invoke, confirm } from "@/scripts/config/tauri";
+import { getEngineImages } from "@/scripts/controllers/imagesController";
 
 interface Props {
   addOn: EngineAddOn
@@ -89,8 +90,9 @@ export default function EngineAddOnRow({ addOn, handleDuplicateAddOn }: Props) {
   };
 
   const handlePrint = async () => {
+    const pictures = await getEngineImages(addOn.engineNum);
     const args = {
-      stockNum: addOn.engineNum || '',
+      stockNum: addOn.engineNum.toString() || '',
       model: addOn.model || '',
       serialNum: addOn.serialNum || '',
       hp: addOn.hp || '',
@@ -98,7 +100,8 @@ export default function EngineAddOnRow({ addOn, handleDuplicateAddOn }: Props) {
       remarks: addOn.notes || '',
       date: formatDate(addOn.entryDate) || '',
       partNum: addOn.arrNum || '',
-      rating: 0,
+      rating: '0',
+      hasPictures: pictures.length > 0,
       copies: Number(printQty)
     };
     await invoke('print_part_tag', { args });

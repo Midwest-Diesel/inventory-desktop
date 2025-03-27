@@ -16,6 +16,7 @@ import VendorSelect from "../Library/Select/VendorSelect";
 import { getPurchaseOrderByPoNum } from "@/scripts/controllers/purchaseOrderController";
 import { selectedPoAddOnAtom } from "@/scripts/atoms/components";
 import { getRatingFromRemarks } from "@/scripts/tools/utils";
+import { getImagesFromPart } from "@/scripts/controllers/imagesController";
 
 interface Props {
   addOn: AddOn
@@ -131,16 +132,18 @@ export default function ShopAddonRow({ addOn, handleDuplicateAddOn, partNumList,
 
   const handlePrint = async () => {
     const engine = await getEngineByStockNum(addOn.engineNum);
+    const pictures = await getImagesFromPart(addOn.partNum);
     const args = {
       stockNum: addOn.stockNum || '',
-      model: engine.model || '',
+      model: engine && engine.model || '',
       serialNum: addOn.serialNum || '',
       hp: addOn.hp || '',
       location: addOn.location || '',
       remarks: addOn.remarks || '',
       date: formatDate(addOn.entryDate) || '',
       partNum: addOn.partNum || '',
-      rating: Number(addOn.rating) || 0,
+      rating: addOn.rating ? `${addOn.rating}` : '0',
+      hasPictures: pictures.length > 0,
       copies: Number(printQty)
     };
     await invoke('print_part_tag', { args });

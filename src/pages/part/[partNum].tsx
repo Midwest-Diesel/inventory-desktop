@@ -106,6 +106,7 @@ export default function PartDetails() {
   const handlePrint = async () => {
     const copies = Number(prompt('How many tags do you want to print?', '1'));
     if (copies <= 0) return;
+    const pictures = await getImagesFromPart(part.partNum);
     const args = {
       stockNum: part.stockNum || '',
       model: engine.model || '',
@@ -115,7 +116,8 @@ export default function PartDetails() {
       remarks: part.remarks || '',
       date: formatDate(part.entryDate) || '',
       partNum: part.partNum || '',
-      rating: Number(part.rating) || 0,
+      rating: part.rating ? `${part.rating}` : '0',
+      hasPictures: pictures.length > 0,
       copies
     };
     await invoke('print_part_tag', { args });

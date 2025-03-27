@@ -713,7 +713,7 @@ export default function Handwritten() {
                       <td>{ formatPhone(handwritten.phone) }</td>
                     </tr>
                     <tr>
-                      <th><strong>Contact Email</strong></th>
+                      <th><strong>EOD Email</strong></th>
                       <td>{ handwritten.email }</td>
                     </tr>
                   </tbody>

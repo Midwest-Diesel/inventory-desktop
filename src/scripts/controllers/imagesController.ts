@@ -22,10 +22,9 @@ export const getImagesFromStockNum = async (stockNum: string) => {
 export const getEngineImages = async (engineNum: number) => {
   try {
     const res: any = await invoke('get_engine_images', { pictureArgs: { stock_num: `${engineNum}` }});
-    console.log(res);
     return res.filter((pic) => pic.name !== 'Thumbs.db') as Picture[];
   } catch (err) {
-    console.error('Error getting stock images:', err);
+    console.error('Error getting engine images:', err);
   }
 };
 
