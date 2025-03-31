@@ -1,25 +1,13 @@
-import { useAtom } from "jotai";
 import { useEffect } from "react";
-import { tabsAtom } from "@/scripts/atoms/state";
 import { useRouter } from "next/navigation";
 import { addTab, changeSelectedTab, editTabHistory, getTabsByUser } from "@/scripts/controllers/tabsController";
+import { useAtom } from "jotai";
+import { tabsAtom } from "@/scripts/atoms/state";
 
 
 export function useNavState() {
   const router = useRouter();
   const [tabs, setTabs] = useAtom<Tab[]>(tabsAtom);
-
-  useEffect(() => {
-    if (tabs.length > 0) return;
-    const fetchData = async () => {
-      const res = await getTabsByUser();
-      setTabs(res);
-      const tab = res.find((t) => t.selected);
-      if (!tab) return;
-      router.replace(tab.history[tab.urlIndex].url);
-    };
-    fetchData();
-  }, []);
 
   const forward = async () => {
     const tab = tabs.find((t) => t.selected);
@@ -45,7 +33,6 @@ export function useNavState() {
   };
 
   const push = async (name: string, url: string) => {
-    console.log(name, url);
     let selectedTab: Tab | undefined;
     setTabs((prevTabs) =>
       prevTabs.map((tab) => {

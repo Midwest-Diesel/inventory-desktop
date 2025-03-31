@@ -6,7 +6,7 @@ import Button from "../Library/Button";
 import { useNavState } from "./useNavState";
 import ContextMenu from "../Library/ContextMenu";
 import { useState } from "react";
-import { deleteTab, renameTab } from "@/scripts/controllers/tabsController";
+import { changeSelectedTab, deleteTab, renameTab } from "@/scripts/controllers/tabsController";
 
 
 export default function Navbar() {
@@ -28,8 +28,19 @@ export default function Navbar() {
 
   const handleDeleteTab = async () => {
     if (tabs.length === 1) return;
+    const filteredTabs = tabs.filter((t) => t.id !== selectedTab.id);
+    let updatedTabs = filteredTabs;
+    if (selectedTab.selected) {
+      await changeSelectedTab(filteredTabs[filteredTabs.length - 1].id);
+      updatedTabs = updatedTabs.map((tab) => {
+        if (tab.id === filteredTabs[filteredTabs.length - 1].id) {
+          return { ...tab, selected: true };
+        }
+        return tab;
+      });
+    }
     await deleteTab(selectedTab.id);
-    setTabs(tabs.filter((tab) => tab.id !== selectedTab.id));
+    setTabs(updatedTabs);
   };
 
 

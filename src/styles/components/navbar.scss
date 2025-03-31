@@ -69,6 +69,7 @@
     display: flex;
     width: 100%;
     gap: 0.1rem;
+    overflow-x: auto;
 
     .nav-buttons {
       display: flex;
