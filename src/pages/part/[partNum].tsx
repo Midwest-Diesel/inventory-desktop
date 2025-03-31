@@ -15,7 +15,7 @@ import PartPicturesDialog from "@/components/Dialogs/PartPicturesDialog";
 import EditPartDetails from "@/components/Dashboard/EditPartDetails";
 import EngineCostOutTable from "@/components/EngineCostOut";
 import Loading from "@/components/Library/Loading";
-import Link from "next/link";
+import Link from "@/components/Library/Link";
 import { getEngineByStockNum, getEngineCostRemaining } from "@/scripts/controllers/enginesController";
 import PartCostIn from "@/components/PartCostIn";
 import StockNumPicturesDialog from "@/components/Dialogs/StockNumPicturesDialog";

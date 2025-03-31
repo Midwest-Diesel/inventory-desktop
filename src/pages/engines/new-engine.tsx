@@ -8,7 +8,7 @@ import NewEnginesQuoteList from "@/components/NewEnginesQuoteList";
 import { enginesAtom } from "@/scripts/atoms/state";
 import { getEnginesByStatus } from "@/scripts/controllers/enginesController";
 import { useAtom } from "jotai";
-import Link from "next/link";
+import Link from "@/components/Library/Link";
 import { useEffect, useState } from "react";
 
 

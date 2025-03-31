@@ -1,7 +1,7 @@
 import { getAllEngines, getEnginesByEngineData } from "@/scripts/controllers/enginesController";
 import { useEffect, useState } from "react";
 import Table from "../Library/Table";
-import Link from "next/link";
+import Link from "../Library/Link";
 import Checkbox from "../Library/Checkbox";
 import { formatCurrency } from "@/scripts/tools/stringUtils";
 import Button from "../Library/Button";

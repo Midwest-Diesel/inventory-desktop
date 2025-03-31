@@ -10,7 +10,7 @@ import { POSearchAtom } from "@/scripts/atoms/state";
 import { addBlankPurchaseOrder, getPurchaseOrdersCount, getSomePurchaseOrders, searchPurchaseOrders } from "@/scripts/controllers/purchaseOrderController";
 import { formatDate } from "@/scripts/tools/stringUtils";
 import { useAtom } from "jotai";
-import Link from "next/link";
+import Link from "@/components/Library/Link";
 import { useEffect, useState } from "react";
 
 

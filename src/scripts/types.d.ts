@@ -13,6 +13,14 @@ type User = {
   subtype?: 'sales' | 'frontDesk' | 'dev'
 };
 
+type Tab = {
+  id: number
+  name: string | null
+  urlIndex: number
+  history: { name: string, url: string }[]
+  selected: boolean
+};
+
 type Picture = {
   id: string
   name: string

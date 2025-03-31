@@ -10,7 +10,7 @@ import { handwrittenSearchAtom, userAtom } from "@/scripts/atoms/state";
 import { addBlankHandwritten, addHandwritten, getHandwrittenCount, getHandwrittensByDate, getMostRecentHandwrittenDate, getSomeHandwrittens, searchHandwrittens } from "@/scripts/controllers/handwrittensController";
 import { formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
 import { useAtom } from "jotai";
-import Link from "next/link";
+import Link from "@/components/Library/Link";
 import { useEffect, useState } from "react";
 
 

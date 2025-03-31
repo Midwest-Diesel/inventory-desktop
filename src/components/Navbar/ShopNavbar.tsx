@@ -1,6 +1,6 @@
 import Image from "next/image";
 import NavDropdown from "../Library/Dropdown/NavDropdown";
-import Link from 'next/link';
+import Link from "../Library/Link";
 
 
 export default function ShopNavbar() {

@@ -12,7 +12,7 @@ import { getAutofillEngine } from "@/scripts/controllers/enginesController";
 import Loading from "../Library/Loading";
 import { confirm } from "@/scripts/config/tauri";
 import VendorSelect from "../Library/Select/VendorSelect";
-import Link from "next/link";
+import Link from "../Library/Link";
 import { getPurchaseOrderByPoNum } from "@/scripts/controllers/purchaseOrderController";
 import { getRatingFromRemarks } from "@/scripts/tools/utils";
 import { selectedAddOnAtom } from "@/scripts/atoms/components";

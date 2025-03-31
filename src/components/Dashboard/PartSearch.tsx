@@ -11,7 +11,7 @@ import AltPartsSearchDialog from "../Dialogs/dashboard/AltPartsSearchDialog";
 import { getAltsByPartNum, getPartsQty, getSomeParts, searchAltParts, searchParts } from "@/scripts/controllers/partsController";
 import { getImagesFromPart, getImagesFromStockNum } from "@/scripts/controllers/imagesController";
 import SalesInfoDialog from "../Dialogs/dashboard/SalesInfoDialog";
-import Link from "next/link";
+import Link from "../Library/Link";
 import Loading from "../Library/Loading";
 import { isObjectNull } from "@/scripts/tools/utils";
 import PartPicturesDialog from "../Dialogs/PartPicturesDialog";

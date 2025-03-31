@@ -35,3 +35,4 @@ export const warrantySearchAtom = atom<any>({});
 export const POSearchAtom = atom<any>({});
 export const ReturnSearchAtom = atom<any>({});
 export const FreightCarriersAtom = atom<FreightCarrier[]>([]);
+export const tabsAtom = atom<Tab[]>([]);

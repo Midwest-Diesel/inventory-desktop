@@ -3,7 +3,7 @@ import Button from "@/components/Library/Button";
 import Pagination from "@/components/Library/Pagination";
 import Table from "@/components/Library/Table";
 import { useEffect, useState } from "react";
-import Link from "next/link";
+import Link from "@/components/Library/Link";
 import Loading from "@/components/Library/Loading";
 import { getSomeCompletedReturns, getSomeReturns } from "@/scripts/controllers/returnsController";
 import { cap, formatDate } from "@/scripts/tools/stringUtils";

@@ -1,10 +1,10 @@
 import CoreSearchDialog from "@/components/Dialogs/CoreSearchDialog";
 import { Layout } from "@/components/Layout";
 import Button from "@/components/Library/Button";
+import Link from "@/components/Library/Link";
 import Table from "@/components/Library/Table";
 import { getAllCores } from "@/scripts/controllers/coresController";
 import { formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
-import Link from "next/link";
 import { useEffect, useState } from "react";
 
 

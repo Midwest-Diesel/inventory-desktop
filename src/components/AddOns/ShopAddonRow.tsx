@@ -8,7 +8,7 @@ import { deleteAddOn } from "@/scripts/controllers/addOnsController";
 import { getPartByEngineNum, getPartsInfoByPartNum } from "@/scripts/controllers/partsController";
 import { useEffect, useRef, useState } from "react";
 import Input from "../Library/Input";
-import Link from "next/link";
+import Link from "../Library/Link";
 import { getAutofillEngine, getEngineByStockNum } from "@/scripts/controllers/enginesController";
 import { invoke, confirm } from "@/scripts/config/tauri";
 import { formatDate } from "@/scripts/tools/stringUtils";

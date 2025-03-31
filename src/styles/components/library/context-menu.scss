@@ -1,0 +1,21 @@
+.context-menu {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--grey-dark-2);
+  z-index: 2;
+  border-radius: 0.2rem;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+
+  button {
+    font-size: var(--font-xsm);
+    font-weight: 300;
+    padding: 0.5rem;
+    border-radius: 0;
+
+    &:hover {
+      color: white;
+      background-color: var(--grey-dark-3);
+    }
+  }
+}

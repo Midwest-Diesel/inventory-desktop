@@ -1,7 +1,7 @@
 import { formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
 import Dialog from "../../Library/Dialog";
 import Table from "../../Library/Table";
-import Link from "next/link";
+import Link from "../../Library/Link";
 import { getSalesByYear } from "@/scripts/tools/search";
 import { useEffect, useState } from "react";
 import { getSalesInfo, searchParts } from "@/scripts/controllers/partsController";

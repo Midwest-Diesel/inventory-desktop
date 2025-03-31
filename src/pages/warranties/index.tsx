@@ -9,7 +9,7 @@ import { userAtom, warrantySearchAtom } from "@/scripts/atoms/state";
 import { addWarranty, editWarranty, getSomeWarranties, getWarrantyCount, searchWarranties } from "@/scripts/controllers/warrantiesController";
 import { formatDate } from "@/scripts/tools/stringUtils";
 import { useAtom } from "jotai";
-import Link from "next/link";
+import Link from "@/components/Library/Link";
 import { useEffect, useState } from "react";
 import { confirm } from "@/scripts/config/tauri";
 import WarrantySearchDialog from "@/components/Dialogs/WarrantySearchDialog";

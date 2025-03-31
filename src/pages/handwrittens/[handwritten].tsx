@@ -22,7 +22,7 @@ import { setTitle } from "@/scripts/tools/utils";
 import { RealtimePostgresInsertPayload, RealtimePostgresUpdatePayload } from "@supabase/supabase-js";
 import { invoke, confirm } from "@/scripts/config/tauri";
 import { useAtom } from "jotai";
-import Link from "next/link";
+import Link from "@/components/Library/Link";
 import { useParams } from "next/navigation";
 import { useRouter } from "next/router";
 import { FormEvent, useEffect, useRef, useState } from "react";

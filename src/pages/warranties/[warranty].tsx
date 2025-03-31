@@ -11,7 +11,7 @@ import { deleteWarranty, editWarrantyCompleted, getWarrantyById } from "@/script
 import { formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
 import { setTitle } from "@/scripts/tools/utils";
 import { useAtom } from "jotai";
-import Link from "next/link";
+import Link from "@/components/Library/Link";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { confirm, invoke } from "@/scripts/config/tauri";

@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import Table from "./Library/Table";
 import { formatCurrency, formatDate, formatPhone } from "@/scripts/tools/stringUtils";
 import Checkbox from "./Library/Checkbox";
-import Link from "next/link";
+import Link from "@/components/Library/Link";
 
 interface Props {
   model: string

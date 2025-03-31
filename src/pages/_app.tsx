@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import { invoke } from '@tauri-apps/api/tauri';
 import { APIProvider } from "@vis.gl/react-google-maps";
 import '../styles/globals.scss';
+import { addTab, getTabsByUser } from '@/scripts/controllers/tabsController';
 
 
 export default function App({ Component, pageProps }: any) {
@@ -21,6 +22,12 @@ export default function App({ Component, pageProps }: any) {
         }
       }
     });
+
+    const fetchData = async () => {
+      const tabs = await getTabsByUser();
+      if (tabs.length === 0) await addTab([{ name: 'Home', url: '' }]);
+    };
+    fetchData();
   }, []);
 
 

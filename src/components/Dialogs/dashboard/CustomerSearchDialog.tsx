@@ -4,7 +4,7 @@ import Table from "../../Library/Table";
 import { useAtom } from "jotai";
 import { customersAtom, selectedCustomerAtom } from "@/scripts/atoms/state";
 import { FormEvent, useEffect, useState } from "react";
-import Link from "next/link";
+import Link from "../../Library/Link";
 import { getCustomersCount, getCustomerTypes, getSomeCustomers, searchCustomers } from "@/scripts/controllers/customerController";
 import Button from "@/components/Library/Button";
 import Input from "@/components/Library/Input";

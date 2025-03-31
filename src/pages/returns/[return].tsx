@@ -12,7 +12,7 @@ import { deleteReturn, getReturnById, issueReturnCredit } from "@/scripts/contro
 import { formatCurrency, formatDate, formatPhone } from "@/scripts/tools/stringUtils";
 import { setTitle } from "@/scripts/tools/utils";
 import { useAtom } from "jotai";
-import Link from "next/link";
+import Link from "@/components/Library/Link";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 

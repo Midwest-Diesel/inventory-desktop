@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "../Library/Link";
 import { useEffect, useState } from "react";
 import GridItem from "../Library/Grid/GridItem";
 import Grid from "../Library/Grid/Grid";

@@ -3,7 +3,7 @@ import Dialog from "../Library/Dialog";
 import Table from "../Library/Table";
 import { getSurplusSoldParts } from "@/scripts/controllers/surplusController";
 import { formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
-import Link from "next/link";
+import Link from "../Library/Link";
 
 interface Props {
   open: boolean
