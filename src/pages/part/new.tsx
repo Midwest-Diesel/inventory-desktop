@@ -9,11 +9,11 @@ import { addPart, getPartsInfoByPartNum } from "@/scripts/controllers/partsContr
 import Error from "@/components/Errors/Error";
 import Input from "@/components/Library/Input";
 import { confirm } from "@/scripts/config/tauri";
-import { useRouter } from "next/router";
+import { useNavState } from "@/components/Navbar/useNavState";
 
 
 export default function NewPart() {
-  const router = useRouter();
+  const { push } = useNavState();
   const [partNum, setPartNum] = useState<string>('');
   const [desc, setDesc] = useState<string>('');
   const [qty, setQty] = useState<number>(1);
@@ -58,7 +58,7 @@ export default function NewPart() {
 
     const testSearch = await getPartsInfoByPartNum(partNum);
     await addPart(newPart, testSearch.length > 0);
-    router.replace('/');
+    await push('Home', '/');
   };
 
   const handleChangePartCostIn = (item: PartCostIn, i: number) => {

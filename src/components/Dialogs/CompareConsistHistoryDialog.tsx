@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { getCompareDataByCustomer } from "@/scripts/controllers/compareConsistController";
 import { formatDate } from "@/scripts/tools/stringUtils";
 import Table from "../Library/Table";
-import { useRouter } from "next/router";
+import { useNavState } from "../Navbar/useNavState";
 
 interface Props {
   open: boolean
@@ -14,7 +14,7 @@ interface Props {
 
 
 export default function CompareConsistHistoryDialog({ open, setOpen, customerId }: Props) {
-  const router = useRouter();
+  const { push } = useNavState();
   const [compareData, setCompareData] = useState<CompareConsist[]>([]);
   const [page, setPage] = useState(0);
 
@@ -46,7 +46,7 @@ export default function CompareConsistHistoryDialog({ open, setOpen, customerId 
   const handleLoad = () => {
     const url = new URL(location.href);
     url.searchParams.set("r", compareData[page].id.toString());
-    router.replace(url.href);
+    push(url.href, url.href);
   };
 
 

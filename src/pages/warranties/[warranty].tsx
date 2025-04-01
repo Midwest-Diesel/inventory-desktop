@@ -12,13 +12,14 @@ import { formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
 import { setTitle } from "@/scripts/tools/utils";
 import { useAtom } from "jotai";
 import Link from "@/components/Library/Link";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { confirm, invoke } from "@/scripts/config/tauri";
+import { useNavState } from "@/components/Navbar/useNavState";
 
 
 export default function Warranty() {
-  const router = useRouter();
+  const { backward, push } = useNavState();
   const params = useParams();
   const [user] = useAtom<User>(userAtom);
   const [warrantyData, setWarrantyData] = useState<Warranty>(null);
@@ -28,7 +29,7 @@ export default function Warranty() {
     const fetchData = async () => {
       if (!params) return;
       const res = await getWarrantyById(Number(params.warranty));
-      setTitle(`${res.warrantyItems[0].desc} Warranty`);
+      setTitle(`${res.warrantyItems.length > 0 ? res.warrantyItems[0].desc + ' ' : ''}Warranty`);
       setWarrantyData(res);
     };
     fetchData();
@@ -37,7 +38,7 @@ export default function Warranty() {
   const handleDelete = async () => {
     if (user.accessLevel <= 1 || prompt('Type "confirm" to delete this warranty') !== 'confirm') return;
     await deleteWarranty(warrantyData.id);
-    router.replace('/warranties');
+    await push('Warranties', '/warranties');
   };
 
   const handleCompleteWarranty = async () => {
@@ -107,7 +108,7 @@ export default function Warranty() {
                 </Button>
                 <Button
                   className="warranty-details__close-btn"
-                  onClick={() => window.history.back()}
+                  onClick={backward}
                 >
                   Close
                 </Button>
@@ -127,7 +128,9 @@ export default function Warranty() {
                     <tr>
                       <th>Customer</th>
                       <td>
-                        <Link href={`/customer/${warrantyData.customer.id}`}>{ warrantyData.customer.company }</Link>
+                        {warrantyData.customer &&
+                          <Link href={`/customer/${warrantyData.customer.id}`}>{ warrantyData.customer.company }</Link>
+                        }
                       </td>
                     </tr>
                     <tr>
@@ -170,7 +173,9 @@ export default function Warranty() {
                     <tr>
                       <th>Connected Return</th>
                       <td>
-                        <Link href={`/returns/${warrantyData.return.id}`}>{ warrantyData.return.id }</Link>
+                        {warrantyData.return &&
+                          <Link href={`/returns/${warrantyData.return.id}`}>{ warrantyData.return.id }</Link>
+                        }
                       </td>
                     </tr>
                   </tbody>

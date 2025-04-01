@@ -649,7 +649,7 @@ type Return = {
   handwrittenId: number
   warrantyId: number
   invoiceDate: Date
-  createdBy: string
+  salesman: User
   dateCalled: Date
   dateReceived: Date
   creditIssued: Date

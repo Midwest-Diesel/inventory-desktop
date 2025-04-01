@@ -12,13 +12,13 @@ import RecentQuotes from "@/components/Dashboard/RecentQuotes";
 import { addHandwrittenItem, addHandwrittenItemChild, editHandwrittenItems, editHandwrittenOrderNotes, getHandwrittenById } from "@/scripts/controllers/handwrittensController";
 import SelectHandwrittenDialog from "@/components/Dialogs/dashboard/SelectHandwrittenDialog";
 import { listen } from '@tauri-apps/api/event';
-import { useRouter } from 'next/router';
 import { confirm } from "@/scripts/config/tauri";
 import { toggleQuoteSold } from "@/scripts/controllers/quotesController";
+import { useNavState } from "@/components/Navbar/useNavState";
 
 
 export default function Home() {
-  const router = useRouter();
+  const { push } = useNavState();
   const [user] = useAtom<User>(userAtom);
   const [recentPartSearches, setRecentPartSearches] = useAtom<RecentPartSearch[]>(recentPartSearchesAtom);
   const [recentQuoteSearches] = useAtom<RecentQuoteSearch[]>(recentQuotesAtom);
@@ -40,7 +40,7 @@ export default function Home() {
   useEffect(() => {
     if (!window.__TAURI_IPC__) return;
     listen<string>('change-page', (e) => {
-      router.replace(e.payload);
+      push(e.payload, e.payload);
     });
   }, []);
 

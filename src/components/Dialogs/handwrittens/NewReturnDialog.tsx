@@ -8,7 +8,7 @@ import { addReturn, addReturnItem } from "@/scripts/controllers/returnsControlle
 import { useAtom } from "jotai";
 import { userAtom } from "@/scripts/atoms/state";
 import { confirm } from "@/scripts/config/tauri";
-import { useRouter } from "next/navigation";
+import { useNavState } from "@/components/Navbar/useNavState";
 
 interface Props {
   open: boolean
@@ -18,7 +18,7 @@ interface Props {
 
 
 export default function NewReturnDialog({ open, setOpen, handwritten }: Props) {
-  const router = useRouter();
+  const { push } = useNavState();
   const [user] = useAtom<User>(userAtom);
   const [handwrittenItems, setHandwrittenItems] = useState<HandwrittenItem[]>(handwritten.handwrittenItems);
   const [returnNotes, setReturnNotes] = useState('');
@@ -92,7 +92,7 @@ export default function NewReturnDialog({ open, setOpen, handwritten }: Props) {
       if (newReturnItems[i]) await addReturnItem(newReturnItems[i]);
     }
 
-    router.push('/returns');
+    await push('Returns', '/returns');
   };
 
 

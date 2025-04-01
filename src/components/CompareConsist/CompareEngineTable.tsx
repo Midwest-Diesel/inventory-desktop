@@ -8,8 +8,8 @@ import Button from "../Library/Button";
 import Pagination from "../Library/Pagination";
 import Loading from "../Library/Loading";
 import CompareConsistHistoryDialog from "../Dialogs/CompareConsistHistoryDialog";
-import { useRouter } from "next/router";
 import { addCompareData } from "@/scripts/controllers/compareConsistController";
+import { useNavState } from "../Navbar/useNavState";
 
 interface Props {
   openSideBySide: (engine: Engine) => void
@@ -19,7 +19,7 @@ interface Props {
 
 
 export default function CompareEngineTable({ openSideBySide, getEngineData, customerId }: Props) {
-  const router = useRouter();
+  const { push } = useNavState();
   const [paginatedEngines, setPaginatedEngines] = useState<Engine[]>([]);
   const [loading, setLoading] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -58,7 +58,7 @@ export default function CompareEngineTable({ openSideBySide, getEngineData, cust
   const handleLoadBlankRecord = () => {
     const url = new URL(location.href);
     url.searchParams.delete('r');
-    router.replace(url.href);
+    push(url.pathname, url.href);
   };
 
 

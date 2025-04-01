@@ -20,7 +20,7 @@ interface Props {
 
 
 export default function EditWarrantyDetails({ warrantyData, setWarranty, setIsEditing }: Props) {
-  const [company, setCompany] = useState<string>(warrantyData.customer.company);
+  const [company, setCompany] = useState<string>(warrantyData.customer && warrantyData.customer.company);
   const [date, setDate] = useState<Date>(warrantyData.date);
   const [vendor, setVendor] = useState<string>(warrantyData.vendor);
   const [vendorWarrantyNum, setVendorWarrantyNum] = useState<number>(warrantyData.vendorWarrantyNum);

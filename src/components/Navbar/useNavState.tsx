@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { addTab, changeSelectedTab, editTabHistory, getTabsByUser } from "@/scripts/controllers/tabsController";
 import { useAtom } from "jotai";
@@ -17,7 +16,7 @@ export function useNavState() {
     await editTabHistory(tab.id, tab.urlIndex + 1, tab.history);
   };
 
-  const backward = async () => {
+  const backward = async () => {    
     const tab = tabs.find((t) => t.selected);
     if (tab.urlIndex === 0) return;
     setTabs(tabs.map((t) => t.id === tab.id ? ({ ...t, urlIndex: t.urlIndex - 1 }) : t));
@@ -58,6 +57,7 @@ export function useNavState() {
     await addTab([{ name: 'Home', url: '/' }]);
     const res = await getTabsByUser();
     setTabs(res);
+    router.replace('/');
   };
   
   return { tabs, setTabs, forward, backward, handleChangeTab, push, newTab };

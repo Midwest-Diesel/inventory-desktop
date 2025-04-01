@@ -7,13 +7,13 @@ import { selectedCustomerAtom, userAtom } from "@/scripts/atoms/state";
 import { isObjectNull } from "@/scripts/tools/utils";
 import SelectedCustomerInfo from "./SelectedCustomerInfo";
 import { addCustomer, getCustomerById, getCustomerByName } from "@/scripts/controllers/customerController";
-import { useRouter } from "next/router";
 import Toast from "../Library/Toast";
 import { addHandwritten } from "@/scripts/controllers/handwrittensController";
+import { useNavState } from "../Navbar/useNavState";
 
 
 export default function CustomerSearch() {
-  const router = useRouter();
+  const { push } = useNavState();
   const [user] = useAtom<User>(userAtom);
   const [selectedCustomer, setSelectedCustomer] = useAtom<Customer>(selectedCustomerAtom);
   const [searchDialogOpen, setSearchDialogOpen] = useState(false);
@@ -40,7 +40,7 @@ export default function CustomerSearch() {
     if (!name) return;
     await addCustomer(name);
     const res = await getCustomerByName(name);
-    router.replace(`/customer/${res.id}`);
+    await push('customer', `/customer/${res.id}`);
   };
 
   const deselectCustomer = () => {

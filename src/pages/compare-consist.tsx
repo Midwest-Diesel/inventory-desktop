@@ -10,12 +10,12 @@ import { getCompareDataById, searchCompareData } from "@/scripts/controllers/com
 import { getCustomerById, getCustomers } from "@/scripts/controllers/customerController";
 import { useAtom } from "jotai";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/router";
 import Button from "@/components/Library/Button";
+import { useNavState } from "@/components/Navbar/useNavState";
 
 
 export default function CompareConsist() {
-  const router = useRouter();
+  const { push } = useNavState();
   const [customerData, setCustomersData] = useAtom<Customer[]>(customersAtom);
   const [customer, setCustomer] = useState<Customer>(null);
   const [company, setCompany] = useState('');
@@ -169,11 +169,11 @@ export default function CompareConsist() {
     setCompany(value);
     setChangeCustomer(false);
     if (!value) {
-      router.replace('/compare-consist');
+      push('Compare Consist', '/compare-consist');
       return;
     }
     const id = customerData.find((c) => c.company === value).id;
-    router.replace(`/compare-consist?c=${id}`);
+    push('Compare Consist', `/compare-consist?c=${id}`);
   };
 
   const loadCompareData = (data: CompareConsist) => {

@@ -10,18 +10,18 @@ import Grid from "@/components/Library/Grid/Grid";
 import GridItem from "@/components/Library/Grid/GridItem";
 import Loading from "@/components/Library/Loading";
 import Table from "@/components/Library/Table";
+import { useNavState } from "@/components/Navbar/useNavState";
 import { userAtom } from "@/scripts/atoms/state";
 import { deleteEngine, getEngineByStockNum } from "@/scripts/controllers/enginesController";
 import { formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
 import { setTitle } from "@/scripts/tools/utils";
 import { useAtom } from "jotai";
 import { useParams } from "next/navigation";
-import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
 
 export default function EngineDetailsPage() {
-  const router = useRouter();
+  const { backward, push } = useNavState();
   const params = useParams();
   const [user] = useAtom<User>(userAtom);
   const [engine, setEngine] = useState<Engine>(null);
@@ -72,7 +72,7 @@ export default function EngineDetailsPage() {
   const handleDelete = async () => {
     if (user.accessLevel <= 1 || prompt('Type "confirm" to delete this engine') !== 'confirm') return;
     await deleteEngine(engine.id);
-    router.replace('/engines');
+    await push('Engines', '/engines');
   };
 
 
@@ -109,7 +109,7 @@ export default function EngineDetailsPage() {
                 </Button>
                 <Button
                   className="engine-details__close-btn"
-                  onClick={() => window.history.back()}
+                  onClick={backward}
                 >
                   Close
                 </Button>

@@ -7,10 +7,10 @@ import { addHandwritten, addHandwrittenItem } from "@/scripts/controllers/handwr
 import { useAtom } from "jotai";
 import { userAtom } from "@/scripts/atoms/state";
 import { confirm } from "@/scripts/config/tauri";
-import { useRouter } from "next/router";
 import { FormEvent, useState } from "react";
 import Checkbox from "@/components/Library/Checkbox";
 import Input from "@/components/Library/Input";
+import { useNavState } from "@/components/Navbar/useNavState";
 
 interface Props {
   open: boolean
@@ -21,7 +21,7 @@ interface Props {
 
 
 export default function CoreCreditsDialog({ open, setOpen, cores, handwritten }: Props) {
-  const router = useRouter();
+  const { push } = useNavState();
   const [user] = useAtom<User>(userAtom);
   const [selectedCores, setSelectedCores] = useState<Core[]>([]);
   const [inputQty, setInputQty] = useState(1);
@@ -52,7 +52,7 @@ export default function CoreCreditsDialog({ open, setOpen, cores, handwritten }:
       await removeQtyFromCore(core, qty);
       if (core.qty - qty <= 0) await deleteCore(core.id);
     }
-    router.replace(`/handwrittens`);
+    await push('Handwrittens', `/handwrittens`);
   };
 
   const handleToggleSelection = (core: Core, selected: boolean) => {

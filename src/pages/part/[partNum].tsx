@@ -23,10 +23,11 @@ import { setTitle } from "@/scripts/tools/utils";
 import { invoke } from "@/scripts/config/tauri";
 import Modal from "@/components/Library/Modal";
 import { getSurplusCostRemaining } from "@/scripts/controllers/surplusController";
+import { useNavState } from "@/components/Navbar/useNavState";
 
 
 export default function PartDetails() {
-  const router = useRouter();
+  const { backward, push } = useNavState();
   const params = useParams();
   const [user] = useAtom<User>(userAtom);
   const [part, setPart] = useState<Part>(null);
@@ -92,7 +93,7 @@ export default function PartDetails() {
   const handleDelete = async () => {
     if (user.accessLevel <= 1 || prompt('Type "confirm" to delete this part') !== 'confirm') return;
     await deletePart(part.id);
-    router.replace('/');
+    await push('Home', '/');
   };
 
   const handleAddToUP = async () => {
@@ -162,7 +163,7 @@ export default function PartDetails() {
               </Button>
               <Button
                 className="part-details__close-btn"
-                onClick={() => window.history.back()}
+                onClick={backward}
               >
                 Close
               </Button>

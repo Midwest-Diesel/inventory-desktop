@@ -1,3 +1,10 @@
+/*  
+==========================================================
+Printer names are hard coded, you will have to change some
+of them when replacing a printer.
+==========================================================
+*/
+
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 use serde::{Deserialize, Serialize};

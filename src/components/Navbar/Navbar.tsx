@@ -7,9 +7,11 @@ import { useNavState } from "./useNavState";
 import ContextMenu from "../Library/ContextMenu";
 import { useState } from "react";
 import { changeSelectedTab, deleteTab, renameTab } from "@/scripts/controllers/tabsController";
+import { useRouter } from "next/router";
 
 
 export default function Navbar() {
+  const router = useRouter();
   const [user] = useAtom(userAtom);
   const { tabs, setTabs, forward, backward, handleChangeTab, newTab } = useNavState();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -31,9 +33,11 @@ export default function Navbar() {
     const filteredTabs = tabs.filter((t) => t.id !== selectedTab.id);
     let updatedTabs = filteredTabs;
     if (selectedTab.selected) {
-      await changeSelectedTab(filteredTabs[filteredTabs.length - 1].id);
+      const newTab = filteredTabs[filteredTabs.length - 1];
+      await changeSelectedTab(newTab.id);
+      router.replace(newTab.history[newTab.history.length - 1].url);
       updatedTabs = updatedTabs.map((tab) => {
-        if (tab.id === filteredTabs[filteredTabs.length - 1].id) {
+        if (tab.id === newTab.id) {
           return { ...tab, selected: true };
         }
         return tab;

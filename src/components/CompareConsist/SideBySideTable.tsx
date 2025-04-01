@@ -8,7 +8,7 @@ import { addQuote } from "@/scripts/controllers/quotesController";
 import { useAtom } from "jotai";
 import { userAtom } from "@/scripts/atoms/state";
 import { invoke } from "@/scripts/config/tauri";
-import { useRouter } from "next/router";
+import { useNavState } from "../Navbar/useNavState";
 
 interface Props {
   customer: Customer
@@ -19,7 +19,7 @@ interface Props {
 
 
 export default function SideBySideTable({ customer, customerEngineData, mwdEngine, setMwdEngine }: Props) {
-  const router = useRouter();
+  const { push } = useNavState();
   const [user] = useAtom<User>(userAtom);
   const [matchingValues, setMatchingValues] = useState<string[]>([]);
   const isMatchingValues = (key: string) => matchingValues.includes(key);
@@ -121,7 +121,7 @@ export default function SideBySideTable({ customer, customerEngineData, mwdEngin
       partId: null
     };
     await addQuote(quote);
-    router.replace('/');
+    await push('Home', '/');
   };
 
 

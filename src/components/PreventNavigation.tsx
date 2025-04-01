@@ -3,6 +3,7 @@
 import { useRouter } from 'next/router';
 import { useEffect, useRef, useState } from 'react';
 import Popup from './Library/Popup';
+import { useNavState } from './Navbar/useNavState';
 
 interface Props {
   shouldPrevent?: boolean
@@ -11,6 +12,7 @@ interface Props {
 
 
 export const PreventNavigation = ({ shouldPrevent = true, text }: Props) => {
+  const { backward, push } = useNavState();
   const [leavingPage, setLeavingPage] = useState(false);
   const router = useRouter();
   const confirmationFn = useRef<() => void>(() => {});
@@ -22,7 +24,7 @@ export const PreventNavigation = ({ shouldPrevent = true, text }: Props) => {
       if (shouldPrevent) {
         e.preventDefault();
         confirmationFn.current = () => {
-          router.push(target.href || '/');
+          push(target.textContent || 'Home', target.href || '/');
         };
         setLeavingPage(true);
       }
@@ -48,7 +50,7 @@ export const PreventNavigation = ({ shouldPrevent = true, text }: Props) => {
         cancelFn.current = () => {};
         setLeavingPage(true);
       } else {
-        router.back();
+        backward();
       }
     };
 

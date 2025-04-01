@@ -3,13 +3,14 @@ import { FormEvent, useState } from "react";
 import Input from "./Library/Input";
 import Button from "./Library/Button";
 import GridItem from "./Library/Grid/GridItem";
-import { formatDate, parseDateInputValue, parseResDate } from "@/scripts/tools/stringUtils";
+import { parseDateInputValue, parseResDate } from "@/scripts/tools/stringUtils";
 import Grid from "./Library/Grid/Grid";
 import CustomerSelect from "./Library/Select/CustomerSelect";
 import SourceSelect from "./Library/Select/SourceSelect";
 import Table from "./Library/Table";
 import { confirm } from "@/scripts/config/tauri";
 import { PreventNavigation } from "./PreventNavigation";
+import UserSelect from "./Library/Select/UserSelect";
 
 interface Props {
   returnData: Return
@@ -23,7 +24,7 @@ export default function EditReturnDetails({ returnData, setReturn, setIsEditing 
   const [poNum, setPoNum] = useState<string>(returnData.poNum);
   const [payment, setPayment] = useState<string>(returnData.payment);
   const [source, setSource] = useState<string>(returnData.source);
-  const [createdBy, setCreatedBy] = useState<string>(returnData.createdBy);
+  const [salesmanId, setSalesmanId] = useState<number>(returnData.salesman && returnData.salesman.id);
   const [billToAddress, setBillToAddress] = useState<string>(returnData.billToAddress);
   const [billToAddress2, setBillToAddress2] = useState<string>(returnData.billToAddress2);
   const [billToCity, setBillToCity] = useState<string>(returnData.billToCity);
@@ -54,7 +55,7 @@ export default function EditReturnDetails({ returnData, setReturn, setIsEditing 
       poNum,
       payment,
       source,
-      createdBy,
+      salesmanId,
       billToAddress,
       billToAddress2,
       billToCity,
@@ -159,10 +160,10 @@ export default function EditReturnDetails({ returnData, setReturn, setIsEditing 
                   <tr>
                     <th>Created By</th>
                     <td>
-                      <Input
-                        variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
-                        value={createdBy}
-                        onChange={(e: any) => setCreatedBy(e.target.value)}
+                      <UserSelect
+                        variant={['label-space-between', 'label-full-width', 'label-bold']}
+                        value={salesmanId}
+                        onChange={(e: any) => setSalesmanId(e.target.value)}
                       />
                     </td>
                   </tr>

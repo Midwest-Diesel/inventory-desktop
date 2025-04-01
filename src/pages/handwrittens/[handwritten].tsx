@@ -27,9 +27,11 @@ import { useParams } from "next/navigation";
 import { useRouter } from "next/router";
 import { FormEvent, useEffect, useRef, useState } from "react";
 import { paymentTypes } from ".";
+import { useNavState } from "@/components/Navbar/useNavState";
 
 
 export default function Handwritten() {
+  const { backward, push } = useNavState();
   const router = useRouter();
   const params = useParams();
   const [user] = useAtom<User>(userAtom);
@@ -107,7 +109,7 @@ export default function Handwritten() {
       router.replace(location.href);
       const exit = await confirm("Do you want to leave the page before printing the credit card label?");
       if (exit) {
-        router.push(url);
+        await push(url, url);
       }
     };
     
@@ -146,7 +148,7 @@ export default function Handwritten() {
   const handleDelete = async () => {
     if (user.accessLevel <= 1 || prompt('Type "confirm" to delete this handwritten') !== 'confirm') return;
     await deleteHandwritten(Number(handwritten.id));
-    router.replace('/handwrittens');
+    await push('Handwrittens', '/handwrittens');
   };
 
   const handleChangePayment = async (id: number, value: string) => {
@@ -420,7 +422,7 @@ export default function Handwritten() {
                 </Button>
                 <Button
                   className="handwritten-details__close-btn"
-                  onClick={() => window.history.back()}
+                  onClick={backward}
                 >
                   Close
                 </Button>

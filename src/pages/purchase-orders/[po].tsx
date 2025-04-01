@@ -11,13 +11,14 @@ import { deletePurchaseOrder, getPurchaseOrderByPoNum, togglePurchaseOrderReceiv
 import { formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
 import { setTitle } from "@/scripts/tools/utils";
 import { useAtom } from "jotai";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { confirm, invoke } from "@/scripts/config/tauri";
+import { useNavState } from "@/components/Navbar/useNavState";
 
 
 export default function PurchaseOrder() {
-  const router = useRouter();
+  const { backward, push } = useNavState();
   const params = useParams();
   const [user] = useAtom<User>(userAtom);
   const [poData, setPoData] = useState<PO>(null);
@@ -36,7 +37,7 @@ export default function PurchaseOrder() {
   const handleDelete = async () => {
     if (user.accessLevel <= 1 || prompt('Type "confirm" to delete this purchase order') !== 'confirm') return;
     await deletePurchaseOrder(poData.id);
-    router.replace('/purchase-orders');
+    await push('Purchase Orders', '/purchase-orders');
   };
 
   const handleReceivedItem = async () => {
@@ -102,7 +103,7 @@ export default function PurchaseOrder() {
                 </Button>
                 <Button
                   className="purchase-order-details__close-btn"
-                  onClick={() => window.history.back()}
+                  onClick={backward}
                 >
                   Close
                 </Button>

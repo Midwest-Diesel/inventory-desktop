@@ -3,9 +3,9 @@ import Table from "./Library/Table";
 import Checkbox from "./Library/Checkbox";
 import { editReturnItem } from "@/scripts/controllers/returnsController";
 import Button from "./Library/Button";
-import { useRouter } from "next/navigation";
 import { confirm } from "@/scripts/config/tauri";
 import { editPart } from "@/scripts/controllers/partsController";
+import { useNavState } from "./Navbar/useNavState";
 
 interface Props {
   className?: string
@@ -16,7 +16,7 @@ interface Props {
 
 
 export default function ReturnItemsTable({ className, returnItems, returnData, setReturnData }: Props) {
-  const router = useRouter();
+  const { push } = useNavState();
 
   const getTotalPrice = (): number => {
     return returnItems.reduce((acc, item) => item.cost !== 0.04 && item.cost !== 0.01 && acc + (item.unitPrice * item.qty), 0);
@@ -50,7 +50,7 @@ export default function ReturnItemsTable({ className, returnItems, returnData, s
     if (item.part.purchasedFrom && await confirm('Set "Qty Sold" to 0?')) {
       await editPart({ ...item.part, qtySold: 0 });
     }
-    router.push(`/part/${item.part.id}`);
+    await push('Part', `/part/${item.part.id}`);
   };
 
 

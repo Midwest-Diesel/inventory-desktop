@@ -13,12 +13,13 @@ import { formatCurrency, formatDate, formatPhone } from "@/scripts/tools/stringU
 import { setTitle } from "@/scripts/tools/utils";
 import { useAtom } from "jotai";
 import Link from "@/components/Library/Link";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useNavState } from "@/components/Navbar/useNavState";
 
 
 export default function Return() {
-  const router = useRouter();
+  const { backward, push } = useNavState();
   const params = useParams();
   const [user] = useAtom<User>(userAtom);
   const [returnData, setReturnData] = useState<Return>(null);
@@ -37,7 +38,7 @@ export default function Return() {
   const handleDelete = async () => {
     if (prompt('Type "confirm" to delete this return') !== 'confirm') return;
     await deleteReturn(returnData.id);
-    router.back();
+    await backward();
   };
 
   const handleCreditIssued = async () => {
@@ -49,7 +50,7 @@ export default function Return() {
   const handlePrint = async () => {
     if (!await confirm('Print return?')) return;
     const args = {
-      createdBy: returnData.createdBy || '',
+      createdBy: returnData.salesman ? returnData.salesman.initials : '',
       date: formatDate(new Date()),
       poNum: returnData.poNum || '',
       id: returnData.id,
@@ -105,7 +106,7 @@ export default function Return() {
                 </Button>
                 <Button
                   className="return-details__close-btn"
-                  onClick={() => router.back()}
+                  onClick={backward}
                 >
                   Close
                 </Button>
@@ -121,7 +122,7 @@ export default function Return() {
 
             <div className="return-details__top-bar">
               <Button onClick={handleCreditIssued} data-id="credit-issued-btn" disabled={Boolean(returnData.creditIssued)}>Credit Issued</Button>
-              <Button onClick={() => router.push(`/warranties/${returnData.warrantyId}`)} disabled={!returnData.warrantyId}>Warranty</Button>
+              <Button onClick={() => push('Warranty', `/warranties/${returnData.warrantyId}`)} disabled={!returnData.warrantyId}>Warranty</Button>
               <Button onClick={handlePrint}>Print</Button>
             </div>
 
@@ -151,7 +152,7 @@ export default function Return() {
                     </tr>
                     <tr>
                       <th>Created By</th>
-                      <td>{ returnData.createdBy }</td>
+                      <td>{ returnData.salesman && returnData.salesman.initials }</td>
                     </tr>
                   </tbody>
                 </Table>

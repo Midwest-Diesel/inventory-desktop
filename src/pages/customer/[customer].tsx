@@ -7,18 +7,19 @@ import Grid from "@/components/Library/Grid/Grid";
 import GridItem from "@/components/Library/Grid/GridItem";
 import Loading from "@/components/Library/Loading";
 import Table from "@/components/Library/Table";
+import { useNavState } from "@/components/Navbar/useNavState";
 import { selectedCustomerAtom, userAtom } from "@/scripts/atoms/state";
 import { deleteCustomer, getCustomerById, getCustomerSalesHistory } from "@/scripts/controllers/customerController";
 import { deleteMapLocationByCustomer, getMapLocationFromCustomer } from "@/scripts/controllers/mapController";
 import { formatCurrency, formatPhone } from "@/scripts/tools/stringUtils";
 import { setTitle } from "@/scripts/tools/utils";
 import { useAtom } from "jotai";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 
 export default function Customer() {
-  const router = useRouter();
+  const { backward, push } = useNavState();
   const params = useParams();
   const [user] = useAtom<User>(userAtom);
   const [selectedCustomer, setSelectedCustomer] = useAtom<Customer>(selectedCustomerAtom);
@@ -47,7 +48,7 @@ export default function Customer() {
     setSelectedCustomer({} as Customer);
     await deleteCustomer(customer.id);
     await deleteMapLocationByCustomer(customer.id);
-    router.replace('/');
+    await push('Home', '/');
   };
 
 
@@ -88,7 +89,7 @@ export default function Customer() {
                 }
                 <Button
                   className="customer-details__close-btn"
-                  onClick={() => window.history.back()}
+                  onClick={backward}
                 >
                   Close
                 </Button>
