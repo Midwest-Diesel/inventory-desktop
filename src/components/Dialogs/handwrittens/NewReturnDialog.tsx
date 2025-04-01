@@ -40,7 +40,7 @@ export default function NewReturnDialog({ open, setOpen, handwritten }: Props) {
       customer: handwritten.customer,
       handwrittenId: handwritten.id,
       invoiceDate: handwritten.date,
-      createdBy: user.initials,
+      salesmanId: user.id,
       dateCalled: new Date(),
       dateReceived: null,
       creditIssued: null,
@@ -67,7 +67,7 @@ export default function NewReturnDialog({ open, setOpen, handwritten }: Props) {
       source: handwritten.source,
       returnItems: [],
       returnPart: null
-    } as Return;
+    } as any;
     const id = await addReturn(newReturn);
 
     const newReturnItems = handwrittenItems.map((item) => {

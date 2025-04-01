@@ -74,7 +74,7 @@ export default function Returns() {
                       <td><Link href={`/returns/${ret.id}`} data-id="return-link">{ ret.id }</Link></td>
                       <td><Link href={`/handwrittens/${ret.handwrittenId}`} data-id="handwritten-link">{ ret.handwrittenId }</Link></td>
                       <td>{ formatDate(ret.dateCalled) }</td>
-                      <td>{ ret.createdBy }</td>
+                      <td>{ ret.salesman.initials }</td>
                       <td>{ ret.billToCompany }</td>
                       <td>{ ret.returnNotes }</td>
                     </tr>
@@ -112,7 +112,7 @@ export default function Returns() {
                       <td><Link href={`/returns/${ret.id}`}>{ ret.id }</Link></td>
                       <td><Link href={`/handwrittens/${ret.handwrittenId}`}>{ ret.handwrittenId }</Link></td>
                       <td>{ formatDate(ret.dateCalled) }</td>
-                      <td>{ ret.createdBy }</td>
+                      <td>{ ret.salesman.initials }</td>
                       <td>{ ret.billToCompany }</td>
                       <td>{ ret.returnNotes }</td>
                       <td>{ formatDate(ret.creditIssued) }</td>
@@ -151,7 +151,7 @@ export default function Returns() {
                       <td><Link href={`/returns/${ret.id}`}>{ ret.id }</Link></td>
                       <td><Link href={`/handwrittens/${ret.handwrittenId}`}>{ ret.handwrittenId }</Link></td>
                       <td>{ formatDate(ret.dateCalled) }</td>
-                      <td>{ ret.createdBy }</td>
+                      <td>{ ret.salesman.initials }</td>
                       <td>{ ret.billToCompany }</td>
                       <td>{ ret.returnNotes }</td>
                       <td>{ formatDate(ret.creditIssued) }</td>

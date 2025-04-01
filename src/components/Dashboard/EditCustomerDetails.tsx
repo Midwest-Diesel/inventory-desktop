@@ -1,9 +1,9 @@
 import Button from "../Library/Button";
 import Grid from "../Library/Grid/Grid";
 import GridItem from "../Library/Grid/GridItem";
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import Input from "@/components/Library/Input";
-import { editCustomer } from "@/scripts/controllers/customerController";
+import { editCustomer, getCustomerTypes } from "@/scripts/controllers/customerController";
 import Table from "../Library/Table";
 import { confirm } from "@/scripts/config/tauri";
 import { getMapLocationFromCustomer } from "@/scripts/controllers/mapController";
@@ -11,6 +11,7 @@ import EditMapLocDialog from "../Dialogs/customers/EditMapLocDialog";
 import { PreventNavigation } from "../PreventNavigation";
 import SourceSelect from "../Library/Select/SourceSelect";
 import CustomerContactsBlock from "../CustomerContactsBlock";
+import Select from "../Library/Select/Select";
 
 interface Props {
   customer: Customer
@@ -46,6 +47,15 @@ export default function CustomerDetails({ customer, setCustomer, setIsEditing }:
   const [editLocDialogOpen, setEditLocDialogOpen] = useState(false);
   const [loc, setLoc] = useState<MapLocation>(null);
   const [changesSaved, setChangesSaved] = useState<boolean>(true);
+  const [customerTypes, setCustomerTypes] = useState<string[]>([]);
+
+  useEffect(() => {
+    const fetchData = async () =>  {
+      const types = await getCustomerTypes();
+      setCustomerTypes(types);
+    };
+    fetchData();
+  }, []);
 
   const saveChanges = async (e: FormEvent) => {
     e.preventDefault();
@@ -162,10 +172,14 @@ export default function CustomerDetails({ customer, setCustomer, setIsEditing }:
                     <tr>
                       <th>Customer Type</th>
                       <td>
-                        <Input
-                          value={customerType}
+                        <Select
                           onChange={(e: any) => setCustomerType(e.target.value)}
-                        />
+                          value={customerType}
+                        >
+                          {customerTypes.map((type, i) => {
+                            return <option key={i} value={type}>{ type }</option>;
+                          })}
+                        </Select>
                       </td>
                     </tr>
                     <tr>

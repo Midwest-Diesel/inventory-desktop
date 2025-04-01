@@ -1,4 +1,4 @@
-import { editReturn } from "@/scripts/controllers/returnsController";
+import { editReturn, getReturnById } from "@/scripts/controllers/returnsController";
 import { FormEvent, useState } from "react";
 import Input from "./Library/Input";
 import Button from "./Library/Button";
@@ -77,12 +77,8 @@ export default function EditReturnDetails({ returnData, setReturn, setIsEditing 
       restockFee
     };
     await editReturn(newReturn);
-    setReturn({
-      ...newReturn,
-      dateCalled: parseResDate(parseDateInputValue(dateCalled)),
-      dateReceived: parseResDate(parseDateInputValue(dateReceived)),
-      creditIssued: parseResDate(parseDateInputValue(creditIssued))
-    });
+    const res = await getReturnById(returnData.id);
+    setReturn(res);
     setIsEditing(false);
   };
   
@@ -164,6 +160,7 @@ export default function EditReturnDetails({ returnData, setReturn, setIsEditing 
                         variant={['label-space-between', 'label-full-width', 'label-bold']}
                         value={salesmanId}
                         onChange={(e: any) => setSalesmanId(e.target.value)}
+                        userSubtype="sales"
                       />
                     </td>
                   </tr>

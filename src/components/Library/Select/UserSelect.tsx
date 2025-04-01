@@ -8,11 +8,12 @@ import { usersAtom } from "@/scripts/atoms/state";
 interface Props extends SelectHTML {
   variant?: ('label-inline' | 'label-space-between' | 'label-full-width' | 'label-stack' | 'label-bold')[]
   label?: string
+  userSubtype?: 'sales' | 'dev' | 'frontDesk'
 }
 
 
-export default function UserSelect({ variant, label, ...props }: Props) {
-  const [usersData, setUsersData] = useAtom<{ id: number, initials: string }[]>(usersAtom);
+export default function UserSelect({ variant, label, userSubtype, ...props }: Props) {
+  const [usersData, setUsersData] = useAtom<{ id: number, username: string, initials: string, type: string, subtype: string }[]>(usersAtom);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -31,7 +32,7 @@ export default function UserSelect({ variant, label, ...props }: Props) {
           {...props}
         >
           <option value="">-- SELECT A USER --</option>
-          {usersData.length > 0 && usersData.sort().map((user, i) => {
+          {usersData.length > 0 && usersData.filter((user) => !userSubtype || userSubtype === user.subtype).sort().map((user, i) => {
             return (
               <option key={i} value={user.id}>{ user.initials }</option>
             );
