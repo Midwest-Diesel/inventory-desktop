@@ -7,17 +7,18 @@ of them when replacing a printer.
 
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
+use image::{io::Reader as ImageReader, ImageOutputFormat, DynamicImage, imageops::{rotate90, resize, FilterType}};
 use serde::{Deserialize, Serialize};
 use serde_json::to_string;
 use tauri::Manager;
 use std::process::Command;
 use std::fs::{write};
 use std::{fs::File, io::copy};
-use std::io::{self, Write};
+use std::io::{self, Cursor, Write};
 use reqwest::Client;
 use std::path::{Path};
 use zip::read::ZipArchive;
-use base64::{engine::general_purpose::STANDARD as BASE64_STANDARD, Engine};
+use base64::{engine::general_purpose::STANDARD as BASE64_STANDARD, Engine, decode};
 use url::Url;
 
 #[derive(Deserialize, Debug)]
@@ -1800,7 +1801,7 @@ fn print_coo() -> Result<(), String> {
 }
 
 #[tauri::command]
-fn print_part_tag(args: PartTagArgs) -> Result<(), String> {
+fn _print_part_tag(args: PartTagArgs) -> Result<(), String> {
   let printer = "ZDesigner GC420d (EPL)";
   let vbs_script = format!(
     r#"
@@ -2635,4 +2636,31 @@ fn email_end_of_day(args: EmailEndOfDayArgs) {
   let mut cmd = Command::new("wscript.exe");
   cmd.arg(temp_vbs_path);
   cmd.output().expect("Failed to create new draft");
+}
+
+#[tauri::command]
+fn print_part_tag(imageData: String) -> Result<(), String> {
+  let data = decode(imageData.split(',').nth(1).unwrap()).map_err(|e| e.to_string())?;
+  let file_path = "C:\\MWD\\scripts\\part_tag.png";
+  let printer = "ZDesigner GC420d (EPL)";
+
+  let img = ImageReader::new(Cursor::new(&data))
+    .with_guessed_format()
+    .map_err(|e| e.to_string())?
+    .decode()
+    .map_err(|e| e.to_string())?;
+
+  let rotated_img: DynamicImage = image::DynamicImage::ImageRgba8(rotate90(&img)).resize(3248, 1624, FilterType::Lanczos3);
+
+  {
+    let mut file = File::create(file_path).map_err(|e| e.to_string())?;
+    rotated_img.write_to(&mut file, ImageOutputFormat::Png).map_err(|e| e.to_string())?;
+  }
+
+  Command::new("mspaint")
+  .args([file_path, "/pt", printer])
+  .output()
+  .map_err(|e| e.to_string())?;
+
+  Ok(())
 }

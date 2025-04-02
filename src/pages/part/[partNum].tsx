@@ -2,7 +2,7 @@ import { Layout } from "@/components/Layout";
 import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import { formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { getImagesFromPart, getImagesFromStockNum } from "@/scripts/controllers/imagesController";
 import Table from "@/components/Library/Table";
 import Button from "@/components/Library/Button";
@@ -24,11 +24,14 @@ import { invoke } from "@/scripts/config/tauri";
 import Modal from "@/components/Library/Modal";
 import { getSurplusCostRemaining } from "@/scripts/controllers/surplusController";
 import { useNavState } from "@/components/Navbar/useNavState";
+import { toPng } from "html-to-image";
+import PartTag from "@/components/PrintableComponents/PartTag";
 
 
 export default function PartDetails() {
   const { backward, push } = useNavState();
   const params = useParams();
+  const printRef = useRef();
   const [user] = useAtom<User>(userAtom);
   const [part, setPart] = useState<Part>(null);
   const [engine, setEngine] = useState<Engine>(null);
@@ -42,6 +45,7 @@ export default function PartDetails() {
   const [engineCostOut, setEngineCostOut] = useState<EngineCostOut[]>([]);
   const [costAlertMsg, setCostAlertMsg] = useState('');
   const [costAlertOpen, setCostAlertOpen] = useState(false);
+  const [partTagProps, setPartTagProps] = useState(null);
 
   useEffect(() => {
     fetchData();
@@ -58,6 +62,18 @@ export default function PartDetails() {
     };
     fetchTables();
   }, [isEditingPart]);
+
+  useEffect(() => {
+    // Print part tag
+    if (!partTagProps) return;
+    const copies = Number(prompt('How many tags do you want to print?', '1'));
+    if (copies <= 0) return;
+    setTimeout(async () => {
+      const imageData = await toPng(printRef.current);
+      await invoke('print_part_tag', { imageData });
+      setPartTagProps(null);
+    }, 200);
+  }, [partTagProps]);
 
   useEffect(() => {}, [pictures, snPictures, part]);
 
@@ -105,10 +121,8 @@ export default function PartDetails() {
   };
 
   const handlePrint = async () => {
-    const copies = Number(prompt('How many tags do you want to print?', '1'));
-    if (copies <= 0) return;
     const pictures = await getImagesFromPart(part.partNum);
-    const args = {
+    setPartTagProps({
       stockNum: part.stockNum || '',
       model: engine.model || '',
       serialNum: engine.serialNum || '',
@@ -117,11 +131,9 @@ export default function PartDetails() {
       remarks: part.remarks || '',
       date: formatDate(part.entryDate) || '',
       partNum: part.partNum || '',
-      rating: part.rating ? `${part.rating}` : '0',
-      hasPictures: pictures.length > 0,
-      copies
-    };
-    await invoke('print_part_tag', { args });
+      rating: part.rating,
+      hasPictures: pictures && pictures.length > 0
+    });
   };
 
 
@@ -199,7 +211,7 @@ export default function PartDetails() {
 
           <div className="part-details__top-bar">
             <Button onClick={handleAddToUP} data-id="add-to-up-btn">Add to UP</Button>
-            <Button onClick={handlePrint}>Print Tag</Button>
+            <Button onClick={() => handlePrint()}>Print Tag</Button>
           </div>
 
 
@@ -414,6 +426,14 @@ export default function PartDetails() {
         </div>
         :
         <Loading />
+      }
+
+      {partTagProps &&
+        <div ref={printRef} style={{ width: '1400px', marginTop: '10rem' }}>
+          <PartTag
+            properties={partTagProps}
+          />
+        </div>
       }
     </Layout>
   );
