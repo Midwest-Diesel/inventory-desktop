@@ -25,9 +25,9 @@ export default function PartTag({ properties }: Props) {
         <h1>{ stockNum }</h1>
       </div>
       <div className="part-tag__row">
-        <p>{ model }23</p>
-        <p>{ serialNum }123</p>
-        <p>{ hp }132</p>
+        <p>{ model }</p>
+        <p>{ serialNum }</p>
+        <p>{ hp }</p>
       </div>
 
       <div className="part-tag__middle">
