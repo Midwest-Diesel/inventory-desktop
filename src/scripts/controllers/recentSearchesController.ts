@@ -9,10 +9,10 @@ interface RecentSearch {
 
 // === GET routes === //
 
-export const getRecentPartSearches = async () => {
+export const getRecentPartSearches = async (partNum: string) => {
   try {
     const auth = { withCredentials: true };
-    const res = await api.get('/api/recent-searches/parts', auth);
+    const res = await api.get(`/api/recent-searches/parts/${partNum}`, auth);
     res.data = res.data.map((search: any) => {
       return {
         ...search,

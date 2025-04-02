@@ -10,6 +10,7 @@ import { getCustomerByName, getCustomerNames } from "@/scripts/controllers/custo
 import { useAtom } from "jotai";
 import { customerNamesAtom } from "@/scripts/atoms/state";
 import PartSelectDialog from "./PartSelectDialog";
+import Select from "@/components/Library/Select/Select";
 
 interface Props {
   setQuoteEdited: (quote: Quote) => void
@@ -23,6 +24,7 @@ export default function EditQuoteDialog({ setQuoteEdited, quote, setQuote }: Pro
   const [date, setDate] = useState<Date>(quote.date);
   const [source, setSource] = useState<string>(quote.source);
   const [company, setCompany] = useState<string>(quote.customer.company || '');
+  const [contact, setContact] = useState<string>(quote.contact || '');
   const [part, setPart] = useState<Part>(quote.part);
   const [desc, setDesc] = useState<string>(quote.desc || '');
   const [price, setPrice] = useState<number>(Number(quote.price));
@@ -42,6 +44,7 @@ export default function EditQuoteDialog({ setQuoteEdited, quote, setQuote }: Pro
     const newQuote = {
       ...quote,
       customer,
+      contact,
       date,
       source,
       partNum: part ? part.partNum : quote.partNum,
@@ -60,6 +63,7 @@ export default function EditQuoteDialog({ setQuoteEdited, quote, setQuote }: Pro
     setDate(quote.date);
     setSource(quote.source);
     setCompany(quote.customer.company);
+    setContact(quote.contact);
     setPart(quote.part);
     setDesc(quote.desc);
     setPrice(quote.price);
@@ -108,6 +112,18 @@ export default function EditQuoteDialog({ setQuoteEdited, quote, setQuote }: Pro
             onChange={(value: any) => setCompany(value)}
             maxHeight="15rem"
           />
+
+          <Select
+            label="Contact"
+            variant={['label-full-width', 'label-bold', 'label-stack']}
+            value={contact}
+            onChange={(e: any) => setContact(e.target.value)}
+          >
+            <option value="">-- SELECT CONTACT --</option>
+            {quote.customer && quote.customer.contacts.map((c) => {
+              return <option key={c.id}>{ c.name }</option>;
+            })}
+          </Select>
 
           {part &&
             <>

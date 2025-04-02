@@ -5,9 +5,9 @@ import ShopNavbar from "./ShopNavbar";
 import Button from "../Library/Button";
 import { useNavState } from "./useNavState";
 import ContextMenu from "../Library/ContextMenu";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { changeSelectedTab, deleteTab, renameTab } from "@/scripts/controllers/tabsController";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 
 
 export default function Navbar() {
@@ -16,6 +16,14 @@ export default function Navbar() {
   const { tabs, setTabs, forward, backward, handleChangeTab, newTab } = useNavState();
   const [menuOpen, setMenuOpen] = useState(false);
   const [selectedTab, setSelectedTab] = useState<Tab>(null);
+  let loaded = false;
+
+  // useEffect(() => {
+  //   if (tabs.length === 0 || loaded) return;
+  //   loaded = true;
+  //   const tab = tabs.find((t) => t.selected);
+  //   router.replace(tab.history[tab.history.length - 1].url);
+  // }, [tabs]);
 
   const handleRenameTab = async () => {
     const name = prompt('Name');

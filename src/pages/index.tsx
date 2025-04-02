@@ -32,7 +32,9 @@ export default function Home() {
   useEffect(() => {
     const fetchData = async () => {
       if (!user || isObjectNull(user)) return;
-      setRecentPartSearches(await getRecentPartSearches());
+      const prevSearch: any = localStorage.getItem('altPartSearches') || localStorage.getItem('partSearches');
+      const partNum = JSON.parse(prevSearch).partNum.replace('*', '');
+      setRecentPartSearches(await getRecentPartSearches(partNum !== '' ? partNum : '*'));
     };
     fetchData();
   }, [user]);
