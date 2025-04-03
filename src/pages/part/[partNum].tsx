@@ -65,14 +65,16 @@ export default function PartDetails() {
 
   useEffect(() => {
     // Print part tag
-    if (!partTagProps) return;
-    const copies = Number(prompt('How many tags do you want to print?', '1'));
-    if (copies <= 0) return;
-    setTimeout(async () => {
+    const captureImage = async () => {
+      if (!partTagProps) return;
+      const copies = Number(prompt('How many tags do you want to print?', '1'));
+      if (copies <= 0) return;
+
       const imageData = await toPng(printRef.current);
       await invoke('print_part_tag', { imageData });
       setPartTagProps(null);
-    }, 200);
+    };
+    setTimeout(() => captureImage(), 200);
   }, [partTagProps]);
 
   useEffect(() => {}, [pictures, snPictures, part]);
