@@ -77,10 +77,10 @@ export default function PiggybackQuoteDialog({ open, setOpen, quote, handleChang
     const newQuote = {
       date: new Date(),
       source: null,
-      customerId: customer.id,
-      contact: customer ? customer.contact : null,
-      phone: customer ? customer.phone : null,
-      state: customer ? customer.billToState : null,
+      customerId: customer?.id,
+      contact: customer?.contact,
+      phone: customer?.phone,
+      state: customer?.billToState,
       partNum: part.partNum,
       desc: part.desc,
       stockNum: part.stockNum,
@@ -88,7 +88,7 @@ export default function PiggybackQuoteDialog({ open, setOpen, quote, handleChang
       notes: part.desc,
       salesmanId: user.id,
       rating: part.rating,
-      email: customer ? customer.email : null,
+      email: customer?.email,
       partId: part.id
     };
     const id = await addQuote(newQuote) as any;

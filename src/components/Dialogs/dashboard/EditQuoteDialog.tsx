@@ -23,7 +23,7 @@ export default function EditQuoteDialog({ setQuoteEdited, quote, setQuote }: Pro
   const [customerNames, setCustomerNames] = useAtom<string[]>(customerNamesAtom);
   const [date, setDate] = useState<Date>(quote.date);
   const [source, setSource] = useState<string>(quote.source);
-  const [company, setCompany] = useState<string>(quote.customer.company || '');
+  const [company, setCompany] = useState<string>(quote.customer ? quote.customer.company : '');
   const [contact, setContact] = useState<string>(quote.contact || '');
   const [part, setPart] = useState<Part>(quote.part);
   const [desc, setDesc] = useState<string>(quote.desc || '');

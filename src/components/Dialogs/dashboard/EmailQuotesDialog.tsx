@@ -77,42 +77,42 @@ export default function SalesInfo({ open, setOpen, quote }: Props) {
           </thead>
           <tbody>
             ${quotes.map((quote) => {
-              const quoteArgs = {
-                quoteId: quote.id,
-                date: formatDate(quote.date),
-                customer: quote.customer,
-                contact: quote.contact,
-                qty: (quote.part && quote.part.qty) || 1,
-                partNum: quote.partNum,
-                desc: quote.desc,
-                unitPrice: quote.price
-              };
+    const quoteArgs = {
+      quoteId: quote.id,
+      date: formatDate(quote.date),
+      customer: quote.customer,
+      contact: quote.contact,
+      qty: (quote.part && quote.part.qty) || 1,
+      partNum: quote.partNum,
+      desc: quote.desc,
+      unitPrice: quote.price
+    };
 
-              return (`
-                <tr>
-                  <td>${quoteArgs.qty}</td>
-                  <td>${quoteArgs.partNum}</td>
-                  <td>${quoteArgs.desc}</td>
-                  <td>${formatCurrency(quoteArgs.unitPrice)}</td>
-                  <td>${formatCurrency(quoteArgs.qty * quoteArgs.unitPrice)}</td>
-                  <td>${quote.part ? quote.part.condition : ''}</td>
-                </tr>
-                ${quote.piggybackQuotes.map((quote: PiggybackQuote) => {
-                  if (quote.addToEmail) {  
-                    return (`
-                      <tr>
-                        <td>${quoteArgs.qty}</td>
-                        <td>${quote.partNum}</td>
-                        <td>${quote.desc}</td>
-                        <td>${formatCurrency(quote.price)}</td>
-                        <td>${formatCurrency(quoteArgs.qty * quote.price)}</td>
-                        <td>${quote.part ? quote.part.condition : ''}</td>
-                      </tr>
-                    `);
-                  }
-                })}  
-              `);
-            }).join('')}
+    return (`
+      <tr>
+        <td>${quoteArgs.qty}</td>
+        <td>${quoteArgs.partNum}</td>
+        <td>${quoteArgs.desc}</td>
+        <td>${formatCurrency(quoteArgs.unitPrice)}</td>
+        <td>${formatCurrency(quoteArgs.qty * quoteArgs.unitPrice)}</td>
+        <td>${quote.part ? quote.part.condition : ''}</td>
+      </tr>
+      ${quote.piggybackQuotes.map((quote: PiggybackQuote) => {
+        if (quote.addToEmail) {  
+          return (`
+            <tr>
+              <td>${quoteArgs.qty}</td>
+              <td>${quote.partNum}</td>
+              <td>${quote.desc}</td>
+              <td>${formatCurrency(quote.price)}</td>
+              <td>${formatCurrency(quoteArgs.qty * quote.price)}</td>
+              <td>${quote.part ? quote.part.condition : ''}</td>
+            </tr>
+          `);
+        }
+      })}  
+    `);
+  }).join('')}
           </tbody>
         </table>
       `,

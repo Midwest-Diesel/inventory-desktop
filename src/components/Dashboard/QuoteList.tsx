@@ -119,6 +119,7 @@ export default function QuoteList({ quotes, setQuotes, setSelectHandwrittenOpen,
   };
 
   const invoiceQuote = async (quote: Quote) => {
+    if (!quote.customer || !quote.part) return;
     const part = (
       quote.part ?
         await getPartById(quote.part.id)
@@ -297,8 +298,8 @@ export default function QuoteList({ quotes, setQuotes, setSelectHandwrittenOpen,
                         <td>{ quote.source }</td>
                         <td style={{ width: '15rem' }}>{ quote.customer && <Link href={`/customer/${quote.customer.id}`}>{ quote.customer.company }</Link> }</td>
                         <td>{ quote.contact }</td>
-                        <td style={{ width:'7.5rem' }}>{ quote.phone && formatPhone(quote.phone) }</td>
-                        <td>{ quote.state }</td>
+                        <td style={{ width:'7.5rem' }}>{ formatPhone(quote.customer?.phone) }</td>
+                        <td>{ quote.customer?.billToState }</td>
                         <td>
                           {quote.part ?
                             <Link href={`/part/${quote.part.id}`}>{ quote.partNum }</Link>
