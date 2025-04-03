@@ -51,6 +51,7 @@ export default function Pagination({ className = '', variant, data, setData, btn
         <Button
           onClick={() => handleChangePage(currentPage === 1 ? totalPages : currentPage - 1)}
           variant={[]}
+          type="button"
         >
           Previous
         </Button>
@@ -61,6 +62,7 @@ export default function Pagination({ className = '', variant, data, setData, btn
             onClick={() => handleChangePage(1)}
             variant={['circle']}
             className={currentPage === 1 ? 'pagination--selected' : ''}
+            type="button"
           >
             1
           </Button>
@@ -73,6 +75,7 @@ export default function Pagination({ className = '', variant, data, setData, btn
           onClick={() => handleChangePage(pageNum)}
           variant={['circle']}
           className={currentPage === pageNum ? 'pagination--selected' : ''}
+          type="button"
         >
           {pageNum}
         </Button>
@@ -84,6 +87,7 @@ export default function Pagination({ className = '', variant, data, setData, btn
             onClick={() => handleChangePage(totalPages)}
             variant={['circle']}
             className={currentPage === totalPages ? 'pagination--selected' : ''}
+            type="button"
           >
             {totalPages}
           </Button>
@@ -93,6 +97,7 @@ export default function Pagination({ className = '', variant, data, setData, btn
         <Button
           onClick={() => handleChangePage(currentPage === totalPages ? 1 : currentPage + 1)}
           variant={[]}
+          type="button"
         >
           Next
         </Button>

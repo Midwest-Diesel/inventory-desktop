@@ -65,6 +65,19 @@ export const getSomeQuotesByPartNum = async (page: number, limit: number, partNu
   }
 };
 
+export const getQuotesByCustomer = async (id: number) => {
+  try {
+    const auth = { withCredentials: true };
+    const res = await api.get(`/api/quotes/customer/${id}`, auth);
+    return {
+      rows: parseQuotesRes(res.data.rows),
+      minItems: res.data.minItems
+    };
+  } catch (err) {
+    console.error(err);
+  }
+};
+
 export const getSomeUnsoldQuotesByPartNum = async (page: number, limit: number, partNum: string, customerId: number, includeAlts: boolean) => {
   try {
     const auth = { withCredentials: true };

@@ -18,6 +18,7 @@ import Link from "../Library/Link";
 import SalesEndOfDayDialog from "../Dialogs/dashboard/SalesEndOfDayDialog";
 import Toast from "../Library/Toast";
 import { confirm } from "@/scripts/config/tauri";
+import EmailQuotesDialog from "../Dialogs/dashboard/EmailQuotesDialog";
 
 interface Props {
   quotes: Quote[]
@@ -47,6 +48,8 @@ export default function QuoteList({ quotes, setQuotes, setSelectHandwrittenOpen,
   const [endOfDayOpen, setEndOfDayOpen] = useState(false);
   const [showingSearchResults, setShowingSearchResults] = useState(false);
   const [toastOpen, setToastOpen] = useState(false);
+  const [emailDialogOpen, setEmailDialogOpen] = useState(false);
+  const [quoteEmailed, setQuoteEmailed] = useState<Quote>(null);
   const search = localStorage.getItem('altPartSearches') || localStorage.getItem('partSearches') || null;
   const [page, setPage] = useState(1);
   const LIMIT = 26;
@@ -129,80 +132,13 @@ export default function QuoteList({ quotes, setQuotes, setSelectHandwrittenOpen,
     setHandwrittenQuote(quote);
   };
 
-  const handleEmail = async (quote: Quote) => {
-    const recipients = prompt('Enter recipients', quote.customer.email || '');
-    if (!recipients) return;
-    const quoteArgs = {
-      quoteId: quote.id,
-      date: formatDate(quote.date),
-      customer: quote.customer,
-      contact: quote.contact,
-      qty: (quote.part && quote.part.qty) || 1,
-      partNum: quote.partNum,
-      desc: quote.desc,
-      unitPrice: quote.price
-    };
-    const emailArgs: Email = {
-      subject: `Midwest Diesel Quote: ${quoteArgs.quoteId}`,
-      body: `
-        <style>
-          table {
-            border: 1px solid black;
-            border-collapse: collapse;
-          }
-          th, td {
-            padding: 8px;
-            text-align: left;
-            border: 1px solid black;
-          }
-          th {
-            background-color: #DDDCDC;
-          }
-        </style>
-        <table>
-          <thead>
-            <tr>
-              <th>Qty</th>
-              <th>Part Number</th>
-              <th>Description</th>
-              <th>Unit Price</th>
-              <th>Total Price</th>
-              <th>Condition</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>${quoteArgs.qty}</td>
-              <td>${quoteArgs.partNum}</td>
-              <td>${quoteArgs.desc}</td>
-              <td>${formatCurrency(quoteArgs.unitPrice)}</td>
-              <td>${formatCurrency(quoteArgs.qty * quoteArgs.unitPrice)}</td>
-              <td>${quote.part ? quote.part.condition : ''}</td>
-            </tr>
-            ${quote.piggybackQuotes.map((quote: PiggybackQuote) => {
-              if (quote.addToEmail) {  
-                return (`
-                  <tr>
-                    <td>${quoteArgs.qty}</td>
-                    <td>${quote.partNum}</td>
-                    <td>${quote.desc}</td>
-                    <td>${formatCurrency(quote.price)}</td>
-                    <td>${formatCurrency(quoteArgs.qty * quote.price)}</td>
-                    <td>${quote.part ? quote.part.condition : ''}</td>
-                  </tr>
-                `);
-              }
-            })}
-          </tbody>
-        </table>
-      `,
-      recipients: recipients.split(', ').map((r) => r.trim()),
-      attachments: []
-    };
-    invoke('new_email_draft', { emailArgs });
+  const handleEmail = (quote: Quote) => {
+    if (!quote.customer) return;
+    setEmailDialogOpen(true);
+    setQuoteEmailed(quote);
   };
 
-  const handleChangePage = async (data: any, page: number) => {
+  const handleChangePage = async (_: any, page: number) => {
     if (!selectedCustomer.id && localStorage.getItem('customerId')) return;
     if (showingSearchResults) {
       const res = await searchQuotes({ ...JSON.parse(localStorage.getItem('quoteSearch')), page });
@@ -252,6 +188,15 @@ export default function QuoteList({ quotes, setQuotes, setSelectHandwrittenOpen,
         <h2>Part Quotes</h2>
         <Image src={`/images/icons/arrow-${quotesOpen ? 'up' : 'down'}.svg`} alt="arrow" width={25} height={25} />
       </div>
+
+      {quoteEmailed &&
+        <EmailQuotesDialog
+          open={emailDialogOpen}
+          setOpen={setEmailDialogOpen}
+          quote={quoteEmailed}
+        />
+      }
+
       <QuoteSearchDialog
         open={searchDialogOpen}
         setOpen={setSearchDialogOpen}
@@ -332,9 +277,11 @@ export default function QuoteList({ quotes, setQuotes, setSelectHandwrittenOpen,
                           <Button variant={['fit']} onClick={() => setQuoteEdited(quote)}>
                             <Image alt="Edit" src="/images/icons/edit.svg" width={17} height={17} />
                           </Button>
-                          <Button variant={['fit']} onClick={() => handleEmail(quote)}>
-                            <Image alt="Email" src="/images/icons/email.svg" width={17} height={17} />
-                          </Button>
+                          {quote.customer &&
+                            <Button variant={['fit']} onClick={() => handleEmail(quote)}>
+                              <Image alt="Email" src="/images/icons/email.svg" width={17} height={17} />
+                            </Button>
+                          }
                           <Button variant={['fit']} onClick={() => invoiceQuote(quote)} data-id="invoice-btn">
                             <Image alt="Add to handwritten" src="/images/icons/invoice.svg" width={17} height={17} />
                           </Button>
