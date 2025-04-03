@@ -56,16 +56,15 @@ export default function QuoteList({ quotes, setQuotes, setSelectHandwrittenOpen,
 
   useEffect(() => {
     const fetchData = async () => {
-      const pageCount = await getQuotesCount(search && JSON.parse(search).length > 1 ? JSON.parse(search).partNum : '', selectedCustomer.id, quoteListType === 'engine');
-      setCount(pageCount);
       await handleChangePage(null, 1);
+
+      if (!localStorage.getItem('customerId')) {
+        setFilterByCustomer(false);
+      } else {
+        setFilterByCustomer(true);
+      }
     };
     fetchData();
-    if (!localStorage.getItem('customerId')) {
-      setFilterByCustomer(false);
-    } else {
-      setFilterByCustomer(true);
-    }
   }, [lastSearch, selectedCustomer, quotesData]);
 
   useEffect(() => {
@@ -147,6 +146,10 @@ export default function QuoteList({ quotes, setQuotes, setSelectHandwrittenOpen,
     } else {
       const res = await getSomeQuotes(page, LIMIT, search ? JSON.parse(search).partNum : '', filterByCustomer ? selectedCustomer.id : null, quoteListType === 'engine');
       setPaginatedQuotes(res);
+      if (filterByCustomer) {
+        const pageCount = await getQuotesCount(search && JSON.parse(search).length > 1 ? JSON.parse(search).partNum : '', selectedCustomer.id, quoteListType === 'engine');
+        setCount(pageCount);
+      }
       if (res.length === 0 && filterByCustomer) setFilterByCustomer(false);
     }
     setPage(page);
