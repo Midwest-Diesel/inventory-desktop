@@ -20,14 +20,12 @@ export default function SelectedCustomerInfo({ customerData, setCustomerData, ex
   const customerInfo = [formatPhone(customer.phone, true), customer.email, customer.billToState, customer.billToCity].filter((v) => v).join(', ');
 
   useEffect(() => {
+    setCustomer(customerData);
     const fetchData = async () => {
-      setSalesHistory(await getCustomerSalesHistory(Number(customer.id)));
+      const sales = await getCustomerSalesHistory(customerData.id);
+      setSalesHistory(sales);
     };
     fetchData();
-  }, []);
-
-  useEffect(() => {
-    setCustomer(customerData);
   }, [customerData]);
 
 
