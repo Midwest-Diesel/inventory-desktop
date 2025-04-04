@@ -27,8 +27,14 @@ export default function GlobalData({ children }: Props) {
       await handleGetUser();
       setLoaded(true);
       setAlertsData(await getAlerts());
-      const tabs = await getTabsByUser();
-      setTabs(tabs);
+      // const tabs = await getTabsByUser();
+      setTabs([{
+        id: 0,
+        name: null,
+        urlIndex: 0,
+        history: [{ name: 'Home', url: '/' }],
+        selected: true
+      }]);
     };
     fetchData();
   }, []);

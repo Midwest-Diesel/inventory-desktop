@@ -6,7 +6,7 @@ import Button from "../Library/Button";
 import { useNavState } from "./useNavState";
 import ContextMenu from "../Library/ContextMenu";
 import { useEffect, useState } from "react";
-import { changeSelectedTab, deleteTab, renameTab } from "@/scripts/controllers/tabsController";
+// import { changeSelectedTab, deleteTab, renameTab } from "@/scripts/controllers/tabsController";
 import { useRouter } from "next/navigation";
 
 
@@ -27,7 +27,7 @@ export default function Navbar() {
 
   const handleRenameTab = async () => {
     const name = prompt('Name');
-    await renameTab(selectedTab.id, name);
+    // await renameTab(selectedTab.id, name);
     setTabs(tabs.map((tab) => {
       if (tab.id === selectedTab.id) {
         return { ...tab, name };
@@ -42,7 +42,7 @@ export default function Navbar() {
     let updatedTabs = filteredTabs;
     if (selectedTab.selected) {
       const newTab = filteredTabs[filteredTabs.length - 1];
-      await changeSelectedTab(newTab.id);
+      // await changeSelectedTab(newTab.id);
       router.replace(newTab.history[newTab.history.length - 1].url);
       updatedTabs = updatedTabs.map((tab) => {
         if (tab.id === newTab.id) {
@@ -51,7 +51,7 @@ export default function Navbar() {
         return tab;
       });
     }
-    await deleteTab(selectedTab.id);
+    // await deleteTab(selectedTab.id);
     setTabs(updatedTabs);
   };
 

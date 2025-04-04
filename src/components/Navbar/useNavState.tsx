@@ -1,5 +1,5 @@
 import { useRouter } from "next/navigation";
-import { addTab, changeSelectedTab, editTabHistory, getTabsByUser } from "@/scripts/controllers/tabsController";
+// import { addTab, changeSelectedTab, editTabHistory, getTabsByUser } from "@/scripts/controllers/tabsController";
 import { useAtom } from "jotai";
 import { tabsAtom } from "@/scripts/atoms/state";
 
@@ -11,22 +11,24 @@ export function useNavState() {
   const forward = async () => {
     const tab = tabs.find((t) => t.selected);
     if (tab.urlIndex === tab.history.length - 1) return;
+    const nextTab = tab.history[tab.urlIndex + 1];
     setTabs(tabs.map((t) => t.id === tab.id ? ({ ...t, urlIndex: t.urlIndex + 1 }) : t));
-    router.replace(tab.history[tab.urlIndex + 1].url);
-    await editTabHistory(tab.id, tab.urlIndex + 1, tab.history);
+    router.replace(nextTab.url);
+    // await editTabHistory(tab.id, tab.urlIndex + 1, tab.history);
   };
 
   const backward = async () => {    
     const tab = tabs.find((t) => t.selected);
     if (tab.urlIndex === 0) return;
+    const prevTab = tab.history[tab.urlIndex - 1];
     setTabs(tabs.map((t) => t.id === tab.id ? ({ ...t, urlIndex: t.urlIndex - 1 }) : t));
-    router.replace(tab.history[tab.urlIndex - 1].url);
-    await editTabHistory(tab.id, tab.urlIndex - 1, tab.history);
+    router.replace(prevTab.url);
+    // await editTabHistory(tab.id, tab.urlIndex - 1, tab.history);
   };
 
   const handleChangeTab = async (tabId: number) => {
     setTabs(tabs.map((tab) => ({ ...tab, selected: tab.id === tabId })));
-    await changeSelectedTab(tabId);
+    // await changeSelectedTab(tabId);
     const tab = tabs.find((t) => t.id === tabId);
     router.replace(tab.history[tab.urlIndex].url);
   };
@@ -44,9 +46,9 @@ export function useNavState() {
       })
     );
   
-    if (selectedTab) {
-      await editTabHistory(selectedTab.id, selectedTab.urlIndex, selectedTab.history);
-    }
+    // if (selectedTab) {
+    //   await editTabHistory(selectedTab.id, selectedTab.urlIndex, selectedTab.history);
+    // }
   
     setTimeout(() => {
       router.replace(url);
@@ -54,9 +56,16 @@ export function useNavState() {
   };  
 
   const newTab = async () => {
-    await addTab([{ name: 'Home', url: '/' }]);
-    const res = await getTabsByUser();
-    setTabs(res);
+    // await addTab([{ name: 'Home', url: '/' }]);
+    // const res = await getTabsByUser();
+    // setTabs(res);
+    setTabs([...tabs, {
+      id: tabs.length + 1,
+      name: null,
+      urlIndex: 0,
+      history: [{ name: 'Home', url: '/' }],
+      selected: false
+    }]);
     router.replace('/');
   };
   

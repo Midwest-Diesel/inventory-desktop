@@ -25,11 +25,11 @@ export default function App({ Component, pageProps }: any) {
     };
     document.addEventListener('auxclick', handleMiddleClick);
 
-    const fetchData = async () => {
-      const tabs = await getTabsByUser();
-      if (tabs && tabs.length === 0) await addTab([{ name: 'Home', url: '' }]);
-    };
-    fetchData();
+    // const fetchData = async () => {
+    //   const tabs = await getTabsByUser();
+    //   if (tabs && tabs.length === 0) await addTab([{ name: 'Home', url: '' }]);
+    // };
+    // fetchData();
 
     return () => {
       document.removeEventListener('auxclick', handleMiddleClick);
