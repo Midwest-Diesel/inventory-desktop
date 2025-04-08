@@ -49,7 +49,8 @@ export const getSomeQuotes = async (page: number, limit: number, partNum: string
   try {
     const auth = { withCredentials: true };
     const res = await api.get(`/api/quotes/limit/${JSON.stringify({ page: (page - 1) * limit, limit, partNum, customerId, isEngineQuote })}`, auth);
-    return parseQuotesRes(res.data);
+    res.data = { minItems: res.data.minItems, rows: parseQuotesRes(res.data.rows)};
+    return res.data;
   } catch (err) {
     console.error(err);
   }
@@ -123,10 +124,10 @@ export const getQuotesCountByPartNum = async (isEngineQuote = false, partNum: st
   }
 };
 
-export const searchQuotes = async (quote: QuoteSearchData) => {
+export const searchQuotes = async (quote: QuoteSearchData, customerId: number) => {
   try {
     const auth = { withCredentials: true };
-    const res = await api.get(`/api/quotes/search/${encodeURIComponent(JSON.stringify(quote))}`, auth);
+    const res = await api.get(`/api/quotes/search/${encodeURIComponent(JSON.stringify({ ...quote, customerId }))}`, auth);
     res.data = { minItems: res.data.minItems, rows: parseQuotesRes(res.data.rows)};
     return res.data;
   } catch (err) {

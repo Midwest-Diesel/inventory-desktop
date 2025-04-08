@@ -6,13 +6,12 @@ import QuoteSearchDialog from "../Dialogs/dashboard/QuoteSearchDialog";
 import { useAtom } from "jotai";
 import { lastPartSearchAtom, quotesAtom, selectedCustomerAtom, userAtom } from "@/scripts/atoms/state";
 import EditQuoteDialog from "@/components/Dialogs/dashboard/EditQuoteDialog";
-import { addQuote, deleteQuote, getQuotesCount, getSomeQuotes, searchQuotes, toggleAddToEmail, toggleQuoteSold } from "@/scripts/controllers/quotesController";
+import { addQuote, deleteQuote, getSomeQuotes, searchQuotes, toggleAddToEmail, toggleQuoteSold } from "@/scripts/controllers/quotesController";
 import Table from "@/components/Library/Table";
 import Pagination from "@/components/Library/Pagination";
 import { formatCurrency, formatDate, formatPhone } from "@/scripts/tools/stringUtils";
 import Checkbox from "@/components/Library/Checkbox";
-import { getPartById, getPartByPartNum } from "@/scripts/controllers/partsController";
-import { invoke } from "@/scripts/config/tauri";
+import { getPartById } from "@/scripts/controllers/partsController";
 import PiggybackQuoteDialog from "../Dialogs/dashboard/PiggybackQuoteDialog";
 import Link from "../Library/Link";
 import SalesEndOfDayDialog from "../Dialogs/dashboard/SalesEndOfDayDialog";
@@ -33,48 +32,52 @@ interface Props {
 export default function QuoteList({ quotes, setQuotes, setSelectHandwrittenOpen, setSelectedHandwrittenPart, setHandwrittenCustomer, setHandwrittenQuote }: Props) {
   const [user] = useAtom<User>(userAtom);
   const [quotesData, setQuotesData] = useAtom<Quote[]>(quotesAtom);
+  const [lastSearch] = useAtom<string>(lastPartSearchAtom);
   const [count, setCount] = useState<number[]>([]);
   const [quotesOpen, setQuotesOpen] = useState(localStorage.getItem('quotesOpen') === 'true' || localStorage.getItem('quotesOpen') === null ? true : false);
   const [searchDialogOpen, setSearchDialogOpen] = useState(false);
   const [quoteEdited, setQuoteEdited] = useState<Quote>(null);
   const [quoteListType, setQuoteListType] = useState('part');
-  const [lastSearch] = useAtom<string>(lastPartSearchAtom);
+  const [searchData, setSearchData] = useState<any>(null);
   const [selectedCustomer] = useAtom<Customer>(selectedCustomerAtom);
-  const [paginatedQuotes, setPaginatedQuotes] = useState<Quote[]>([]);
   const [expandedQuotes, setExpandedQuotes] = useState<number[]>([]);
-  const [filterByCustomer, setFilterByCustomer] = useState(true);
+  const [filterByCustomer, setFilterByCustomer] = useState(false);
+  const [filterByPart, setFilterByPart] = useState(false);
   const [piggybackQuoteOpen, setPiggybackQuoteOpen] = useState(false);
   const [piggybackQuote, setPiggybackQuote] = useState<Quote>(null);
   const [endOfDayOpen, setEndOfDayOpen] = useState(false);
-  const [showingSearchResults, setShowingSearchResults] = useState(false);
   const [toastOpen, setToastOpen] = useState(false);
   const [emailDialogOpen, setEmailDialogOpen] = useState(false);
   const [quoteEmailed, setQuoteEmailed] = useState<Quote>(null);
-  const search = localStorage.getItem('altPartSearches') || localStorage.getItem('partSearches') || null;
   const [page, setPage] = useState(1);
+  const [loaded, setLoaded] = useState(false);
+  const partNumSearch = localStorage.getItem('altPartSearches') || localStorage.getItem('partSearches') || null;
+  const partNum = JSON.parse(partNumSearch)?.partNum;
   const LIMIT = 26;
 
   useEffect(() => {
+    setLoaded(true);
     const fetchData = async () => {
-      await handleChangePage(null, 1);
-
-      if (!localStorage.getItem('customerId')) {
-        setFilterByCustomer(false);
-      } else {
-        setFilterByCustomer(true);
-      }
+      if (selectedCustomer.id) setFilterByCustomer(true);
+      if (partNum?.trim().replace('*', '') !== '') setFilterByPart(true);
+      const res = await getSomeQuotes(page, LIMIT, filterByPart ? partNum : '', selectedCustomer.id || 0, quoteListType === 'engine');
+      setQuotesData(res.rows);
+      setQuotes(res.rows);
+      setCount(res.count);
     };
     fetchData();
-  }, [lastSearch, selectedCustomer, quotesData]);
+  }, [selectedCustomer, lastSearch]);
 
   useEffect(() => {
+    if (!loaded) return;
     const fetchData = async () => {
-      const pageCount = await getQuotesCount(search && JSON.parse(search).length > 1 ? JSON.parse(search).partNum : '', filterByCustomer ? selectedCustomer.id : null, quoteListType === 'engine');
-      setCount(pageCount);
-      await handleChangePage(null, 1);
+      const res = await getSomeQuotes(page, LIMIT, filterByPart ? partNum : '', selectedCustomer.id || 0, quoteListType === 'engine');
+      setQuotesData(res.rows);
+      setQuotes(res.rows);
+      setCount(res.count);
     };
     fetchData();
-  }, [filterByCustomer]);
+  }, [filterByCustomer, filterByPart, quoteListType]);
 
   const toggleQuotesOpen = () => {
     localStorage.setItem('quotesOpen', `${!quotesOpen}`);
@@ -107,7 +110,7 @@ export default function QuoteList({ quotes, setQuotes, setSelectHandwrittenOpen,
       partId: null
     };
     await addQuote(newQuote);
-    setQuotes(await getSomeQuotes(page, LIMIT, lastSearch, selectedCustomer.id, quoteListType === 'engine'));
+    await handleChangePage(null, page);
     setToastOpen(true);
   };
 
@@ -120,12 +123,7 @@ export default function QuoteList({ quotes, setQuotes, setSelectHandwrittenOpen,
 
   const invoiceQuote = async (quote: Quote) => {
     if (!quote.customer || !quote.part) return;
-    const part = (
-      quote.part ?
-        await getPartById(quote.part.id)
-        :
-        await getPartByPartNum(quote.partNum)
-    );
+    const part = await getPartById(quote.part.id);
     setSelectHandwrittenOpen(true);
     setSelectedHandwrittenPart(part);
     setHandwrittenCustomer(quote.customer);
@@ -138,20 +136,33 @@ export default function QuoteList({ quotes, setQuotes, setSelectHandwrittenOpen,
     setQuoteEmailed(quote);
   };
 
-  const handleChangePage = async (_: any, page: number) => {
-    if (!selectedCustomer.id && localStorage.getItem('customerId')) return;
-    if (showingSearchResults) {
-      const res = await searchQuotes({ ...JSON.parse(localStorage.getItem('quoteSearch')), page });
-      setPaginatedQuotes(res.rows);
+  const handleChangePage = async (_: any, page: number, resetSearch = false) => {
+    // I'm sorry
+    if (!loaded) return;
+    if (searchData && !resetSearch) {
+      const res = await searchQuotes({ ...searchData, page: (page - 1) * LIMIT, limit: LIMIT  }, filterByCustomer ? selectedCustomer.id : 0);
+      setQuotes(res.rows);
       setCount(res.minItems);
-    } else {
-      const res = await getSomeQuotes(page, LIMIT, search ? JSON.parse(search).partNum : '', filterByCustomer ? selectedCustomer.id : null, quoteListType === 'engine');
-      setPaginatedQuotes(res);
-      if (filterByCustomer) {
-        const pageCount = await getQuotesCount(search && JSON.parse(search).length > 1 ? JSON.parse(search).partNum : '', selectedCustomer.id, quoteListType === 'engine');
-        setCount(pageCount);
+      return;
+    }
+
+    const res = await getSomeQuotes(page, LIMIT, filterByPart ? partNum : '', filterByCustomer ? selectedCustomer.id : 0, quoteListType === 'engine');
+    if (res.rows.length === 0 && filterByPart) {
+      setFilterByPart(false);
+      const res = await getSomeQuotes(page, LIMIT, '', filterByCustomer ? selectedCustomer.id : 0, quoteListType === 'engine');
+      setQuotes(res.rows);
+      setCount(res.minItems);
+
+      if (res.rows.length === 0 && filterByCustomer) {
+        setFilterByCustomer(false);
+        const res = await getSomeQuotes(page, LIMIT, partNum, selectedCustomer.id, quoteListType === 'engine');
+        setQuotes(res.rows);
+        setCount(res.minItems);
       }
-      if (res.length === 0 && filterByCustomer) setFilterByCustomer(false);
+    } else {
+      const res = await getSomeQuotes(page, LIMIT, '', 0, quoteListType === 'engine');
+      setQuotes(res.rows);
+      setCount(res.minItems);
     }
     setPage(page);
   };
@@ -189,7 +200,7 @@ export default function QuoteList({ quotes, setQuotes, setSelectHandwrittenOpen,
       <Toast msg="Created quote" type="success" open={toastOpen} setOpen={setToastOpen} />
 
       <div className="quote-list__header no-select" onClick={toggleQuotesOpen}>
-        <h2>Part Quotes</h2>
+        <h2>Quotes</h2>
         <Image src={`/images/icons/arrow-${quotesOpen ? 'up' : 'down'}.svg`} alt="arrow" width={25} height={25} />
       </div>
 
@@ -201,18 +212,23 @@ export default function QuoteList({ quotes, setQuotes, setSelectHandwrittenOpen,
         />
       }
 
-      <QuoteSearchDialog
-        open={searchDialogOpen}
-        setOpen={setSearchDialogOpen}
-        setQuotes={setPaginatedQuotes}
-        setCount={setCount}
-        setShowingSearchResults={setShowingSearchResults}
-        limit={LIMIT}
-        page={page}
-      />
+      {searchDialogOpen &&
+        <QuoteSearchDialog
+          open={searchDialogOpen}
+          setOpen={setSearchDialogOpen}
+          setQuotes={setQuotes}
+          setCount={setCount}
+          filterByCustomer={filterByCustomer}
+          searchData={searchData}
+          setSearchData={setSearchData}
+          backupFunction={handleChangePage}
+          limit={LIMIT}
+          page={page}
+        />
+      }
       <SalesEndOfDayDialog open={endOfDayOpen} setOpen={setEndOfDayOpen} />
       { quoteEdited && <EditQuoteDialog setQuoteEdited={setQuoteEdited} quote={quoteEdited} setQuote={(q: Quote) => handleEdit(q)} /> }
-      { piggybackQuote &&
+      {piggybackQuote &&
         <PiggybackQuoteDialog
           open={piggybackQuoteOpen}
           setOpen={setPiggybackQuoteOpen}
@@ -226,15 +242,21 @@ export default function QuoteList({ quotes, setQuotes, setSelectHandwrittenOpen,
         <>
           <div className="quote-list-top-bar">
             <Button onClick={() => setSearchDialogOpen(true)}>Search</Button>
-            {/* <Button onClick={() => setQuoteListType(quoteListType === 'part' ? 'engine' : 'part')}>
-              { quoteListType === 'part' ? 'Engine Quotes' : 'Part Quotes' }
-            </Button> */}
             <Button onClick={handleNewQuote}>New</Button>
+            <Button onClick={() => setQuoteListType(quoteListType === 'part' ? 'engine' : 'part')}>
+              { quoteListType === 'part' ? 'Engine Quotes' : 'Part Quotes' }
+            </Button>
             <Button
               onClick={() => setFilterByCustomer(!filterByCustomer)}
               disabled={!localStorage.getItem('customerId') && true}
             >
               {filterByCustomer ? 'No Customer Filter' : 'Filter by Customer'}
+            </Button>
+            <Button
+              onClick={() => setFilterByPart(!filterByPart)}
+              disabled={partNum?.trim().replace('*', '') === ''}
+            >
+              {filterByPart ? 'No Part Filter' : 'Filter by Part'}
             </Button>
             <Button onClick={() => setEndOfDayOpen(true)}>Sales End of Day</Button>
           </div>
@@ -261,8 +283,9 @@ export default function QuoteList({ quotes, setQuotes, setSelectHandwrittenOpen,
                 </tr>
               </thead>
               <tbody>
-                {paginatedQuotes.length === 0 && <tr><td colSpan={15} style={{ margin: '0.6rem 0' }}>No results...</td></tr>}
-                {paginatedQuotes.map((quote: Quote, i) => {
+                {quotes.length === 0 && <tr><td colSpan={15} style={{ margin: '0.6rem 0' }}>No results...</td></tr>}
+                {quotes.map((quote: Quote, i) => {
+                  if (!quote) return;
                   const isExpanded = expandedQuotes.includes(quote.id);
                   return (
                     <Fragment key={i}>
@@ -359,7 +382,7 @@ export default function QuoteList({ quotes, setQuotes, setSelectHandwrittenOpen,
             </Table>
 
             <Pagination
-              data={quotes}
+              data={quotesData}
               setData={handleChangePage}
               minData={count}
               pageSize={LIMIT}

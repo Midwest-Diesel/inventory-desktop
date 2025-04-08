@@ -3,24 +3,27 @@ import Dialog from "../../Library/Dialog";
 import Input from "../../Library/Input";
 import { searchQuotes } from "@/scripts/controllers/quotesController";
 import Button from "../../Library/Button";
-import { formatDate, parseDateInputValue } from "@/scripts/tools/stringUtils";
+import { parseDateInputValue } from "@/scripts/tools/stringUtils";
 import SourceSelect from "@/components/Library/Select/SourceSelect";
 import Select from "@/components/Library/Select/Select";
 import UserSelect from "@/components/Library/Select/UserSelect";
-
+import { isObjectNull } from "@/scripts/tools/utils";
 
 interface Props {
   open: boolean
   setOpen: (open: boolean) => void
   setQuotes: (quotes: Quote[]) => void
   setCount: (minItems: number[]) => void
-  setShowingSearchResults: (value: boolean) => void
+  filterByCustomer: boolean
+  searchData: any
+  setSearchData: (data: any) => void
+  backupFunction: (data: any, page: number, resetSearch: boolean) => void
   limit: number
   page: number
 }
 
-export default function QuoteSearchDialog({ open, setOpen, setQuotes, setCount, setShowingSearchResults, limit, page }: Props) {
-  const prevSearches = JSON.parse(localStorage.getItem('quoteSearch'));
+
+export default function QuoteSearchDialog({ open, setOpen, setQuotes, setCount, filterByCustomer, searchData, setSearchData, backupFunction, limit, page }: Props) {
   const [id, setId] = useState<number>('' as any);
   const [date, setDate] = useState<Date>(null);
   const [salesmanId, setSalesmanId] = useState<number>('' as any);
@@ -35,8 +38,8 @@ export default function QuoteSearchDialog({ open, setOpen, setQuotes, setCount, 
   const [sale, setSale] = useState<'' | 'TRUE' | 'FALSE'>('');
 
   useEffect(() => {
-    if (prevSearches) {
-      const { id, date, salesmanId, source, customer, contact, phone, state, partNum, desc, stockNum, sale } = prevSearches;
+    if (searchData && open) {
+      const { id, date, salesmanId, source, customer, contact, phone, state, partNum, desc, stockNum, sale } = searchData;
       setId(id || '' as any);
       setDate(new Date(date) || null);
       setSalesmanId(salesmanId || '' as any);
@@ -50,7 +53,7 @@ export default function QuoteSearchDialog({ open, setOpen, setQuotes, setCount, 
       setStockNum(stockNum || '');
       setSale(sale || '');
     }
-  }, []);
+  }, [open]);
 
   const clearInputs = () => {
     setId('' as any);
@@ -85,11 +88,18 @@ export default function QuoteSearchDialog({ open, setOpen, setQuotes, setCount, 
       limit,
       page: (page - 1) * limit
     };
-    localStorage.setItem('quoteSearch', JSON.stringify(quoteSearch));
-    const res = await searchQuotes(quoteSearch);    
-    setQuotes(res.rows);
-    setCount(res.minItems);
-    setShowingSearchResults(true);
+    const isValidSearch = (
+      !isObjectNull({ ...quoteSearch, id, date, page: null, limit: null, salesmanId: salesmanId > 0 ? salesmanId : null })
+    );
+    if (isValidSearch) {
+      setSearchData(quoteSearch);
+      const res = await searchQuotes(quoteSearch, filterByCustomer ? Number(localStorage.getItem("customerId")) : 0);
+      setQuotes(res.rows);
+      setCount(res.minItems);
+    } else {
+      setSearchData(null);
+      backupFunction(null, page, true);
+    }
   };
 
 

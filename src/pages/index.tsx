@@ -33,7 +33,7 @@ export default function Home() {
     const fetchData = async () => {
       if (!user || isObjectNull(user)) return;
       const prevSearch: any = localStorage.getItem('altPartSearches') || localStorage.getItem('partSearches');
-      const partNum = JSON.parse(prevSearch).partNum.replace('*', '');
+      const partNum = JSON.parse(prevSearch)?.partNum.replace('*', '');
       setRecentPartSearches(await getRecentPartSearches(partNum !== '' ? partNum : '*'));
     };
     fetchData();
@@ -84,7 +84,7 @@ export default function Home() {
 
     const updatedQuote = { ...handwrittenQuote, sale: true };
     await toggleQuoteSold(updatedQuote);
-    setQuotes(quotes.map((q) => q.id === handwrittenQuote.id && updatedQuote));
+    setQuotes(quotes.map((q) => (q.id === handwrittenQuote.id) && updatedQuote));
   };
 
 
