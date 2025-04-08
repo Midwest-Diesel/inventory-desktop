@@ -129,11 +129,11 @@ export default function SelectedCustomerInfo({ customerData, setCustomerData, ex
               </Table>
             </GridItem>
 
-            <GridItem variant={['no-style']} colStart={12} rowStart={1}>
+            <GridItem variant={['no-style']} colStart={1} colEnd={5} rowStart={2}>
               { customer.contacts.length > 0 && <CustomerContactsBlock customer={customer} setCustomer={setCustomerData} /> }
             </GridItem>
 
-            <GridItem colStart={1} colEnd={4} variant={['low-opacity-bg']}>
+            <GridItem colStart={5} colEnd={10} variant={['low-opacity-bg']}>
               <Table variant={['plain', 'row-details']}>
                 <tbody>
                   <tr>
@@ -156,7 +156,7 @@ export default function SelectedCustomerInfo({ customerData, setCustomerData, ex
               </Table>
             </GridItem>
 
-            <GridItem variant={['no-style']} colStart={4} colEnd={8} rowStart={2} className="customer-details__sales-history">
+            <GridItem variant={['no-style']} colStart={10} colEnd={12} rowStart={2} className="customer-details__sales-history">
               <h3>Sales History</h3>
               {salesHistory.length > 0 ?
                 <Table>
