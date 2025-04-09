@@ -90,7 +90,9 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
   useEffect(() => {
     const fetchData = async () => {
       if (sourcesData.length === 0) setSourcesData(await getAllSources());
-      setUsers(await getAllUsers());
+      const users = await getAllUsers();
+      setUsers(users);
+      if (!soldBy) setSoldBy(users[0].id);
     };
     fetchData();
   }, []);
