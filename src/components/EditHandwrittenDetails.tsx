@@ -1,19 +1,19 @@
 import { sourcesAtom } from "@/scripts/atoms/state";
-import { addAltShipAddress, addHandwrittenItem, deleteHandwrittenItem, editHandwritten, editHandwrittenItems, editHandwrittenTaxable, getHandwrittenById } from "@/scripts/controllers/handwrittensController";
+import { addAltShipAddress, addHandwrittenItem, deleteHandwrittenItem, editHandwritten, editHandwrittenItems, editHandwrittenTaxable } from "@/scripts/controllers/handwrittensController";
 import { useAtom } from "jotai";
 import { FormEvent, Fragment, useEffect, useState } from "react";
 import GridItem from "./Library/Grid/GridItem";
 import Input from "./Library/Input";
 import Grid from "./Library/Grid/Grid";
 import Select from "./Library/Select/Select";
-import { parseDateInputValue } from "@/scripts/tools/stringUtils";
+import { formatCurrency, formatDate, parseDateInputValue } from "@/scripts/tools/stringUtils";
 import Button from "./Library/Button";
 import Table from "./Library/Table";
 import CustomerSelect from "./Library/Select/CustomerSelect";
 import { getCustomerByName } from "@/scripts/controllers/customerController";
 import { getAllSources } from "@/scripts/controllers/sourcesController";
 import { deleteCoreByItemId, editCoreCustomer } from "@/scripts/controllers/coresController";
-import { confirm } from "@/scripts/config/tauri";
+import { confirm, invoke } from "@/scripts/config/tauri";
 import ShippingListDialog from "./Dialogs/handwrittens/ShippingListDialog";
 import Checkbox from "./Library/Checkbox";
 import { PreventNavigation } from "./PreventNavigation";
@@ -221,6 +221,10 @@ export default function EditHandwrittenDetails({
       if (await confirm('Add this to shipping list?')) {
         setShippingListDialogOpen(true);
       }
+
+      const hasCore = handwrittenItems.some((item) => item.location === 'CORE DEPOSIT');
+      await handlePrintCCLabel();
+      await printHandwritten(hasCore, newInvoice);
     }
 
     // Tracking numbers
@@ -268,6 +272,93 @@ export default function EditHandwrittenDetails({
     } else if (invoiceStatus !== 'SENT TO ACCOUNTING' || handwritten.invoiceStatus === 'SENT TO ACCOUNTING') {
       setIsEditing(false);
     }
+  };
+
+  const printHandwritten = async (hasCore: boolean, handwritten: Handwritten) => {
+    const itemTotals: number[] = handwrittenItems.map((item) => item.qty * item.unitPrice);
+    const handwrittenTotal = formatCurrency(itemTotals.reduce((acc, cur) => acc + cur, 0));
+    const shipVia = await getFreightCarrierById(shipViaId);
+    const args = {
+      billToCompany: handwritten.billToCompany || '',
+      billToAddress: handwritten.billToAddress || '',
+      billToAddress2: handwritten.billToAddress2 || '',
+      billToCity: handwritten.billToCity || '',
+      billToState: handwritten.billToState || '',
+      billToZip: handwritten.billToZip || '',
+      billToCountry: handwritten.billToCountry || '',
+      shipToCompany: handwritten.shipToCompany || '',
+      shipToAddress: handwritten.shipToAddress || '',
+      shipToAddress2: handwritten.shipToAddress2 || '',
+      shipToCity: handwritten.shipToCity || '',
+      shipToState: handwritten.shipToState || '',
+      shipToZip: handwritten.shipToZip || '',
+      shipToContact: handwritten.shipToContact || '',
+      shipToCountry: '',
+      accountNum: '',
+      paymentType: handwritten.payment || '',
+      createdBy: handwritten.createdBy || '',
+      soldBy: users.find((user) => user.id === Number(handwritten.soldBy)).initials || '',
+      handwrittenId: Number(handwritten.id),
+      date: formatDate(handwritten.date) || '',
+      contact: handwritten.shipToContact || '',
+      poNum: handwritten.poNum || '',
+      shipVia: shipVia.name || '',
+      source: handwritten.source || '',
+      invoiceNotes: handwritten.orderNotes ? handwritten.orderNotes.replace(/[\n\r]/g, '  ').replaceAll('…', '...') : '',
+      shippingNotes: handwritten.shippingNotes ? handwritten.shippingNotes.replace(/[\n\r]/g, '  ').replaceAll('…', '...') : '',
+      mp: `${handwritten.mp || 0} Mousepads`,
+      cap: `${handwritten.cap || 0} Hats`,
+      br: `${handwritten.br || 0} Brochures`,
+      fl: `${handwritten.fl || 0} Flashlights`,
+      setup: handwritten.isSetup || false,
+      taxable: handwritten.isTaxable || false,
+      blind: handwritten.isBlindShipment || false,
+      npi: handwritten.isNoPriceInvoice || false,
+      collect: handwritten.isCollect || false,
+      thirdParty: handwritten.isThirdParty || false,
+      handwrittenTotal,
+      items: JSON.stringify(handwrittenItems.map((item) => {
+        return {
+          stockNum: item.stockNum || '',
+          location: item.location || '',
+          cost: formatCurrency(item.cost).replaceAll(',', '|') || '$0.00',
+          qty: item.qty,
+          partNum: item.partNum || '',
+          desc: item.desc || '',
+          unitPrice: formatCurrency(item.unitPrice).replaceAll(',', '|') || '$0.00',
+          total: formatCurrency(item.qty * item.unitPrice).replaceAll(',', '|') || '$0.00',
+          itemChildren: item.invoiceItemChildren
+        };
+      })) || '[]'
+    };
+    const itemChildren = handwrittenItems.map((item) => {
+      if (item.invoiceItemChildren.length > 0) return item.invoiceItemChildren.map((child) => {
+        return {
+          cost: formatCurrency(child.cost).replaceAll(',', '|') || '$0.00',
+          qty: child.qty,
+          partNum: child.partNum,
+          desc: child.part.desc,
+          stockNum: child.stockNum,
+          location: child.part.location,
+          unitPrice: formatCurrency(item.unitPrice).replaceAll(',', '|') || '$0.00',
+          total: formatCurrency(child.qty * item.unitPrice).replaceAll(',', '|') || '$0.00'
+        };
+      });
+    }).filter((item) => item).flat();
+    const itemsWithChildren = JSON.stringify([...JSON.parse(args.items).filter((item) => item.itemChildren.length === 0), ...itemChildren ]);
+    const filteredItems = JSON.parse(args.items).map((item) => {
+      const { itemChildren, ...rest } = item;
+      return { ...rest };
+    });
+
+    await invoke('print_accounting_invoice', { args: { ...args, items: JSON.stringify(filteredItems) } });
+    await invoke('print_shipping_invoice', { args: { ...args, items: itemsWithChildren } });
+    if (hasCore) await invoke('print_core_invoice', { args });
+  };
+
+  const handlePrintCCLabel = async () => {
+    if (!cardNum || !expDate || !cvv) return;
+    await invoke('print_cc_label', { args: { cardNum: Number(cardNum), expDate, cvv: Number(cvv), cardZip, cardName, cardAddress } });
   };
 
   const handleAltShip = async () => {

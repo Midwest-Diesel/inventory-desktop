@@ -885,7 +885,7 @@ fn print_shipping_label(args: ShippingLabelArgs) -> Result<(), String> {
     r#"
     Dim doc, sheet1
     Set doc = CreateObject("Word.Application")
-    doc.Visible = True
+    doc.Visible = False
     Set sheet1 = doc.Documents.Open("\\MWD1-SERVER\Server\shippingLabelTemplate.docx")
 
     Sub ReplaceTextAndColor(sheet, findText, replaceText)
@@ -1138,7 +1138,7 @@ fn print_accounting_invoice(args: AccountingInvoiceArgs) -> Result<(), String> {
     r#"
     Dim doc, sheet1
     Set doc = CreateObject("Word.Application")
-    doc.Visible = True
+    doc.Visible = False
     Set sheet1 = doc.Documents.Open("\\MWD1-SERVER\Server\handwrittenAccountingTemplate.docx")
 
     Sub ReplaceAndSetColor(sheet, findText, replaceText)
@@ -1336,7 +1336,7 @@ fn print_shipping_invoice(args: ShippingInvoiceArgs) -> Result<(), String> {
     r#"
     Dim doc, sheet1
     Set doc = CreateObject("Word.Application")
-    doc.Visible = True
+    doc.Visible = False
     Set sheet1 = doc.Documents.Open("\\MWD1-SERVER\Server\handwrittenShippingTemplate.docx")
 
     Sub ReplaceAndSetColor(sheet, findText, replaceText)
@@ -1540,7 +1540,7 @@ fn print_core_invoice(args: AccountingInvoiceArgs) -> Result<(), String> {
     r#"
     Dim doc, sheet1
     Set doc = CreateObject("Word.Application")
-    doc.Visible = True
+    doc.Visible = False
     Set sheet1 = doc.Documents.Open("\\MWD1-SERVER\Server\handwrittenCoreTemplate.docx")
 
     Sub ReplaceAndSetColor(sheet, findText, replaceText)
@@ -1784,7 +1784,7 @@ fn print_coo() -> Result<(), String> {
     r#"
     Dim doc, sheet1
     Set doc = CreateObject("Word.Application")
-    doc.Visible = True
+    doc.Visible = False
     Set sheet1 = doc.Documents.Open("\\MWD1-SERVER\Server\CERTOOtemplate.docm")
     doc.ActivePrinter = "{}"
     "#,
@@ -1807,7 +1807,7 @@ fn _print_part_tag(args: PartTagArgs) -> Result<(), String> {
     r#"
     Dim doc, sheet1
     Set doc = CreateObject("Word.Application")
-    doc.Visible = True
+    doc.Visible = False
     Set sheet1 = doc.Documents.Open("\\MWD1-SERVER\Server\part_tag_template.rtf")
 
     Sub ReplaceAndSetColor(sheet, findText, replaceText)
@@ -1933,7 +1933,7 @@ fn print_return(args: PrintReturnArgs) -> Result<(), String> {
     r#"
     Dim doc, sheet1
     Set doc = CreateObject("Word.Application")
-    doc.Visible = True
+    doc.Visible = False
     Set sheet1 = doc.Documents.Open("\\MWD1-SERVER\Server\returnTemplate.rtf")
 
     Sub ReplaceTextAndColor(sheet, findText, replaceText)
@@ -2083,7 +2083,7 @@ fn print_warranty(args: PrintWarrantyArgs) -> Result<(), String> {
     r#"
     Dim doc, sheet1
     Set doc = CreateObject("Word.Application")
-    doc.Visible = True
+    doc.Visible = False
     Set sheet1 = doc.Documents.Open("\\MWD1-SERVER\Server\warrantyTemplate.docx")
 
     Sub ReplaceTextAndColor(sheet, findText, replaceText)
@@ -2254,7 +2254,7 @@ fn print_packing_slip(args: PrintPackingSlipArgs) -> Result<(), String> {
     r#"
     Dim doc, sheet1
     Set doc = CreateObject("Word.Application")
-    doc.Visible = True
+    doc.Visible = False
     Set sheet1 = doc.Documents.Open("\\MWD1-SERVER\Server\packingSlipTemplate.docx")
 
     Sub ReplaceTextAndColor(sheet, findText, replaceText)
@@ -2366,7 +2366,7 @@ fn print_packing_slip_blind(args: PrintPackingSlipBlindArgs) -> Result<(), Strin
     r#"
     Dim doc, sheet1
     Set doc = CreateObject("Word.Application")
-    doc.Visible = True
+    doc.Visible = False
     Set sheet1 = doc.Documents.Open("\\MWD1-SERVER\Server\packingSlipBlindTemplate.docx")
 
     Sub ReplaceTextAndColor(sheet, findText, replaceText)
@@ -2464,7 +2464,7 @@ fn print_po(args: PrintPOArgs) -> Result<(), String> {
     r#"
     Dim doc, sheet1
     Set doc = CreateObject("Word.Application")
-    doc.Visible = True
+    doc.Visible = False
     Set sheet1 = doc.Documents.Open("\\MWD1-SERVER\Server\poTemplate.docx")
 
     Sub ReplaceTextAndColor(sheet, findText, replaceText)

@@ -1,4 +1,4 @@
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import Dialog from "../../Library/Dialog";
 import { invoke } from "@/scripts/config/tauri";
 import Checkbox from "@/components/Library/Checkbox";
@@ -16,6 +16,11 @@ export default function PrintInvoiceDialog({ open, setOpen, handwritten }: Props
   const [accounting, setAccounting] = useState(true);
   const [shipping, setShipping] = useState(true);
   const [coreDeposit, setCoreDeposit] = useState(false);
+
+  useEffect(() => {
+    if (!open) return;
+    setCoreDeposit(handwritten.handwrittenItems.some((item) => item.location === 'CORE DEPOSIT'));
+  }, [open]);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
