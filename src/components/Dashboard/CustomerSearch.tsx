@@ -106,7 +106,13 @@ export default function CustomerSearch() {
               <>
                 <Button variant={['x-small']} onClick={handleAddCustomer}>Add Customer</Button>
                 <Button variant={['x-small']} onClick={deselectCustomer} data-id="unselect">Unselect</Button>
-                <Button variant={['x-small']} onClick={() => setExpandedDetailsOpen(!expandedDetailsOpen)} data-id="expand">{ expandedDetailsOpen ? 'Collapse' : 'Expand' }</Button>
+                <Button
+                  variant={['x-small']}
+                  onClick={() => setExpandedDetailsOpen(!expandedDetailsOpen)}
+                  data-id="expand"
+                >
+                  { expandedDetailsOpen ? 'Collapse' : 'Expand' }
+                </Button>
                 <Button variant={['x-small']} onClick={handleNewHandwritten}>New Handwritten</Button>
               </>
             }

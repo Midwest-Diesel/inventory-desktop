@@ -18,6 +18,8 @@ import SalesEndOfDayDialog from "../Dialogs/dashboard/SalesEndOfDayDialog";
 import Toast from "../Library/Toast";
 import { confirm } from "@/scripts/config/tauri";
 import EmailQuotesDialog from "../Dialogs/dashboard/EmailQuotesDialog";
+import { getCustomerById } from "@/scripts/controllers/customerController";
+import { isObjectNull } from "@/scripts/tools/utils";
 
 interface Props {
   quotes: Quote[]
@@ -40,6 +42,7 @@ export default function QuoteList({ quotes, setQuotes, setSelectHandwrittenOpen,
   const [quoteListType, setQuoteListType] = useState('part');
   const [searchData, setSearchData] = useState<any>(null);
   const [selectedCustomer] = useAtom<Customer>(selectedCustomerAtom);
+  const [customer, setCustomer] = useState<Customer>(null);
   const [expandedQuotes, setExpandedQuotes] = useState<number[]>([]);
   const [filterByCustomer, setFilterByCustomer] = useState(false);
   const [filterByPart, setFilterByPart] = useState(false);
@@ -52,32 +55,37 @@ export default function QuoteList({ quotes, setQuotes, setSelectHandwrittenOpen,
   const [page, setPage] = useState(1);
   const [loaded, setLoaded] = useState(false);
   const partNumSearch = localStorage.getItem('altPartSearches') || localStorage.getItem('partSearches') || null;
-  const partNum = JSON.parse(partNumSearch)?.partNum;
+  const partNum = JSON.parse(partNumSearch)?.partNum || '';
   const LIMIT = 26;
 
   useEffect(() => {
     setLoaded(true);
     const fetchData = async () => {
-      if (selectedCustomer.id) setFilterByCustomer(true);
-      if (partNum?.trim().replace('*', '') !== '') setFilterByPart(true);
-      const res = await getSomeQuotes(page, LIMIT, filterByPart ? partNum : '', selectedCustomer.id || 0, quoteListType === 'engine');
-      setQuotesData(res.rows);
-      setQuotes(res.rows);
-      setCount(res.count);
+      if (isObjectNull(selectedCustomer)) {
+        const res = await getCustomerById(Number(localStorage.getItem('customerId')));
+        setCustomer(res || {});
+      } else {
+        setCustomer(selectedCustomer);
+        setFilterByCustomer(true);
+      }
     };
     fetchData();
-  }, [selectedCustomer, lastSearch]);
+  }, [selectedCustomer]);
 
   useEffect(() => {
     if (!loaded) return;
     const fetchData = async () => {
-      const res = await getSomeQuotes(page, LIMIT, filterByPart ? partNum : '', selectedCustomer.id || 0, quoteListType === 'engine');
-      setQuotesData(res.rows);
-      setQuotes(res.rows);
-      setCount(res.count);
+      if (partNum?.trim().replace('*', '') !== '') {
+        setFilterByPart(true);
+      }
     };
     fetchData();
-  }, [filterByCustomer, filterByPart, quoteListType]);
+  }, [loaded, customer, lastSearch]);
+
+  useEffect(() => {
+    if (!loaded) return;
+    setQuotesData([]);
+  }, [filterByCustomer, filterByPart, quoteListType, customer]);
 
   const toggleQuotesOpen = () => {
     localStorage.setItem('quotesOpen', `${!quotesOpen}`);
@@ -95,10 +103,10 @@ export default function QuoteList({ quotes, setQuotes, setSelectHandwrittenOpen,
     const newQuote = {
       date: new Date(),
       source: null,
-      customerId: selectedCustomer.id,
-      contact: selectedCustomer ? selectedCustomer.contact : '',
-      phone: selectedCustomer ? selectedCustomer.phone : '',
-      state: selectedCustomer ? selectedCustomer.billToState : '',
+      customerId: customer.id,
+      contact: customer ? customer.contact : '',
+      phone: customer ? customer.phone : '',
+      state: customer ? customer.billToState : '',
       partNum: null,
       desc: '',
       stockNum: null,
@@ -106,7 +114,7 @@ export default function QuoteList({ quotes, setQuotes, setSelectHandwrittenOpen,
       notes: null,
       salesmanId: user.id,
       rating: 0,
-      email: selectedCustomer.email,
+      email: customer.email,
       partId: null
     };
     await addQuote(newQuote);
@@ -138,29 +146,28 @@ export default function QuoteList({ quotes, setQuotes, setSelectHandwrittenOpen,
 
   const handleChangePage = async (_: any, page: number, resetSearch = false) => {
     // I'm sorry
-    if (!loaded) return;
+    if (!loaded || !customer) return;
     if (searchData && !resetSearch) {
-      const res = await searchQuotes({ ...searchData, page: (page - 1) * LIMIT, limit: LIMIT  }, filterByCustomer ? selectedCustomer.id : 0);
+      const res = await searchQuotes({ ...searchData, page: (page - 1) * LIMIT, limit: LIMIT }, filterByCustomer ? customer.id : 0);
       setQuotes(res.rows);
       setCount(res.minItems);
       return;
     }
 
-    const res = await getSomeQuotes(page, LIMIT, filterByPart ? partNum : '', filterByCustomer ? selectedCustomer.id : 0, quoteListType === 'engine');
+    const res = await getSomeQuotes(page, LIMIT, filterByPart ? partNum : '', filterByCustomer ? customer.id : 0, quoteListType === 'engine');
     if (res.rows.length === 0 && filterByPart) {
       setFilterByPart(false);
-      const res = await getSomeQuotes(page, LIMIT, '', filterByCustomer ? selectedCustomer.id : 0, quoteListType === 'engine');
+      const res = await getSomeQuotes(page, LIMIT, '', filterByCustomer ? customer.id : 0, quoteListType === 'engine');
       setQuotes(res.rows);
       setCount(res.minItems);
 
       if (res.rows.length === 0 && filterByCustomer) {
         setFilterByCustomer(false);
-        const res = await getSomeQuotes(page, LIMIT, partNum, selectedCustomer.id, quoteListType === 'engine');
+        const res = await getSomeQuotes(page, LIMIT, partNum, customer.id, quoteListType === 'engine');
         setQuotes(res.rows);
         setCount(res.minItems);
       }
     } else {
-      const res = await getSomeQuotes(page, LIMIT, '', 0, quoteListType === 'engine');
       setQuotes(res.rows);
       setCount(res.minItems);
     }
