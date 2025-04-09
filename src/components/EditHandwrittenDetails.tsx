@@ -22,15 +22,50 @@ import { addTrackingNumber, deleteTrackingNumber, editTrackingNumber } from "@/s
 import FreightCarrierSelect from "./Library/Select/FreightCarrierSelect";
 import { getFreightCarrierById } from "@/scripts/controllers/freightCarriersController";
 import { getAllUsers } from "@/scripts/controllers/userController";
+import CreditCardBlock from "./CreditCardBlock";
 
 interface Props {
   handwritten: Handwritten
   setHandwritten: (handwritten: Handwritten) => void
   setIsEditing: (value: boolean) => void
+  setPromptLeaveWindow: (value: boolean) => void
+  cardNum: number
+  expDate: string
+  cvv: number
+  cardZip: string
+  cardName: string
+  cardAddress: string
+  payment: string
+  setPayment: (value: string) => void
+  setCardNum: (value: number) => void
+  setExpDate: (value: string) => void
+  setCvv: (value: number) => void
+  setCardZip: (value: string) => void
+  setCardName: (value: string) => void
+  setCardAddress: (value: string) => void
 }
 
 
-export default function EditHandwrittenDetails({ handwritten, setHandwritten, setIsEditing }: Props) {
+export default function EditHandwrittenDetails({
+  handwritten,
+  setHandwritten,
+  setIsEditing,
+  setPromptLeaveWindow,
+  cardNum,
+  expDate,
+  cvv,
+  cardZip,
+  cardName,
+  cardAddress,
+  payment,
+  setPayment,
+  setCardNum,
+  setExpDate,
+  setCvv,
+  setCardZip,
+  setCardName,
+  setCardAddress
+}: Props) {
   const [sourcesData, setSourcesData] = useAtom<string[]>(sourcesAtom);
   const [date, setDate] = useState<Date>(handwritten.date);
   const [poNum, setPoNum] = useState<string>(handwritten.poNum);
@@ -50,7 +85,6 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
   const [shipToZip, setShipToZip] = useState<string>(handwritten.shipToZip);
   const [shipToCompany, setShipToCompany] = useState<string>(handwritten.shipToCompany);
   const [shipViaId, setShipViaId] = useState<number>(handwritten.shipVia && handwritten.shipVia.id);
-  const [payment, setPayment] = useState<string>(handwritten.payment);
   const [shipToContact, setShipToContact] = useState<string>(handwritten.shipToContact);
   const [contact, setContact] = useState<string>(handwritten.contactName);
   const [contactPhone, setContactPhone] = useState<string>(handwritten.phone);
@@ -639,6 +673,27 @@ export default function EditHandwrittenDetails({ handwritten, setHandwritten, se
 
             <GridItem colStart={12} colEnd={14} variant={['no-style']}>
               <Button variant={['xx-small']} onClick={handleSameAsBillTo} type="button">Same as Bill To</Button>
+            </GridItem>
+
+            <GridItem colStart={3} colEnd={7} rowEnd={3} variant={['low-opacity-bg']} className="no-print">
+              <CreditCardBlock
+                handwritten={handwritten}
+                setPromptLeaveWindow={setPromptLeaveWindow}
+                cardNum={cardNum}
+                expDate={expDate}
+                cvv={cvv}
+                cardZip={cardZip}
+                cardName={cardName}
+                cardAddress={cardAddress}
+                payment={payment}
+                setPayment={setPayment}
+                setCardNum={setCardNum}
+                setExpDate={setExpDate}
+                setCvv={setCvv}
+                setCardZip={setCardZip}
+                setCardName={setCardName}
+                setCardAddress={setCardAddress}
+              />
             </GridItem>
 
             <GridItem colStart={7} colEnd={11} variant={['low-opacity-bg']}>

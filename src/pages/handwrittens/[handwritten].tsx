@@ -12,11 +12,10 @@ import Grid from "@/components/Library/Grid/Grid";
 import GridItem from "@/components/Library/Grid/GridItem";
 import Input from "@/components/Library/Input";
 import Loading from "@/components/Library/Loading";
-import Select from "@/components/Library/Select/Select";
 import Table from "@/components/Library/Table";
 import { userAtom } from "@/scripts/atoms/state";
 import { supabase } from "@/scripts/config/supabase";
-import { AltShip, deleteHandwritten, editHandwritten, editHandwrittenPaymentType, editHandwrittenShipTo, getAltShipByHandwritten, getHandwrittenById } from "@/scripts/controllers/handwrittensController";
+import { AltShip, deleteHandwritten, editHandwrittenShipTo, getAltShipByHandwritten, getHandwrittenById } from "@/scripts/controllers/handwrittensController";
 import { formatCurrency, formatDate, formatPhone, parseResDate } from "@/scripts/tools/stringUtils";
 import { setTitle } from "@/scripts/tools/utils";
 import { RealtimePostgresInsertPayload, RealtimePostgresUpdatePayload } from "@supabase/supabase-js";
@@ -25,9 +24,9 @@ import { useAtom } from "jotai";
 import Link from "@/components/Library/Link";
 import { useParams } from "next/navigation";
 import { useRouter } from "next/router";
-import { FormEvent, useEffect, useRef, useState } from "react";
-import { paymentTypes } from ".";
+import { FormEvent, useEffect, useState } from "react";
 import { useNavState } from "@/components/Navbar/useNavState";
+import CreditCardBlock from "@/components/CreditCardBlock";
 
 
 export default function Handwritten() {
@@ -54,7 +53,6 @@ export default function Handwritten() {
   const [takeoffItem, setTakeoffItem] = useState<HandwrittenItem | HandwrittenItemChild>(null);
   const [takeoffsOpen, setTakeoffsOpen] = useState(false);
   const [taxTotal, setTaxTotal] = useState(0);
-  const ccLabelRef = useRef(null);
   const TAX_RATE = 0.08375;
 
   useEffect(() => {
@@ -149,39 +147,6 @@ export default function Handwritten() {
     if (user.accessLevel <= 1 || prompt('Type "confirm" to delete this handwritten') !== 'confirm') return;
     await deleteHandwritten(Number(handwritten.id));
     await push('Handwrittens', '/handwrittens');
-  };
-
-  const handleChangePayment = async (id: number, value: string) => {
-    setPayment(value);
-    await editHandwrittenPaymentType(id, value);
-  };
-
-  const handleChangeCard = () => {
-    if (cardNum || cvv || expDate) {
-      setPromptLeaveWindow(true);
-    } else {
-      setPromptLeaveWindow(false);
-    }
-  };
-
-  const handleDetectPaymentType = async (num: string) => {
-    if (!num) return;
-    switch (Number(num)) {
-    case 3:
-      await handleChangePayment(handwritten.id, 'AMEX');
-      break;
-    case 4:
-      await handleChangePayment(handwritten.id, 'Visa');
-      break;
-    case 5:
-      await handleChangePayment(handwritten.id, 'Mastercard');
-      break;
-    case 6:
-      await handleChangePayment(handwritten.id, 'Discover');
-      break;
-    default:
-      break;
-    }
   };
 
   const handlePrintShipDocs = async () => {
@@ -405,7 +370,26 @@ export default function Handwritten() {
 
       <div className="handwritten-details">
         {handwritten ? isEditing ?
-          <EditHandwrittenDetails handwritten={handwritten} setHandwritten={setHandwritten} setIsEditing={setIsEditing} />
+          <EditHandwrittenDetails
+            handwritten={handwritten}
+            setHandwritten={setHandwritten}
+            setIsEditing={setIsEditing}
+            setPromptLeaveWindow={setPromptLeaveWindow}
+            cardNum={cardNum}
+            expDate={expDate}
+            cvv={cvv}
+            cardZip={cardZip}
+            cardName={cardName}
+            cardAddress={cardAddress}
+            payment={payment}
+            setPayment={setPayment}
+            setCardNum={setCardNum}
+            setExpDate={setExpDate}
+            setCvv={setCvv}
+            setCardZip={setCardZip}
+            setCardName={setCardName}
+            setCardAddress={setCardAddress}
+          />
           :
           <>
             <div className="handwritten-details__header">
@@ -595,112 +579,24 @@ export default function Handwritten() {
               </GridItem>
 
               <GridItem colStart={3} colEnd={7} rowEnd={3} variant={['low-opacity-bg']} className="no-print">
-                <div ref={ccLabelRef}>
-                  <Table variant={['plain', 'edit-row-details']}>
-                    <tbody>
-                      <tr>
-                        <th>Card Number</th>
-                        <td>
-                          <Input
-                            variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
-                            value={cardNum}
-                            onChange={(e: any) => {
-                              setCardNum(e.target.value);
-                              handleChangeCard();
-                              if (e.target.value.length === 1 || `${cardNum}`.charAt(0) !== e.target.value.trim().charAt(0)) {
-                                handleDetectPaymentType(e.target.value.trim().charAt(0));
-                              }
-                            }}
-                          />
-                        </td>
-                      </tr>
-                      <tr>
-                        <th>Exp Date</th>
-                        <td>
-                          <Input
-                            variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
-                            value={expDate}
-                            onChange={(e: any) => {
-                              setExpDate(e.target.value);
-                              handleChangeCard();
-                            }}
-                          />
-                        </td>
-                      </tr>
-                      <tr>
-                        <th>Security Code</th>
-                        <td>
-                          <Input
-                            variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
-                            value={cvv}
-                            type="number"
-                            onChange={(e: any) => {
-                              setCvv(e.target.value);
-                              handleChangeCard();
-                            }}
-                          />
-                        </td>
-                      </tr>
-                      <tr>
-                        <th>Card Zip Code</th>
-                        <td>
-                          <Input
-                            variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
-                            value={cardZip}
-                            onChange={(e: any) => setCardZip(e.target.value)}
-                          />
-                        </td>
-                      </tr>
-                      <tr>
-                        <th>Card Address</th>
-                        <td>
-                          <Input
-                            variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold', 'search']}
-                            value={cardAddress}
-                            onChange={(e: any) => setCardAddress(e.target.value)}
-                          >
-                            <Button
-                              variant={['x-small']}
-                              style={{ width: '10rem' }}
-                              onClick={() => {
-                                setCardAddress(handwritten.billToAddress);
-                                setCardZip(handwritten.billToZip);
-                              }}
-                            >
-                              Same as Bill To
-                            </Button>
-                          </Input>
-                        </td>
-                      </tr>
-                      <tr>
-                        <th>Card Name</th>
-                        <td>
-                          <Input
-                            variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold', 'search']}
-                            value={cardName}
-                            onChange={(e: any) => setCardName(e.target.value)}
-                          >
-                            <Button variant={['x-small']} style={{ width: '10rem' }} onClick={() => setCardName(handwritten.billToCompany)}>Same as Bill To</Button>
-                          </Input>
-                        </td>
-                      </tr>
-                      <tr>
-                        <th>Payment Type</th>
-                        <td>
-                          <Select
-                            value={payment}
-                            onChange={(e: any) => handleChangePayment(handwritten.id, e.target.value)}
-                          >
-                            <option value="">-- SELECT PAYMENT TYPE --</option>
-                            {paymentTypes.map((type, i) => {
-                              return <option key={i}>{ type }</option>;
-                            })}
-                          </Select>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </Table>
-                </div>
+                <CreditCardBlock
+                  handwritten={handwritten}
+                  setPromptLeaveWindow={setPromptLeaveWindow}
+                  cardNum={cardNum}
+                  expDate={expDate}
+                  cvv={cvv}
+                  cardZip={cardZip}
+                  cardName={cardName}
+                  cardAddress={cardAddress}
+                  payment={payment}
+                  setPayment={setPayment}
+                  setCardNum={setCardNum}
+                  setExpDate={setExpDate}
+                  setCvv={setCvv}
+                  setCardZip={setCardZip}
+                  setCardName={setCardName}
+                  setCardAddress={setCardAddress}
+                />
               </GridItem>
 
               <GridItem colStart={7} colEnd={11} variant={['low-opacity-bg']}>
