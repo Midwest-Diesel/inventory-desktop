@@ -33,7 +33,7 @@ export default function RecentPartSearches() {
 
     const prevSearch: any = localStorage.getItem('altPartSearches') || localStorage.getItem('partSearches');
     const partNum = JSON.parse(prevSearch).partNum.replace('*', '');
-    setRecentPartSearches(await getRecentPartSearches(partNum !== '' ? partNum : '*'));
+    setRecentPartSearches(await getRecentPartSearches((partNum && partNum !== '') ? partNum : '*'));
   };
   
 
