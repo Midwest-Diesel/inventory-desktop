@@ -42,7 +42,9 @@ export default function PartSearch({ selectHandwrittenOpen, setSelectHandwritten
   const [salesInfoOpen, setSalesInfoOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [partImages, setPartImages] = useState<Picture[]>([]);
+  const [picturesPartNum, setPicturesPartNum] = useState<string>('');
   const [snImages, setSnImages] = useState<Picture[]>([]);
+  const [picturesStockNum, setPicturesStockNum] = useState<string>('');
   const [partImagesOpen, setPartImagesOpen] = useState(false);
   const [snImagesOpen, setSnImagesOpen] = useState(false);
   const [partsOnEngsOpen, setPartsOnEngsOpen] = useState(false);
@@ -156,11 +158,13 @@ export default function PartSearch({ selectHandwrittenOpen, setSelectHandwritten
   
   const openPartImages = async (part: Part) => {
     setPartImages(await getImagesFromPart(part.partNum));
+    setPicturesPartNum(part.partNum);
     setPartImagesOpen(true);
   };
 
   const openStockNumImages = async (part: Part) => {
     setSnImages(await getImagesFromStockNum(part.stockNum));
+    setPicturesStockNum(part.stockNum);
     setSnImagesOpen(true);
   };
 
@@ -207,8 +211,8 @@ export default function PartSearch({ selectHandwrittenOpen, setSelectHandwritten
       {partsOpen &&
         <>
           { loading && <Loading /> }
-          <PartPicturesDialog open={partImagesOpen} setOpen={setPartImagesOpen} pictures={partImages} />
-          <StockNumPicturesDialog open={snImagesOpen} setOpen={setSnImagesOpen} pictures={snImages} />
+          <PartPicturesDialog open={partImagesOpen} setOpen={setPartImagesOpen} pictures={partImages} partNum={picturesPartNum} />
+          <StockNumPicturesDialog open={snImagesOpen} setOpen={setSnImagesOpen} pictures={snImages} stockNum={picturesStockNum} />
 
           <div className="parts-search-top-bar">
             <Button

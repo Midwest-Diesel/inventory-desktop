@@ -1,14 +1,49 @@
 import Image from "next/image";
 import Dialog from "../Library/Dialog";
+import Checkbox from "../Library/Checkbox";
+import { useEffect, useState } from "react";
+import { invoke } from "@/scripts/config/tauri";
+import Button from "../Library/Button";
 
 interface Props {
   open: boolean
   setOpen: (open: boolean) => void
   pictures: Picture[]
+  stockNum: string
 }
 
 
-export default function StockNumPicturesDialog({ open, setOpen, pictures = [] }: Props) {
+export default function StockNumPicturesDialog({ open, setOpen, pictures = [], stockNum }: Props) {
+  const [selectedImages, setSelectedImages] = useState<string[]>([]);
+
+  useEffect(() => {
+    setSelectedImages(pictures.map((pic) => pic.name));
+  }, [pictures]);
+
+  const editSelectedImages = (checked: boolean, name: string) => {
+    if (checked) { 
+      setSelectedImages([...selectedImages, name]);
+    } else {
+      setSelectedImages(selectedImages.filter((i) => i !== name));
+    }
+  };
+
+  const handleNewEmail = async () => {
+    const args = {
+      subject: 'Part Pictures',
+      body: '',
+      recipients: [],
+      attachments: pictures.filter((pic) => selectedImages.includes(pic.name)).map((pic) => `\\\\MWD1-SERVER/Server/Pictures/sn_specific/${stockNum}/${pic.name}`)
+    };
+    await invoke('new_email_draft', { emailArgs: args });
+  };
+
+  const handleAttachEmail = async () => {
+    const attachments = pictures.filter((pic) => selectedImages.includes(pic.name)).map((pic) => `\\\\MWD1-SERVER/Server/Pictures/sn_specific/${stockNum}/${pic.name}`).join(';');
+    await invoke('attach_to_existing_email', { attachments });
+  };
+
+
   return (
     <Dialog
       open={open}
@@ -18,15 +53,26 @@ export default function StockNumPicturesDialog({ open, setOpen, pictures = [] }:
       height={520}
       className="part-pictures-dialog"
     >
+      <Button onClick={handleNewEmail}>Add to New Email</Button>
+      <Button onClick={handleAttachEmail}>Attach to Existing Email</Button>
+
       {pictures.map((pic: Picture, i) => {
         return (
-          <Image
-            key={i}
-            src={`data:image/png;base64,${pic.url}`}
-            alt={pic.name}
-            width={160}
-            height={160}
-          />
+          <div key={i} className="part-pictures-dialog__img-container">
+            <Image
+              key={i}
+              src={`data:image/png;base64,${pic.url}`}
+              alt={pic.name}
+              width={240}
+              height={240}
+            />
+
+            <Checkbox
+              variant={['label-fit']}
+              checked={selectedImages.includes(pic.name)}
+              onChange={(e: any) => editSelectedImages(e.target.checked, pic.name)}
+            />
+          </div>
         );
       })}
     </Dialog>

@@ -217,8 +217,8 @@ export default function PartDetails() {
           </div>
 
 
-          { part.imageExists && <PartPicturesDialog open={picturesOpen} setOpen={setPicturesOpen} pictures={pictures} /> }        
-          { part.snImageExists && <StockNumPicturesDialog open={snPicturesOpen} setOpen={setSnPicturesOpen} pictures={snPictures} /> }
+          { part.imageExists && <PartPicturesDialog open={picturesOpen} setOpen={setPicturesOpen} pictures={pictures} partNum={part.partNum} /> }        
+          { part.snImageExists && <StockNumPicturesDialog open={snPicturesOpen} setOpen={setSnPicturesOpen} pictures={snPictures} stockNum={part.stockNum} /> }
 
           <Grid rows={1} cols={12} gap={1}>
             <GridItem colStart={1} colEnd={7} rowStart={1} variant={['low-opacity-bg']}>

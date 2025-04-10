@@ -48,13 +48,22 @@
     overflow-y: auto;
     overflow-x: hidden;
     max-height: 27.5rem;
+    display: flex;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+  }
+
+  &__img-container {
+    display: flex;
+    flex-direction: column;
+    width: fit-content;
+    align-items: center;
   }
 
   img {
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
     margin: 0.5rem;
     background-color: var(--grey-light-1);
-    width: 100%;
     max-width: fit-content;
     height: fit-content;
   }

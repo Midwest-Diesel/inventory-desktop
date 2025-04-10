@@ -126,7 +126,7 @@ export default function Dropdown({ children, className = '', variant = [], label
                 onChange={(e: any) => onChange(e.target.value)}
                 onFocus={() => setIsOpen(true)}
               />
-            :
+              :
               <DropdownOption className={`dropdown__option--selected drop-id-${idProp}`} value={selectedOption} onClick={() => setIsOpen(true)}>
                 {dropdownOptions.find((child: any) => child.props.value === selectedOption)?.props.children}
                 <Image className="dropdown__arrow" src="/images/icons/arrow-down.svg" alt="arrow" width={20} height={20} />
