@@ -20,11 +20,13 @@ export const PreventNavigation = ({ shouldPrevent = true, text }: Props) => {
 
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {
-      const target = e.target as HTMLAnchorElement;
+      const target = e.target as HTMLElement;
+      const link = target.closest('a');
       if (shouldPrevent) {
         e.preventDefault();
+        e.stopImmediatePropagation();
         confirmationFn.current = () => {
-          push(target.textContent || 'Home', target.href || '/');
+          push(link.textContent || 'Home', link.getAttribute('data-href') || '/');
         };
         setLeavingPage(true);
       }

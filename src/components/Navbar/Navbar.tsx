@@ -16,14 +16,6 @@ export default function Navbar() {
   const { tabs, setTabs, forward, backward, handleChangeTab, newTab } = useNavState();
   const [menuOpen, setMenuOpen] = useState(false);
   const [selectedTab, setSelectedTab] = useState<Tab>(null);
-  let loaded = false;
-
-  // useEffect(() => {
-  //   if (tabs.length === 0 || loaded) return;
-  //   loaded = true;
-  //   const tab = tabs.find((t) => t.selected);
-  //   router.replace(tab.history[tab.history.length - 1].url);
-  // }, [tabs]);
 
   const handleRenameTab = async () => {
     const name = prompt('Name');
