@@ -193,6 +193,16 @@ export const getMostRecentHandwrittenDate = async () => {
   }
 };
 
+export const getHandwrittenEmails = async (customerId: number) => {
+  try {
+    const auth = { withCredentials: true };
+    const res = await api.get(`/api/handwrittens/emails/${customerId}`, auth);
+    return res.data;
+  } catch (err) {
+    console.error(err);
+  }
+};
+
 // === POST routes === //
 
 export const addHandwritten = async (handwritten: Handwritten) => {

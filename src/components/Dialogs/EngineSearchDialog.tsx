@@ -175,7 +175,7 @@ export default function EngineSearchDialog({ open, setOpen, engines, setEngines 
           <option value="FALSE">False</option>
         </Select>
 
-        <Select
+        {/* <Select
           variant={['label-space-between', 'label-inline']}
           label="Current Status"
           value={currentStatus}
@@ -185,7 +185,7 @@ export default function EngineSearchDialog({ open, setOpen, engines, setEngines 
           {statusList.map((status, i) => {
             return <option key={i}>{ status }</option>;
           })}
-        </Select>
+        </Select> */}
 
         <div className="form__footer">
           <Button type="button" variant={['small']} onClick={clearInputs}>Clear</Button>

@@ -1,5 +1,5 @@
 import { sourcesAtom } from "@/scripts/atoms/state";
-import { addAltShipAddress, addHandwrittenItem, deleteHandwrittenItem, editHandwritten, editHandwrittenItems, editHandwrittenTaxable } from "@/scripts/controllers/handwrittensController";
+import { addAltShipAddress, addHandwrittenItem, deleteHandwrittenItem, editHandwritten, editHandwrittenItems, editHandwrittenTaxable, getHandwrittenEmails } from "@/scripts/controllers/handwrittensController";
 import { useAtom } from "jotai";
 import { FormEvent, Fragment, useEffect, useState } from "react";
 import GridItem from "./Library/Grid/GridItem";
@@ -23,6 +23,8 @@ import FreightCarrierSelect from "./Library/Select/FreightCarrierSelect";
 import { getFreightCarrierById } from "@/scripts/controllers/freightCarriersController";
 import { getAllUsers } from "@/scripts/controllers/userController";
 import CreditCardBlock from "./CreditCardBlock";
+import Dropdown from "./Library/Dropdown/Dropdown";
+import DropdownOption from "./Library/Dropdown/DropdownOption";
 
 interface Props {
   handwritten: Handwritten
@@ -119,6 +121,7 @@ export default function EditHandwrittenDetails({
   const [changeCustomerDialogData, setChangeCustomerDialogData] = useState<Handwritten>(null);
   const [taxTotal, setTaxTotal] = useState(0);
   const [users, setUsers] = useState<User[]>([]);
+  const [emails, setEmails] = useState<string[]>([]);
   const TAX_RATE = 0.08375;
 
   useEffect(() => {
@@ -127,6 +130,8 @@ export default function EditHandwrittenDetails({
       const users = await getAllUsers();
       setUsers(users);
       if (!soldBy) setSoldBy(users[0].id);
+      const emails = await getHandwrittenEmails(handwritten.customer.id);
+      setEmails(emails);
     };
     fetchData();
   }, []);
@@ -813,11 +818,15 @@ export default function EditHandwrittenDetails({
                   <tr>
                     <th>EOD Email</th>
                     <td>
-                      <Input
-                        variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+                      <Dropdown
+                        variant={['input', 'no-margin']}
                         value={contactEmail}
-                        onChange={(e: any) => setContactEmail(e.target.value)}
-                      />
+                        onChange={(value: string) => setContactEmail(value)}
+                      >
+                        {emails.map((email, i) => {
+                          return <DropdownOption key={i} value={email}>{ email }</DropdownOption>;
+                        })}
+                      </Dropdown>
                     </td>
                   </tr>
                 </tbody>

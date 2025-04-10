@@ -2,6 +2,7 @@ import { generateClasses, generateRandId, parseClasses } from "../../../scripts/
 import React, { Children, useState, useEffect, useRef } from "react";
 import DropdownOption from "./DropdownOption";
 import Image from "next/image";
+import Input from "../Input";
 
 
 interface Props {
@@ -14,13 +15,13 @@ interface Props {
   maxHeight?: string
 }
 
-export default function Dropdown({ children, className = "", variant = [], label = "", value, onChange, maxHeight = "none" }: Props) {
+export default function Dropdown({ children, className = '', variant = [], label = '', value = '', onChange, maxHeight = "none" }: Props) {
   const classes = generateClasses(className, variant.filter((v) => !["label-stack", "label-space-between", "label-bold"].includes(v)), "dropdown");
   const [isOpen, setIsOpen] = useState(false);
-  const [idProp, setIdProp] = useState("");
-  const [search, setSearch] = useState("");
+  const [idProp, setIdProp] = useState('');
+  const [search, setSearch] = useState('');
   const searchRef = useRef<HTMLInputElement>(null);
-  let id = "";
+  let id = '';
 
   const removeDuplicateRows = (dropdownOptions: any[]) => {
     const seenValues = new Set();
@@ -55,7 +56,7 @@ export default function Dropdown({ children, className = "", variant = [], label
   }, [isOpen]);
 
   const handleScreenClick = (e: any) => {
-    const clickedDropdown = e.target.closest(".dropdown__option");
+    const clickedDropdown = e.target.closest(".dropdown__option") || e.target.closest(".dropdown--input");
     if (!clickedDropdown) setIsOpen(false);
   };
 
@@ -78,22 +79,29 @@ export default function Dropdown({ children, className = "", variant = [], label
   if (variant.includes("label-stack")) labelClass += "dropdown--label-stack ";
   if (variant.includes("label-bold")) labelClass += "dropdown--label-bold ";
 
+
   return (
     <div style={{ display: "flex", alignItems: "flex-start", gap: variant.includes("gap") ? "0.5rem" : 0 }} className={labelClass}>
-      <p className="dropdown__label">{label}</p>
+      <p className="dropdown__label">{ label }</p>
       <div className="dropdown__container">
         <ul {...parseClasses(classes)} style={isOpen ? { position: "absolute", zIndex: 2 } : {}}>
           {isOpen ? (
             <>
-              {/* Search input */}
-              <input
-                ref={searchRef}
-                type="text"
-                className="dropdown__search"
-                placeholder="Search..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
+              {variant.includes("input") ?
+                <Input
+                  value={value}
+                  onChange={(e: any) => onChange(e.target.value)}
+                />
+                :
+                <input
+                  ref={searchRef}
+                  type="text"
+                  className="dropdown__search"
+                  placeholder="Search..."
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                />
+              }
 
               {/* Dropdown options */}
               <div style={{ maxHeight, overflowY: "auto" }}>
@@ -102,7 +110,7 @@ export default function Dropdown({ children, className = "", variant = [], label
                     const { value, children, data } = child.props;
                     return (
                       <DropdownOption key={i} {...child.props} onClick={() => selectOption(value, data)}>
-                        {children}
+                        { children }
                       </DropdownOption>
                     );
                   })
@@ -112,10 +120,17 @@ export default function Dropdown({ children, className = "", variant = [], label
               </div>
             </>
           ) : (
-            <DropdownOption className={`dropdown__option--selected drop-id-${idProp}`} value={selectedOption} onClick={() => setIsOpen(true)}>
-              {dropdownOptions.find((child: any) => child.props.value === selectedOption)?.props.children}
-              <Image className="dropdown__arrow" src="/images/icons/arrow-down.svg" alt="arrow" width={20} height={20} />
-            </DropdownOption>
+            variant.includes("input") ?
+              <Input
+                value={value}
+                onChange={(e: any) => onChange(e.target.value)}
+                onFocus={() => setIsOpen(true)}
+              />
+            :
+              <DropdownOption className={`dropdown__option--selected drop-id-${idProp}`} value={selectedOption} onClick={() => setIsOpen(true)}>
+                {dropdownOptions.find((child: any) => child.props.value === selectedOption)?.props.children}
+                <Image className="dropdown__arrow" src="/images/icons/arrow-down.svg" alt="arrow" width={20} height={20} />
+              </DropdownOption>
           )}
         </ul>
       </div>
