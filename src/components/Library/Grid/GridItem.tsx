@@ -21,7 +21,7 @@ interface Breakpoint {
 }
 
 
-export default function GridItem({ children, className, rowEnd = 0, colEnd = 0, rowStart = 0, colStart = 0, variant, breakpoints, style }: Props) {
+export default function GridItem({ children, className = '', rowEnd = 0, colEnd = 0, rowStart = 0, colStart = 0, variant = [], breakpoints, style }: Props) {
   const classes = generateClasses(className, variant, 'grid__item');
 
   const determineBreakpointValues = () => {

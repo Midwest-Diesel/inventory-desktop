@@ -12,15 +12,15 @@ interface Props {
 
 
 export default function CustomerContactsBlock({ customer, setCustomer }: Props) {
-  const [contact, setContact] = useState<Contact>(null);
+  const [contact, setContact] = useState<Contact | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   
   useEffect(() => {
-    setContact(customer.contacts.find((c) => c.name === customer.contact));
+    setContact(customer.contacts.find((c) => c.name === customer.contact) ?? null);
   }, [customer]);
 
   const changeContact = async (e: any) => {
-    setContact(customer.contacts.find((c) => c.name === e.target.value));
+    setContact(customer.contacts.find((c) => c.name === e.target.value) ?? null);
     await editCustomer({ ...customer, contact: e.target.value });
     setCustomer({ ...customer, contact: e.target.value });
   };
@@ -34,18 +34,18 @@ export default function CustomerContactsBlock({ customer, setCustomer }: Props) 
   };
 
   const handleSaveContact = async () => {
-    await editContact(contact);
+    if (contact) await editContact(contact);
     setIsEditing(false);
     setCustomer(await getCustomerById(customer.id));
   };
 
   const handleCancelEdit = () => {
-    setContact(customer.contacts.find((c) => c.name === customer.contact));
+    setContact(customer.contacts.find((c) => c.name === customer.contact) ?? null);
     setIsEditing(false);
   };
 
   const handleDeleteContact = async () => {
-    if (!await confirm('Are you sure you want to delete this?')) return;
+    if (!contact?.id || !await confirm('Are you sure you want to delete this?')) return;
     await deleteContact(contact.id);
     await editCustomer({ ...customer, contact: null });
     const filteredContacts = customer.contacts.filter((c) => c.id !== contact.id);
@@ -67,7 +67,7 @@ export default function CustomerContactsBlock({ customer, setCustomer }: Props) 
         }
         <Button type="button" onClick={handleDeleteContact} variant={['danger']}>Delete</Button>
         <Select
-          value={contact?.name}
+          value={contact?.name ?? ''}
           onChange={changeContact}
         >
           <option value="">-- CONTACT NAME --</option>
@@ -84,16 +84,16 @@ export default function CustomerContactsBlock({ customer, setCustomer }: Props) 
               <Input
                 variant={['small', 'thin', 'label-full-width', 'label-space-between', 'label-bold']}
                 label="Name"
-                value={contact.name}
-                onChange={(e: any) => setContact({ ...contact, name: e.target.value })}
+                value={contact?.name ?? ''}
+                onChange={(e: any) => contact && setContact({ ...contact, name: e.target.value })}
               />
             </div>
             <div className="contacts-block__row">
               <Input
                 variant={['small', 'thin', 'label-full-width', 'label-space-between', 'label-bold']}
                 label="Position"
-                value={contact.position}
-                onChange={(e: any) => setContact({ ...contact, position: e.target.value })}
+                value={contact?.position ?? ''}
+                onChange={(e: any) => contact && setContact({ ...contact, position: e.target.value })}
               />
             </div>
             <div className="contacts-block__row">
@@ -101,8 +101,8 @@ export default function CustomerContactsBlock({ customer, setCustomer }: Props) 
                 variant={['small', 'thin', 'label-full-width', 'label-space-between', 'label-bold']}
                 label="Email"
                 type="email"
-                value={contact.email}
-                onChange={(e: any) => setContact({ ...contact, email: e.target.value })}
+                value={contact?.email ?? ''}
+                onChange={(e: any) => contact && setContact({ ...contact, email: e.target.value })}
               />
             </div>
             <div className="contacts-block__row">
@@ -110,16 +110,16 @@ export default function CustomerContactsBlock({ customer, setCustomer }: Props) 
                 variant={['small', 'thin', 'label-full-width', 'label-space-between', 'label-bold']}
                 label="Ext"
                 type="number"
-                value={contact.ext}
-                onChange={(e: any) => setContact({ ...contact, ext: e.target.value })}
+                value={contact?.ext ?? ''}
+                onChange={(e: any) => contact && setContact({ ...contact, ext: e.target.value })}
               />
             </div>
             <div className="contacts-block__row">
               <Input
                 variant={['small', 'thin', 'label-full-width', 'label-space-between', 'label-bold']}
                 label="Notes"
-                value={contact.notes}
-                onChange={(e: any) => setContact({ ...contact, notes: e.target.value })}
+                value={contact?.notes ?? ''}
+                onChange={(e: any) => contact && setContact({ ...contact, notes: e.target.value })}
               />
             </div>
           </>

@@ -87,8 +87,8 @@ export default function SoldEngines() {
                       <td>{ engine.purchasedFrom }</td>
                       <td>{ engine.soldTo }</td>
                       <td>{ engine.mileage }</td>
-                      <td className="cbx-td"><Checkbox checked={engine.warranty} disabled /></td>
-                      <td className="cbx-td"><Checkbox checked={engine.testRun} disabled /></td>
+                      <td className="cbx-td"><Checkbox checked={Boolean(engine.warranty)} disabled /></td>
+                      <td className="cbx-td"><Checkbox checked={Boolean(engine.testRun)} disabled /></td>
                     </tr>
                   );
                 })}

@@ -27,26 +27,26 @@ interface Props {
 export default function PartDetails({ part, setPart, setIsEditingPart, partCostInData, engineCostOutData, setPartCostInData, setEngineCostOutData }: Props) {
   const [user] = useAtom<User>(userAtom);
   const [showSoldParts] = useAtom<boolean>(showSoldPartsAtom);
-  const [desc, setDesc] = useState<string>(part.desc);
+  const [desc, setDesc] = useState<string>(part.desc ?? '');
   const [qty, setQty] = useState<number>(part.qty);
-  const [stockNum, setStockNum] = useState<string>(part.stockNum);
-  const [location, setLocation] = useState<string>(part.location);
-  const [manufacturer, setManufacturer] = useState<string>(part.manufacturer);
-  const [purchasedFrom, setPurchasedFrom] = useState<string>(part.purchasedFrom);
-  const [condition, setCondition] = useState<string>(part.condition);
-  const [rating, setRating] = useState<number>(part.rating);
-  const [entryDate, setEntryDate] = useState<Date>(part.entryDate);
-  const [remarks, setRemarks] = useState<string>(part.remarks);
-  const [listPrice, setListPrice] = useState<number>(part.listPrice);
-  const [fleetPrice, setFleetPrice] = useState<number>(part.fleetPrice);
-  const [remanListPrice, setRemanListPrice] = useState<number>(part.remanListPrice);
-  const [remanFleetPrice, setRemanFleetPrice] = useState<number>(part.remanFleetPrice);
-  const [corePrice, setCorePrice] = useState<number>(part.corePrice);
-  const [engineStockNum, setEngineStockNum] = useState<number>(part.engineNum);
-  const [purchasePrice, setPurchasePrice] = useState<number>(part.purchasePrice);
+  const [stockNum, setStockNum] = useState<string>(part.stockNum ?? '');
+  const [location, setLocation] = useState<string>(part.location ?? '');
+  const [manufacturer, setManufacturer] = useState<string>(part.manufacturer ?? '');
+  const [purchasedFrom, setPurchasedFrom] = useState<string>(part.purchasedFrom ?? '');
+  const [condition, setCondition] = useState<string>(part.condition ?? '');
+  const [rating, setRating] = useState<number>(part.rating ?? 0);
+  const [entryDate, setEntryDate] = useState<Date | null>(part.entryDate);
+  const [remarks, setRemarks] = useState<string>(part.remarks ?? '');
+  const [listPrice, setListPrice] = useState<number | null>(part.listPrice);
+  const [fleetPrice, setFleetPrice] = useState<number | null>(part.fleetPrice);
+  const [remanListPrice, setRemanListPrice] = useState<number | null>(part.remanListPrice);
+  const [remanFleetPrice, setRemanFleetPrice] = useState<number | null>(part.remanFleetPrice);
+  const [corePrice, setCorePrice] = useState<number | null>(part.corePrice);
+  const [engineStockNum, setEngineStockNum] = useState<number | null>(part.engineNum);
+  const [purchasePrice, setPurchasePrice] = useState<number | null>(part.purchasePrice);
   const [altParts, setAltParts] = useState<string[]>(part.altParts);
-  const [weightDims, setWeightDims] = useState<string>(part.weightDims);
-  const [specialNotes, setSpecialNotes] = useState<string>(part.specialNotes);
+  const [weightDims, setWeightDims] = useState<string>(part.weightDims ?? '');
+  const [specialNotes, setSpecialNotes] = useState<string>(part.specialNotes ?? '');
   const [partCostIn, setPartCostIn] = useState<PartCostIn[]>(partCostInData);
   const [engineCostOut, setEngineCostOut] = useState<EngineCostOut[]>(engineCostOutData);
   const [changesSaved, setChangesSaved] = useState(true);
@@ -125,7 +125,7 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
       for (let i = 0; i < partCostIn.length; i++) {
         const item = partCostIn[i];
         if (item.id === 0) {
-          await addPartCostIn(part.stockNum, Number(item.cost), Number(item.invoiceNum), item.vendor, item.costType, item.note);
+          await addPartCostIn(part.stockNum ?? '', Number(item.cost), Number(item.invoiceNum), item.vendor ?? '', item.costType ?? '', item.note ?? '');
         }
       }
     }
@@ -133,7 +133,7 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
       for (let i = 0; i < engineCostOut.length; i++) {
         const item = engineCostOut[i];
         if (item.id === 0) {
-          await addEngineCostOut(part.stockNum, item.engineStockNum, item.cost, item.costType, item.note);
+          await addEngineCostOut(part.stockNum ?? '', item.engineStockNum ?? 0, item.cost ?? 0, item.costType ?? '', item.note ?? '');
         }
       }
     }
@@ -143,7 +143,7 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
   };
 
   const handleNewPartCostInRowChange = (field: keyof PartCostIn, value: string | number) => {
-    setNewPartCostInRow((prev) => ({ ...prev, [field]: value }));
+    setNewPartCostInRow((prev: PartCostIn) => ({ ...prev, [field]: value }));
   };
 
   const handleAddPartCostInRow = () => {
@@ -152,7 +152,7 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
   };
 
   const handleNewEngineCostOutRowChange = (field: keyof EngineCostOut, value: string | number) => {
-    setNewEngineCostOutRow((prev) => ({ ...prev, [field]: value }));
+    setNewEngineCostOutRow((prev: EngineCostOut) => ({ ...prev, [field]: value }));
   };
 
   const handleAddEngineCostOutRow = () => {
@@ -205,7 +205,7 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
     for (const value of values) {
       const partInfo = await getPartsInfoByPartNum(value);
       if (partInfo.length > 0) {
-        partInfo[0].altParts.split(', ').forEach((alt) => altsToAdd.add(alt));
+        partInfo[0].altParts.split(', ').forEach((alt: string) => altsToAdd.add(alt));
       }
     }
     altsToAdd = Array.from(altsToAdd);
@@ -224,7 +224,7 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
 
   const handleRemoveAltPart = async () => {
     const input = prompt('Enter part numbers seperated by comma');
-    const removedParts = input && input.toUpperCase().trim().replace(/\s*,\s*/g, ',').split(',');
+    const removedParts = input?.toUpperCase().trim().replace(/\s*,\s*/g, ',').split(',') ?? [];
     const updatedAltString = altParts.filter((a) => !removedParts.includes(a));
     if (!input || !await confirm(`Are you sure you want to REMOVE: ${removedParts.join(', ')}?\n\n New Alt Parts:\n${updatedAltString.join(', ')}`)) return;
 
@@ -384,7 +384,7 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
                   <td>
                     <Input
                       variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
-                      value={listPrice}
+                      value={listPrice ?? ''}
                       onChange={(e: any) => setListPrice(e.target.value)}
                       type="number"
                     />
@@ -395,7 +395,7 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
                   <td>
                     <Input
                       variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
-                      value={fleetPrice}
+                      value={fleetPrice ?? ''}
                       onChange={(e: any) => setFleetPrice(e.target.value)}
                       type="number"
                     />
@@ -406,7 +406,7 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
                   <td>
                     <Input
                       variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
-                      value={remanListPrice}
+                      value={remanListPrice ?? ''}
                       onChange={(e: any) => setRemanListPrice(e.target.value)}
                       type="number"
                     />
@@ -417,7 +417,7 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
                   <td>
                     <Input
                       variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
-                      value={remanFleetPrice}
+                      value={remanFleetPrice ?? ''}
                       onChange={(e: any) => setRemanFleetPrice(e.target.value)}
                       type="number"
                     />
@@ -428,7 +428,7 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
                   <td>
                     <Input
                       variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
-                      value={corePrice}
+                      value={corePrice ?? ''}
                       onChange={(e: any) => setCorePrice(e.target.value)}
                       type="number"
                     />
@@ -489,7 +489,7 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
                   <td>
                     <Input
                       variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
-                      value={engineStockNum}
+                      value={engineStockNum ?? ''}
                       onChange={(e: any) => setEngineStockNum(e.target.value)}
                       type="number"
                     />
@@ -548,7 +548,7 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
                       <td>
                         <Input
                           variant={['x-small', 'thin', 'label-bold']}
-                          value={item.cost}
+                          value={item.cost ?? ''}
                           onChange={(e: any) => handleChangePartCostIn({ ...item, cost: e.target.value }, i)}
                           type="number"
                         />
@@ -556,21 +556,21 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
                       <td>
                         <Input
                           variant={['x-small', 'thin', 'label-bold']}
-                          value={item.costType}
+                          value={item.costType ?? ''}
                           onChange={(e: any) => handleChangePartCostIn({ ...item, costType: e.target.value }, i)}
                         />
                       </td>
                       <td>
                         <Input
                           variant={['x-small', 'thin', 'label-bold']}
-                          value={item.vendor}
+                          value={item.vendor ?? ''}
                           onChange={(e: any) => handleChangePartCostIn({ ...item, vendor: e.target.value }, i)}
                         />
                       </td>
                       <td>
                         <Input
                           variant={['x-small', 'thin', 'label-bold']}
-                          value={item.invoiceNum}
+                          value={item.invoiceNum ?? ''}
                           onChange={(e: any) => handleChangePartCostIn({ ...item, invoiceNum: e.target.value }, i)}
                           type="number"
                         />
@@ -578,7 +578,7 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
                       <td>
                         <Input
                           variant={['x-small', 'thin', 'label-bold']}
-                          value={item.note}
+                          value={item.note ?? ''}
                           onChange={(e: any) => handleChangePartCostIn({ ...item, note: e.target.value }, i)}
                         />
                       </td>
@@ -667,7 +667,7 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
                       <td>
                         <Input
                           variant={['x-small', 'thin', 'label-bold']}
-                          value={item.cost}
+                          value={item.cost ?? ''}
                           onChange={(e: any) => handleChangeEngineCostOut({ ...item, cost: e.target.value }, i)}
                           type="number"
                         />
@@ -675,7 +675,7 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
                       <td>
                         <Input
                           variant={['x-small', 'thin', 'label-bold']}
-                          value={item.engineStockNum}
+                          value={item.engineStockNum ?? ''}
                           onChange={(e: any) => handleChangeEngineCostOut({ ...item, engineStockNum: e.target.value }, i)}
                           type="number"
                         />
@@ -683,21 +683,21 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
                       <td>
                         <Input
                           variant={['x-small', 'thin', 'label-bold']}
-                          value={item.stockNum}
+                          value={item.stockNum ?? ''}
                           onChange={(e: any) => handleChangeEngineCostOut({ ...item, stockNum: e.target.value }, i)}
                         />
                       </td>
                       <td>
                         <Input
                           variant={['x-small', 'thin', 'label-bold']}
-                          value={item.costType}
+                          value={item.costType ?? ''}
                           onChange={(e: any) => handleChangeEngineCostOut({ ...item, costType: e.target.value }, i)}
                         />
                       </td>
                       <td>
                         <Input
                           variant={['x-small', 'thin', 'label-bold']}
-                          value={item.note}
+                          value={item.note ?? ''}
                           onChange={(e: any) => handleChangeEngineCostOut({ ...item, note: e.target.value }, i)}
                         />
                       </td>

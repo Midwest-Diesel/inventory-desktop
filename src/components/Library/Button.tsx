@@ -7,7 +7,7 @@ interface Props extends ButtonHTML {
   type?: 'submit' | 'reset' | 'button'
 }
 
-export default function Button({ children, className = '', variant, type, ...props }: Props) {
+export default function Button({ children, className = '', variant = [], type, ...props }: Props) {
   const classes = generateClasses(className, variant, 'button');
 
   return (

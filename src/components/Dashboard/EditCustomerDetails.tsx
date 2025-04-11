@@ -21,31 +21,31 @@ interface Props {
 
 
 export default function CustomerDetails({ customer, setCustomer, setIsEditing }: Props) {
-  const [company, setCompany] = useState<string>(customer.company);
-  const [contact, setContact] = useState<string>(customer.contact);
-  const [phone, setPhone] = useState<string>(customer.phone);
-  const [billToPhone, setBillToPhone] = useState<string>(customer.billToPhone);
-  const [email, setEmail] = useState<string>(customer.email);
-  const [customerType, setCustomerType] = useState<string>(customer.customerType);
-  const [fax, setFax] = useState<string>(customer.fax);
-  const [billToAddress, setBillToAddress] = useState<string>(customer.billToAddress);
-  const [billToAddress2, setBillToAddress2] = useState<string>(customer.billToAddress2);
-  const [billToCity, setBillToCity] = useState<string>(customer.billToCity);
-  const [billToState, setBillToState] = useState<string>(customer.billToState);
-  const [billToZip, setBillToZip] = useState<string>(customer.billToZip);
-  const [shipToAddress, setShipToAddress] = useState<string>(customer.shipToAddress);
-  const [shipToAddress2, setShipToAddress2] = useState<string>(customer.shipToAddress2);
-  const [shipToCity, setShipToCity] = useState<string>(customer.shipToCity);
-  const [shipToState, setShipToState] = useState<string>(customer.shipToState);
-  const [shipToZip, setShipToZip] = useState<string>(customer.shipToZip);
-  const [partsManager, setPartsManager] = useState<string>(customer.partsManager);
-  const [partsManagerEmail, setPartsManagerEmail] = useState<string>(customer.partsManagerEmail);
-  const [serviceManager, setServiceManager] = useState<string>(customer.serviceManager);
-  const [serviceManagerEmail, setServiceManagerEmail] = useState<string>(customer.serviceManagerEmail);
-  const [paymentType, setPaymentType] = useState<string>(customer.paymentType);
-  const [source, setSource] = useState<string>(customer.source);
+  const [company, setCompany] = useState<string>(customer.company ?? '');
+  const [contact, setContact] = useState<string>(customer.contact ?? '');
+  const [phone, setPhone] = useState<string>(customer.phone ?? '');
+  const [billToPhone, setBillToPhone] = useState<string>(customer.billToPhone ?? '');
+  const [email, setEmail] = useState<string>(customer.email ?? '');
+  const [customerType, setCustomerType] = useState<string>(customer.customerType ?? '');
+  const [fax, setFax] = useState<string>(customer.fax ?? '');
+  const [billToAddress, setBillToAddress] = useState<string>(customer.billToAddress ?? '');
+  const [billToAddress2, setBillToAddress2] = useState<string>(customer.billToAddress2 ?? '');
+  const [billToCity, setBillToCity] = useState<string>(customer.billToCity ?? '');
+  const [billToState, setBillToState] = useState<string>(customer.billToState ?? '');
+  const [billToZip, setBillToZip] = useState<string>(customer.billToZip ?? '');
+  const [shipToAddress, setShipToAddress] = useState<string>(customer.shipToAddress ?? '');
+  const [shipToAddress2, setShipToAddress2] = useState<string>(customer.shipToAddress2 ?? '');
+  const [shipToCity, setShipToCity] = useState<string>(customer.shipToCity ?? '');
+  const [shipToState, setShipToState] = useState<string>(customer.shipToState ?? '');
+  const [shipToZip, setShipToZip] = useState<string>(customer.shipToZip ?? '');
+  const [partsManager, setPartsManager] = useState<string>(customer.partsManager ?? '');
+  const [partsManagerEmail, setPartsManagerEmail] = useState<string>(customer.partsManagerEmail ?? '');
+  const [serviceManager, setServiceManager] = useState<string>(customer.serviceManager ?? '');
+  const [serviceManagerEmail, setServiceManagerEmail] = useState<string>(customer.serviceManagerEmail ?? '');
+  const [paymentType, setPaymentType] = useState<string>(customer.paymentType ?? '');
+  const [source, setSource] = useState<string>(customer.source ?? '');
   const [editLocDialogOpen, setEditLocDialogOpen] = useState(false);
-  const [loc, setLoc] = useState<MapLocation>(null);
+  const [loc, setLoc] = useState<MapLocation | null>(null);
   const [changesSaved, setChangesSaved] = useState<boolean>(true);
   const [customerTypes, setCustomerTypes] = useState<string[]>([]);
 

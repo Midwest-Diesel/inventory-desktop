@@ -23,7 +23,7 @@ export default function Customer() {
   const params = useParams();
   const [user] = useAtom<User>(userAtom);
   const [selectedCustomer, setSelectedCustomer] = useAtom<Customer>(selectedCustomerAtom);
-  const [customer, setCustomer] = useState<Customer>(null);
+  const [customer, setCustomer] = useState<Customer | null>(null);
   const [salesHistory, setSalesHistory] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
   const [isOnMap, setIsOnMap] = useState(true);
@@ -43,7 +43,7 @@ export default function Customer() {
   }, [params]);
 
   const handleDelete = async () => {
-    if (user.accessLevel <= 1 || prompt('Type "confirm" to delete this customer') !== 'confirm') return;
+    if (!customer?.id || user.accessLevel <= 1 || prompt('Type "confirm" to delete this customer') !== 'confirm') return;
     localStorage.removeItem('customerId');
     setSelectedCustomer({} as Customer);
     await deleteCustomer(customer.id);

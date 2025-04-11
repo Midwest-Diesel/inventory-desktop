@@ -29,82 +29,80 @@ type Picture = {
 
 type Contact = {
   id: number
-  name: string
-  position: string
-  email: string
-  ext: number
-  notes: string
+  name: string | null
+  position: string | null
+  email: string | null
+  ext: number | null
+  notes: string | null
 };
 
 type Customer = {
   id: number
-  company: string
-  contact: string
+  company: string | null
+  contact: string | null
   contacts: Contact[]
-  partsManager: string
-  partsManagerEmail: string
-  serviceManager: string
-  serviceManagerEmail: string
-  other: string
-  phone: string
-  billToPhone: string
-  fax: string
-  email: string
-  terms: string
-  billToAddress: string
-  billToAddress2: string
-  billToCity: string
-  billToState: string
-  billToZip: string
-  shipToAddress: string
-  shipToAddress2: string
-  shipToCity: string
-  shipToState: string
-  shipToZip: string
-  companyType: string
+  partsManager: string | null
+  partsManagerEmail: string | null
+  serviceManager: string | null
+  serviceManagerEmail: string | null
+  other: string | null
+  phone: string | null
+  billToPhone: string | null
+  fax: string | null
+  email: string | null
+  terms: string | null
+  billToAddress: string | null
+  billToAddress2: string | null
+  billToCity: string | null
+  billToState: string | null
+  billToZip: string | null
+  shipToAddress: string | null
+  shipToAddress2: string | null
+  shipToCity: string | null
+  shipToState: string | null
+  shipToZip: string | null
+  companyType: string | null
   dateContacted: Date
-  comments: string
+  comments: string | null
   emailList: boolean
   mailList: boolean
   propsectList: boolean
   creditApp: boolean
   taxExempt: boolean
-  rating: number
-  apConact: string
-  apPhone: string
-  paymentHistory: string
-  customerType: string
-  source: string
-  paymentType: string
-  country: string
+  apConact: string | null
+  apPhone: string | null
+  paymentHistory: string | null
+  customerType: string | null
+  source: string | null
+  paymentType: string | null
+  country: string | null
 };
 
 type Quote = {
   id: number
-  date: Date
-  source: string
-  customer: Customer
-  contact: string
-  phone: string
-  state: string
-  partNum: string
-  desc: string
-  stockNum: string
-  price: number
-  notes: string
-  salesman: string
+  date: Date | null
+  source: string | null
+  customer: Customer | null
+  contact: string | null
+  phone: string | null
+  state: string | null
+  partNum: string | null
+  desc: string | null
+  stockNum: string | null
+  price: number | null
+  notes: string | null
+  salesman: string | null
   sale: boolean
   followedUp: boolean
-  followUpDate: Date
-  rating: number
+  followUpDate: Date | null
   toFollowUp: boolean
-  followUpNotes: string
-  email: string
-  invoiceItem: number
+  followUpNotes: string | null
+  email: string | null
+  invoiceItem: number | null
   createdAfter: boolean
   children: Quote[]
   piggybackQuotes: PiggybackQuote[]
-  part?: Part
+  part: Part | null
 };
 
 type PiggybackQuote = {
@@ -177,46 +175,46 @@ type Handwritten = {
   soldBy: string
   soldById: number
   date: Date
-  poNum: string
-  billToAddress: string
-  billToAddress2: string
-  billToCity: string
-  billToState: string
-  billToZip: string
-  billToCountry: Country
-  billToCompany: string
-  billToPhone: string
-  fax: string
-  email: string
-  contactName: string
-  shipToAddress: string
-  shipToAddress2: string
-  shipToCity: string
-  shipToState: string
-  shipToZip: string
-  shipToCompany: string
-  shipToContact: string
-  source: string
-  payment: string
-  phone: string
-  cell: string
-  engineSerialNum: string
+  poNum: string | null
+  billToAddress: string | null
+  billToAddress2: string | null
+  billToCity: string | null
+  billToState: string | null
+  billToZip: string | null
+  billToCountry: Country | null
+  billToCompany: string | null
+  billToPhone: string | null
+  fax: string | null
+  email: string | null
+  contactName: string | null
+  shipToAddress: string | null
+  shipToAddress2: string | null
+  shipToCity: string | null
+  shipToState: string | null
+  shipToZip: string | null
+  shipToCompany: string | null
+  shipToContact: string | null
+  source: string | null
+  payment: string | null
+  phone: string | null
+  cell: string | null
+  engineSerialNum: string | null
   isBlindShipment: boolean
   isNoPriceInvoice: boolean
-  shipVia: FreightCarrier
-  cardNum: number
-  expDate: string
-  cvv: number
-  cardAddress: string
-  cardZip: string
-  cardName: string
-  orderNotes: string
+  shipVia: FreightCarrier | null
+  cardNum: number | null
+  expDate: string | null
+  cvv: number | null
+  cardAddress: string | null
+  cardZip: string | null
+  cardName: string | null
+  orderNotes: string | null
   invoiceStatus: InvoiceStatus
-  accountingStatus: AccountingStatus
-  shippingStatus: ShippingStatus
+  accountingStatus: AccountingStatus | null
+  shippingStatus: ShippingStatus | null
   cores: Core[]
   coreReturns: Core[]
-  shippingNotes: string
+  shippingNotes: string | null
   mp: number
   br: number
   cap: number
@@ -227,7 +225,7 @@ type Handwritten = {
   isSetup: boolean
   isEndOfDay: boolean
   trackingNumbers: TrackingNumber[]
-  thirdPartyAccount: string
+  thirdPartyAccount: string | null
 };
 
 type InvoiceStatus = 'INVOICE PENDING' | 'SENT TO ACCOUNTING' | 'CANCELLED' | 'STOP - HOLD' | 'HOLD AS FAVOR';
@@ -237,17 +235,17 @@ type ShippingStatus = '' | 'ORDER PICKED' | 'ORDER PACKAGED' | 'ORDER COMPLETE';
 type HandwrittenItem = {
   id: number
   handwrittenId: number
-  partId: number
+  partId: number | null
   handwrittenItemId: number
-  stockNum: string
-  location: string
-  cost: number
-  qty: number
-  partNum: string
-  desc: string
-  unitPrice: number
+  stockNum: string | null
+  location: string | null
+  cost: number | null
+  qty: number | null
+  partNum: string | null
+  desc: string | null
+  unitPrice: number | null
   return: boolean
-  date: Date
+  date: Date | null
   isTakeoffDone: boolean
   invoiceItemChildren: HandwrittenItemChild[]
   weight: number
@@ -258,124 +256,124 @@ type HandwrittenItem = {
 
 type HandwrittenItemChild = {
   id: number
-  partId: number
-  part: Part
-  qty: number
-  cost: number
-  partNum: string
-  stockNum: string
+  partId: number | null
+  part: Part | null
+  qty: number | null
+  cost: number | null
+  partNum: string | null
+  stockNum: string | null
 };
 
 type AddOn = {
   id: number
-  qty: number
-  partNum: string
-  desc: string
-  stockNum: string
-  location: string
-  remarks: string
-  entryDate: Date
-  rating: string
-  engineNum: number
-  condition: string
-  purchasePrice: number
-  purchasedFrom: string
-  po: string
-  manufacturer: string
+  qty: number | null
+  partNum: string | null
+  desc: string | null
+  stockNum: string | null
+  location: string | null
+  remarks: string | null
+  entryDate: Date | null
+  rating: string | null
+  engineNum: number | null
+  condition: string | null
+  purchasePrice: number | null
+  purchasedFrom: string | null
+  po: string | null
+  manufacturer: string | null
   isSpecialCost: boolean
-  newPrice: number
-  remanPrice: number
-  dealerPrice: number
+  newPrice: number | null
+  remanPrice: number | null
+  dealerPrice: number | null
   pricingType: 'Truck' | 'Industrial'
   priceStatus: 'We have pricing' | 'No pricing'
-  hp: string
-  serialNum: string
+  hp: string | null
+  serialNum: string | null
   altParts: string[]
 };
 
 type EngineAddOn = {
   id: number
-  engineNum: number
-  model: string
-  serialNum: string
-  arrNum: number
-  entryDate: Date
-  location: string
-  hp: string
+  engineNum: number | null
+  model: string | null
+  serialNum: string | null
+  arrNum: number | null
+  entryDate: Date | null
+  location: string | null
+  hp: string | null
   currentStatus: EngineStatus
-  purchasedFrom: string
-  notes: string
+  purchasedFrom: string | null
+  notes: string | null
   ecm: boolean
   jakeBrake: boolean
   oilPan: 'FS' | 'RS' | 'CS'
-  cost: number
+  cost: number | null
 };
 
 type Warranty = {
   id: number
-  customer: Customer
+  customer: Customer | null
   date: Date
-  salesman: string
-  vendor: string
+  salesman: string | null
+  vendor: string | null
   invoiceDate: Date
   completed: boolean
-  completedDate: Date
-  vendorWarrantyNum: number
+  completedDate: Date | null
+  vendorWarrantyNum: number | null
   warrantyItems: WarrantyItem[]
-  handwrittenId: number
-  return: Return
+  handwrittenId: number | null
+  return: Return | null
 };
 
 type WarrantyItem = {
   id: number
-  stockNum: string
-  qty: number
-  partNum: string
-  desc: string
-  cost: number
-  price: number
-  returnedVendorDate: Date
-  claimReason: string
-  vendorReport: string
+  stockNum: string | null
+  qty: number | null
+  partNum: string | null
+  desc: string | null
+  cost: number | null
+  price: number | null
+  returnedVendorDate: Date | null
+  claimReason: string | null
+  vendorReport: string | null
   hasVendorReplacedPart: boolean
-  vendorCredit: string
+  vendorCredit: string | null
   isCustomerCredited: boolean
 };
 
 type Part = {
   id: number
   partNum: string
-  manufacturer: string
-  desc: string
-  location: string
-  remarks: string
-  entryDate: Date
-  enteredBy: string
+  manufacturer: string | null
+  desc: string | null
+  location: string | null
+  remarks: string | null
+  entryDate: Date | null
+  enteredBy: string | null
   qty: number
-  stockNum: string
-  purchasePrice: number
-  listPrice: number
-  remanListPrice: number
-  fleetPrice: number
-  remanFleetPrice: number
-  corePrice: number
-  soldTo: string
-  qtySold: number
-  sellingPrice: number
-  purchasedFrom: string
-  soldToDate: Date
-  condition: string
-  rating: number
-  invoiceNum: number
-  engineNum: number
+  stockNum: string | null
+  purchasePrice: number | null
+  listPrice: number | null
+  remanListPrice: number | null
+  fleetPrice: number | null
+  remanFleetPrice: number | null
+  corePrice: number | null
+  soldTo: string | null
+  qtySold: number | null
+  sellingPrice: number | null
+  purchasedFrom: string | null
+  soldToDate: Date | null
+  condition: string | null
+  rating: number | null
+  invoiceNum: number | null
+  engineNum: number | null
   altParts: string[]
   partsCostIn: PartsCostIn[]
   engineCostOut: EngineCostOut[]
   pictures?: Picture[]
   imageExists: boolean
   snImageExists: boolean
-  weightDims: string
-  specialNotes: string
+  weightDims: string | null
+  specialNotes: string | null
 };
 
 type RecentPartSearch = {
@@ -398,31 +396,31 @@ type RecentQuoteSearch = {
 
 type PartCostIn = {
   id: number
-  stockNum: string
-  invoiceNum: number
-  cost: number
-  vendor: string
-  costType: string
-  note: string
+  stockNum: string | null
+  invoiceNum: number | null
+  cost: number | null
+  vendor: string | null
+  costType: string | null
+  note: string | null
 };
 
 type EngineCostOut = {
   id: number
-  stockNum: string
-  cost: number
-  engineStockNum: number
-  costType: CostType
-  note: string
+  stockNum: string | null
+  cost: number | null
+  engineStockNum: number | null
+  costType: CostType | null
+  note: string | null
 };
 
 type EngineCostIn = {
   id: number
-  engineStockNum: number
-  cost: number
-  invoiceNum: number
-  costType: CostType
-  vendor: string
-  note: string
+  engineStockNum: number | null
+  cost: number | null
+  invoiceNum: number | null
+  costType: CostType | null
+  vendor: string | null
+  note: string | null
 };
 
 type EngineProfit = {
@@ -441,47 +439,8 @@ type Surplus = {
   name: string
   date: Date
   price: number
-  costApplied: number
-  notes: string
-};
-
-type Invoice = {
-  id: number
-  customer: Customer
-  invoiceItems: InvoiceItem[]
-  date: Date
-  poNum: string
-  billToCompany: string
-  billToAddress: string
-  billToCity: string
-  billToState: string
-  billToZip: string
-  billToCountry: Country
-  billToContact: string
-  billToPhone: string
-  billToFax: string
-  shipToCompany: string
-  shipToAddress: string
-  shipToCity: string
-  shipToState: string
-  shipToZip: string
-  source: string
-  payment: string
-  return: boolean
-  returnDate: Date
-  salesperson: string
-};
-
-type InvoiceItem = {
-  stockNum: string
-  location: string
-  cost: number
-  qty: number
-  partNum: string
-  desc: string
-  unitPrice: number
-  return: boolean
-  entryDate: Date
+  costApplied: number | null
+  notes: string | null
 };
 
 type EngineStatus = 'ToreDown' | 'RunnerReady' | 'RunnerNotReady' | 'HoldSoldRunner' | 'CoreEngine' | 'Sold' | 'ShortBlock' | 'LongBlock';
@@ -489,142 +448,142 @@ type EngineStatus = 'ToreDown' | 'RunnerReady' | 'RunnerNotReady' | 'HoldSoldRun
 type Engine = {
   id: number
   stockNum: number
-  toreDownDate: Date
-  model: string
-  serialNum: string
-  location: string
-  horsePower: string
+  toreDownDate: Date | null
+  model: string | null
+  serialNum: string | null
+  location: string | null
+  horsePower: string | null
   jakeBrake: boolean
-  purchasedFrom: string
-  soldTo: string
-  comments: string
-  partsPulled: string
-  totalCostApplied: number
-  sellPrice: number
-  askingPrice: number
-  purchasePrice: number
-  soldDate: Date
-  costRemaining: number
-  currentStatus: EngineStatus
-  loginDate: Date
+  purchasedFrom: string | null
+  soldTo: string | null
+  comments: string | null
+  partsPulled: string | null
+  totalCostApplied: number | null
+  sellPrice: number | null
+  askingPrice: number | null
+  purchasePrice: number | null
+  soldDate: Date | null
+  costRemaining: number | null
+  currentStatus: EngineStatus | null
+  loginDate: Date | null
   warranty: boolean
   testRun: boolean
   ecm: boolean
-  mileage: string
-  torque: string
-  pan: string
-  application: string
+  mileage: string | null
+  torque: string | null
+  pan: string | null
+  application: string | null
   costIn: EngineCostIn[]
   costOut: EngineCostOut[]
-  turboArr: string
-  turboHpNew: string
-  turboHpReman: string
-  turboHpActual: string
-  turboLpNew: string
-  turboLpReman: string
-  turboLpActual: string
-  fwhNumber: string
-  costProposed1: number
-  arrNum: string
-  costIn1: number
-  costIn2: number
-  costIn3: number
-  costIn4: number
-  blockNew: string
-  blockReman: string
-  blockActual: string
-  blockCasting: string
-  crankNew: string
-  crankReman: string
-  crankActual: string
-  headNew: string
-  headReman: string
-  headActual: string
-  camNew: string
-  camReman: string
-  camActual: string
-  injNew: string
-  injReman: string
-  injActual: string
-  turboNew: string
-  turboReman: string
-  turboActual: string
-  pistonNew: string
-  pistonReman: string
-  pistonActual: string
-  cylPacksNew: string
-  cylPacksReman: string
-  cylPacksActual: string
-  fwhNew: string
-  fwhReman: string
-  fwhActual: string
-  oilPanNew: string
-  oilPanReman: string
-  oilPanActual: string
-  oilCoolerNew: string
-  oilCoolerReman: string
-  oilCoolerActual: string
-  frontHsngNew: string
-  frontHsngActual: string
-  flywheelNew: string
-  flywheelActual: string
-  ragNew: string
-  ragActual: string
-  heuiPumpNew: string
-  heuiPumpReman: string
-  heuiPumpActual: string
-  exhMnfldNew: string
-  exhMnfldReman: string
-  exhMnfldActual: string
-  oilPumpNew: string
-  oilPumpReman: string
-  oilPumpActual: string
-  waterPumpNew: string
-  waterPumpReman: string
-  waterPumpActual: string
+  turboArr: string | null
+  turboHpNew: string | null
+  turboHpReman: string | null
+  turboHpActual: string | null
+  turboLpNew: string | null
+  turboLpReman: string | null
+  turboLpActual: string | null
+  fwhNumber: string | null
+  costProposed1: number | null
+  arrNum: string | null
+  costIn1: number | null
+  costIn2: number | null
+  costIn3: number | null
+  costIn4: number | null
+  blockNew: string | null
+  blockReman: string | null
+  blockActual: string | null
+  blockCasting: string | null
+  crankNew: string | null
+  crankReman: string | null
+  crankActual: string | null
+  headNew: string | null
+  headReman: string | null
+  headActual: string | null
+  camNew: string | null
+  camReman: string | null
+  camActual: string | null
+  injNew: string | null
+  injReman: string | null
+  injActual: string | null
+  turboNew: string | null
+  turboReman: string | null
+  turboActual: string | null
+  pistonNew: string | null
+  pistonReman: string | null
+  pistonActual: string | null
+  cylPacksNew: string | null
+  cylPacksReman: string | null
+  cylPacksActual: string | null
+  fwhNew: string | null
+  fwhReman: string | null
+  fwhActual: string | null
+  oilPanNew: string | null
+  oilPanReman: string | null
+  oilPanActual: string | null
+  oilCoolerNew: string | null
+  oilCoolerReman: string | null
+  oilCoolerActual: string | null
+  frontHsngNew: string | null
+  frontHsngActual: string | null
+  flywheelNew: string | null
+  flywheelActual: string | null
+  ragNew: string | null
+  ragActual: string | null
+  heuiPumpNew: string | null
+  heuiPumpReman: string | null
+  heuiPumpActual: string | null
+  exhMnfldNew: string | null
+  exhMnfldReman: string | null
+  exhMnfldActual: string | null
+  oilPumpNew: string | null
+  oilPumpReman: string | null
+  oilPumpActual: string | null
+  waterPumpNew: string | null
+  waterPumpReman: string | null
+  waterPumpActual: string | null
 };
 
 type CompareConsist = {
   id: number
-  customerId: number
-  dateCreated: Date
-  model: string
-  serialNum: string
-  arrNum: string
-  hp: string
-  headNew: string
-  headReman: string
-  blockNew: string
-  blockReman: string
-  crankNew: string
-  crankReman: string
-  pistonNew: string
-  pistonReman: string
-  camNew: string
-  camReman: string
-  injNew: string
-  injReman: string
-  turboNew: string
-  turboReman: string
-  fwhNew: string
-  fwhReman: string
-  frontHsngNew: string
-  frontHsngReman: string
-  oilPanNew: string
-  oilPanReman: string
-  turboHpNew: string
-  turboHpReman: string
-  turboLpNew: string
-  turboLpReman: string
-  heuiPumpNew: string
-  heuiPumpReman: string
-  exhMnfldNew: string
-  exhMnfldReman: string
-  oilPumpNew: string
-  oilPumpReman: string
-  waterPumpNew: string
-  waterPumpReman: string
-  notes: string
+  customerId: number | null
+  dateCreated: Date | null
+  model: string | null
+  serialNum: string | null
+  arrNum: string | null
+  hp: string | null
+  headNew: string | null
+  headReman: string | null
+  blockNew: string | null
+  blockReman: string | null
+  crankNew: string | null
+  crankReman: string | null
+  pistonNew: string | null
+  pistonReman: string | null
+  camNew: string | null
+  camReman: string | null
+  injNew: string | null
+  injReman: string | null
+  turboNew: string | null
+  turboReman: string | null
+  fwhNew: string | null
+  fwhReman: string | null
+  frontHsngNew: string | null
+  frontHsngReman: string | null
+  oilPanNew: string | null
+  oilPanReman: string | null
+  turboHpNew: string | null
+  turboHpReman: string | null
+  turboLpNew: string | null
+  turboLpReman: string | null
+  heuiPumpNew: string | null
+  heuiPumpReman: string | null
+  exhMnfldNew: string | null
+  exhMnfldReman: string | null
+  oilPumpNew: string | null
+  oilPumpReman: string | null
+  waterPumpNew: string | null
+  waterPumpReman: string | null
+  notes: string | null
   headCheck: boolean
   blockCheck: boolean
   crankCheck: boolean
@@ -645,53 +604,53 @@ type CompareConsist = {
 
 type Return = {
   id: number
-  customer: Customer
-  handwrittenId: number
-  warrantyId: number
-  invoiceDate: Date
-  salesman: User
-  dateCalled: Date
-  dateReceived: Date
-  creditIssued: Date
-  returnNotes: string
-  returnReason: string
-  returnPaymentTerms: string
-  restockFee: string
-  billToCompany: string
-  billToAddress: string
-  billToAddress2: string
-  billToCity: string
-  billToState: string
-  billToZip: string
-  billToContact: string
-  billToPhone: string
-  shipToCompany: string
-  shipToAddress: string
-  shipToAddress2: string
-  shipToCity: string
-  shipToState: string
-  shipToZip: string
-  poNum: string
-  payment: string
-  source: string
+  customer: Customer | null
+  handwrittenId: number | null
+  warrantyId: number | null
+  invoiceDate: Date | null
+  salesman: User | null
+  dateCalled: Date | null
+  dateReceived: Date | null
+  creditIssued: Date | null
+  returnNotes: string | null
+  returnReason: string | null
+  returnPaymentTerms: string | null
+  restockFee: string | null
+  billToCompany: string | null
+  billToAddress: string | null
+  billToAddress2: string | null
+  billToCity: string | null
+  billToState: string | null
+  billToZip: string | null
+  billToContact: string | null
+  billToPhone: string | null
+  shipToCompany: string | null
+  shipToAddress: string | null
+  shipToAddress2: string | null
+  shipToCity: string | null
+  shipToState: string | null
+  shipToZip: string | null
+  poNum: string | null
+  payment: string | null
+  source: string | null
   returnItems: ReturnItem[]
-  returnPart: ReturnPart
+  returnPart: ReturnPart | null
 };
 
 type ReturnItem = {
   id: number
   returnId: number
-  qty: number
-  partNum: string
-  desc: string
-  cost: number
-  unitPrice: number
-  stockNum: string
+  qty: number | null
+  partNum: string | null
+  desc: string | null
+  cost: number | null
+  unitPrice: number | null
+  stockNum: string | null
   isReturnReceived: boolean
   isReturnAsDescribed: boolean
   isReturnPutAway: boolean
-  notes: string
-  part: Part
+  notes: string | null
+  part: Part | null
 };
 
 type ReturnPart = {
@@ -704,51 +663,51 @@ type ReturnPart = {
 type PO = {
   id: number
   poNum: number
-  date: Date
-  purchasedFrom: string
-  vendorAddress: string
-  vendorCity: string
-  vendorState: string
-  vendorZip: string
-  vendorPhone: string
-  vendorFax: string
-  shipToCompany: string
-  shipToAddress: string
-  shipToCity: string
-  shipToState: string
-  shipToZip: string
-  shipToPhone: string
-  shipToFax: string
-  paymentTerms: string
-  specialInstructions: string
-  comments: string
-  purchasedFor: string
+  date: Date | null
+  purchasedFrom: string | null
+  vendorAddress: string | null
+  vendorCity: string | null
+  vendorState: string | null
+  vendorZip: string | null
+  vendorPhone: string | null
+  vendorFax: string | null
+  shipToCompany: string | null
+  shipToAddress: string | null
+  shipToCity: string | null
+  shipToState: string | null
+  shipToZip: string | null
+  shipToPhone: string | null
+  shipToFax: string | null
+  paymentTerms: string | null
+  specialInstructions: string | null
+  comments: string | null
+  purchasedFor: string | null
   isItemReceived: boolean
-  orderedBy: string
-  salesmanId: number
-  vendorContact: string
-  shippingMethod: string
+  orderedBy: string | null
+  salesmanId: number | null
+  vendorContact: string | null
+  shippingMethod: string | null
   poItems: POItem[]
   poReceivedItems: POReceivedItem[]
 };
 
 type POItem = {
   id: number
-  desc: string
-  qty: number
-  unitPrice: number
-  totalPrice: number
+  desc: string | null
+  qty: number | null
+  unitPrice: number | null
+  totalPrice: number | null
   isReceived: boolean
 };
 
 type POReceivedItem = {
   id: number
-  partNum: string
-  desc: string
-  stockNum: string
-  cost: number
-  qty: number
-  POItemId: number
+  partNum: string | null
+  desc: string | null
+  stockNum: string | null
+  cost: number | null
+  qty: number | null
+  POItemId: number | null
 };
 
 type EmailStuff = {
@@ -782,14 +741,14 @@ type ShippingList = {
 
 type Vendor = {
   id: number
-  name: string
-  vendorAddress: string
-  vendorState: string
-  vendorZip: string
-  vendorPhone: string
-  vendorFax: string
-  vendorTerms: string
-  vendorContact: string
+  name: string | null
+  vendorAddress: string | null
+  vendorState: string | null
+  vendorZip: string | null
+  vendorPhone: string | null
+  vendorFax: string | null
+  vendorTerms: string | null
+  vendorContact: string | null
 };
 
 type Alert = {
@@ -797,8 +756,8 @@ type Alert = {
   type: string
   partNum: string
   date: Date
-  addedBy: string
-  note: string
+  addedBy: string | null
+  note: string | null
 };
 
 type MapLocation = {
@@ -809,21 +768,12 @@ type MapLocation = {
   location: { lat: number, lng: number }
   type: MapLocationType
   salesman: string
-  customer: Customer
+  customer: Customer | null
   customerType: string
   date: Date
-  notes?: string
+  notes: string | null
 };
 type MapLocationType = 'customer' | 'vendor' | '';
-
-type Call = {
-  id: number
-  salesperson: string
-  callOpen: Date
-  callClose: Date
-  abortCall: boolean
-  customer: Customer
-};
 
 type Country = {
   id: number
@@ -858,98 +808,98 @@ interface Email {
 }
 
 interface CustomerEngineData {
-  serialNum: string
-  arrNum: string
-  headNew: string
-  blockNew: string
-  crankNew: string
-  pistonNew: string
-  camNew: string
-  injNew: string
-  turboNew: string
-  fwhNew: string
-  frontHsngNew: string
-  oilPanNew: string
-  turboHpNew: string
-  turboLpNew: string
-  heuiPumpNew: string
-  exhMnfldNew: string
-  oilPumpNew: string
-  waterPumpNew: string
-  headReman: string
-  blockReman: string
-  crankReman: string
-  pistonReman: string
-  camReman: string
-  injReman: string
-  turboReman: string
-  fwhReman: string
-  frontHsngReman: string
-  oilPanReman: string
-  turboHpReman: string
-  turboLpReman: string
-  heuiPumpReman: string
-  exhMnfldReman: string
-  oilPumpReman: string
-  waterPumpReman: string
+  serialNum: string | null
+  arrNum: string | null
+  headNew: string | null
+  blockNew: string | null
+  crankNew: string | null
+  pistonNew: string | null
+  camNew: string | null
+  injNew: string | null
+  turboNew: string | null
+  fwhNew: string | null
+  frontHsngNew: string | null
+  oilPanNew: string | null
+  turboHpNew: string | null
+  turboLpNew: string | null
+  heuiPumpNew: string | null
+  exhMnfldNew: string | null
+  oilPumpNew: string | null
+  waterPumpNew: string | null
+  headReman: string | null
+  blockReman: string | null
+  crankReman: string | null
+  pistonReman: string | null
+  camReman: string | null
+  injReman: string | null
+  turboReman: string | null
+  fwhReman: string | null
+  frontHsngReman: string | null
+  oilPanReman: string | null
+  turboHpReman: string | null
+  turboLpReman: string | null
+  heuiPumpReman: string | null
+  exhMnfldReman: string | null
+  oilPumpReman: string | null
+  waterPumpReman: string | null
 }
 
 interface EnginePartsTable {
-  blockReman: string
-  blockNew: string
-  blockCasting: string
-  blockActual: string
-  crankReman: string
-  crankNew: string
-  crankActual: string
-  camReman: string
-  camNew: string
-  camActual: string
-  injReman: string
-  injNew: string
-  injActual: string
-  turboReman: string
-  turboNew: string
-  turboActual: string
-  turboHpReman: string
-  turboHpNew: string
-  turboHpActual: string
-  turboLpReman: string
-  turboLpNew: string
-  turboLpActual: string
-  headReman: string
-  headNew: string
-  headActual: string
-  pistonReman: string
-  pistonNew: string
-  pistonActual: string
-  fwhNew: string
-  fwhActual: string
-  fwhReman: string
-  flywheelNew: string
-  flywheelActual: string
-  ragNew: string
-  ragActual: string
-  oilPanReman: string
-  oilPanNew: string
-  oilPanActual: string
-  oilCoolerReman: string
-  oilCoolerNew: string
-  oilCoolerActual: string
-  frontHsngNew: string
-  frontHsngActual: string
-  heuiPumpReman: string
-  heuiPumpNew: string
-  heuiPumpActual: string
-  oilPumpReman: string
-  oilPumpNew: string
-  oilPumpActual: string
-  waterPumpReman: string
-  waterPump: string
-  waterPumpActual: string
-  exhMnfldNew: string
-  exhMnfldActual: string
-  exhMnfldReman: string
+  blockReman: string | null
+  blockNew: string | null
+  blockCasting: string | null
+  blockActual: string | null
+  crankReman: string | null
+  crankNew: string | null
+  crankActual: string | null
+  camReman: string | null
+  camNew: string | null
+  camActual: string | null
+  injReman: string | null
+  injNew: string | null
+  injActual: string | null
+  turboReman: string | null
+  turboNew: string | null
+  turboActual: string | null
+  turboHpReman: string | null
+  turboHpNew: string | null
+  turboHpActual: string | null
+  turboLpReman: string | null
+  turboLpNew: string | null
+  turboLpActual: string | null
+  headReman: string | null
+  headNew: string | null
+  headActual: string | null
+  pistonReman: string | null
+  pistonNew: string | null
+  pistonActual: string | null
+  fwhNew: string | null
+  fwhActual: string | null
+  fwhReman: string | null
+  flywheelNew: string | null
+  flywheelActual: string | null
+  ragNew: string | null
+  ragActual: string | null
+  oilPanReman: string | null
+  oilPanNew: string | null
+  oilPanActual: string | null
+  oilCoolerReman: string | null
+  oilCoolerNew: string | null
+  oilCoolerActual: string | null
+  frontHsngNew: string | null
+  frontHsngActual: string | null
+  heuiPumpReman: string | null
+  heuiPumpNew: string | null
+  heuiPumpActual: string | null
+  oilPumpReman: string | null
+  oilPumpNew: string | null
+  oilPumpActual: string | null
+  waterPumpReman: string | null
+  waterPump: string | null
+  waterPumpActual: string | null
+  exhMnfldNew: string | null
+  exhMnfldActual: string | null
+  exhMnfldReman: string | null
 }
 
 interface SingleCompany {

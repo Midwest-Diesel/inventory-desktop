@@ -26,7 +26,7 @@ export default function AltPartsSearchDialog({ open, setOpen, setParts, setLoadi
   const [alertsData] = useAtom<Alert[]>(alertsAtom);
   const [user] = useAtom<User>(userAtom);
   const [showSoldParts] = useAtom<boolean>(showSoldPartsAtom);
-  const prevSearches = JSON.parse(localStorage.getItem('altPartSearches'));
+  const prevSearches = JSON.parse(localStorage.getItem('altPartSearches')!);
   const [partNum, setPartNum] = useState('*');
   const [stockNum, setStockNum] = useState('');
   const [desc, setDesc] = useState('');
@@ -60,7 +60,7 @@ export default function AltPartsSearchDialog({ open, setOpen, setParts, setLoadi
   }, [showSoldParts]);
 
   useEffect(() => {
-    document.getElementById('alt-part-search-input').focus();
+    document.getElementById('alt-part-search-input')?.focus();
   }, [open]);
 
 

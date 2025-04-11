@@ -17,7 +17,7 @@ export default function EngineSearchDialog({ open, setOpen, engines, setEngines 
   const [stockNum, setStockNum] = useState<number>('' as any);
   const [model, setModel] = useState('');
   const [serialNum, setSerialNum] = useState('');
-  const [date, setDate] = useState<Date>(null);
+  const [date, setDate] = useState<Date | null>(null);
   const [location, setLocation] = useState('');
   const [comments, setComments] = useState('');
   const [horsePower, setHorsePower] = useState('');
@@ -56,16 +56,16 @@ export default function EngineSearchDialog({ open, setOpen, engines, setEngines 
     return engines.filter((engine) => {
       if (
         (!stockNum || engine.stockNum === Number(stockNum)) &&
-        (!model || model.includes('*') ? engine.model.toUpperCase().includes(model.replace('*', '').toUpperCase()) : engine.model.toUpperCase() === model.toUpperCase()) &&
-        (!serialNum || serialNum.includes('*') ? engine.serialNum.toUpperCase().includes(serialNum.replace('*', '').toUpperCase()) : engine.serialNum.toUpperCase() === serialNum.toUpperCase()) &&
+        (!model || model.includes('*') ? engine.model?.toUpperCase().includes(model.replace('*', '').toUpperCase()) : engine.model?.toUpperCase() === model.toUpperCase()) &&
+        (!serialNum || serialNum.includes('*') ? engine.serialNum?.toUpperCase().includes(serialNum.replace('*', '').toUpperCase()) : engine.serialNum?.toUpperCase() === serialNum.toUpperCase()) &&
         (!parsedDate || formatDate(engine.loginDate) === parsedDate) &&
-        (!location || location.includes('*') ? engine.location.toUpperCase().includes(location.replace('*', '').toUpperCase()) : engine.location.toUpperCase() === location.toUpperCase()) &&
-        (!comments || comments.includes('*') ? engine.comments.toUpperCase().includes(comments.replace('*', '').toUpperCase()) : engine.comments.toUpperCase() === comments.toUpperCase()) &&
-        (!horsePower || horsePower.includes('*') ? engine.horsePower.toUpperCase().includes(horsePower.replace('*', '').toUpperCase()) : engine.horsePower.toUpperCase() === horsePower.toUpperCase()) &&
+        (!location || location.includes('*') ? engine.location?.toUpperCase().includes(location.replace('*', '').toUpperCase()) : engine.location?.toUpperCase() === location.toUpperCase()) &&
+        (!comments || comments.includes('*') ? engine.comments?.toUpperCase().includes(comments.replace('*', '').toUpperCase()) : engine.comments?.toUpperCase() === comments.toUpperCase()) &&
+        (!horsePower || horsePower.includes('*') ? engine.horsePower?.toUpperCase().includes(horsePower.replace('*', '').toUpperCase()) : engine.horsePower?.toUpperCase() === horsePower.toUpperCase()) &&
         (!jakeBrake || (!engine.jakeBrake && jakeBrake === 'FALSE') || (engine.jakeBrake && jakeBrake === 'TRUE')) &&
         (!warranty || (!engine.warranty && warranty === 'FALSE') || (engine.warranty && warranty === 'TRUE')) &&
         (!testRun || (!engine.testRun && testRun === 'FALSE') || (engine.testRun && testRun === 'TRUE')) &&
-        (!mileage || mileage.includes('*') ? engine.mileage.toUpperCase().includes(mileage.replace('*', '').toUpperCase()) : engine.mileage.toUpperCase() === mileage.toUpperCase()) &&
+        (!mileage || mileage.includes('*') ? engine.mileage?.toUpperCase().includes(mileage.replace('*', '').toUpperCase()) : engine.mileage?.toUpperCase() === mileage.toUpperCase()) &&
         (!currentStatus || engine.currentStatus === currentStatus)
       ) {
         return engine;

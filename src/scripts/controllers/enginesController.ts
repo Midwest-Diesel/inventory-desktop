@@ -13,8 +13,8 @@ const parseEngineRes = (data: any) => {
       warranty: Boolean(engine.warranty),
       testRun: Boolean(engine.testRun),
       ecm: Boolean(engine.ecm),
-      costOut: engine.costOut ? engine.costOut.filter((cost) => cost) : [],
-      costIn: engine.costOut ? engine.costIn.filter((cost) => cost) : []
+      costOut: engine.costOut ? engine.costOut.filter((cost: number) => cost) : [],
+      costIn: engine.costOut ? engine.costIn.filter((cost: number) => cost) : []
     };
   }).sort((a: any, b: any) => b.loginDate - a.loginDate);
 };
@@ -75,7 +75,7 @@ export const getEngineById = async (id: number) => {
   }
 };
 
-export const getEngineByStockNum = async (stockNum: number) => {
+export const getEngineByStockNum = async (stockNum: number | null): Promise<Engine | null> => {
   try {
     const auth = { withCredentials: true };
     const res = await api.get(`/api/engines/stock-num/${stockNum}`, auth);
@@ -83,6 +83,7 @@ export const getEngineByStockNum = async (stockNum: number) => {
     return res.data[0];
   } catch (err) {
     console.error(err);
+    return null;
   }
 };
 

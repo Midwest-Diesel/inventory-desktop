@@ -8,10 +8,10 @@ interface Props {
 
 
 export default function Print({ html, styles, onPrint }: Props) {
-  const ref = useRef<HTMLDivElement>(null);
+  const ref = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    ref.current.innerHTML = html;
+    if (ref.current) ref.current.innerHTML = html;
 
     window.addEventListener('afterprint', () => {
       onPrint();

@@ -9,19 +9,19 @@ import { FormEvent, useState } from "react";
 interface Props {
   open: boolean
   setOpen: (open: boolean) => void
-  loc: MapLocation
+  loc: MapLocation | null
 }
 
 
 export default function EditMapLocDialog({ open, setOpen, loc }: Props) {
-  const [name, setName] = useState(loc.name);
-  const [address, setAddress] = useState(loc.address);
-  const [type, setType] = useState<MapLocationType>(loc.type);
-  const [notes, setNotes] = useState(loc.notes);
+  const [name, setName] = useState<string>(loc?.name ?? '');
+  const [address, setAddress] = useState<string>(loc?.address ?? '');
+  const [type, setType] = useState<MapLocationType>(loc?.type ?? '');
+  const [notes, setNotes] = useState<string>(loc?.notes ?? '');
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    if (!await confirm('Are you sure?')) return;
+    if (!loc || !await confirm('Are you sure?')) return;
     const location = (await getGeoLocation(address))[0];
     const newLoc = {
       id: loc.id,
@@ -30,7 +30,7 @@ export default function EditMapLocDialog({ open, setOpen, loc }: Props) {
       lat: location.geometry.location.lat,
       lng: location.geometry.location.lng,
       type,
-      customerId: loc.customer.id,
+      customerId: loc.customer?.id,
       legacyId: null,
       date: loc.date,
       notes

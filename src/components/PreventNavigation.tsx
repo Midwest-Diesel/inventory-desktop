@@ -21,12 +21,12 @@ export const PreventNavigation = ({ shouldPrevent = true, text }: Props) => {
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
-      const link = target.closest('a');
+      const link: HTMLAnchorElement | null = target.closest('a');
       if (shouldPrevent) {
         e.preventDefault();
         e.stopImmediatePropagation();
         confirmationFn.current = () => {
-          push(link.textContent || 'Home', link.getAttribute('data-href') || '/');
+          push(link?.textContent || 'Home', link?.getAttribute('data-href') || '/');
         };
         setLeavingPage(true);
       }
@@ -63,7 +63,7 @@ export const PreventNavigation = ({ shouldPrevent = true, text }: Props) => {
       }
     };
 
-    document.querySelectorAll('.nav-dropdown').forEach((elmt) => {
+    document.querySelectorAll('.nav-dropdown').forEach((elmt: any) => {
       elmt.addEventListener('click', handleDropdownClick);
     });
     document.querySelectorAll('a').forEach((link) => {
@@ -74,7 +74,7 @@ export const PreventNavigation = ({ shouldPrevent = true, text }: Props) => {
     window.addEventListener('beforeunload', handleBeforeUnload);
 
     return () => {
-      document.querySelectorAll('.nav-dropdown').forEach((elmt) => {
+      document.querySelectorAll('.nav-dropdown').forEach((elmt: any) => {
         elmt.removeEventListener('click', handleDropdownClick);
       });
       document.querySelectorAll('a').forEach((link) => {

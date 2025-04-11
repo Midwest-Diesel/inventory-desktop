@@ -57,7 +57,7 @@ export default function NewEmailAttachmentDialog({ open, setOpen, setEmailStuff 
     clearInputs();
     setOpen(false);
 
-    const res = await getAllEmailStuff();
+    const res = await getAllEmailStuff() ?? [];
     setEmailStuff(res);
   };
 

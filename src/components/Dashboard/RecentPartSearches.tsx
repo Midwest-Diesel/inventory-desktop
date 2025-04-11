@@ -28,7 +28,7 @@ export default function RecentPartSearches() {
   }, [recentPartSearches]);
 
   const refreshRecentSearches = async (e: RealtimePostgresInsertPayload<RecentPartSearch>) => {
-    const newSearchData = e.new = { ...e.new, date: parseResDate(e.new.date as any), salesman: user.initials };
+    const newSearchData = e.new = { ...e.new, date: parseResDate(e.new.date as any), salesman: user.initials } as any;
     setRecentPartSearches([newSearchData, ...recentPartSearches]);
 
     const prevSearch: any = localStorage.getItem('altPartSearches') || localStorage.getItem('partSearches');

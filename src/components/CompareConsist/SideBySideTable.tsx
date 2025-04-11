@@ -11,10 +11,10 @@ import { invoke } from "@/scripts/config/tauri";
 import { useNavState } from "../Navbar/useNavState";
 
 interface Props {
-  customer: Customer
-  customerEngineData: CustomerEngineData
+  customer: Customer | null
+  customerEngineData: CustomerEngineData | null
   mwdEngine: Engine
-  setMwdEngine: (engine: Engine) => void
+  setMwdEngine: (engine: Engine | null) => void
 }
 
 
@@ -35,37 +35,37 @@ export default function SideBySideTable({ customer, customerEngineData, mwdEngin
 
   const determineMatchingValues = () => {
     const arr = [];
-    if ((customerEngineData.headNew && customerEngineData.headNew === mwdEngine.headNew) || (customerEngineData.headReman && customerEngineData.headReman === mwdEngine.headReman))
+    if ((customerEngineData?.headNew && customerEngineData?.headNew === mwdEngine.headNew) || (customerEngineData?.headReman && customerEngineData?.headReman === mwdEngine.headReman))
       arr.push(`Head`);
-    if ((customerEngineData.blockNew && customerEngineData.blockNew === mwdEngine.blockNew) || (customerEngineData.blockReman && customerEngineData.blockReman === mwdEngine.blockReman))
+    if ((customerEngineData?.blockNew && customerEngineData?.blockNew === mwdEngine.blockNew) || (customerEngineData?.blockReman && customerEngineData?.blockReman === mwdEngine.blockReman))
       arr.push(`Block`);
-    if ((customerEngineData.crankNew && customerEngineData.crankNew === mwdEngine.crankNew) || (customerEngineData.crankReman && customerEngineData.crankReman === mwdEngine.crankReman))
+    if ((customerEngineData?.crankNew && customerEngineData?.crankNew === mwdEngine.crankNew) || (customerEngineData?.crankReman && customerEngineData?.crankReman === mwdEngine.crankReman))
       arr.push(`Crank`);
-    if ((customerEngineData.pistonNew && customerEngineData.pistonNew === mwdEngine.pistonNew) || (customerEngineData.pistonReman && customerEngineData.pistonReman === mwdEngine.pistonReman))
+    if ((customerEngineData?.pistonNew && customerEngineData?.pistonNew === mwdEngine.pistonNew) || (customerEngineData?.pistonReman && customerEngineData?.pistonReman === mwdEngine.pistonReman))
       arr.push(`Pistons`);
-    if ((customerEngineData.camNew && customerEngineData.camNew === mwdEngine.camNew) || (customerEngineData.camReman && customerEngineData.camReman === mwdEngine.camReman))
+    if ((customerEngineData?.camNew && customerEngineData?.camNew === mwdEngine.camNew) || (customerEngineData?.camReman && customerEngineData?.camReman === mwdEngine.camReman))
       arr.push(`Cam`);
-    if ((customerEngineData.injNew && customerEngineData.injNew === mwdEngine.injNew) || (customerEngineData.injReman && customerEngineData.injReman === mwdEngine.injReman))
+    if ((customerEngineData?.injNew && customerEngineData?.injNew === mwdEngine.injNew) || (customerEngineData?.injReman && customerEngineData?.injReman === mwdEngine.injReman))
       arr.push(`Injectors`);
-    if ((customerEngineData.turboNew && customerEngineData.turboNew === mwdEngine.turboNew) || (customerEngineData.turboReman && customerEngineData.turboReman === mwdEngine.turboReman))
+    if ((customerEngineData?.turboNew && customerEngineData?.turboNew === mwdEngine.turboNew) || (customerEngineData?.turboReman && customerEngineData?.turboReman === mwdEngine.turboReman))
       arr.push(`Turbo`);
-    if ((customerEngineData.fwhNew && customerEngineData.fwhNew === mwdEngine.fwhNew) || (customerEngineData.fwhReman && customerEngineData.fwhReman === mwdEngine.fwhReman))
+    if ((customerEngineData?.fwhNew && customerEngineData?.fwhNew === mwdEngine.fwhNew) || (customerEngineData?.fwhReman && customerEngineData?.fwhReman === mwdEngine.fwhReman))
       arr.push(`Fwh`);
-    if ((customerEngineData.frontHsngNew && customerEngineData.frontHsngNew === mwdEngine.frontHsngNew) || (customerEngineData.frontHsngReman && customerEngineData.frontHsngReman === mwdEngine.frontHsngNew))
+    if ((customerEngineData?.frontHsngNew && customerEngineData?.frontHsngNew === mwdEngine.frontHsngNew) || (customerEngineData?.frontHsngReman && customerEngineData?.frontHsngReman === mwdEngine.frontHsngNew))
       arr.push(`FrontHsng`);
-    if ((customerEngineData.oilPanNew && customerEngineData.oilPanNew === mwdEngine.oilPanNew) || (customerEngineData.oilPanReman && customerEngineData.oilPanReman === mwdEngine.oilPanReman))
+    if ((customerEngineData?.oilPanNew && customerEngineData?.oilPanNew === mwdEngine.oilPanNew) || (customerEngineData?.oilPanReman && customerEngineData?.oilPanReman === mwdEngine.oilPanReman))
       arr.push(`OilPan`);
-    if ((customerEngineData.turboHpNew && customerEngineData.turboHpNew === mwdEngine.turboHpNew) || (customerEngineData.turboHpReman && customerEngineData.turboHpReman === mwdEngine.turboHpReman))
+    if ((customerEngineData?.turboHpNew && customerEngineData?.turboHpNew === mwdEngine.turboHpNew) || (customerEngineData?.turboHpReman && customerEngineData?.turboHpReman === mwdEngine.turboHpReman))
       arr.push(`TurboHp`);
-    if ((customerEngineData.turboLpNew && customerEngineData.turboLpNew === mwdEngine.turboLpNew) || (customerEngineData.turboLpReman && customerEngineData.turboLpReman === mwdEngine.turboLpReman))
+    if ((customerEngineData?.turboLpNew && customerEngineData?.turboLpNew === mwdEngine.turboLpNew) || (customerEngineData?.turboLpReman && customerEngineData?.turboLpReman === mwdEngine.turboLpReman))
       arr.push(`TurboLp`);
-    if ((customerEngineData.heuiPumpNew && customerEngineData.heuiPumpNew === mwdEngine.heuiPumpNew) || (customerEngineData.heuiPumpReman && customerEngineData.heuiPumpReman === mwdEngine.heuiPumpReman))
+    if ((customerEngineData?.heuiPumpNew && customerEngineData?.heuiPumpNew === mwdEngine.heuiPumpNew) || (customerEngineData?.heuiPumpReman && customerEngineData?.heuiPumpReman === mwdEngine.heuiPumpReman))
       arr.push(`HeuiPump`);
-    if ((customerEngineData.exhMnfldNew && customerEngineData.exhMnfldNew === mwdEngine.exhMnfldNew) || (customerEngineData.exhMnfldReman && customerEngineData.exhMnfldReman === mwdEngine.exhMnfldReman))
+    if ((customerEngineData?.exhMnfldNew && customerEngineData?.exhMnfldNew === mwdEngine.exhMnfldNew) || (customerEngineData?.exhMnfldReman && customerEngineData?.exhMnfldReman === mwdEngine.exhMnfldReman))
       arr.push(`ExhMnfld`);
-    if ((customerEngineData.oilPumpNew && customerEngineData.oilPumpNew === mwdEngine.oilPumpNew) || (customerEngineData.oilPumpReman && customerEngineData.oilPumpReman === mwdEngine.oilPumpReman))
+    if ((customerEngineData?.oilPumpNew && customerEngineData?.oilPumpNew === mwdEngine.oilPumpNew) || (customerEngineData?.oilPumpReman && customerEngineData?.oilPumpReman === mwdEngine.oilPumpReman))
       arr.push(`OilPump`);
-    if ((customerEngineData.waterPumpNew && customerEngineData.waterPumpNew === mwdEngine.waterPumpNew) || (customerEngineData.waterPumpReman && customerEngineData.waterPumpReman === mwdEngine.waterPumpReman))
+    if ((customerEngineData?.waterPumpNew && customerEngineData?.waterPumpNew === mwdEngine.waterPumpNew) || (customerEngineData?.waterPumpReman && customerEngineData?.waterPumpReman === mwdEngine.waterPumpReman))
       arr.push(`WaterPump`);
     setMatchingValues(arr.map((item) => item.replaceAll('\n', '').trim()));
   };
@@ -119,7 +119,7 @@ export default function SideBySideTable({ customer, customerEngineData, mwdEngin
       rating: 0,
       email: customer.email,
       partId: null
-    };
+    } as any;
     await addQuote(quote);
     await push('Home', '/');
   };
@@ -133,8 +133,8 @@ export default function SideBySideTable({ customer, customerEngineData, mwdEngin
         <div>
           <h2>{ customer && customer.company }</h2>
           <div>
-            { customerEngineData.serialNum && <p><strong>Serial Number: </strong>{ customerEngineData.serialNum }</p> }
-            { customerEngineData.arrNum && <p><strong>Arrangement Number: </strong>{ customerEngineData.arrNum }</p> }
+            { customerEngineData?.serialNum && <p><strong>Serial Number: </strong>{ customerEngineData?.serialNum }</p> }
+            { customerEngineData?.arrNum && <p><strong>Arrangement Number: </strong>{ customerEngineData?.arrNum }</p> }
           </div>
         </div>
         <div>
@@ -159,83 +159,83 @@ export default function SideBySideTable({ customer, customerEngineData, mwdEngin
           <tbody>
             <tr>
               <th style={{ backgroundColor: `${isMatchingValues('Head') ? 'var(--blue-1)' : ''}` }}>Head</th>
-              <td>{ customerEngineData.headReman }</td>
-              <td>{ customerEngineData.headNew }</td>
+              <td>{ customerEngineData?.headReman }</td>
+              <td>{ customerEngineData?.headNew }</td>
             </tr>
             <tr>
               <th style={{ backgroundColor: `${isMatchingValues('Block') ? 'var(--blue-1)' : ''}` }}>Block</th>
-              <td>{ customerEngineData.blockReman }</td>
-              <td>{ customerEngineData.blockNew }</td>
+              <td>{ customerEngineData?.blockReman }</td>
+              <td>{ customerEngineData?.blockNew }</td>
             </tr>
             <tr>
               <th style={{ backgroundColor: `${isMatchingValues('Crank') ? 'var(--blue-1)' : ''}` }}>Crank</th>
-              <td>{ customerEngineData.crankReman }</td>
-              <td>{ customerEngineData.crankNew }</td>
+              <td>{ customerEngineData?.crankReman }</td>
+              <td>{ customerEngineData?.crankNew }</td>
             </tr>
             <tr>
               <th style={{ backgroundColor: `${isMatchingValues('Pistons') ? 'var(--blue-1)' : ''}` }}>Pistons</th>
-              <td>{ customerEngineData.pistonReman }</td>
-              <td>{ customerEngineData.pistonNew }</td>
+              <td>{ customerEngineData?.pistonReman }</td>
+              <td>{ customerEngineData?.pistonNew }</td>
             </tr>
             <tr>
               <th style={{ backgroundColor: `${isMatchingValues('Cam') ? 'var(--blue-1)' : ''}` }}>Camshaft</th>
-              <td>{ customerEngineData.camReman }</td>
-              <td>{ customerEngineData.camNew }</td>
+              <td>{ customerEngineData?.camReman }</td>
+              <td>{ customerEngineData?.camNew }</td>
             </tr>
             <tr>
               <th style={{ backgroundColor: `${isMatchingValues('Injectors') ? 'var(--blue-1)' : ''}` }}>Injectors</th>
-              <td>{ customerEngineData.injReman }</td>
-              <td>{ customerEngineData.injNew }</td>
+              <td>{ customerEngineData?.injReman }</td>
+              <td>{ customerEngineData?.injNew }</td>
             </tr>
             <tr>
               <th style={{ backgroundColor: `${isMatchingValues('Turbo') ? 'var(--blue-1)' : ''}` }}>Single Turbo</th>
-              <td>{ customerEngineData.turboReman }</td>
-              <td>{ customerEngineData.turboNew }</td>
+              <td>{ customerEngineData?.turboReman }</td>
+              <td>{ customerEngineData?.turboNew }</td>
             </tr>
             <tr>
               <th style={{ backgroundColor: `${isMatchingValues('Fwh') ? 'var(--blue-1)' : ''}` }}>FWH</th>
-              <td>{ customerEngineData.fwhReman }</td>
-              <td>{ customerEngineData.fwhNew }</td>
+              <td>{ customerEngineData?.fwhReman }</td>
+              <td>{ customerEngineData?.fwhNew }</td>
             </tr>
             <tr>
               <th style={{ backgroundColor: `${isMatchingValues('FrontHsng') ? 'var(--blue-1)' : ''}` }}>Front Housing</th>
-              <td>{ customerEngineData.frontHsngReman }</td>
-              <td>{ customerEngineData.frontHsngNew }</td>
+              <td>{ customerEngineData?.frontHsngReman }</td>
+              <td>{ customerEngineData?.frontHsngNew }</td>
             </tr>
             <tr>
               <th style={{ backgroundColor: `${isMatchingValues('OilPan') ? 'var(--blue-1)' : ''}` }}>Oil Pan</th>
-              <td>{ customerEngineData.oilPanReman }</td>
-              <td>{ customerEngineData.oilPanNew }</td>
+              <td>{ customerEngineData?.oilPanReman }</td>
+              <td>{ customerEngineData?.oilPanNew }</td>
             </tr>
             <tr>
               <th style={{ backgroundColor: `${isMatchingValues('TurboHp') ? 'var(--blue-1)' : ''}` }}>HP Turbo</th>
-              <td>{ customerEngineData.turboHpReman }</td>
-              <td>{ customerEngineData.turboHpNew }</td>
+              <td>{ customerEngineData?.turboHpReman }</td>
+              <td>{ customerEngineData?.turboHpNew }</td>
             </tr>
             <tr>
               <th style={{ backgroundColor: `${isMatchingValues('TurboLp') ? 'var(--blue-1)' : ''}` }}>LP Turbo</th>
-              <td>{ customerEngineData.turboLpReman }</td>
-              <td>{ customerEngineData.turboLpNew }</td>
+              <td>{ customerEngineData?.turboLpReman }</td>
+              <td>{ customerEngineData?.turboLpNew }</td>
             </tr>
             <tr>
               <th style={{ backgroundColor: `${isMatchingValues('HeuiPump') ? 'var(--blue-1)' : ''}` }}>HEUI Pump</th>
-              <td>{ customerEngineData.heuiPumpReman }</td>
-              <td>{ customerEngineData.heuiPumpNew }</td>
+              <td>{ customerEngineData?.heuiPumpReman }</td>
+              <td>{ customerEngineData?.heuiPumpNew }</td>
             </tr>
             <tr>
               <th style={{ backgroundColor: `${isMatchingValues('ExhMnfld') ? 'var(--blue-1)' : ''}` }}>ExhManfld</th>
-              <td>{ customerEngineData.exhMnfldReman }</td>
-              <td>{ customerEngineData.exhMnfldNew }</td>
+              <td>{ customerEngineData?.exhMnfldReman }</td>
+              <td>{ customerEngineData?.exhMnfldNew }</td>
             </tr>
             <tr>
               <th style={{ backgroundColor: `${isMatchingValues('OilPump') ? 'var(--blue-1)' : ''}` }}>Oil Pump</th>
-              <td>{ customerEngineData.oilPumpReman }</td>
-              <td>{ customerEngineData.oilPumpNew }</td>
+              <td>{ customerEngineData?.oilPumpReman }</td>
+              <td>{ customerEngineData?.oilPumpNew }</td>
             </tr>
             <tr>
               <th style={{ backgroundColor: `${isMatchingValues('WaterPump') ? 'var(--blue-1)' : ''}` }}>Water Pump</th>
-              <td>{ customerEngineData.waterPumpReman }</td>
-              <td>{ customerEngineData.waterPumpNew }</td>
+              <td>{ customerEngineData?.waterPumpReman }</td>
+              <td>{ customerEngineData?.waterPumpNew }</td>
             </tr>
           </tbody>
         </Table>

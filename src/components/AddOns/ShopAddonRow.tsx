@@ -27,7 +27,7 @@ interface Props {
 
 
 export default function ShopAddonRow({ addOn, handleDuplicateAddOn, partNumList, engineNumList }: Props) {
-  const [selectedPoData, setSelectedPoData] = useAtom<{ selectedPoAddOn: PO, addOn: AddOn, receivedItemsDialogOpen: boolean }>(selectedPoAddOnAtom);
+  const [selectedPoData, setSelectedPoData] = useAtom<{ selectedPoAddOn: PO | null, addOn: AddOn | null, receivedItemsDialogOpen: boolean }>(selectedPoAddOnAtom);
   const [addOns, setAddons] = useAtom<AddOn[]>(shopAddOnsAtom);
   const [poLink, setPoLink] = useState<string>(addOn.po ? `${addOn.po}` : '');
   const [autofillPartNum, setAutofillPartNum] = useState('');
@@ -39,6 +39,7 @@ export default function ShopAddonRow({ addOn, handleDuplicateAddOn, partNumList,
   useEffect(() => {
     if (!showVendorSelect) return;
     setTimeout(() => {
+      if (!ref.current) return;
       const select = ref.current.querySelectorAll('select');
       select.length > 0 && select[select.length - 1].focus();
     }, 30);
@@ -64,7 +65,7 @@ export default function ShopAddonRow({ addOn, handleDuplicateAddOn, partNumList,
     if (!partNum) {
       setAutofillPartNum('');
     } else {
-      setAutofillPartNum(partNumList.find((p) => p.startsWith(partNum)));
+      setAutofillPartNum(partNumList.find((p) => p.startsWith(partNum)) ?? '');
     }
   };
 
@@ -72,7 +73,7 @@ export default function ShopAddonRow({ addOn, handleDuplicateAddOn, partNumList,
     if (!engineNum) {
       setAutofillEngineNum('');
     } else {
-      setAutofillEngineNum(engineNumList.find((p) => p.startsWith(`${engineNum}`)));
+      setAutofillEngineNum(engineNumList.find((p) => p.startsWith(`${engineNum}`)) ?? '');
     }
   };
 
@@ -258,7 +259,7 @@ export default function ShopAddonRow({ addOn, handleDuplicateAddOn, partNumList,
               <td>
                 <Select
                   style={{ width: '100%' }}
-                  value={addOn.manufacturer}
+                  value={addOn.manufacturer ?? ''}
                   onChange={(e: any) => handleEditAddOn({ ...addOn, manufacturer: e.target.value })}
                 >
                   <option value="CAT">CAT</option>
@@ -272,7 +273,7 @@ export default function ShopAddonRow({ addOn, handleDuplicateAddOn, partNumList,
               <td>
                 <Select
                   style={{ width: '100%' }}
-                  value={addOn.condition}
+                  value={addOn.condition ?? ''}
                   onChange={(e: any) => handleEditAddOn({ ...addOn, condition: e.target.value })}
                 >
                   <option value="Core">Core</option>
@@ -367,7 +368,7 @@ export default function ShopAddonRow({ addOn, handleDuplicateAddOn, partNumList,
                   {showVendorSelect ?
                     <VendorSelect
                       variant={['label-full-width']}
-                      value={addOn.purchasedFrom}
+                      value={addOn.purchasedFrom ?? ''}
                       onChange={(e: any) => handleEditAddOn({ ...addOn, purchasedFrom: e.target.value })}
                       onBlur={() => setShowVendorSelect(false)}
                     />

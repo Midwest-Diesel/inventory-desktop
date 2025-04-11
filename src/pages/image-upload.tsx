@@ -7,8 +7,8 @@ import { FormEvent, useState } from "react";
 
 
 export default function ImageUpload() {
-  const [partImages, setPartImages] = useState<File[]>(null);
-  const [stockNumImages, setStockNumImages] = useState<File[]>(null);
+  const [partImages, setPartImages] = useState<File[]>([]);
+  const [stockNumImages, setStockNumImages] = useState<File[]>([]);
   const [partImagesName, setPartImagesName] = useState('');
   const [stockNumImagesName, setStockNumImagesName] = useState('');
   const [isUploadingParts, setIsUploadingParts] = useState(false);
@@ -22,7 +22,7 @@ export default function ImageUpload() {
       const content = Array.from(new Uint8Array(arrayBuffer));
       await invoke('upload_file', { fileArgs: { file: content, dir: `\\\\MWD1-SERVER/Server/Pictures/parts_dir/${partImagesName}`, name: image.name }});
     }
-    setPartImages(null);
+    setPartImages([]);
     setPartImagesName('');
     setIsUploadingParts(false);
   };
@@ -35,7 +35,7 @@ export default function ImageUpload() {
       const content = Array.from(new Uint8Array(arrayBuffer));
       await invoke('upload_file', { fileArgs: { file: content, dir: `\\\\MWD1-SERVER/Server/Pictures/sn_specific/${stockNumImagesName}`, name: image.name }});
     }
-    setStockNumImages(null);
+    setStockNumImages([]);
     setStockNumImagesName('');
     setIsUploadingStockNums(false);
   };

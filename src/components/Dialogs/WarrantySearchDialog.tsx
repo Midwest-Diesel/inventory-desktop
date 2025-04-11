@@ -42,8 +42,8 @@ export default function WarrantySearchDialog({ open, setOpen, setWarranties, set
       offset: 0
     };
     const res = await searchWarranties(searchData);
-    setWarranties(res.rows);
-    setMinItems(res.minItems);
+    setWarranties(res?.rows);
+    setMinItems(res?.minItems);
     setSearchData(searchData);
   };
 

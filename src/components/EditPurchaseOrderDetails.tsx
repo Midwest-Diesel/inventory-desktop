@@ -19,31 +19,31 @@ interface Props {
 
 
 export default function EditPoDetails({ poData, setPo, setIsEditing }: Props) {
-  const [date, setDate] = useState<Date>(poData.date);
-  const [purchasedFrom, setPurchasedFrom] = useState(poData.purchasedFrom);
-  const [vendorAddress, setVendorAddress] = useState(poData.vendorAddress);
-  const [vendorCity, setVendorCity] = useState(poData.vendorCity);
-  const [vendorState, setVendorState] = useState(poData.vendorState);
-  const [vendorZip, setVendorZip] = useState(poData.vendorZip);
-  const [vendorPhone, setVendorPhone] = useState(poData.vendorPhone);
-  const [vendorFax, setVendorFax] = useState(poData.vendorFax);
-  const [shipToCompany, setShipToCompany] = useState(poData.shipToCompany);
-  const [shipToAddress, setShipToAddress] = useState(poData.shipToAddress);
-  const [shipToCity, setShipToCity] = useState(poData.shipToCity);
-  const [shipToState, setShipToState] = useState(poData.shipToState);
-  const [shipToZip, setShipToZip] = useState(poData.shipToZip);
-  const [shipToPhone, setShipToPhone] = useState(poData.shipToPhone);
-  const [shipToFax, setShipToFax] = useState(poData.shipToFax);
-  const [paymentTerms, setPaymentTerms] = useState(poData.paymentTerms);
-  const [specialInstructions, setSpecialInstructions] = useState(poData.specialInstructions);
-  const [comments, setComments] = useState(poData.comments);
-  const [purchasedFor, setPurchasedFor] = useState(poData.purchasedFor);
-  const [isItemReceived, setIsItemReceived] = useState(poData.isItemReceived);
-  const [orderedBy, setOrderedBy] = useState(poData.orderedBy);
-  const [vendorContact, setVendorContact] = useState(poData.vendorContact);
-  const [shippingMethod, setShippingMethod] = useState(poData.shippingMethod);
+  const [date, setDate] = useState<Date | null>(poData.date);
+  const [purchasedFrom, setPurchasedFrom] = useState<string>(poData.purchasedFrom ?? '');
+  const [vendorAddress, setVendorAddress] = useState<string>(poData.vendorAddress ?? '');
+  const [vendorCity, setVendorCity] = useState<string>(poData.vendorCity ?? '');
+  const [vendorState, setVendorState] = useState<string>(poData.vendorState ?? '');
+  const [vendorZip, setVendorZip] = useState<string>(poData.vendorZip ?? '');
+  const [vendorPhone, setVendorPhone] = useState<string>(poData.vendorPhone ?? '');
+  const [vendorFax, setVendorFax] = useState<string>(poData.vendorFax ?? '');
+  const [shipToCompany, setShipToCompany] = useState<string>(poData.shipToCompany ?? '');
+  const [shipToAddress, setShipToAddress] = useState<string>(poData.shipToAddress ?? '');
+  const [shipToCity, setShipToCity] = useState<string>(poData.shipToCity ?? '');
+  const [shipToState, setShipToState] = useState<string>(poData.shipToState ?? '');
+  const [shipToZip, setShipToZip] = useState<string>(poData.shipToZip ?? '');
+  const [shipToPhone, setShipToPhone] = useState<string>(poData.shipToPhone ?? '');
+  const [shipToFax, setShipToFax] = useState<string>(poData.shipToFax ?? '');
+  const [paymentTerms, setPaymentTerms] = useState<string>(poData.paymentTerms ?? '');
+  const [specialInstructions, setSpecialInstructions] = useState<string>(poData.specialInstructions ?? '');
+  const [comments, setComments] = useState<string>(poData.comments ?? '');
+  const [purchasedFor, setPurchasedFor] = useState<string>(poData.purchasedFor ?? '');
+  const [isItemReceived, setIsItemReceived] = useState<boolean>(poData.isItemReceived);
+  const [orderedBy, setOrderedBy] = useState<string>(poData.orderedBy ?? '');
+  const [vendorContact, setVendorContact] = useState<string>(poData.vendorContact ?? '');
+  const [shippingMethod, setShippingMethod] = useState<string>(poData.shippingMethod ?? '');
   const [poItems, setPoItems] = useState<POItem[]>(poData.poItems);
-  const [changesSaved, setChangesSaved] = useState<boolean>(true);
+  const [changesSaved, setChangesSaved] = useState(true);
 
   const saveChanges = async (e: FormEvent) => {
     e.preventDefault();
@@ -77,7 +77,7 @@ export default function EditPoDetails({ poData, setPo, setIsEditing }: Props) {
     await editPurchaseOrder(newPo);
     if (JSON.stringify(poItems) !== JSON.stringify(poData.poItems)) {
       for (let i = 0; i < poItems.length; i++) {
-        const item = poItems[i];
+        const item: any = poItems[i];
         const newItem = {
           id: item.id,
           ...item
@@ -117,7 +117,7 @@ export default function EditPoDetails({ poData, setPo, setIsEditing }: Props) {
   };
 
   const handleChangeVendor = async (vendor: Vendor) => {
-    setPurchasedFrom(vendor.name);
+    setPurchasedFrom(vendor.name ?? '');
   };
 
 
@@ -425,7 +425,7 @@ export default function EditPoDetails({ poData, setPo, setIsEditing }: Props) {
                       <tr key={i}>
                         <td>
                           <Input
-                            value={item.qty}
+                            value={item.qty ?? ''}
                             onChange={(e: any) => handleEditItem({ ...item, qty: e.target.value }, i)}
                             type="number"
                             required
@@ -433,13 +433,13 @@ export default function EditPoDetails({ poData, setPo, setIsEditing }: Props) {
                         </td>
                         <td>
                           <Input
-                            value={item.desc}
+                            value={item.desc ?? ''}
                             onChange={(e: any) => handleEditItem({ ...item, desc: e.target.value }, i)}
                           />
                         </td>
                         <td>
                           <Input
-                            value={item.unitPrice}
+                            value={item.unitPrice ?? ''}
                             onChange={(e: any) => handleEditItem({ ...item, unitPrice: e.target.value }, i)}
                             type="number"
                             required
@@ -447,7 +447,7 @@ export default function EditPoDetails({ poData, setPo, setIsEditing }: Props) {
                         </td>
                         <td>
                           <Input
-                            value={item.totalPrice}
+                            value={item.totalPrice ?? ''}
                             onChange={(e: any) => handleEditItem({ ...item, totalPrice: e.target.value }, i)}
                             type="number"
                             required

@@ -13,8 +13,9 @@ export const getAllFreightCarriers = async () => {
   }
 };
 
-export const getFreightCarrierById = async (id: number) => {
+export const getFreightCarrierById = async (id: number | null) => {
   try {
+    if (!id) return null;
     const auth = { withCredentials: true };
     const res = await api.get(`/api/freight-carriers/${id}`, auth);
     return res.data;

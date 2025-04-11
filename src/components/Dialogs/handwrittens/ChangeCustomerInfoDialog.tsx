@@ -8,19 +8,19 @@ interface Props {
   open: boolean
   setOpen: (open: boolean) => void
   customer: Customer
-  handwritten: Handwritten
+  handwritten: Handwritten | null
   setIsEditing: (value: boolean) => void
 }
 
 
 export default function ChangeCustomerInfoDialog({ open, setOpen, customer, handwritten, setIsEditing }: Props) {
-  const [billToCompany, setBillToCompany] = useState<string>(handwritten.billToCompany);
-  const [billToAddress, setBillToAddress] = useState<string>(handwritten.billToAddress);
-  const [billToAddress2, setBillToAddress2] = useState<string>(handwritten.billToAddress2);
-  const [billToCity, setBillToCity] = useState<string>(handwritten.billToCity);
-  const [billToState, setBillToState] = useState<string>(handwritten.billToState);
-  const [billToZip, setBillToZip] = useState<string>(handwritten.billToZip);
-  const [billToPhone, setBillToPhone] = useState<string>(handwritten.billToPhone);
+  const [billToCompany, setBillToCompany] = useState<string>(handwritten?.billToCompany ?? '');
+  const [billToAddress, setBillToAddress] = useState<string>(handwritten?.billToAddress ?? '');
+  const [billToAddress2, setBillToAddress2] = useState<string>(handwritten?.billToAddress2 ?? '');
+  const [billToCity, setBillToCity] = useState<string>(handwritten?.billToCity ?? '');
+  const [billToState, setBillToState] = useState<string>(handwritten?.billToState ?? '');
+  const [billToZip, setBillToZip] = useState<string>(handwritten?.billToZip ?? '');
+  const [billToPhone, setBillToPhone] = useState<string>(handwritten?.billToPhone ?? '');
   const [showBillToCompany] = useState<boolean>((billToCompany || '') !== (customer.company || ''));
   const [showBillToAddress] = useState<boolean>((billToAddress || '') !== (customer.billToAddress || ''));
   const [showBillToAddress2] = useState<boolean>((billToAddress2 || '') !== (customer.billToAddress2 || ''));

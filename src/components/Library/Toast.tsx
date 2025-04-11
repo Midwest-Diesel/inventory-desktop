@@ -11,7 +11,7 @@ interface Props {
   duration?: number
 }
 
-export default function Toast({ msg, className = '', variant, type, open, setOpen, duration = 4000, ...props }: Props) {
+export default function Toast({ msg, className = '', variant = [], type, open, setOpen, duration = 4000, ...props }: Props) {
   const classes = generateClasses(className, variant, 'toast');
   const ref = useRef<HTMLParagraphElement>(null);
 
@@ -20,6 +20,7 @@ export default function Toast({ msg, className = '', variant, type, open, setOpe
   }, [open]);
 
   const handleOpened = () => {
+    if (!ref.current) return;
     ref.current.innerHTML = msg;
     setTimeout(() => {
       setOpen(false);

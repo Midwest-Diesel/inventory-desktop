@@ -22,7 +22,7 @@ export default function Warranty() {
   const { backward, push } = useNavState();
   const params = useParams();
   const [user] = useAtom<User>(userAtom);
-  const [warrantyData, setWarrantyData] = useState<Warranty>(null);
+  const [warrantyData, setWarrantyData] = useState<Warranty | null>(null);
   const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
@@ -36,34 +36,34 @@ export default function Warranty() {
   }, [params]);
 
   const handleDelete = async () => {
-    if (user.accessLevel <= 1 || prompt('Type "confirm" to delete this warranty') !== 'confirm') return;
+    if (user.accessLevel <= 1 || prompt('Type "confirm" to delete this warranty') !== 'confirm' || !warrantyData?.id) return;
     await deleteWarranty(warrantyData.id);
     await push('Warranties', '/warranties');
   };
 
   const handleCompleteWarranty = async () => {
-    if (!await confirm(`${warrantyData.completed ? 'Open' : 'Close'} warranty?`)) return;
+    if (!warrantyData || !await confirm(`${warrantyData.completed ? 'Open' : 'Close'} warranty?`)) return;
     await editWarrantyCompleted(warrantyData.id, !warrantyData.completed, warrantyData.completedDate ? null : new Date());
     setWarrantyData(await getWarrantyById(warrantyData.id));
   };
 
   const handlePrint = async () => {
     if (!await confirm('Print warranty?')) return;
-    let claimReason = [];
-    let vendorReport = [];
+    let claimReason: string[] = [];
+    let vendorReport: string[] = [];
     const args = {
-      vendor: warrantyData.vendor || '',
-      createdDate: formatDate(warrantyData.date),
-      id: Number(warrantyData.id),
-      vendorWarrantyId: Number(warrantyData.vendorWarrantyNum),
-      completed: warrantyData.completed ? `Claim Completed: ${formatDate(warrantyData.completedDate)}` : '',
-      billToAddress: warrantyData.customer.billToAddress || '',
-      shipToAddress: warrantyData.customer.shipToAddress || '',
-      paymentTerms: warrantyData.return.returnPaymentTerms || ' ',
-      restockFee: warrantyData.return.restockFee || ' ',
-      items: JSON.stringify(warrantyData.warrantyItems.map((item, i) => {
-        claimReason.push(`[Row ${i + 1}] ${item.claimReason.replaceAll('"', `'`)}`);
-        vendorReport.push(`[Row ${i + 1}] ${item.vendorReport.replaceAll('"', `'`)}`);
+      vendor: warrantyData?.vendor || '',
+      createdDate: formatDate(warrantyData?.date ?? null),
+      id: Number(warrantyData?.id),
+      vendorWarrantyId: Number(warrantyData?.vendorWarrantyNum),
+      completed: warrantyData?.completed ? `Claim Completed: ${formatDate(warrantyData?.completedDate)}` : '',
+      billToAddress: warrantyData?.customer?.billToAddress || '',
+      shipToAddress: warrantyData?.customer?.shipToAddress || '',
+      paymentTerms: warrantyData?.return?.returnPaymentTerms || ' ',
+      restockFee: warrantyData?.return?.restockFee || ' ',
+      items: JSON.stringify(warrantyData?.warrantyItems.map((item: WarrantyItem, i: number) => {
+        claimReason.push(`[Row ${i + 1}] ${item?.claimReason?.replaceAll('"', `'`)}`);
+        vendorReport.push(`[Row ${i + 1}] ${item?.vendorReport?.replaceAll('"', `'`)}`);
 
         return {
           qty: item.qty || '',

@@ -29,8 +29,8 @@ const parsePartsData = async (parts: any) => {
       altParts: part.altParts ? part.altParts.split(',').map((p: any) => p.trim()) : [],
       partsCostIn: part.partsCostIn ? part.partsCostIn.filter((part: any) => !isObjectNull(part)) : [],
       engineCostOut: part.engineCostOut ? part.engineCostOut.filter((part: any) => !isObjectNull(part)) : [],
-      imageExists: window.__TAURI_IPC__ && await checkImageExists(part.partNum, 'part'),
-      snImageExists: window.__TAURI_IPC__ && await checkImageExists(part.stockNum, 'stock'),
+      imageExists: (window as any).__TAURI_IPC__ && await checkImageExists(part.partNum, 'part'),
+      snImageExists: (window as any).__TAURI_IPC__ && await checkImageExists(part.stockNum, 'stock'),
     };
   }));
   return partsWithImages;
@@ -140,11 +140,11 @@ export const getPartsByYear = async (year: number) => {
   }
 };
 
-export const getSomeParts = async (page: number, limit: number, showSoldParts: boolean) => {
+export const getSomeParts = async (page: number, limit: number, showSoldParts: boolean): Promise<any> => {
   try {
     const auth = { withCredentials: true };
     const res = await api.get(`/api/parts/limit/${JSON.stringify({ page: (page - 1) * limit, limit, showSoldParts })}`, auth);
-    return await parsePartsData(res.data);
+    return await parsePartsData(res.data) ?? [];
   } catch (err) {
     console.error(err);
   }
@@ -204,13 +204,13 @@ export const getSalesInfo = async (altParts: string) => {
     const res = await api.get(`/api/parts/sales-info/${altParts}`, auth);
     return {
       ...res.data,
-      sales: res.data.sales.map((part) => {
+      sales: res.data.sales.map((part: any) => {
         return {
           ...part,
           soldToDate: parseResDate(part.soldToDate)
         };
       }),
-      quotes: res.data.quotes.map((quote) => {
+      quotes: res.data.quotes.map((quote: any) => {
         return {
           ...quote,
           date: parseResDate(quote.date)
@@ -249,8 +249,8 @@ export const addPart = async (part: Part, partInfoExists: boolean, updateLoading
     if (filteredAlts.length > 0) {
       await addAltParts(partNum, includedAlts, updateLoading);
       // Updates alt parts
-      let altsToAdd = [];
-      const res = await searchAltParts({ partNum: `*${filteredAlts[0]}`, showSoldParts: true });
+      let altsToAdd: any[] = [];
+      const res = await searchAltParts({ partNum: `*${filteredAlts[0]}`, showSoldParts: true }) ?? [];
       res.forEach((part) => {
         altsToAdd.push(...part.altParts);
       });
@@ -262,7 +262,7 @@ export const addPart = async (part: Part, partInfoExists: boolean, updateLoading
   }
 };
 
-export const addPartCostIn = async (stockNum: string, cost: number, invoiceNum: number, vendor: string, costType: string, note: string) => {
+export const addPartCostIn = async (stockNum: string, cost: number, invoiceNum: number | null, vendor: string, costType: string, note: string) => {
   try {
     const auth = { withCredentials: true };
     await api.post('/api/parts/part-cost-in', { stockNum, cost, invoiceNum, vendor, costType, note }, auth);

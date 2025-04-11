@@ -17,7 +17,7 @@ export default function AddOnsOffice() {
   const [engineNumList, setEngineNumList] = useState<string[]>([]);
   const [prevAddons, setPrevAddons] = useState<AddOn[]>([]);
   const [addOns, setAddons] = useAtom<AddOn[]>(shopAddOnsAtom);
-  const [selectedAddOnData, setSelectedAddOnData] = useAtom<{ addOn: AddOn, dialogOpen: boolean }>(selectedAddOnAtom);
+  const [selectedAddOnData, setSelectedAddOnData] = useAtom<{ addOn: AddOn | null, dialogOpen: boolean }>(selectedAddOnAtom);
   const [savedBtnText, setSavedBtnText] = useState('Save');
   const [shouldPreventLeave, setShouldPreventLeave] = useState(false);
 
@@ -28,9 +28,9 @@ export default function AddOnsOffice() {
       setPrevAddons(res);
 
       const partNums = await getAllPartNums();
-      setPartNumList(partNums.map((p) => p.partNum));
+      setPartNumList(partNums.map((p: Part) => p.partNum));
       const engines = await getAllEngineNums();
-      setEngineNumList(engines.map((e) => `${e.stockNum}`));
+      setEngineNumList(engines.map((e: Engine) => `${e.stockNum}`));
     };
     fetchData();
   }, []);

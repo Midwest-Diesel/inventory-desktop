@@ -11,7 +11,7 @@ interface Props {
 }
 
 
-export default function Grid({ children, className, rows = 1, cols = 12, gap = 0, variant }: Props) {
+export default function Grid({ children, className = '', rows = 1, cols = 12, gap = 0, variant = [] }: Props) {
   const ref = useRef(null) as any;
   const classes = generateClasses(className, variant, 'grid');
     

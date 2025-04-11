@@ -9,7 +9,7 @@ interface Props {
   open: boolean
   setOpen: (open: boolean) => void
   purchaseOrder: PO
-  addOn: AddOn
+  addOn: AddOn | null
 }
 
 
@@ -33,11 +33,11 @@ export default function MarkPoItemsReceivedDialog({ open, setOpen, purchaseOrder
     if (!newItemsList.find((i) => !i.isReceived)) await togglePurchaseOrderReceived(purchaseOrder.id, true);
 
     const newItem = {
-      partNum: addOn.partNum,
-      desc: addOn.desc,
-      stockNum: addOn.stockNum,
-      cost: addOn.newPrice,
-      qty: addOn.qty,
+      partNum: addOn?.partNum,
+      desc: addOn?.desc,
+      stockNum: addOn?.stockNum,
+      cost: addOn?.newPrice,
+      qty: addOn?.qty,
       POItemId: item.id
     } as any;
     await addPurchaseOrderReceivedItem(newItem);

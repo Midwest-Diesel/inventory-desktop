@@ -6,14 +6,14 @@ interface Props {
   className?: string
   variant?: ('default')[]
   data: any[]
-  setData: (data: any[], page?: number) => void
+  setData: (data: any[], page: number) => void
   btnCount?: number
   page?: number
   pageSize: number
   minData?: any[]
 }
 
-export default function Pagination({ className = '', variant, data, setData, btnCount = 5, page = 1, pageSize, minData }: Props) {
+export default function Pagination({ className = '', variant = [], data, setData, btnCount = 5, page = 1, pageSize, minData }: Props) {
   const classes = generateClasses(className, variant, 'pagination');
   const [currentPage, setCurrentPage] = useState(page);
 

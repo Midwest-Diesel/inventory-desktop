@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 
 
 export default function Performance() {
-  const [performance, setPerformance] = useState<Performance>(null);
+  const [performance, setPerformance] = useState<Performance | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {

@@ -33,7 +33,7 @@ export default function VendorSelect({ variant, label, ...props }: Props) {
           <option value="">-- SELECT A VENDOR --</option>
           {vendorsData.length > 0 && vendorsData.sort().map((vendor: Vendor, i) => {
             return (
-              <option key={i} value={vendor.name}>{ vendor.name }</option>
+              <option key={i} value={vendor.name ?? ''}>{ vendor.name }</option>
             );
           })}
         </Select>

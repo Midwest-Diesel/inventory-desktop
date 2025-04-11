@@ -26,7 +26,7 @@ export default function PiggybackPartSearchDialog({ open, setOpen, setParts, set
   const [purchasedFrom, setPurchasedFrom] = useState('');
 
   useEffect(() => {
-    document.getElementById('alt-part-search-input').focus();
+    document.getElementById('alt-part-search-input')?.focus();
   }, [open]);
 
 

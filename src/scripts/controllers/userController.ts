@@ -58,9 +58,9 @@ export const loginUser = async (user: UserLogin) => {
       withCredentials: true
     };
     await api.post('/api/account/authenticate', user, config);
-  } catch (err) {
+  } catch (err: any) {
     console.error(err);
-    return err.response.data.message;
+    return err?.response.data.message;
   }
 };
 

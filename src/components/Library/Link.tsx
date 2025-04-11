@@ -15,7 +15,7 @@ export default function Link({ children, href, style, className, ...props }: Pro
   const ref = useRef<HTMLAnchorElement>(null);
 
   const handleChangePage = () => {
-    if (location.pathname === href) return;
+    if (!ref.current || location.pathname === href) return;
     push(ref.current.textContent || 'Home', href);
   };
 

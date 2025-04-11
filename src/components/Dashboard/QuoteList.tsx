@@ -38,24 +38,24 @@ export default function QuoteList({ quotes, setQuotes, setSelectHandwrittenOpen,
   const [count, setCount] = useState<number[]>([]);
   const [quotesOpen, setQuotesOpen] = useState(localStorage.getItem('quotesOpen') === 'true' || localStorage.getItem('quotesOpen') === null ? true : false);
   const [searchDialogOpen, setSearchDialogOpen] = useState(false);
-  const [quoteEdited, setQuoteEdited] = useState<Quote>(null);
+  const [quoteEdited, setQuoteEdited] = useState<Quote | null>(null);
   const [quoteListType, setQuoteListType] = useState('part');
   const [searchData, setSearchData] = useState<any>(null);
   const [selectedCustomer] = useAtom<Customer>(selectedCustomerAtom);
-  const [customer, setCustomer] = useState<Customer>(null);
+  const [customer, setCustomer] = useState<Customer | null>(null);
   const [expandedQuotes, setExpandedQuotes] = useState<number[]>([]);
   const [filterByCustomer, setFilterByCustomer] = useState(false);
   const [filterByPart, setFilterByPart] = useState(false);
   const [piggybackQuoteOpen, setPiggybackQuoteOpen] = useState(false);
-  const [piggybackQuote, setPiggybackQuote] = useState<Quote>(null);
+  const [piggybackQuote, setPiggybackQuote] = useState<Quote | null>(null);
   const [endOfDayOpen, setEndOfDayOpen] = useState(false);
   const [toastOpen, setToastOpen] = useState(false);
   const [emailDialogOpen, setEmailDialogOpen] = useState(false);
-  const [quoteEmailed, setQuoteEmailed] = useState<Quote>(null);
+  const [quoteEmailed, setQuoteEmailed] = useState<Quote | null>(null);
   const [page, setPage] = useState(1);
   const [loaded, setLoaded] = useState(false);
   const partNumSearch = localStorage.getItem('altPartSearches') || localStorage.getItem('partSearches') || null;
-  const partNum = JSON.parse(partNumSearch)?.partNum || '';
+  const partNum = partNumSearch ? JSON.parse(partNumSearch).partNum : '';
   const LIMIT = 26;
 
   useEffect(() => {
@@ -100,10 +100,10 @@ export default function QuoteList({ quotes, setQuotes, setSelectHandwrittenOpen,
   };
 
   const handleNewQuote = async () => {
-    const newQuote = {
+    const newQuote: any = {
       date: new Date(),
       source: null,
-      customerId: customer.id,
+      customerId: customer?.id,
       contact: customer ? customer.contact : '',
       phone: customer ? customer.phone : '',
       state: customer ? customer.billToState : '',
@@ -114,7 +114,7 @@ export default function QuoteList({ quotes, setQuotes, setSelectHandwrittenOpen,
       notes: null,
       salesmanId: user.id,
       rating: 0,
-      email: customer.email,
+      email: customer?.email,
       partId: null
     };
     await addQuote(newQuote);
@@ -341,7 +341,7 @@ export default function QuoteList({ quotes, setQuotes, setSelectHandwrittenOpen,
                         <td>{ quote.stockNum }</td>
                         <td>{ formatCurrency(quote.price) }</td>
                         <td>{ quote.notes }</td>
-                        <td className="cbx-td" style={ quote.sale ? { backgroundColor: 'var(--green-dark-2)' } : null}>
+                        <td className="cbx-td" style={ quote.sale ? { backgroundColor: 'var(--green-dark-2)' } : {}}>
                           <Checkbox
                             checked={quote.sale}
                             onChange={(e) => handleQuoteSale(e, quote)}

@@ -19,7 +19,7 @@ export default function ReturnItemsTable({ className, returnItems, returnData, s
   const { push } = useNavState();
 
   const getTotalPrice = (): number => {
-    return returnItems.reduce((acc, item) => item.cost !== 0.04 && item.cost !== 0.01 && acc + (item.unitPrice * item.qty), 0);
+    return (returnItems as any).reduce((acc: number, item: ReturnItem) => item.cost !== 0.04 && item.cost !== 0.01 && acc + ((item?.unitPrice ?? 0) * (item?.qty ?? 0)), 0);
   };
 
   const handleToggleIsReceived = async (part: ReturnItem, value: boolean) => {
@@ -47,10 +47,10 @@ export default function ReturnItemsTable({ className, returnItems, returnData, s
   };
 
   const handleOpenPart = async (item: ReturnItem) => {
-    if (item.part.purchasedFrom && await confirm('Set "Qty Sold" to 0?')) {
+    if (item.part?.purchasedFrom && await confirm('Set "Qty Sold" to 0?')) {
       await editPart({ ...item.part, qtySold: 0 });
     }
-    await push('Part', `/part/${item.part.id}`);
+    await push('Part', `/part/${item.part?.id}`);
   };
 
 
@@ -103,7 +103,7 @@ export default function ReturnItemsTable({ className, returnItems, returnData, s
                       />
                     </td>
                     <td>
-                      { ret.part.id && <Button onClick={() => handleOpenPart(ret)}>Open Part</Button> }
+                      { ret.part?.id && <Button onClick={() => handleOpenPart(ret)}>Open Part</Button> }
                     </td>
                   </tr>
                 );

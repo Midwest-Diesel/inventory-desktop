@@ -25,7 +25,7 @@ interface Props {
 
 export default function QuoteSearchDialog({ open, setOpen, setQuotes, setCount, filterByCustomer, searchData, setSearchData, backupFunction, limit, page }: Props) {
   const [id, setId] = useState<number>('' as any);
-  const [date, setDate] = useState<Date>(null);
+  const [date, setDate] = useState<Date | null>(null);
   const [salesmanId, setSalesmanId] = useState<number>('' as any);
   const [source, setSource] = useState('');
   const [customer, setCustomer] = useState('');

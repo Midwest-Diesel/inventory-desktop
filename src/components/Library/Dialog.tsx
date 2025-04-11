@@ -22,7 +22,7 @@ interface Props {
   y?: number
 }
 
-export default function Dialog({ children, className, variant, title, closeOnOutsideClick, exitWithEsc = true, hasCloseBtn = true, width, height, maxHeight, open, setOpen, x, y, ...props }: Props) {
+export default function Dialog({ children, className = '', variant = [], title, closeOnOutsideClick, exitWithEsc = true, hasCloseBtn = true, width, height, maxHeight, open, setOpen, x, y, ...props }: Props) {
   const [dialogs, setDialogs] = useAtom<{ order: number, div: HTMLDivElement }[]>(dialogsAtom);
   const container = useRef<HTMLDivElement>(null);
   const ref = useRef<HTMLDialogElement>(null);
@@ -64,7 +64,7 @@ export default function Dialog({ children, className, variant, title, closeOnOut
   };
 
   const closeDialog = () => {
-    setOpen(false);
+    if (setOpen) setOpen(false);
   };
 
   const bringToFront = () => {
@@ -73,7 +73,7 @@ export default function Dialog({ children, className, variant, title, closeOnOut
     const updatedDialogs = dialogs.map((dialog) => {
       if (dialog.div === currentDialog) {
         return { order: maxOrder + 2, div: dialog.div };
-      } else if (dialog.order > Number(currentDialog.style.zIndex)) {
+      } else if (dialog.order > Number(currentDialog?.style.zIndex)) {
         return { order: dialog.order - 2, div: dialog.div };
       } else {
         return dialog;
@@ -84,7 +84,7 @@ export default function Dialog({ children, className, variant, title, closeOnOut
       dialog.div.style.zIndex = String(index + 2);
     });
     setDialogs(updatedDialogs);
-    ref.current.focus();
+    ref.current?.focus();
   };
 
   return (

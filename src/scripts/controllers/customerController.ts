@@ -59,7 +59,7 @@ export const getCustomerNames = async () => {
   try {
     const auth = { withCredentials: true };
     const res = await api.get('/api/customers/names', auth);
-    return res.data.map((c) => c.company);
+    return res.data.map((c: Customer) => c.company);
   } catch (err) {
     console.error(err);
   }

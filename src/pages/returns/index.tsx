@@ -24,20 +24,20 @@ export default function Returns() {
 
   const fetchData = async () => {
     const res = await getSomeReturns(1, LIMIT, true);
-    setReturnsData(res.rows);
-    setReturnMin(res.minItems);
+    setReturnsData(res?.rows);
+    setReturnMin(res?.minItems);
     setLoading(false);
   };
 
   const handleChangePage = async (_: any, page: number) => {
     if (displayedPanel === 'completed') {
       const res = await getSomeCompletedReturns(page, LIMIT);
-      setReturns(res.rows);
-      setReturnMin(res.minItems);
+      setReturns(res?.rows);
+      setReturnMin(res?.minItems);
     } else {
       const res = await getSomeReturns(page, LIMIT, displayedPanel === 'shop' ? true : false);
-      setReturns(res.rows);
-      setReturnMin(res.minItems);
+      setReturns(res?.rows);
+      setReturnMin(res?.minItems);
     }
   };
 
@@ -74,7 +74,7 @@ export default function Returns() {
                       <td><Link href={`/returns/${ret.id}`} data-id="return-link">{ ret.id }</Link></td>
                       <td><Link href={`/handwrittens/${ret.handwrittenId}`} data-id="handwritten-link">{ ret.handwrittenId }</Link></td>
                       <td>{ formatDate(ret.dateCalled) }</td>
-                      <td>{ ret.salesman.initials }</td>
+                      <td>{ ret.salesman?.initials }</td>
                       <td>{ ret.billToCompany }</td>
                       <td>{ ret.returnNotes }</td>
                     </tr>
@@ -112,7 +112,7 @@ export default function Returns() {
                       <td><Link href={`/returns/${ret.id}`}>{ ret.id }</Link></td>
                       <td><Link href={`/handwrittens/${ret.handwrittenId}`}>{ ret.handwrittenId }</Link></td>
                       <td>{ formatDate(ret.dateCalled) }</td>
-                      <td>{ ret.salesman.initials }</td>
+                      <td>{ ret.salesman?.initials }</td>
                       <td>{ ret.billToCompany }</td>
                       <td>{ ret.returnNotes }</td>
                       <td>{ formatDate(ret.creditIssued) }</td>
@@ -151,7 +151,7 @@ export default function Returns() {
                       <td><Link href={`/returns/${ret.id}`}>{ ret.id }</Link></td>
                       <td><Link href={`/handwrittens/${ret.handwrittenId}`}>{ ret.handwrittenId }</Link></td>
                       <td>{ formatDate(ret.dateCalled) }</td>
-                      <td>{ ret.salesman.initials }</td>
+                      <td>{ ret.salesman?.initials }</td>
                       <td>{ ret.billToCompany }</td>
                       <td>{ ret.returnNotes }</td>
                       <td>{ formatDate(ret.creditIssued) }</td>

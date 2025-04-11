@@ -8,28 +8,28 @@ import { editAddOnAltParts } from "@/scripts/controllers/addOnsController";
 interface Props {
   open: boolean
   setOpen: (open: boolean) => void
-  addOn: AddOn
+  addOn: AddOn | null
   partNumList: string[]
 }
 
 
 export default function AddOnAltPartsDialog({ open, setOpen, addOn, partNumList }: Props) {
   const [autofillPartNum, setAutofillPartNum] = useState('');
-  const [addOnPartNum, setAddOnPartNum] = useState<string>(addOn.partNum);
+  const [addOnPartNum, setAddOnPartNum] = useState<string>(addOn?.partNum ?? '');
   const [partNum, setPartNum] = useState('');
   const [alts, setAlts] = useState<string[]>([]);
   const [savedBtnText, setSavedBtnText] = useState('Save');
 
   useEffect(() => {
     if (!open) return;
-    setAlts(addOn.altParts);
+    setAlts(addOn?.altParts ?? []);
   }, [open]);
 
   const autofillFromPartNum = (partNum: string) => {
     if (!partNum) {
       setAutofillPartNum('');
     } else {
-      setAutofillPartNum(partNumList.find((p) => p.startsWith(partNum)));
+      setAutofillPartNum(partNumList.find((p) => p.startsWith(partNum)) ?? '');
     }
   };
 
@@ -47,6 +47,7 @@ export default function AddOnAltPartsDialog({ open, setOpen, addOn, partNumList 
   };
 
   const handleSave = async () => {
+    if (!addOn?.id) return;
     setSavedBtnText('Saved!');
     await editAddOnAltParts(addOn.id, alts.join(', '));
     setTimeout(() => setSavedBtnText('Save'), 1000);

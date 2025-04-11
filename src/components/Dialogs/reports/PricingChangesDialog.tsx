@@ -15,7 +15,7 @@ interface Props {
 
 
 export default function PricingChangesDialog({ open, setOpen, setTableOpen, setTableData, setReportsOpen }: Props) {
-  const [file, setFile] = useState<File>(null);
+  const [file, setFile] = useState<File | null>(null);
   const [list, setList] = useState<PricingChangesReport[]>([]);
 
   const showPreviousResults = async () => {
@@ -155,7 +155,7 @@ export default function PricingChangesDialog({ open, setOpen, setTableOpen, setT
   };
 
   const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files[0];
+    const file = (e.target.files ?? [])[0];
     setFile(file);
     if (!file) return;
     const reader = new FileReader();

@@ -18,10 +18,10 @@ import WarrantySearchDialog from "@/components/Dialogs/WarrantySearchDialog";
 export default function Warranties() {
   const [user] = useAtom<User>(userAtom);
   const [searchData] = useAtom(warrantySearchAtom);
-  const [warrantiesData, setWarrantiesData] = useState<Warranty[]>();
+  const [warrantiesData, setWarrantiesData] = useState<Warranty[]>([]);
   const [warranties, setWarranties] = useState<Warranty[]>([]);
   const [warrantiesMin, setWarrantiesMin] = useState<number[]>([]);
-  const [focusedWarranty, setFocusedHandwritten] = useState<Warranty>(null);
+  const [focusedWarranty, setFocusedHandwritten] = useState<Warranty | null>(null);
   const [warrantySearchOpen, setWarrantySearchOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
@@ -50,8 +50,8 @@ export default function Warranties() {
 
     if (hasValidSearchCriteria) {
       const res = await searchWarranties({ ...searchData, offset: (page - 1) * LIMIT });
-      setWarrantiesMin(res.minItems);
-      setWarranties(res.rows);
+      setWarrantiesMin(res?.minItems);
+      setWarranties(res?.rows);
     } else{
       const res = await getSomeWarranties(page, LIMIT);
       setWarrantiesMin(await getWarrantyCount());
@@ -66,7 +66,7 @@ export default function Warranties() {
     const updatedWarranty = {
       ...war,
       completed: checked,
-      customerId: war.customer.id
+      customerId: war.customer?.id
     } as Warranty;
     await editWarranty(updatedWarranty);
     const res = await getSomeWarranties(1, LIMIT);

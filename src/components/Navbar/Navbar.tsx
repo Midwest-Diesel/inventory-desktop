@@ -15,13 +15,13 @@ export default function Navbar() {
   const [user] = useAtom(userAtom);
   const { tabs, setTabs, forward, backward, handleChangeTab, newTab } = useNavState();
   const [menuOpen, setMenuOpen] = useState(false);
-  const [selectedTab, setSelectedTab] = useState<Tab>(null);
+  const [selectedTab, setSelectedTab] = useState<Tab | null>(null);
 
   const handleRenameTab = async () => {
     const name = prompt('Name');
     // await renameTab(selectedTab.id, name);
     setTabs(tabs.map((tab) => {
-      if (tab.id === selectedTab.id) {
+      if (tab.id === selectedTab?.id) {
         return { ...tab, name };
       }
       return tab;
@@ -30,9 +30,9 @@ export default function Navbar() {
 
   const handleDeleteTab = async () => {
     if (tabs.length === 1) return;
-    const filteredTabs = tabs.filter((t) => t.id !== selectedTab.id);
+    const filteredTabs = tabs.filter((t) => t.id !== selectedTab?.id);
     let updatedTabs = filteredTabs;
-    if (selectedTab.selected) {
+    if (selectedTab?.selected) {
       const newTab = filteredTabs[filteredTabs.length - 1];
       // await changeSelectedTab(newTab.id);
       router.replace(newTab.history[newTab.history.length - 1].url);

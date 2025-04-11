@@ -13,7 +13,7 @@ import PartSelectDialog from "./PartSelectDialog";
 import Select from "@/components/Library/Select/Select";
 
 interface Props {
-  setQuoteEdited: (quote: Quote) => void
+  setQuoteEdited: (quote: Quote | null) => void
   quote: Quote
   setQuote: (quote: Quote) => void
 }
@@ -21,14 +21,14 @@ interface Props {
 
 export default function EditQuoteDialog({ setQuoteEdited, quote, setQuote }: Props) {
   const [customerNames, setCustomerNames] = useAtom<string[]>(customerNamesAtom);
-  const [date, setDate] = useState<Date>(quote.date);
-  const [source, setSource] = useState<string>(quote.source);
-  const [company, setCompany] = useState<string>(quote.customer ? quote.customer.company : '');
-  const [contact, setContact] = useState<string>(quote.contact || '');
-  const [part, setPart] = useState<Part>(quote.part);
-  const [desc, setDesc] = useState<string>(quote.desc || '');
+  const [date, setDate] = useState<Date | null>(quote.date);
+  const [source, setSource] = useState<string>(quote.source ?? '');
+  const [company, setCompany] = useState<string>(quote.customer?.company ?? '');
+  const [contact, setContact] = useState<string>(quote.contact ?? '');
+  const [part, setPart] = useState<Part | null>(quote.part);
+  const [desc, setDesc] = useState<string>(quote.desc ?? '');
   const [price, setPrice] = useState<number>(Number(quote.price));
-  const [notes, setNotes] = useState<string>(quote.notes);
+  const [notes, setNotes] = useState<string>(quote.notes ?? '');
   const [partSelectOpen, setPartSelectOpen] = useState(false);
 
   useEffect(() => {
@@ -61,19 +61,19 @@ export default function EditQuoteDialog({ setQuoteEdited, quote, setQuote }: Pro
 
   const handelCancel = () => {
     setDate(quote.date);
-    setSource(quote.source);
-    setCompany(quote.customer.company);
-    setContact(quote.contact);
+    setSource(quote.source ?? '');
+    setCompany(quote.customer?.company ?? '');
+    setContact(quote.contact ?? '');
     setPart(quote.part);
-    setDesc(quote.desc);
-    setPrice(quote.price);
-    setNotes(quote.notes);
+    setDesc(quote.desc ?? '');
+    setPrice(quote.price ?? 0);
+    setNotes(quote.notes ?? '');
     setQuoteEdited(null);
   };
 
   const onSubmitPartSelect = (part: Part) => {
     setPart(part);
-    setDesc(part.desc);
+    setDesc(part.desc ?? '');
   };
 
 

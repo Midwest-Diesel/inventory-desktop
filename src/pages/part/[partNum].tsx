@@ -31,10 +31,10 @@ import PartTag from "@/components/PrintableComponents/PartTag";
 export default function PartDetails() {
   const { backward, push } = useNavState();
   const params = useParams();
-  const printRef = useRef();
+  const printRef = useRef<HTMLDivElement>(null);
   const [user] = useAtom<User>(userAtom);
-  const [part, setPart] = useState<Part>(null);
-  const [engine, setEngine] = useState<Engine>(null);
+  const [part, setPart] = useState<Part | null>(null);
+  const [engine, setEngine] = useState<Engine | null>(null);
   const [picturesOpen, setPicturesOpen] = useState(false);
   const [snPicturesOpen, setSnPicturesOpen] = useState(false);
   const [pictures, setPictures] = useState<Picture[]>([]);
@@ -45,7 +45,7 @@ export default function PartDetails() {
   const [engineCostOut, setEngineCostOut] = useState<EngineCostOut[]>([]);
   const [costAlertMsg, setCostAlertMsg] = useState('');
   const [costAlertOpen, setCostAlertOpen] = useState(false);
-  const [partTagProps, setPartTagProps] = useState(null);
+  const [partTagProps, setPartTagProps] = useState<any>(null);
 
   useEffect(() => {
     fetchData();
@@ -55,10 +55,10 @@ export default function PartDetails() {
   useEffect(() => {
     if (!part || isEditingPart) return;
     const fetchTables = async () => {
-      const costRes = await getEngineCostRemaining(part.engineNum);
+      const costRes = await getEngineCostRemaining(part?.engineNum ?? 0);
       setCostRemaining(costRes);
-      setPartCostIn(await getPartCostIn(part.stockNum));
-      setEngineCostOut(await getPartEngineCostOut(part.stockNum));
+      setPartCostIn(await getPartCostIn(part?.stockNum ?? ''));
+      setEngineCostOut(await getPartEngineCostOut(part?.stockNum ?? ''));
     };
     fetchTables();
   }, [isEditingPart]);
@@ -66,7 +66,7 @@ export default function PartDetails() {
   useEffect(() => {
     // Print part tag
     const captureImage = async () => {
-      if (!partTagProps) return;
+      if (!partTagProps || !printRef.current) return;
       const copies = Number(prompt('How many tags do you want to print?', '1'));
       if (copies <= 0) return;
 
@@ -87,9 +87,9 @@ export default function PartDetails() {
     setPart(part);
     setEngine(engine);
 
-    const pictures = await getImagesFromPart(part.partNum);
+    const pictures = await getImagesFromPart(part.partNum) ?? [];
     setPictures(pictures);
-    setSnPictures(await getImagesFromStockNum(part.stockNum));
+    setSnPictures(await getImagesFromStockNum(part.stockNum) ?? []);
 
     const costRes = await getEngineCostRemaining(part.engineNum);
     setCostRemaining(costRes);
@@ -105,36 +105,36 @@ export default function PartDetails() {
   };
 
   const getTotalCostIn = () => {
-    return partCostIn.reduce((acc, val) => acc + val.cost, 0);
+    return partCostIn.reduce((acc, val) => acc + (val.cost ?? 0), 0);
   };
 
   const handleDelete = async () => {
-    if (user.accessLevel <= 1 || prompt('Type "confirm" to delete this part') !== 'confirm') return;
+    if (!part?.id || user.accessLevel <= 1 || prompt('Type "confirm" to delete this part') !== 'confirm') return;
     await deletePart(part.id);
     await push('Home', '/');
   };
 
   const handleAddToUP = async () => {
     const qty = Number(prompt('Enter qty to add'));
-    if (!qty) return;
-    await editPart({ ...part, qty: qty + part.qty });
+    if (!qty || !part) return;
+    await editPart({ ...part, qty: qty + (part?.qty ?? 0) });
     await fetchData();
     await handlePrint();
   };
 
   const handlePrint = async () => {
-    const pictures = await getImagesFromPart(part.partNum);
+    const pictures = await getImagesFromPart(part?.partNum ?? '') ?? [];
     setPartTagProps({
-      stockNum: part.stockNum || '',
-      model: engine.model || '',
-      serialNum: engine.serialNum || '',
-      hp: engine.horsePower || '',
-      location: part.location || '',
-      remarks: part.remarks || '',
-      date: formatDate(part.entryDate) || '',
-      partNum: part.partNum || '',
-      rating: part.rating,
-      hasPictures: pictures && pictures.length > 0
+      stockNum: part?.stockNum ?? '',
+      model: engine?.model ?? '',
+      serialNum: engine?.serialNum ?? '',
+      hp: engine?.horsePower ?? '',
+      location: part?.location ?? '',
+      remarks: part?.remarks ?? '',
+      date: formatDate(part?.entryDate) ?? '',
+      partNum: part?.partNum ?? '',
+      rating: part?.rating,
+      hasPictures: pictures.length > 0
     });
   };
 
@@ -330,7 +330,7 @@ export default function PartDetails() {
                   <tr>
                     <th>Engine Stock #</th>
                     <td>
-                      {engine && part.engineNum > 1 ?
+                      {engine && (part?.engineNum ?? 0) > 1 ?
                         <Link href={`/engines/${part.engineNum}`}>{ part.engineNum }</Link>
                         :
                         <p>{ part.engineNum }</p>
@@ -339,11 +339,11 @@ export default function PartDetails() {
                   </tr>
                   <tr>
                     <th>Serial Number</th>
-                    <td>{ engine.serialNum }</td>
+                    <td>{ engine?.serialNum }</td>
                   </tr>
                   <tr>
                     <th>Horse Power</th>
-                    <td>{ engine.horsePower }</td>
+                    <td>{ engine?.horsePower }</td>
                   </tr>
                   <tr>
                     {costRemaining !== null ?

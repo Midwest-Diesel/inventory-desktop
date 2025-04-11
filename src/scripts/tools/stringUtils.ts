@@ -1,9 +1,9 @@
-export const formatDate = (date: Date): string => {
+export const formatDate = (date: Date | null | undefined): string => {
   if (!date || typeof date === 'string') return '';
   return date.toLocaleDateString('en-US', { day: '2-digit', month: '2-digit', year: 'numeric' });
 };
 
-export const parseResDate = (date: string): Date => {
+export const parseResDate = (date: string): Date | null => {
   if (!date || typeof date !== 'string') return null;
   const [datePart, timePart] = date.split('T');
   const dateChars = datePart.split('-');
@@ -27,7 +27,7 @@ export const formatTime = (date: Date): string => {
   return `${hours}:${minutes.toString().padStart(2, '0')} ${ampm}`;
 };
 
-export const parseDateInputValue = (date: Date): string => {
+export const parseDateInputValue = (date: Date | null): string => {
   return date && typeof date === 'object' && !isNaN(date.getTime()) ? date.toISOString().split('T')[0] : '';
 };
 
@@ -44,7 +44,7 @@ export const formatCurrency = (amount: any): string => {
   return `$${integerPart}.${decimalPart}`;
 };
 
-export const formatPhone = (value: string, noParens?: boolean) => {
+export const formatPhone = (value: string | null | undefined, noParens?: boolean) => {
   if (!value || value === '') return '';
   if (value === '+') return value;
 
@@ -96,7 +96,7 @@ export const parsePhone = (value: string) => {
   return value.replace(/\D/g, '');
 };
 
-export const extractStatusColors = (text: string): string => {
+export const extractStatusColors = (text: string | null): string => {
   if (!text || text === '') return '';
   if (text.toLowerCase().includes('sold')) {
     return 'sold';

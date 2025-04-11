@@ -66,13 +66,13 @@ export default function Karmak() {
       const handwritten: Handwritten = res[i];
       const args = {
         id: Number(handwritten.id),
-        email: handwritten.email || '',
+        email: handwritten.email ?? '',
         company: handwritten.customer.company,
         date: formatDate(handwritten.date),
         year: handwritten.date.getFullYear().toString(),
         month: (handwritten.date.getMonth() + 1).toString(),
         day: handwritten.date.getDay().toString(),
-        shipVia: handwritten.shipVia.name || '',
+        shipVia: handwritten.shipVia?.name ?? '',
         trackingNumbers: handwritten.trackingNumbers.map((num) => `<li style='margin: 0;'>${num.trackingNumber}</li>`)
       };
       await invoke('email_end_of_day', { args });

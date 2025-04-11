@@ -20,7 +20,7 @@ export const getPerformance = async () => {
   }
 };
 
-export const reportSingleCompany = async (customer: string, startDate: Date, endDate: Date) => {
+export const reportSingleCompany = async (customer: string, startDate: Date | null, endDate: Date | null) => {
   try {
     const auth = { withCredentials: true };
     const res = await api.get(`/api/reports/single-company/${JSON.stringify({customer, startDate, endDate})}`, auth);
@@ -30,7 +30,7 @@ export const reportSingleCompany = async (customer: string, startDate: Date, end
   }
 };
 
-export const reportAllCompanies = async (startDate: Date, endDate: Date) => {
+export const reportAllCompanies = async (startDate: Date | null, endDate: Date | null) => {
   try {
     const auth = { withCredentials: true };
     const res = await api.get(`/api/reports/all-companies/${JSON.stringify({startDate, endDate})}`, auth);
@@ -40,7 +40,7 @@ export const reportAllCompanies = async (startDate: Date, endDate: Date) => {
   }
 };
 
-export const reportAllParts = async (startDate: Date, endDate: Date) => {
+export const reportAllParts = async (startDate: Date | null, endDate: Date | null) => {
   try {
     const auth = { withCredentials: true };
     const res = await api.get(`/api/reports/all-parts/${JSON.stringify({startDate, endDate})}`, auth);
@@ -50,7 +50,7 @@ export const reportAllParts = async (startDate: Date, endDate: Date) => {
   }
 };
 
-export const reportPartDesc = async (keyword: string, startDate: Date, endDate: Date) => {
+export const reportPartDesc = async (keyword: string, startDate: Date | null, endDate: Date | null) => {
   try {
     const auth = { withCredentials: true };
     const res = await api.get(`/api/reports/part-desc/${JSON.stringify({keyword, startDate, endDate})}`, auth);
@@ -60,7 +60,7 @@ export const reportPartDesc = async (keyword: string, startDate: Date, endDate: 
   }
 };
 
-export const reportAllEngines = async (startDate: Date, endDate: Date) => {
+export const reportAllEngines = async (startDate: Date | null, endDate: Date | null) => {
   try {
     const auth = { withCredentials: true };
     const res = await api.get(`/api/reports/all-engines/${JSON.stringify({startDate, endDate})}`, auth);
@@ -70,7 +70,7 @@ export const reportAllEngines = async (startDate: Date, endDate: Date) => {
   }
 };
 
-export const reportAllSources = async (startDate: Date, endDate: Date) => {
+export const reportAllSources = async (startDate: Date | null, endDate: Date | null) => {
   try {
     const auth = { withCredentials: true };
     const res = await api.get(`/api/reports/all-sources/${JSON.stringify({startDate, endDate})}`, auth);
@@ -80,7 +80,7 @@ export const reportAllSources = async (startDate: Date, endDate: Date) => {
   }
 };
 
-export const reportAllSalesmen = async (startDate: Date, endDate: Date) => {
+export const reportAllSalesmen = async (startDate: Date | null, endDate: Date | null) => {
   try {
     const auth = { withCredentials: true };
     const res = await api.get(`/api/reports/all-salesmen/${JSON.stringify({startDate, endDate})}`, auth);
@@ -100,7 +100,7 @@ export const reportTheMachines = async () => {
   }
 };
 
-export const reportArielSales = async (startDate: Date, endDate: Date) => {
+export const reportArielSales = async (startDate: Date | null, endDate: Date | null) => {
   try {
     const auth = { withCredentials: true };
     const res = await api.get(`/api/reports/ariel-sales/${JSON.stringify({startDate, endDate})}`, auth);
@@ -110,7 +110,7 @@ export const reportArielSales = async (startDate: Date, endDate: Date) => {
   }
 };
 
-export const reportSingleCompanyParts = async (customer: string, startDate: Date, endDate: Date) => {
+export const reportSingleCompanyParts = async (customer: string, startDate: Date | null, endDate: Date | null) => {
   try {
     const auth = { withCredentials: true };
     const res = await api.get(`/api/reports/single-company-parts/${JSON.stringify({customer, startDate, endDate})}`, auth);
@@ -120,7 +120,7 @@ export const reportSingleCompanyParts = async (customer: string, startDate: Date
   }
 };
 
-export const reportSingleCompanyEngines = async (customer: string, startDate: Date, endDate: Date) => {
+export const reportSingleCompanyEngines = async (customer: string, startDate: Date | null, endDate: Date | null) => {
   try {
     const auth = { withCredentials: true };
     const res = await api.get(`/api/reports/single-company-engines/${JSON.stringify({customer, startDate, endDate})}`, auth);
@@ -170,7 +170,7 @@ export const reportRecentSearches = async (partNum: string) => {
   }
 };
 
-export const reportEmails = async (startDate: Date, endDate: Date) => {
+export const reportEmails = async (startDate: Date | null, endDate: Date | null) => {
   try {
     const auth = { withCredentials: true };
     const res = await api.get(`/api/reports/emails/${JSON.stringify({startDate, endDate})}`, auth);

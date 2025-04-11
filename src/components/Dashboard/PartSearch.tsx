@@ -83,25 +83,25 @@ export default function PartSearch({ selectHandwrittenOpen, setSelectHandwritten
   }, [showSoldParts]);
 
   useEffect(() => {
-    const prevSearches = JSON.parse(localStorage.getItem('altPartSearches')) || JSON.parse(localStorage.getItem('partSearches'));
+    const prevSearches = JSON.parse(localStorage.getItem('altPartSearches')!) ?? JSON.parse(localStorage.getItem('partSearches')!);
     if (!prevSearches) {
       setIsValidSearch(false);
       return;
     }
-    setIsValidSearch(Object.values(prevSearches).map((value: string) => value.replace('*', '')).some((value) => value));
+    setIsValidSearch(Object.values(prevSearches).map((value: any) => value.replace('*', '')).some((value) => value));
   }, [parts]);
 
   const searchInputExists = () => {
-    const altSearch = JSON.parse(localStorage.getItem('altPartSearches'));
+    const altSearch = JSON.parse(localStorage.getItem('altPartSearches')!);
     return (
       !isObjectNull(altSearch ? { ...altSearch, partNum: altSearch.partNum.replace('*', '')} : {}) ||
-      !isObjectNull(JSON.parse(localStorage.getItem('partSearches')) || {})
+      !isObjectNull(JSON.parse(localStorage.getItem('partSearches')!) ?? {})
     );
   };
 
   const handleSearchData = async (parts: Part[]) => {
     if (!parts) {
-      setParts(null);
+      setParts([]);
       setPartsQty((await getPartsQty(showSoldParts)));
       setParts(await getSomeParts(1, LIMIT, showSoldParts));
     } else if (parts.length === 0) {
@@ -125,7 +125,7 @@ export default function PartSearch({ selectHandwrittenOpen, setSelectHandwritten
       const res = await getPartsOnEngines(alts[i]);
       engines.push(res);
     }
-    setPartsOnEngs(engines);
+    setPartsOnEngs(engines as any);
     setPartsOnEngsOpen(true);
   };
 
@@ -163,8 +163,8 @@ export default function PartSearch({ selectHandwrittenOpen, setSelectHandwritten
   };
 
   const openStockNumImages = async (part: Part) => {
-    setSnImages(await getImagesFromStockNum(part.stockNum));
-    setPicturesStockNum(part.stockNum);
+    setSnImages(await getImagesFromStockNum(part.stockNum ?? ''));
+    setPicturesStockNum(part.stockNum ?? '');
     setSnImagesOpen(true);
   };
 
@@ -177,8 +177,8 @@ export default function PartSearch({ selectHandwrittenOpen, setSelectHandwritten
   const handleChangePage = async (_: any, page: number) => {
     if (page === currentPage || !pageLoaded) return;
     setLoading(true);
-    const altSearch = JSON.parse(localStorage.getItem('altPartSearches'));
-    const partSearch = JSON.parse(localStorage.getItem('partSearches'));
+    const altSearch = JSON.parse(localStorage.getItem('altPartSearches')!);
+    const partSearch = JSON.parse(localStorage.getItem('partSearches')!);
 
     if (!isObjectNull(altSearch ? { ...altSearch, partNum: altSearch.partNum.replace('*', '')} : {}) || !isObjectNull(partSearch || {})) {
       setParts(partsData.slice((page - 1) * LIMIT, (page - 1) * LIMIT + LIMIT));
@@ -195,7 +195,7 @@ export default function PartSearch({ selectHandwrittenOpen, setSelectHandwritten
   };
 
   const partCostStyles = (part: Part) => {
-    return getTotalCostIn(part) > 0.01 && part.stockNum.slice(0, 2) !== 'UP' ? { color: 'var(--orange-1)', fontWeight: 'bold' } : {};
+    return getTotalCostIn(part) > 0.01 && part.stockNum?.slice(0, 2) !== 'UP' ? { color: 'var(--orange-1)', fontWeight: 'bold' } : {};
   };
 
 

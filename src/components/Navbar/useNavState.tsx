@@ -10,6 +10,7 @@ export function useNavState() {
 
   const forward = async () => {
     const tab = tabs.find((t) => t.selected);
+    if (!tab) return;
     if (tab.urlIndex === tab.history.length - 1) return;
     const nextTab = tab.history[tab.urlIndex + 1];
     setTabs(tabs.map((t) => t.id === tab.id ? ({ ...t, urlIndex: t.urlIndex + 1 }) : t));
@@ -19,6 +20,7 @@ export function useNavState() {
 
   const backward = async () => {    
     const tab = tabs.find((t) => t.selected);
+    if (!tab) return;
     if (tab.urlIndex === 0) return;
     const prevTab = tab.history[tab.urlIndex - 1];
     setTabs(tabs.map((t) => t.id === tab.id ? ({ ...t, urlIndex: t.urlIndex - 1 }) : t));
@@ -30,7 +32,7 @@ export function useNavState() {
     setTabs(tabs.map((tab) => ({ ...tab, selected: tab.id === tabId })));
     // await changeSelectedTab(tabId);
     const tab = tabs.find((t) => t.id === tabId);
-    router.replace(tab.history[tab.urlIndex].url);
+    if (tab) router.replace(tab.history[tab.urlIndex].url);
   };
 
   const push = async (name: string, url: string) => {

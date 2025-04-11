@@ -66,13 +66,14 @@ export const getSomeQuotesByPartNum = async (page: number, limit: number, partNu
   }
 };
 
-export const getQuotesByCustomer = async (id: number) => {
+export const getQuotesByCustomer = async (id: number | null): Promise<any> => {
   try {
+    if (!id) return { rows: [], minItems: [] };
     const auth = { withCredentials: true };
     const res = await api.get(`/api/quotes/customer/${id}`, auth);
     return {
-      rows: parseQuotesRes(res.data.rows),
-      minItems: res.data.minItems
+      rows: parseQuotesRes(res.data.rows) ?? [],
+      minItems: res.data.minItems ?? []
     };
   } catch (err) {
     console.error(err);

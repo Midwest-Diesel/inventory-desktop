@@ -24,7 +24,7 @@ export default function EngineDetailsPage() {
   const { backward, push } = useNavState();
   const params = useParams();
   const [user] = useAtom<User>(userAtom);
-  const [engine, setEngine] = useState<Engine>(null);
+  const [engine, setEngine] = useState<Engine | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [engineCostIn, setEngineCostIn] = useState<EngineCostIn[]>([]);
   const [engineCostOut, setEngineCostOut] = useState<EngineCostOut[]>([]);
@@ -41,11 +41,11 @@ export default function EngineDetailsPage() {
       setTitle(`${res.stockNum} Engine`);
 
       const upStockNums: EngineCostIn[] = res.costOut
-        .filter((num) => num.stockNum && num.stockNum.includes('UP'))
-        .map((num) => ({ ...num, engineStockNum: num.stockNum, vendor: null }));
+        .filter((num: any) => num.stockNum && num.stockNum.includes('UP'))
+        .map((num: any) => ({ ...num, engineStockNum: num.stockNum, vendor: null }));
       setEngineCostIn([...res.costIn, ...upStockNums]);
 
-      const filteredCostOut = res.costOut.filter((num) => num.stockNum && !num.stockNum.includes('UP'));
+      const filteredCostOut = res.costOut.filter((num: any) => num.stockNum && !num.stockNum.includes('UP'));
       setEngineCostOut(filteredCostOut);
     };
     fetchData();
@@ -53,24 +53,24 @@ export default function EngineDetailsPage() {
 
   const getTotalCostIn = () => {
     return engineCostIn
-      .filter((num) => num.cost !== 0.04 && num.cost !== 0.01 && num.costType !== 'ReconPrice' && !num.engineStockNum.toString().includes('UP'))
+      .filter((num) => num.cost !== 0.04 && num.cost !== 0.01 && num.costType !== 'ReconPrice' && !num?.engineStockNum?.toString().includes('UP'))
       .reduce((acc, val) => acc + Number(val.cost), 0);
   };
 
   const getTotalCostOut = () => {
     return engineCostOut
-      .filter((num) => num.cost !== 0.04 && num.cost !== 0.01 && num.costType !== 'ReconPrice' && !num.stockNum.toString().includes('UP'))
-      .reduce((acc, val) => acc + val.cost, 0);
+      .filter((num) => num.cost !== 0.04 && num.cost !== 0.01 && num.costType !== 'ReconPrice' && !num?.stockNum?.toString().includes('UP'))
+      .reduce((acc, val) => acc + (val?.cost ?? 0), 0);
   };
 
   const getPurchaseCost = () => {
     return engineCostIn
-      .filter((en) => en.costType === 'PurchasePrice' && !en.engineStockNum.toString().includes('UP'))
-      .reduce((acc, val) => acc + val.cost, 0);
+      .filter((en) => en.costType === 'PurchasePrice' && !en?.engineStockNum?.toString().includes('UP'))
+      .reduce((acc, val) => acc + (val?.cost ?? 0), 0);
   };
 
   const handleDelete = async () => {
-    if (user.accessLevel <= 1 || prompt('Type "confirm" to delete this engine') !== 'confirm') return;
+    if (!engine?.id || user.accessLevel <= 1 || prompt('Type "confirm" to delete this engine') !== 'confirm') return;
     await deleteEngine(engine.id);
     await push('Engines', '/engines');
   };
@@ -190,7 +190,7 @@ export default function EngineDetailsPage() {
                       <th>Warranty</th>
                       <td>
                         <Checkbox
-                          checked={engine.warranty}
+                          checked={Boolean(engine.warranty)}
                           disabled
                         />
                       </td>
@@ -199,7 +199,7 @@ export default function EngineDetailsPage() {
                       <th>Test Run</th>
                       <td>
                         <Checkbox
-                          checked={engine.testRun}
+                          checked={Boolean(engine.testRun)}
                           disabled
                         />
                       </td>
@@ -208,7 +208,7 @@ export default function EngineDetailsPage() {
                       <th>ECM</th>
                       <td>
                         <Checkbox
-                          checked={engine.ecm}
+                          checked={Boolean(engine.ecm)}
                           disabled
                         />
                       </td>

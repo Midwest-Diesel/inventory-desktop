@@ -17,7 +17,7 @@ import { useNavState } from "@/components/Navbar/useNavState";
 export default function CompareConsist() {
   const { push } = useNavState();
   const [customerData, setCustomersData] = useAtom<Customer[]>(customersAtom);
-  const [customer, setCustomer] = useState<Customer>(null);
+  const [customer, setCustomer] = useState<Customer | null>(null);
   const [company, setCompany] = useState('');
   const [model, setModel] = useState('');
   const [serialNum, setSerialNum] = useState('');
@@ -77,8 +77,8 @@ export default function CompareConsist() {
   const [oilPumpCheck, setOilPumpCheck] = useState(false);
   const [waterPumpCheck, setWaterPumpCheck] = useState(false);
 
-  const [customerEngineData, setCustomerEngineData] = useState<CustomerEngineData>(null);
-  const [mwdEngine, setMwdEngine] = useState<Engine>(null);
+  const [customerEngineData, setCustomerEngineData] = useState<CustomerEngineData | null>(null);
+  const [mwdEngine, setMwdEngine] = useState<Engine | null>(null);
   const urlSearchParams = new URLSearchParams(window.location.search);
   const params: any = Object.fromEntries(urlSearchParams.entries());
   const [searchOpen, setSearchOpen] = useState(false);
@@ -172,7 +172,7 @@ export default function CompareConsist() {
       push('Compare Consist', '/compare-consist');
       return;
     }
-    const id = customerData.find((c) => c.company === value).id;
+    const id = customerData.find((c) => c.company === value)?.id;
     push('Compare Consist', `/compare-consist?c=${id}`);
   };
 
@@ -230,7 +230,7 @@ export default function CompareConsist() {
   };
 
   const handleSearch = async () => {
-    const res = await searchCompareData(customer && customer.id || null, serialNum || null, arrNum || null);
+    const res = await searchCompareData(customer?.id ?? 0, serialNum, arrNum);
     setSearchData(res);
     if (res[0]) loadCompareData(res[0]);
     setSearchOpen(true);

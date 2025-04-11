@@ -27,33 +27,33 @@ interface Props {
 
 export default function EditEngineDetails({ engine, setEngine, setIsEditing, engineCostInData, engineCostOutData, setEngineCostInData, setEngineCostOutData }: Props) {
   const [engineParts, setEngineParts] = useAtom<EnginePartsTable>(enginePartsTableAtom);
-  const [currentStatus, setCurrentStatus] = useState<EngineStatus>(engine.currentStatus);
-  const [loginDate, setLoginDate] = useState<Date>(engine.loginDate);
-  const [model, setModel] = useState<string>(engine.model);
-  const [serialNum, setSerialNumber] = useState<string>(engine.serialNum);
-  const [arrNum, setArrNum] = useState<string>(engine.arrNum);
-  const [location, setLocation] = useState<string>(engine.location);
-  const [horsePower, setHorsePower] = useState<string>(engine.horsePower);
-  const [mileage, setMileage] = useState<string>(engine.mileage);
-  const [purchasedFrom, setPurchasedFrom] = useState<string>(engine.purchasedFrom);
-  const [toreDownDate, setToreDownDate] = useState<Date>(engine.toreDownDate);
-  const [soldDate, setSoldDate] = useState<Date>(engine.soldDate);
-  const [soldTo, setSoldTo] = useState<string>(engine.soldTo);
-  const [sellPrice, setSellPrice] = useState<number>(engine.sellPrice);
+  const [currentStatus, setCurrentStatus] = useState<EngineStatus>(engine.currentStatus ?? 'ToreDown');
+  const [loginDate, setLoginDate] = useState<Date | null>(engine.loginDate);
+  const [model, setModel] = useState<string>(engine.model ?? '');
+  const [serialNum, setSerialNumber] = useState<string>(engine.serialNum ?? '');
+  const [arrNum, setArrNum] = useState<string>(engine.arrNum ?? '');
+  const [location, setLocation] = useState<string>(engine.location ?? '');
+  const [horsePower, setHorsePower] = useState<string>(engine.horsePower ?? '');
+  const [mileage, setMileage] = useState<string>(engine.mileage ?? '');
+  const [purchasedFrom, setPurchasedFrom] = useState<string>(engine.purchasedFrom ?? '');
+  const [toreDownDate, setToreDownDate] = useState<Date | null>(engine.toreDownDate);
+  const [soldDate, setSoldDate] = useState<Date | null>(engine.soldDate);
+  const [soldTo, setSoldTo] = useState<string>(engine.soldTo ?? '');
+  const [sellPrice, setSellPrice] = useState<number | null>(engine.sellPrice);
   const [jakeBrake, setJakeBrake] = useState<boolean>(engine.jakeBrake);
   const [warranty, setWarranty] = useState<boolean>(engine.warranty);
   const [testRun, setTestRun] = useState<boolean>(engine.testRun);
   const [ecm, setEcm] = useState<boolean>(engine.ecm);
-  const [askingPrice, setAskingPrice] = useState<number>(engine.askingPrice);
-  const [purchasePrice, setPurchasePrice] = useState<number>(engine.purchasePrice);
-  const [torque, setTorque] = useState<string>(engine.torque);
-  const [pan, setPan] = useState<string>(engine.pan);
-  const [application, setApplication] = useState<string>(engine.application);
-  const [turboHpNew, setTurboHP] = useState<string>(engine.turboHpNew);
-  const [turboLpNew, setTurboLP] = useState<string>(engine.turboLpNew);
-  const [fwhNumber, setFwhNumber] = useState<string>(engine.fwhNumber);
-  const [comments, setComments] = useState<string>(engine.comments);
-  const [partsPulled, setPartsPulled] = useState<string>(engine.partsPulled);
+  const [askingPrice, setAskingPrice] = useState<number | null>(engine.askingPrice);
+  const [purchasePrice, setPurchasePrice] = useState<number | null>(engine.purchasePrice);
+  const [torque, setTorque] = useState<string>(engine.torque ?? '');
+  const [pan, setPan] = useState<string>(engine.pan ?? '');
+  const [application, setApplication] = useState<string>(engine.application ?? '');
+  const [turboHpNew, setTurboHP] = useState<string>(engine.turboHpNew ?? '');
+  const [turboLpNew, setTurboLP] = useState<string>(engine.turboLpNew ?? '');
+  const [fwhNumber, setFwhNumber] = useState<string>(engine.fwhNumber ?? '');
+  const [comments, setComments] = useState<string>(engine.comments ?? '');
+  const [partsPulled, setPartsPulled] = useState<string>(engine.partsPulled ?? '');
   const [engineCostIn, setEngineCostIn] = useState<EngineCostIn[]>(engineCostInData);
   const [engineCostOut, setEngineCostOut] = useState<EngineCostOut[]>(engineCostOutData);
   const [changesSaved, setChangesSaved] = useState(false);
@@ -210,7 +210,7 @@ export default function EditEngineDetails({ engine, setEngine, setIsEditing, eng
       for (let i = 0; i < engineCostIn.length; i++) {
         const item = engineCostIn[i];
         if (item.id === 0) {
-          await addEngineCostIn(Number(item.engineStockNum), Number(item.cost), Number(item.invoiceNum), item.vendor, item.costType, item.note);
+          await addEngineCostIn(Number(item.engineStockNum), Number(item.cost), Number(item.invoiceNum), item.vendor ?? '', item.costType ?? '', item.note ?? '');
         }
       }
     }
@@ -218,7 +218,7 @@ export default function EditEngineDetails({ engine, setEngine, setIsEditing, eng
       for (let i = 0; i < engineCostOut.length; i++) {
         const item = engineCostOut[i];
         if (item.id === 0) {
-          await addEngineCostOut(item.stockNum, Number(item.engineStockNum), Number(item.cost), item.costType, item.note);
+          await addEngineCostOut(item.stockNum ?? '', Number(item.engineStockNum), Number(item.cost), item.costType ?? '', item.note ?? '');
         }
       }
     }
@@ -231,7 +231,7 @@ export default function EditEngineDetails({ engine, setEngine, setIsEditing, eng
   };
 
   const handleNewEngineCostInRowChange = (field: keyof EngineCostIn, value: string | number) => {
-    setNewEngineCostInRow((prev) => ({ ...prev, [field]: value }));
+    setNewEngineCostInRow((prev : EngineCostIn) => ({ ...prev, [field]: value }));
   };
 
   const handleAddEngineCostInRow = () => {
@@ -240,7 +240,7 @@ export default function EditEngineDetails({ engine, setEngine, setIsEditing, eng
   };
 
   const handleNewEngineCostOutRowChange = (field: keyof EngineCostOut, value: string | number) => {
-    setNewEngineCostOutRow((prev) => ({ ...prev, [field]: value }));
+    setNewEngineCostOutRow((prev: EngineCostOut) => ({ ...prev, [field]: value }));
   };
 
   const handleAddEngineCostOutRow = () => {
@@ -549,7 +549,7 @@ export default function EditEngineDetails({ engine, setEngine, setIsEditing, eng
                     <td>
                       <Input
                         variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
-                        value={sellPrice}
+                        value={sellPrice ?? ''}
                         type="number"
                         onChange={(e: any) => setSellPrice(e.target.value)}
                       />
@@ -560,7 +560,7 @@ export default function EditEngineDetails({ engine, setEngine, setIsEditing, eng
                     <td>
                       <Input
                         variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
-                        value={askingPrice}
+                        value={askingPrice ?? ''}
                         type="number"
                         onChange={(e: any) => setAskingPrice(e.target.value)}
                       />
@@ -629,7 +629,7 @@ export default function EditEngineDetails({ engine, setEngine, setIsEditing, eng
                         <td>
                           <Input
                             variant={['x-small', 'thin', 'label-bold']}
-                            value={item.cost}
+                            value={item.cost ?? ''}
                             onChange={(e: any) => handleChangeEngineCostIn({ ...item, cost: e.target.value }, i)}
                             type="number"
                           />
@@ -637,7 +637,7 @@ export default function EditEngineDetails({ engine, setEngine, setIsEditing, eng
                         <td>
                           <Input
                             variant={['x-small', 'thin', 'label-bold']}
-                            value={item.engineStockNum}
+                            value={item.engineStockNum ?? ''}
                             onChange={(e: any) => handleChangeEngineCostIn({ ...item, engineStockNum: e.target.value }, i)}
                             type="number"
                           />
@@ -645,28 +645,28 @@ export default function EditEngineDetails({ engine, setEngine, setIsEditing, eng
                         <td>
                           <Input
                             variant={['x-small', 'thin', 'label-bold']}
-                            value={item.vendor}
+                            value={item.vendor ?? ''}
                             onChange={(e: any) => handleChangeEngineCostIn({ ...item, vendor: e.target.value }, i)}
                           />
                         </td>
                         <td>
                           <Input
                             variant={['x-small', 'thin', 'label-bold']}
-                            value={item.invoiceNum}
+                            value={item.invoiceNum ?? ''}
                             onChange={(e: any) => handleChangeEngineCostIn({ ...item, invoiceNum: e.target.value }, i)}
                           />
                         </td>
                         <td>
                           <Input
                             variant={['x-small', 'thin', 'label-bold']}
-                            value={item.costType}
+                            value={item.costType ?? ''}
                             onChange={(e: any) => handleChangeEngineCostIn({ ...item, costType: e.target.value }, i)}
                           />
                         </td>
                         <td>
                           <Input
                             variant={['x-small', 'thin', 'label-bold']}
-                            value={item.note}
+                            value={item.note ?? ''}
                             onChange={(e: any) => handleChangeEngineCostIn({ ...item, note: e.target.value }, i)}
                           />
                         </td>
@@ -763,7 +763,7 @@ export default function EditEngineDetails({ engine, setEngine, setIsEditing, eng
                         <td>
                           <Input
                             variant={['x-small', 'thin', 'label-bold']}
-                            value={item.cost}
+                            value={item.cost ?? ''}
                             onChange={(e: any) => handleChangeEngineCostOut({ ...item, cost: e.target.value }, i)}
                             type="number"
                           />
@@ -771,7 +771,7 @@ export default function EditEngineDetails({ engine, setEngine, setIsEditing, eng
                         <td>
                           <Input
                             variant={['x-small', 'thin', 'label-bold']}
-                            value={item.engineStockNum}
+                            value={item.engineStockNum ?? ''}
                             onChange={(e: any) => handleChangeEngineCostOut({ ...item, engineStockNum: e.target.value }, i)}
                             type="number"
                           />
@@ -779,21 +779,21 @@ export default function EditEngineDetails({ engine, setEngine, setIsEditing, eng
                         <td>
                           <Input
                             variant={['x-small', 'thin', 'label-bold']}
-                            value={item.stockNum}
+                            value={item.stockNum ?? ''}
                             onChange={(e: any) => handleChangeEngineCostOut({ ...item, stockNum: e.target.value }, i)}
                           />
                         </td>
                         <td>
                           <Input
                             variant={['x-small', 'thin', 'label-bold']}
-                            value={item.costType}
+                            value={item.costType ?? ''}
                             onChange={(e: any) => handleChangeEngineCostOut({ ...item, costType: e.target.value }, i)}
                           />
                         </td>
                         <td>
                           <Input
                             variant={['x-small', 'thin', 'label-bold']}
-                            value={item.note}
+                            value={item.note ?? ''}
                             onChange={(e: any) => handleChangeEngineCostOut({ ...item, note: e.target.value }, i)}
                           />
                         </td>

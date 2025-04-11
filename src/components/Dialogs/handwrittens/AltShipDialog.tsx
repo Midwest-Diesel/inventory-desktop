@@ -54,7 +54,7 @@ export default function AltShipDialog({ open, setOpen, handwritten, setHandwritt
             <p>{ data.shipToAddress2 }</p>
             <p>{ data.shipToCity}, { data.shipToState } { data.shipToZip }</p>
             <div className="alt-ship-dialog__box--buttons">
-              <Button onClick={() => handleDelete(data.id)}>Delete</Button>
+              <Button onClick={() => data.id && handleDelete(data.id)}>Delete</Button>
               <Button onClick={() => selectAddress(data)}>Use This Address</Button>
             </div>
           </div>

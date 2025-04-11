@@ -13,7 +13,7 @@ import { Fragment, useEffect, useState } from "react";
 
 
 export default function AddOnsShop() {
-  const [selectedPoData, setSelectedPoData] = useAtom<{ selectedPoAddOn: PO, addOn: AddOn, receivedItemsDialogOpen: boolean }>(selectedPoAddOnAtom);
+  const [selectedPoData, setSelectedPoData] = useAtom<{ selectedPoAddOn: PO | null, addOn: AddOn | null, receivedItemsDialogOpen: boolean }>(selectedPoAddOnAtom);
   const [partNumList, setPartNumList] = useState<string[]>([]);
   const [engineNumList, setEngineNumList] = useState<string[]>([]);
   const [prevAddons, setPrevAddons] = useState<AddOn[]>([]);
@@ -29,9 +29,9 @@ export default function AddOnsShop() {
       setPrevAddons(res);
 
       const parts = await getAllPartNums();
-      setPartNumList(parts.map((p) => p.partNum));
+      setPartNumList(parts.map((p: Part) => p.partNum));
       const engines = await getAllEngineNums();
-      setEngineNumList(engines.map((e) => `${e.stockNum}`));
+      setEngineNumList(engines.map((e: Engine) => `${e.stockNum}`));
     };
     fetchData();
   }, []);

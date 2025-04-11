@@ -20,30 +20,30 @@ interface Props {
 
 
 export default function EditReturnDetails({ returnData, setReturn, setIsEditing }: Props) {
-  const [company, setCompany] = useState<string>(returnData.customer.company);
-  const [poNum, setPoNum] = useState<string>(returnData.poNum);
-  const [payment, setPayment] = useState<string>(returnData.payment);
-  const [source, setSource] = useState<string>(returnData.source);
-  const [salesmanId, setSalesmanId] = useState<number>(returnData.salesman && returnData.salesman.id);
-  const [billToAddress, setBillToAddress] = useState<string>(returnData.billToAddress);
-  const [billToAddress2, setBillToAddress2] = useState<string>(returnData.billToAddress2);
-  const [billToCity, setBillToCity] = useState<string>(returnData.billToCity);
-  const [billToState, setBillToState] = useState<string>(returnData.billToState);
-  const [billToZip, setBillToZip] = useState<string>(returnData.billToZip);
-  const [billToPhone, setBillToPhone] = useState<string>(returnData.billToPhone);
-  const [billToContact, setBillToContact] = useState<string>(returnData.billToContact);
-  const [shipToAddress, setShipToAddress] = useState<string>(returnData.shipToAddress);
-  const [shipToAddress2, setShipToAddress2] = useState<string>(returnData.shipToAddress2);
-  const [shipToCity, setShipToCity] = useState<string>(returnData.shipToCity);
-  const [shipToState, setShipToState] = useState<string>(returnData.shipToState);
-  const [shipToZip, setShipToZip] = useState<string>(returnData.shipToZip);
-  const [dateCalled, setDateCalled] = useState<Date>(returnData.dateCalled);
-  const [dateReceived, setDateReceived] = useState<Date>(returnData.dateReceived);
-  const [creditIssued, setCreditIssued] = useState<Date>(returnData.creditIssued);
-  const [returnNotes, setReturnNotes] = useState<string>(returnData.returnNotes);
-  const [returnReason, setReturnReason] = useState<string>(returnData.returnReason);
-  const [returnPaymentTerms, setReturnPaymentTerms] = useState<string>(returnData.returnPaymentTerms);
-  const [restockFee, setRestockFee] = useState<string>(returnData.restockFee);
+  const [company, setCompany] = useState<string>(returnData.customer?.company ?? '');
+  const [poNum, setPoNum] = useState<string>(returnData.poNum ?? '');
+  const [payment, setPayment] = useState<string>(returnData.payment ?? '');
+  const [source, setSource] = useState<string>(returnData.source ?? '');
+  const [salesmanId, setSalesmanId] = useState<number>(returnData.salesman?.id ?? 0);
+  const [billToAddress, setBillToAddress] = useState<string>(returnData.billToAddress ?? '');
+  const [billToAddress2, setBillToAddress2] = useState<string>(returnData.billToAddress2 ?? '');
+  const [billToCity, setBillToCity] = useState<string>(returnData.billToCity ?? '');
+  const [billToState, setBillToState] = useState<string>(returnData.billToState ?? '');
+  const [billToZip, setBillToZip] = useState<string>(returnData.billToZip ?? '');
+  const [billToPhone, setBillToPhone] = useState<string>(returnData.billToPhone ?? '');
+  const [billToContact, setBillToContact] = useState<string>(returnData.billToContact ?? '');
+  const [shipToAddress, setShipToAddress] = useState<string>(returnData.shipToAddress ?? '');
+  const [shipToAddress2, setShipToAddress2] = useState<string>(returnData.shipToAddress2 ?? '');
+  const [shipToCity, setShipToCity] = useState<string>(returnData.shipToCity ?? '');
+  const [shipToState, setShipToState] = useState<string>(returnData.shipToState ?? '');
+  const [shipToZip, setShipToZip] = useState<string>(returnData.shipToZip ?? '');
+  const [dateCalled, setDateCalled] = useState<Date | null>(returnData.dateCalled);
+  const [dateReceived, setDateReceived] = useState<Date | null>(returnData.dateReceived);
+  const [creditIssued, setCreditIssued] = useState<Date | null>(returnData.creditIssued);
+  const [returnNotes, setReturnNotes] = useState<string>(returnData.returnNotes ?? '');
+  const [returnReason, setReturnReason] = useState<string>(returnData.returnReason ?? '');
+  const [returnPaymentTerms, setReturnPaymentTerms] = useState<string>(returnData.returnPaymentTerms ?? '');
+  const [restockFee, setRestockFee] = useState<string>(returnData.restockFee ?? '');
   const [changesSaved, setChangesSaved] = useState<boolean>(true);
 
   const saveChanges = async (e: FormEvent) => {

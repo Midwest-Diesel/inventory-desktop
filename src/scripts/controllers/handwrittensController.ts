@@ -33,7 +33,7 @@ export const parseHandwrittenRes = (data: any) => {
     return {
       ...invoice,
       date: invoice.date && parseResDate(invoice.date),
-      handwrittenItems: filterNullObjValuesArr(invoice.handwrittenItems.filter((item) => item)).map((item: any) => {
+      handwrittenItems: filterNullObjValuesArr(invoice.handwrittenItems.filter((item: HandwrittenItem) => item)).map((item: any) => {
         return {
           ...item,
           date: item.date && parseResDate(item.date),
@@ -140,7 +140,7 @@ export const getSomeHandwrittensByStatus = async (page: number, limit: number, s
   try {
     const auth = { withCredentials: true };
     const res = await api.get(`/api/handwrittens/status/${JSON.stringify({ page: (page - 1) * limit, limit, status })}`, auth);
-    return res.data.map((row) => {
+    return res.data.map((row: any) => {
       return { ...row, date: parseResDate(row.date), };
     });
   } catch (err) {

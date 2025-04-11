@@ -21,7 +21,7 @@ export default function Handwrittens() {
   const [handwrittenSearchData] = useAtom(handwrittenSearchAtom);
   const [handwrittensData] = useState<Handwritten[]>([]);
   const [handwrittens, setHandwrittens] = useState<Handwritten[]>([]);
-  const [focusedHandwritten, setFocusedHandwritten] = useState<Handwritten>(null);
+  const [focusedHandwritten, setFocusedHandwritten] = useState<Handwritten | null>(null);
   const [yesterdayInvoices, setYesterdayInvoices] = useState<Handwritten[]>(handwrittensData);
   const [handwrittenCount, setHandwrittenCount] = useState<number[]>([]);
   const [openSearch, setOpenSearch] = useState(false);
@@ -39,6 +39,7 @@ export default function Handwrittens() {
       setHandwrittenCount(pageCount);
       
       const date = await getMostRecentHandwrittenDate();
+      if (!date) return;
       const today = new Date();
       today.setHours(0, 0, 0, 0);
       date.setHours(0, 0, 0, 0);
@@ -68,7 +69,7 @@ export default function Handwrittens() {
 
     if (hasValidSearchCriteria) {
       const res = await searchHandwrittens({ ...searchData, offset: (page - 1) * LIMIT });
-      setHandwrittens(res.rows);
+      setHandwrittens(res?.rows);
     } else{
       const res = await getSomeHandwrittens(page, LIMIT);
       setHandwrittens(res);
@@ -82,11 +83,11 @@ export default function Handwrittens() {
   };
 
   const sumInvoiceCosts = (handwrittenItems: HandwrittenItem[]): number => {
-    return handwrittenItems.filter((item) => item.cost > 0.04).reduce((acc, item) => acc + (item.cost * item.qty), 0);
+    return handwrittenItems.filter((item) => (item?.cost ?? 0) > 0.04).reduce((acc, item) => acc + ((item?.cost ?? 0) * (item?.qty ?? 0)), 0);
   };
 
   const sumHandwrittenItems = (handwrittenItems: HandwrittenItem[]): number => {
-    return handwrittenItems.filter((item) => item.unitPrice > 0.04).reduce((acc, item) => acc + (item.unitPrice * item.qty), 0);
+    return handwrittenItems.filter((item) => (item?.unitPrice ?? 0) > 0.04).reduce((acc, item) => acc + ((item?.unitPrice ?? 0) * (item?.qty ?? 0)), 0);
   };
 
   const getTotalCogs = (): number => {
@@ -143,7 +144,7 @@ export default function Handwrittens() {
 
   const handleFocusHandwritten = (handwritten: Handwritten) => {
     setFocusedHandwritten(handwritten);
-    const taxItemsAmount = handwritten && handwritten.handwrittenItems.map((item) => item.qty * item.unitPrice).reduce((acc, cur) => acc + cur, 0);
+    const taxItemsAmount = handwritten && handwritten.handwrittenItems.map((item) => (item?.qty ?? 0) * (item?.unitPrice ?? 0)).reduce((acc, cur) => acc + cur, 0);
     setTaxTotal(Number((taxItemsAmount * TAX_RATE).toFixed(2)));
   };
 

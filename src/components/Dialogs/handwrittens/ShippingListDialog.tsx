@@ -13,20 +13,20 @@ interface Props {
   open: boolean
   setOpen: (open: boolean) => void
   handwrittenItems: HandwrittenItem[]
-  newShippingListRow: Handwritten
+  newShippingListRow: Handwritten | null
   setIsEditing: (value: boolean) => void
 }
 
 
 export default function ShippingListDialog({ open, setOpen, handwrittenItems, newShippingListRow, setIsEditing }: Props) {
-  const [handwritten, setHandwritten] = useState<Handwritten>(null);
+  const [handwritten, setHandwritten] = useState<Handwritten | null>(null);
   const [date, setDate] = useState<Date>(new Date());
   const [isCondensed, setIsCondensed] = useState(handwrittenItems.length > 2);
   const [desc, setDesc] = useState('');
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (!open) return;
+    if (!open || !newShippingListRow) return;
     const fetchData = async () => {
       const res = await getHandwrittenById(newShippingListRow.id);
       setHandwritten(res);
@@ -46,20 +46,20 @@ export default function ShippingListDialog({ open, setOpen, handwrittenItems, ne
       const weight = handwrittenItems.reduce((arr, item) => arr + item.weight, 0);
       const { length, width, height } = handwrittenItems[0];
       const new_shipping_list_row = {
-        handwritten_id: Number(handwritten.id),
-        initials: handwritten.createdBy || '',
-        ship_via: handwritten.shipVia ? handwritten.shipVia.name : '',
-        ship_type: handwritten.shipVia ? handwritten.shipVia.type : '',
-        customer: handwritten.customer.company,
-        attn_to: handwritten.shipToContact || '',
+        handwritten_id: Number(handwritten?.id),
+        initials: handwritten?.createdBy ?? '',
+        ship_via: handwritten?.shipVia?.name ?? '',
+        ship_type: handwritten?.shipVia?.type ?? '',
+        customer: handwritten?.customer.company,
+        attn_to: handwritten?.shipToContact ?? '',
         part_num: 'Multiple',
         desc: desc,
         stock_num: 'See Yellow',
         location: 'See Yellow',
-        mp: handwritten.mp,
-        br: handwritten.br,
-        cap: handwritten.cap,
-        fl: handwritten.fl,
+        mp: handwritten?.mp,
+        br: handwritten?.br,
+        cap: handwritten?.cap,
+        fl: handwritten?.fl,
         pulled: false,
         packaged: false,
         gone: false,
@@ -74,20 +74,20 @@ export default function ShippingListDialog({ open, setOpen, handwrittenItems, ne
       for (let i = 0; i < handwrittenItems.length; i++) {
         const { length, width, height } = handwrittenItems[i];
         const new_shipping_list_row = {
-          handwritten_id: Number(handwritten.id),
-          initials: handwritten.createdBy || '',
-          ship_via: handwritten.shipVia ? handwritten.shipVia.name : '',
-          ship_type: handwritten.shipVia ? handwritten.shipVia.type : '',
-          customer: handwritten.customer.company,
-          attn_to: handwritten.shipToContact || '',
+          handwritten_id: Number(handwritten?.id),
+          initials: handwritten?.createdBy ?? '',
+          ship_via: handwritten?.shipVia?.name ?? '',
+          ship_type: handwritten?.shipVia?.type ?? '',
+          customer: handwritten?.customer.company,
+          attn_to: handwritten?.shipToContact ?? '',
           part_num: handwrittenItems[i].partNum,
           desc: handwrittenItems[i].desc,
           stock_num: handwrittenItems[i].stockNum,
           location: handwrittenItems[i].location,
-          mp: handwritten.mp,
-          br: handwritten.br,
-          cap: handwritten.cap,
-          fl: handwritten.fl,
+          mp: handwritten?.mp,
+          br: handwritten?.br,
+          cap: handwritten?.cap,
+          fl: handwritten?.fl,
           pulled: false,
           packaged: false,
           gone: false,

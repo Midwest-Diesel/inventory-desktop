@@ -21,7 +21,7 @@ export default function EngineCostInTable({ EngineCostInData }: Props) {
           </tr>
         </thead>
         <tbody>
-          {EngineCostInData.sort((a, b) => b.cost - a.cost).map((item, i) => {
+          {EngineCostInData.sort((a, b) => (b.cost ?? 0) - (a.cost ?? 0)).map((item, i) => {
             return (
               <tr key={i}>
                 <td>{ formatCurrency(item.cost) }</td>

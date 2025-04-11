@@ -149,8 +149,8 @@ export default function CreditCardBlock({
                   variant={['x-small']}
                   style={{ width: '10rem' }}
                   onClick={() => {
-                    setCardAddress(handwritten.billToAddress);
-                    setCardZip(handwritten.billToZip);
+                    setCardAddress(handwritten.billToAddress ?? '');
+                    setCardZip(handwritten.billToZip ?? '');
                   }}
                   type="button"
                 >
@@ -167,7 +167,7 @@ export default function CreditCardBlock({
                 value={cardName}
                 onChange={(e: any) => setCardName(e.target.value)}
               >
-                <Button variant={['x-small']} style={{ width: '10rem' }} onClick={() => setCardName(handwritten.billToCompany)} type="button">Same as Bill To</Button>
+                <Button variant={['x-small']} style={{ width: '10rem' }} onClick={() => setCardName(handwritten.billToCompany ?? '')} type="button">Same as Bill To</Button>
               </Input>
             </td>
           </tr>

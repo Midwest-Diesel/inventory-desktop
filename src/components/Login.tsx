@@ -17,7 +17,7 @@ export default function Login() {
 
   const handleGetUser = async () => {
     const res = await getUser();
-    setUserData(res);
+    (setUserData as any)(res);
   };
 
   const handleLogin = async (e: FormEvent) => {

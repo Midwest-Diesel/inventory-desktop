@@ -16,7 +16,7 @@ export default function SalesInfo({ open, setOpen }: Props) {
   const [sales, setSales] = useState<Part[]>([]);
   const [quotes, setQuotes] = useState<Quote[]>([]);
   const [counters, setCounters] = useState({ new: 0, recon: 0, used: 0, core: 0 });
-  const prevSearches = JSON.parse(localStorage.getItem('altPartSearches')) || JSON.parse(localStorage.getItem('partSearches'));
+  const prevSearches = JSON.parse(localStorage.getItem('altPartSearches')!) ?? JSON.parse(localStorage.getItem('partSearches')!);
 
 
   useEffect(() => {

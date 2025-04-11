@@ -22,7 +22,7 @@ interface Props {
 export default function HandwrittensSearchDialog({ open, setOpen, setHandwrittens, setMinItems, limit }: Props) {
   const [handwrittenSearchData, setHandwrittenSearchData] = useAtom(handwrittenSearchAtom);
   const [id, setId] = useState<number>('' as any);
-  const [date, setDate] = useState<Date>(null);
+  const [date, setDate] = useState<Date | null>(null);
   const [poNum, setPoNum] = useState('');
   const [billToCompany, setBillToCompany] = useState('');
   const [shipToCompany, setShipToCompany] = useState('');
@@ -53,8 +53,8 @@ export default function HandwrittensSearchDialog({ open, setOpen, setHandwritten
       offset: 0
     };
     const res = await searchHandwrittens(searchData);
-    setHandwrittens(res.rows);
-    setMinItems(res.minItems);
+    setHandwrittens(res?.rows);
+    setMinItems(res?.minItems);
     setHandwrittenSearchData(searchData);
   };
 

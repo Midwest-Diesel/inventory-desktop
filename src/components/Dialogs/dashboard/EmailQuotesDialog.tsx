@@ -17,7 +17,7 @@ interface Props {
 
 
 export default function SalesInfo({ open, setOpen, quote }: Props) {
-  const [recipients, setRecipients] = useState(quote.customer.email || '');
+  const [recipients, setRecipients] = useState<string>(quote.customer?.email ?? '');
   const [quotes, setQuotes] = useState<Quote[]>([quote]);
   const [customerQuotes, setCustomerQuotes] = useState<Quote[]>([]);
   const [paginatedQuotes, setPaginatedQuotes] = useState<Quote[]>([]);
@@ -30,7 +30,7 @@ export default function SalesInfo({ open, setOpen, quote }: Props) {
     clearData();
 
     const fetchData = async () => {
-      const res = await getQuotesByCustomer(quote.customer.id);
+      const res = await getQuotesByCustomer(quote.customer?.id ?? null);
       setCustomerQuotes(res.rows);
       setCount(res.minItems);
       setLoading(false);
@@ -39,7 +39,7 @@ export default function SalesInfo({ open, setOpen, quote }: Props) {
   }, [open]);
 
   const clearData = () => {
-    setRecipients(quote.customer.email || '');
+    setRecipients(quote.customer?.email ?? '');
     setQuotes([quote]);
     setLoading(true);
   };
@@ -94,7 +94,7 @@ export default function SalesInfo({ open, setOpen, quote }: Props) {
         <td>${quoteArgs.partNum}</td>
         <td>${quoteArgs.desc}</td>
         <td>${formatCurrency(quoteArgs.unitPrice)}</td>
-        <td>${formatCurrency(quoteArgs.qty * quoteArgs.unitPrice)}</td>
+        <td>${formatCurrency(quoteArgs.qty * (quoteArgs.unitPrice ?? 0))}</td>
         <td>${quote.part ? quote.part.condition : ''}</td>
       </tr>
       ${quote.piggybackQuotes.map((quote: PiggybackQuote) => {
@@ -155,7 +155,7 @@ export default function SalesInfo({ open, setOpen, quote }: Props) {
           required
         />
 
-        <h2>Selected Quotes: { quote.customer.company }</h2>
+        <h2>Selected Quotes: { quote.customer?.company }</h2>
         <div style={{ maxHeight: '10rem', overflowY: 'auto' }}>
           <Table>
             <thead>
@@ -173,7 +173,7 @@ export default function SalesInfo({ open, setOpen, quote }: Props) {
                     <td>{ quote.partNum }</td>
                     <td>{ quote.stockNum }</td>
                     <td>{ quote.desc }</td>
-                    <td>{ formatCurrency(quote.part ? quote.price * quote.part.qty : quote.price) }</td>
+                    <td>{ formatCurrency(quote.part ? (quote.price ?? 0) * quote.part.qty : quote.price) }</td>
                   </tr>
                 );
               })}
@@ -207,7 +207,7 @@ export default function SalesInfo({ open, setOpen, quote }: Props) {
                         <td>{ quote.partNum }</td>
                         <td>{ quote.stockNum }</td>
                         <td>{ quote.desc }</td>
-                        <td>{ formatCurrency(quote.part ? quote.price * quote.part.qty : quote.price) }</td>
+                        <td>{ formatCurrency(quote.part ? (quote.price ?? 0) * quote.part.qty : quote.price) }</td>
                       </tr>
                     );
                   })}

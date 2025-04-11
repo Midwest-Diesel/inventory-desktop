@@ -16,8 +16,8 @@ interface Props {
 
 export default function SingleCompanyDialog({ open, setOpen, setTableOpen, setTableData, setReportsOpen }: Props) {
   const [customer, setCustomer] = useState('');
-  const [startDate, setStartDate] = useState<Date>(null);
-  const [endDate, setEndDate] = useState<Date>(null);
+  const [startDate, setStartDate] = useState<Date | null>(null);
+  const [endDate, setEndDate] = useState<Date | null>(null);
 
   const handleSearch = async () => {
     setTableOpen(true);

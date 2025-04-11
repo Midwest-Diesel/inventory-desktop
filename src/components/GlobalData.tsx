@@ -42,7 +42,7 @@ export default function GlobalData({ children }: Props) {
   const handleGetUser = async () => {
     const res = await getUser();
     setUser(res);
-    setUserData(res);
+    (setUserData as any)(res);
   };
 
   const checkForUpdates = async () => {

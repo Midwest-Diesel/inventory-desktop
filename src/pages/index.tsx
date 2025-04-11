@@ -24,10 +24,10 @@ export default function Home() {
   const [recentQuoteSearches] = useAtom<RecentQuoteSearch[]>(recentQuotesAtom);
   const [customer] = useAtom<Customer>(selectedCustomerAtom);
   const [quotes, setQuotes] = useState<Quote[]>([]);
-  const [handwrittenCustomer, setHandwrittenCustomer] = useState<Customer>(null);
-  const [handwrittenQuote, setHandwrittenQuote] = useState<Quote>();
+  const [handwrittenCustomer, setHandwrittenCustomer] = useState<Customer | null>(null);
+  const [handwrittenQuote, setHandwrittenQuote] = useState<Quote | null>(null);
   const [selectHandwrittenOpen, setSelectHandwrittenOpen] = useState(false);
-  const [selectedHandwrittenPart, setSelectedHandwrittenPart] = useState<Part>(null);
+  const [selectedHandwrittenPart, setSelectedHandwrittenPart] = useState<Part | null>(null);
   
   useEffect(() => {
     const fetchData = async () => {
@@ -55,13 +55,13 @@ export default function Home() {
       handwrittenId: id,
       date: new Date(),
       desc: desc,
-      partNum: selectedHandwrittenPart.partNum,
-      stockNum: selectedHandwrittenPart.stockNum,
+      partNum: selectedHandwrittenPart?.partNum,
+      stockNum: selectedHandwrittenPart?.stockNum,
       unitPrice: price,
       qty: qty,
       cost: 0.04,
-      location: selectedHandwrittenPart.location,
-      partId: selectedHandwrittenPart.id,
+      location: selectedHandwrittenPart?.location,
+      partId: selectedHandwrittenPart?.id,
     } as HandwrittenItem;
     await addHandwrittenItem(newItem);
     if (warranty) await editHandwrittenOrderNotes(id, warranty);
@@ -69,11 +69,11 @@ export default function Home() {
 
   const handleSubmitNewHandwritten = async (handwritten: Handwritten, warranty: string, qty: number, desc: string, price: number) => {
     const part = selectedHandwrittenPart;
-    const newItem = handwritten.handwrittenItems.find((item) => item.partNum === part.partNum);
+    const newItem = handwritten.handwrittenItems.find((item) => item.partNum === part?.partNum);
     if (newItem) {
       if (await confirm('Part already exists do you want to add qty?')) {
-        await editHandwrittenItems({ ...newItem, qty: newItem.qty + qty, handwrittenId: handwritten.id });
-        await addHandwrittenItemChild(newItem.id, { partId: part.id, qty: qty, cost: price } as HandwrittenItemChild);
+        await editHandwrittenItems({ ...newItem, qty: newItem.qty ?? 0 + qty, handwrittenId: handwritten.id });
+        await addHandwrittenItemChild(newItem.id, { partId: part?.id, qty: qty, cost: price } as HandwrittenItemChild);
         await editHandwrittenOrderNotes(handwritten.id, warranty);
       } else {
         handleAddToHandwritten(handwritten.id, desc, qty, price, warranty);
@@ -83,8 +83,8 @@ export default function Home() {
     }
 
     const updatedQuote = { ...handwrittenQuote, sale: true };
-    await toggleQuoteSold(updatedQuote);
-    setQuotes(quotes.map((q) => (q.id === handwrittenQuote.id) && updatedQuote));
+    await toggleQuoteSold(updatedQuote as any);
+    setQuotes(quotes.map((q) => (q.id === handwrittenQuote?.id) && (updatedQuote as any)));
   };
 
 

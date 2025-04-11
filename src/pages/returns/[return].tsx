@@ -22,7 +22,7 @@ export default function Return() {
   const { backward, push } = useNavState();
   const params = useParams();
   const [user] = useAtom<User>(userAtom);
-  const [returnData, setReturnData] = useState<Return>(null);
+  const [returnData, setReturnData] = useState<Return | null>(null);
   const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
@@ -36,13 +36,13 @@ export default function Return() {
   }, [params]);
 
   const handleDelete = async () => {
-    if (prompt('Type "confirm" to delete this return') !== 'confirm') return;
+    if (!returnData?.id || prompt('Type "confirm" to delete this return') !== 'confirm') return;
     await deleteReturn(returnData.id);
     await backward();
   };
 
   const handleCreditIssued = async () => {
-    if (returnData.creditIssued || !await confirm('Are you sure you want to credit this?')) return;
+    if (!returnData || returnData.creditIssued || !await confirm('Are you sure you want to credit this?')) return;
     await issueReturnCredit(returnData.id);
     setReturnData({ ...returnData, creditIssued: new Date() });
   };
@@ -50,26 +50,26 @@ export default function Return() {
   const handlePrint = async () => {
     if (!await confirm('Print return?')) return;
     const args = {
-      createdBy: returnData.salesman ? returnData.salesman.initials : '',
+      createdBy: returnData?.salesman?.initials ?? '',
       date: formatDate(new Date()),
-      poNum: returnData.poNum || '',
-      id: returnData.id,
-      invoiceDate: formatDate(returnData.invoiceDate),
-      billToCompany: returnData.billToCompany || '',
-      shipToCompany: returnData.shipToCompany || '',
-      billToAddress: returnData.billToAddress || '',
-      billToCity: returnData.billToCity || '',
-      billToState: returnData.billToState || '',
-      billToZip: returnData.billToZip || '',
-      billToPhone: returnData.billToPhone || '',
-      dateCalled: formatDate(returnData.dateCalled),
+      poNum: returnData?.poNum || '',
+      id: returnData?.id,
+      invoiceDate: formatDate(returnData?.invoiceDate),
+      billToCompany: returnData?.billToCompany || '',
+      shipToCompany: returnData?.shipToCompany || '',
+      billToAddress: returnData?.billToAddress || '',
+      billToCity: returnData?.billToCity || '',
+      billToState: returnData?.billToState || '',
+      billToZip: returnData?.billToZip || '',
+      billToPhone: returnData?.billToPhone || '',
+      dateCalled: formatDate(returnData?.dateCalled),
       salesman: user.initials || '',
-      returnReason: returnData.returnReason || '',
-      returnNotes: returnData.returnNotes || '',
-      returnPaymentTerms: returnData.returnPaymentTerms || '',
-      payment: returnData.payment || '',
-      restockFee: returnData.restockFee || '',
-      items: JSON.stringify(returnData.returnItems.map((item) => {
+      returnReason: returnData?.returnReason || '',
+      returnNotes: returnData?.returnNotes || '',
+      returnPaymentTerms: returnData?.returnPaymentTerms || '',
+      payment: returnData?.payment || '',
+      restockFee: returnData?.restockFee || '',
+      items: JSON.stringify(returnData?.returnItems.map((item) => {
         return {
           cost: formatCurrency(item.cost).replaceAll(',', '|') || '$0.00',
           stockNum: item.stockNum || '',
@@ -77,7 +77,7 @@ export default function Return() {
           partNum: item.partNum || '',
           desc: item.desc || '',
           unitPrice: formatCurrency(item.unitPrice).replaceAll(',', '|') || '$0.00',
-          total: formatCurrency(item.qty * item.unitPrice).replaceAll(',', '|') || '$0.00'
+          total: formatCurrency((item.qty ?? 0) * (item.unitPrice ?? 0)).replaceAll(',', '|') || '$0.00'
         };
       })) || '[]'
     };
@@ -136,7 +136,7 @@ export default function Return() {
                     </tr>
                     <tr>
                       <th>Customer</th>
-                      <td><Link href={`/customer/${returnData.customer.id}`}>{ returnData.customer.company }</Link></td>
+                      <td><Link href={`/customer/${returnData.customer?.id}`}>{ returnData.customer?.company }</Link></td>
                     </tr>
                     <tr>
                       <th>PO Number</th>

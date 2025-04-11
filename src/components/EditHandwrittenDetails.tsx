@@ -70,35 +70,35 @@ export default function EditHandwrittenDetails({
 }: Props) {
   const [sourcesData, setSourcesData] = useAtom<string[]>(sourcesAtom);
   const [date, setDate] = useState<Date>(handwritten.date);
-  const [poNum, setPoNum] = useState<string>(handwritten.poNum);
-  const [company, setCompany] = useState<string>(handwritten.customer.company);
-  const [source, setSource] = useState<string>(handwritten.source);
-  const [billToCompany, setBillToCompany] = useState<string>(handwritten.billToCompany);
-  const [billToAddress, setBillToAddress] = useState<string>(handwritten.billToAddress);
-  const [billToAddress2, setBillToAddress2] = useState<string>(handwritten.billToAddress2);
-  const [billToCity, setBillToCity] = useState<string>(handwritten.billToCity);
-  const [billToState, setBillToState] = useState<string>(handwritten.billToState);
-  const [billToZip, setBillToZip] = useState<string>(handwritten.billToZip);
-  const [billToPhone, setBillToPhone] = useState<string>(handwritten.billToPhone);
-  const [shipToAddress, setShipToAddress] = useState<string>(handwritten.shipToAddress);
-  const [shipToAddress2, setShipToAddress2] = useState<string>(handwritten.shipToAddress2);
-  const [shipToCity, setShipToCity] = useState<string>(handwritten.shipToCity);
-  const [shipToState, setShipToState] = useState<string>(handwritten.shipToState);
-  const [shipToZip, setShipToZip] = useState<string>(handwritten.shipToZip);
-  const [shipToCompany, setShipToCompany] = useState<string>(handwritten.shipToCompany);
-  const [shipViaId, setShipViaId] = useState<number>(handwritten.shipVia && handwritten.shipVia.id);
-  const [shipToContact, setShipToContact] = useState<string>(handwritten.shipToContact);
-  const [contact, setContact] = useState<string>(handwritten.contactName);
-  const [contactPhone, setContactPhone] = useState<string>(handwritten.phone);
-  const [contactCell, setContactCell] = useState<string>(handwritten.cell);
-  const [contactFax, setContactFax] = useState<string>(handwritten.fax);
-  const [contactEmail, setContactEmail] = useState<string>(handwritten.email);
+  const [poNum, setPoNum] = useState<string>(handwritten.poNum ?? '');
+  const [company, setCompany] = useState<string>(handwritten.customer?.company ?? '');
+  const [source, setSource] = useState<string>(handwritten.source ?? '');
+  const [billToCompany, setBillToCompany] = useState<string>(handwritten.billToCompany ?? '');
+  const [billToAddress, setBillToAddress] = useState<string>(handwritten.billToAddress ?? '');
+  const [billToAddress2, setBillToAddress2] = useState<string>(handwritten.billToAddress2 ?? '');
+  const [billToCity, setBillToCity] = useState<string>(handwritten.billToCity ?? '');
+  const [billToState, setBillToState] = useState<string>(handwritten.billToState ?? '');
+  const [billToZip, setBillToZip] = useState<string>(handwritten.billToZip ?? '');
+  const [billToPhone, setBillToPhone] = useState<string>(handwritten.billToPhone ?? '');
+  const [shipToAddress, setShipToAddress] = useState<string>(handwritten.shipToAddress ?? '');
+  const [shipToAddress2, setShipToAddress2] = useState<string>(handwritten.shipToAddress2 ?? '');
+  const [shipToCity, setShipToCity] = useState<string>(handwritten.shipToCity ?? '');
+  const [shipToState, setShipToState] = useState<string>(handwritten.shipToState ?? '');
+  const [shipToZip, setShipToZip] = useState<string>(handwritten.shipToZip ?? '');
+  const [shipToCompany, setShipToCompany] = useState<string>(handwritten.shipToCompany ?? '');
+  const [shipViaId, setShipViaId] = useState<number | null>(handwritten.shipVia?.id ?? null);
+  const [shipToContact, setShipToContact] = useState<string>(handwritten.shipToContact ?? '');
+  const [contact, setContact] = useState<string>(handwritten.contactName ?? '');
+  const [contactPhone, setContactPhone] = useState<string>(handwritten.phone ?? '');
+  const [contactCell, setContactCell] = useState<string>(handwritten.cell ?? '');
+  const [contactFax, setContactFax] = useState<string>(handwritten.fax ?? '');
+  const [contactEmail, setContactEmail] = useState<string>(handwritten.email ?? '');
   const [invoiceStatus, setInvoiceStatus] = useState<InvoiceStatus>(handwritten.invoiceStatus);
-  const [accountingStatus, setAccountingStatus] = useState<AccountingStatus>(handwritten.accountingStatus);
-  const [shippingStatus, setShippingStatus] = useState<ShippingStatus>(handwritten.shippingStatus);
+  const [accountingStatus, setAccountingStatus] = useState<AccountingStatus>(handwritten.accountingStatus ?? '');
+  const [shippingStatus, setShippingStatus] = useState<ShippingStatus>(handwritten.shippingStatus ?? '');
   const [handwrittenItems, setHandwrittenItems] = useState<HandwrittenItem[]>(handwritten.handwrittenItems);
-  const [orderNotes, setOrderNotes] = useState<string>(handwritten.orderNotes);
-  const [shippingNotes, setShippingNotes] = useState<string>(handwritten.shippingNotes);
+  const [orderNotes, setOrderNotes] = useState<string>(handwritten.orderNotes ?? '');
+  const [shippingNotes, setShippingNotes] = useState<string>(handwritten.shippingNotes ?? '');
   const [mp, setMp] = useState<number>(handwritten.mp);
   const [cap, setCap] = useState<number>(handwritten.cap);
   const [br, setBr] = useState<number>(handwritten.br);
@@ -106,7 +106,7 @@ export default function EditHandwrittenDetails({
   const [trackingNumbers, setTrackingNumbers] = useState<TrackingNumber[]>(handwritten.trackingNumbers);
   const [blankTrackingNumber, setBlankTrackingNumber] = useState('');
   const [shippingListDialogOpen, setShippingListDialogOpen] = useState(false);
-  const [newShippingListRow, setNewShippingListRow] = useState<Handwritten>(null);
+  const [newShippingListRow, setNewShippingListRow] = useState<Handwritten | null>(null);
   const [isTaxable, setIsTaxable] = useState<boolean>(handwritten.isTaxable);
   const [isBlindShipment, setIsBlind] = useState<boolean>(handwritten.isBlindShipment);
   const [isThirdParty, setIsThirdParty] = useState<boolean>(handwritten.isThirdParty);
@@ -114,11 +114,11 @@ export default function EditHandwrittenDetails({
   const [isCollect, setIsCollect] = useState<boolean>(handwritten.isCollect);
   const [isSetup, setIsSetup] = useState<boolean>(handwritten.isSetup);
   const [isEndOfDay, setIsEndOfDay] = useState<boolean>(handwritten.isEndOfDay);
-  const [thirdPartyAccount, setThirdPartyAccount] = useState<string>(handwritten.thirdPartyAccount);
+  const [thirdPartyAccount, setThirdPartyAccount] = useState<string>(handwritten.thirdPartyAccount ?? '');
   const [soldBy, setSoldBy] = useState<number>(handwritten.soldById);
   const [changesSaved, setChangesSaved] = useState(true);
   const [changeCustomerDialogOpen, setChangeCustomerDialogOpen] = useState(false);
-  const [changeCustomerDialogData, setChangeCustomerDialogData] = useState<Handwritten>(null);
+  const [changeCustomerDialogData, setChangeCustomerDialogData] = useState<Handwritten | null>(null);
   const [taxTotal, setTaxTotal] = useState(0);
   const [users, setUsers] = useState<User[]>([]);
   const [emails, setEmails] = useState<string[]>([]);
@@ -141,7 +141,7 @@ export default function EditHandwrittenDetails({
   }, [handwritten]);
 
   useEffect(() => {
-    const taxItemsAmount = handwrittenItems.map((item) => item.qty * item.unitPrice).reduce((acc, cur) => acc + cur, 0);
+    const taxItemsAmount = handwrittenItems.map((item) => (item.qty ?? 0) * (item.unitPrice ?? 0)).reduce((acc, cur) => acc + cur, 0);
     setTaxTotal(Number((taxItemsAmount * TAX_RATE).toFixed(2)));
   }, [handwrittenItems]);
 
@@ -243,7 +243,7 @@ export default function EditHandwrittenDetails({
     }
 
     for (let i = 0; i < trackingNumbers.length; i++) {
-      if (deletedNumbers.some((num) => num.id === deletedNumbers)) continue;
+      if (deletedNumbers.some((num: any) => num.id === deletedNumbers)) continue;
       if (!handwritten.trackingNumbers.some((num) => num.id === trackingNumbers[i].id)) {
         await addTrackingNumber(handwritten.id, trackingNumbers[i].trackingNumber);
       } else if (trackingNumbers[i].trackingNumber !== handwritten.trackingNumbers[i].trackingNumber) {
@@ -280,61 +280,61 @@ export default function EditHandwrittenDetails({
   };
 
   const printHandwritten = async (hasCore: boolean, handwritten: Handwritten) => {
-    const itemTotals: number[] = handwrittenItems.map((item) => item.qty * item.unitPrice);
+    const itemTotals: number[] = handwrittenItems.map((item) => (item.qty ?? 0) * (item.unitPrice ?? 0));
     const handwrittenTotal = formatCurrency(itemTotals.reduce((acc, cur) => acc + cur, 0));
     const shipVia = await getFreightCarrierById(shipViaId);
     const args = {
-      billToCompany: handwritten.billToCompany || '',
-      billToAddress: handwritten.billToAddress || '',
-      billToAddress2: handwritten.billToAddress2 || '',
-      billToCity: handwritten.billToCity || '',
-      billToState: handwritten.billToState || '',
-      billToZip: handwritten.billToZip || '',
-      billToCountry: handwritten.billToCountry || '',
-      shipToCompany: handwritten.shipToCompany || '',
-      shipToAddress: handwritten.shipToAddress || '',
-      shipToAddress2: handwritten.shipToAddress2 || '',
-      shipToCity: handwritten.shipToCity || '',
-      shipToState: handwritten.shipToState || '',
-      shipToZip: handwritten.shipToZip || '',
-      shipToContact: handwritten.shipToContact || '',
+      billToCompany: handwritten.billToCompany ?? '',
+      billToAddress: handwritten.billToAddress ?? '',
+      billToAddress2: handwritten.billToAddress2 ?? '',
+      billToCity: handwritten.billToCity ?? '',
+      billToState: handwritten.billToState ?? '',
+      billToZip: handwritten.billToZip ?? '',
+      billToCountry: handwritten.billToCountry ?? '',
+      shipToCompany: handwritten.shipToCompany ?? '',
+      shipToAddress: handwritten.shipToAddress ?? '',
+      shipToAddress2: handwritten.shipToAddress2 ?? '',
+      shipToCity: handwritten.shipToCity ?? '',
+      shipToState: handwritten.shipToState ?? '',
+      shipToZip: handwritten.shipToZip ?? '',
+      shipToContact: handwritten.shipToContact ?? '',
       shipToCountry: '',
       accountNum: '',
-      paymentType: handwritten.payment || '',
-      createdBy: handwritten.createdBy || '',
-      soldBy: users.find((user) => user.id === Number(handwritten.soldBy)).initials || '',
+      paymentType: handwritten.payment ?? '',
+      createdBy: handwritten.createdBy ?? '',
+      soldBy: users.find((user) => user.id === Number(handwritten.soldBy))?.initials ?? '',
       handwrittenId: Number(handwritten.id),
-      date: formatDate(handwritten.date) || '',
-      contact: handwritten.shipToContact || '',
-      poNum: handwritten.poNum || '',
-      shipVia: shipVia.name || '',
-      source: handwritten.source || '',
+      date: formatDate(handwritten.date) ?? '',
+      contact: handwritten.shipToContact ?? '',
+      poNum: handwritten.poNum ?? '',
+      shipVia: shipVia?.name ?? '',
+      source: handwritten.source ?? '',
       invoiceNotes: handwritten.orderNotes ? handwritten.orderNotes.replace(/[\n\r]/g, '  ').replaceAll('…', '...') : '',
       shippingNotes: handwritten.shippingNotes ? handwritten.shippingNotes.replace(/[\n\r]/g, '  ').replaceAll('…', '...') : '',
-      mp: `${handwritten.mp || 0} Mousepads`,
-      cap: `${handwritten.cap || 0} Hats`,
-      br: `${handwritten.br || 0} Brochures`,
-      fl: `${handwritten.fl || 0} Flashlights`,
-      setup: handwritten.isSetup || false,
-      taxable: handwritten.isTaxable || false,
-      blind: handwritten.isBlindShipment || false,
-      npi: handwritten.isNoPriceInvoice || false,
-      collect: handwritten.isCollect || false,
-      thirdParty: handwritten.isThirdParty || false,
+      mp: `${handwritten.mp ?? 0} Mousepads`,
+      cap: `${handwritten.cap ?? 0} Hats`,
+      br: `${handwritten.br ?? 0} Brochures`,
+      fl: `${handwritten.fl ?? 0} Flashlights`,
+      setup: handwritten.isSetup ?? false,
+      taxable: handwritten.isTaxable ?? false,
+      blind: handwritten.isBlindShipment ?? false,
+      npi: handwritten.isNoPriceInvoice ?? false,
+      collect: handwritten.isCollect ?? false,
+      thirdParty: handwritten.isThirdParty ?? false,
       handwrittenTotal,
       items: JSON.stringify(handwrittenItems.map((item) => {
         return {
-          stockNum: item.stockNum || '',
-          location: item.location || '',
-          cost: formatCurrency(item.cost).replaceAll(',', '|') || '$0.00',
+          stockNum: item.stockNum ?? '',
+          location: item.location ?? '',
+          cost: formatCurrency(item.cost).replaceAll(',', '|') ?? '$0.00',
           qty: item.qty,
-          partNum: item.partNum || '',
-          desc: item.desc || '',
-          unitPrice: formatCurrency(item.unitPrice).replaceAll(',', '|') || '$0.00',
-          total: formatCurrency(item.qty * item.unitPrice).replaceAll(',', '|') || '$0.00',
+          partNum: item.partNum ?? '',
+          desc: item.desc ?? '',
+          unitPrice: formatCurrency(item.unitPrice).replaceAll(',', '|') ?? '$0.00',
+          total: formatCurrency((item.qty ?? 0) * (item.unitPrice ?? 0)).replaceAll(',', '|') ?? '$0.00',
           itemChildren: item.invoiceItemChildren
         };
-      })) || '[]'
+      })) ?? '[]'
     };
     const itemChildren = handwrittenItems.map((item) => {
       if (item.invoiceItemChildren.length > 0) return item.invoiceItemChildren.map((child) => {
@@ -342,16 +342,16 @@ export default function EditHandwrittenDetails({
           cost: formatCurrency(child.cost).replaceAll(',', '|') || '$0.00',
           qty: child.qty,
           partNum: child.partNum,
-          desc: child.part.desc,
+          desc: child.part?.desc,
           stockNum: child.stockNum,
-          location: child.part.location,
+          location: child.part?.location,
           unitPrice: formatCurrency(item.unitPrice).replaceAll(',', '|') || '$0.00',
-          total: formatCurrency(child.qty * item.unitPrice).replaceAll(',', '|') || '$0.00'
+          total: formatCurrency((child.qty ?? 0) * (item.unitPrice ?? 0)).replaceAll(',', '|') || '$0.00'
         };
       });
     }).filter((item) => item).flat();
-    const itemsWithChildren = JSON.stringify([...JSON.parse(args.items).filter((item) => item.itemChildren.length === 0), ...itemChildren ]);
-    const filteredItems = JSON.parse(args.items).map((item) => {
+    const itemsWithChildren = JSON.stringify([...JSON.parse(args.items).filter((item: any) => item.itemChildren.length === 0), ...itemChildren ]);
+    const filteredItems = JSON.parse(args.items).map((item: any) => {
       const { itemChildren, ...rest } = item;
       return { ...rest };
     });
@@ -443,7 +443,7 @@ export default function EditHandwrittenDetails({
     } else {
       const item = handwrittenItems.find((item) => item.partNum === 'TAX');
       if (item) await deleteHandwrittenItem(item.id);
-      setHandwrittenItems(handwrittenItems.filter((i) => i.id !== item.id));
+      setHandwrittenItems(handwrittenItems.filter((i) => i.id !== item?.id));
     }
   };
 
@@ -758,7 +758,7 @@ export default function EditHandwrittenDetails({
                     <td>
                       <FreightCarrierSelect
                         variant={['label-bold']}
-                        value={shipViaId}
+                        value={shipViaId ?? ''}
                         onChange={(e: any) => handleEditShipVia(e.target.value)}
                       />
                     </td>
@@ -964,21 +964,21 @@ export default function EditHandwrittenDetails({
                       <tr key={i}>
                         <td>
                           <Input
-                            value={item.stockNum}
+                            value={item.stockNum ?? ''}
                             onChange={(e: any) => editHandwrittenItem({ ...item, stockNum: e.target.value }, i)}
                             disabled={item.desc === 'TAX' || item.partNum === 'FREIGHT'}
                           />
                         </td>
                         <td>
                           <Input
-                            value={item.location}
+                            value={item.location ?? ''}
                             onChange={(e: any) => editHandwrittenItem({ ...item, location: e.target.value }, i)}
                             disabled={item.desc === 'TAX' || item.partNum === 'FREIGHT'}
                           />
                         </td>
                         <td>
                           <Input
-                            value={item.cost}
+                            value={item.cost ?? ''}
                             type="number"
                             onChange={(e: any) => editHandwrittenItem({ ...item, cost: e.target.value }, i)}
                             disabled={item.desc === 'TAX' || item.partNum === 'FREIGHT'}
@@ -986,7 +986,7 @@ export default function EditHandwrittenDetails({
                         </td>
                         <td>
                           <Input
-                            value={item.qty}
+                            value={item.qty ?? ''}
                             type="number"
                             onChange={(e: any) => editHandwrittenItem({ ...item, qty: e.target.value }, i)}
                             disabled={item.desc === 'TAX' || item.partNum === 'FREIGHT'}
@@ -994,21 +994,21 @@ export default function EditHandwrittenDetails({
                         </td>
                         <td>
                           <Input
-                            value={item.partNum}
+                            value={item.partNum ?? ''}
                             onChange={(e: any) => editHandwrittenItem({ ...item, partNum: e.target.value }, i)}
                             disabled={item.desc === 'TAX' || item.partNum === 'FREIGHT'}
                           />
                         </td>
                         <td>
                           <Input
-                            value={item.desc}
+                            value={item.desc ?? ''}
                             onChange={(e: any) => editHandwrittenItem({ ...item, desc: e.target.value }, i)}
                             disabled={item.desc === 'TAX' || item.partNum === 'FREIGHT'}
                           />
                         </td>
                         <td>
                           <Input
-                            value={item.desc === 'TAX' ? taxTotal : item.unitPrice}
+                            value={item.desc === 'TAX' ? taxTotal : item.unitPrice ?? ''}
                             type="number"
                             onChange={(e: any) => editHandwrittenItem({ ...item, unitPrice: e.target.value }, i)}
                             disabled={item.desc === 'TAX' || item.partNum === 'FREIGHT'}

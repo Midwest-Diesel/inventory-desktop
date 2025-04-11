@@ -39,7 +39,7 @@ export default function App({ Component, pageProps }: any) {
 
   return (
     <Provider>
-      <APIProvider apiKey={process.env.NEXT_PUBLIC_MAPS_API}>
+      <APIProvider apiKey={process.env.NEXT_PUBLIC_MAPS_API ?? ''}>
         <GlobalData>
           <Component {...pageProps} />
         </GlobalData>

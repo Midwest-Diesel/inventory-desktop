@@ -5,7 +5,7 @@ import { parseResDate } from "../tools/stringUtils";
 const parseSurplusDataRes = (data: any) => {
   return data.map((d: any) => {
     return { ...d, date: parseResDate(d.date) };
-  }).sort((a, b) => a.date === null && b.date === null ? 0 : a.date === null ? 1 : b.date === null ? -1 : a.date > b.date ? -1 : 1);
+  }).sort((a: any, b: any) => a.date === null && b.date === null ? 0 : a.date === null ? 1 : b.date === null ? -1 : a.date > b.date ? -1 : 1);
 };
 
 // === GET routes === //

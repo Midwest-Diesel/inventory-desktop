@@ -90,7 +90,7 @@ export default function Dropdown({ children, className = '', variant = [], label
               {variant.includes("input") ?
                 <Input
                   value={value}
-                  onChange={(e: any) => onChange(e.target.value)}
+                  onChange={(e: any) => onChange && onChange(e.target.value)}
                 />
                 :
                 <input
@@ -123,7 +123,7 @@ export default function Dropdown({ children, className = '', variant = [], label
             variant.includes("input") ?
               <Input
                 value={value}
-                onChange={(e: any) => onChange(e.target.value)}
+                onChange={(e: any) => onChange && onChange(e.target.value)}
                 onFocus={() => setIsOpen(true)}
               />
               :

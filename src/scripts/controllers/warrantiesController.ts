@@ -19,7 +19,7 @@ const parseWarrantyRes = (data: any) => {
       date: parseResDate(warrantyData.date),
       invoiceDate: parseResDate(warrantyData.invoiceDate),
       completedDate: parseResDate(warrantyData.completedDate),
-      warrantyItems: warrantyData.warrantyItems.map((item) => {
+      warrantyItems: warrantyData.warrantyItems.map((item: any) => {
         return {
           ...item,
           returnedVendorDate: parseResDate(item.returnedVendorDate)

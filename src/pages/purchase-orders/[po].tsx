@@ -21,7 +21,7 @@ export default function PurchaseOrder() {
   const { backward, push } = useNavState();
   const params = useParams();
   const [user] = useAtom<User>(userAtom);
-  const [poData, setPoData] = useState<PO>(null);
+  const [poData, setPoData] = useState<PO | null>(null);
   const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
@@ -35,13 +35,13 @@ export default function PurchaseOrder() {
   }, [params]);
 
   const handleDelete = async () => {
-    if (user.accessLevel <= 1 || prompt('Type "confirm" to delete this purchase order') !== 'confirm') return;
+    if (!poData?.id || user.accessLevel <= 1 || prompt('Type "confirm" to delete this purchase order') !== 'confirm') return;
     await deletePurchaseOrder(poData.id);
     await push('Purchase Orders', '/purchase-orders');
   };
 
   const handleReceivedItem = async () => {
-    if (!await confirm('Are you sure you want to do this?')) return;
+    if (!poData?.id || !await confirm('Are you sure you want to do this?')) return;
     await togglePurchaseOrderReceived(poData.id, !poData.isItemReceived);
     const res = await getPurchaseOrderByPoNum(params.po.toString());
     setPoData(res);
@@ -50,26 +50,26 @@ export default function PurchaseOrder() {
   const handlePrint = async () => {
     if (!await confirm('Print purchase order?')) return;
     const args = {
-      id: poData.id,
-      vendor: poData.purchasedFrom || '',
-      address: poData.vendorAddress || '',
-      city: poData.vendorCity || '',
-      state: poData.vendorState || '',
-      zip: poData.vendorZip.toString() || '',
-      phone: poData.vendorPhone || '',
-      fax: poData.vendorFax || '',
-      paymentTerms: poData.paymentTerms || '',
-      purchasedFor: poData.purchasedFor || '',
-      specialInstructions: poData.specialInstructions || '',
-      comments: poData.comments || '',
-      date: formatDate(poData.date) || '',
-      orderedBy: poData.orderedBy || '',
-      items: JSON.stringify(poData.poItems.map((item) => {
+      id: poData?.id,
+      vendor: poData?.purchasedFrom ?? '',
+      address: poData?.vendorAddress ?? '',
+      city: poData?.vendorCity ?? '',
+      state: poData?.vendorState ?? '',
+      zip: poData?.vendorZip?.toString() ?? '',
+      phone: poData?.vendorPhone ?? '',
+      fax: poData?.vendorFax ?? '',
+      paymentTerms: poData?.paymentTerms ?? '',
+      purchasedFor: poData?.purchasedFor ?? '',
+      specialInstructions: poData?.specialInstructions ?? '',
+      comments: poData?.comments ?? '',
+      date: formatDate(poData?.date) ?? '',
+      orderedBy: poData?.orderedBy ?? '',
+      items: JSON.stringify(poData?.poItems.map((item) => {
         return {
-          qty: item.qty || '',
-          desc: item.desc || '',
+          qty: item.qty ?? '',
+          desc: item.desc ?? '',
           price: formatCurrency(item.unitPrice).replaceAll(',', '|') || '$0.00',
-          total: formatCurrency(item.unitPrice * item.qty).replaceAll(',', '|') || '$0.00',
+          total: formatCurrency((item.unitPrice ?? 0) * (item.qty ?? 0)).replaceAll(',', '|') || '$0.00',
         };
       })) || '[]'
     };

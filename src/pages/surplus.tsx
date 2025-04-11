@@ -15,10 +15,10 @@ export default function Surplus() {
   const [user] = useAtom<User>(userAtom);
   const [surplus, setSurplus] = useState<Surplus[]>([]);
   const [soldPartsOpen, setSoldPartsOpen] = useState(false);
-  const [soldPartsCode, setSoldPartsCode] = useState(null);
+  const [soldPartsCode, setSoldPartsCode] = useState('');
   const [remainingPartsOpen, setRemainingPartsOpen] = useState(false);
   const [newSurplusOpen, setNewSurplusOpen] = useState(false);
-  const [remainingPartsCode, setRemainingPartsCode] = useState(null);
+  const [remainingPartsCode, setRemainingPartsCode] = useState('');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -29,7 +29,7 @@ export default function Surplus() {
   }, []);
 
   const getCostRemaining = (surplus: Surplus) => {
-    return surplus.price - surplus.costApplied;
+    return surplus.price - (surplus.costApplied ?? 0);
   };
 
 

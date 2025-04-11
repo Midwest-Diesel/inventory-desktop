@@ -8,7 +8,7 @@ import { getCustomerById, getCustomers } from "@/scripts/controllers/customerCon
 interface Props {
   open: boolean
   setOpen: (value: boolean) => void
-  data: MapLocation
+  data: MapLocation | null
   onSubmit: (data: any) => void
 }
 
@@ -16,10 +16,10 @@ interface Props {
 export default function EditMapLocationDialog({ open, setOpen, data, onSubmit }: Props) {
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [customerId, setCustomerId] = useState((data as any).legacyId || '');
-  const [name, setName] = useState(data.name);
-  const [address, setAddress] = useState(data.address);
-  const [type, setType] = useState<MapLocationType>(data.type);
-  const [notes, setNotes] = useState(data.notes);
+  const [name, setName] = useState(data?.name ?? '');
+  const [address, setAddress] = useState(data?.address ?? '');
+  const [type, setType] = useState<MapLocationType>(data?.type ?? 'customer');
+  const [notes, setNotes] = useState(data?.notes ?? '');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -31,6 +31,7 @@ export default function EditMapLocationDialog({ open, setOpen, data, onSubmit }:
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    if (!data?.id) return;
     onSubmit({ id: data.id, name, address, type, customerId, notes });
     setOpen(false);
   };
@@ -52,7 +53,7 @@ export default function EditMapLocationDialog({ open, setOpen, data, onSubmit }:
           onChange={async (e: any) => {
             const customer: Customer = await getCustomerById(e.target.value);
             setCustomerId(customer.id);
-            setName(customer.company);
+            setName(customer?.company ?? '');
             setAddress(`${customer?.billToAddress}, ${customer?.billToCity}`);
           }}
         >

@@ -19,7 +19,7 @@ export default function PartCostIn({ partCostInData }: Props) {
         </tr>
       </thead>
       <tbody>
-        {partCostInData.sort((a, b) => b.cost - a.cost).map((item) => {
+        {partCostInData.sort((a, b) => (b.cost ?? 0) - (a.cost ?? 0)).map((item) => {
           return (
             <tr key={item.id}>
               <td>{ formatCurrency(item.cost) }</td>

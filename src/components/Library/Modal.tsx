@@ -20,13 +20,13 @@ interface Props {
 }
 
 
-export default function Modal({ children, className, variant, title, closeOnOutsideClick, exitWithEsc = true, showCloseBtn = true, width, height, maxHeight, open, setOpen, onClose, ...props }: Props) {
+export default function Modal({ children, className = '', variant = [], title, closeOnOutsideClick, exitWithEsc = true, showCloseBtn = true, width, height, maxHeight, open, setOpen, onClose, ...props }: Props) {
   const ref = useRef<HTMLDivElement>(null);
   const classes = generateClasses(className, variant, 'modal');
 
   useEffect(() => {
     bindEventListeners();
-    document.querySelector('dialog').focus();
+    document.querySelector('dialog')?.focus();
   }, []);
 
   const bindEventListeners = () => {
@@ -48,7 +48,7 @@ export default function Modal({ children, className, variant, title, closeOnOuts
     if (setOpen) {
       setOpen(false);
     } else {
-      onClose();
+      onClose && onClose();
     }
   };
     

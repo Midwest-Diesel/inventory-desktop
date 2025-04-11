@@ -7,7 +7,7 @@ export const userAtom = atom<User>({
   initials: null,
   accessLevel: null,
   type: null
-});
+} as any);
 
 export const picturesAtom = atom<any[]>([]);
 export const snPicturesAtom = atom<any[]>([]);
@@ -16,7 +16,6 @@ export const customerNamesAtom = atom<string[]>([]);
 export const vendorsDataAtom = atom<Vendor[]>([]);
 export const quotesAtom = atom<Quote[]>([]);
 export const partsAtom = atom<Part[]>([]);
-export const invoicesAtom = atom<Invoice[]>([]);
 export const enginesAtom = atom<Engine[]>([]);
 export const recentPartSearchesAtom = atom<RecentPartSearch[]>([]);
 export const recentQuotesAtom = atom<RecentQuoteSearch[]>([]);

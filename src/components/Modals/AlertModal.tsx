@@ -9,7 +9,7 @@ interface Props {
 
 
 export default function AlertModal({ alerts, setAlerts }: Props) {
-  const [alert, setAlert] = useState(null);
+  const [alert, setAlert] = useState<Alert | null>(null);
 
   useEffect(() => {
     setAlert(alerts[0]);
@@ -37,7 +37,7 @@ export default function AlertModal({ alerts, setAlerts }: Props) {
   };
 
   const handleClose = () => {
-    const filteredAlerts = alerts.filter((a) => a.id !== alert.id);
+    const filteredAlerts = alerts.filter((a) => a.id !== alert?.id);
     setAlerts(filteredAlerts);
   };
 

@@ -9,7 +9,7 @@ interface Props {
   open: boolean
   setOpen: (open: boolean) => void
   pictures: Picture[]
-  stockNum: string
+  stockNum: string | null
 }
 
 

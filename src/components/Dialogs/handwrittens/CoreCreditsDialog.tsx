@@ -25,11 +25,11 @@ export default function CoreCreditsDialog({ open, setOpen, cores, handwritten }:
   const [user] = useAtom<User>(userAtom);
   const [selectedCores, setSelectedCores] = useState<Core[]>([]);
   const [inputQty, setInputQty] = useState(1);
-  const [inputCore, setInputCore] = useState<Core>(null);
+  const [inputCore, setInputCore] = useState<Core | null>(null);
 
   const handleCredit = async () => {
     if (selectedCores.length === 0 || !await confirm('Are you sure?')) return;
-    const id = await addHandwritten({ date: new Date(), createdBy: user.id, ...handwritten });
+    const id = await addHandwritten({ ...handwritten, date: new Date(), salesmanId: user.id } as any);
 
     for (let i = 0; i < selectedCores.length; i++) {
       const core = selectedCores[i];
@@ -47,7 +47,7 @@ export default function CoreCreditsDialog({ open, setOpen, cores, handwritten }:
         return: false,
         date: core.date,
         invoiceItemChildren: [],
-      } as HandwrittenItem;
+      } as any;
       await addHandwrittenItem(newItem);
       await removeQtyFromCore(core, qty);
       if (core.qty - qty <= 0) await deleteCore(core.id);

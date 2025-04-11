@@ -9,10 +9,10 @@ interface Props {
 
 export default function WarrantyItemsTable({ className, warrantyItems }: Props) {
   const getTotalCost = (): number => {
-    return warrantyItems.reduce((acc, item) => item.cost !== 0.04 && item.cost !== 0.01 && acc + (item.cost * item.qty), 0);
+    return (warrantyItems as any).reduce((acc: number, item: WarrantyItem) => item.cost !== 0.04 && item.cost !== 0.01 && acc + ((item?.cost ?? 0) * (item?.qty ?? 0)), 0);
   };
   const getTotalPrice = (): number => {
-    return warrantyItems.reduce((acc, item) => acc + (item.price * item.qty), 0);
+    return warrantyItems.reduce((acc: number, item: WarrantyItem) => acc + ((item?.price ?? 0) * (item?.qty ?? 0)), 0);
   };
   const costColorStyle = getTotalCost() < 0 ? { color: 'var(--red-2)' } : '';
   const priceColorStyle = getTotalPrice() < 0 ? { color: 'var(--red-2)' } : '';

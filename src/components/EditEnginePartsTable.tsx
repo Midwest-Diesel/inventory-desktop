@@ -35,7 +35,7 @@ export default function EditEnginePartsTable() {
             <Input
               variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
               name="blockNew"
-              value={engineParts.blockNew}
+              value={engineParts.blockNew ?? ''}
               onChange={handleChange}
             />
           </td>
@@ -43,7 +43,7 @@ export default function EditEnginePartsTable() {
             <Input
               variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
               name="blockReman"
-              value={engineParts.blockReman}
+              value={engineParts.blockReman ?? ''}
               onChange={handleChange}
             />
           </td>
@@ -51,7 +51,7 @@ export default function EditEnginePartsTable() {
             <Input
               variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
               name="blockCasting"
-              value={engineParts.blockCasting}
+              value={engineParts.blockCasting ?? ''}
               onChange={handleChange}
             />
           </td>
@@ -59,7 +59,7 @@ export default function EditEnginePartsTable() {
             <Input
               variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
               name="blockActual"
-              value={engineParts.blockActual}
+              value={engineParts.blockActual ?? ''}
               onChange={handleChange}
             />
           </td>
@@ -70,7 +70,7 @@ export default function EditEnginePartsTable() {
             <Input
               variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
               name="crankNew"
-              value={engineParts.crankNew}
+              value={engineParts.crankNew ?? ''}
               onChange={handleChange}
             />
           </td>
@@ -78,7 +78,7 @@ export default function EditEnginePartsTable() {
             <Input
               variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
               name="crankReman"
-              value={engineParts.crankReman}
+              value={engineParts.crankReman ?? ''}
               onChange={handleChange}
             />
           </td>
@@ -87,7 +87,7 @@ export default function EditEnginePartsTable() {
             <Input
               variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
               name="crankActual"
-              value={engineParts.crankActual}
+              value={engineParts.crankActual ?? ''}
               onChange={handleChange}
             />
           </td>
@@ -98,7 +98,7 @@ export default function EditEnginePartsTable() {
             <Input
               variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
               name="camNew"
-              value={engineParts.camNew}
+              value={engineParts.camNew ?? ''}
               onChange={handleChange}
             />
           </td>
@@ -106,7 +106,7 @@ export default function EditEnginePartsTable() {
             <Input
               variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
               name="camReman"
-              value={engineParts.camReman}
+              value={engineParts.camReman ?? ''}
               onChange={handleChange}
             />
           </td>
@@ -115,7 +115,7 @@ export default function EditEnginePartsTable() {
             <Input
               variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
               name="camActual"
-              value={engineParts.camActual}
+              value={engineParts.camActual ?? ''}
               onChange={handleChange}
             />
           </td>
@@ -126,7 +126,7 @@ export default function EditEnginePartsTable() {
             <Input
               variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
               name="injNew"
-              value={engineParts.injNew}
+              value={engineParts.injNew ?? ''}
               onChange={handleChange}
             />
           </td>
@@ -134,7 +134,7 @@ export default function EditEnginePartsTable() {
             <Input
               variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
               name="injReman"
-              value={engineParts.injReman}
+              value={engineParts.injReman ?? ''}
               onChange={handleChange}
             />
           </td>
@@ -143,7 +143,7 @@ export default function EditEnginePartsTable() {
             <Input
               variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
               name="injActual"
-              value={engineParts.injActual}
+              value={engineParts.injActual ?? ''}
               onChange={handleChange}
             />
           </td>
@@ -154,7 +154,7 @@ export default function EditEnginePartsTable() {
             <Input
               variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
               name="turboNew"
-              value={engineParts.turboNew}
+              value={engineParts.turboNew ?? ''}
               onChange={handleChange}
             />
           </td>
@@ -162,7 +162,7 @@ export default function EditEnginePartsTable() {
             <Input
               variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
               name="turboReman"
-              value={engineParts.turboReman}
+              value={engineParts.turboReman ?? ''}
               onChange={handleChange}
             />
           </td>
@@ -171,7 +171,7 @@ export default function EditEnginePartsTable() {
             <Input
               variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
               name="turboActual"
-              value={engineParts.turboActual}
+              value={engineParts.turboActual ?? ''}
               onChange={handleChange}
             />
           </td>
@@ -182,7 +182,7 @@ export default function EditEnginePartsTable() {
             <Input
               variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
               name="turboHpNew"
-              value={engineParts.turboHpNew}
+              value={engineParts.turboHpNew ?? ''}
               onChange={handleChange}
             />
           </td>
@@ -190,7 +190,7 @@ export default function EditEnginePartsTable() {
             <Input
               variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
               name="turboHpReman"
-              value={engineParts.turboHpReman}
+              value={engineParts.turboHpReman ?? ''}
               onChange={handleChange}
             />
           </td>
@@ -199,7 +199,7 @@ export default function EditEnginePartsTable() {
             <Input
               variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
               name="turboHpActual"
-              value={engineParts.turboHpActual}
+              value={engineParts.turboHpActual ?? ''}
               onChange={handleChange}
             />
           </td>
@@ -210,7 +210,7 @@ export default function EditEnginePartsTable() {
             <Input
               variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
               name="turboLpNew"
-              value={engineParts.turboLpNew}
+              value={engineParts.turboLpNew ?? ''}
               onChange={handleChange}
             />
           </td>
@@ -218,7 +218,7 @@ export default function EditEnginePartsTable() {
             <Input
               variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
               name="turboLpReman"
-              value={engineParts.turboLpReman}
+              value={engineParts.turboLpReman ?? ''}
               onChange={handleChange}
             />
           </td>
@@ -227,7 +227,7 @@ export default function EditEnginePartsTable() {
             <Input
               variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
               name="turboLpActual"
-              value={engineParts.turboLpActual}
+              value={engineParts.turboLpActual ?? ''}
               onChange={handleChange}
             />
           </td>
@@ -238,7 +238,7 @@ export default function EditEnginePartsTable() {
             <Input
               variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
               name="headNew"
-              value={engineParts.headNew}
+              value={engineParts.headNew ?? ''}
               onChange={handleChange}
             />
           </td>
@@ -246,7 +246,7 @@ export default function EditEnginePartsTable() {
             <Input
               variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
               name="headReman"
-              value={engineParts.headReman}
+              value={engineParts.headReman ?? ''}
               onChange={handleChange}
             />
           </td>
@@ -255,7 +255,7 @@ export default function EditEnginePartsTable() {
             <Input
               variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
               name="headActual"
-              value={engineParts.headActual}
+              value={engineParts.headActual ?? ''}
               onChange={handleChange}
             />
           </td>
@@ -266,7 +266,7 @@ export default function EditEnginePartsTable() {
             <Input
               variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
               name="pistonNew"
-              value={engineParts.pistonNew}
+              value={engineParts.pistonNew ?? ''}
               onChange={handleChange}
             />
           </td>
@@ -274,7 +274,7 @@ export default function EditEnginePartsTable() {
             <Input
               variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
               name="pistonReman"
-              value={engineParts.pistonReman}
+              value={engineParts.pistonReman ?? ''}
               onChange={handleChange}
             />
           </td>
@@ -283,7 +283,7 @@ export default function EditEnginePartsTable() {
             <Input
               variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
               name="pistonActual"
-              value={engineParts.pistonActual}
+              value={engineParts.pistonActual ?? ''}
               onChange={handleChange}
             />
           </td>
@@ -294,7 +294,7 @@ export default function EditEnginePartsTable() {
             <Input
               variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
               name="fwhNew"
-              value={engineParts.fwhNew}
+              value={engineParts.fwhNew ?? ''}
               onChange={handleChange}
             />
           </td>
@@ -302,7 +302,7 @@ export default function EditEnginePartsTable() {
             <Input
               variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
               name="fwhReman"
-              value={engineParts.fwhReman}
+              value={engineParts.fwhReman ?? ''}
               onChange={handleChange}
             />
           </td>
@@ -311,7 +311,7 @@ export default function EditEnginePartsTable() {
             <Input
               variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
               name="fwhActual"
-              value={engineParts.fwhActual}
+              value={engineParts.fwhActual ?? ''}
               onChange={handleChange}
             />
           </td>
@@ -322,7 +322,7 @@ export default function EditEnginePartsTable() {
             <Input
               variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
               name="flywheelNew"
-              value={engineParts.flywheelNew}
+              value={engineParts.flywheelNew ?? ''}
               onChange={handleChange}
             />
           </td>
@@ -332,7 +332,7 @@ export default function EditEnginePartsTable() {
             <Input
               variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
               name="flywheelActual"
-              value={engineParts.flywheelActual}
+              value={engineParts.flywheelActual ?? ''}
               onChange={handleChange}
             />
           </td>
@@ -343,7 +343,7 @@ export default function EditEnginePartsTable() {
             <Input
               variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
               name="oilPanNew"
-              value={engineParts.oilPanNew}
+              value={engineParts.oilPanNew ?? ''}
               onChange={handleChange}
             />
           </td>
@@ -351,7 +351,7 @@ export default function EditEnginePartsTable() {
             <Input
               variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
               name="oilPanReman"
-              value={engineParts.oilPanReman}
+              value={engineParts.oilPanReman ?? ''}
               onChange={handleChange}
             />
           </td>
@@ -360,7 +360,7 @@ export default function EditEnginePartsTable() {
             <Input
               variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
               name="oilPanActual"
-              value={engineParts.oilPanActual}
+              value={engineParts.oilPanActual ?? ''}
               onChange={handleChange}
             />
           </td>
@@ -371,7 +371,7 @@ export default function EditEnginePartsTable() {
             <Input
               variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
               name="oilCoolerNew"
-              value={engineParts.oilCoolerNew}
+              value={engineParts.oilCoolerNew ?? ''}
               onChange={handleChange}
             />
           </td>
@@ -379,7 +379,7 @@ export default function EditEnginePartsTable() {
             <Input
               variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
               name="oilCoolerReman"
-              value={engineParts.oilCoolerReman}
+              value={engineParts.oilCoolerReman ?? ''}
               onChange={handleChange}
             />
           </td>
@@ -388,7 +388,7 @@ export default function EditEnginePartsTable() {
             <Input
               variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
               name="oilCoolerActual"
-              value={engineParts.oilCoolerActual}
+              value={engineParts.oilCoolerActual ?? ''}
               onChange={handleChange}
             />
           </td>
@@ -399,7 +399,7 @@ export default function EditEnginePartsTable() {
             <Input
               variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
               name="frontHsngNew"
-              value={engineParts.frontHsngNew}
+              value={engineParts.frontHsngNew ?? ''}
               onChange={handleChange}
             />
           </td>
@@ -409,7 +409,7 @@ export default function EditEnginePartsTable() {
             <Input
               variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
               name="frontHsngActual"
-              value={engineParts.frontHsngActual}
+              value={engineParts.frontHsngActual ?? ''}
               onChange={handleChange}
             />
           </td>
@@ -420,7 +420,7 @@ export default function EditEnginePartsTable() {
             <Input
               variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
               name="ragNew"
-              value={engineParts.ragNew}
+              value={engineParts.ragNew ?? ''}
               onChange={handleChange}
             />
           </td>
@@ -430,7 +430,7 @@ export default function EditEnginePartsTable() {
             <Input
               variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
               name="ragActual"
-              value={engineParts.ragActual}
+              value={engineParts.ragActual ?? ''}
               onChange={handleChange}
             />
           </td>
@@ -441,7 +441,7 @@ export default function EditEnginePartsTable() {
             <Input
               variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
               name="heuiPumpNew"
-              value={engineParts.heuiPumpNew}
+              value={engineParts.heuiPumpNew ?? ''}
               onChange={handleChange}
             />
           </td>
@@ -449,7 +449,7 @@ export default function EditEnginePartsTable() {
             <Input
               variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
               name="heuiPumpReman"
-              value={engineParts.heuiPumpReman}
+              value={engineParts.heuiPumpReman ?? ''}
               onChange={handleChange}
             />
           </td>
@@ -458,7 +458,7 @@ export default function EditEnginePartsTable() {
             <Input
               variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
               name="heuiPumpActual"
-              value={engineParts.heuiPumpActual}
+              value={engineParts.heuiPumpActual ?? ''}
               onChange={handleChange}
             />
           </td>
@@ -469,7 +469,7 @@ export default function EditEnginePartsTable() {
             <Input
               variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
               name="oilPumpNew"
-              value={engineParts.oilPumpNew}
+              value={engineParts.oilPumpNew ?? ''}
               onChange={handleChange}
             />
           </td>
@@ -477,7 +477,7 @@ export default function EditEnginePartsTable() {
             <Input
               variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
               name="oilPumpReman"
-              value={engineParts.oilPumpReman}
+              value={engineParts.oilPumpReman ?? ''}
               onChange={handleChange}
             />
           </td>
@@ -486,7 +486,7 @@ export default function EditEnginePartsTable() {
             <Input
               variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
               name="oilPumpActual"
-              value={engineParts.oilPumpActual}
+              value={engineParts.oilPumpActual ?? ''}
               onChange={handleChange}
             />
           </td>
@@ -497,7 +497,7 @@ export default function EditEnginePartsTable() {
             <Input
               variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
               name="waterPump"
-              value={engineParts.waterPump}
+              value={engineParts.waterPump ?? ''}
               onChange={handleChange}
             />
           </td>
@@ -505,7 +505,7 @@ export default function EditEnginePartsTable() {
             <Input
               variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
               name="waterPumpReman"
-              value={engineParts.waterPumpReman}
+              value={engineParts.waterPumpReman ?? ''}
               onChange={handleChange}
             />
           </td>
@@ -514,7 +514,7 @@ export default function EditEnginePartsTable() {
             <Input
               variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
               name="waterPumpActual"
-              value={engineParts.waterPumpActual}
+              value={engineParts.waterPumpActual ?? ''}
               onChange={handleChange}
             />
           </td>
@@ -525,7 +525,7 @@ export default function EditEnginePartsTable() {
             <Input
               variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
               name="exhMnfldNew"
-              value={engineParts.exhMnfldNew}
+              value={engineParts.exhMnfldNew ?? ''}
               onChange={handleChange}
             />
           </td>
@@ -533,7 +533,7 @@ export default function EditEnginePartsTable() {
             <Input
               variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
               name="exhMnfldReman"
-              value={engineParts.exhMnfldReman}
+              value={engineParts.exhMnfldReman ?? ''}
               onChange={handleChange}
             />
           </td>
@@ -542,7 +542,7 @@ export default function EditEnginePartsTable() {
             <Input
               variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
               name="exhMnfldActual"
-              value={engineParts.exhMnfldActual}
+              value={engineParts.exhMnfldActual ?? ''}
               onChange={handleChange}
             />
           </td>

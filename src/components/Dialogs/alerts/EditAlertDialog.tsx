@@ -1,6 +1,5 @@
 import { FormEvent, useState } from "react";
 import Dialog from "../../Library/Dialog";
-import Select from "../../Library/Select/Select";
 import Input from "../../Library/Input";
 import Button from "../../Library/Button";
 import { useAtom } from "jotai";
@@ -10,19 +9,20 @@ import { editAlert, getAlerts } from "@/scripts/controllers/alertsController";
 interface Props {
   open: boolean
   setOpen: (open: boolean) => void
-  alert: Alert
+  alert: Alert | null
 }
 
 
 export default function EditAlertDialog({ open, setOpen, alert }: Props) {
   const [user] = useAtom<User>(userAtom);
   const [alertsData, setAlertsAtom] = useAtom<Alert[]>(alertsAtom);
-  const [type, setType] = useState<string>(alert.type);
-  const [partNum, setPartNum] = useState<string>(alert.partNum);
-  const [note, setNote] = useState<string>(alert.note);
+  const [type, setType] = useState(alert?.type ?? '');
+  const [partNum, setPartNum] = useState(alert?.partNum ?? '');
+  const [note, setNote] = useState(alert?.note ?? '');
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    if (!alert) return;
     const newAlert = {
       id: alert.id,
       type,
@@ -37,9 +37,9 @@ export default function EditAlertDialog({ open, setOpen, alert }: Props) {
   };
 
   const handelCancel = () => {
-    setType(alert.type);
-    setPartNum(alert.partNum);
-    setNote(alert.note);
+    setType(alert?.type ?? '');
+    setPartNum(alert?.partNum ?? '');
+    setNote(alert?.note ?? '');
     setOpen(false);
   };
 

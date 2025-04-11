@@ -28,7 +28,7 @@ export function Layout({ children, title }: Props) {
 
   return (
     <div>
-      { alert && <AlertModal alerts={alerts} setAlerts={setAlerts} /> }
+      <AlertModal alerts={alerts} setAlerts={setAlerts} />
       { user && <Navbar /> }
       <div className="layout__container">
         <div className="layout__main-content">

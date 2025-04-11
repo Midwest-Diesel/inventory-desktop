@@ -90,10 +90,10 @@ export default function EnginesRunning() {
                       <td>{ engine.location }</td>
                       <td>{ engine.comments }</td>
                       <td>{ engine.horsePower }</td>
-                      <td className="cbx-td"><Checkbox checked={engine.jakeBrake} disabled /></td>
-                      <td className="cbx-td"><Checkbox checked={engine.warranty} disabled /></td>
-                      <td className="cbx-td"><Checkbox checked={engine.testRun} disabled /></td>
-                      <td className="cbx-td"><Checkbox checked={engine.ecm} disabled /></td>
+                      <td className="cbx-td"><Checkbox checked={Boolean(engine.jakeBrake)} disabled /></td>
+                      <td className="cbx-td"><Checkbox checked={Boolean(engine.warranty)} disabled /></td>
+                      <td className="cbx-td"><Checkbox checked={Boolean(engine.testRun)} disabled /></td>
+                      <td className="cbx-td"><Checkbox checked={Boolean(engine.ecm)} disabled /></td>
                       <td>{ engine.mileage }</td>
                       <td>{ formatCurrency(engine.costRemaining) }</td>
                       <td className="cbx-td"><Checkbox checked={isResearched(engine)} disabled /></td>

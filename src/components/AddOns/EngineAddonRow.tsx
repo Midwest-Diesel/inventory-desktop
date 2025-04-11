@@ -29,6 +29,7 @@ export default function EngineAddOnRow({ addOn, handleDuplicateAddOn }: Props) {
   useEffect(() => {
     if (!showVendorSelect) return;
     setTimeout(() => {
+      if (!ref.current) return;
       const select = ref.current.querySelectorAll('select');
       select.length > 0 && select[select.length - 2].focus();
     }, 30);
@@ -92,14 +93,14 @@ export default function EngineAddOnRow({ addOn, handleDuplicateAddOn }: Props) {
   const handlePrint = async () => {
     const pictures = await getEngineImages(addOn.engineNum);
     const args = {
-      stockNum: addOn.engineNum.toString() || '',
-      model: addOn.model || '',
-      serialNum: addOn.serialNum || '',
-      hp: addOn.hp || '',
-      location: addOn.location || '',
-      remarks: addOn.notes || '',
-      date: formatDate(addOn.entryDate) || '',
-      partNum: addOn.arrNum || '',
+      stockNum: addOn.engineNum?.toString() ?? '',
+      model: addOn.model ?? '',
+      serialNum: addOn.serialNum ?? '',
+      hp: addOn.hp ?? '',
+      location: addOn.location ?? '',
+      remarks: addOn.notes ?? '',
+      date: formatDate(addOn.entryDate) ?? '',
+      partNum: addOn.arrNum ?? '',
       rating: '0',
       hasPictures: pictures.length > 0,
       copies: Number(printQty)
@@ -208,7 +209,7 @@ export default function EngineAddOnRow({ addOn, handleDuplicateAddOn }: Props) {
                   {showVendorSelect ?
                     <VendorSelect
                       variant={['label-full-width']}
-                      value={addOn.purchasedFrom}
+                      value={addOn.purchasedFrom ?? ''}
                       onChange={(e: any) => handleEditAddOn({ ...addOn, purchasedFrom: e.target.value })}
                       onBlur={() => setShowVendorSelect(false)}
                     />

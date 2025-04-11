@@ -20,11 +20,11 @@ interface Props {
 
 
 export default function EditWarrantyDetails({ warrantyData, setWarranty, setIsEditing }: Props) {
-  const [company, setCompany] = useState<string>(warrantyData.customer && warrantyData.customer.company);
+  const [company, setCompany] = useState(warrantyData.customer?.company ?? '');
   const [date, setDate] = useState<Date>(warrantyData.date);
-  const [vendor, setVendor] = useState<string>(warrantyData.vendor);
-  const [vendorWarrantyNum, setVendorWarrantyNum] = useState<number>(warrantyData.vendorWarrantyNum);
-  const [handwrittenId, setHandwrittenId] = useState<number>(warrantyData.handwrittenId);
+  const [vendor, setVendor] = useState(warrantyData.vendor ?? '');
+  const [vendorWarrantyNum, setVendorWarrantyNum] = useState<number | null>(warrantyData.vendorWarrantyNum);
+  const [handwrittenId, setHandwrittenId] = useState<number | null>(warrantyData.handwrittenId);
   const [warrantyItems, setWarrantyItems] = useState<WarrantyItem[]>(warrantyData.warrantyItems);
   const [changesSaved, setChangesSaved] = useState(true);
 
@@ -164,7 +164,7 @@ export default function EditWarrantyDetails({ warrantyData, setWarranty, setIsEd
                     <td>
                       <Input
                         type="number"
-                        value={vendorWarrantyNum}
+                        value={vendorWarrantyNum ?? ''}
                         onChange={(e: any) => setVendorWarrantyNum(e.target.value)}
                       />
                     </td>
@@ -174,7 +174,7 @@ export default function EditWarrantyDetails({ warrantyData, setWarranty, setIsEd
                     <td>
                       <Input
                         type="number"
-                        value={handwrittenId}
+                        value={handwrittenId ?? ''}
                         onChange={(e: any) => setHandwrittenId(e.target.value)}
                       />
                     </td>
@@ -208,40 +208,40 @@ export default function EditWarrantyDetails({ warrantyData, setWarranty, setIsEd
                       <tr key={i}>
                         <td>
                           <Input
-                            value={item.stockNum}
+                            value={item.stockNum ?? ''}
                             onChange={(e: any) => handleEditItem({ ...item, stockNum: e.target.value }, i)}
                           />
                         </td>
                         <td>
                           <Input
                             type="number"
-                            value={item.qty}
+                            value={item.qty ?? ''}
                             onChange={(e: any) => handleEditItem({ ...item, qty: e.target.value }, i)}
                           />
                         </td>
                         <td>
                           <Input
-                            value={item.partNum}
+                            value={item.partNum ?? ''}
                             onChange={(e: any) => handleEditItem({ ...item, partNum: e.target.value }, i)}
                           />
                         </td>
                         <td>
                           <Input
-                            value={item.desc}
+                            value={item.desc ?? ''}
                             onChange={(e: any) => handleEditItem({ ...item, desc: e.target.value }, i)}
                           />
                         </td>
                         <td>
                           <Input
                             type="number"
-                            value={item.cost}
+                            value={item.cost ?? ''}
                             onChange={(e: any) => handleEditItem({ ...item, cost: e.target.value }, i)}
                           />
                         </td>
                         <td>
                           <Input
                             type="number"
-                            value={item.price}
+                            value={item.price ?? ''}
                             onChange={(e: any) => handleEditItem({ ...item, price: e.target.value }, i)}
                           />
                         </td>
@@ -254,19 +254,19 @@ export default function EditWarrantyDetails({ warrantyData, setWarranty, setIsEd
                         </td>
                         <td>
                           <Input
-                            value={item.claimReason}
+                            value={item.claimReason ?? ''}
                             onChange={(e: any) => handleEditItem({ ...item, claimReason: e.target.value }, i)}
                           />
                         </td>
                         <td>
                           <Input
-                            value={item.vendorReport}
+                            value={item.vendorReport ?? ''}
                             onChange={(e: any) => handleEditItem({ ...item, vendorReport: e.target.value }, i)}
                           />
                         </td>
                         <td>
                           <Input
-                            value={item.vendorCredit}
+                            value={item.vendorCredit ?? ''}
                             onChange={(e: any) => handleEditItem({ ...item, vendorCredit: e.target.value }, i)}
                           />
                         </td>

@@ -21,7 +21,7 @@ export default function SalesEndOfDayDialog({ open, setOpen }: Props) {
   const [itemsData, setItemsData] = useState<SalesEndOfDayItem[]>([]);
   const [items, setItems] = useState<SalesEndOfDayItem[]>([]);
   const [itemsMin, setItemsMin] = useState<number[]>([]);
-  const [selectedItem, setSelectedItem] = useState<SalesEndOfDayItem>(null);
+  const [selectedItem, setSelectedItem] = useState<SalesEndOfDayItem | null>(null);
   const [quotesData, setQuotesData] = useState<Quote[]>([]);
   const [quotes, setQuotes] = useState<Quote[]>([]);
   const [quotesMin, setQuotesMin] = useState<number[]>([]);
@@ -32,8 +32,8 @@ export default function SalesEndOfDayDialog({ open, setOpen }: Props) {
     const fetchData = async () => {
       if (!open) return;
       const res = await getSomeUnsoldItems(1, LIMIT, user.id);
-      setItemsMin(res.minItems);
-      setItemsData(res.rows);
+      setItemsMin(res?.minItems);
+      setItemsData(res?.rows);
     };
     fetchData();
   }, [open]);
@@ -42,22 +42,22 @@ export default function SalesEndOfDayDialog({ open, setOpen }: Props) {
     const fetchData = async () => {
       if (!open || !selectedItem) return;
       const res = await getSomeUnsoldQuotesByPartNum(1, LIMIT, selectedItem.partNum, selectedItem.customer.id, showAlts);
-      setQuotesData(res.rows);
-      setQuotesMin(res.minQuotes);
+      setQuotesData(res?.rows);
+      setQuotesMin(res?.minQuotes);
     };
     fetchData();
   }, [open, showAlts]);
 
-  const handleChangeItemsPage = async (data: any, page: number) => {
+  const handleChangeItemsPage = async (_: any, page: number) => {
     if (!open) return;
     const res = await getSomeUnsoldItems(page, LIMIT, user.id);
-    setItems(res.rows);
+    setItems(res?.rows);
   };
 
-  const handleChangeQuotesPage = async (data: any, page: number) => {
+  const handleChangeQuotesPage = async (_: any, page: number) => {
     if (!open) return;
-    const res = await getSomeUnsoldQuotesByPartNum(page, LIMIT, selectedItem.partNum, selectedItem.customer.id, showAlts);
-    setQuotes(res.rows);
+    const res = await getSomeUnsoldQuotesByPartNum(page, LIMIT, selectedItem?.partNum ?? '', selectedItem?.customer.id ?? 0, showAlts);
+    setQuotes(res?.rows);
   };
 
   const handleMarkQuoteSold = async (quote: Quote) => {
@@ -70,29 +70,29 @@ export default function SalesEndOfDayDialog({ open, setOpen }: Props) {
   };
 
   const handleNewQuote = async () => {
-    const quote = {
+    const quote: any = {
       date: new Date(),
       source: null,
-      customerId: selectedItem.customer.id,
-      contact: selectedItem.customer.contact,
-      phone: selectedItem.customer.phone,
-      state: selectedItem.customer.billToState,
-      partNum: selectedItem.partNum,
-      desc: selectedItem.desc,
-      stockNum: selectedItem.part ? selectedItem.part.stockNum : null,
-      price: selectedItem.unitPrice,
+      customerId: selectedItem?.customer.id,
+      contact: selectedItem?.customer.contact,
+      phone: selectedItem?.customer.phone,
+      state: selectedItem?.customer.billToState,
+      partNum: selectedItem?.partNum,
+      desc: selectedItem?.desc,
+      stockNum: selectedItem?.part?.stockNum,
+      price: selectedItem?.unitPrice,
       notes: '',
-      rating: selectedItem.part ? selectedItem.part.rating : 0,
-      email: selectedItem.customer.email,
+      rating: selectedItem?.part?.rating ?? 0,
+      email: selectedItem?.customer.email,
       salesmanId: user.id,
-      partId: selectedItem.part ? selectedItem.part.id : null
+      partId: selectedItem?.part?.id
     };
     const id = await addQuote(quote);
     const newQuote = {
       ...quote,
       id,
-      customer: selectedItem.customer,
-      part: selectedItem.part || null,
+      customer: selectedItem?.customer,
+      part: selectedItem?.part,
       salesman: user.initials,
       sale: false,
       followedUp: false,

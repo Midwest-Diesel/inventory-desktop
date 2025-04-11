@@ -15,7 +15,7 @@ describe('Format date', () => {
   });
 
   it('should format time', () => {
-    const parsedDate = parseResDate('2024-06-11T19:24:47.601Z');
+    const parsedDate = parseResDate('2024-06-11T19:24:47.601Z') ?? '';
     const date = new Date(parsedDate);
     const result = formatTime(date);
     expect(result).toBe('7:24 PM');

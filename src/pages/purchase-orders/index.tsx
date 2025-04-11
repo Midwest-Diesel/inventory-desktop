@@ -19,7 +19,7 @@ export default function PurchaseOrders() {
   const [purchaseOrdersData, setPurchaseOrdersData] = useState<PO[]>([]);
   const [purchaseOrders, setPurchaseOrders] = useState<PO[]>([]);
   const [purchaseOrderCount, setPurchaseOrderCount] = useState<number[]>([]);
-  const [focusedPurchaseOrder, setFocusedPurchaseOrder] = useState<PO>(null);
+  const [focusedPurchaseOrder, setFocusedPurchaseOrder] = useState<PO | null>(null);
   const [showIncomming, setShowIncomming] = useState(false);
   const [showSearchDialog, setShowSearchDialog] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
@@ -52,8 +52,8 @@ export default function PurchaseOrders() {
 
     if (hasValidSearchCriteria) {
       const res = await searchPurchaseOrders({ ...searchData, offset: (page - 1) * LIMIT });
-      setPurchaseOrders(res.rows);
-      setPurchaseOrderCount(res.minItems);
+      setPurchaseOrders(res?.rows);
+      setPurchaseOrderCount(res?.minItems);
     } else {
       const res = await getSomePurchaseOrders(page, LIMIT, showIncomming);
       setPurchaseOrderCount(await getPurchaseOrdersCount(showIncomming));

@@ -16,7 +16,7 @@ interface Props {
   open: boolean
   setOpen: (open: boolean) => void
   part: Part
-  customer: Customer
+  customer: Customer | null
   setHandwrittenCustomer: (customer: Customer) => void
   onSubmit: (handwritten: Handwritten, warranty: string, qty: number, desc: string, price: number) => void
 }
@@ -40,7 +40,7 @@ export default function SelectHandwrittenDialog({ open, setOpen, part, customer,
   const [customWar, setCustomWar] = useState(false);
   const [search, setSearch] = useState('');
   const [toastOpen, setToastOpen] = useState(false);
-  const [prevSearch, setPrevSearch] = useState(null);
+  const [prevSearch, setPrevSearch] = useState<{ billToCompany: string, limit: number, offset: number } | null>(null);
   const LIMIT = 26;
   
   useEffect(() => {
@@ -49,7 +49,7 @@ export default function SelectHandwrittenDialog({ open, setOpen, part, customer,
       await resetHandwrittensList();
     };
     setSearch('');
-    setDesc(part.desc);
+    setDesc(part.desc ?? '');
     setQty(part.qty);
     fetchData();
   }, [open]);
@@ -69,8 +69,8 @@ export default function SelectHandwrittenDialog({ open, setOpen, part, customer,
     if (page === currentPage) return;
     if (prevSearch) {
       const res = await searchHandwrittens({ ...prevSearch, offset: (page - 1) * LIMIT });
-      setHandwrittens(res.rows);
-      setHandwrittenCount(res.minItems);
+      setHandwrittens(res?.rows);
+      setHandwrittenCount(res?.minItems);
     } else {
       const res = await getSomeHandwrittens(page, LIMIT);
       setHandwrittens(res);
@@ -91,8 +91,8 @@ export default function SelectHandwrittenDialog({ open, setOpen, part, customer,
         offset: (currentPage - 1) * LIMIT
       };
       const res = await searchHandwrittens(searchData);
-      setHandwrittens(res.rows);
-      setHandwrittenCount(res.minItems);
+      setHandwrittens(res?.rows);
+      setHandwrittenCount(res?.minItems);
       setPrevSearch(searchData);
     } else {
       resetHandwrittensList();
@@ -179,7 +179,7 @@ export default function SelectHandwrittenDialog({ open, setOpen, part, customer,
             variant={['x-small', 'fit']}
             onClick={handleNewHandwritten}
             type="button"
-            disabled={!customer.company}
+            disabled={!customer?.company}
           >
             New Handwritten
           </Button>

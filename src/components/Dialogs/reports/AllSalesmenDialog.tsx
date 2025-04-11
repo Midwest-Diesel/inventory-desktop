@@ -15,8 +15,8 @@ interface Props {
 
 
 export default function AllSalesmenDialog({ open, setOpen, setTableOpen, setTableData, setReportsOpen }: Props) {
-  const [startDate, setStartDate] = useState<Date>(null);
-  const [endDate, setEndDate] = useState<Date>(null);
+  const [startDate, setStartDate] = useState<Date | null>(null);
+  const [endDate, setEndDate] = useState<Date | null>(null);
 
   const handleSearch = async (e: FormEvent) => {
     e.preventDefault();

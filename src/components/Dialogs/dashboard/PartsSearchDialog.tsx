@@ -26,7 +26,7 @@ export default function PartsSearchDialog({ open, setOpen, setParts, setLoading 
   const [alertsData] = useAtom<Alert[]>(alertsAtom);
   const [user] = useAtom<User>(userAtom);
   const [showSoldParts] = useAtom<boolean>(showSoldPartsAtom);
-  const prevSearches = JSON.parse(localStorage.getItem('partSearches'));
+  const prevSearches = JSON.parse(localStorage.getItem('partSearches')!);
   const [partNum, setPartNum] = useState('');
   const [stockNum, setStockNum] = useState('');
   const [desc, setDesc] = useState('');
@@ -60,7 +60,7 @@ export default function PartsSearchDialog({ open, setOpen, setParts, setLoading 
   }, [showSoldParts]);
 
   useEffect(() => {
-    document.getElementById('part-search-input').focus();
+    document.getElementById('part-search-input')?.focus();
   }, [open]);
 
   const clearInputs = () => {

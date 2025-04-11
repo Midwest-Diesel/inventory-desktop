@@ -60,7 +60,7 @@ export default function AddToMapDialog({ open, setOpen, customer, userId }: Prop
         <Input
           variant={['label-bold', 'label-stack']}
           label="Name"
-          value={name}
+          value={name ?? ''}
           onChange={(e: any) => setName(e.target.value)}
           required
         />

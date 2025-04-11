@@ -1,10 +1,10 @@
 import { createClient } from '@supabase/supabase-js';
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_KEY;
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL ?? '';
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_KEY ?? '';
 export const supabase = createClient(supabaseUrl, supabaseKey);
 
 
-export const uploadSupabaseFile = async (bucket: string, file: File, name: string, options?: any) => {
+export const uploadSupabaseFile = async (bucket: string, file: File | null, name: string, options?: any) => {
   if (!file) {
     console.error('No file data');
     return;

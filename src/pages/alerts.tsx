@@ -16,7 +16,7 @@ export default function Alerts() {
   const [alertsData, setAlertsAtom] = useAtom<Alert[]>(alertsAtom);
   const [newAlertOpen, setNewAlertOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const [alertEdited, setAlertEdited] = useState<Alert>(null);
+  const [alertEdited, setAlertEdited] = useState<Alert | null>(null);
 
   const handleEdit = (alert: Alert) => {
     setAlertEdited(alert);

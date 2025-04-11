@@ -26,7 +26,7 @@ interface Props {
 
 export default function OfficeAddonRow({ addOn, partNumList, engineNumList }: Props) {
   const [addOns, setAddons] = useAtom<AddOn[]>(shopAddOnsAtom);
-  const [selectedAddOnData, setSelectedAddOnData] = useAtom<{ addOn: AddOn, dialogOpen: boolean }>(selectedAddOnAtom);
+  const [selectedAddOnData, setSelectedAddOnData] = useAtom<{ addOn: AddOn | null, dialogOpen: boolean }>(selectedAddOnAtom);
   const [poLink, setPoLink] = useState<string>(addOn.po ? `${addOn.po}` : '');
   const [autofillPartNum, setAutofillPartNum] = useState('');
   const [autofillEngineNum, setAutofillEngineNum] = useState('');
@@ -42,7 +42,7 @@ export default function OfficeAddonRow({ addOn, partNumList, engineNumList }: Pr
 
   useEffect(() => {
     const fetchData = async () => {
-      await handlePartNumBlur(addOn.partNum);
+      await handlePartNumBlur(addOn.partNum ?? '');
     };
     fetchData();
   }, []);
@@ -50,6 +50,7 @@ export default function OfficeAddonRow({ addOn, partNumList, engineNumList }: Pr
   useEffect(() => {
     if (!showVendorSelect) return;
     setTimeout(() => {
+      if (!ref.current) return;
       const select = ref.current.querySelectorAll('select');
       select.length > 0 && select[select.length - 1].focus();
     }, 30);
@@ -76,7 +77,7 @@ export default function OfficeAddonRow({ addOn, partNumList, engineNumList }: Pr
     if (!partNum) {
       setAutofillPartNum('');
     } else {
-      setAutofillPartNum(partNumList.find((p) => p.startsWith(partNum)));
+      setAutofillPartNum(partNumList.find((p) => p.startsWith(partNum)) ?? '');
     }
   };
 
@@ -84,7 +85,7 @@ export default function OfficeAddonRow({ addOn, partNumList, engineNumList }: Pr
     if (!engineNum) {
       setAutofillEngineNum('');
     } else {
-      setAutofillEngineNum(engineNumList.find((p) => p.startsWith(`${engineNum}`)));
+      setAutofillEngineNum(engineNumList.find((p) => p.startsWith(`${engineNum}`)) ?? '');
     }
   };
 
@@ -162,10 +163,9 @@ export default function OfficeAddonRow({ addOn, partNumList, engineNumList }: Pr
     setLoadingProgress(`${i}/${total}`);
   };
 
-  const handlePoLink = async (poNum: string) => {
-    const po: PO = await getPurchaseOrderByPoNum(poNum);
-    if (!po) return;
-    setPoLink(`${po.poNum}`);
+  const handlePoLink = async (poNum: string | null) => {
+    const po: PO | null = await getPurchaseOrderByPoNum(poNum);
+    if (po) setPoLink(`${po.poNum}`);
   };
 
   const handlePartNumBlur = async (partNum: string) => {
@@ -279,7 +279,7 @@ export default function OfficeAddonRow({ addOn, partNumList, engineNumList }: Pr
               <td>
                 <Select
                   style={{ width: '100%' }}
-                  value={addOn.manufacturer}
+                  value={addOn.manufacturer ?? ''}
                   onChange={(e: any) => handleEditAddOn({ ...addOn, manufacturer: e.target.value })}
                 >
                   <option value="CAT">CAT</option>
@@ -293,7 +293,7 @@ export default function OfficeAddonRow({ addOn, partNumList, engineNumList }: Pr
               <td>
                 <Select
                   style={{ width: '100%' }}
-                  value={addOn.condition}
+                  value={addOn.condition ?? ''}
                   onChange={(e: any) => handleEditAddOn({ ...addOn, condition: e.target.value })}
                 >
                   <option value="Core">Core</option>
@@ -388,7 +388,7 @@ export default function OfficeAddonRow({ addOn, partNumList, engineNumList }: Pr
                   {showVendorSelect ?
                     <VendorSelect
                       variant={['label-full-width']}
-                      value={addOn.purchasedFrom}
+                      value={addOn.purchasedFrom ?? ''}
                       onChange={(e: any) => handleEditAddOn({ ...addOn, purchasedFrom: e.target.value })}
                       onBlur={() => setShowVendorSelect(false)}
                     />

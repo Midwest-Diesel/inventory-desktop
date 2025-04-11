@@ -49,10 +49,10 @@ export default function HandwrittenItemsTable({ className, handwritten, handwrit
   };
 
   const getTotalCost = (): number => {
-    return handwrittenItems.reduce((acc, item) => item.cost !== 0.04 && item.cost !== 0.01 && acc + (item.cost * item.qty), 0);
+    return (handwrittenItems as any).reduce((acc: number, item: HandwrittenItem) => item.cost !== 0.04 && item.cost !== 0.01 && acc + ((item.cost ?? 0) * (item.qty ?? 0)), 0);
   };
   const getInvoiceTotal = (): number => {
-    return handwrittenItems.reduce((acc, item) => acc + (item.unitPrice * item.qty), 0);
+    return handwrittenItems.reduce((acc, item) => acc + ((item.unitPrice ?? 0) * (item.qty ?? 0)), 0);
   };
   const costColorStyle = getTotalCost() < 0 ? { color: 'var(--red-2)' } : '';
   const totalColorStyle = getInvoiceTotal() < 0 ? { color: 'var(--red-2)' } : '';

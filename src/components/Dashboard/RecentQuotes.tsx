@@ -39,7 +39,7 @@ export default function RecentQuotes() {
                 <tbody>
                   {recentQuoteSearches.map((quote, i) => {
                     return (
-                      <tr key={i} style={ quote.sale ? { backgroundColor: 'var(--green-dark-2)' } : null}>
+                      <tr key={i} style={ quote.sale ? { backgroundColor: 'var(--green-dark-2)' } : {}}>
                         <td>{ formatDate(quote.date) }</td>
                         <td>{ quote.partNum }</td>
                         <td>{ quote.salesman }</td>

@@ -16,7 +16,7 @@ export default function EmailStuff() {
   useEffect(() => {
     const fetchData = async () => {
       const res = await getAllEmailStuff();
-      setEmailStuff(res);
+      setEmailStuff(res ?? []);
     };
     fetchData();
   }, []);

@@ -40,14 +40,14 @@ export default function NewEnginesList() {
   };
 
   const getEngineModels = () => {
-    const engineModels = enginesData.reduce((acc: string[], engine: Engine) => {
-      if (!acc.includes(engine.model)) {
-        acc.push(engine.model);
+    const engineModels: any = enginesData.reduce((acc: string[], engine: Engine) => {
+      if (!acc.includes(engine.model ?? '')) {
+        acc.push(engine.model ?? '');
       }
       return acc;
     }, []);
 
-    engineModels.sort((a, b) => {
+    engineModels.sort((a: string, b: string) => {
       const numA = parseFloat(a.match(/[\d\.]+/)?.[0] || 'Infinity');
       const numB = parseFloat(b.match(/[\d\.]+/)?.[0] || 'Infinity');
       const textA = a.match(/[a-zA-Z]+/)?.[0] || '';
@@ -142,8 +142,8 @@ export default function NewEnginesList() {
                     </td>
                     <td><Link href={`/engines/${engine.stockNum}`}>{ engine.stockNum }</Link></td>
                     <td className="cbx-td"><Checkbox checked={isEngineResNotNull(engine)} disabled /></td>
-                    <td className="cbx-td"><Checkbox checked={engine.ecm} disabled /></td>
-                    <td className="cbx-td"><Checkbox checked={engine.warranty} disabled /></td>
+                    <td className="cbx-td"><Checkbox checked={Boolean(engine.ecm)} disabled /></td>
+                    <td className="cbx-td"><Checkbox checked={Boolean(engine.warranty)} disabled /></td>
                     <td>{ engine.model }</td>
                     <td>{ engine.serialNum }</td>
                     <td>{ engine.horsePower }</td>

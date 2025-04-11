@@ -32,7 +32,7 @@ type LocationFormData = {
 export default function ImportantCustomersMap() {
   const [user] = useAtom<User>(userAtom);
   const startPos = { lat: 44.98022676149887, lng: -93.35875786260717 };
-  const mapRef = useRef<HTMLDivElement>(null);
+  const mapRef = useRef<HTMLDivElement | null>(null);
   const mapInstanceRef = useRef<google.maps.Map | null>(null);
   const markersRef = useRef<Map<number, google.maps.marker.AdvancedMarkerElement>>(new Map());
   const [usersList, setUsersList] = useState<User[]>([]);
@@ -41,13 +41,13 @@ export default function ImportantCustomersMap() {
   const [listDisplayItems, setListDisplayItems] = useState<MapLocation[]>([]);
   const [newLocationDialogOpen, setNewLocationDialogOpen] = useState(false);
   const [editLocationDialogOpen, setEditLocationDialogOpen] = useState(false);
-  const [editLocationData, setEditLocationData] = useState(null);
+  const [editLocationData, setEditLocationData] = useState<MapLocation | null>(null);
   const [filterName, setFilterName] = useState("");
   const [filterType, setFilterType] = useState("all");
   const [filterCustomerType, setFilterCustomerType] = useState("all");
   const [filterSalesman, setFilterSalesman] = useState("all");
   const [minLocations, setMinLocations] = useState<number[]>([]);
-  const [cluster, setCluster] = useState<MarkerClusterer>(null);
+  const [cluster, setCluster] = useState<MarkerClusterer | null>(null);
   const [loading, setLoading] = useState(false);
   const LIMIT = 30;
 
@@ -63,11 +63,12 @@ export default function ImportantCustomersMap() {
     fetchData();
 
     const loader = new Loader({
-      apiKey: process.env.NEXT_PUBLIC_MAPS_API,
+      apiKey: process.env.NEXT_PUBLIC_MAPS_API ?? '',
       version: "weekly",
     });
 
     loader.load().then(() => {
+      if (!mapRef.current) return;
       const map = new google.maps.Map(mapRef.current, {
         zoom: 9,
         center: startPos,
@@ -95,7 +96,7 @@ export default function ImportantCustomersMap() {
       const { AdvancedMarkerElement, PinElement } = await google.maps.importLibrary("marker") as google.maps.MarkerLibrary;
       const { InfoWindow } = google.maps;
       const infoWindow = new InfoWindow();
-      const markers = [];
+      const markers: any[] = [];
 
       markersRef.current.forEach((marker) => marker.map = null);
       markersRef.current.clear();
@@ -152,9 +153,9 @@ export default function ImportantCustomersMap() {
   const addRealtimeMapChanges = async (e: RealtimePostgresInsertPayload<MapLocation>) => {
     const payload: any = e.new;
     const customer = payload.customerId ? await getCustomerById(payload.customerId) : null;
-    const salesman = usersList.find((u) => u.id === payload.salesmanId).initials;
+    const salesman = usersList.find((u) => u.id === payload.salesmanId)?.initials;
     const newSearchData = { ...e.new, date: parseResDate(e.new.date as any), salesman, customer, location: { lat: payload.lat, lng: payload.lng }};
-    const newLocations = [newSearchData, ...listOfLocations];
+    const newLocations: any[] = [newSearchData, ...listOfLocations];
     setListOfLocations(newLocations);
     handleFilters(newLocations);
   };
@@ -162,9 +163,9 @@ export default function ImportantCustomersMap() {
   const editRealtimeMapChanges = async (e: RealtimePostgresUpdatePayload<MapLocation>) => {
     const payload: any = e.new;
     const customer = payload.customerId ? await getCustomerById(payload.customerId) : null;
-    const salesman = usersList.find((u) => u.id === payload.salesmanId).initials;
+    const salesman = usersList.find((u) => u.id === payload.salesmanId)?.initials;
     const newSearchData = { ...e.new, date: parseResDate(e.new.date as any), salesman, customer, location: { lat: payload.lat, lng: payload.lng }};
-    const newLocations = listOfLocations.map((loc) => {
+    const newLocations: any[] = listOfLocations.map((loc) => {
       if (loc.id === newSearchData.id)
         return newSearchData;
       else
@@ -220,13 +221,13 @@ export default function ImportantCustomersMap() {
 
   const panTo = (loc: any) => {
     const { lat, lng } = loc;
-    mapInstanceRef.current.panTo({ lat, lng });
+    mapInstanceRef.current?.panTo({ lat, lng });
   };
 
   const handleViewLoc = (loc: any) => {
     panTo(loc);
-    const zoom = mapInstanceRef.current.getZoom();
-    mapInstanceRef.current.setZoom(zoom >= 15 ? zoom : 15);
+    const zoom = mapInstanceRef.current?.getZoom() ?? 0;
+    mapInstanceRef.current?.setZoom(zoom >= 15 ? zoom : 15);
   };
 
   const handleDeleteLocation = async (loc: MapLocation) => {
@@ -236,7 +237,7 @@ export default function ImportantCustomersMap() {
 
   const handleAddLocation = async (name: string, location: { lat: number, lng: number }, type: MapLocationType, customerId: number | null, notes: string) => {
     const geocoder = new window.google.maps.Geocoder();
-    await geocoder.geocode({ location }, async (results, status) => {
+    await geocoder.geocode({ location }, async (results: any, status: string) => {
       if (status === "OK") {
         if (results[0]) {
           const address = results[0].formatted_address;
@@ -252,7 +253,7 @@ export default function ImportantCustomersMap() {
 
   const handleEditLocation = async (id: number, name: string, location: { lat: number, lng: number }, type: MapLocationType, customerId: number | null, notes: string) => {
     const geocoder = new window.google.maps.Geocoder();
-    await geocoder.geocode({ location }, async (results, status) => {
+    await geocoder.geocode({ location }, async (results: any, status: string) => {
       if (status === "OK") {
         if (results[0]) {
           const address = results[0].formatted_address;
@@ -285,6 +286,7 @@ export default function ImportantCustomersMap() {
   };
 
   const handleSubmitEditLocation = async (data: LocationFormData) => {
+    if (!data.id) return;
     const loc = await getGeoLocation(data.address);
     if (loc.length === 0) return;
     const { lat, lng } = loc[0].geometry.location;
