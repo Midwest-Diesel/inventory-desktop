@@ -32,7 +32,7 @@ export const getSurplusByCode = async (code: string) => {
   }
 };
 
-export const getSurplusSoldParts = async (code: string) => {
+export const getSurplusSoldParts = async (code: string): Promise<any[]> => {
   try {
     const auth = { withCredentials: true };
     const res = await api.get(`/api/surplus/sold/${code}`, auth);
@@ -42,10 +42,11 @@ export const getSurplusSoldParts = async (code: string) => {
     return res.data;
   } catch (err) {
     console.error(err);
+    return [];
   }
 };
 
-export const getSurplusRemainingParts = async (code: string) => {
+export const getSurplusRemainingParts = async (code: string): Promise<any[]> => {
   try {
     const auth = { withCredentials: true };
     const res = await api.get(`/api/surplus/remaining/${code}`, auth);
@@ -55,6 +56,7 @@ export const getSurplusRemainingParts = async (code: string) => {
     return res.data;
   } catch (err) {
     console.error(err);
+    return [];
   }
 };
 

@@ -1,4 +1,4 @@
-import CustomerSelectDialog from "@/components/Dialogs/CustomerSelectDialog";
+import CustomerDropdownDialog from "@/components/Dialogs/CustomerSelectDialog";
 import HandwrittensSearchDialog from "@/components/Dialogs/handwrittens/HandwrittensSearchDialog";
 import HandwrittenItemsTable from "@/components/HandwrittenItemsTable";
 import { Layout } from "@/components/Layout";
@@ -152,7 +152,7 @@ export default function Handwrittens() {
   return (
     <Layout title="Handwrittens">
       <HandwrittensSearchDialog open={openSearch} setOpen={setOpenSearch} setHandwrittens={handleSearch} setMinItems={setHandwrittenCount} limit={LIMIT} />
-      <CustomerSelectDialog open={customerSelectOpen} setOpen={setCustomerSelectOpen} onSubmit={handleNewHandwritten} />
+      <CustomerDropdownDialog open={customerSelectOpen} setOpen={setCustomerSelectOpen} onSubmit={handleNewHandwritten} />
 
       <div className="handwrittens__container">
         <div className="handwrittens">

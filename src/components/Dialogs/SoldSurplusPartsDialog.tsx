@@ -31,7 +31,7 @@ export default function SoldSurplusPartsDialog({ open, setOpen, code }: Props) {
 
   useEffect(() => {
     const fetchData = async () => {
-      const res = await getSurplusSoldParts(code);
+      const res: SoldPart[] = await getSurplusSoldParts(code);
       setSoldParts(res);
     };
     fetchData();

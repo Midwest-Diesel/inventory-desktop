@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Button from "../Library/Button";
 import Dialog from "../Library/Dialog";
-import CustomerSelect from "../Library/Select/CustomerSelect";
+import CustomerDropdown from "../Library/Select/CustomerDropdown";
 import { getCustomerByName } from "@/scripts/controllers/customerController";
 
 interface Props {
@@ -29,7 +29,7 @@ export default function CustomerSelectDialog({ open, setOpen, onSubmit }: Props)
       y={-200}
       className="select-customer-dialog"
     >
-      <CustomerSelect
+      <CustomerDropdown
         value={customer}
         onChange={(c: string) => setCustomer(c)}
         maxHeight="16rem"

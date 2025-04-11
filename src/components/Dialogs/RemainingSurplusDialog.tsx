@@ -28,7 +28,7 @@ export default function RemainingSurplusDialog({ open, setOpen, code }: Props) {
 
   useEffect(() => {
     const fetchData = async () => {
-      const res = await getSurplusRemainingParts(code);
+      const res: RemainingPart[] = await getSurplusRemainingParts(code);
       setRemainingParts(res);
     };
     fetchData();

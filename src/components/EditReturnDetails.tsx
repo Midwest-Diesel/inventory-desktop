@@ -3,14 +3,15 @@ import { FormEvent, useState } from "react";
 import Input from "./Library/Input";
 import Button from "./Library/Button";
 import GridItem from "./Library/Grid/GridItem";
-import { parseDateInputValue, parseResDate } from "@/scripts/tools/stringUtils";
+import { parseDateInputValue } from "@/scripts/tools/stringUtils";
 import Grid from "./Library/Grid/Grid";
-import CustomerSelect from "./Library/Select/CustomerSelect";
 import SourceSelect from "./Library/Select/SourceSelect";
 import Table from "./Library/Table";
 import { confirm } from "@/scripts/config/tauri";
 import { PreventNavigation } from "./PreventNavigation";
 import UserSelect from "./Library/Select/UserSelect";
+import CustomerSelect from "./Library/Select/CustomerSelect";
+import { getCustomerByName } from "@/scripts/controllers/customerController";
 
 interface Props {
   returnData: Return
@@ -50,6 +51,7 @@ export default function EditReturnDetails({ returnData, setReturn, setIsEditing 
     e.preventDefault();
     if (!changesSaved && !await confirm('Are you sure you want to save these changes?')) return;
     setChangesSaved(false);
+    const customerId = (await getCustomerByName(company))?.id;
     const newReturn = {
       ...returnData,
       poNum,
@@ -74,7 +76,8 @@ export default function EditReturnDetails({ returnData, setReturn, setIsEditing 
       returnNotes,
       returnReason,
       returnPaymentTerms,
-      restockFee
+      restockFee,
+      customerId
     };
     await editReturn(newReturn);
     const res = await getReturnById(returnData.id);
@@ -120,7 +123,7 @@ export default function EditReturnDetails({ returnData, setReturn, setIsEditing 
                     <td>
                       <CustomerSelect
                         value={company}
-                        onChange={(value: any) => setCompany(value)}
+                        onChange={(e: any) => setCompany(e.target.value)}
                       />
                     </td>
                   </tr>

@@ -1,6 +1,6 @@
 import CompareEngineTable from "@/components/CompareConsist/CompareEngineTable";
 import SideBySideTable from "@/components/CompareConsist/SideBySideTable";
-import CustomerSelect from "@/components/Library/Select/CustomerSelect";
+import CustomerDropdown from "@/components/Library/Select/CustomerDropdown";
 import { Layout } from "@/components/Layout";
 import Checkbox from "@/components/Library/Checkbox";
 import Input from "@/components/Library/Input";
@@ -243,7 +243,7 @@ export default function CompareConsist() {
         {!mwdEngine ?
           <>
             <div className="compare-consist__top-bar">
-              <CustomerSelect
+              <CustomerDropdown
                 label="Customer"
                 variant={['label-stack', 'label-bold']}
                 value={company}

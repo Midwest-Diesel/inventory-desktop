@@ -4,7 +4,7 @@ import Input from "../../Library/Input";
 import Button from "../../Library/Button";
 import { editQuote } from "@/scripts/controllers/quotesController";
 import SourceSelect from "../../Library/Select/SourceSelect";
-import CustomerSelect from "../../Library/Select/CustomerSelect";
+import CustomerDropdown from "../../Library/Select/CustomerDropdown";
 import { parseDateInputValue } from "@/scripts/tools/stringUtils";
 import { getCustomerByName, getCustomerNames } from "@/scripts/controllers/customerController";
 import { useAtom } from "jotai";
@@ -105,7 +105,7 @@ export default function EditQuoteDialog({ setQuoteEdited, quote, setQuote }: Pro
             onChange={(e: any) => setSource(e.target.value)}
           />
           
-          <CustomerSelect
+          <CustomerDropdown
             label="Customer"
             variant={['label-full-width', 'gap', 'fill', 'label-bold', 'label-stack']}
             value={company}

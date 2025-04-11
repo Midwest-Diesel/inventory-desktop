@@ -76,14 +76,15 @@ export const getCustomerById = async (id: number) => {
   }
 };
 
-export const getCustomerByName = async (name: string) => {
+export const getCustomerByName = async (name: string): Promise<Customer | null> => {
   try {
     const auth = { withCredentials: true };
     const res = await api.get(`/api/customers/name/${name}`, auth);
     res.data = parseCustomerRes(res.data);
-    return res.data[0];
+    return res.data[0] ?? null;
   } catch (err) {
     console.error(err);
+    return null;
   }
 };
 

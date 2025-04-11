@@ -9,7 +9,7 @@ import Select from "./Library/Select/Select";
 import { formatCurrency, formatDate, parseDateInputValue } from "@/scripts/tools/stringUtils";
 import Button from "./Library/Button";
 import Table from "./Library/Table";
-import CustomerSelect from "./Library/Select/CustomerSelect";
+import CustomerDropdown from "./Library/Select/CustomerDropdown";
 import { getCustomerByName } from "@/scripts/controllers/customerController";
 import { getAllSources } from "@/scripts/controllers/sourcesController";
 import { deleteCoreByItemId, editCoreCustomer } from "@/scripts/controllers/coresController";
@@ -202,7 +202,7 @@ export default function EditHandwrittenDetails({
     } as any;
     setNewShippingListRow(newInvoice);
     await editHandwritten(newInvoice);
-    await editCoreCustomer(handwritten.id, newCustomer.id);
+    await editCoreCustomer(handwritten.id, newCustomer?.id ?? null);
     if (JSON.stringify(handwrittenItems) !== JSON.stringify(handwritten.handwrittenItems)) {
       for (let i = 0; i < handwrittenItems.length; i++) {
         const item = handwrittenItems[i];
@@ -551,7 +551,7 @@ export default function EditHandwrittenDetails({
                   <tr>
                     <th>Customer</th>
                     <td>
-                      <CustomerSelect
+                      <CustomerDropdown
                         variant={['fill', 'label-full-width', 'label-full-height', 'no-margin']}
                         value={company}
                         onChange={(value: any) => setCompany(value)}

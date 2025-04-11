@@ -7,7 +7,7 @@ import Table from "./Library/Table";
 import { formatDate, parseDateInputValue, parseResDate } from "@/scripts/tools/stringUtils";
 import { addWarrantyItem, deleteWarrantyItem, editWarranty, editWarrantyItem, getWarrantyById } from "@/scripts/controllers/warrantiesController";
 import Checkbox from "./Library/Checkbox";
-import CustomerSelect from "./Library/Select/CustomerSelect";
+import CustomerDropdown from "./Library/Select/CustomerDropdown";
 import { getCustomerByName } from "@/scripts/controllers/customerController";
 import { confirm } from "@/scripts/config/tauri";
 import { PreventNavigation } from "./PreventNavigation";
@@ -124,7 +124,7 @@ export default function EditWarrantyDetails({ warrantyData, setWarranty, setIsEd
                   <tr>
                     <th>Customer</th>
                     <td>
-                      <CustomerSelect
+                      <CustomerDropdown
                         variant={['fill', 'label-full-width', 'label-full-height', 'no-margin']}
                         value={company}
                         onChange={(value: any) => setCompany(value)}

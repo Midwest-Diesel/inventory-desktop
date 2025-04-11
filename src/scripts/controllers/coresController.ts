@@ -73,7 +73,7 @@ export const removeQtyFromCore = async (core: Core, qtyRemoved: number) => {
   }
 };
 
-export const editCoreCustomer = async (handwrittenId: number, customerId: number) => {
+export const editCoreCustomer = async (handwrittenId: number, customerId: number | null) => {
   try {
     const auth = { withCredentials: true };
     await api.patch('/api/cores/customer', { handwrittenId, customerId }, auth);
