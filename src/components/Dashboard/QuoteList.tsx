@@ -63,7 +63,7 @@ export default function QuoteList({ quotes, setQuotes, setSelectHandwrittenOpen,
     const fetchData = async () => {
       if (isObjectNull(selectedCustomer)) {
         const res = await getCustomerById(Number(localStorage.getItem('customerId')));
-        setCustomer(res || {});
+        setCustomer(res ?? { id: 0 });
       } else {
         setCustomer(selectedCustomer);
         setFilterByCustomer(true);
@@ -145,7 +145,6 @@ export default function QuoteList({ quotes, setQuotes, setSelectHandwrittenOpen,
   };
 
   const handleChangePage = async (_: any, page: number, resetSearch = false) => {
-    // I'm sorry
     if (!loaded || !customer) return;
     if (searchData && !resetSearch) {
       const res = await searchQuotes({ ...searchData, page: (page - 1) * LIMIT, limit: LIMIT }, filterByCustomer ? customer.id : 0);
@@ -154,6 +153,7 @@ export default function QuoteList({ quotes, setQuotes, setSelectHandwrittenOpen,
       return;
     }
 
+    // I'm sorry
     const res = await getSomeQuotes(page, LIMIT, filterByPart ? partNum : '', filterByCustomer ? customer.id : 0, quoteListType === 'engine');
     if (res.rows.length === 0 && filterByPart) {
       setFilterByPart(false);
