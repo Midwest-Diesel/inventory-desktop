@@ -147,7 +147,7 @@ export default function EditHandwrittenDetails({
 
   const saveChanges = async (e: FormEvent) => {
     e.preventDefault();
-    if (!await confirm('Are you sure you want to save these changes?')) return;
+    if (!changesSaved && !await confirm('Are you sure you want to save these changes?')) return;
     setChangesSaved(true);
     await handleAltShip();
     const newCustomer = await getCustomerByName(company);

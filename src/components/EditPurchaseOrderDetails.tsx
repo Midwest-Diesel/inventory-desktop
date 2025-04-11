@@ -47,7 +47,7 @@ export default function EditPoDetails({ poData, setPo, setIsEditing }: Props) {
 
   const saveChanges = async (e: FormEvent) => {
     e.preventDefault();
-    if (!await confirm('Are you sure you want to save these changes?')) return;
+    if (!changesSaved && !await confirm('Are you sure you want to save these changes?')) return;
     setChangesSaved(false);
     const newPo = {
       id: poData.id,

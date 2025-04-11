@@ -32,7 +32,7 @@ export default function EditWarrantyDetails({ warrantyData, setWarranty, setIsEd
 
   const saveChanges = async (e: FormEvent) => {
     e.preventDefault();
-    if (!await confirm('Are you sure you want to save these changes?')) return;
+    if (!changesSaved && !await confirm('Are you sure you want to save these changes?')) return;
     setChangesSaved(false);
     const newCustomer = await getCustomerByName(company);
     const newWarranty = {

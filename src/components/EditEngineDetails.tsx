@@ -56,7 +56,7 @@ export default function EditEngineDetails({ engine, setEngine, setIsEditing, eng
   const [partsPulled, setPartsPulled] = useState<string>(engine.partsPulled ?? '');
   const [engineCostIn, setEngineCostIn] = useState<EngineCostIn[]>(engineCostInData);
   const [engineCostOut, setEngineCostOut] = useState<EngineCostOut[]>(engineCostOutData);
-  const [changesSaved, setChangesSaved] = useState(false);
+  const [changesSaved, setChangesSaved] = useState(true);
   const blankEngineCostIn = { id: 0, cost: '', engineStockNum: engine.stockNum, vendor: '', invoiceNum: '', costType: '', note: '' };
   const blankEngineCostOut = { id: 0, stockNum: '', engineStockNum: Number(engine.stockNum), cost: '', costType: '', note: '' };
   const [newEngineCostInRow, setNewEngineCostInRow] = useState<any>(blankEngineCostIn);
@@ -125,8 +125,8 @@ export default function EditEngineDetails({ engine, setEngine, setIsEditing, eng
 
   const saveChanges = async (e: FormEvent) => {
     e.preventDefault();
-    if (!await confirm('Are you sure you want to save these changes?')) return;
-    setChangesSaved(false);
+    if (!changesSaved && !await confirm('Are you sure you want to save these changes?')) return;
+    setChangesSaved(true);
     const newEngine = {
       id: engine.id,
       stockNum: engine.stockNum,

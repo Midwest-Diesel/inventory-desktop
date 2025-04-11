@@ -59,7 +59,7 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
 
   const saveChanges = async (e: FormEvent) => {
     e.preventDefault();
-    if (!await confirm('Are you sure you want to save these changes?')) return;
+    if (!changesSaved && !await confirm('Are you sure you want to save these changes?')) return;
     setChangesSaved(false);
     const newPart = {
       id: part.id,
@@ -256,20 +256,20 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
         <div className="edit-part-details__header">
           <div className="header__btn-container">
             <Button
-              className="edit-part-details__close-btn"
-              type="button"
-              onClick={() => setIsEditingPart(false)}
-              data-id="stop-editing"
-            >
-              Stop Editing
-            </Button>
-            <Button
               variant={['save']}
               className="edit-part-details__save-btn"
               type="submit"
               data-id="save-btn"
             >
               Save
+            </Button>
+            <Button
+              className="edit-part-details__close-btn"
+              type="button"
+              onClick={() => setIsEditingPart(false)}
+              data-id="stop-editing"
+            >
+              Stop Editing
             </Button>
           </div>
 

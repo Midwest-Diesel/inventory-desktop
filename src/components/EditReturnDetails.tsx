@@ -48,7 +48,7 @@ export default function EditReturnDetails({ returnData, setReturn, setIsEditing 
 
   const saveChanges = async (e: FormEvent) => {
     e.preventDefault();
-    if (!await confirm('Are you sure you want to save these changes?')) return;
+    if (!changesSaved && !await confirm('Are you sure you want to save these changes?')) return;
     setChangesSaved(false);
     const newReturn = {
       ...returnData,
