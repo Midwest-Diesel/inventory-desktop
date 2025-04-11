@@ -7,10 +7,10 @@ import Pagination from "@/components/Library/Pagination";
 import Input from "@/components/Library/Input";
 import Button from "@/components/Library/Button";
 import Checkbox from "@/components/Library/Checkbox";
-import { invoke } from "@/scripts/config/tauri";
 import Toast from "@/components/Library/Toast";
 import { useAtom } from "jotai";
 import { selectedCustomerAtom, userAtom } from "@/scripts/atoms/state";
+import { useNavState } from "@/components/Navbar/useNavState";
 
 interface Props {
   open: boolean
@@ -23,6 +23,7 @@ interface Props {
 
 
 export default function SelectHandwrittenDialog({ open, setOpen, part, customer, setHandwrittenCustomer, onSubmit }: Props) {
+  const { newTab } = useNavState();
   const [user] = useAtom<User>(userAtom);
   const [selectedCustomer] = useAtom<Customer>(selectedCustomerAtom);
   const [handwrittensData, setHandwrittensData] = useState<Handwritten[]>([]);
@@ -78,9 +79,8 @@ export default function SelectHandwrittenDialog({ open, setOpen, part, customer,
     setCurrentPage(page);
   };
 
-  const handleSelectRow = async (id: number) => {
+  const handleSelectRow = (id: number) => {
     setSelectedHandwrittenId(id);
-    await invoke('open_window', { windowArgs: { title: 'Handwritten', url: `/handwrittens/${id}`, is_prod: process.env.NODE_ENV === 'production' }});
   };
 
   const handleSearch = async () => {
@@ -161,6 +161,8 @@ export default function SelectHandwrittenDialog({ open, setOpen, part, customer,
     }
     if (noVerbage) fullWar = '';
     onSubmit(handwritten, fullWar, Number(qty), desc, Number(price));
+
+    await newTab([{ name: 'Handwritten', url: `/handwrittens/${selectedHandwrittenId}` }]);
   };
 
 

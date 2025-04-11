@@ -57,18 +57,26 @@ export function useNavState() {
     }, 0);
   };  
 
-  const newTab = async () => {
+  const newTab = async (history = [{ name: 'Home', url: '/' }], moveImmediately = true) => {
     // await addTab([{ name: 'Home', url: '/' }]);
     // const res = await getTabsByUser();
     // setTabs(res);
-    setTabs([...tabs, {
-      id: tabs.length + 1,
+    const id = tabs.length + 1;
+    const newTabs = [...tabs, {
+      id,
       name: null,
       urlIndex: 0,
-      history: [{ name: 'Home', url: '/' }],
+      history,
       selected: false
-    }]);
-    router.replace('/');
+    }];
+    setTabs(newTabs);
+
+    if (moveImmediately) {
+      setTabs(newTabs.map((tab) => ({ ...tab, selected: tab.id === id })));
+      // await changeSelectedTab(tabId);
+      const tab = newTabs.find((t) => t.id === id);
+      if (tab) router.replace(tab.history[tab.urlIndex].url);
+    }
   };
   
   return { tabs, setTabs, forward, backward, handleChangeTab, push, newTab };
