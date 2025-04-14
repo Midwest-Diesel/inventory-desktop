@@ -1,4 +1,4 @@
-import { sourcesAtom } from "@/scripts/atoms/state";
+import { errorAtom, sourcesAtom } from "@/scripts/atoms/state";
 import { addAltShipAddress, addHandwrittenItem, deleteHandwrittenItem, editHandwritten, editHandwrittenItems, editHandwrittenTaxable, getHandwrittenEmails } from "@/scripts/controllers/handwrittensController";
 import { useAtom } from "jotai";
 import { FormEvent, Fragment, useEffect, useState } from "react";
@@ -69,6 +69,7 @@ export default function EditHandwrittenDetails({
   setCardAddress
 }: Props) {
   const [sourcesData, setSourcesData] = useAtom<string[]>(sourcesAtom);
+  const [error, setError] = useAtom<string>(errorAtom);
   const [date, setDate] = useState<Date>(handwritten.date);
   const [poNum, setPoNum] = useState<string>(handwritten.poNum ?? '');
   const [company, setCompany] = useState<string>(handwritten.customer?.company ?? '');
@@ -149,6 +150,12 @@ export default function EditHandwrittenDetails({
     e.preventDefault();
     if (!changesSaved && !await confirm('Are you sure you want to save these changes?')) return;
     setChangesSaved(true);
+    const isSentToAccounting = invoiceStatus === 'SENT TO ACCOUNTING' && handwritten.invoiceStatus !== 'SENT TO ACCOUNTING';
+    if (isSentToAccounting && handwrittenItems.some((item) => item.cost === 0.04)) {
+      setError('Can\'t save when items have $0.04 cost');
+      return;
+    }
+
     await handleAltShip();
     const newCustomer = await getCustomerByName(company);
     const newInvoice = {
@@ -222,7 +229,7 @@ export default function EditHandwrittenDetails({
       }
     }
 
-    if (invoiceStatus === 'SENT TO ACCOUNTING' && handwritten.invoiceStatus !== 'SENT TO ACCOUNTING') {
+    if (isSentToAccounting) {
       if (await confirm('Add this to shipping list?')) {
         setShippingListDialogOpen(true);
       }
