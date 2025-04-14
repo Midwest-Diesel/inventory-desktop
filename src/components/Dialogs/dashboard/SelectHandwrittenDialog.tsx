@@ -9,7 +9,7 @@ import Button from "@/components/Library/Button";
 import Checkbox from "@/components/Library/Checkbox";
 import Toast from "@/components/Library/Toast";
 import { useAtom } from "jotai";
-import { selectedCustomerAtom, userAtom } from "@/scripts/atoms/state";
+import { errorAtom, selectedCustomerAtom, userAtom } from "@/scripts/atoms/state";
 import { confirm } from "@/scripts/config/tauri";
 
 interface Props {
@@ -25,6 +25,7 @@ interface Props {
 export default function SelectHandwrittenDialog({ open, setOpen, part, customer, setHandwrittenCustomer, onSubmit }: Props) {
   const [user] = useAtom<User>(userAtom);
   const [selectedCustomer] = useAtom<Customer>(selectedCustomerAtom);
+  const [error, setError] = useAtom<string>(errorAtom);
   const [handwrittensData, setHandwrittensData] = useState<Handwritten[]>([]);
   const [handwrittens, setHandwrittens] = useState<Handwritten[]>([]);
   const [handwrittenCount, setHandwrittenCount] = useState<number[]>([]);
@@ -166,13 +167,17 @@ export default function SelectHandwrittenDialog({ open, setOpen, part, customer,
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (!selectedHandwrittenId) return;
+    const handwritten = await getHandwrittenById(selectedHandwrittenId);
+    if (!handwritten) return;
+    if (handwritten.invoiceStatus === 'SENT TO ACCOUNTING') {
+      setError('Can\'t add items to handwritten when status is SENT TO ACCOUNTING');
+      return;
+    }
 
     if (await confirm('Add warranty?')) {
       setShowWarranty(true);
     } else {
       setOpen(false);
-      const handwritten = await getHandwrittenById(selectedHandwrittenId);
-      if (!handwritten) return;
       onSubmit(handwritten, '', Number(qty), desc, Number(price));
     }
   };

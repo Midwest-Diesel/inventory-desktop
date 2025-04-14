@@ -116,7 +116,7 @@ export default function Karmak() {
                     <td>{ formatDate(handwritten.date) }</td>
                     <td>{ handwritten.billToCompany }</td>
                     <td>{ handwritten.shipToCompany }</td>
-                    <td>{ handwritten.shipVia && handwritten.shipVia.name }</td>
+                    <td>{ handwritten.shipVia?.name }</td>
                     <td>{ handwritten.accountingStatus }</td>
                   </tr>
                 );
