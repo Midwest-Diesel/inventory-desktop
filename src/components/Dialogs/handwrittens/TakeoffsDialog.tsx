@@ -1,9 +1,9 @@
 import Button from "@/components/Library/Button";
 import Dialog from "@/components/Library/Dialog";
 import Input from "@/components/Library/Input";
-import { editHandwrittenItemQty, editHandwrittenTakeoffState, getHandwrittenById } from "@/scripts/controllers/handwrittensController";
+import { editHandwrittenTakeoffState, getHandwrittenById } from "@/scripts/controllers/handwrittensController";
 import { addPart, addPartCostIn, editPartCostIn, getPartById, getPartCostIn, handlePartTakeoff } from "@/scripts/controllers/partsController";
-import { getSurplusByCode, editSurplusPrice, zeroAllSurplusItems } from "@/scripts/controllers/surplusController";
+import { getSurplusByCode, zeroAllSurplusItems } from "@/scripts/controllers/surplusController";
 import { formatDate } from "@/scripts/tools/stringUtils";
 import { useParams } from "next/navigation";
 import { FormEvent, useEffect, useState } from "react";
@@ -12,7 +12,7 @@ interface Props {
   open: boolean
   setOpen: (open: boolean) => void
   item: HandwrittenItem | HandwrittenItemChild
-  setHandwritten: (handwritten: Handwritten) => void
+  setHandwritten: (handwritten: Handwritten | null) => void
 }
 
 

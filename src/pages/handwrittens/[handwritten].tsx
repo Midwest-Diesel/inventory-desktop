@@ -59,9 +59,9 @@ export default function Handwritten() {
     const fetchData = async () => {
       if (!params) return;
       const res = await getHandwrittenById(Number(params.handwritten));
-      setTitle(`${res.id} Handwritten`);
+      setTitle(`${res?.id} Handwritten`);
       setHandwritten(res);
-      if (res.invoiceStatus === 'INVOICE PENDING') {
+      if (res?.invoiceStatus === 'INVOICE PENDING') {
         setIsEditing(true);
       }
     };

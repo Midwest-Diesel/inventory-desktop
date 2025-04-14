@@ -10,7 +10,7 @@ import Checkbox from "@/components/Library/Checkbox";
 import Toast from "@/components/Library/Toast";
 import { useAtom } from "jotai";
 import { selectedCustomerAtom, userAtom } from "@/scripts/atoms/state";
-import { useNavState } from "@/components/Navbar/useNavState";
+import { confirm } from "@/scripts/config/tauri";
 
 interface Props {
   open: boolean
@@ -23,17 +23,16 @@ interface Props {
 
 
 export default function SelectHandwrittenDialog({ open, setOpen, part, customer, setHandwrittenCustomer, onSubmit }: Props) {
-  const { newTab } = useNavState();
   const [user] = useAtom<User>(userAtom);
   const [selectedCustomer] = useAtom<Customer>(selectedCustomerAtom);
   const [handwrittensData, setHandwrittensData] = useState<Handwritten[]>([]);
   const [handwrittens, setHandwrittens] = useState<Handwritten[]>([]);
   const [handwrittenCount, setHandwrittenCount] = useState<number[]>([]);
-  const [currentPage, setCurrentPage] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
   const [selectedHandwrittenId, setSelectedHandwrittenId] = useState(0);
   const [desc, setDesc] = useState('');
-  const [qty, setQty] = useState(0);
-  const [price, setPrice] = useState('');
+  const [qty, setQty] = useState<number | null>(null);
+  const [price, setPrice] = useState<number | null>(null);
   const [warranty, setWarranty] = useState('');
   const [noWarranty, setNoWarranty] = useState(false);
   const [noVerbage, setNoVerbage] = useState(false);
@@ -41,7 +40,7 @@ export default function SelectHandwrittenDialog({ open, setOpen, part, customer,
   const [customWar, setCustomWar] = useState(false);
   const [search, setSearch] = useState('');
   const [toastOpen, setToastOpen] = useState(false);
-  const [prevSearch, setPrevSearch] = useState<{ billToCompany: string, limit: number, offset: number } | null>(null);
+  const [showWarranty, setShowWarranty] = useState(false);
   const LIMIT = 26;
   
   useEffect(() => {
@@ -51,25 +50,44 @@ export default function SelectHandwrittenDialog({ open, setOpen, part, customer,
     };
     setSearch('');
     setDesc(part.desc ?? '');
-    setQty(part.qty);
+    setQty(null);
+    setPrice(null);
     fetchData();
   }, [open]);
 
   useEffect(() => {}, [customer]);
 
-  const resetHandwrittensList = async () => {
-    const pageCount = await getHandwrittenCount();
-    setHandwrittenCount(pageCount);
-    const res = await getSomeHandwrittens(1, LIMIT);
-    setHandwrittensData(res);
-    setHandwrittens(res);
-    setPrevSearch(null);
+  const resetHandwrittensList = async () => {    
+    if (search || selectedCustomer?.id) {
+      const searchData = {
+        billToCompany: search ?? '',
+        limit: LIMIT,
+        offset: (currentPage - 1) * LIMIT,
+        ...((!search && selectedCustomer?.id) && { customerId: selectedCustomer?.id })
+      };
+      const res = await searchHandwrittens(searchData);
+      setHandwrittens(res?.rows);
+      setHandwrittenCount(res?.minItems);
+    } else {
+      const pageCount = await getHandwrittenCount();
+      setHandwrittenCount(pageCount);
+      const res = await getSomeHandwrittens(1, LIMIT);
+      setHandwrittensData(res);
+      setHandwrittens(res);
+      setSearch('');
+    }
   };
   
   const handleChangePage = async (_: any, page: number) => {
     if (page === currentPage) return;
-    if (prevSearch) {
-      const res = await searchHandwrittens({ ...prevSearch, offset: (page - 1) * LIMIT });
+    if (search || selectedCustomer?.id) {
+      const searchData = {
+        billToCompany: search ?? '',
+        limit: LIMIT,
+        offset: (page - 1) * LIMIT,
+        ...((!search && selectedCustomer?.id) && { customerId: selectedCustomer?.id })
+      };
+      const res = await searchHandwrittens(searchData);
       setHandwrittens(res?.rows);
       setHandwrittenCount(res?.minItems);
     } else {
@@ -93,7 +111,6 @@ export default function SelectHandwrittenDialog({ open, setOpen, part, customer,
       const res = await searchHandwrittens(searchData);
       setHandwrittens(res?.rows);
       setHandwrittenCount(res?.minItems);
-      setPrevSearch(searchData);
     } else {
       resetHandwrittensList();
     }
@@ -147,10 +164,23 @@ export default function SelectHandwrittenDialog({ open, setOpen, part, customer,
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    setOpen(false);
     if (!selectedHandwrittenId) return;
+
+    if (await confirm('Add warranty?')) {
+      setShowWarranty(true);
+    } else {
+      setOpen(false);
+      const handwritten = await getHandwrittenById(selectedHandwrittenId);
+      if (!handwritten) return;
+      onSubmit(handwritten, '', Number(qty), desc, Number(price));
+    }
+  };
+
+  const handleSubmitWarranty = async (e: FormEvent) => {
+    e.preventDefault();
     const handwritten = await getHandwrittenById(selectedHandwrittenId);
-    
+    if (!handwritten) return;
+
     let fullWar = `${handwritten.orderNotes ? '\n' : ''}`;
     if (injectorWar) fullWar += 'Injector warranty\n';
     if (customWar) fullWar += `${warranty}\n`;
@@ -161,8 +191,6 @@ export default function SelectHandwrittenDialog({ open, setOpen, part, customer,
     }
     if (noVerbage) fullWar = '';
     onSubmit(handwritten, fullWar, Number(qty), desc, Number(price));
-
-    await newTab([{ name: 'Handwritten', url: `/handwrittens/${selectedHandwrittenId}` }]);
   };
 
 
@@ -172,63 +200,27 @@ export default function SelectHandwrittenDialog({ open, setOpen, part, customer,
     
       <Dialog
         open={open}
-        setOpen={setOpen}
+        setOpen={(value: boolean) => {
+          setShowWarranty(false);
+          setOpen(value);
+        }}
         title="Select Handwritten"
         width={600}
       >
-        <form onSubmit={handleSubmit} className="select-handwritten-form">
-          <Button
-            variant={['x-small', 'fit']}
-            onClick={handleNewHandwritten}
-            type="button"
-            disabled={!customer?.company}
-          >
-            New Handwritten
-          </Button>
-
-          <div className="select-handwritten-form__inputs">
-            <Input
-              variant={['small', 'thin', 'label-bold', 'label-stack', 'label-fit-content']}
-              label="Description"
-              value={desc}
-              onChange={(e: any) => setDesc(e.target.value)}
-              required
-            />
-            <Input
-              variant={['x-small', 'thin', 'label-bold', 'label-stack', 'label-fit-content']}
-              label="Qty"
-              type="number"
-              value={qty}
-              onChange={(e: any) => setQty(e.target.value)}
-              required
-            />
-            <Input
-              variant={['x-small', 'thin', 'label-bold', 'label-stack', 'label-fit-content']}
-              label="Price"
-              type="number"
-              value={price}
-              onChange={(e: any) => setPrice(e.target.value)}
-              required
-            />
-            <Input
-              variant={['small', 'thin', 'label-bold', 'label-stack', 'label-fit-content']}
-              label="Warranty"
-              value={warranty}
-              onChange={(e: any) => setWarranty(e.target.value)}
-            />
-          </div>
+        {showWarranty ?
+        <form onSubmit={handleSubmitWarranty}>
+          <Input
+            variant={['small', 'thin', 'label-bold', 'label-stack', 'label-fit-content']}
+            label="Warranty"
+            value={warranty}
+            onChange={(e: any) => setWarranty(e.target.value)}
+          />
           <div>
             <Checkbox
               label="No CAT Warranty"
               variant={['label-bold', 'dark-bg', 'label-align-center', 'label-fit']}
               checked={noWarranty}
               onChange={(e: any) => setNoWarranty(e.target.checked)}
-            />
-            <Checkbox
-              label="No Verbage"
-              variant={['label-bold', 'dark-bg', 'label-align-center', 'label-fit']}
-              checked={noVerbage}
-              onChange={(e: any) => setNoVerbage(e.target.checked)}
             />
             <Checkbox
               label="Injector Warranty"
@@ -243,57 +235,100 @@ export default function SelectHandwrittenDialog({ open, setOpen, part, customer,
               onChange={(e: any) => setCustomWar(e.target.checked)}
             />
           </div>
-          <Button type="submit" variant={['fit']}>Add to Handwritten</Button>
-        </form>
-
-        <form
-          className="search-handwritten-form"
-          onSubmit={(e) => {
-            e.preventDefault();
-            handleSearch();
-          }}
-        >
-          <div className="select-handwritten-form__inputs">
-            <Input
-              variant={['label-bold', 'label-stack', 'label-fit-content']}
-              label="Search Company"
-              value={search}
-              onChange={(e: any) => setSearch(e.target.value)}
-            />
+          <div className="form__footer">
+            <Button type="submit">Submit</Button>
+            <Button type="submit" onClick={() => setNoVerbage(true)}>Cancel Warranty</Button>
           </div>
         </form>
+        :
+        <>
+          <form onSubmit={handleSubmit} className="select-handwritten-form">
+            {/* <Button
+              variant={['x-small', 'fit']}
+              onClick={handleNewHandwritten}
+              type="button"
+              disabled={!customer?.company}
+            >
+              New Handwritten
+            </Button> */}
+            <div className="select-handwritten-form__inputs">
+              <Input
+                variant={['small', 'thin', 'label-bold', 'label-stack', 'label-fit-content']}
+                label="Description"
+                value={desc}
+                onChange={(e: any) => setDesc(e.target.value)}
+                required
+              />
+              <Input
+                variant={['x-small', 'thin', 'label-bold', 'label-stack', 'label-fit-content']}
+                label="Qty"
+                type="number"
+                value={qty ?? ''}
+                onChange={(e: any) => setQty(e.target.value)}
+                required
+              />
+              <Input
+                variant={['x-small', 'thin', 'label-bold', 'label-stack', 'label-fit-content']}
+                label="Price"
+                type="number"
+                value={price ?? ''}
+                onChange={(e: any) => setPrice(e.target.value)}
+                required
+              />
+            </div>
+            <Button type="submit" variant={['fit']}>Add Item to Handwritten</Button>
+          </form>
 
-        <div className="select-handwritten-dialog">
-          <Table>
-            <thead>
-              <tr>
-                <th></th>
-                <th>Date</th>
-                <th>Customer</th>
-                <th>Bill To Company</th>
-              </tr>
-            </thead>
-            <tbody>
-              {handwrittens.map((handwritten: Handwritten) => {
-                return (
-                  <tr key={handwritten.id} onClick={() => handleSelectRow(handwritten.id)} className={handwritten.id === selectedHandwrittenId ? 'select-handwritten-dialog--selected' : ''}>
-                    <td>{ handwritten.id }</td>
-                    <td>{ formatDate(handwritten.date) }</td>
-                    <td>{ handwritten.customer ? handwritten.customer.company : null }</td>
-                    <td>{ handwritten.billToCompany }</td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </Table>
+          <form
+            className="search-handwritten-form"
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleSearch();
+            }}
+          >
+            <div className="select-handwritten-form__inputs">
+              <Input
+                variant={['label-bold', 'label-stack', 'label-fit-content']}
+                label="Search Company"
+                value={search}
+                onChange={(e: any) => setSearch(e.target.value)}
+              />
+            </div>
+          </form>
 
-          <Pagination
-            data={handwrittensData}
-            setData={handleChangePage}
-            minData={handwrittenCount}
-            pageSize={LIMIT}
-          />
-        </div>
+          <div className="select-handwritten-dialog">
+            <Table>
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>Date</th>
+                  <th>Customer</th>
+                  <th>Bill To Company</th>
+                </tr>
+              </thead>
+              <tbody>
+                {handwrittens.map((handwritten: Handwritten) => {
+                  return (
+                    <tr key={handwritten.id} onClick={() => handleSelectRow(handwritten.id)} className={handwritten.id === selectedHandwrittenId ? 'select-handwritten-dialog--selected' : ''}>
+                      <td>{ handwritten.id }</td>
+                      <td>{ formatDate(handwritten.date) }</td>
+                      <td>{ handwritten.customer ? handwritten.customer.company : null }</td>
+                      <td>{ handwritten.billToCompany }</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </Table>
+
+            <Pagination
+              data={handwrittensData}
+              setData={handleChangePage}
+              minData={handwrittenCount}
+              pageSize={LIMIT}
+            />
+          </div>
+        </>
+        }
       </Dialog>
     </>
   );

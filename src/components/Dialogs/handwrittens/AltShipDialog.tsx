@@ -7,7 +7,7 @@ interface Props {
   open: boolean
   setOpen: (open: boolean) => void
   handwritten: Handwritten
-  setHandwritten: (handwritten: Handwritten) => void
+  setHandwritten: (handwritten: Handwritten | null) => void
   altShipData: AltShip[]
   setAltShipData: (data: AltShip[]) => void
 }

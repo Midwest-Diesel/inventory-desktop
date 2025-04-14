@@ -5,13 +5,14 @@ import { getCoresByCustomer, getCoreReturnsByCustomer } from "./coresController"
 
 interface HandwrittenSearchData {
   id?: number
+  customerId?: number
   date?: string
   poNum?: string
-  billToCompany?: string,
-  shipToCompany?: string,
-  source?: string,
-  payment?: string,
-  limit: number,
+  billToCompany?: string
+  shipToCompany?: string
+  source?: string
+  payment?: string
+  limit: number
   offset: number
 }
 
@@ -62,7 +63,7 @@ export const getAllHandwrittens = async () => {
   }
 };
 
-export const getHandwrittenById = async (id: number) => {
+export const getHandwrittenById = async (id: number): Promise<Handwritten | null> => {
   try {
     const auth = { withCredentials: true };
     const res = await api.get(`/api/handwrittens/id/${id}`, auth);
@@ -73,6 +74,7 @@ export const getHandwrittenById = async (id: number) => {
     return parseHandwrittenRes(res.data)[0];
   } catch (err) {
     console.error(err);
+    return null;
   }
 };
 
@@ -86,13 +88,14 @@ export const getSomeHandwrittens = async (page: number, limit: number) => {
   }
 };
 
-export const searchHandwrittens = async (invoice: HandwrittenSearchData) => {
+export const searchHandwrittens = async (handwritten: HandwrittenSearchData): Promise<{ minItems: number[], rows: Handwritten[] }> => {
   try {
     const auth = { withCredentials: true };
-    const res = await api.get(`/api/handwrittens/search/${JSON.stringify(invoice)}`, auth);
+    const res = await api.get(`/api/handwrittens/search/${JSON.stringify(handwritten)}`, auth);
     return { minItems: res.data.minItems, rows: await parseHandwrittenRes(res.data.rows) };
   } catch (err) {
     console.error(err);
+    return { minItems: [], rows: [] };
   }
 };
 
@@ -324,7 +327,7 @@ export const editHandwrittenOrderNotes = async (id: number, orderNotes: string) 
   try {
     const auth = { withCredentials: true };
     const res = await getHandwrittenById(id);
-    const existingNotes = res.orderNotes ? res.orderNotes : '';
+    const existingNotes = res?.orderNotes ?? '';
     const newOrderNotes = orderNotes
       .split('\n')
       .filter((note) => !existingNotes.toLowerCase().includes(note.toLowerCase()))
