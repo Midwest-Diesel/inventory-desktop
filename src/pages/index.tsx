@@ -18,7 +18,7 @@ import { useNavState } from "@/components/Navbar/useNavState";
 
 
 export default function Home() {
-  const { push, newTab } = useNavState();
+  const { push, newTab, tabs, handleChangeTab } = useNavState();
   const [user] = useAtom<User>(userAtom);
   const [recentPartSearches, setRecentPartSearches] = useAtom<RecentPartSearch[]>(recentPartSearchesAtom);
   const [recentQuoteSearches] = useAtom<RecentQuoteSearch[]>(recentQuotesAtom);
@@ -86,7 +86,12 @@ export default function Home() {
     await toggleQuoteSold(updatedQuote as any);
     setQuotes(quotes.map((q) => (q.id === handwrittenQuote?.id) && (updatedQuote as any)));
 
-    await newTab([{ name: 'Handwritten', url: `/handwrittens/${handwritten.id}` }]);
+    const tab: Tab | null = tabs.find((tab: Tab) => tab.history.find((t) => t.url === `/handwrittens/${handwritten.id}`)) ?? null;
+    if (tab) {
+      await handleChangeTab(tab.id);
+    } else {
+      await newTab([{ name: 'Handwritten', url: `/handwrittens/${handwritten.id}` }]);
+    }
   };
 
 
