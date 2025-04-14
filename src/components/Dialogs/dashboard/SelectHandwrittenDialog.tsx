@@ -44,18 +44,19 @@ export default function SelectHandwrittenDialog({ open, setOpen, part, customer,
   const LIMIT = 26;
   
   useEffect(() => {
-    if (!open) return;
-    const fetchData = async () => {
-      await resetHandwrittensList();
-    };
     setSearch('');
     setDesc(part.desc ?? '');
     setQty(null);
     setPrice(null);
-    fetchData();
   }, [open]);
 
-  useEffect(() => {}, [customer]);
+  useEffect(() => {
+    if (!open) return;
+    const fetchData = async () => {
+      await resetHandwrittensList();
+    };
+    fetchData();
+  }, [open, selectedCustomer]);
 
   const resetHandwrittensList = async () => {    
     if (search || selectedCustomer?.id) {
@@ -251,6 +252,12 @@ export default function SelectHandwrittenDialog({ open, setOpen, part, customer,
               >
                 New Handwritten
               </Button> */}
+              {part &&
+                <div style={{ display: 'flex', gap: '1rem', marginBottom: '0.3rem' }}>
+                  <p><strong>Part Num</strong> { part.partNum }</p>
+                  <p><strong>Stock Num</strong> { part.stockNum }</p>
+                </div>
+              }
               <div className="select-handwritten-form__inputs">
                 <Input
                   variant={['small', 'thin', 'label-bold', 'label-stack', 'label-fit-content']}
