@@ -16,7 +16,7 @@ export default function CustomerSelectDialog({ open, setOpen, onSubmit }: Props)
 
   const handleSubmit = async () => {
     const res = await getCustomerByName(customer);
-    onSubmit(res);
+    if (res) onSubmit(res);
   };
 
 

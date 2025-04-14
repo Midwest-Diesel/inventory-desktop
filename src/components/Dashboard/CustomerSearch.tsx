@@ -40,7 +40,7 @@ export default function CustomerSearch() {
     if (!name) return;
     await addCustomer(name);
     const res = await getCustomerByName(name);
-    await push('customer', `/customer/${res.id}`);
+    if (res) await push('customer', `/customer/${res.id}`);
   };
 
   const deselectCustomer = () => {

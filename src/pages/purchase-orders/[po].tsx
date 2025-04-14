@@ -28,7 +28,7 @@ export default function PurchaseOrder() {
     const fetchData = async () => {
       if (!params) return;
       const res = await getPurchaseOrderByPoNum(params.po.toString());
-      setTitle(`${res.purchasedFrom} PO`);
+      setTitle(`${res?.purchasedFrom} PO`);
       setPoData(res);
     };
     fetchData();
