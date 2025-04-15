@@ -53,13 +53,14 @@ export const parseHandwrittenRes = (data: any) => {
 
 // === GET routes === //
 
-export const getAllHandwrittens = async () => {
+export const getAllHandwrittens = async (): Promise<Handwritten[]> => {
   try {
     const auth = { withCredentials: true };
     const res = await api.get('/api/handwrittens', auth);
     return parseHandwrittenRes(res.data);
   } catch (err) {
     console.error(err);
+    return [];
   }
 };
 
@@ -78,13 +79,14 @@ export const getHandwrittenById = async (id: number): Promise<Handwritten | null
   }
 };
 
-export const getSomeHandwrittens = async (page: number, limit: number) => {
+export const getSomeHandwrittens = async (page: number, limit: number): Promise<Handwritten[]> => {
   try {
     const auth = { withCredentials: true };
     const res = await api.get(`/api/handwrittens/limit/${JSON.stringify({ page: (page - 1) * limit, limit: limit })}`, auth);
     return await parseHandwrittenRes(res.data);
   } catch (err) {
     console.error(err);
+    return [];
   }
 };
 
@@ -193,6 +195,28 @@ export const getMostRecentHandwrittenDate = async () => {
     return parseResDate(res.data.date);
   } catch (err) {
     console.error(err);
+  }
+};
+
+export const getYeserdaySales = async (): Promise<number> => {
+  try {
+    const auth = { withCredentials: true };
+    const res = await api.get(`/api/handwrittens/yesterday-sales`, auth);
+    return Number(res.data.sum);
+  } catch (err) {
+    console.error(err);
+    return 0;
+  }
+};
+
+export const getYeserdayCOGS = async (): Promise<number> => {
+  try {
+    const auth = { withCredentials: true };
+    const res = await api.get(`/api/handwrittens/yesterday-cogs`, auth);
+    return Number(res.data.sum);
+  } catch (err) {
+    console.error(err);
+    return 0;
   }
 };
 

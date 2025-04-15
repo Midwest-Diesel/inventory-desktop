@@ -7,7 +7,7 @@ import Loading from "@/components/Library/Loading";
 import Pagination from "@/components/Library/Pagination";
 import Table from "@/components/Library/Table";
 import { handwrittenSearchAtom, userAtom } from "@/scripts/atoms/state";
-import { addHandwritten, getHandwrittenCount, getHandwrittensByDate, getMostRecentHandwrittenDate, getSomeHandwrittens, searchHandwrittens } from "@/scripts/controllers/handwrittensController";
+import { addHandwritten, getHandwrittenCount, getHandwrittensByDate, getMostRecentHandwrittenDate, getSomeHandwrittens, getYeserdayCOGS, getYeserdaySales, searchHandwrittens } from "@/scripts/controllers/handwrittensController";
 import { formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
 import { useAtom } from "jotai";
 import Link from "@/components/Library/Link";
@@ -30,6 +30,8 @@ export default function Handwrittens() {
   const [currentPage, setCurrentPage] = useState(0);
   const [searchData, setSearchData] = useState<any>({});
   const [taxTotal, setTaxTotal] = useState(0);
+  const [totalSales, setTotalSales] = useState(0);
+  const [totalCOGS, setTotalCOGS] = useState(0);
   const TAX_RATE = 0.08375;
   const LIMIT = 40;
 
@@ -38,15 +40,8 @@ export default function Handwrittens() {
       const pageCount = await getHandwrittenCount();
       setHandwrittenCount(pageCount);
       
-      const date = await getMostRecentHandwrittenDate();
-      if (!date) return;
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      date.setHours(0, 0, 0, 0);
-      if (date.getTime() === today.getTime()) {
-        date.setDate(date.getDate() - 1);
-      }
-      setYesterdayInvoices(await getHandwrittensByDate(date));
+      setTotalSales(await getYeserdaySales());
+      setTotalCOGS(await getYeserdayCOGS());
       setLoading(false);
     };
     fetchData();
@@ -69,8 +64,8 @@ export default function Handwrittens() {
 
     if (hasValidSearchCriteria) {
       const res = await searchHandwrittens({ ...searchData, offset: (page - 1) * LIMIT });
-      setHandwrittens(res?.rows);
-    } else{
+      setHandwrittens(res.rows);
+    } else {
       const res = await getSomeHandwrittens(page, LIMIT);
       setHandwrittens(res);
     }
@@ -83,11 +78,15 @@ export default function Handwrittens() {
   };
 
   const sumInvoiceCosts = (handwrittenItems: HandwrittenItem[]): number => {
-    return handwrittenItems.filter((item) => (item?.cost ?? 0) > 0.04).reduce((acc, item) => acc + ((item?.cost ?? 0) * (item?.qty ?? 0)), 0);
+    return handwrittenItems
+      .filter((item) => (item.cost ?? 0) > 0.04 && item.isTakeoffDone && item.desc != 'TAX')
+      .reduce((acc, item) => acc + ((item.cost ?? 0) * (item.qty ?? 0)), 0);
   };
 
   const sumHandwrittenItems = (handwrittenItems: HandwrittenItem[]): number => {
-    return handwrittenItems.filter((item) => (item?.unitPrice ?? 0) > 0.04).reduce((acc, item) => acc + ((item?.unitPrice ?? 0) * (item?.qty ?? 0)), 0);
+    return handwrittenItems
+      .filter((item) => (item.unitPrice ?? 0) > 0.04 && item.isTakeoffDone && item.desc != 'TAX')
+      .reduce((acc, item) => acc + ((item.unitPrice ?? 0) * (item.qty ?? 0)), 0);
   };
 
   const getTotalCogs = (): number => {
@@ -164,11 +163,11 @@ export default function Handwrittens() {
           <div className="handwrittens__top-bar">
             <div className="handwrittens__top-bar--count-block">
               <h4>Yesterday&apos;s COGS</h4>
-              <p>{ yesterdayInvoices && formatCurrency(getTotalCogs()) }</p>
+              <p>{ formatCurrency(totalCOGS) }</p>
             </div>
             <div className="handwrittens__top-bar--count-block">
               <h4>Yesterday&apos;s Sales</h4>
-              <p>{ yesterdayInvoices && formatCurrency(getTotalSales()) }</p>
+              <p>{ formatCurrency(totalSales) }</p>
             </div>
           </div>
           { loading && <Loading /> }
