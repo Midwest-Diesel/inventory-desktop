@@ -153,24 +153,9 @@ export default function QuoteList({ quotes, setQuotes, setSelectHandwrittenOpen,
       return;
     }
 
-    // I'm sorry
     const res = await getSomeQuotes(page, LIMIT, filterByPart ? partNum : '', filterByCustomer ? customer.id : 0, quoteListType === 'engine');
-    if (res.rows.length === 0 && filterByPart) {
-      setFilterByPart(false);
-      const res = await getSomeQuotes(page, LIMIT, '', filterByCustomer ? customer.id : 0, quoteListType === 'engine');
-      setQuotes(res.rows);
-      setCount(res.minItems);
-
-      if (res.rows.length === 0 && filterByCustomer) {
-        setFilterByCustomer(false);
-        const res = await getSomeQuotes(page, LIMIT, partNum, customer.id, quoteListType === 'engine');
-        setQuotes(res.rows);
-        setCount(res.minItems);
-      }
-    } else {
-      setQuotes(res.rows);
-      setCount(res.minItems);
-    }
+    setQuotes(res.rows);
+    setCount(res.minItems);
     setPage(page);
   };
 
