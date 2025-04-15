@@ -10,13 +10,14 @@ const parseAddOnDataRes = (data: any) => {
 
 // === GET routes === //
 
-export const getAllAddOns = async () => {
+export const getAllAddOns = async (): Promise<AddOn[]> => {
   try {
     const auth = { withCredentials: true };
     const res = await api.get('/api/add-ons', auth);
     return parseAddOnDataRes(res.data);
   } catch (err) {
     console.error(err);
+    return [];
   }
 };
 

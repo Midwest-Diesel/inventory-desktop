@@ -11,43 +11,47 @@ const parseCoreDataRes = (data: any) => {
 
 // === GET routes === //
 
-export const getAllCores = async () => {
+export const getAllCores = async (): Promise<Core[]> => {
   try {
     const auth = { withCredentials: true };
     const res = await api.get('/api/cores', auth);
     return parseCoreDataRes(res.data);
   } catch (err) {
     console.error(err);
+    return [];
   }
 };
 
-export const getCoresByHandwritten = async (id: number) => {
+export const getCoresByHandwritten = async (id: number): Promise<Core[]> => {
   try {
     const auth = { withCredentials: true };
     const res = await api.get(`/api/cores/handwritten/${id}`, auth);
     return parseCoreDataRes(res.data);
   } catch (err) {
     console.error(err);
+    return [];
   }
 };
 
-export const getCoresByCustomer = async (customerId: number, handwrittenId: number) => {
+export const getCoresByCustomer = async (customerId: number, handwrittenId: number): Promise<Core[]> => {
   try {
     const auth = { withCredentials: true };
     const res = await api.get(`/api/cores/customer/${JSON.stringify({customerId, handwrittenId})}`, auth);
-    return parseCoreDataRes(res.data) || [];
+    return parseCoreDataRes(res.data) ?? [];
   } catch (err) {
     console.error(err);
+    return [];
   }
 };
 
-export const getCoreReturnsByCustomer = async (id: number) => {
+export const getCoreReturnsByCustomer = async (id: number): Promise<Core[]> => {
   try {
     const auth = { withCredentials: true };
     const res = await api.get(`/api/cores/return/customer/${id}`, auth);
-    return parseCoreDataRes(res.data) || [];
+    return parseCoreDataRes(res.data) ?? [];
   } catch (err) {
     console.error(err);
+    return [];
   }
 };
 

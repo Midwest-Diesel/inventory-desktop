@@ -68,16 +68,19 @@ export default function SelectHandwrittenDialog({ open, setOpen, part, customer,
         ...((!search && selectedCustomer?.id) && { customerId: selectedCustomer?.id })
       };
       const res = await searchHandwrittens(searchData);
-      setHandwrittens(res?.rows);
-      setHandwrittenCount(res?.minItems);
-    } else {
-      const pageCount = await getHandwrittenCount();
-      setHandwrittenCount(pageCount);
-      const res = await getSomeHandwrittens(1, LIMIT);
-      setHandwrittensData(res);
-      setHandwrittens(res);
-      setSearch('');
+      if (res.rows.length > 0) {
+        setHandwrittens(res?.rows);
+        setHandwrittenCount(res?.minItems);
+        return;
+      }
     }
+    
+    const pageCount = await getHandwrittenCount();
+    setHandwrittenCount(pageCount);
+    const res = await getSomeHandwrittens(1, LIMIT);
+    setHandwrittensData(res);
+    setHandwrittens(res);
+    setSearch('');
   };
   
   const handleChangePage = async (_: any, page: number) => {
@@ -90,12 +93,16 @@ export default function SelectHandwrittenDialog({ open, setOpen, part, customer,
         ...((!search && selectedCustomer?.id) && { customerId: selectedCustomer?.id })
       };
       const res = await searchHandwrittens(searchData);
-      setHandwrittens(res?.rows);
-      setHandwrittenCount(res?.minItems);
-    } else {
-      const res = await getSomeHandwrittens(page, LIMIT);
-      setHandwrittens(res);
+      if (res.rows.length > 0) {
+        setHandwrittens(res?.rows);
+        setHandwrittenCount(res?.minItems);
+        setCurrentPage(page);
+        return;
+      }
     }
+    
+    const res = await getSomeHandwrittens(page, LIMIT);
+    setHandwrittens(res);
     setCurrentPage(page);
   };
 

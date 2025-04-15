@@ -13,7 +13,7 @@ const parseCustomerRes = (data: any) => {
 
 // === GET routes === //
 
-export const getCustomers = async () => {
+export const getCustomers = async (): Promise<Customer[]> => {
   try {
     const auth = { withCredentials: true };
     const res = await api.get('/api/customers', auth);
@@ -21,10 +21,11 @@ export const getCustomers = async () => {
     return res.data;
   } catch (err) {
     console.error(err);
+    return [];
   }
 };
 
-export const getSomeCustomers = async (page: number, limit: number) => {
+export const getSomeCustomers = async (page: number, limit: number): Promise<Customer[]> => {
   try {
     const auth = { withCredentials: true };
     const res = await api.get(`/api/customers/limit/${JSON.stringify({ page: (page - 1) * limit, limit: limit })}`, auth);
@@ -32,6 +33,7 @@ export const getSomeCustomers = async (page: number, limit: number) => {
     return res.data;
   } catch (err) {
     console.error(err);
+    return [];
   }
 };
 

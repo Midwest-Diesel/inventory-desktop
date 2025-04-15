@@ -10,7 +10,7 @@ const parseAlertDataRes = (data: any) => {
 
 // === GET routes === //
 
-export const getAlerts = async () => {
+export const getAlerts = async (): Promise<Alert[]> => {
   try {
     const auth = { withCredentials: true };
     const res = await api.get('/api/alerts', auth);
@@ -18,6 +18,7 @@ export const getAlerts = async () => {
     return res.data;
   } catch (err) {
     console.error(err);
+    return [];
   }
 };
 
