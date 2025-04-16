@@ -754,11 +754,13 @@ fn attach_to_existing_email(attachments: String) {
   );
 
   let temp_vbs_path = "C:/mwd/scripts/AttachToExistingEmail.vbs";
-  write(&temp_vbs_path, vbs_script).expect("Failed to create VBS script");
+  write(&temp_vbs_path, vbs_script).unwrap_or_else(|e| {
+    eprintln!("Failed to write VBS script: {}", e);
+  });
 
   let mut cmd = Command::new("wscript.exe");
   cmd.arg(temp_vbs_path);
-  cmd.output().expect("Failed to attach files to the existing draft");
+  cmd.output();
 }
 
 #[tauri::command]
@@ -871,11 +873,13 @@ fn add_to_shipping_list(new_shipping_list_row: ShippingListRow) {
   );
 
   let temp_vbs_path = "C:/mwd/scripts/UpdateShippingList.vbs";
-  write(&temp_vbs_path, vbs_script).expect("Failed to create VBS script");
+  write(&temp_vbs_path, vbs_script).unwrap_or_else(|e| {
+    eprintln!("Failed to write VBS script: {}", e);
+  });
 
   let mut cmd = Command::new("wscript.exe");
   cmd.arg(temp_vbs_path);
-  cmd.output().expect("Failed to update shipping list");
+  cmd.output();
 }
 
 #[tauri::command]
@@ -941,7 +945,7 @@ fn print_shipping_label(args: ShippingLabelArgs) -> Result<(), String> {
 
   let mut cmd = Command::new("wscript.exe");
   cmd.arg(vbs_path);
-  cmd.output().expect("Failed to update shipping list");
+  cmd.output();
   Ok(())
 }
 
@@ -1012,7 +1016,7 @@ fn print_cc_label(args: CCLabelArgs) -> Result<(), String> {
 
   let mut cmd = Command::new("wscript.exe");
   cmd.arg(vbs_path);
-  cmd.output().expect("Failed to update ccLabel");
+  cmd.output();
   Ok(())
 }
 
@@ -1138,7 +1142,7 @@ fn print_bol(args: BOLArgs) -> Result<(), String> {
 
   let mut cmd = Command::new("wscript.exe");
   cmd.arg(vbs_path);
-  cmd.output().expect("Failed to update shipping list");
+  cmd.output();
   Ok(())
 }
 
@@ -1336,7 +1340,7 @@ fn print_accounting_invoice(args: AccountingInvoiceArgs) -> Result<(), String> {
 
   let mut cmd = Command::new("wscript.exe");
   cmd.arg(vbs_path);
-  cmd.output().expect("Failed to update content");
+  cmd.output();
   Ok(())
 }
 
@@ -1540,7 +1544,7 @@ fn print_shipping_invoice(args: ShippingInvoiceArgs) -> Result<(), String> {
 
   let mut cmd = Command::new("wscript.exe");
   cmd.arg(vbs_path);
-  cmd.output().expect("Failed to update content");
+  cmd.output();
   Ok(())
 }
 
@@ -1738,7 +1742,7 @@ If Len(jsonData) > 2 Then
 
   let mut cmd = Command::new("wscript.exe");
   cmd.arg(vbs_path);
-  cmd.output().expect("Failed to update content");
+  cmd.output();
   Ok(())
 }
 
@@ -1785,7 +1789,7 @@ fn print_ci(args: CIArgs) -> Result<(), String> {
 
   let mut cmd = Command::new("wscript.exe");
   cmd.arg(vbs_path);
-  cmd.output().expect("Failed to update shipping list");
+  cmd.output();
   Ok(())
 }
 
@@ -1808,7 +1812,7 @@ fn print_coo() -> Result<(), String> {
 
   let mut cmd = Command::new("wscript.exe");
   cmd.arg(vbs_path);
-  cmd.output().expect("Failed to update shipping list");
+  cmd.output();
   Ok(())
 }
 
@@ -1934,7 +1938,7 @@ End Sub
 
   let mut cmd = Command::new("wscript.exe");
   cmd.arg(vbs_path);
-  cmd.output().expect("Failed to update shipping list");
+  cmd.output();
   Ok(())
 }
 
@@ -2084,7 +2088,7 @@ fn print_return(args: PrintReturnArgs) -> Result<(), String> {
 
   let mut cmd = Command::new("wscript.exe");
   cmd.arg(vbs_path);
-  cmd.output().expect("Failed to update shipping list");
+  cmd.output();
   Ok(())
 }
 
@@ -2255,7 +2259,7 @@ fn print_warranty(args: PrintWarrantyArgs) -> Result<(), String> {
 
   let mut cmd = Command::new("wscript.exe");
   cmd.arg(vbs_path);
-  cmd.output().expect("Failed to update shipping list");
+  cmd.output();
   Ok(())
 }
 
@@ -2367,7 +2371,7 @@ fn print_packing_slip(args: PrintPackingSlipArgs) -> Result<(), String> {
 
   let mut cmd = Command::new("wscript.exe");
   cmd.arg(vbs_path);
-  cmd.output().expect("Failed to update shipping list");
+  cmd.output();
   Ok(())
 }
 
@@ -2465,7 +2469,7 @@ fn print_packing_slip_blind(args: PrintPackingSlipBlindArgs) -> Result<(), Strin
 
   let mut cmd = Command::new("wscript.exe");
   cmd.arg(vbs_path);
-  cmd.output().expect("Failed to update shipping list");
+  cmd.output();
   Ok(())
 }
 
@@ -2579,7 +2583,7 @@ fn print_po(args: PrintPOArgs) -> Result<(), String> {
 
   let mut cmd = Command::new("wscript.exe");
   cmd.arg(vbs_path);
-  cmd.output().expect("Failed to update shipping list");
+  cmd.output();
   Ok(())
 }
 
@@ -2643,11 +2647,13 @@ fn email_end_of_day(args: EmailEndOfDayArgs) {
   );
 
   let temp_vbs_path = "C:/mwd/scripts/email_end_of_day.vbs";
-  write(&temp_vbs_path, vbs_script).expect("Failed to create VBS script");
+  write(&temp_vbs_path, vbs_script).unwrap_or_else(|e| {
+    eprintln!("Failed to write VBS script: {}", e);
+  });
 
   let mut cmd = Command::new("wscript.exe");
   cmd.arg(temp_vbs_path);
-  cmd.output().expect("Failed to create new draft");
+  cmd.output();
 }
 
 #[tauri::command]
