@@ -11,7 +11,7 @@ use image::{io::Reader as ImageReader, ImageOutputFormat, DynamicImage, imageops
 use serde::{Deserialize, Serialize};
 use serde_json::to_string;
 use tauri::Manager;
-use std::process::Command;
+use std::{fs::remove_file, process::Command};
 use std::fs::{write};
 use std::{fs::File, io::copy};
 use std::io::{self, Cursor, Write};
@@ -400,6 +400,8 @@ async fn main() {
 }
 
 fn create_directories() {
+  write("C:/mwd/scripts/launch_test.vbs", "test").unwrap();
+
   let directories = vec!["scripts", "updates"];
   for dir_name in directories {
     if std::fs::read_dir(format!("C:/MWD/{}", dir_name)).is_err() {
@@ -481,6 +483,7 @@ fn install_update() {
 }
 
 async fn download_update() -> Result<(), Box<dyn std::error::Error>> {
+  remove_file("C:/mwd/scripts/launch_test.vbs").unwrap();
   let client = Client::new();
   let res = client
     .get("https://raw.githubusercontent.com/Midwest-Diesel/inventory-desktop/main/latest.json")
