@@ -706,17 +706,7 @@ fn new_email_draft(email_args: EmailArgs) {
 
   let mut cmd = Command::new("wscript.exe");
   cmd.arg(temp_vbs_path);
-  let output_result = cmd.output();
-  match output_result {
-    Ok(output) => {
-      if !output.status.success() {
-        eprintln!("wscript.exe exited with error: {:?}", output);
-      }
-    }
-    Err(e) => {
-      eprintln!("Failed to run wscript.exe: {}", e);
-    }
-  }
+  cmd.output().unwrap();
 }
 
 #[tauri::command]
@@ -755,17 +745,7 @@ fn attach_to_existing_email(attachments: String) {
 
   let mut cmd = Command::new("wscript.exe");
   cmd.arg(temp_vbs_path);
-  let output_result = cmd.output();
-  match output_result {
-    Ok(output) => {
-      if !output.status.success() {
-        eprintln!("wscript.exe exited with error: {:?}", output);
-      }
-    }
-    Err(e) => {
-      eprintln!("Failed to run wscript.exe: {}", e);
-    }
-  }
+  cmd.output().unwrap();
 }
 
 #[tauri::command]
@@ -882,17 +862,7 @@ fn add_to_shipping_list(new_shipping_list_row: ShippingListRow) {
 
   let mut cmd = Command::new("wscript.exe");
   cmd.arg(temp_vbs_path);
-  let output_result = cmd.output();
-  match output_result {
-    Ok(output) => {
-      if !output.status.success() {
-        eprintln!("wscript.exe exited with error: {:?}", output);
-      }
-    }
-    Err(e) => {
-      eprintln!("Failed to run wscript.exe: {}", e);
-    }
-  }
+  cmd.output().unwrap();
 }
 
 #[tauri::command]
@@ -953,22 +923,12 @@ fn print_shipping_label(args: ShippingLabelArgs) -> Result<(), String> {
     args.copies
   );
 
-  let vbs_path = "C:\\MWD\\scripts\\generate_shipping_label.vbs";
+  let vbs_path = "C:/mwd/scripts/generate_shipping_label.vbs";
   write(&vbs_path, vbs_script).unwrap();
 
   let mut cmd = Command::new("wscript.exe");
   cmd.arg(vbs_path);
-  let output_result = cmd.output();
-  match output_result {
-    Ok(output) => {
-      if !output.status.success() {
-        eprintln!("wscript.exe exited with error: {:?}", output);
-      }
-    }
-    Err(e) => {
-      eprintln!("Failed to run wscript.exe: {}", e);
-    }
-  }
+  cmd.output().unwrap();
   Ok(())
 }
 
@@ -1034,22 +994,12 @@ fn print_cc_label(args: CCLabelArgs) -> Result<(), String> {
     1
   );
 
-  let vbs_path = "C:\\MWD\\scripts\\generate_cc_label.vbs";
+  let vbs_path = "C:/mwd/scripts/generate_cc_label.vbs";
   write(&vbs_path, vbs_script).unwrap();
 
   let mut cmd = Command::new("wscript.exe");
   cmd.arg(vbs_path);
-  let output_result = cmd.output();
-  match output_result {
-    Ok(output) => {
-      if !output.status.success() {
-        eprintln!("wscript.exe exited with error: {:?}", output);
-      }
-    }
-    Err(e) => {
-      eprintln!("Failed to run wscript.exe: {}", e);
-    }
-  }
+  cmd.output().unwrap();
   Ok(())
 }
 
@@ -1170,22 +1120,12 @@ fn print_bol(args: BOLArgs) -> Result<(), String> {
     printer
   );
 
-  let vbs_path = "C:\\MWD\\scripts\\generate_bol.vbs";
+  let vbs_path = "C:/mwd/scripts/generate_bol.vbs";
   write(&vbs_path, vbs_script).unwrap();
 
   let mut cmd = Command::new("wscript.exe");
   cmd.arg(vbs_path);
-  let output_result = cmd.output();
-  match output_result {
-    Ok(output) => {
-      if !output.status.success() {
-        eprintln!("wscript.exe exited with error: {:?}", output);
-      }
-    }
-    Err(e) => {
-      eprintln!("Failed to run wscript.exe: {}", e);
-    }
-  }
+  cmd.output().unwrap();
   Ok(())
 }
 
@@ -1378,22 +1318,12 @@ fn print_accounting_invoice(args: AccountingInvoiceArgs) -> Result<(), String> {
     printer
   );
 
-  let vbs_path = "C:\\MWD\\scripts\\generate_accounting_invoice.vbs";
+  let vbs_path = "C:/mwd/scripts/generate_accounting_invoice.vbs";
   write(&vbs_path, vbs_script).unwrap();
 
   let mut cmd = Command::new("wscript.exe");
   cmd.arg(vbs_path);
-  let output_result = cmd.output();
-  match output_result {
-    Ok(output) => {
-      if !output.status.success() {
-        eprintln!("wscript.exe exited with error: {:?}", output);
-      }
-    }
-    Err(e) => {
-      eprintln!("Failed to run wscript.exe: {}", e);
-    }
-  }
+  cmd.output().unwrap();
   Ok(())
 }
 
@@ -1592,22 +1522,12 @@ fn print_shipping_invoice(args: ShippingInvoiceArgs) -> Result<(), String> {
     printer
   );
 
-  let vbs_path = "C:\\MWD\\scripts\\generate_shipping_invoice.vbs";
+  let vbs_path = "C:/mwd/scripts/generate_shipping_invoice.vbs";
   write(&vbs_path, vbs_script).unwrap();
 
   let mut cmd = Command::new("wscript.exe");
   cmd.arg(vbs_path);
-  let output_result = cmd.output();
-  match output_result {
-    Ok(output) => {
-      if !output.status.success() {
-        eprintln!("wscript.exe exited with error: {:?}", output);
-      }
-    }
-    Err(e) => {
-      eprintln!("Failed to run wscript.exe: {}", e);
-    }
-  }
+  cmd.output().unwrap();
   Ok(())
 }
 
@@ -1800,22 +1720,12 @@ If Len(jsonData) > 2 Then
     printer
   );
 
-  let vbs_path = "C:\\MWD\\scripts\\generate_core_invoice.vbs";
+  let vbs_path = "C:/mwd/scripts/generate_core_invoice.vbs";
   write(&vbs_path, vbs_script).unwrap();
 
   let mut cmd = Command::new("wscript.exe");
   cmd.arg(vbs_path);
-  let output_result = cmd.output();
-  match output_result {
-    Ok(output) => {
-      if !output.status.success() {
-        eprintln!("wscript.exe exited with error: {:?}", output);
-      }
-    }
-    Err(e) => {
-      eprintln!("Failed to run wscript.exe: {}", e);
-    }
-  }
+  cmd.output().unwrap();
   Ok(())
 }
 
@@ -1857,22 +1767,12 @@ fn print_ci(args: CIArgs) -> Result<(), String> {
     printer
   );
 
-  let vbs_path = "C:\\MWD\\scripts\\generate_ci_template.vbs";
+  let vbs_path = "C:/mwd/scripts/generate_ci_template.vbs";
   write(&vbs_path, vbs_script).unwrap();
 
   let mut cmd = Command::new("wscript.exe");
   cmd.arg(vbs_path);
-  let output_result = cmd.output();
-  match output_result {
-    Ok(output) => {
-      if !output.status.success() {
-        eprintln!("wscript.exe exited with error: {:?}", output);
-      }
-    }
-    Err(e) => {
-      eprintln!("Failed to run wscript.exe: {}", e);
-    }
-  }
+  cmd.output().unwrap();
   Ok(())
 }
 
@@ -1890,22 +1790,12 @@ fn print_coo() -> Result<(), String> {
     printer,
   );
 
-  let vbs_path = "C:\\MWD\\scripts\\generate_coo_template.vbs";
+  let vbs_path = "C:/mwd/scripts/generate_coo_template.vbs";
   write(&vbs_path, vbs_script).unwrap();
 
   let mut cmd = Command::new("wscript.exe");
   cmd.arg(vbs_path);
-  let output_result = cmd.output();
-  match output_result {
-    Ok(output) => {
-      if !output.status.success() {
-        eprintln!("wscript.exe exited with error: {:?}", output);
-      }
-    }
-    Err(e) => {
-      eprintln!("Failed to run wscript.exe: {}", e);
-    }
-  }
+  cmd.output().unwrap();
   Ok(())
 }
 
@@ -2026,22 +1916,12 @@ End Sub
     args.copies
   );
 
-  let vbs_path = "C:\\MWD\\scripts\\print_part_tag.vbs";
+  let vbs_path = "C:/mwd/scripts/print_part_tag.vbs";
   write(&vbs_path, vbs_script).unwrap();
 
   let mut cmd = Command::new("wscript.exe");
   cmd.arg(vbs_path);
-  let output_result = cmd.output();
-  match output_result {
-    Ok(output) => {
-      if !output.status.success() {
-        eprintln!("wscript.exe exited with error: {:?}", output);
-      }
-    }
-    Err(e) => {
-      eprintln!("Failed to run wscript.exe: {}", e);
-    }
-  }
+  cmd.output().unwrap();
   Ok(())
 }
 
@@ -2186,22 +2066,12 @@ fn print_return(args: PrintReturnArgs) -> Result<(), String> {
     1
   );
 
-  let vbs_path = "C:\\MWD\\scripts\\print_return.vbs";
+  let vbs_path = "C:/mwd/scripts/print_return.vbs";
   write(&vbs_path, vbs_script).unwrap();
 
   let mut cmd = Command::new("wscript.exe");
   cmd.arg(vbs_path);
-  let output_result = cmd.output();
-  match output_result {
-    Ok(output) => {
-      if !output.status.success() {
-        eprintln!("wscript.exe exited with error: {:?}", output);
-      }
-    }
-    Err(e) => {
-      eprintln!("Failed to run wscript.exe: {}", e);
-    }
-  }
+  cmd.output().unwrap();
   Ok(())
 }
 
@@ -2367,22 +2237,12 @@ fn print_warranty(args: PrintWarrantyArgs) -> Result<(), String> {
     1
   );
 
-  let vbs_path = "C:\\MWD\\scripts\\print_warranty.vbs";
+  let vbs_path = "C:/mwd/scripts/print_warranty.vbs";
   write(&vbs_path, vbs_script).unwrap();
 
   let mut cmd = Command::new("wscript.exe");
   cmd.arg(vbs_path);
-  let output_result = cmd.output();
-  match output_result {
-    Ok(output) => {
-      if !output.status.success() {
-        eprintln!("wscript.exe exited with error: {:?}", output);
-      }
-    }
-    Err(e) => {
-      eprintln!("Failed to run wscript.exe: {}", e);
-    }
-  }
+  cmd.output().unwrap();
   Ok(())
 }
 
@@ -2489,22 +2349,12 @@ fn print_packing_slip(args: PrintPackingSlipArgs) -> Result<(), String> {
     1
   );
 
-  let vbs_path = "C:\\MWD\\scripts\\print_packing_slip.vbs";
+  let vbs_path = "C:/mwd/scripts/print_packing_slip.vbs";
   write(&vbs_path, vbs_script).unwrap();
 
   let mut cmd = Command::new("wscript.exe");
   cmd.arg(vbs_path);
-  let output_result = cmd.output();
-  match output_result {
-    Ok(output) => {
-      if !output.status.success() {
-        eprintln!("wscript.exe exited with error: {:?}", output);
-      }
-    }
-    Err(e) => {
-      eprintln!("Failed to run wscript.exe: {}", e);
-    }
-  }
+  cmd.output().unwrap();
   Ok(())
 }
 
@@ -2597,22 +2447,12 @@ fn print_packing_slip_blind(args: PrintPackingSlipBlindArgs) -> Result<(), Strin
     1
   );
 
-  let vbs_path = "C:\\MWD\\scripts\\print_packing_slip_blind.vbs";
+  let vbs_path = "C:/mwd/scripts/print_packing_slip_blind.vbs";
   write(&vbs_path, vbs_script).unwrap();
 
   let mut cmd = Command::new("wscript.exe");
   cmd.arg(vbs_path);
-  let output_result = cmd.output();
-  match output_result {
-    Ok(output) => {
-      if !output.status.success() {
-        eprintln!("wscript.exe exited with error: {:?}", output);
-      }
-    }
-    Err(e) => {
-      eprintln!("Failed to run wscript.exe: {}", e);
-    }
-  }
+  cmd.output().unwrap();
   Ok(())
 }
 
@@ -2721,22 +2561,12 @@ fn print_po(args: PrintPOArgs) -> Result<(), String> {
     1
   );
 
-  let vbs_path = "C:\\MWD\\scripts\\print_po.vbs";
+  let vbs_path = "C:/mwd/scripts/print_po.vbs";
   write(&vbs_path, vbs_script).unwrap();
 
   let mut cmd = Command::new("wscript.exe");
   cmd.arg(vbs_path);
-  let output_result = cmd.output();
-  match output_result {
-    Ok(output) => {
-      if !output.status.success() {
-        eprintln!("wscript.exe exited with error: {:?}", output);
-      }
-    }
-    Err(e) => {
-      eprintln!("Failed to run wscript.exe: {}", e);
-    }
-  }
+  cmd.output().unwrap();
   Ok(())
 }
 
@@ -2804,23 +2634,13 @@ fn email_end_of_day(args: EmailEndOfDayArgs) {
 
   let mut cmd = Command::new("wscript.exe");
   cmd.arg(temp_vbs_path);
-  let output_result = cmd.output();
-  match output_result {
-    Ok(output) => {
-      if !output.status.success() {
-        eprintln!("wscript.exe exited with error: {:?}", output);
-      }
-    }
-    Err(e) => {
-      eprintln!("Failed to run wscript.exe: {}", e);
-    }
-  }
+  cmd.output().unwrap();
 }
 
 #[tauri::command]
 fn print_part_tag(imageData: String) -> Result<(), String> {
   let data = decode(imageData.split(',').nth(1).unwrap()).map_err(|e| e.to_string())?;
-  let file_path = "C:\\MWD\\scripts\\part_tag.png";
+  let file_path = "C:/mwd/scripts/part_tag.png";
   let printer = "ZDesigner GC420d (EPL)";
 
   let img = ImageReader::new(Cursor::new(&data))
