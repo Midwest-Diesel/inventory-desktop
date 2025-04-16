@@ -406,6 +406,8 @@ fn create_directories() {
       std::fs::create_dir(format!("C:/MWD/{}", dir_name));
     }
   }
+
+  write("C:/mwd/scripts/launch_test.vbs", "test").unwrap();
 }
 
 #[tauri::command]
@@ -478,7 +480,6 @@ fn install_update() {
   });
   let _ = std::fs::remove_dir_all("C:/MWD/updates");
   let _ = std::fs::create_dir("C:/MWD/updates");
-  write("C:/mwd/scripts/launch_test.vbs", "test").unwrap();
 }
 
 async fn download_update() -> Result<(), Box<dyn std::error::Error>> {
