@@ -703,11 +703,23 @@ fn new_email_draft(email_args: EmailArgs) {
   );
 
   let temp_vbs_path = "C:/mwd/scripts/CreateEmailDraft.vbs";
-  write(&temp_vbs_path, vbs_script).expect("Failed to create VBS script");
+  write(&temp_vbs_path, vbs_script).unwrap_or_else(|e| {
+    eprintln!("Failed to write VBS script: {}", e);
+  });
 
   let mut cmd = Command::new("wscript.exe");
   cmd.arg(temp_vbs_path);
-  cmd.output().expect("Failed to create new draft");
+  let output_result = cmd.output();
+  match output_result {
+    Ok(output) => {
+      if !output.status.success() {
+        eprintln!("wscript.exe exited with error: {:?}", output);
+      }
+    }
+    Err(e) => {
+      eprintln!("Failed to run wscript.exe: {}", e);
+    }
+  }
 }
 
 #[tauri::command]
