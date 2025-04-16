@@ -400,8 +400,6 @@ async fn main() {
 }
 
 fn create_directories() {
-  write("C:/mwd/scripts/launch_test.vbs", "test").unwrap();
-
   let directories = vec!["scripts", "updates"];
   for dir_name in directories {
     if std::fs::read_dir(format!("C:/MWD/{}", dir_name)).is_err() {
@@ -480,6 +478,7 @@ fn install_update() {
   });
   let _ = std::fs::remove_dir_all("C:/MWD/updates");
   let _ = std::fs::create_dir("C:/MWD/updates");
+  write("C:/mwd/scripts/launch_test.vbs", "test").unwrap();
 }
 
 async fn download_update() -> Result<(), Box<dyn std::error::Error>> {
