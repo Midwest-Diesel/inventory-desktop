@@ -1,5 +1,5 @@
 import { Layout } from "@/components/Layout";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import Image from "next/image";
 import { formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
 import { useEffect, useRef, useState } from "react";
@@ -40,7 +40,7 @@ export default function PartDetails() {
   const [pictures, setPictures] = useState<Picture[]>([]);
   const [snPictures, setSnPictures] = useState<Picture[]>([]);
   const [isEditingPart, setIsEditingPart] = useState(false);
-  const [costRemaining, setCostRemaining] = useState(null);
+  const [costRemaining, setCostRemaining] = useState<number | null>(null);
   const [partCostIn, setPartCostIn] = useState<PartCostIn[]>([]);
   const [engineCostOut, setEngineCostOut] = useState<EngineCostOut[]>([]);
   const [costAlertMsg, setCostAlertMsg] = useState('');
@@ -72,9 +72,9 @@ export default function PartDetails() {
 
       const imageData = await toPng(printRef.current);
       await invoke('print_part_tag', { imageData });
-      // setPartTagProps(null);
+      setPartTagProps(null);
     };
-    setTimeout(() => captureImage(), 200);
+    setTimeout(() => captureImage(), 500);
   }, [partTagProps]);
 
   useEffect(() => {}, [pictures, snPictures, part]);
@@ -98,7 +98,7 @@ export default function PartDetails() {
     setEngineCostOut(await getPartEngineCostOut(part.stockNum));
 
     const costRemaining = await getSurplusCostRemaining(part.purchasedFrom);
-    if (costRemaining > 0) {
+    if (Number(costRemaining) > 0) {
       setCostAlertMsg(`${formatCurrency(costRemaining)} remaining on ${part.purchasedFrom}`);
       setCostAlertOpen(true);
     }
