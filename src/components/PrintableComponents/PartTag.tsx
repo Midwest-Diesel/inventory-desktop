@@ -33,7 +33,9 @@ export default function PartTag({ properties }: Props) {
       <div className="part-tag__middle">
         <p className="part-tag__location">{ location }</p>
         <p className="part-tag__remarks">{ remarks }</p>
-        <p className="part-tag__barcode">*{ stockNum }*</p>
+        <div className="part-tag__barcode-container">
+          <p className="part-tag__barcode">*{ stockNum }*</p>
+        </div>
       </div>
 
       <div className="part-tag__bottom-row">

@@ -41,13 +41,19 @@
     margin: 0;
   }
 
+  &__barcode-container {
+    position: relative;
+    width: 6rem;
+    margin: -8rem 0 0 11rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 0;
+  }
+
   &__barcode {
     transform: rotate(-90deg);
-    margin: 0;
     font-family: barcode, Arial, Helvetica, sans-serif;
-    position: absolute;
-    left: 79.5%;
-    top: 15rem;
   }
 
   &__remarks {

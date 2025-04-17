@@ -72,7 +72,7 @@ export default function PartDetails() {
 
       const imageData = await toPng(printRef.current);
       await invoke('print_part_tag', { imageData });
-      setPartTagProps(null);
+      // setPartTagProps(null);
     };
     setTimeout(() => captureImage(), 200);
   }, [partTagProps]);
