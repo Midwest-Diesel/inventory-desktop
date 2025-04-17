@@ -431,7 +431,7 @@ export default function PartDetails() {
       }
 
       {partTagProps &&
-        <div ref={printRef} style={{ width: '350px', marginTop: '10rem' }}>
+        <div ref={printRef} style={{ width: '1050px', marginTop: '10rem' }}>
           <PartTag
             properties={partTagProps}
           />
