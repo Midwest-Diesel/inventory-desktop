@@ -2644,7 +2644,7 @@ fn email_end_of_day(args: EmailEndOfDayArgs) {
 fn print_part_tag(imageData: String) -> Result<(), String> {
   let data = decode(imageData.split(',').nth(1).unwrap()).map_err(|e| e.to_string())?;
   let file_path = "C:/mwd/scripts/part_tag.png";
-  let printer = "Brother MFC-L3770CDW series";
+  let printer = "ZDesigner GC420d (EPL)";
 
   let img = ImageReader::new(Cursor::new(&data))
     .with_guessed_format()
