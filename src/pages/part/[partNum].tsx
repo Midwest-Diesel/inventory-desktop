@@ -66,7 +66,10 @@ export default function PartDetails() {
   useEffect(() => {
     // Print part tag
     const captureImage = async () => {
-      if (!partTagProps || !printRef.current) return;
+      if (!partTagProps || !printRef.current) {
+        setPartTagProps(null);
+        return;
+      }
       const copies = Number(prompt('How many tags do you want to print?', '1'));
       if (copies <= 0) return;
 
@@ -431,7 +434,7 @@ export default function PartDetails() {
       }
 
       {partTagProps &&
-        <div ref={printRef} style={{ width: '1050px', marginTop: '10rem' }}>
+        <div ref={printRef} style={{ width: '1800px', marginTop: '10rem' }}>
           <PartTag
             properties={partTagProps}
           />
