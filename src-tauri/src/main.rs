@@ -2652,7 +2652,7 @@ fn print_part_tag(imageData: String) -> Result<(), String> {
     .decode()
     .map_err(|e| e.to_string())?;
 
-  let rotated_img: DynamicImage = image::DynamicImage::ImageRgba8(rotate90(&img)).resize(3248, 1624, FilterType::Lanczos3);
+  let rotated_img: DynamicImage = image::DynamicImage::ImageRgba8(rotate90(&img)).resize(6496, 3248, FilterType::Lanczos3);
 
   {
     let mut file = File::create(file_path).map_err(|e| e.to_string())?;
@@ -2660,6 +2660,7 @@ fn print_part_tag(imageData: String) -> Result<(), String> {
   }
 
   Command::new("mspaint")
+  .current_dir("C:/mwd/scripts")
   .args([file_path, "/pt", printer])
   .output()
   .map_err(|e| e.to_string())?;
