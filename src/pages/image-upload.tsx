@@ -9,10 +9,13 @@ import { FormEvent, useState } from "react";
 export default function ImageUpload() {
   const [partImages, setPartImages] = useState<File[]>([]);
   const [stockNumImages, setStockNumImages] = useState<File[]>([]);
+  const [engineNumImages, setEngineNumImages] = useState<File[]>([]);
   const [partImagesName, setPartImagesName] = useState('');
   const [stockNumImagesName, setStockNumImagesName] = useState('');
+  const [engineNumImagesName, setEngineNumImagesName] = useState('');
   const [isUploadingParts, setIsUploadingParts] = useState(false);
   const [isUploadingStockNums, setIsUploadingStockNums] = useState(false);
+  const [isUploadingEngineNums, setIsUploadingEngineNums] = useState(false);
 
   const handleUploadPart = async (e: FormEvent) => {
     e.preventDefault();
@@ -38,6 +41,19 @@ export default function ImageUpload() {
     setStockNumImages([]);
     setStockNumImagesName('');
     setIsUploadingStockNums(false);
+  };
+
+  const handleUploadEngineNum = async (e: FormEvent) => {
+    e.preventDefault();
+    setIsUploadingEngineNums(true);
+    for (const image of engineNumImages) {
+      const arrayBuffer = await image.arrayBuffer();
+      const content = Array.from(new Uint8Array(arrayBuffer));
+      await invoke('upload_file', { fileArgs: { file: content, dir: `\\\\MWD1-SERVER/Server/Engines Pictures/StockPhotos/${engineNumImagesName}`, name: image.name }});
+    }
+    setEngineNumImages([]);
+    setEngineNumImagesName('');
+    setIsUploadingEngineNums(false);
   };
 
 
@@ -83,6 +99,30 @@ export default function ImageUpload() {
             />
             <Input
               onChange={(e: any) => setStockNumImages(e.target.files)}
+              type="file"
+              accept="image/*"
+              multiple
+              required
+            />
+            <Button type="submit">Upload</Button>
+          </form>
+        }
+
+        {isUploadingEngineNums ?
+          <Loading />
+          :
+          <form onSubmit={(e) => handleUploadEngineNum(e)}>
+            <h2>Upload For Engine Numbers</h2>
+            <Input
+              labelClass="image-upload__name-input"
+              label="Folder Name"
+              variant={['small', 'thin', 'label-stack', 'label-fit-content']}
+              value={engineNumImagesName}
+              onChange={(e: any) => setEngineNumImagesName(e.target.value)}
+              required
+            />
+            <Input
+              onChange={(e: any) => setEngineNumImages(e.target.files)}
               type="file"
               accept="image/*"
               multiple
