@@ -2652,7 +2652,7 @@ fn print_part_tag(imageData: String) -> Result<(), String> {
     .decode()
     .map_err(|e| e.to_string())?;
 
-  let rotated_img: DynamicImage = image::DynamicImage::ImageRgba8(rotate90(&img)).resize(288, 192, FilterType::Lanczos3);
+  let rotated_img: DynamicImage = image::DynamicImage::ImageRgba8(rotate90(&img)).resize(2880, 1920, FilterType::Lanczos3);
 
   {
     let mut file = File::create(file_path).map_err(|e| e.to_string())?;
