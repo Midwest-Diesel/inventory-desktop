@@ -19,7 +19,7 @@ import { useNavState } from "@/components/Navbar/useNavState";
 
 
 export default function Warranty() {
-  const { backward, push } = useNavState();
+  const { closeBtn, push } = useNavState();
   const params = useParams();
   const [user] = useAtom<User>(userAtom);
   const [warrantyData, setWarrantyData] = useState<Warranty | null>(null);
@@ -108,7 +108,7 @@ export default function Warranty() {
                 </Button>
                 <Button
                   className="warranty-details__close-btn"
-                  onClick={backward}
+                  onClick={async () => await closeBtn()}
                 >
                   Close
                 </Button>

@@ -29,7 +29,7 @@ import PartTag from "@/components/PrintableComponents/PartTag";
 
 
 export default function PartDetails() {
-  const { backward, push } = useNavState();
+  const { closeBtn, push } = useNavState();
   const params = useParams();
   const printRef = useRef<HTMLDivElement>(null);
   const [user] = useAtom<User>(userAtom);
@@ -180,7 +180,7 @@ export default function PartDetails() {
               </Button>
               <Button
                 className="part-details__close-btn"
-                onClick={backward}
+                onClick={async () => await closeBtn()}
               >
                 Close
               </Button>

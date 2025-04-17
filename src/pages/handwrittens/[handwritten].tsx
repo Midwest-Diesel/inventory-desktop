@@ -30,7 +30,7 @@ import CreditCardBlock from "@/components/CreditCardBlock";
 
 
 export default function Handwritten() {
-  const { backward, push } = useNavState();
+  const { closeBtn, push } = useNavState();
   const router = useRouter();
   const params = useParams();
   const [user] = useAtom<User>(userAtom);
@@ -406,7 +406,7 @@ export default function Handwritten() {
                 </Button>
                 <Button
                   className="handwritten-details__close-btn"
-                  onClick={backward}
+                  onClick={async () => await closeBtn()}
                 >
                   Close
                 </Button>

@@ -18,7 +18,7 @@ import { useNavState } from "@/components/Navbar/useNavState";
 
 
 export default function PurchaseOrder() {
-  const { backward, push } = useNavState();
+  const { closeBtn, push } = useNavState();
   const params = useParams();
   const [user] = useAtom<User>(userAtom);
   const [poData, setPoData] = useState<PO | null>(null);
@@ -103,7 +103,7 @@ export default function PurchaseOrder() {
                 </Button>
                 <Button
                   className="purchase-order-details__close-btn"
-                  onClick={backward}
+                  onClick={async () => await closeBtn()}
                 >
                   Close
                 </Button>

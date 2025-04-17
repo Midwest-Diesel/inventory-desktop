@@ -21,7 +21,7 @@ import { useEffect, useState } from "react";
 
 
 export default function EngineDetailsPage() {
-  const { backward, push } = useNavState();
+  const { closeBtn, push } = useNavState();
   const params = useParams();
   const [user] = useAtom<User>(userAtom);
   const [engine, setEngine] = useState<Engine | null>(null);
@@ -109,7 +109,7 @@ export default function EngineDetailsPage() {
                 </Button>
                 <Button
                   className="engine-details__close-btn"
-                  onClick={backward}
+                  onClick={async () => await closeBtn()}
                 >
                   Close
                 </Button>

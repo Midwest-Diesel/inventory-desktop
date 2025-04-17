@@ -19,7 +19,7 @@ import { useEffect, useState } from "react";
 
 
 export default function Customer() {
-  const { backward, push } = useNavState();
+  const { closeBtn, push } = useNavState();
   const params = useParams();
   const [user] = useAtom<User>(userAtom);
   const [selectedCustomer, setSelectedCustomer] = useAtom<Customer>(selectedCustomerAtom);
@@ -89,7 +89,7 @@ export default function Customer() {
                 }
                 <Button
                   className="customer-details__close-btn"
-                  onClick={backward}
+                  onClick={async () => await closeBtn()}
                 >
                   Close
                 </Button>

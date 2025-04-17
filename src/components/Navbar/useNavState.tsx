@@ -55,7 +55,26 @@ export function useNavState() {
     setTimeout(() => {
       router.replace(url);
     }, 0);
-  };  
+  };
+
+  const closeBtn = async () => {
+    let selectedTab: Tab | undefined;
+    setTabs((prevTabs) =>
+      prevTabs.map((tab) => {
+        if (tab.selected) {
+          const prevPage = tab.history[tab.history.length - 1];
+          const newHistory = [...tab.history.slice(0, tab.urlIndex + 1), { name: prevPage.name, url: prevPage.url }];
+          selectedTab = { ...tab, history: newHistory, urlIndex: newHistory.length - 1 };
+          return selectedTab;
+        }
+        return tab;
+      })
+    );
+  
+    setTimeout(() => {
+      if (selectedTab) router.replace(selectedTab.history[0].url);
+    }, 0);
+  };
 
   const newTab = async (history = [{ name: 'Home', url: '/' }], moveImmediately = true) => {
     // await addTab([{ name: 'Home', url: '/' }]);
@@ -79,5 +98,5 @@ export function useNavState() {
     }
   };
   
-  return { tabs, setTabs, forward, backward, handleChangeTab, push, newTab };
+  return { tabs, setTabs, forward, backward, handleChangeTab, push, closeBtn, newTab };
 }

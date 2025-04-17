@@ -19,7 +19,7 @@ import { useNavState } from "@/components/Navbar/useNavState";
 
 
 export default function Return() {
-  const { backward, push } = useNavState();
+  const { closeBtn, backward, push } = useNavState();
   const params = useParams();
   const [user] = useAtom<User>(userAtom);
   const [returnData, setReturnData] = useState<Return | null>(null);
@@ -106,7 +106,7 @@ export default function Return() {
                 </Button>
                 <Button
                   className="return-details__close-btn"
-                  onClick={backward}
+                  onClick={async () => await closeBtn()}
                 >
                   Close
                 </Button>
