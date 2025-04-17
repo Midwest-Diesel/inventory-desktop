@@ -140,7 +140,7 @@ export default function CustomerSearch() {
         }
       </div>
 
-      <CustomerSearchDialog open={searchDialogOpen} setOpen={setSearchDialogOpen} searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+      <CustomerSearchDialog open={searchDialogOpen} setOpen={setSearchDialogOpen} searchTerm={searchTerm} />
     </div>
   );
 }

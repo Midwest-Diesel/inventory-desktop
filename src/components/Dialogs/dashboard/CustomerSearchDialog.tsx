@@ -14,10 +14,9 @@ interface Props {
   open: boolean
   setOpen: (open: boolean) => void
   searchTerm: string
-  setSearchTerm: (value: string) => void
 }
 
-export default function CustomerSearchDialog({ open, setOpen, searchTerm, setSearchTerm }: Props) {
+export default function CustomerSearchDialog({ open, setOpen, searchTerm }: Props) {
   const [customersData, setCustomersData] = useAtom<Customer[]>(customersAtom);
   const [searchedCustomers, setSearchedCustomers] = useState<Customer[]>([]);
   const [selectedCustomer, setSelectedCustomer] = useAtom<Customer>(selectedCustomerAtom);
@@ -26,6 +25,7 @@ export default function CustomerSearchDialog({ open, setOpen, searchTerm, setSea
   const [customerTypes, setCustomerTypes] = useState<string[]>([]);
   const [page, setPage] = useState<number>(1);
   const [isSearching, setIsSearching] = useState<boolean>(false);
+  const [name, setName] = useState(searchTerm);
   const [phone, setPhone] = useState('');
   const [state, setState] = useState('');
   const [zip, setZip] = useState('');
@@ -78,13 +78,14 @@ export default function CustomerSearchDialog({ open, setOpen, searchTerm, setSea
   const handleCustomerSearch = async (e: FormEvent) => {
     e.preventDefault();
     setIsSearching(true);
-    const res = await searchCustomers({ name: searchTerm, phone, state, zip, country, customerType });
+    const res = await searchCustomers({ name, phone, state, zip, country, customerType });
     setSearchedCustomers(res);
     setPage(1);
   };
 
   const displayedCustomers = isSearching ? searchedCustomers.slice((page - 1) * 25, page * 25) : customers;
 
+  
   return (
     <Dialog
       open={open}
@@ -99,8 +100,8 @@ export default function CustomerSearchDialog({ open, setOpen, searchTerm, setSea
         <Input
           label="Name"
           variant={['label-bold', 'label-stack', 'thin', 'small', 'label-fit-content']}
-          onChange={(e: any) => setSearchTerm(e.target.value)}
-          value={searchTerm}
+          onChange={(e: any) => setName(e.target.value)}
+          value={name}
         />
         <Input
           label="Phone"
