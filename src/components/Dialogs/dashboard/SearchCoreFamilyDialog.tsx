@@ -5,6 +5,7 @@ import { FormEvent, useEffect, useState } from "react";
 import Table from "@/components/Library/Table";
 import { formatCurrency } from "@/scripts/tools/stringUtils";
 import { getPartsByCoreFamily } from "@/scripts/controllers/partsController";
+import Link from "@/components/Library/Link";
 
 interface Props {
   open: boolean
@@ -66,8 +67,8 @@ export default function CoreFamilySearchDialog({ open, setOpen }: Props) {
             {results.map((row) => {
               return (
                 <tr key={row.id}>
-                  <td>{ row.coreFamily }</td>
-                  <td>{ row.partNum }</td>
+                  <td>{ row.coreFam }</td>
+                  <td><Link href={`/part/${row.id}`}>{ row.partNum }</Link></td>
                   <td>{ row.stockNum }</td>
                   <td>{ row.qty }</td>
                   <td>{ row.condition }</td>

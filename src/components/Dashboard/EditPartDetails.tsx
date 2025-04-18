@@ -47,7 +47,7 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
   const [altParts, setAltParts] = useState<string[]>(part.altParts);
   const [weightDims, setWeightDims] = useState<string>(part.weightDims ?? '');
   const [specialNotes, setSpecialNotes] = useState<string>(part.specialNotes ?? '');
-  const [coreFamily, setCoreFamily] = useState<string>(part.coreFamily ?? '');
+  const [coreFam, setCoreFamily] = useState<string>(part.coreFam ?? '');
   const [partCostIn, setPartCostIn] = useState<PartCostIn[]>(partCostInData);
   const [engineCostOut, setEngineCostOut] = useState<EngineCostOut[]>(engineCostOutData);
   const [changesSaved, setChangesSaved] = useState(true);
@@ -85,7 +85,7 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
       altParts,
       weightDims,
       specialNotes,
-      coreFamily
+      coreFam
     } as Part;
     await editPart(newPart);
 
@@ -379,7 +379,7 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
                   <td>
                     <Input
                       variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
-                      value={coreFamily ?? ''}
+                      value={coreFam ?? ''}
                       onChange={(e: any) => setCoreFamily(e.target.value)}
                     />
                   </td>

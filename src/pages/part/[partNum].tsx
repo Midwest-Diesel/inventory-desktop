@@ -283,7 +283,7 @@ export default function PartDetails() {
                   </tr>
                   <tr>
                     <th>Core Family</th>
-                    <td>{ part.coreFamily }</td>
+                    <td>{ part.coreFam }</td>
                   </tr>
                 </tbody>
               </Table>

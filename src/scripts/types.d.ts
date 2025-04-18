@@ -374,7 +374,7 @@ type Part = {
   snImageExists: boolean
   weightDims: string | null
   specialNotes: string | null
-  coreFamily: string | null
+  coreFam: string | null
 };
 
 type RecentPartSearch = {
