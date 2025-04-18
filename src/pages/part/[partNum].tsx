@@ -281,6 +281,10 @@ export default function PartDetails() {
                     <th>Purchase Price</th>
                     <td>{ formatCurrency(getTotalCostIn()) }</td>
                   </tr>
+                  <tr>
+                    <th>Core Family</th>
+                    <td>{ part.coreFamily }</td>
+                  </tr>
                 </tbody>
               </Table>
             </GridItem>
@@ -434,7 +438,7 @@ export default function PartDetails() {
       }
 
       {partTagProps &&
-        <div ref={printRef} style={{ width: '12000px', marginTop: '10rem' }}>
+        <div ref={printRef} style={{ marginTop: '10rem' }}>
           <PartTag
             properties={partTagProps}
           />

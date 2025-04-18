@@ -232,6 +232,17 @@ export const checkForNewPartNum = async (partNum: string) => {
   }
 };
 
+export const getPartsByCoreFamily = async (coreFamily: string): Promise<Part[] | []> => {
+  try {
+    const auth = { withCredentials: true };
+    const res = await api.get(`/api/parts/core-family?coreFamily=${coreFamily}`, auth);
+    return res.data;
+  } catch (err) {
+    console.error(err);
+    return [];
+  }
+};
+
 // === POST routes === //
 
 export const addPart = async (part: Part, partInfoExists: boolean, updateLoading?: (i: number, total: number) => void) => {

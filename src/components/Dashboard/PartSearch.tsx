@@ -20,6 +20,7 @@ import PartsOnEnginesDialog from "../Dialogs/dashboard/PartsOnEnginesDialog";
 import { getSearchedPartNum } from "@/scripts/tools/search";
 import StockNumPicturesDialog from "../Dialogs/StockNumPicturesDialog";
 import { addQuote } from "@/scripts/controllers/quotesController";
+import CoreFamilySearchDialog from "../Dialogs/dashboard/SearchCoreFamilyDialog";
 
 interface Props {
   selectHandwrittenOpen: boolean
@@ -47,6 +48,7 @@ export default function PartSearch({ selectHandwrittenOpen, setSelectHandwritten
   const [picturesStockNum, setPicturesStockNum] = useState<string>('');
   const [partImagesOpen, setPartImagesOpen] = useState(false);
   const [snImagesOpen, setSnImagesOpen] = useState(false);
+  const [coreFamilyOpen, setCoreFamilyOpen] = useState(false);
   const [partsOnEngsOpen, setPartsOnEngsOpen] = useState(false);
   const [partsOnEngs, setPartsOnEngs] = useState<{ partNum: string, engines: Engine[] }[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -207,6 +209,7 @@ export default function PartSearch({ selectHandwrittenOpen, setSelectHandwritten
       </div>
 
       <PartsOnEnginesDialog open={partsOnEngsOpen} setOpen={setPartsOnEngsOpen} searchResults={partsOnEngs} />
+      <CoreFamilySearchDialog open={coreFamilyOpen} setOpen={setCoreFamilyOpen} />
 
       {partsOpen &&
         <>
@@ -242,6 +245,11 @@ export default function PartSearch({ selectHandwrittenOpen, setSelectHandwritten
               onClick={() => setShowSoldParts(!showSoldParts)}
             >
               {showSoldParts ? 'Hide' : 'Show'} Sold Parts
+            </Button>
+            <Button
+              onClick={() => setCoreFamilyOpen(true)}
+            >
+              Search Core Family
             </Button>
             <Link
               className="parts-search-top-bar__link"
