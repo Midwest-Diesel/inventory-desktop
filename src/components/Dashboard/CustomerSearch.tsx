@@ -77,6 +77,7 @@ export default function CustomerSearch() {
       engineSerialNum: '',
       isBlindShipment: false,
       isNoPriceInvoice: false,
+      isTaxable: selectedCustomer.isTaxable,
       shipVia: '',
       cardNum: '',
       expDate: '',

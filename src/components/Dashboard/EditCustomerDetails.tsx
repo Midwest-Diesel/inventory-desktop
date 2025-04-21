@@ -13,6 +13,7 @@ import SourceSelect from "../Library/Select/SourceSelect";
 import CustomerContactsBlock from "../CustomerContactsBlock";
 import Select from "../Library/Select/Select";
 import Popup from "../Library/Popup";
+import Checkbox from "../Library/Checkbox";
 
 interface Props {
   customer: Customer
@@ -45,6 +46,7 @@ export default function CustomerDetails({ customer, setCustomer, setIsEditing }:
   const [serviceManagerEmail, setServiceManagerEmail] = useState<string>(customer.serviceManagerEmail ?? '');
   const [paymentType, setPaymentType] = useState<string>(customer.paymentType ?? '');
   const [source, setSource] = useState<string>(customer.source ?? '');
+  const [isTaxable, setIsTaxable] = useState<boolean>(customer.isTaxable);
   const [editLocDialogOpen, setEditLocDialogOpen] = useState(false);
   const [loc, setLoc] = useState<MapLocation | null>(null);
   const [changesSaved, setChangesSaved] = useState<boolean>(true);
@@ -89,6 +91,7 @@ export default function CustomerDetails({ customer, setCustomer, setIsEditing }:
       serviceManager,
       serviceManagerEmail,
       paymentType,
+      isTaxable
     } as Customer;
     await editCustomer(newCustomer);
     setCustomer(newCustomer);
@@ -286,6 +289,13 @@ export default function CustomerDetails({ customer, setCustomer, setIsEditing }:
 
               <GridItem variant={['no-style']} colStart={5} colEnd={9} rowStart={2}>
                 { customer.contacts && customer.contacts.length > 0 ? <CustomerContactsBlock customer={customer} setCustomer={setCustomer} /> : <p>No Contacts</p> }
+
+                <Checkbox
+                  variant={['label-bold', 'label-align-center']}
+                  label="TAXABLE"
+                  checked={isTaxable}
+                  onChange={(e: any) => setIsTaxable(e.target.checked)}
+                />
               </GridItem>
 
               <GridItem colStart={1} colEnd={5} variant={['low-opacity-bg']}>

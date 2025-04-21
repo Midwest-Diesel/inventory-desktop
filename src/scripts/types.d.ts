@@ -76,6 +76,7 @@ type Customer = {
   source: string | null
   paymentType: string | null
   country: string | null
+  isTaxable: boolean
 };
 
 type Quote = {

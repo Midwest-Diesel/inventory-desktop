@@ -3,6 +3,7 @@ import EditCustomerDetails from "@/components/Dashboard/EditCustomerDetails";
 import AddToMapDialog from "@/components/Dialogs/customers/AddToMapDialog";
 import { Layout } from "@/components/Layout";
 import Button from "@/components/Library/Button";
+import Checkbox from "@/components/Library/Checkbox";
 import Grid from "@/components/Library/Grid/Grid";
 import GridItem from "@/components/Library/Grid/GridItem";
 import Loading from "@/components/Library/Loading";
@@ -249,6 +250,13 @@ export default function Customer() {
 
               <GridItem variant={['no-style']} colStart={5} colEnd={9} rowStart={2}>
                 { customer.contacts && customer.contacts.length > 0 ? <CustomerContactsBlock customer={customer} setCustomer={setCustomer} /> : <p>No Contacts</p> }
+
+                <Checkbox
+                  variant={['label-bold', 'label-align-center']}
+                  label="TAXABLE"
+                  checked={customer.isTaxable}
+                  disabled
+                />
               </GridItem>
             </Grid>
           </>

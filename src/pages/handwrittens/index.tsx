@@ -123,6 +123,7 @@ export default function Handwrittens() {
       engineSerialNum: null,
       isBlindShipment: false,
       isNoPriceInvoice: false,
+      isTaxable: customer.isTaxable,
       shipVia: null,
       cardNum: null,
       expDate: null,
