@@ -105,7 +105,7 @@ export default function Handwritten() {
         return;
       }
       router.replace(location.href);
-      const exit = await confirm("Do you want to leave the page before printing the credit card label?");
+      const exit = await confirm("Leave the page before printing the credit card label?");
       if (exit) {
         await push(url, url);
       }
@@ -250,7 +250,7 @@ export default function Handwritten() {
   };
 
   const handlePrintShippingLabel = async (copies: number) => {
-    if (!await confirm(`Do you want to print ${copies} shipping label${copies > 1 ? 's' : ''}?`)) return;
+    if (!await confirm(`Print ${copies} shipping label${copies > 1 ? 's' : ''}?`)) return;
     if (handwritten?.isBlindShipment) {
       const shipFromCityStateZip = [handwritten?.billToCity, `${handwritten?.billToState} ${handwritten?.billToZip}`].join(', ');
       const shipToCityStateZip = [handwritten?.shipToCity, `${handwritten?.shipToState} ${handwritten?.shipToZip}`].join(', ');

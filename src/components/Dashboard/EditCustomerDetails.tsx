@@ -12,6 +12,7 @@ import { PreventNavigation } from "../PreventNavigation";
 import SourceSelect from "../Library/Select/SourceSelect";
 import CustomerContactsBlock from "../CustomerContactsBlock";
 import Select from "../Library/Select/Select";
+import Popup from "../Library/Popup";
 
 interface Props {
   customer: Customer
@@ -48,6 +49,7 @@ export default function CustomerDetails({ customer, setCustomer, setIsEditing }:
   const [loc, setLoc] = useState<MapLocation | null>(null);
   const [changesSaved, setChangesSaved] = useState<boolean>(true);
   const [customerTypes, setCustomerTypes] = useState<string[]>([]);
+  const [popupOpen, setPopupOpen] = useState(false);
 
   useEffect(() => {
     const fetchData = async () =>  {
@@ -96,9 +98,9 @@ export default function CustomerDetails({ customer, setCustomer, setIsEditing }:
       JSON.stringify({ company: customer.company, billToAddress: customer.billToAddress, billToAddress2: customer.billToAddress2, billToCity: customer.billToCity, billToState: customer.billToState, billToZip: customer.billToZip }) !==
       JSON.stringify({ company: newCustomer.company, billToAddress: newCustomer.billToAddress, billToAddress2: newCustomer.billToAddress2, billToCity: newCustomer.billToCity, billToState: newCustomer.billToState, billToZip: newCustomer.billToZip })
     );
-    if (Boolean(location) && isLocationChanged && await confirm('Do you want to update the map location?')) {
+    if (Boolean(location) && isLocationChanged) {
       setLoc(location);
-      setEditLocDialogOpen(true);
+      setPopupOpen(true);
     } else {
       setIsEditing(false);
     }
@@ -108,6 +110,14 @@ export default function CustomerDetails({ customer, setCustomer, setIsEditing }:
   return (
     <>
       <PreventNavigation shouldPrevent={!changesSaved} text="Leave without saving changes?" />
+
+      <Popup
+        type="question"
+        text="Do you want to update the map location?"
+        open={popupOpen}
+        setOpen={setPopupOpen}
+        yesCallback={() => setEditLocDialogOpen(true)}
+      />
 
       {editLocDialogOpen &&
         <EditMapLocDialog
