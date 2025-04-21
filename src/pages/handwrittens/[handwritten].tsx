@@ -720,26 +720,28 @@ export default function Handwritten() {
                     <p style={{ whiteSpace: 'pre-line' }}>{ handwritten.shippingNotes }</p>
                   </div>
 
-                  <Table variant={['plain', 'row-details']}>
-                    <tbody>
-                      <tr>
-                        <th><strong>Mousepads</strong></th>
-                        <td>{ handwritten.mp }</td>
-                      </tr>
-                      <tr>
-                        <th><strong>Hats</strong></th>
-                        <td>{ handwritten.cap }</td>
-                      </tr>
-                      <tr>
-                        <th><strong>Brochures</strong></th>
-                        <td>{ handwritten.br }</td>
-                      </tr>
-                      <tr>
-                        <th><strong>Flashlights</strong></th>
-                        <td>{ handwritten.fl }</td>
-                      </tr>
-                    </tbody>
-                  </Table>
+                  {!handwritten.isBlindShipment &&
+                    <Table variant={['plain', 'row-details']}>
+                      <tbody>
+                        <tr>
+                          <th><strong>Mousepads</strong></th>
+                          <td>{ handwritten.mp }</td>
+                        </tr>
+                        <tr>
+                          <th><strong>Hats</strong></th>
+                          <td>{ handwritten.cap }</td>
+                        </tr>
+                        <tr>
+                          <th><strong>Brochures</strong></th>
+                          <td>{ handwritten.br }</td>
+                        </tr>
+                        <tr>
+                          <th><strong>Flashlights</strong></th>
+                          <td>{ handwritten.fl }</td>
+                        </tr>
+                      </tbody>
+                    </Table>
+                  }
                 </div>
               </GridItem>
 
@@ -750,6 +752,7 @@ export default function Handwritten() {
             </Grid>
 
             <form onSubmit={handleTakeoffs}>
+              <br />
               <Input
                 variant={['label-bold', 'label-stack', 'small']}
                 label="Takeoff"

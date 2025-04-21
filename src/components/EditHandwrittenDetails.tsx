@@ -1091,59 +1091,61 @@ export default function EditHandwrittenDetails({
                   onChange={(e: any) => setShippingNotes(e.target.value)}
                 />
 
-                <Table variant={['plain', 'row-details']}>
-                  <tbody>
-                    <tr>
-                      <th><strong>Mousepads</strong></th>
-                      <td style={{ padding: 0 }}>
-                        <Input
-                          style={{ margin: 0, color: 'white' }}
-                          variant={['no-arrows', 'no-style']}
-                          value={mp}
-                          onChange={(e: any) => setMp(e.target.value)}
-                          type="number"
-                        />
-                      </td>
-                    </tr>
-                    <tr>
-                      <th><strong>Hats</strong></th>
-                      <td style={{ padding: 0 }}>
-                        <Input
-                          style={{ margin: 0, color: 'white' }}
-                          variant={['no-arrows', 'no-style']}
-                          value={cap}
-                          onChange={(e: any) => setCap(e.target.value)}
-                          type="number"
-                        />
-                      </td>
-                    </tr>
-                    <tr>
-                      <th><strong>Brochures</strong></th>
-                      <td style={{ padding: 0 }}>
-                        <Input
-                          style={{ margin: 0, color: 'white' }}
-                          variant={['no-arrows', 'no-style']}
-                          value={br}
-                          onChange={(e: any) => setBr(e.target.value)}
-                          type="number"
-                        />
-                      </td>
-                    </tr>
-                    <tr>
-                      <th><strong>Flashlights</strong></th>
-                      <td style={{ padding: 0 }}>
-                        <Input
-                          style={{ margin: 0, color: 'white' }}
-                          variant={['no-arrows', 'no-style']}
-                          maxLength={245}
-                          value={fl}
-                          onChange={(e: any) => setFl(e.target.value)}
-                          type="number"
-                        />
-                      </td>
-                    </tr>
-                  </tbody>
-                </Table>
+                {!isBlindShipment &&
+                  <Table variant={['plain', 'row-details']}>
+                    <tbody>
+                      <tr>
+                        <th><strong>Mousepads</strong></th>
+                        <td style={{ padding: 0 }}>
+                          <Input
+                            style={{ margin: 0, color: 'white' }}
+                            variant={['no-arrows', 'no-style']}
+                            value={mp}
+                            onChange={(e: any) => setMp(e.target.value)}
+                            type="number"
+                          />
+                        </td>
+                      </tr>
+                      <tr>
+                        <th><strong>Hats</strong></th>
+                        <td style={{ padding: 0 }}>
+                          <Input
+                            style={{ margin: 0, color: 'white' }}
+                            variant={['no-arrows', 'no-style']}
+                            value={cap}
+                            onChange={(e: any) => setCap(e.target.value)}
+                            type="number"
+                          />
+                        </td>
+                      </tr>
+                      <tr>
+                        <th><strong>Brochures</strong></th>
+                        <td style={{ padding: 0 }}>
+                          <Input
+                            style={{ margin: 0, color: 'white' }}
+                            variant={['no-arrows', 'no-style']}
+                            value={br}
+                            onChange={(e: any) => setBr(e.target.value)}
+                            type="number"
+                          />
+                        </td>
+                      </tr>
+                      <tr>
+                        <th><strong>Flashlights</strong></th>
+                        <td style={{ padding: 0 }}>
+                          <Input
+                            style={{ margin: 0, color: 'white' }}
+                            variant={['no-arrows', 'no-style']}
+                            maxLength={245}
+                            value={fl}
+                            onChange={(e: any) => setFl(e.target.value)}
+                            type="number"
+                          />
+                        </td>
+                      </tr>
+                    </tbody>
+                  </Table>
+                }
               </div>
             </GridItem>
 
