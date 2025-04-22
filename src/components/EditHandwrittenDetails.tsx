@@ -966,21 +966,22 @@ export default function EditHandwrittenDetails({
                   </tr>
                 </thead>
                 <tbody>
-                  {handwrittenItems.map((item: HandwrittenItem, i: number) => { 
+                  {handwrittenItems.map((item: HandwrittenItem, i: number) => {
+                    const isDisabled = item.desc === 'TAX' || item.partNum === 'FREIGHT' || invoiceStatus === 'SENT TO ACCOUNTING';
                     return (
                       <tr key={i}>
                         <td>
                           <Input
                             value={item.stockNum ?? ''}
                             onChange={(e: any) => editHandwrittenItem({ ...item, stockNum: e.target.value }, i)}
-                            disabled={item.desc === 'TAX' || item.partNum === 'FREIGHT'}
+                            disabled={isDisabled}
                           />
                         </td>
                         <td>
                           <Input
                             value={item.location ?? ''}
                             onChange={(e: any) => editHandwrittenItem({ ...item, location: e.target.value }, i)}
-                            disabled={item.desc === 'TAX' || item.partNum === 'FREIGHT'}
+                            disabled={isDisabled}
                           />
                         </td>
                         <td>
@@ -988,7 +989,7 @@ export default function EditHandwrittenDetails({
                             value={item.cost ?? ''}
                             type="number"
                             onChange={(e: any) => editHandwrittenItem({ ...item, cost: e.target.value }, i)}
-                            disabled={item.desc === 'TAX' || item.partNum === 'FREIGHT'}
+                            disabled={isDisabled}
                           />
                         </td>
                         <td>
@@ -996,21 +997,21 @@ export default function EditHandwrittenDetails({
                             value={item.qty ?? ''}
                             type="number"
                             onChange={(e: any) => editHandwrittenItem({ ...item, qty: e.target.value }, i)}
-                            disabled={item.desc === 'TAX' || item.partNum === 'FREIGHT'}
+                            disabled={isDisabled}
                           />
                         </td>
                         <td>
                           <Input
                             value={item.partNum ?? ''}
                             onChange={(e: any) => editHandwrittenItem({ ...item, partNum: e.target.value }, i)}
-                            disabled={item.desc === 'TAX' || item.partNum === 'FREIGHT'}
+                            disabled={isDisabled}
                           />
                         </td>
                         <td>
                           <Input
                             value={item.desc ?? ''}
                             onChange={(e: any) => editHandwrittenItem({ ...item, desc: e.target.value }, i)}
-                            disabled={item.desc === 'TAX' || item.partNum === 'FREIGHT'}
+                            disabled={isDisabled}
                           />
                         </td>
                         <td>
@@ -1018,25 +1019,27 @@ export default function EditHandwrittenDetails({
                             value={item.desc === 'TAX' ? taxTotal : item.unitPrice ?? ''}
                             type="number"
                             onChange={(e: any) => editHandwrittenItem({ ...item, unitPrice: e.target.value }, i)}
-                            disabled={item.desc === 'TAX' || item.partNum === 'FREIGHT'}
+                            disabled={isDisabled}
                           />
                         </td>
                         <td>
                           <Input
                             value={parseDateInputValue(item.date)}
                             onChange={(e: any) => editHandwrittenItem({ ...item, date: new Date(e.target.value) }, i)}
-                            disabled={item.desc === 'TAX' || item.partNum === 'FREIGHT'}
+                            disabled={isDisabled}
                             type="date"
                           />
                         </td>
                         <td>
-                          <Button
-                            variant={['red-color']}
-                            onClick={() => handleDeleteItem(item)}
-                            type="button"
-                          >
-                            Delete
-                          </Button>
+                          {invoiceStatus !== 'SENT TO ACCOUNTING' &&
+                            <Button
+                              variant={['red-color']}
+                              onClick={() => handleDeleteItem(item)}
+                              type="button"
+                            >
+                              Delete
+                            </Button>
+                          }
                         </td>
                       </tr>
                     );
