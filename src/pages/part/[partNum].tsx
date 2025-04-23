@@ -51,7 +51,6 @@ export default function PartDetails() {
     fetchData();
   }, [params]);
 
-  
   useEffect(() => {
     if (!part || isEditingPart) return;
     const fetchTables = async () => {
@@ -108,7 +107,8 @@ export default function PartDetails() {
   };
 
   const getTotalCostIn = () => {
-    return partCostIn.reduce((acc, val) => acc + (val.cost ?? 0), 0);
+    const value = partCostIn.reduce((acc, val) => acc + (val.cost ?? 0), 0);
+    return value > 0 ? value : 0.01;
   };
 
   const handleDelete = async () => {

@@ -4,7 +4,7 @@ import { parseResDate } from "../tools/stringUtils";
 
 const parseReportData = (data: any) => {
   return data.map((d: any) => {
-    return { ...d, date: parseResDate(`${d.date}`), entryDate: parseResDate(`${d.entryDate}`), loginDate: parseResDate(`${d.loginDate}`) };
+    return { ...d, date: parseResDate(`${d.date}`), entryDate: parseResDate(`${d.entryDate}`), loginDate: parseResDate(`${d.loginDate}`), toreDownDate: parseResDate(`${d.toreDownDate}`) };
   });
 };
 
@@ -187,6 +187,72 @@ export const reportOutstandingCores = async () => {
     return parseReportData(res.data);
   } catch (err) {
     console.log(err);
+  }
+};
+
+export const reportInventoryValueParts = async (): Promise<{ partNum: string, stockNum: string, desc: string, qty: number, purchasePrice: number, totalCost: number }[]> => {
+  try {
+    const auth = { withCredentials: true };
+    const res = await api.get(`/api/reports/inventory-value/parts`, auth);
+    return parseReportData(res.data);
+  } catch (err) {
+    console.log(err);
+    return [];
+  }
+};
+
+export const reportInventoryValueCoreEngines = async (): Promise<{ stockNum: number, loginDate: Date, model: string, serialNum: string, costRemaining: number }[]> => {
+  try {
+    const auth = { withCredentials: true };
+    const res = await api.get(`/api/reports/inventory-value/core-engines`, auth);
+    return parseReportData(res.data);
+  } catch (err) {
+    console.log(err);
+    return [];
+  }
+};
+
+export const reportInventoryValueToreDownEngines = async (): Promise<{ stockNum: number, loginDate: Date, model: string, serialNum: string, costRemaining: number, toreDownDate: Date }[]> => {
+  try {
+    const auth = { withCredentials: true };
+    const res = await api.get(`/api/reports/inventory-value/tore-down-engines`, auth);
+    return parseReportData(res.data);
+  } catch (err) {
+    console.log(err);
+    return [];
+  }
+};
+
+export const reportInventoryValueRunningEngines = async (): Promise<{ stockNum: number, serialNum: string, loginDate: Date, costRemaining: number, currentStatus: string }[]> => {
+  try {
+    const auth = { withCredentials: true };
+    const res = await api.get(`/api/reports/inventory-value/running-engines`, auth);
+    return parseReportData(res.data);
+  } catch (err) {
+    console.log(err);
+    return [];
+  }
+};
+
+export const reportInventoryValueShortBlocks = async (): Promise<{ stockNum: number, model: string, serialNum: string, loginDate: Date, currentStatus: string, costRemaining: number }[]> => {
+  try {
+    const auth = { withCredentials: true };
+    const res = await api.get(`/api/reports/inventory-value/short-blocks`, auth);
+    return parseReportData(res.data);
+  } catch (err) {
+    console.log(err);
+    return [];
+  }
+};
+
+export const reportInventoryValueSurplus = async (): Promise<{ code: string, name: string, date: Date, price: number, costRemaining: number }[]> => {
+  try {
+    const auth = { withCredentials: true };
+    const res = await api.get(`/api/reports/inventory-value/surplus`, auth);
+    return parseReportData(res.data);
+  } catch (err) {
+    console.log(err);
+    return [];
   }
 };
 

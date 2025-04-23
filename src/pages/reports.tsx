@@ -23,6 +23,7 @@ import AllSourcesTable from "@/components/Reports/AllSourcesTable";
 import ArielSalesTable from "@/components/Reports/ArielSalesTable";
 import EmailsTable from "@/components/Reports/EmailsTable";
 import HandwrittenCompanyTable from "@/components/Reports/HandwrittenCompayTable";
+import InventoryValueTable from "@/components/Reports/InventoryValueTable";
 import NoLocationPartsTable from "@/components/Reports/NoLocationPartsTable";
 import OutstandingCoresTable from "@/components/Reports/OutstandingCoresTable";
 import PartDescTable from "@/components/Reports/PartDescTable";
@@ -90,6 +91,7 @@ export default function Reports() {
   const [pricingChangesOpen, setPricingChangesOpen] = useState(false);
   const [pricingChangesTableOpen, setPricingChangesTableOpen] = useState(false);
   const [pricingChangesData, setPricingChangesData] = useState<PricingChangesReport[]>([]);
+  const [inventoryValueTableOpen, setInventoryValueTableOpen] = useState(false);
   const [reportsPageOpen, setReportsPageOpen] = useState(true);
 
   const handleSearchPBB = async () => {
@@ -154,6 +156,14 @@ export default function Reports() {
                 {/* <Button onClick={() => setEmailAddressesOpen(!emailAddressesOpen)}>Email Addresses</Button> */}
                 <Button onClick={handleSearchOutstandingCores}>Outstanding High Cores</Button>
                 <Button onClick={() => setPricingChangesOpen(!pricingChangesOpen)}>Pricing Changes</Button>
+                <Button
+                  onClick={() => {
+                    setInventoryValueTableOpen(true);
+                    setReportsPageOpen(false);
+                  }}
+                >
+                  Inventory Accounting
+                </Button>
               </div>
             </div>
           </div>
@@ -314,6 +324,7 @@ export default function Reports() {
           {/* { emailAddressesTableOpen && <EmailsTable setTableOpen={setEmailAddressesTableOpen} data={emailAddressesData} setReportsOpen={setReportsPageOpen} /> } */}
           { outstandingHighCoresTableOpen && <OutstandingCoresTable setTableOpen={setOutstandingHighCoresTableOpen} data={outstandingHighCoresData} setReportsOpen={setReportsPageOpen} /> }
           { pricingChangesTableOpen && <PricingChangesTable setTableOpen={setPricingChangesTableOpen} data={pricingChangesData} setReportsOpen={setReportsPageOpen} /> }
+          { inventoryValueTableOpen && <InventoryValueTable setTableOpen={setInventoryValueTableOpen} setReportsOpen={setReportsPageOpen} /> }
         </>
       }
     </Layout>

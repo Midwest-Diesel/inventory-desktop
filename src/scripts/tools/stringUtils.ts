@@ -1,5 +1,5 @@
 export const formatDate = (date: Date | null | undefined): string => {
-  if (!date || typeof date === 'string') return '';
+  if (!date || typeof date === 'string' || `${(date as any)}` === 'Invalid Date') return '';
   return date.toLocaleDateString('en-US', { day: '2-digit', month: '2-digit', year: 'numeric' });
 };
 

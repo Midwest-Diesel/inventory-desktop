@@ -1056,3 +1056,12 @@ interface PricingChangesReport {
   oldPrice?: number
   oldPercent?: number
 }
+
+interface InventoryValueReport {
+  parts: { partNum: string, stockNum: string, desc: string, qty: number, purchasePrice: number, totalCost: number }[]
+  coreEngines: { stockNum: number, loginDate: Date, model: string, serialNum: string, costRemaining: number }[]
+  toreDownEngines: { stockNum: number, loginDate: Date, model: string, serialNum: string, costRemaining: number, toreDownDate: Date }[]
+  runningEngines: { stockNum: number, serialNum: string, loginDate: Date, costRemaining: number, currentStatus: string }[]
+  shortBlocks: { stockNum: number, model: string, serialNum: string, loginDate: Date, currentStatus: string, costRemaining: number }[]
+  surplus: { code: string, name: string, date: Date, price: number, costRemaining: number }[]
+}
