@@ -13,12 +13,12 @@ interface Props {
 
 export default function PricingChangesTable({ setTableOpen, setReportsOpen }: Props) {
   const [table, setTable] = useState<'parts' | 'coreEngines' | 'toreDownEngines' | 'runningEngines' | 'shortBlocks' | 'surplus' | ''>('');
-  const [parts, setParts] = useState<{ partNum: string, stockNum: string, desc: string, qty: number, purchasePrice: number, totalCost: number }[]>([]);
-  const [coreEngines, setCoreEngines] = useState<{ stockNum: number, loginDate: Date, model: string, serialNum: string, costRemaining: number }[]>([]);
-  const [toreDownEngines, setToreDownEngines] = useState<{ stockNum: number, loginDate: Date, model: string, serialNum: string, costRemaining: number, toreDownDate: Date }[]>([]);
-  const [runningEngines, setRunningEngines] = useState<{ stockNum: number, serialNum: string, loginDate: Date, costRemaining: number, currentStatus: string }[]>([]);
-  const [shortBlocks, setShortBlocks] = useState<{ stockNum: number, model: string, serialNum: string, loginDate: Date, currentStatus: string, costRemaining: number }[]>([]);
-  const [surplus, setSurplus] = useState<{ code: string, name: string, date: Date, price: number, costRemaining: number }[]>([]);
+  const [parts, setParts] = useState<InventoryValueReportParts[]>([]);
+  const [coreEngines, setCoreEngines] = useState<InventoryValueReportCoreEngines[]>([]);
+  const [toreDownEngines, setToreDownEngines] = useState<InventoryValueReportToreDownEngines[]>([]);
+  const [runningEngines, setRunningEngines] = useState<InventoryValueReportRunningEngines[]>([]);
+  const [shortBlocks, setShortBlocks] = useState<InventoryValueReportShortBlocks[]>([]);
+  const [surplus, setSurplus] = useState<InventoryValueReportSurplus[]>([]);
   const [loading, setLoading] = useState(false);
 
   const handleGoBack = () => {

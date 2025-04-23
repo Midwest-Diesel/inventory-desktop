@@ -190,7 +190,7 @@ export const reportOutstandingCores = async () => {
   }
 };
 
-export const reportInventoryValueParts = async (): Promise<{ partNum: string, stockNum: string, desc: string, qty: number, purchasePrice: number, totalCost: number }[]> => {
+export const reportInventoryValueParts = async (): Promise<InventoryValueReportParts[]> => {
   try {
     const auth = { withCredentials: true };
     const res = await api.get(`/api/reports/inventory-value/parts`, auth);
@@ -201,7 +201,7 @@ export const reportInventoryValueParts = async (): Promise<{ partNum: string, st
   }
 };
 
-export const reportInventoryValueCoreEngines = async (): Promise<{ stockNum: number, loginDate: Date, model: string, serialNum: string, costRemaining: number }[]> => {
+export const reportInventoryValueCoreEngines = async (): Promise<InventoryValueReportCoreEngines[]> => {
   try {
     const auth = { withCredentials: true };
     const res = await api.get(`/api/reports/inventory-value/core-engines`, auth);
@@ -212,7 +212,7 @@ export const reportInventoryValueCoreEngines = async (): Promise<{ stockNum: num
   }
 };
 
-export const reportInventoryValueToreDownEngines = async (): Promise<{ stockNum: number, loginDate: Date, model: string, serialNum: string, costRemaining: number, toreDownDate: Date }[]> => {
+export const reportInventoryValueToreDownEngines = async (): Promise<InventoryValueReportToreDownEngines[]> => {
   try {
     const auth = { withCredentials: true };
     const res = await api.get(`/api/reports/inventory-value/tore-down-engines`, auth);
@@ -223,7 +223,7 @@ export const reportInventoryValueToreDownEngines = async (): Promise<{ stockNum:
   }
 };
 
-export const reportInventoryValueRunningEngines = async (): Promise<{ stockNum: number, serialNum: string, loginDate: Date, costRemaining: number, currentStatus: string }[]> => {
+export const reportInventoryValueRunningEngines = async (): Promise<InventoryValueReportRunningEngines[]> => {
   try {
     const auth = { withCredentials: true };
     const res = await api.get(`/api/reports/inventory-value/running-engines`, auth);
@@ -234,7 +234,7 @@ export const reportInventoryValueRunningEngines = async (): Promise<{ stockNum: 
   }
 };
 
-export const reportInventoryValueShortBlocks = async (): Promise<{ stockNum: number, model: string, serialNum: string, loginDate: Date, currentStatus: string, costRemaining: number }[]> => {
+export const reportInventoryValueShortBlocks = async (): Promise<InventoryValueReportShortBlocks[]> => {
   try {
     const auth = { withCredentials: true };
     const res = await api.get(`/api/reports/inventory-value/short-blocks`, auth);
@@ -245,7 +245,7 @@ export const reportInventoryValueShortBlocks = async (): Promise<{ stockNum: num
   }
 };
 
-export const reportInventoryValueSurplus = async (): Promise<{ code: string, name: string, date: Date, price: number, costRemaining: number }[]> => {
+export const reportInventoryValueSurplus = async (): Promise<InventoryValueReportSurplus[]> => {
   try {
     const auth = { withCredentials: true };
     const res = await api.get(`/api/reports/inventory-value/surplus`, auth);
