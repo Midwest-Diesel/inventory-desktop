@@ -62,9 +62,10 @@ export function useNavState() {
     setTabs((prevTabs) =>
       prevTabs.map((tab) => {
         if (tab.selected) {
-          const prevPage = tab.history[tab.history.length - 1];
+          const prevPage = tab.history[tab.history.length - 2];
           const newHistory = [...tab.history.slice(0, tab.urlIndex + 1), { name: prevPage.name, url: prevPage.url }];
           selectedTab = { ...tab, history: newHistory, urlIndex: newHistory.length - 1 };
+          console.log(selectedTab);
           return selectedTab;
         }
         return tab;
@@ -72,7 +73,7 @@ export function useNavState() {
     );
   
     setTimeout(() => {
-      if (selectedTab) router.replace(selectedTab.history[0].url);
+      if (selectedTab) router.replace(selectedTab.history[selectedTab.history.length - 1].url);
     }, 0);
   };
 
