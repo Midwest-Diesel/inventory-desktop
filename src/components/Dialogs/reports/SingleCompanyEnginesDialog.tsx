@@ -1,6 +1,7 @@
 import Button from "@/components/Library/Button";
 import Dialog from "@/components/Library/Dialog";
 import Input from "@/components/Library/Input";
+import CustomerSelect from "@/components/Library/Select/CustomerSelect";
 import { reportSingleCompanyEngines } from "@/scripts/controllers/reportsController";
 import { parseDateInputValue } from "@/scripts/tools/stringUtils";
 import { useState } from "react";
@@ -39,7 +40,7 @@ export default function SingleCompanyEnginesDialog({ open, setOpen, setTableOpen
       className="reports-dialog"
     >
       <form onSubmit={handleSearch}>
-        <Input
+        <CustomerSelect
           label="Company"
           variant={['label-stack']}
           value={customer}

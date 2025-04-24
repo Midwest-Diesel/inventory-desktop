@@ -220,6 +220,7 @@ export default function SelectHandwrittenDialog({ open, setOpen, part, customer,
         }}
         title="Select Handwritten"
         width={600}
+        height={680}
       >
         {showWarranty ?
           <form onSubmit={handleSubmitWarranty}>
