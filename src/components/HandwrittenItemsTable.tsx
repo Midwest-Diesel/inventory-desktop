@@ -63,9 +63,9 @@ export default function HandwrittenItemsTable({ className, handwritten, handwrit
       handwrittenId: handwritten.id,
       date: new Date(),
       desc: item.desc,
-      partNum: item.partNum,
+      partNum: 'CORE DEPOSIT',
       stockNum: item.stockNum,
-      unitPrice: 0,
+      unitPrice: item.unitPrice,
       qty: item.qty,
       cost: 0.01,
       location: 'CORE DEPOSIT',
@@ -87,7 +87,7 @@ export default function HandwrittenItemsTable({ className, handwritten, handwrit
       shipToCompany: handwritten.shipToCompany,
       charge: item.cost,
       priority,
-      salesmanId: handwritten.createdBy,
+      salesmanId: handwritten.soldById,
       partId: item.partId,
       handwrittenItemId: newItemId
     } as any;
