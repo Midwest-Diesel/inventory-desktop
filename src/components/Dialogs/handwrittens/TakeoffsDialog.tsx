@@ -21,7 +21,7 @@ export default function TakeoffsDialog({ open, setOpen, item, setHandwritten }: 
   const [qty, setQty] = useState<number | null>(item.qty);
   const [cost, setCost] = useState<number | null>(item.cost);
   const [changeCost, setChangeCost] = useState(false);
-
+  
   useEffect(() => {
     if (item.cost === 0.04) {
       setChangeCost(true);
@@ -32,14 +32,17 @@ export default function TakeoffsDialog({ open, setOpen, item, setHandwritten }: 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (!item.partId) return;
-    const part: Part = await getPartById(item.partId);
+    const part: Part | null = await getPartById(item.partId);
     await handlePartTakeoff(item.partId, Number(qty));
     await editHandwrittenTakeoffState(item.id, true);
-    const surplus: Surplus = await getSurplusByCode(part.purchasedFrom ?? '');
+    if (!part) return;
+    
+    const surplus: Surplus | null = await getSurplusByCode(part.purchasedFrom ?? '');
     if (surplus && surplus.price - Number(cost) <= 0) await zeroAllSurplusItems(surplus.code);
     if (part.qty - Number(qty) <= 0) {
-      const partCostIn = (await getPartCostIn(part.stockNum ?? '')).find((p: PartCostIn) => p.vendor === part.purchasedFrom);
-      await editPartCostIn({ ...partCostIn, cost: Number(cost) });
+      const res = await getPartCostIn(part.stockNum ?? '');
+      const partCostIn: PartCostIn | null = res.find((p: PartCostIn) => p.vendor === part.purchasedFrom) ?? null;
+      if (partCostIn) await editPartCostIn({ ...partCostIn, cost: Number(cost) });
     } else {
       const newStockNum = `${part.stockNum} (${formatDate(new Date())})`;
       await addPart({ ...part, qty: 0, stockNum: newStockNum }, true);

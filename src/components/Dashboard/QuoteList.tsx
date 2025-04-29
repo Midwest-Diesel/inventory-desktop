@@ -131,9 +131,9 @@ export default function QuoteList({ quotes, setQuotes, setSelectHandwrittenOpen,
 
   const invoiceQuote = async (quote: Quote) => {
     if (!quote.customer || !quote.part) return;
-    const part = await getPartById(quote.part.id);
+    const part: Part | null = await getPartById(quote.part.id);
     setSelectHandwrittenOpen(true);
-    setSelectedHandwrittenPart(part);
+    if (part) setSelectedHandwrittenPart(part);
     setHandwrittenCustomer(quote.customer);
     setHandwrittenQuote(quote);
   };

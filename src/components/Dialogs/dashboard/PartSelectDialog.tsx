@@ -67,7 +67,7 @@ export default function PartSelectDialog({ open, setOpen, onSubmit }: Props) {
 
   const handleSubmit = async () => {
     const part = await getPartById(selectedPartId);
-    onSubmit(part);
+    if (part) onSubmit(part);
     setOpen(false);
   };
 

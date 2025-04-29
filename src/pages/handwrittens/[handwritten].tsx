@@ -326,7 +326,7 @@ export default function Handwritten() {
     e.preventDefault();
     const stockNum = takeoff.replace('<', '').replace('>', '');
     const children: HandwrittenItemChild[] = [];
-    const item = handwritten?.handwrittenItems.find((item) => item.stockNum === stockNum);
+    const item: HandwrittenItem | null = handwritten?.handwrittenItems.find((item) => item.stockNum === stockNum && item.location !== 'CORE DEPOSIT') ?? null;
     handwritten?.handwrittenItems.forEach((item) => {
       if (item.invoiceItemChildren.length > 0) children.push(...item.invoiceItemChildren);
     });
@@ -334,7 +334,7 @@ export default function Handwritten() {
 
     if (!item && !itemChild) return;
     setTakeoffsOpen(true);
-    setTakeoffItem(itemChild ?? item);
+    setTakeoffItem(item);
   };
 
   const handleSameAsBillTo = async () => {

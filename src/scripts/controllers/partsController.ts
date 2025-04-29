@@ -38,13 +38,14 @@ const parsePartsData = async (parts: any) => {
 
 // === GET routes === //
 
-export const getPartById = async (id: number) => {
+export const getPartById = async (id: number): Promise<Part | null> => {
   try {
     const auth = { withCredentials: true };
     const res = await api.get(`/api/parts/part/${id}`, auth);
     return (await parsePartsData(res.data))[0];
   } catch (err) {
     console.error(err);
+    return null;
   }
 };
 
@@ -108,7 +109,7 @@ export const getAllPartNums = async () => {
   }
 };
 
-export const getPartCostIn = async (stockNum: string) => {
+export const getPartCostIn = async (stockNum: string): Promise<PartCostIn[]> => {
   try {
     const auth = { withCredentials: true };
     const encodedParam = encodeURIComponent(stockNum);
@@ -116,6 +117,7 @@ export const getPartCostIn = async (stockNum: string) => {
     return res.data;
   } catch (err) {
     console.error(err);
+    return [];
   }
 };
 

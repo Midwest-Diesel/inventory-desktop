@@ -81,15 +81,15 @@ export default function PiggybackQuoteDialog({ open, setOpen, quote, handleChang
       contact: customer?.contact,
       phone: customer?.phone,
       state: customer?.billToState,
-      partNum: part.partNum,
-      desc: part.desc,
-      stockNum: part.stockNum,
+      partNum: part?.partNum,
+      desc: part?.desc,
+      stockNum: part?.stockNum,
       price: 0,
-      notes: part.desc,
+      notes: part?.desc,
       salesmanId: user.id,
-      rating: part.rating,
+      rating: part?.rating,
       email: customer?.email,
-      partId: part.id
+      partId: part?.id
     };
     const id = await addQuote(newQuote) as any;
     await piggybackQuote(quote.id, id);

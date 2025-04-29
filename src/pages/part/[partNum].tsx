@@ -84,6 +84,7 @@ export default function PartDetails() {
   const fetchData = async () => {
     if (!params) return;
     const part = await getPartById(Number(params.partNum));
+    if (!part) return;
     const engine = await getEngineByStockNum(part.engineNum);
     setTitle(`${part.partNum} ${part.desc}`);
     setPart(part);
@@ -91,15 +92,15 @@ export default function PartDetails() {
 
     const pictures = await getImagesFromPart(part.partNum) ?? [];
     setPictures(pictures);
-    setSnPictures(await getImagesFromStockNum(part.stockNum) ?? []);
+    setSnPictures(await getImagesFromStockNum(part.stockNum ?? '') ?? []);
 
-    const costRes = await getEngineCostRemaining(part.engineNum);
+    const costRes = await getEngineCostRemaining(part.engineNum ?? 0);
     setCostRemaining(costRes);
     
-    setPartCostIn(await getPartCostIn(part.stockNum));
-    setEngineCostOut(await getPartEngineCostOut(part.stockNum));
+    setPartCostIn(await getPartCostIn(part.stockNum ?? ''));
+    setEngineCostOut(await getPartEngineCostOut(part.stockNum ?? ''));
 
-    const costRemaining = await getSurplusCostRemaining(part.purchasedFrom);
+    const costRemaining = await getSurplusCostRemaining(part.purchasedFrom ?? '');
     if (Number(costRemaining) > 0) {
       setCostAlertMsg(`${formatCurrency(costRemaining)} remaining on ${part.purchasedFrom}`);
       setCostAlertOpen(true);
