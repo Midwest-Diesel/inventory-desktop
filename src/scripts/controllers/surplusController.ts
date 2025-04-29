@@ -21,7 +21,7 @@ export const getAllSurplus = async () => {
   }
 };
 
-export const getSurplusByCode = async (code: string) => {
+export const getSurplusByCode = async (code: string): Promise<Surplus | null> => {
   try {
     const auth = { withCredentials: true };
     const res = await api.get(`/api/surplus/code/${code}`, auth);
@@ -29,6 +29,7 @@ export const getSurplusByCode = async (code: string) => {
     return res.data[0];
   } catch (err) {
     console.error(err);
+    return null;
   }
 };
 

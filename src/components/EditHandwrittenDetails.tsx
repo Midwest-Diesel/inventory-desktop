@@ -826,7 +826,7 @@ export default function EditHandwrittenDetails({
                     <th>EOD Email</th>
                     <td>
                       <Dropdown
-                        variant={['input', 'no-margin']}
+                        variant={['input', 'no-margin', 'fill']}
                         value={contactEmail}
                         onChange={(value: string) => setContactEmail(value)}
                       >

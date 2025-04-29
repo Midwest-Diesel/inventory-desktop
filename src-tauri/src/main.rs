@@ -11,7 +11,7 @@ use image::{io::Reader as ImageReader, ImageOutputFormat, DynamicImage, imageops
 use serde::{Deserialize, Serialize};
 use serde_json::to_string;
 use tauri::Manager;
-use std::{fs::remove_file, process::Command};
+use std::{fs::remove_file, process::Command, env};
 use std::fs::{write};
 use std::{fs::File, io::copy};
 use std::io::{self, Cursor, Write};
@@ -882,6 +882,7 @@ fn upload_file(file_args: FileArgs) -> Result<(), String> {
 
 #[tauri::command]
 fn print_shipping_label(args: ShippingLabelArgs) -> Result<(), String> {
+  if env::var("DISABLE_PRINTING").unwrap() == "TRUE".to_string() {return Ok(())}
   let printer = "\\\\FRONT-DESK\\Zebra  ZP 450-200 dpi";
   let vbs_script = format!(
     r#"
@@ -937,6 +938,7 @@ fn print_shipping_label(args: ShippingLabelArgs) -> Result<(), String> {
 
 #[tauri::command]
 fn print_cc_label(args: CCLabelArgs) -> Result<(), String> {
+  if env::var("DISABLE_PRINTING").unwrap() == "TRUE".to_string() {return Ok(())}
   let printer = "\\\\FRONT-DESK\\ZDesigner GC420d";
   let vbs_script = format!(
     r#"
@@ -1134,6 +1136,7 @@ fn print_bol(args: BOLArgs) -> Result<(), String> {
 
 #[tauri::command]
 fn print_accounting_invoice(args: AccountingInvoiceArgs) -> Result<(), String> {
+  if env::var("DISABLE_PRINTING").unwrap() == "TRUE".to_string() {return Ok(())}
   let printer = "Brother HL-L5200DW series";
   let json_data = to_string(&args.items).unwrap();
   let vbs_script = format!(
@@ -1332,6 +1335,7 @@ fn print_accounting_invoice(args: AccountingInvoiceArgs) -> Result<(), String> {
 
 #[tauri::command]
 fn print_shipping_invoice(args: ShippingInvoiceArgs) -> Result<(), String> {
+  if env::var("DISABLE_PRINTING").unwrap() == "TRUE".to_string() {return Ok(())}
   let printer = "\\\\JIM-PC\\HP LaserJet Pro M402-M403 n-dne PCL 6";
   let json_data = to_string(&args.items).unwrap();
   let vbs_script = format!(
@@ -1536,6 +1540,7 @@ fn print_shipping_invoice(args: ShippingInvoiceArgs) -> Result<(), String> {
 
 #[tauri::command]
 fn print_core_invoice(args: AccountingInvoiceArgs) -> Result<(), String> {
+  if env::var("DISABLE_PRINTING").unwrap() == "TRUE".to_string() {return Ok(())}
   let printer = "Brother HL-L5200DW series";
   let json_data = to_string(&args.items).unwrap();
   let vbs_script = format!(
@@ -1804,6 +1809,7 @@ fn print_coo() -> Result<(), String> {
 
 #[tauri::command]
 fn _print_part_tag(args: PartTagArgs) -> Result<(), String> {
+  if env::var("DISABLE_PRINTING").unwrap() == "TRUE".to_string() {return Ok(())}
   let printer = "ZDesigner GC420d (EPL)";
   let vbs_script = format!(
     r#"
@@ -1930,6 +1936,7 @@ End Sub
 
 #[tauri::command]
 fn print_return(args: PrintReturnArgs) -> Result<(), String> {
+  if env::var("DISABLE_PRINTING").unwrap() == "TRUE".to_string() {return Ok(())}
   let printer = "Brother MFC-L3770CDW series";
   let vbs_script = format!(
     r#"
@@ -2080,6 +2087,7 @@ fn print_return(args: PrintReturnArgs) -> Result<(), String> {
 
 #[tauri::command]
 fn print_warranty(args: PrintWarrantyArgs) -> Result<(), String> {
+  if env::var("DISABLE_PRINTING").unwrap() == "TRUE".to_string() {return Ok(())}
   let printer = "Brother MFC-L3770CDW series";
   let vbs_script = format!(
     r#"
@@ -2251,6 +2259,7 @@ fn print_warranty(args: PrintWarrantyArgs) -> Result<(), String> {
 
 #[tauri::command]
 fn print_packing_slip(args: PrintPackingSlipArgs) -> Result<(), String> {
+  if env::var("DISABLE_PRINTING").unwrap() == "TRUE".to_string() {return Ok(())}
   let printer = "Brother MFC-L3770CDW series";
   let vbs_script = format!(
     r#"
@@ -2363,6 +2372,7 @@ fn print_packing_slip(args: PrintPackingSlipArgs) -> Result<(), String> {
 
 #[tauri::command]
 fn print_packing_slip_blind(args: PrintPackingSlipBlindArgs) -> Result<(), String> {
+  if env::var("DISABLE_PRINTING").unwrap() == "TRUE".to_string() {return Ok(())}
   let printer = "Brother MFC-L3770CDW series";
   let vbs_script = format!(
     r#"
@@ -2461,6 +2471,7 @@ fn print_packing_slip_blind(args: PrintPackingSlipBlindArgs) -> Result<(), Strin
 
 #[tauri::command]
 fn print_po(args: PrintPOArgs) -> Result<(), String> {
+  if env::var("DISABLE_PRINTING").unwrap() == "TRUE".to_string() {return Ok(())}
   let printer = "Brother MFC-L3770CDW series";
   let vbs_script = format!(
     r#"
@@ -2632,11 +2643,11 @@ fn email_end_of_day(args: EmailEndOfDayArgs) {
     format!("\\\\MWD1-SERVER\\Server\\InvoiceScans\\Archives\\{}\\{}\\{}\\{}.pdf", args.year, args.month, args.day, args.id)
   );
 
-  let temp_vbs_path = "C:/mwd/scripts/email_end_of_day.vbs";
-  write(&temp_vbs_path, vbs_script).unwrap();
+  let vbs_path = "C:/mwd/scripts/email_end_of_day.vbs";
+  write(&vbs_path, vbs_script).unwrap();
 
   let mut cmd = Command::new("wscript.exe");
-  cmd.arg(temp_vbs_path);
+  cmd.arg(vbs_path);
   cmd.output().unwrap();
 }
 
