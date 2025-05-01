@@ -76,6 +76,7 @@ export default function Navbar() {
               className="navbar-tab"
               onClick={() => handleChangeTab(tab.id)}
               onContextMenu={() => setSelectedTab(tab)}
+              data-testid="tab"
             >
               { tab.name || tab.history[tab.urlIndex].name }
             </Button>

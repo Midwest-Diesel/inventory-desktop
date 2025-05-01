@@ -76,3 +76,21 @@ export const dateDiffInDays = (a: Date, b: Date, numbersOnly = false) => {
   else
     return days !== 0 ? days > 1 ? `${days} days ago` : 'yesterday' : 'today';
 };
+
+export const windowConfirm = (msg: string) => confirm(msg);
+
+export const arrayOfObjectsMatch = (arr1: any[], arr2: any[]): boolean => {
+  if (arr1.length !== arr2.length) return false;
+  const objectsEqual = (o1: any, o2: any): boolean => {
+    if (o1 !== null && typeof o1 === 'object' && o2 !== null && typeof o2 === 'object') {
+      return Object.keys(o1).length === Object.keys(o2).length && Object.keys(o1).every(p => objectsEqual(o1[p], o2[p]));
+    } else {
+      return o1 === o2;
+    }
+  };
+
+  for (let i = 0; i < arr1.length; i++) {
+    if (!objectsEqual(arr1[i], arr2[i])) return false;
+  }
+  return true;
+};

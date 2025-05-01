@@ -175,7 +175,7 @@ export default function PartDetails() {
                 className="part-details__edit-btn"
                 onClick={() => setIsEditingPart(true)}
                 disabled={costRemaining === null}
-                data-id="edit-btn"
+                data-testid="edit-btn"
               >
                 Edit
               </Button>
@@ -190,7 +190,7 @@ export default function PartDetails() {
                   variant={['danger']}
                   className="part-details__delete-btn"
                   onClick={handleDelete}
-                  data-id="delete-btn"
+                  data-testid="delete-btn"
                 >
                   Delete
                 </Button>
@@ -216,7 +216,7 @@ export default function PartDetails() {
           </div>
 
           <div className="part-details__top-bar">
-            <Button onClick={handleAddToUP} data-id="add-to-up-btn">Add to UP</Button>
+            <Button onClick={handleAddToUP} data-testid="add-to-up-btn">Add to UP</Button>
             <Button onClick={() => handlePrint()}>Print Tag</Button>
           </div>
 
@@ -230,7 +230,7 @@ export default function PartDetails() {
                 <tbody>
                   <tr>
                     <th>Qty</th>
-                    <td data-id="qty">{ part.qty }</td>
+                    <td data-testid="qty">{ part.qty }</td>
                   </tr>
                   <tr>
                     <th>Stock Number</th>
@@ -322,7 +322,7 @@ export default function PartDetails() {
                 <tbody>
                   <tr style={{ height: '4rem' }}>
                     <th>Alt Parts</th>
-                    <td data-id="alt-parts">{ part.altParts.join(', ') }</td>
+                    <td data-testid="alt-parts">{ part.altParts.join(', ') }</td>
                   </tr>
                   <tr style={{ height: '4rem' }}>
                     <th>Remarks</th>

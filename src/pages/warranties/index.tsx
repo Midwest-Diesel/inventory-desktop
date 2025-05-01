@@ -120,7 +120,7 @@ export default function Warranties() {
                   {warranties.map((war) => {
                     return (
                       <tr key={war.id} onClick={() => setFocusedHandwritten(war)} style={ focusedWarranty && war.id === focusedWarranty.id ? { border: 'solid 3px var(--yellow-2)' } : {} }>
-                        <td><Link href={`/warranties/${war.id}`} data-id="warranty-link">{ war.id }</Link></td>
+                        <td><Link href={`/warranties/${war.id}`} data-testid="warranty-link">{ war.id }</Link></td>
                         <td>{ formatDate(war.date) }</td>
                         <td>{ war.customer && war.customer.company }</td>
                         <td>{ war.warrantyItems && war.warrantyItems[0].partNum }</td>

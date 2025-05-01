@@ -128,18 +128,28 @@ export default function HandwrittenItemsTable({ className, handwritten, handwrit
               {handwrittenItems.map((item: HandwrittenItem, i: number) => {
                 return (
                   <tr key={i}>
-                    <td>{ item.location && !item.location.includes('CORE DEPOSIT') && <Button variant={['x-small']} onClick={() => handleCoreCharge(item)}>Core Charge</Button> }</td>
-                    <td className="handwritten-items-table__stock-num" style={ textStyles(item) }>
+                    <td>
+                      {item.location && !item.location.includes('CORE DEPOSIT') &&
+                        <Button
+                          variant={['x-small']}
+                          onClick={() => handleCoreCharge(item)}
+                          data-testid="core-charge-btn"
+                        >
+                          Core Charge
+                        </Button>
+                      }
+                    </td>
+                    <td className="handwritten-items-table__stock-num" style={ textStyles(item) } data-testid="item-stock-num">
                       { item.stockNum }
                       { item.invoiceItemChildren && item.invoiceItemChildren.length > 0 && <Button variant={['x-small']} onClick={() => handleOpenStockNums(item.invoiceItemChildren)}>View</Button> }
                     </td>
                     <td>{ item.location }</td>
                     <td>{ formatCurrency(item.cost) }</td>
-                    <td>{ item.qty }</td>
-                    <td style={ textStyles(item) }>
+                    <td data-testid="item-qty">{ item.qty }</td>
+                    <td style={ textStyles(item) } data-testid="item-part-num">
                       { item.partNum }
                     </td>
-                    <td>{ item.desc }</td>
+                    <td data-testid="item-desc">{ item.desc }</td>
                     <td>{ item.desc === 'TAX' ? formatCurrency(taxTotal) : formatCurrency(item.unitPrice) }</td>
                     <td>{ formatDate(item.date) }</td>
                   </tr>

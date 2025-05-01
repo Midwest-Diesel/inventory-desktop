@@ -25,6 +25,7 @@ import { getAllUsers } from "@/scripts/controllers/userController";
 import CreditCardBlock from "./CreditCardBlock";
 import Dropdown from "./Library/Dropdown/Dropdown";
 import DropdownOption from "./Library/Dropdown/DropdownOption";
+import { arrayOfObjectsMatch } from "@/scripts/tools/utils";
 
 interface Props {
   handwritten: Handwritten
@@ -138,10 +139,6 @@ export default function EditHandwrittenDetails({
   }, []);
 
   useEffect(() => {
-    setHandwrittenItems(handwritten.handwrittenItems);
-  }, [handwritten]);
-
-  useEffect(() => {
     const taxItemsAmount = handwrittenItems.map((item) => (item.qty ?? 0) * (item.unitPrice ?? 0)).reduce((acc, cur) => acc + cur, 0);
     setTaxTotal(Number((taxItemsAmount * TAX_RATE).toFixed(2)));
   }, [handwrittenItems]);
@@ -210,19 +207,20 @@ export default function EditHandwrittenDetails({
     setNewShippingListRow(newInvoice);
     await editHandwritten(newInvoice);
     await editCoreCustomer(handwritten.id, newCustomer?.id ?? null);
-    if (JSON.stringify(handwrittenItems) !== JSON.stringify(handwritten.handwrittenItems)) {
+    
+    if (!arrayOfObjectsMatch(handwrittenItems, handwritten.handwrittenItems)) {
       for (let i = 0; i < handwrittenItems.length; i++) {
         const item = handwrittenItems[i];
         const newItem = {
-          id: item.id,
-          handwrittenId: handwritten.id,
+          id: Number(item.id),
+          handwrittenId: Number(handwritten.id),
           stockNum: item.stockNum,
           location: item.location,
-          cost: item.cost,
-          qty: item.qty,
+          cost: Number(item.cost),
+          qty: Number(item.qty),
           partNum: item.partNum,
           desc: item.desc,
-          unitPrice: item.unitPrice,
+          unitPrice: Number(item.unitPrice),
           date: item.date,
         } as HandwrittenItem;
         await editHandwrittenItems(newItem);
@@ -525,7 +523,7 @@ export default function EditHandwrittenDetails({
                 variant={['save']}
                 className="edit-handwritten-details__save-btn"
                 type="submit"
-                data-id="save-btn"
+                data-testid="save-btn"
               >
                 Save
               </Button>
@@ -533,7 +531,7 @@ export default function EditHandwrittenDetails({
                 className="edit-handwritten-details__close-btn"
                 type="button"
                 onClick={() => setIsEditing(false)}
-                data-id="stop-edit-btn"
+                data-testid="stop-edit-btn"
               >
                 Stop Editing
               </Button>
@@ -573,7 +571,7 @@ export default function EditHandwrittenDetails({
                         variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                         value={poNum}
                         onChange={(e: any) => setPoNum(e.target.value)}
-                        data-id="po-num"
+                        data-testid="po-num"
                       />
                     </td>
                   </tr>
@@ -584,6 +582,7 @@ export default function EditHandwrittenDetails({
                         variant={['label-space-between']}
                         value={source}
                         onChange={(e: any) => setSource(e.target.value)}
+                        data-testid="source"
                       >
                         <option value="">-- SELECT A SOURCE --</option>
                         {sourcesData.map((source: string, i) => {
@@ -613,6 +612,7 @@ export default function EditHandwrittenDetails({
                         variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                         value={contact}
                         onChange={(e: any) => setContact(e.target.value)}
+                        data-testid="contact"
                       />
                     </td>
                   </tr>
@@ -630,6 +630,7 @@ export default function EditHandwrittenDetails({
                         variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                         value={billToCompany}
                         onChange={(e: any) => setBillToCompany(e.target.value)}
+                        data-testid="bill-to-company"
                       />
                     </td>
                   </tr>
@@ -640,6 +641,7 @@ export default function EditHandwrittenDetails({
                         variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                         value={billToAddress}
                         onChange={(e: any) => setBillToAddress(e.target.value)}
+                        data-testid="bill-to-address"
                       />
                     </td>
                   </tr>
@@ -650,6 +652,7 @@ export default function EditHandwrittenDetails({
                         variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                         value={billToAddress2}
                         onChange={(e: any) => setBillToAddress2(e.target.value)}
+                        data-testid="bill-to-address-2"
                       />
                     </td>
                   </tr>
@@ -660,6 +663,7 @@ export default function EditHandwrittenDetails({
                         variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                         value={billToCity}
                         onChange={(e: any) => setBillToCity(e.target.value)}
+                        data-testid="bill-to-city"
                       />
                     </td>
                   </tr>
@@ -670,6 +674,7 @@ export default function EditHandwrittenDetails({
                         variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                         value={billToState}
                         onChange={(e: any) => setBillToState(e.target.value)}
+                        data-testid="bill-to-state"
                       />
                     </td>
                   </tr>
@@ -680,6 +685,7 @@ export default function EditHandwrittenDetails({
                         variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                         value={billToZip}
                         onChange={(e: any) => setBillToZip(e.target.value)}
+                        data-testid="bill-to-zip"
                       />
                     </td>
                   </tr>
@@ -690,6 +696,7 @@ export default function EditHandwrittenDetails({
                         variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                         value={billToPhone}
                         onChange={(e: any) => setBillToPhone(e.target.value)}
+                        data-testid="bill-to-phone"
                       />
                     </td>
                   </tr>
@@ -707,6 +714,7 @@ export default function EditHandwrittenDetails({
                         variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                         value={shipToCompany}
                         onChange={(e: any) => setShipToCompany(e.target.value)}
+                        data-testid="ship-to-company"
                       />
                     </td>
                   </tr>
@@ -717,6 +725,7 @@ export default function EditHandwrittenDetails({
                         variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                         value={shipToAddress}
                         onChange={(e: any) => setShipToAddress(e.target.value)}
+                        data-testid="ship-to-address"
                       />
                     </td>
                   </tr>
@@ -727,6 +736,7 @@ export default function EditHandwrittenDetails({
                         variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                         value={shipToAddress2}
                         onChange={(e: any) => setShipToAddress2(e.target.value)}
+                        data-testid="ship-to-address-2"
                       />
                     </td>
                   </tr>
@@ -737,6 +747,7 @@ export default function EditHandwrittenDetails({
                         variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                         value={shipToCity}
                         onChange={(e: any) => setShipToCity(e.target.value)}
+                        data-testid="ship-to-city"
                       />
                     </td>
                   </tr>
@@ -747,6 +758,7 @@ export default function EditHandwrittenDetails({
                         variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                         value={shipToState}
                         onChange={(e: any) => setShipToState(e.target.value)}
+                        data-testid="ship-to-state"
                       />
                     </td>
                   </tr>
@@ -757,6 +769,7 @@ export default function EditHandwrittenDetails({
                         variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                         value={shipToZip}
                         onChange={(e: any) => setShipToZip(e.target.value)}
+                        data-testid="ship-to-zip"
                       />
                     </td>
                   </tr>
@@ -767,6 +780,7 @@ export default function EditHandwrittenDetails({
                         variant={['label-bold']}
                         value={shipViaId ?? ''}
                         onChange={(e: any) => handleEditShipVia(e.target.value)}
+                        data-testid="ship-via"
                       />
                     </td>
                   </tr>
@@ -809,6 +823,7 @@ export default function EditHandwrittenDetails({
                         variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                         value={shipToContact}
                         onChange={(e: any) => setShipToContact(e.target.value)}
+                        data-testid="attn-to"
                       />
                     </td>
                   </tr>
@@ -819,6 +834,7 @@ export default function EditHandwrittenDetails({
                         variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                         value={contactPhone}
                         onChange={(e: any) => setContactPhone(e.target.value)}
+                        data-testid="contact-phone"
                       />
                     </td>
                   </tr>
@@ -829,6 +845,7 @@ export default function EditHandwrittenDetails({
                         variant={['input', 'no-margin', 'fill']}
                         value={contactEmail}
                         onChange={(value: string) => setContactEmail(value)}
+                        data-testid="eod-email"
                       >
                         {emails.map((email, i) => {
                           return <DropdownOption key={i} value={email}>{ email }</DropdownOption>;
@@ -914,7 +931,7 @@ export default function EditHandwrittenDetails({
                   variant={['label-stack']}
                   value={invoiceStatus}
                   onChange={(e: any) => setInvoiceStatus(e.target.value)}
-                  data-id="sales-status"
+                  data-testid="sales-status"
                 >
                   <option value="INVOICE PENDING">INVOICE PENDING</option>
                   <option value="SENT TO ACCOUNTING">SENT TO ACCOUNTING</option>
@@ -998,6 +1015,7 @@ export default function EditHandwrittenDetails({
                             type="number"
                             onChange={(e: any) => editHandwrittenItem({ ...item, qty: e.target.value }, i)}
                             disabled={isDisabled}
+                            data-testid="item-qty"
                           />
                         </td>
                         <td>
@@ -1036,6 +1054,7 @@ export default function EditHandwrittenDetails({
                               variant={['red-color']}
                               onClick={() => handleDeleteItem(item)}
                               type="button"
+                              data-testid="item-delete-btn"
                             >
                               Delete
                             </Button>
@@ -1092,6 +1111,7 @@ export default function EditHandwrittenDetails({
                   rows={5}
                   value={shippingNotes}
                   onChange={(e: any) => setShippingNotes(e.target.value)}
+                  data-testid="shipping-notes"
                 />
 
                 {!isBlindShipment &&

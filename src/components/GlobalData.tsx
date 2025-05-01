@@ -46,7 +46,7 @@ export default function GlobalData({ children }: Props) {
   };
 
   const checkForUpdates = async () => {
-    if (!window.__TAURI_IPC__) return;
+    if (!window?.__TAURI_IPC__) return;
     const update = await checkUpdate();
     if (update.shouldUpdate) {
       setUpdateDialogOpen(true);

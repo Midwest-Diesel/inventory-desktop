@@ -28,6 +28,7 @@ export default function CustomerSelectDialog({ open, setOpen, onSubmit }: Props)
       width={300}
       y={-200}
       className="select-customer-dialog"
+      data-testid="select-customer-dialog"
     >
       <CustomerDropdown
         value={customer}
@@ -35,7 +36,7 @@ export default function CustomerSelectDialog({ open, setOpen, onSubmit }: Props)
         maxHeight="16rem"
       />
       <div className="form__footer">
-        <Button onClick={handleSubmit} data-id="customer-submit-btn">Submit</Button>
+        <Button onClick={handleSubmit} data-testid="customer-submit-btn">Submit</Button>
       </div>
     </Dialog>
   );

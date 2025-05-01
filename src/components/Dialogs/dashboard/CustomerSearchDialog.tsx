@@ -94,7 +94,7 @@ export default function CustomerSearchDialog({ open, setOpen, searchTerm }: Prop
       maxHeight="20rem"
       width={600}
       className="customer-search-dialog"
-      data-id="customer-search-dialog"
+      data-testid="customer-search-dialog"
     >
       <form onSubmit={(e) => handleCustomerSearch(e)} autoComplete="off">
         <Input

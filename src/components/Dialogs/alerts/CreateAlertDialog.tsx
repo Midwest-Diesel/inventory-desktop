@@ -47,7 +47,7 @@ export default function CreateAlertDialog({ open, setOpen }: Props) {
       title="New Alert"
       maxHeight="44rem"
       width={400}
-      data-id="new-alert-dialog"
+      data-testid="new-alert-dialog"
     >
       <form onSubmit={(e)=> handleSubmit(e)}>
         <Input
@@ -55,7 +55,7 @@ export default function CreateAlertDialog({ open, setOpen }: Props) {
           variant={['label-space-between', 'label-full-width', 'small', 'thin', 'label-bold']}
           value={type}
           onChange={(e: any) => setType(e.target.value)}
-          data-id="alert-type-input"
+          data-testid="alert-type-input"
           placeholder="ALERT!!!"
           required
         />
@@ -65,7 +65,7 @@ export default function CreateAlertDialog({ open, setOpen }: Props) {
           variant={['label-space-between', 'label-full-width', 'small', 'thin', 'label-bold']}
           value={partNum}
           onChange={(e: any) => setPartNum(e.target.value)}
-          data-id="part-num-input"
+          data-testid="part-num-input"
           required
         />
 
@@ -76,12 +76,12 @@ export default function CreateAlertDialog({ open, setOpen }: Props) {
           cols={100}
           value={note}
           onChange={(e: any) => setNote(e.target.value)}
-          data-id="note-input"
+          data-testid="note-input"
         />
 
         <div className="form__footer">
-          <Button type="button" variant={['small']} onClick={clearInputs} data-id="clear">Clear</Button>
-          <Button type="submit" variant={['small']} data-id="save">Submit</Button>
+          <Button type="button" variant={['small']} onClick={clearInputs} data-testid="clear">Clear</Button>
+          <Button type="submit" variant={['small']} data-testid="save">Submit</Button>
         </div>
       </form>
     </Dialog>

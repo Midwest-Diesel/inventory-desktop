@@ -34,7 +34,7 @@ export default function Alerts() {
     <Layout title="Alerts">
       <div className="alerts-page">
         <h1>Alerts</h1>
-        <Button onClick={() => setNewAlertOpen(!newAlertOpen)} data-id="new-alert-btn">Create Alert</Button>
+        <Button onClick={() => setNewAlertOpen(!newAlertOpen)} data-testid="new-alert-btn">Create Alert</Button>
         <CreateAlertDialog open={newAlertOpen} setOpen={setNewAlertOpen} />
         { isEditing && <EditAlertDialog open={isEditing} setOpen={setIsEditing} alert={alertEdited} /> }
 
@@ -55,14 +55,14 @@ export default function Alerts() {
                 return (
                   <tr key={alert.id}>
                     <td>
-                      <Button variant={['x-small', 'blue']} onClick={() => handleEdit(alert)} data-id="edit-btn">Edit</Button>
-                      <Button variant={['x-small']} onClick={() => handleDelete(alert.id)} data-id="delete-btn">Delete</Button>
+                      <Button variant={['x-small', 'blue']} onClick={() => handleEdit(alert)} data-testid="edit-btn">Edit</Button>
+                      <Button variant={['x-small']} onClick={() => handleDelete(alert.id)} data-testid="delete-btn">Delete</Button>
                     </td>
                     <td>{ formatDate(alert.date) }</td>
                     <td>{ alert.addedBy }</td>
-                    <td data-id="part-num">{ alert.partNum }</td>
-                    <td><span onClick={() => setSelectedAlerts([...selectedAlerts, alert])} data-id="type">{ alert.type }</span></td>
-                    <td data-id="note">{ alert.note }</td>
+                    <td data-testid="part-num">{ alert.partNum }</td>
+                    <td><span onClick={() => setSelectedAlerts([...selectedAlerts, alert])} data-testid="type">{ alert.type }</span></td>
+                    <td data-testid="note">{ alert.note }</td>
                   </tr>
                 );
               })}

@@ -100,7 +100,7 @@ export default function Return() {
                   variant={['blue']}
                   className="return-details__edit-btn"
                   onClick={() => setIsEditing(true)}
-                  data-id="edit-btn"
+                  data-testid="edit-btn"
                 >
                   Edit
                 </Button>
@@ -113,7 +113,7 @@ export default function Return() {
                 <Button
                   variant={['danger']}
                   onClick={handleDelete}
-                  data-id="delete-btn"
+                  data-testid="delete-btn"
                 >
                   Delete
                 </Button>
@@ -121,7 +121,7 @@ export default function Return() {
             </div>
 
             <div className="return-details__top-bar">
-              <Button onClick={handleCreditIssued} data-id="credit-issued-btn" disabled={Boolean(returnData.creditIssued)}>Credit Issued</Button>
+              <Button onClick={handleCreditIssued} disabled={Boolean(returnData.creditIssued)} data-testid="credit-issued-btn">Credit Issued</Button>
               <Button onClick={() => push('Warranty', `/warranties/${returnData.warrantyId}`)} disabled={!returnData.warrantyId}>Warranty</Button>
               <Button onClick={handlePrint}>Print</Button>
             </div>
@@ -140,7 +140,7 @@ export default function Return() {
                     </tr>
                     <tr>
                       <th>PO Number</th>
-                      <td data-id="po-num">{ returnData.poNum }</td>
+                      <td data-testid="po-num">{ returnData.poNum }</td>
                     </tr>
                     <tr>
                       <th>Payment</th>
@@ -171,7 +171,7 @@ export default function Return() {
                     </tr>
                     <tr>
                       <th>Credit Issued</th>
-                      <td data-id="credit-issued">{ formatDate(returnData.creditIssued) }</td>
+                      <td data-testid="credit-issued">{ formatDate(returnData.creditIssued) }</td>
                     </tr>
 
                     <tr>

@@ -195,16 +195,17 @@ export default function SelectHandwrittenDialog({ open, setOpen, part, customer,
     const handwritten = await getHandwrittenById(selectedHandwrittenId);
     if (!handwritten) return;
 
-    let fullWar = `${handwritten.orderNotes ? '\n' : ''}`;
-    if (injectorWar) fullWar += 'Injector warranty\n';
-    if (customWar) fullWar += `${warranty}\n`;
-    if (noWarranty) fullWar += 'No CAT Warranty\n';
+    let fullWar = [handwritten.orderNotes];
+    if (customWar) fullWar.push(`${warranty}`);
+    if (noWarranty) fullWar.push('No CAT Warranty');
+    if (injectorWar) fullWar.push('Injector warranty');
     if (!fullWar && !warranty && !noVerbage) {
       console.error('Warranty cannot be blank');
       return;
     }
-    if (noVerbage) fullWar = '';
-    onSubmit(handwritten, fullWar, Number(qty), desc, Number(price));
+    if (noVerbage) fullWar = [handwritten.orderNotes];
+    const filteredWar = new Set(fullWar);
+    onSubmit(handwritten, [...Array.from(filteredWar)].join('\n').trim(), Number(qty), desc, Number(price));
   };
 
 
@@ -221,6 +222,7 @@ export default function SelectHandwrittenDialog({ open, setOpen, part, customer,
         title="Select Handwritten"
         width={600}
         height={680}
+        data-testid="select-handwritten-dialog"
       >
         {showWarranty ?
           <form onSubmit={handleSubmitWarranty}>
@@ -229,6 +231,7 @@ export default function SelectHandwrittenDialog({ open, setOpen, part, customer,
               label="Warranty"
               value={warranty}
               onChange={(e: any) => setWarranty(e.target.value)}
+              data-testid="warranty"
             />
             <div>
               <Checkbox
@@ -236,22 +239,25 @@ export default function SelectHandwrittenDialog({ open, setOpen, part, customer,
                 variant={['label-bold', 'dark-bg', 'label-align-center', 'label-fit']}
                 checked={noWarranty}
                 onChange={(e: any) => setNoWarranty(e.target.checked)}
+                data-testid="no-cat-warranty"
               />
               <Checkbox
                 label="Injector Warranty"
                 variant={['label-bold', 'dark-bg', 'label-align-center', 'label-fit']}
                 checked={injectorWar}
                 onChange={(e: any) => setInjectorWar(e.target.checked)}
+                data-testid="inj-warranty"
               />
               <Checkbox
                 label="Custom Warranty"
                 variant={['label-bold', 'dark-bg', 'label-align-center', 'label-fit']}
                 checked={customWar}
                 onChange={(e: any) => setCustomWar(e.target.checked)}
+                data-testid="custom-warranty"
               />
             </div>
             <div className="form__footer">
-              <Button type="submit">Submit</Button>
+              <Button type="submit" data-testid="warranty-submit-btn">Submit</Button>
               <Button type="submit" onClick={() => setNoVerbage(true)}>Cancel Warranty</Button>
             </div>
           </form>
@@ -279,6 +285,7 @@ export default function SelectHandwrittenDialog({ open, setOpen, part, customer,
                   value={desc}
                   onChange={(e: any) => setDesc(e.target.value)}
                   required
+                  data-testid="select-handwritten-desc"
                 />
                 <Input
                   variant={['x-small', 'thin', 'label-bold', 'label-stack', 'label-fit-content']}
@@ -287,6 +294,7 @@ export default function SelectHandwrittenDialog({ open, setOpen, part, customer,
                   value={qty ?? ''}
                   onChange={(e: any) => setQty(e.target.value)}
                   required
+                  data-testid="select-handwritten-qty"
                 />
                 <Input
                   variant={['x-small', 'thin', 'label-bold', 'label-stack', 'label-fit-content']}
@@ -295,9 +303,10 @@ export default function SelectHandwrittenDialog({ open, setOpen, part, customer,
                   value={price ?? ''}
                   onChange={(e: any) => setPrice(e.target.value)}
                   required
+                  data-testid="select-handwritten-price"
                 />
               </div>
-              <Button type="submit" variant={['fit']}>Add Item to Handwritten</Button>
+              <Button type="submit" variant={['fit']} data-testid="select-handwritten-submit-btn">Add Item to Handwritten</Button>
             </form>
 
             <form
@@ -330,7 +339,12 @@ export default function SelectHandwrittenDialog({ open, setOpen, part, customer,
                 <tbody>
                   {handwrittens.map((handwritten: Handwritten) => {
                     return (
-                      <tr key={handwritten.id} onClick={() => handleSelectRow(handwritten.id)} className={handwritten.id === selectedHandwrittenId ? 'select-handwritten-dialog--selected' : ''}>
+                      <tr
+                        key={handwritten.id}
+                        onClick={() => handleSelectRow(handwritten.id)}
+                        className={handwritten.id === selectedHandwrittenId ? 'select-handwritten-dialog--selected' : ''}
+                        data-testid="select-handwritten-row"
+                      >
                         <td>{ handwritten.id }</td>
                         <td>{ formatDate(handwritten.date) }</td>
                         <td>{ handwritten.customer ? handwritten.customer.company : null }</td>

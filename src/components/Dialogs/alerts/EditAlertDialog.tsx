@@ -51,6 +51,7 @@ export default function EditAlertDialog({ open, setOpen, alert }: Props) {
       title="Edit Alert"
       maxHeight="44rem"
       width={400}
+      data-testid="edit-alert-dialog"
     >
       <form onSubmit={(e)=> handleSubmit(e)}>
         <Input
@@ -58,7 +59,7 @@ export default function EditAlertDialog({ open, setOpen, alert }: Props) {
           variant={['label-space-between', 'label-full-width', 'small', 'thin', 'label-bold']}
           value={type}
           onChange={(e: any) => setType(e.target.value)}
-          data-id="alert-type-edit-input"
+          data-testid="alert-type-edit-input"
           placeholder="ALERT!!!"
           required
         />
@@ -68,7 +69,7 @@ export default function EditAlertDialog({ open, setOpen, alert }: Props) {
           variant={['label-space-between', 'label-full-width', 'small', 'thin', 'label-bold']}
           value={partNum}
           onChange={(e: any) => setPartNum(e.target.value)}
-          data-id="part-num-edit-input"
+          data-testid="part-num-edit-input"
           required
         />
 
@@ -79,12 +80,12 @@ export default function EditAlertDialog({ open, setOpen, alert }: Props) {
           cols={100}
           value={note}
           onChange={(e: any) => setNote(e.target.value)}
-          data-id="note-edit-input"
+          data-testid="note-edit-input"
         />
 
         <div className="form__footer">
           <Button type="button" variant={['small']} onClick={handelCancel}>Cancel</Button>
-          <Button type="submit" variant={['small']} data-id="edit-save-btn">Save</Button>
+          <Button type="submit" variant={['small']} data-testid="edit-save-btn">Save</Button>
         </div>
       </form>
     </Dialog>

@@ -58,7 +58,7 @@ export default function Cores() {
                     <td>{ formatDate(core.date) }</td>
                     <td>{ core.billToCompany }</td>
                     <td>{ core.shipToCompany }</td>
-                    <td>{ part ? <Link href={`/part/${part.id}`}>{ part.partNum }</Link> : core.partNum }</td>
+                    <td data-testid="part-num">{ part ? <Link href={`/part/${part.id}`}>{ part.partNum }</Link> : core.partNum }</td>
                     <td>{ part ? part.desc : core.desc }</td>
                     <td>{ core.qty }</td>
                     <td>{ formatCurrency(core.charge) }</td>

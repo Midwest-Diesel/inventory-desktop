@@ -350,16 +350,7 @@ export const editHandwrittenItems = async (item: HandwrittenItem) => {
 export const editHandwrittenOrderNotes = async (id: number, orderNotes: string) => {
   try {
     const auth = { withCredentials: true };
-    const res = await getHandwrittenById(id);
-    const existingNotes = res?.orderNotes ?? '';
-    const newOrderNotes = orderNotes
-      .split('\n')
-      .filter((note) => !existingNotes.toLowerCase().includes(note.toLowerCase()))
-      .join('\n');
-
-    if (newOrderNotes) {
-      await api.put('/api/handwrittens/order-notes', { id, orderNotes: `${newOrderNotes}\n` }, auth);
-    }
+    await api.put('/api/handwrittens/order-notes', { id, orderNotes }, auth);
   } catch (err) {
     console.error(err);
   }

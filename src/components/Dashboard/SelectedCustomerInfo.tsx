@@ -30,14 +30,14 @@ export default function SelectedCustomerInfo({ customerData, setCustomerData, ex
 
 
   return (
-    <div className="selected-customer-info" data-id="selected-customer-info">
+    <div className="selected-customer-info" data-testid="selected-customer-info">
       {!expandedDetailsOpen ?
         <div>
-          <p><strong>Selected Customer:</strong> <Link href={`customer/${customer.id}`} style={{ fontSize: 'var(--font-md)' }} data-id="customer-link">{ customer.company }</Link> <em>{ customerInfo.length > 0 && `(${customerInfo})` }</em></p>
+          <p><strong>Selected Customer:</strong> <Link href={`customer/${customer.id}`} style={{ fontSize: 'var(--font-md)' }} data-testid="customer-link">{ customer.company }</Link> <em>{ customerInfo.length > 0 && `(${customerInfo})` }</em></p>
           <p><strong>Contact:</strong> { customer.contact }</p>
         </div>
         :
-        <div data-id="customer-details">
+        <div data-testid="customer-details">
           <p><strong>Selected Customer:</strong> <Link href={`customer/${customer.id}`} style={{ fontSize: 'var(--font-md)' }}>{ customer.company }</Link></p>
           <Grid rows={1} cols={12} gap={1}>
             <GridItem colStart={1} colEnd={4} variant={['low-opacity-bg']}>

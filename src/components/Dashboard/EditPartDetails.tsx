@@ -261,7 +261,7 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
               variant={['save']}
               className="edit-part-details__save-btn"
               type="submit"
-              data-id="save-btn"
+              data-testid="save-btn"
             >
               Save
             </Button>
@@ -269,7 +269,7 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
               className="edit-part-details__close-btn"
               type="button"
               onClick={() => setIsEditingPart(false)}
-              data-id="stop-editing"
+              data-testid="stop-editing"
             >
               Stop Editing
             </Button>
@@ -461,8 +461,8 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
                         <>
                           <p style={{ margin: '0.8rem' }}>{ altParts.join(', ') }</p>
                           <div className="edit-part-details__alt-parts-btn-container">
-                            <Button type="button" onClick={handleAddAltPart} data-id="add-alts">Add</Button>
-                            <Button variant={['danger']} type="button" onClick={handleRemoveAltPart} data-id="remove-alts">Remove</Button>
+                            <Button type="button" onClick={handleAddAltPart} data-testid="add-alts">Add</Button>
+                            <Button variant={['danger']} type="button" onClick={handleRemoveAltPart} data-testid="remove-alts">Remove</Button>
                           </div>
                         </>
                         :

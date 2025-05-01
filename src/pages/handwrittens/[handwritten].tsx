@@ -130,17 +130,26 @@ export default function Handwritten() {
     };
   }, [promptLeaveWindow]);
 
-  const refreshHandwrittenItems = (e: RealtimePostgresInsertPayload<HandwrittenItem>) => {
+  const refreshHandwrittenItems = async (e: RealtimePostgresInsertPayload<HandwrittenItem>) => {
     const newItems = [...(handwritten?.handwrittenItems ?? []), { ...e.new, date: parseResDate(e.new.date as any) }];
-    setHandwritten({ ...(handwritten ?? {} as Handwritten), handwrittenItems: newItems });
+    const res = await getHandwrittenById(Number(params.handwritten));
+    if (!res) {
+      location.reload();
+      return;
+    }
+    setHandwritten({ ...res, handwrittenItems: newItems });
   };
 
   const refreshHandwrittenItemsChildren = (e: RealtimePostgresInsertPayload<HandwrittenItemChild>) => {
   };
 
-  const refreshHandwrittenOrderNotes = (e: RealtimePostgresUpdatePayload<Handwritten>) => {
-    const newHandwritten: Handwritten = {...(handwritten ?? {} as Handwritten), orderNotes: e.new.orderNotes };
-    setHandwritten(newHandwritten);
+  const refreshHandwrittenOrderNotes = async (e: RealtimePostgresUpdatePayload<Handwritten>) => {
+    const res = await getHandwrittenById(Number(params.handwritten));
+    if (!res) {
+      location.reload();
+      return;
+    }
+    setHandwritten({...res, orderNotes: e.new.orderNotes });
   };
 
   const handleDelete = async () => {
@@ -393,14 +402,14 @@ export default function Handwritten() {
           :
           <>
             <div className="handwritten-details__header">
-              <h2>Handwritten <span data-id="id">{ handwritten.id }</span></h2>
+              <h2>Handwritten <span data-testid="id">{ handwritten.id }</span></h2>
 
               <div className="header__btn-container">
                 <Button
                   variant={['blue']}
                   className="handwritten-details__edit-btn"
                   onClick={() => setIsEditing(true)}
-                  data-id="edit-btn"
+                  data-testid="edit-btn"
                 >
                   Edit
                 </Button>
@@ -414,7 +423,7 @@ export default function Handwritten() {
                   <Button
                     variant={['danger']}
                     onClick={handleDelete}
-                    data-id="delete-btn"
+                    data-testid="delete-btn"
                   >
                     Delete
                   </Button>
@@ -425,7 +434,7 @@ export default function Handwritten() {
             <div className="handwritten-details__top-bar">
               <Button onClick={() => setCoreCreditsOpen(!coreCreditsOpen)} disabled={handwritten.cores.length === 0}>Core Credit</Button>
               <Button onClick={() => setAltShipOpen(!altShipOpen)} disabled={altShipData.length === 0}>Alt Ship</Button>
-              <Button onClick={() => setReturnsOpen(!returnsOpen)} data-id="new-return-btn">New Return</Button>
+              <Button onClick={() => setReturnsOpen(!returnsOpen)} data-testid="new-return-btn">New Return</Button>
             </div>
 
             <CoreCreditsDialog open={coreCreditsOpen} setOpen={setCoreCreditsOpen} cores={handwritten.cores} handwritten={handwritten} />
@@ -453,11 +462,11 @@ export default function Handwritten() {
                     </tr>
                     <tr>
                       <th><strong>PO Number</strong></th>
-                      <td data-id="po-num">{ handwritten.poNum }</td>
+                      <td data-testid="po-num">{ handwritten.poNum }</td>
                     </tr>
                     <tr>
                       <th><strong>Source</strong></th>
-                      <td>{ handwritten.source }</td>
+                      <td data-testid="source">{ handwritten.source }</td>
                     </tr>
                     <tr>
                       <th><strong>Created By</strong></th>
@@ -469,7 +478,7 @@ export default function Handwritten() {
                     </tr>
                     <tr>
                       <th><strong>Contact</strong></th>
-                      <td>{ handwritten.contactName }</td>
+                      <td data-testid="contact">{ handwritten.contactName }</td>
                     </tr>
                   </tbody>
                 </Table>
@@ -480,31 +489,31 @@ export default function Handwritten() {
                   <tbody>
                     <tr>
                       <th><strong>Billing Company</strong></th>
-                      <td>{ handwritten.billToCompany }</td>
+                      <td data-testid="bill-to-company">{ handwritten.billToCompany }</td>
                     </tr>
                     <tr>
                       <th><strong>Billing Address</strong></th>
-                      <td>{ handwritten.billToAddress }</td>
+                      <td data-testid="bill-to-address">{ handwritten.billToAddress }</td>
                     </tr>
                     <tr>
                       <th><strong>Billing Address 2</strong></th>
-                      <td>{ handwritten.billToAddress2 }</td>
+                      <td data-testid="bill-to-address-2">{ handwritten.billToAddress2 }</td>
                     </tr>
                     <tr>
                       <th><strong>Billing City</strong></th>
-                      <td>{ handwritten.billToCity }</td>
+                      <td data-testid="bill-to-city">{ handwritten.billToCity }</td>
                     </tr>
                     <tr>
                       <th><strong>Billing State</strong></th>
-                      <td>{ handwritten.billToState }</td>
+                      <td data-testid="bill-to-state">{ handwritten.billToState }</td>
                     </tr>
                     <tr>
                       <th><strong>Billing Zip</strong></th>
-                      <td>{ handwritten.billToZip }</td>
+                      <td data-testid="bill-to-zip">{ handwritten.billToZip }</td>
                     </tr>
                     <tr>
                       <th><strong>Billing Phone</strong></th>
-                      <td>{ formatPhone(handwritten.billToPhone) }</td>
+                      <td data-testid="bill-to-phone">{ formatPhone(handwritten.billToPhone) }</td>
                     </tr>
                   </tbody>
                 </Table>
@@ -515,31 +524,31 @@ export default function Handwritten() {
                   <tbody>
                     <tr>
                       <th><strong>Shipping Company</strong></th>
-                      <td>{ handwritten.shipToCompany }</td>
+                      <td data-testid="ship-to-company">{ handwritten.shipToCompany }</td>
                     </tr>
                     <tr>
                       <th><strong>Shipping Address</strong></th>
-                      <td>{ handwritten.shipToAddress }</td>
+                      <td data-testid="ship-to-address">{ handwritten.shipToAddress }</td>
                     </tr>
                     <tr>
                       <th><strong>Shipping Address 2</strong></th>
-                      <td>{ handwritten.shipToAddress2 }</td>
+                      <td data-testid="ship-to-address-2">{ handwritten.shipToAddress2 }</td>
                     </tr>
                     <tr>
                       <th><strong>Shipping City</strong></th>
-                      <td>{ handwritten.shipToCity }</td>
+                      <td data-testid="ship-to-city">{ handwritten.shipToCity }</td>
                     </tr>
                     <tr>
                       <th><strong>Shipping State</strong></th>
-                      <td>{ handwritten.shipToState }</td>
+                      <td data-testid="ship-to-state">{ handwritten.shipToState }</td>
                     </tr>
                     <tr>
                       <th><strong>Shipping Zip</strong></th>
-                      <td>{ handwritten.shipToZip }</td>
+                      <td data-testid="ship-to-zip">{ handwritten.shipToZip }</td>
                     </tr>
                     <tr>
                       <th><strong>Ship Via</strong></th>
-                      <td>{ handwritten.shipVia && handwritten.shipVia.name }</td>
+                      <td data-testid="ship-via">{ handwritten.shipVia && handwritten.shipVia.name }</td>
                     </tr>
                   </tbody>
                 </Table>
@@ -604,11 +613,11 @@ export default function Handwritten() {
                   <tbody>
                     <tr>
                       <th><strong>Attn To / Contact</strong></th>
-                      <td>{ handwritten.shipToContact }</td>
+                      <td data-testid="attn-to">{ handwritten.shipToContact }</td>
                     </tr>
                     <tr>
                       <th><strong>Contact Phone</strong></th>
-                      <td>{ formatPhone(handwritten.phone) }</td>
+                      <td data-testid="contact-phone">{ formatPhone(handwritten.phone) }</td>
                     </tr>
                     <tr>
                       <th><strong>EOD Email</strong></th>
@@ -675,7 +684,7 @@ export default function Handwritten() {
                 <div style={{ display: 'flex', gap: '2rem' }}>
                   <div>
                     <p style={{ fontSize: 'var(--font-md)' }}><strong>Sales Status</strong></p>
-                    <p style={{ color: 'var(--yellow-1)' }} data-id="sales-status">{ handwritten.invoiceStatus }</p>
+                    <p style={{ color: 'var(--yellow-1)' }} data-testid="sales-status">{ handwritten.invoiceStatus }</p>
                   </div>
                   <div>
                     <p style={{ fontSize: 'var(--font-md)' }}><strong>Accounting Status</strong></p>
@@ -717,7 +726,7 @@ export default function Handwritten() {
                 <div className="handwritten-details__shipping-notes">
                   <div>
                     <h4 style={{ marginBottom: '0.3rem' }}>Shipping Notes</h4>
-                    <p style={{ whiteSpace: 'pre-line' }}>{ handwritten.shippingNotes }</p>
+                    <p style={{ whiteSpace: 'pre-line' }} data-testid="shipping-notes">{ handwritten.shippingNotes }</p>
                   </div>
 
                   {!handwritten.isBlindShipment &&
@@ -747,7 +756,7 @@ export default function Handwritten() {
 
               <GridItem variant={['low-opacity-bg']} colStart={7} colEnd={12}>
                 <h4 style={{ marginBottom: '0.3rem' }}>Order Notes</h4>
-                <p style={{ whiteSpace: 'pre-line' }}>{ handwritten.orderNotes }</p>
+                <p style={{ whiteSpace: 'pre-line' }} data-testid="order-notes">{ handwritten.orderNotes }</p>
               </GridItem>
             </Grid>
 

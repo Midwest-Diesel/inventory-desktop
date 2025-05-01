@@ -41,7 +41,7 @@ export default function Login() {
             label="Username"
             value={username}
             onChange={(e: any) => setUsername(e.target.value)}
-            data-id="username"
+            data-testid="username"
             required
           />
           <Input
@@ -49,10 +49,10 @@ export default function Login() {
             label="Password"
             value={password}
             onChange={(e: any) => setPassword(e.target.value)}
-            data-id="password"
+            data-testid="password"
             required
           />
-          { loginBtnVisible && <Button type="submit" variant={['fit', 'center']} data-id="login-btn">Submit</Button> }
+          { loginBtnVisible && <Button type="submit" variant={['fit', 'center']} data-testid="login-btn">Submit</Button> }
         </form>
         <Error msg={error} />
       </div>

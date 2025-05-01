@@ -102,7 +102,7 @@ export default function NewReturnDialog({ open, setOpen, handwritten }: Props) {
       setOpen={setOpen}
       title="New Return"
       maxHeight="44rem"
-      data-id="new-return-dialog"
+      data-testid="new-return-dialog"
     >
       <Table>
         <thead>
@@ -143,7 +143,7 @@ export default function NewReturnDialog({ open, setOpen, handwritten }: Props) {
       </Table>
 
       <div className="form__footer">
-        <Button onClick={submitNewReturn} data-id="submit-btn" disabled={!handwrittenItems.some((i) => i.return)}>Submit</Button>
+        <Button onClick={submitNewReturn} data-testid="submit-btn" disabled={!handwrittenItems.some((i) => i.return)}>Submit</Button>
       </div>
     </Dialog>
   );

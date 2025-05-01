@@ -106,11 +106,11 @@ export default function CustomerSearch() {
             {!isObjectNull(selectedCustomer) &&
               <>
                 <Button variant={['x-small']} onClick={handleAddCustomer}>Add Customer</Button>
-                <Button variant={['x-small']} onClick={deselectCustomer} data-id="unselect">Unselect</Button>
+                <Button variant={['x-small']} onClick={deselectCustomer} data-testid="unselect">Unselect</Button>
                 <Button
                   variant={['x-small']}
                   onClick={() => setExpandedDetailsOpen(!expandedDetailsOpen)}
-                  data-id="expand"
+                  data-testid="expand"
                 >
                   { expandedDetailsOpen ? 'Collapse' : 'Expand' }
                 </Button>
@@ -125,9 +125,9 @@ export default function CustomerSearch() {
               variant={['search', 'label-space-between']}
               onChange={(e: any) => setSearchTerm(e.target.value)}
               value={searchTerm}
-              data-id="customer-input"
+              data-testid="customer-input"
             >
-              <Button variant={['search']} style={{ height: '2.1rem' }} data-id="customer-search">Search</Button>
+              <Button variant={['search']} style={{ height: '2.1rem' }} data-testid="customer-search">Search</Button>
             </Input>
           </form>
         </div>

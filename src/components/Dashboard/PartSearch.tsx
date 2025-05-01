@@ -232,7 +232,7 @@ export default function PartSearch({ selectHandwrittenOpen, setSelectHandwritten
             </Button>
             <Button
               onClick={() => setPartsSearchOpen(true)}
-              data-id="part-search-btn"
+              data-testid="part-search-btn"
             >
               Parts Search
             </Button>
@@ -261,7 +261,7 @@ export default function PartSearch({ selectHandwrittenOpen, setSelectHandwritten
               <Link
                 className="parts-search-top-bar__link"
                 href="/part/new"
-                data-id="new-part-btn"
+                data-testid="new-part-btn"
               >
                 New Part
               </Link>
@@ -274,7 +274,7 @@ export default function PartSearch({ selectHandwrittenOpen, setSelectHandwritten
           <AltPartsSearchDialog open={altPartsSearchOpen} setOpen={setAltPartsSearchOpen} setParts={handleSearchData} setLoading={setLoading} />
 
           <div style={{ width:'fit-content', overflow: 'auto', maxHeight: '68vh' }}>
-            <Table data-id="part-search-table">
+            <Table data-testid="part-search-table">
               <thead>
                 <tr>
                   <th>Total Qty <span className="parts-search__total-qty">{ getTotalQty() }</span></th>
@@ -298,8 +298,8 @@ export default function PartSearch({ selectHandwrittenOpen, setSelectHandwritten
                   return (
                     <tr key={i}>
                       <td className="parts-list__left-col table-buttons">
-                        <Button variant={['x-small']} onClick={() => quotePart(part)} data-id="quote-part-btn">Quote Part</Button>
-                        <Button variant={['x-small']} onClick={() => handleOpenSelectHandwrittenDialog(part)}>Add to Handwritten</Button>
+                        <Button variant={['x-small']} onClick={() => quotePart(part)} data-testid="quote-part-btn">Quote Part</Button>
+                        <Button variant={['x-small']} onClick={() => handleOpenSelectHandwrittenDialog(part)} data-testid="add-item-btn">Add to Handwritten</Button>
                       </td>
                       <td>
                         <div className="parts-list__left-content">
@@ -312,7 +312,7 @@ export default function PartSearch({ selectHandwrittenOpen, setSelectHandwritten
                               <Image src="/images/icons/image.svg" alt="detail" width={20} height={20} style={{ alignSelf: 'center' }} />
                             </Button>
                           }
-                          <Link href={`/part/${part.id}`} data-id="part-num-link">{ part.partNum }</Link>
+                          <Link href={`/part/${part.id}`} data-testid="part-num-link">{ part.partNum }</Link>
                         </div>  
                       </td>
                       <td>{ formatDate(part.entryDate) }</td>
@@ -329,7 +329,7 @@ export default function PartSearch({ selectHandwrittenOpen, setSelectHandwritten
                               <Image src="/images/icons/image.svg" alt="detail" width={20} height={20} style={{ alignSelf: 'center' }} />
                             </Button>
                           }
-                          { part.stockNum }
+                          <span data-testid="stock-num">{ part.stockNum }</span>
                         </div>
                       </td>
                       <td>{ part.location }</td>

@@ -159,7 +159,7 @@ export default function Handwrittens() {
           <h1>Handwrittens</h1>
           <div className="handwrittens__top-buttons">
             <Button onClick={() => setOpenSearch(true)}>Search</Button>
-            { user.type === 'office' && <Button onClick={() => setCustomerSelectOpen(true)} data-id="new-btn">New</Button> }
+            { user.type === 'office' && <Button onClick={() => setCustomerSelectOpen(true)} data-testid="new-btn">New</Button> }
           </div>
           <div className="handwrittens__top-bar">
             <div className="handwrittens__top-bar--count-block">
@@ -191,7 +191,7 @@ export default function Handwrittens() {
                   {handwrittens.map((handwritten: Handwritten) => {
                     return (
                       <tr key={handwritten.id} onClick={() => handleFocusHandwritten(handwritten)} style={ focusedHandwritten && handwritten.id === focusedHandwritten.id ? { border: 'solid 3px var(--yellow-2)' } : {} }>
-                        <td><Link href={`/handwrittens/${handwritten.id}`}>{ handwritten.id }</Link></td>
+                        <td><Link href={`/handwrittens/${handwritten.id}`} data-testid="link">{ handwritten.id }</Link></td>
                         <td>{ formatDate(handwritten.date) }</td>
                         <td>{ handwritten.billToCompany }</td>
                         <td>{ handwritten.shipToCompany }</td>

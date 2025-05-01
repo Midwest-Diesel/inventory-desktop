@@ -119,7 +119,7 @@ export default function ChangeCustomerInfoDialog({ open, setOpen, customer, hand
         </div>
 
         <div className="form__footer">
-          <Button type="button" onClick={() => setIsEditing(false)}>No Changes</Button>
+          <Button type="button" onClick={() => setIsEditing(false)} data-testid="no-changes-btn">No Changes</Button>
           <Button type="submit">Save</Button>
         </div>
       </form>

@@ -48,9 +48,9 @@ export default function Returns() {
         <h1>{ `${cap(displayedPanel)} Returns` }</h1>
         <div className="returns__top-bar">
           {/* <Button onClick={() => setOpenSearch(true)}>Search</Button> */}
-          <Button onClick={() => setDisplayedPanel('shop')}>Shop Returns</Button>
-          <Button onClick={() => setDisplayedPanel('accounting')}>Accounting Returns</Button>
-          <Button onClick={() => setDisplayedPanel('completed')}>Completed Returns</Button>
+          <Button onClick={() => setDisplayedPanel('shop')} data-testid="shop-btn">Shop Returns</Button>
+          <Button onClick={() => setDisplayedPanel('accounting')} data-testid="accounting-btn">Accounting Returns</Button>
+          <Button onClick={() => setDisplayedPanel('completed')} data-testid="completed-btn">Completed Returns</Button>
         </div>
 
         { loading && <Loading /> }
@@ -71,8 +71,8 @@ export default function Returns() {
                 {returns && returns.map((ret: Return) => {
                   return (
                     <tr key={ret.id}>
-                      <td><Link href={`/returns/${ret.id}`} data-id="return-link">{ ret.id }</Link></td>
-                      <td><Link href={`/handwrittens/${ret.handwrittenId}`} data-id="handwritten-link">{ ret.handwrittenId }</Link></td>
+                      <td><Link href={`/returns/${ret.id}`} data-testid="return-link">{ ret.id }</Link></td>
+                      <td><Link href={`/handwrittens/${ret.handwrittenId}`} data-testid="handwritten-link">{ ret.handwrittenId }</Link></td>
                       <td>{ formatDate(ret.dateCalled) }</td>
                       <td>{ ret.salesman?.initials }</td>
                       <td>{ ret.billToCompany }</td>
