@@ -432,7 +432,7 @@ export default function Handwritten() {
             </div>
 
             <div className="handwritten-details__top-bar">
-              <Button onClick={() => setCoreCreditsOpen(!coreCreditsOpen)} disabled={handwritten.cores.length === 0}>Core Credit</Button>
+              <Button onClick={() => setCoreCreditsOpen(!coreCreditsOpen)} disabled={handwritten.cores.length === 0} data-testid="core-credit-btn">Core Credit</Button>
               <Button onClick={() => setAltShipOpen(!altShipOpen)} disabled={altShipData.length === 0}>Alt Ship</Button>
               <Button onClick={() => setReturnsOpen(!returnsOpen)} data-testid="new-return-btn">New Return</Button>
             </div>
@@ -454,7 +454,7 @@ export default function Handwritten() {
                   <tbody>
                     <tr>
                       <th><strong>Date</strong></th>
-                      <td>{ formatDate(handwritten.date) }</td>
+                      <td data-testid="date">{ formatDate(handwritten.date) }</td>
                     </tr>
                     <tr>
                       <th><strong>Customer</strong></th>
@@ -768,6 +768,7 @@ export default function Handwritten() {
                 value={takeoff}
                 onChange={(e: any) => setTakeoff(e.target.value)}
                 required
+                data-testid="takeoff-input"
               />
             </form>
           </>

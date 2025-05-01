@@ -119,6 +119,7 @@ export default function PartsSearchDialog({ open, setOpen, setParts, setLoading 
           value={partNum.replaceAll(' ', '')}
           onChange={(e: any) => setPartNum(e.target.value.toUpperCase())}
           id="part-search-input"
+          data-testid="part-search-part-num"
         />
 
         <Input
@@ -126,6 +127,7 @@ export default function PartsSearchDialog({ open, setOpen, setParts, setLoading 
           variant={['small', 'thin', 'label-no-stack', 'label-space-between']}
           value={stockNum}
           onChange={(e: any) => setStockNum(e.target.value)}
+          data-testid="part-search-stock-num"
         />
 
         <Input
@@ -133,6 +135,7 @@ export default function PartsSearchDialog({ open, setOpen, setParts, setLoading 
           variant={['small', 'thin', 'label-no-stack', 'label-space-between']}
           value={desc}
           onChange={(e: any) => setDesc(e.target.value)}
+          data-testid="part-search-desc"
         />
 
         <Input
@@ -140,6 +143,7 @@ export default function PartsSearchDialog({ open, setOpen, setParts, setLoading 
           variant={['small', 'thin', 'label-no-stack', 'label-space-between']}
           value={location}
           onChange={(e: any) => setLocation(e.target.value)}
+          data-testid="part-search-location"
         />
 
         <Input
@@ -148,6 +152,7 @@ export default function PartsSearchDialog({ open, setOpen, setParts, setLoading 
           variant={['small', 'thin', 'label-no-stack', 'label-space-between']}
           value={qty}
           onChange={(e: any) => setQty(e.target.value)}
+          data-testid="part-search-qty"
         />
 
         <Input
@@ -155,6 +160,7 @@ export default function PartsSearchDialog({ open, setOpen, setParts, setLoading 
           variant={['small', 'thin', 'label-no-stack', 'label-space-between']}
           value={remarks}
           onChange={(e: any) => setRemarks(e.target.value)}
+          data-testid="part-search-remarks"
         />
 
         <Input
@@ -163,6 +169,7 @@ export default function PartsSearchDialog({ open, setOpen, setParts, setLoading 
           variant={['small', 'thin', 'label-no-stack', 'label-space-between']}
           value={rating}
           onChange={(e: any) => setRating(e.target.value)}
+          data-testid="part-search-rating"
         />
 
         <Input
@@ -170,6 +177,7 @@ export default function PartsSearchDialog({ open, setOpen, setParts, setLoading 
           variant={['small', 'thin', 'label-no-stack', 'label-space-between']}
           value={purchasedFrom}
           onChange={(e: any) => setPurchasedFrom(e.target.value)}
+          data-testid="part-search-purch-from"
         />
 
         <Input
@@ -177,6 +185,7 @@ export default function PartsSearchDialog({ open, setOpen, setParts, setLoading 
           variant={['small', 'thin', 'label-no-stack', 'label-space-between']}
           value={serialNum}
           onChange={(e: any) => setSerialNum(e.target.value)}
+          data-testid="part-search-serial-num"
         />
 
         <Input
@@ -184,11 +193,12 @@ export default function PartsSearchDialog({ open, setOpen, setParts, setLoading 
           variant={['small', 'thin', 'label-no-stack', 'label-space-between']}
           value={hp}
           onChange={(e: any) => setHp(e.target.value)}
+          data-testid="part-search-hp"
         />
         
         <div className="form__footer">
           <Button type="button" variant={['small']} onClick={clearInputs}>Clear</Button>
-          <Button type="submit" variant={['small']} data-testid="part-search-submit">Submit</Button>
+          <Button type="submit" variant={['small']} data-testid="part-search-submit-btn">Submit</Button>
         </div>
       </form>
     </Dialog>

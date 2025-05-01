@@ -192,7 +192,7 @@ export const searchAltParts = async (part: PartSearchData) => {
       )
     );
     const auth = { withCredentials: true };
-    const res = await api.get(`/api/parts/searchAlt/${JSON.stringify(filteredPart)}`, auth);
+    const res = await api.get(`/api/parts/searchAlt/${encodeURIComponent(JSON.stringify(filteredPart))}`, auth);
     return await parsePartsData(res.data) || [];
   } catch (err) {
     console.error(err);

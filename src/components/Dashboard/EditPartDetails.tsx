@@ -298,6 +298,7 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
                       type="number"
                       onChange={(e: any) => setQty(e.target.value)}
                       required
+                      data-testid="qty"
                     />
                   </td>
                 </tr>

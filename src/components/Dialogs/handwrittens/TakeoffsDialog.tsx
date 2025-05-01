@@ -44,9 +44,9 @@ export default function TakeoffsDialog({ open, setOpen, item, setHandwritten }: 
       const partCostIn: PartCostIn | null = res.find((p: PartCostIn) => p.vendor === part.purchasedFrom) ?? null;
       if (partCostIn) await editPartCostIn({ ...partCostIn, cost: Number(cost) });
     } else {
-      const newStockNum = `${part.stockNum} (${formatDate(new Date())})`;
+      const newStockNum = part.stockNum?.split('').slice(0, 2).join('').toUpperCase() !== 'UP' ? part.stockNum : `${part.stockNum} (${formatDate(new Date())})`;
       await addPart({ ...part, qty: 0, stockNum: newStockNum }, true);
-      await addPartCostIn(newStockNum, Number(cost), null, part.purchasedFrom ?? '', 'PurchasePrice', '');
+      await addPartCostIn(newStockNum ?? '', Number(cost), null, part.purchasedFrom ?? '', 'PurchasePrice', '');
     }
 
     const res = await getHandwrittenById(Number(params.handwritten));
@@ -63,6 +63,7 @@ export default function TakeoffsDialog({ open, setOpen, item, setHandwritten }: 
       title="Takeoff"
       width={300}
       y={-200}
+      data-testid="takeoffs-dialog"
     >
       <form onSubmit={handleSubmit}>
         <Input
@@ -71,6 +72,7 @@ export default function TakeoffsDialog({ open, setOpen, item, setHandwritten }: 
           value={qty ?? ''}
           onChange={(e: any) => setQty(Math.max(Math.min(e.target.value, (item.qty ?? 0)), 1))}
           type="number"
+          data-testid="qty"
         />
         {changeCost &&
           <Input
@@ -79,11 +81,12 @@ export default function TakeoffsDialog({ open, setOpen, item, setHandwritten }: 
             value={cost ?? ''}
             onChange={(e: any) => setCost(e.target.value)}
             type="number"
+            data-testid="change-cost"
           />
         }
 
         <div className="form__footer">
-          <Button type="submit">Submit</Button>
+          <Button type="submit" data-testid="submit-btn">Submit</Button>
         </div>
       </form>
     </Dialog>

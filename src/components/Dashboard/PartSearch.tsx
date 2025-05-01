@@ -238,6 +238,7 @@ export default function PartSearch({ selectHandwrittenOpen, setSelectHandwritten
             </Button>
             <Button
               onClick={() => setAltPartsSearchOpen(true)}
+              data-testid="alt-search-btn"
             >
               Alt Parts Search
             </Button>
@@ -316,7 +317,7 @@ export default function PartSearch({ selectHandwrittenOpen, setSelectHandwritten
                         </div>  
                       </td>
                       <td>{ formatDate(part.entryDate) }</td>
-                      <td style={part.qty > 0 ? {} : { color: 'var(--red-2)', fontWeight: 'bold' }}>{ part.qty }</td>
+                      <td style={part.qty > 0 ? {} : { color: 'var(--red-2)', fontWeight: 'bold' }} data-testid="qty">{ part.qty }</td>
                       <td style={{ width:'16rem' }}>{ part.desc }</td>
                       <td>
                         <div className="parts-list__left-content">

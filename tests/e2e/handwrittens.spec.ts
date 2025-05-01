@@ -1,8 +1,11 @@
+import { formatDate } from '@/scripts/tools/stringUtils';
 import { test, expect } from '@playwright/test';
+import { altSearch, partSearch } from '../utils';
 
 test.describe.configure({ mode: 'serial' });
 let partNum = '';
 let stockNum = '';
+let qty = 0;
 
 
 test.describe('Basic Functionality', () => {
@@ -80,6 +83,7 @@ test.describe('Basic Functionality', () => {
     expect(await page.getByTestId('attn-to').textContent()).toEqual('Bob');
     expect(await page.getByTestId('contact-phone').textContent()).toEqual('(488) 371-9460');
     expect(await page.getByTestId('shipping-notes').textContent()).toEqual('Test');
+    expect(await page.getByTestId('date').textContent()).toEqual(formatDate(new Date()));
   });
 });
 
@@ -96,6 +100,7 @@ test.describe('Handwritten items', () => {
     await page.goto('http://localhost:3000');
     partNum = await page.getByTestId('part-num-link').first().textContent() ?? '';
     stockNum = await page.getByTestId('stock-num').first().textContent() ?? '';
+    qty = Number(await page.getByTestId('qty').first().textContent());
     await page.getByTestId('add-item-btn').first().click();
     await page.getByTestId('select-handwritten-dialog').isVisible();
     await page.getByTestId('select-handwritten-row').first().click();
@@ -135,6 +140,15 @@ test.describe('Handwritten items', () => {
     await expect(page.getByTestId('item-desc').first()).toHaveText('TEST ITEM');
     expect(await page.getByTestId('order-notes').first().textContent()).toEqual('TEST WARRANTY\nNo CAT Warranty\nInjector warranty');
   });
+});
+
+test.describe('Cores', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto('http://localhost:3000/handwrittens');
+    await page.getByTestId('username').fill('bennett');
+    await page.getByTestId('login-btn').click();
+    await page.waitForSelector('.navbar');
+  });
 
   test('Core charge', async ({ page }) => {
     page.on('dialog', (dialog) => dialog.accept());
@@ -151,6 +165,71 @@ test.describe('Handwritten items', () => {
     await page.waitForLoadState('networkidle');
     await expect(page.getByTestId('part-num').first()).toHaveText(partNum);
   });
+
+  test('Core deposit', async ({ page }) => {
+    page.on('dialog', (dialog) => dialog.accept());
+    await page.getByTestId('link').first().click();
+    await page.waitForLoadState('networkidle');
+    await page.getByTestId('save-btn').click();
+    await page.getByTestId('no-changes-btn').click();
+    await page.getByTestId('core-credit-btn').click();
+    await (await page.$$('[data-testid="core-credits-dialog"] .checkbox-wrapper-4'))[0].click();
+    await page.getByTestId('core-qty-input').focus();
+    await page.keyboard.press('Enter');
+    await page.getByTestId('core-credit-submit-btn').click();
+
+    await page.waitForLoadState('networkidle');
+    await page.getByTestId('link').first().click();
+    await page.waitForLoadState('networkidle');
+    await page.getByTestId('save-btn').click();
+    await page.getByTestId('no-changes-btn').click();
+    await expect(page.getByTestId('item-stock-num').first()).toHaveText(stockNum);
+    await expect(page.getByTestId('item-qty').first()).toHaveText('-1');
+  });
+});
+
+test.describe('Takeoffs', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto('http://localhost:3000/handwrittens');
+    await page.getByTestId('username').fill('bennett');
+    await page.getByTestId('login-btn').click();
+    await page.waitForSelector('.navbar');
+  });
+
+  test('Takeoff qty UP stock number', async ({ page }) => {
+    page.on('dialog', (dialog) => dialog.accept('confirm'));
+    await page.getByTestId('link').nth(1).click();
+    await page.waitForLoadState('networkidle');
+    await page.getByTestId('save-btn').click();
+    await page.getByTestId('no-changes-btn').click();
+    await page.getByTestId('takeoff-input').fill(stockNum);
+    await page.getByTestId('takeoff-input').focus();
+    await page.keyboard.press('Enter');
+    const dialog = page.getByTestId('takeoffs-dialog');
+    await dialog.getByTestId('change-cost').fill('10');
+    await dialog.getByTestId('submit-btn').click();
+    await page.waitForTimeout(100);
+    await page.reload();
+
+    await page.goto('http://localhost:3000');
+    await page.waitForLoadState('networkidle');
+    await altSearch(page, { stockNum });
+    await expect(page.getByTestId('qty').first()).toHaveText(`${qty - 6}`);
+    await altSearch(page, { stockNum: `${stockNum} (${formatDate(new Date())})` });
+    await expect(page.getByTestId('qty').first()).toHaveText(`${0}`);
+    await expect(page.getByTestId('stock-num').first()).toHaveText(`${stockNum} (${formatDate(new Date())})`);
+
+    await page.getByTestId('part-num-link').click();
+    await page.waitForLoadState('networkidle');
+    await page.getByTestId('delete-btn').click();
+    await page.waitForLoadState('networkidle');
+    await partSearch(page, { stockNum });
+    await page.getByTestId('part-num-link').first().click();
+    await page.waitForLoadState('networkidle');
+    await page.getByTestId('edit-btn').click();
+    await page.getByTestId('qty').fill(`${qty}`);
+    await page.getByTestId('save-btn').click();
+  });
 });
 
 test.describe('Clean up', () => {
@@ -163,18 +242,22 @@ test.describe('Clean up', () => {
 
   test('Delete handwritten', async ({ page }) => {
     page.on('dialog', (dialog) => dialog.accept('confirm'));
-    const oldIdLocator = page.getByTestId('link').first();
-    await expect(oldIdLocator).toBeVisible();
-    const oldId = await oldIdLocator.textContent();
-  
-    await oldIdLocator.click();
-    await page.waitForSelector('[data-testid="save-btn"]');
-    await page.getByTestId('stop-edit-btn').click();
-    await page.getByTestId('delete-btn').click();
-  
-    const newIdLocator = page.getByTestId('link').first();
-    await expect(newIdLocator).toBeVisible();
-    const newId = await newIdLocator.textContent();
-    expect(newId).not.toEqual(oldId);
+    const deleteLatestHandwritten = async () => {
+      const oldIdLocator = page.getByTestId('link').first();
+      await expect(oldIdLocator).toBeVisible();
+      const oldId = await oldIdLocator.textContent();
+    
+      await oldIdLocator.click();
+      await page.waitForSelector('[data-testid="save-btn"]');
+      await page.getByTestId('stop-edit-btn').click();
+      await page.getByTestId('delete-btn').click();
+    
+      const newIdLocator = page.getByTestId('link').first();
+      await expect(newIdLocator).toBeVisible();
+      const newId = await newIdLocator.textContent();
+      expect(newId).not.toEqual(oldId);
+    };
+    await deleteLatestHandwritten();
+    await deleteLatestHandwritten();
   });
 });

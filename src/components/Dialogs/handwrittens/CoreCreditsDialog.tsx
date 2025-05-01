@@ -82,11 +82,13 @@ export default function CoreCreditsDialog({ open, setOpen, cores, handwritten }:
       setOpen={setOpen}
       title="Core Credits"
       maxHeight="25rem"
+      data-testid="core-credits-dialog"
     >
       <Button
         style={{ marginBottom: '0.3rem' }}
         onClick={handleCredit}
         disabled={inputCore !== null || selectedCores.length === 0}
+        data-testid="core-credit-submit-btn"
       >
         Credit
       </Button>
@@ -116,6 +118,7 @@ export default function CoreCreditsDialog({ open, setOpen, cores, handwritten }:
                         value={inputQty}
                         onChange={(e: any) => setInputQty(e.target.value)}
                         type="number"
+                        data-testid="core-qty-input"
                       />
                     </form>
                   </td>
