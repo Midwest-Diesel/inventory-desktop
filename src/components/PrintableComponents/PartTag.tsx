@@ -21,7 +21,7 @@ export default function PartTag({ properties }: Props) {
   return (
     <div className="part-tag">
       <div className="part-tag__header">
-        { !hasPictures && <Image src="/images/icons/image-black.svg" alt="P" width={40} height={40} /> }
+        { !hasPictures && <Image src="/images/icons/image-black.svg" alt="P" width={120} height={120} /> }
         <h1>{ stockNum }</h1>
       </div>
       <div className="part-tag__row">
