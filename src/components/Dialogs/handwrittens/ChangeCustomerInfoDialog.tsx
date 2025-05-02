@@ -31,8 +31,13 @@ export default function ChangeCustomerInfoDialog({ open, setOpen, customer, hand
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    setIsEditing(false);
+    handleClose();
     await editCustomer({ ...customer, company: billToCompany, billToAddress, billToAddress2, billToCity, billToState, billToZip, billToPhone });
+  };
+
+  const handleClose = () => {
+    if (handwritten?.invoiceStatus !== 'SENT TO ACCOUNTING') setIsEditing(false);
+    setOpen(false);
   };
 
 
@@ -119,7 +124,7 @@ export default function ChangeCustomerInfoDialog({ open, setOpen, customer, hand
         </div>
 
         <div className="form__footer">
-          <Button type="button" onClick={() => setIsEditing(false)} data-testid="no-changes-btn">No Changes</Button>
+          <Button type="button" onClick={handleClose} data-testid="no-changes-btn">No Changes</Button>
           <Button type="submit">Save</Button>
         </div>
       </form>

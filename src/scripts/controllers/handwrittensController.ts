@@ -327,6 +327,15 @@ export const editHandwrittenTaxable = async (id: number, value: boolean) => {
   }
 };
 
+export const editHandwrittenPromotionals = async (id: number, mp: number, cap: number, br: number, fl: number) => {
+  try {
+    const auth = { withCredentials: true };
+    await api.patch('/api/handwrittens/promotionals', { id, mp, cap, br, fl }, auth);
+  } catch (err) {
+    console.error(err);
+  }
+};
+
 // === PUT routes === //
 
 export const editHandwritten = async (invoice: Handwritten) => {

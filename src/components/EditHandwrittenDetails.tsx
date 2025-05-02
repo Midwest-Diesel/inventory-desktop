@@ -26,6 +26,7 @@ import CreditCardBlock from "./CreditCardBlock";
 import Dropdown from "./Library/Dropdown/Dropdown";
 import DropdownOption from "./Library/Dropdown/DropdownOption";
 import { arrayOfObjectsMatch } from "@/scripts/tools/utils";
+import PromotionalDialog from "./Dialogs/handwrittens/PromotionalDialog";
 
 interface Props {
   handwritten: Handwritten
@@ -108,6 +109,7 @@ export default function EditHandwrittenDetails({
   const [trackingNumbers, setTrackingNumbers] = useState<TrackingNumber[]>(handwritten.trackingNumbers);
   const [blankTrackingNumber, setBlankTrackingNumber] = useState('');
   const [shippingListDialogOpen, setShippingListDialogOpen] = useState(false);
+  const [promotionalDialogOpen, setPromotionalDialogOpen] = useState(false);
   const [newShippingListRow, setNewShippingListRow] = useState<Handwritten | null>(null);
   const [isTaxable, setIsTaxable] = useState<boolean>(handwritten.isTaxable);
   const [isBlindShipment, setIsBlind] = useState<boolean>(handwritten.isBlindShipment);
@@ -230,6 +232,9 @@ export default function EditHandwrittenDetails({
     if (isSentToAccounting) {
       if (await confirm('Add this to shipping list?')) {
         setShippingListDialogOpen(true);
+      }
+      if (await confirm('Do you want to add marketing materials?')) {
+        setPromotionalDialogOpen(true);
       }
 
       const hasCore = handwrittenItems.some((item) => item.location === 'CORE DEPOSIT');
@@ -510,6 +515,15 @@ export default function EditHandwrittenDetails({
           handwrittenItems={handwrittenItems}
           newShippingListRow={newShippingListRow}
           setIsEditing={setIsEditing}
+        />
+      }
+
+      {promotionalDialogOpen &&
+        <PromotionalDialog
+          open={promotionalDialogOpen}
+          setOpen={setPromotionalDialogOpen}
+          setIsEditing={setIsEditing}
+          handwritten={handwritten}
         />
       }
 
@@ -1007,6 +1021,7 @@ export default function EditHandwrittenDetails({
                             type="number"
                             onChange={(e: any) => editHandwrittenItem({ ...item, cost: e.target.value }, i)}
                             disabled={isDisabled}
+                            data-testid="item-cost"
                           />
                         </td>
                         <td>

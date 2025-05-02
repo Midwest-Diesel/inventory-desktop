@@ -734,19 +734,19 @@ export default function Handwritten() {
                       <tbody>
                         <tr>
                           <th><strong>Mousepads</strong></th>
-                          <td>{ handwritten.mp }</td>
+                          <td data-testid="mp">{ handwritten.mp }</td>
                         </tr>
                         <tr>
                           <th><strong>Hats</strong></th>
-                          <td>{ handwritten.cap }</td>
+                          <td data-testid="cap">{ handwritten.cap }</td>
                         </tr>
                         <tr>
                           <th><strong>Brochures</strong></th>
-                          <td>{ handwritten.br }</td>
+                          <td data-testid="br">{ handwritten.br }</td>
                         </tr>
                         <tr>
                           <th><strong>Flashlights</strong></th>
-                          <td>{ handwritten.fl }</td>
+                          <td data-testid="fl">{ handwritten.fl }</td>
                         </tr>
                       </tbody>
                     </Table>

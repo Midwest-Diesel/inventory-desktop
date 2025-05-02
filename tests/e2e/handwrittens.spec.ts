@@ -232,6 +232,37 @@ test.describe('Takeoffs', () => {
   });
 });
 
+test.describe('SENT TO ACCOUNTING', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto('http://localhost:3000/handwrittens');
+    await page.getByTestId('username').fill('bennett');
+    await page.getByTestId('login-btn').click();
+    await page.waitForSelector('.navbar');
+  });
+
+  test('Prompt for promotional materials', async ({ page }) => {
+    page.on('dialog', (dialog) => dialog.accept('confirm'));
+    await page.getByTestId('link').nth(1).click();
+    await page.waitForLoadState('networkidle');
+    await page.getByTestId('item-cost').nth(1).fill('60');
+    await page.getByTestId('sales-status').selectOption('SENT TO ACCOUNTING');
+    await page.getByTestId('save-btn').click();
+
+    await page.waitForSelector('[data-testid="promotional-dialog"]');
+    await page.getByTestId('no-changes-btn').click();
+    await page.getByTestId('mp-input').fill('1');
+    await page.getByTestId('cap-input').fill('2');
+    await page.getByTestId('br-input').fill('3');
+    await page.getByTestId('fl-input').fill('4');
+    await page.getByTestId('submit-btn').click();
+
+    await expect(page.getByTestId('mp')).toHaveText('1');
+    await expect(page.getByTestId('cap')).toHaveText('2');
+    await expect(page.getByTestId('br')).toHaveText('3');
+    await expect(page.getByTestId('fl')).toHaveText('4');
+  });
+});
+
 test.describe('Clean up', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('http://localhost:3000/handwrittens');
@@ -242,22 +273,32 @@ test.describe('Clean up', () => {
 
   test('Delete handwritten', async ({ page }) => {
     page.on('dialog', (dialog) => dialog.accept('confirm'));
-    const deleteLatestHandwritten = async () => {
-      const oldIdLocator = page.getByTestId('link').first();
-      await expect(oldIdLocator).toBeVisible();
-      const oldId = await oldIdLocator.textContent();
+    const oldIdLocator = page.getByTestId('link').first();
+    await expect(oldIdLocator).toBeVisible();
+    const oldId = await oldIdLocator.textContent();
+  
+    await oldIdLocator.click();
+    await page.waitForSelector('[data-testid="save-btn"]');
+    await page.getByTestId('stop-edit-btn').click();
+    await page.getByTestId('delete-btn').click();
+  
+    const newIdLocator = page.getByTestId('link').first();
+    await expect(newIdLocator).toBeVisible();
+    const newId = await newIdLocator.textContent();
+    expect(newId).not.toEqual(oldId);
+
     
-      await oldIdLocator.click();
-      await page.waitForSelector('[data-testid="save-btn"]');
-      await page.getByTestId('stop-edit-btn').click();
-      await page.getByTestId('delete-btn').click();
-    
-      const newIdLocator = page.getByTestId('link').first();
-      await expect(newIdLocator).toBeVisible();
-      const newId = await newIdLocator.textContent();
-      expect(newId).not.toEqual(oldId);
-    };
-    await deleteLatestHandwritten();
-    await deleteLatestHandwritten();
+    const oldIdLocator2 = page.getByTestId('link').first();
+    await expect(oldIdLocator2).toBeVisible();
+    const oldId2 = await oldIdLocator2.textContent();
+  
+    await oldIdLocator2.click();
+    await page.waitForSelector('[data-testid="delete-btn"]');
+    await page.getByTestId('delete-btn').click();
+  
+    const newIdLocator2 = page.getByTestId('link').first();
+    await expect(newIdLocator2).toBeVisible();
+    const newId2= await newIdLocator2.textContent();
+    expect(newId2).not.toEqual(oldId2);
   });
 });
