@@ -70,7 +70,10 @@ export default function PartDetails() {
         return;
       }
       const copies = Number(prompt('How many tags do you want to print?', '1'));
-      if (copies <= 0) return;
+      if (copies <= 0) {
+        setPartTagProps(null);
+        return;
+      }
 
       const imageData = await toPng(printRef.current);
       await invoke('print_part_tag', { imageData });

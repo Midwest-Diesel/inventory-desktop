@@ -20,6 +20,7 @@ use std::path::{Path};
 use zip::read::ZipArchive;
 use base64::{engine::general_purpose::STANDARD as BASE64_STANDARD, Engine, decode};
 use url::Url;
+use dotenv::dotenv;
 
 #[derive(Deserialize, Debug)]
 struct LatestVersionInfo {
@@ -362,6 +363,7 @@ struct EmailEndOfDayArgs {
 
 #[tokio::main]
 async fn main() {
+  dotenv::from_filename(".env.development").ok();
   tauri::Builder::default()
     .setup(|_| {
       create_directories();
@@ -882,7 +884,9 @@ fn upload_file(file_args: FileArgs) -> Result<(), String> {
 
 #[tauri::command]
 fn print_shipping_label(args: ShippingLabelArgs) -> Result<(), String> {
-  if env::var("DISABLE_PRINTING").ok().as_deref() == Some("TRUE") { return Ok(()) }
+  if let Ok(val) = env::var("DISABLE_PRINTING") {
+    if val == "TRUE" { return Ok(()) }
+  }
   let printer = "\\\\FRONT-DESK\\Zebra  ZP 450-200 dpi";
   let vbs_script = format!(
     r#"
@@ -938,7 +942,9 @@ fn print_shipping_label(args: ShippingLabelArgs) -> Result<(), String> {
 
 #[tauri::command]
 fn print_cc_label(args: CCLabelArgs) -> Result<(), String> {
-  if env::var("DISABLE_PRINTING").ok().as_deref() == Some("TRUE") { return Ok(()) }
+  if let Ok(val) = env::var("DISABLE_PRINTING") {
+    if val == "TRUE" { return Ok(()) }
+  }
   let printer = "\\\\FRONT-DESK\\ZDesigner GC420d";
   let vbs_script = format!(
     r#"
@@ -1136,7 +1142,9 @@ fn print_bol(args: BOLArgs) -> Result<(), String> {
 
 #[tauri::command]
 fn print_accounting_invoice(args: AccountingInvoiceArgs) -> Result<(), String> {
-  if env::var("DISABLE_PRINTING").ok().as_deref() == Some("TRUE") { return Ok(()) }
+  if let Ok(val) = env::var("DISABLE_PRINTING") {
+    if val == "TRUE" { return Ok(()) }
+  }
   let printer = "Brother HL-L5200DW series";
   let json_data = to_string(&args.items).unwrap();
   let vbs_script = format!(
@@ -1335,7 +1343,9 @@ fn print_accounting_invoice(args: AccountingInvoiceArgs) -> Result<(), String> {
 
 #[tauri::command]
 fn print_shipping_invoice(args: ShippingInvoiceArgs) -> Result<(), String> {
-  if env::var("DISABLE_PRINTING").ok().as_deref() == Some("TRUE") { return Ok(()) }
+  if let Ok(val) = env::var("DISABLE_PRINTING") {
+    if val == "TRUE" { return Ok(()) }
+  }
   let printer = "\\\\JIM-PC\\HP LaserJet Pro M402-M403 n-dne PCL 6";
   let json_data = to_string(&args.items).unwrap();
   let vbs_script = format!(
@@ -1540,7 +1550,9 @@ fn print_shipping_invoice(args: ShippingInvoiceArgs) -> Result<(), String> {
 
 #[tauri::command]
 fn print_core_invoice(args: AccountingInvoiceArgs) -> Result<(), String> {
-  if env::var("DISABLE_PRINTING").ok().as_deref() == Some("TRUE") { return Ok(()) }
+  if let Ok(val) = env::var("DISABLE_PRINTING") {
+    if val == "TRUE" { return Ok(()) }
+  }
   let printer = "Brother HL-L5200DW series";
   let json_data = to_string(&args.items).unwrap();
   let vbs_script = format!(
@@ -1809,7 +1821,9 @@ fn print_coo() -> Result<(), String> {
 
 #[tauri::command]
 fn _print_part_tag(args: PartTagArgs) -> Result<(), String> {
-  if env::var("DISABLE_PRINTING").ok().as_deref() == Some("TRUE") { return Ok(()) }
+  if let Ok(val) = env::var("DISABLE_PRINTING") {
+    if val == "TRUE" { return Ok(()) }
+  }
   let printer = "ZDesigner GC420d (EPL)";
   let vbs_script = format!(
     r#"
@@ -1936,7 +1950,9 @@ End Sub
 
 #[tauri::command]
 fn print_return(args: PrintReturnArgs) -> Result<(), String> {
-  if env::var("DISABLE_PRINTING").ok().as_deref() == Some("TRUE") { return Ok(()) }
+  if let Ok(val) = env::var("DISABLE_PRINTING") {
+    if val == "TRUE" { return Ok(()) }
+  }
   let printer = "Brother MFC-L3770CDW series";
   let vbs_script = format!(
     r#"
@@ -2087,7 +2103,9 @@ fn print_return(args: PrintReturnArgs) -> Result<(), String> {
 
 #[tauri::command]
 fn print_warranty(args: PrintWarrantyArgs) -> Result<(), String> {
-  if env::var("DISABLE_PRINTING").ok().as_deref() == Some("TRUE") { return Ok(()) }
+  if let Ok(val) = env::var("DISABLE_PRINTING") {
+    if val == "TRUE" { return Ok(()) }
+  }
   let printer = "Brother MFC-L3770CDW series";
   let vbs_script = format!(
     r#"
@@ -2259,7 +2277,9 @@ fn print_warranty(args: PrintWarrantyArgs) -> Result<(), String> {
 
 #[tauri::command]
 fn print_packing_slip(args: PrintPackingSlipArgs) -> Result<(), String> {
-  if env::var("DISABLE_PRINTING").ok().as_deref() == Some("TRUE") { return Ok(()) }
+  if let Ok(val) = env::var("DISABLE_PRINTING") {
+    if val == "TRUE" { return Ok(()) }
+  }
   let printer = "Brother MFC-L3770CDW series";
   let vbs_script = format!(
     r#"
@@ -2372,7 +2392,9 @@ fn print_packing_slip(args: PrintPackingSlipArgs) -> Result<(), String> {
 
 #[tauri::command]
 fn print_packing_slip_blind(args: PrintPackingSlipBlindArgs) -> Result<(), String> {
-  if env::var("DISABLE_PRINTING").ok().as_deref() == Some("TRUE") { return Ok(()) }
+  if let Ok(val) = env::var("DISABLE_PRINTING") {
+    if val == "TRUE" { return Ok(()) }
+  }
   let printer = "Brother MFC-L3770CDW series";
   let vbs_script = format!(
     r#"
@@ -2471,7 +2493,9 @@ fn print_packing_slip_blind(args: PrintPackingSlipBlindArgs) -> Result<(), Strin
 
 #[tauri::command]
 fn print_po(args: PrintPOArgs) -> Result<(), String> {
-  if env::var("DISABLE_PRINTING").ok().as_deref() == Some("TRUE") { return Ok(()) }
+  if let Ok(val) = env::var("DISABLE_PRINTING") {
+    if val == "TRUE" { return Ok(()) }
+  }
   let printer = "Brother MFC-L3770CDW series";
   let vbs_script = format!(
     r#"
@@ -2663,19 +2687,17 @@ fn print_part_tag(imageData: String) -> Result<(), String> {
     .decode()
     .map_err(|e| e.to_string())?;
 
-  // let rotated_img: DynamicImage = image::DynamicImage::ImageRgba8(rotate90(&img)).resize(2880, 1920, FilterType::Lanczos3);
   let rotated_img: DynamicImage = image::DynamicImage::ImageRgba8(rotate90(&img));
-
   {
     let mut file = File::create(file_path).map_err(|e| e.to_string())?;
     rotated_img.write_to(&mut file, ImageOutputFormat::Png).map_err(|e| e.to_string())?;
   }
 
   Command::new("mspaint")
-  .current_dir("C:/mwd/scripts")
-  .args([file_path, "/pt", printer])
-  .output()
-  .map_err(|e| e.to_string())?;
+    .current_dir("C:/mwd/scripts")
+    .args([file_path, "/pt", printer])
+    .output()
+    .map_err(|e| e.to_string())?;
 
   Ok(())
 }
