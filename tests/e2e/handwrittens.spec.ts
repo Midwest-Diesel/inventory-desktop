@@ -1,27 +1,30 @@
 import { formatDate } from '@/scripts/tools/stringUtils';
-import { test, expect } from '@playwright/test';
+import { test, expect, Page } from '@playwright/test';
 import { altSearch, partSearch } from '../utils';
 
 test.describe.configure({ mode: 'serial' });
+let page: Page;
 let partNum = '';
 let stockNum = '';
 let qty = 0;
 
 
-test.describe('Basic Functionality', () => {
-  test.beforeEach(async ({ page }) => {
-    await page.goto('http://localhost:3000/handwrittens');
-    await page.getByTestId('username').fill('bennett');
-    await page.getByTestId('login-btn').click();
-    await page.waitForSelector('.navbar');
-  });
+test.beforeAll(async ({ browser }) => {
+  page = await browser.newPage();
+  page.on('dialog', (dialog) => dialog.accept('confirm'));
+  await page.goto('http://localhost:3000/handwrittens');
+  await page.getByTestId('username').fill('bennett');
+  await page.getByTestId('login-btn').click();
+  await page.waitForSelector('.navbar');
+});
 
-  test('Display handwrittens', async ({ page }) => {
+test.describe('Basic Functionality', () => {
+  test('Display handwrittens', async () => {
     const tableLength = (await page.$$('table tr')).length;
     expect(tableLength).toBeGreaterThan(0);
   });
 
-  test('Create blank handwritten', async ({ page }) => {
+  test('Create blank handwritten', async () => {
     const prevId = await page.getByTestId('link').first().textContent() ?? '';
     await page.getByTestId('new-btn').click();
     await page.$('li').then((el) => el?.click());
@@ -34,8 +37,7 @@ test.describe('Basic Functionality', () => {
     await expect(page.getByTestId('link').nth(1)).toHaveText(prevId);
   });
 
-  test('Edit handwritten', async ({ page }) => {
-    page.on('dialog', (dialog) => dialog.accept());
+  test('Edit handwritten', async () => {
     await page.getByTestId('link').first().click();
     await page.getByTestId('po-num').fill('T104B6');
     await page.getByTestId('source').selectOption('Netcom');
@@ -88,15 +90,7 @@ test.describe('Basic Functionality', () => {
 });
 
 test.describe('Handwritten items', () => {
-  test.beforeEach(async ({ page }) => {
-    await page.goto('http://localhost:3000/handwrittens');
-    await page.getByTestId('username').fill('bennett');
-    await page.getByTestId('login-btn').click();
-    await page.waitForSelector('.navbar');
-  });
-
-  test('Add handwritten items', async ({ page }) => {
-    page.on('dialog', (dialog) => dialog.accept());
+  test('Add handwritten items', async () => {
     await page.goto('http://localhost:3000');
     partNum = await page.getByTestId('part-num-link').first().textContent() ?? '';
     stockNum = await page.getByTestId('stock-num').first().textContent() ?? '';
@@ -143,15 +137,8 @@ test.describe('Handwritten items', () => {
 });
 
 test.describe('Cores', () => {
-  test.beforeEach(async ({ page }) => {
+  test('Core charge', async () => {
     await page.goto('http://localhost:3000/handwrittens');
-    await page.getByTestId('username').fill('bennett');
-    await page.getByTestId('login-btn').click();
-    await page.waitForSelector('.navbar');
-  });
-
-  test('Core charge', async ({ page }) => {
-    page.on('dialog', (dialog) => dialog.accept());
     await page.getByTestId('link').first().click();
     await page.waitForLoadState('networkidle');
     await page.getByTestId('save-btn').click();
@@ -160,14 +147,14 @@ test.describe('Cores', () => {
     await page.waitForTimeout(1000);
     await expect(page.getByTestId('item-part-num').first()).toHaveText('CORE DEPOSIT');
     await expect(page.getByTestId('item-stock-num').first()).toHaveText(stockNum);
-
+  
     await page.goto('http://localhost:3000/cores');
     await page.waitForLoadState('networkidle');
     await expect(page.getByTestId('part-num').first()).toHaveText(partNum);
   });
 
-  test('Core deposit', async ({ page }) => {
-    page.on('dialog', (dialog) => dialog.accept());
+  test('Core deposit', async () => {
+    await page.goto('http://localhost:3000/handwrittens');
     await page.getByTestId('link').first().click();
     await page.waitForLoadState('networkidle');
     await page.getByTestId('save-btn').click();
@@ -189,15 +176,8 @@ test.describe('Cores', () => {
 });
 
 test.describe('Takeoffs', () => {
-  test.beforeEach(async ({ page }) => {
+  test('Takeoff qty UP stock number', async () => {
     await page.goto('http://localhost:3000/handwrittens');
-    await page.getByTestId('username').fill('bennett');
-    await page.getByTestId('login-btn').click();
-    await page.waitForSelector('.navbar');
-  });
-
-  test('Takeoff qty UP stock number', async ({ page }) => {
-    page.on('dialog', (dialog) => dialog.accept('confirm'));
     await page.getByTestId('link').nth(1).click();
     await page.waitForLoadState('networkidle');
     await page.getByTestId('save-btn').click();
@@ -233,15 +213,8 @@ test.describe('Takeoffs', () => {
 });
 
 test.describe('SENT TO ACCOUNTING', () => {
-  test.beforeEach(async ({ page }) => {
+  test('Prompt for promotional materials', async () => {
     await page.goto('http://localhost:3000/handwrittens');
-    await page.getByTestId('username').fill('bennett');
-    await page.getByTestId('login-btn').click();
-    await page.waitForSelector('.navbar');
-  });
-
-  test('Prompt for promotional materials', async ({ page }) => {
-    page.on('dialog', (dialog) => dialog.accept('confirm'));
     await page.getByTestId('link').nth(1).click();
     await page.waitForLoadState('networkidle');
     await page.getByTestId('item-cost').nth(1).fill('60');
@@ -264,15 +237,8 @@ test.describe('SENT TO ACCOUNTING', () => {
 });
 
 test.describe('Clean up', () => {
-  test.beforeEach(async ({ page }) => {
+  test('Delete handwritten', async () => {
     await page.goto('http://localhost:3000/handwrittens');
-    await page.getByTestId('username').fill('bennett');
-    await page.getByTestId('login-btn').click();
-    await page.waitForSelector('.navbar');
-  });
-
-  test('Delete handwritten', async ({ page }) => {
-    page.on('dialog', (dialog) => dialog.accept('confirm'));
     const oldIdLocator = page.getByTestId('link').first();
     await expect(oldIdLocator).toBeVisible();
     const oldId = await oldIdLocator.textContent();

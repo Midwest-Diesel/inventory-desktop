@@ -1,24 +1,26 @@
 import { formatDate } from '@/scripts/tools/stringUtils';
-import { test, expect } from '@playwright/test';
+import { test, expect, Page } from '@playwright/test';
 
 test.describe.configure({ mode: 'serial' });
+let page: Page;
 
+
+test.beforeAll(async ({ browser }) => {
+  page = await browser.newPage();
+  page.on('dialog', (dialog) => dialog.accept('confirm'));
+  await page.goto('http://localhost:3000/returns');
+  await page.getByTestId('username').fill('bennett');
+  await page.getByTestId('login-btn').click();
+  await page.waitForSelector('.navbar');
+});
 
 test.describe('Basic Functionality', () => {
-  test.beforeEach(async ({ page }) => {
-    await page.goto('http://localhost:3000/returns');
-    await page.getByTestId('username').fill('bennett');
-    await page.getByTestId('login-btn').click();
-    await page.waitForSelector('.navbar');
-  });
-
-  test('Display returns', async ({ page }) => {
+  test('Display returns', async () => {
     const tableLength = (await page.$$('table tr')).length;
     expect(tableLength).toBeGreaterThan(0);
   });
 
-  test('Create new return from handwritten', async ({ page }) => {
-    page.on('dialog', (dialog) => dialog.accept());
+  test('Create new return from handwritten', async () => {
     await page.goto('http://localhost:3000/handwrittens/9');
     await page.waitForLoadState('networkidle');
     await page.getByTestId('new-return-btn').click();
@@ -27,7 +29,7 @@ test.describe('Basic Functionality', () => {
     await expect(page.getByTestId('handwritten-link').first()).toHaveText('9');
   });
 
-  // test("Can edit return", async ({ page }) => {
+  // test("Can edit return", async () => {
   //   await $('return-link').click();
   //   await $('edit-btn').click();
   //   await $('input').setValue('123');
@@ -38,15 +40,8 @@ test.describe('Basic Functionality', () => {
 });
 
 test.describe('Handle Returns', () => {
-  test.beforeEach(async ({ page }) => {
+  test('Issue credit', async () => {
     await page.goto('http://localhost:3000/returns');
-    await page.getByTestId('username').fill('bennett');
-    await page.getByTestId('login-btn').click();
-    await page.waitForSelector('.navbar');
-  });
-
-  test('Issue credit', async ({ page }) => {
-    page.on('dialog', (dialog) => dialog.accept());
     await page.getByTestId('return-link').first().click();
     await page.waitForLoadState('networkidle');
     await page.getByTestId('credit-issued-btn').click();
@@ -55,15 +50,8 @@ test.describe('Handle Returns', () => {
 });
 
 test.describe('Clean Up', () => {
-  test.beforeEach(async ({ page }) => {
+  test('Delete return', async () => {
     await page.goto('http://localhost:3000/returns');
-    await page.getByTestId('username').fill('bennett');
-    await page.getByTestId('login-btn').click();
-    await page.waitForSelector('.navbar');
-  });
-
-  test('Delete return', async ({ page }) => {
-    page.on('dialog', (dialog) => dialog.accept('confirm'));
     await page.getByTestId('return-link').first().click();
     await page.getByTestId('delete-btn').click();
     await page.waitForTimeout(100);
