@@ -18,7 +18,7 @@ interface Props {
   part: Part
   customer: Customer | null
   setHandwrittenCustomer: (customer: Customer) => void
-  onSubmit: (handwritten: Handwritten, warranty: string, qty: number, desc: string, price: number) => void
+  onSubmit: (handwritten: Handwritten, warranty: string, qty: number, desc: string, price: number, stockNum: string) => void
 }
 
 
@@ -186,7 +186,7 @@ export default function SelectHandwrittenDialog({ open, setOpen, part, customer,
       setShowWarranty(true);
     } else {
       setOpen(false);
-      onSubmit(handwritten, '', Number(qty), desc, Number(price));
+      onSubmit(handwritten, '', Number(qty), desc, Number(price), part.stockNum ?? '');
     }
   };
 
@@ -205,7 +205,7 @@ export default function SelectHandwrittenDialog({ open, setOpen, part, customer,
     }
     if (noVerbage) fullWar = [handwritten.orderNotes];
     const filteredWar = new Set(fullWar);
-    onSubmit(handwritten, [...Array.from(filteredWar)].join('\n').trim(), Number(qty), desc, Number(price));
+    onSubmit(handwritten, [...Array.from(filteredWar)].join('\n').trim(), Number(qty), desc, Number(price), part.stockNum ?? '');
   };
 
 

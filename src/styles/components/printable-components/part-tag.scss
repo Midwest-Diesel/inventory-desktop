@@ -3,7 +3,7 @@
   color: black;
   padding: 1rem;
   text-align: center;
-  font-size: 70px;
+  font-size: 60px;
   width: 70%;
   height: 100vh;
   position: relative;
@@ -41,9 +41,7 @@
   }
 
   &__location {
-    width: fit-content;
     transform: rotate(90deg);
-    margin: 0 0 0 -3.5rem;
   }
 
   &__barcode-container {
@@ -58,7 +56,7 @@
 
   &__barcode {
     transform: rotate(-90deg);
-    font-family: barcode, Arial, Helvetica, sans-serif;
+    margin-top: 9rem;
   }
 
   &__remarks {
@@ -66,6 +64,7 @@
     text-align: center;
     line-height: 4.5rem;
     font-size: 50px;
+    margin-left: 0.7rem;
   }
 
   &__bottom-row {

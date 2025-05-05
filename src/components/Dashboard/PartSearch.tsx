@@ -193,7 +193,7 @@ export default function PartSearch({ selectHandwrittenOpen, setSelectHandwritten
   };
 
   const getTotalCostIn = (part: Part) => {
-    return part.partsCostIn.reduce((acc, val) => acc + val.cost, 0);
+    return part.partsCostIn.reduce((acc, val) => acc + val.cost, 0) || 0.01;
   };
 
   const partCostStyles = (part: Part) => {
@@ -318,7 +318,7 @@ export default function PartSearch({ selectHandwrittenOpen, setSelectHandwritten
                       </td>
                       <td>{ formatDate(part.entryDate) }</td>
                       <td style={part.qty > 0 ? {} : { color: 'var(--red-2)', fontWeight: 'bold' }} data-testid="qty">{ part.qty }</td>
-                      <td style={{ width:'16rem' }}>{ part.desc }</td>
+                      <td style={{ width: '16rem' }}>{ part.desc }</td>
                       <td>
                         <div className="parts-list__left-content">
                           {part.snImageExists &&

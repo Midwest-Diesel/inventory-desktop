@@ -859,6 +859,7 @@ export default function EditHandwrittenDetails({
                         variant={['input', 'no-margin', 'fill']}
                         value={contactEmail}
                         onChange={(value: string) => setContactEmail(value)}
+                        maxHeight="25rem"
                         data-testid="eod-email"
                       >
                         {emails.map((email, i) => {

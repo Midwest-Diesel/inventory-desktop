@@ -15,6 +15,7 @@ import { listen } from '@tauri-apps/api/event';
 import { confirm } from "@/scripts/config/tauri";
 import { toggleQuoteSold } from "@/scripts/controllers/quotesController";
 import { useNavState } from "@/components/Navbar/useNavState";
+import { getPartCostIn } from "@/scripts/controllers/partsController";
 
 
 export default function Home() {
@@ -50,7 +51,9 @@ export default function Home() {
     setHandwrittenCustomer(customer);
   }, [customer]);
 
-  const handleAddToHandwritten = async (id: number, desc: string, qty: number, price: number, warranty: string) => {
+  const handleAddToHandwritten = async (id: number, desc: string, qty: number, price: number, warranty: string, stockNum: string) => {
+    const partCostIn = await getPartCostIn(stockNum);
+    const cost = partCostIn.reduce((acc, val) => acc + (val.cost ?? 0), 0) || 0.01;
     const newItem = {
       handwrittenId: id,
       date: new Date(),
@@ -59,7 +62,7 @@ export default function Home() {
       stockNum: selectedHandwrittenPart?.stockNum,
       unitPrice: price,
       qty: qty,
-      cost: 0.04,
+      cost,
       location: selectedHandwrittenPart?.location,
       partId: selectedHandwrittenPart?.id,
     } as HandwrittenItem;
@@ -67,7 +70,7 @@ export default function Home() {
     if (warranty) await editHandwrittenOrderNotes(id, warranty);
   };
 
-  const handleSubmitNewHandwritten = async (handwritten: Handwritten, warranty: string, qty: number, desc: string, price: number) => {
+  const handleSubmitNewHandwritten = async (handwritten: Handwritten, warranty: string, qty: number, desc: string, price: number, stockNum: string) => {
     const part = selectedHandwrittenPart;
     const newItem = handwritten.handwrittenItems.find((item) => item.partNum === part?.partNum);
     if (newItem) {
@@ -76,10 +79,10 @@ export default function Home() {
         await addHandwrittenItemChild(newItem.id, { partId: part?.id, qty: qty, cost: price } as HandwrittenItemChild);
         await editHandwrittenOrderNotes(handwritten.id, warranty);
       } else {
-        handleAddToHandwritten(handwritten.id, desc, qty, price, warranty);
+        handleAddToHandwritten(handwritten.id, desc, qty, price, warranty, stockNum);
       }
     } else {
-      handleAddToHandwritten(handwritten.id, desc, qty, price, warranty);
+      handleAddToHandwritten(handwritten.id, desc, qty, price, warranty, stockNum);
     }
 
     const updatedQuote = { ...handwrittenQuote, sale: true };

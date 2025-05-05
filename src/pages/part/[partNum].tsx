@@ -74,7 +74,6 @@ export default function PartDetails() {
         setPartTagProps(null);
         return;
       }
-
       const imageData = await toPng(printRef.current);
       await invoke('print_part_tag', { imageData });
       setPartTagProps(null);
@@ -443,9 +442,7 @@ export default function PartDetails() {
 
       {partTagProps &&
         <div ref={printRef} style={{ marginTop: '10rem' }}>
-          <PartTag
-            properties={partTagProps}
-          />
+          <PartTag properties={partTagProps} />
         </div>
       }
     </Layout>

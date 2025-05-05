@@ -121,11 +121,13 @@ export default function Dropdown({ children, className = '', variant = [], label
             </>
           ) : (
             variant.includes("input") ?
-              <Input
-                value={value}
-                onChange={(e: any) => onChange && onChange(e.target.value)}
-                onFocus={() => setIsOpen(true)}
-              />
+              <div style={{ maxHeight, overflowY: "auto" }}>
+                <Input
+                  value={value}
+                  onChange={(e: any) => onChange && onChange(e.target.value)}
+                  onFocus={() => setIsOpen(true)}
+                />
+              </div>
               :
               <DropdownOption className={`dropdown__option--selected drop-id-${idProp}`} value={selectedOption} onClick={() => setIsOpen(true)}>
                 {dropdownOptions.find((child: any) => child.props.value === selectedOption)?.props.children}

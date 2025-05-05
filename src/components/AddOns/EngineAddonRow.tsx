@@ -12,6 +12,8 @@ import { formatDate } from "@/scripts/tools/stringUtils";
 import VendorSelect from "../Library/Select/VendorSelect";
 import { invoke, confirm } from "@/scripts/config/tauri";
 import { getEngineImages } from "@/scripts/controllers/imagesController";
+import { toPng } from "html-to-image";
+import PartTag from "../PrintableComponents/PartTag";
 
 interface Props {
   addOn: EngineAddOn
@@ -24,7 +26,9 @@ export default function EngineAddOnRow({ addOn, handleDuplicateAddOn }: Props) {
   const [autofillEngineNum, setAutofillEngineNum] = useState('');
   const [showVendorSelect, setShowVendorSelect] = useState(false);
   const [printQty, setPrintQty] = useState(1);
+  const [partTagProps, setPartTagProps] = useState<any>(null);
   const ref = useRef<HTMLDivElement>(null);
+  const printRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!showVendorSelect) return;
@@ -34,6 +38,24 @@ export default function EngineAddOnRow({ addOn, handleDuplicateAddOn }: Props) {
       select.length > 0 && select[select.length - 2].focus();
     }, 30);
   }, [showVendorSelect]);
+
+  useEffect(() => {
+    const captureImage = async () => {
+      if (!partTagProps || !printRef.current) {
+        setPartTagProps(null);
+        return;
+      }
+      const copies = Number(prompt('How many tags do you want to print?', '1'));
+      if (copies <= 0) {
+        // setPartTagProps(null);
+        return;
+      }
+      const imageData = await toPng(printRef.current);
+      await invoke('print_part_tag', { imageData });
+      setPartTagProps(null);
+    };
+    setTimeout(() => captureImage(), 500);
+  }, [partTagProps]);
   
   const handleEditAddOn = (newAddOn: EngineAddOn) => {
     const updatedAddOns = addOns.map((a: EngineAddOn) => {
@@ -92,7 +114,7 @@ export default function EngineAddOnRow({ addOn, handleDuplicateAddOn }: Props) {
 
   const handlePrint = async () => {
     const pictures = await getEngineImages(addOn.engineNum);
-    const args = {
+    setPartTagProps({
       stockNum: addOn.engineNum?.toString() ?? '',
       model: addOn.model ?? '',
       serialNum: addOn.serialNum ?? '',
@@ -102,180 +124,186 @@ export default function EngineAddOnRow({ addOn, handleDuplicateAddOn }: Props) {
       date: formatDate(addOn.entryDate) ?? '',
       partNum: addOn.arrNum ?? '',
       rating: '0',
-      hasPictures: pictures.length > 0,
-      copies: Number(printQty)
-    };
-    await invoke('print_part_tag', { args });
+      hasPictures: pictures.length > 0
+    });
   };
   
 
   return (
-    <div className="add-ons__list-row" ref={ref}>
-      <div className="add-ons__list-row-content">
-        <Table variant={['plain', 'edit-row-details']} style={{ width: 'fit-content' }}>
-          <thead>
-            <tr>
-              <th>Engine Num</th>
-              <th>Model</th>
-              <th>Serial Num</th>
-              <th>Arr Num</th>
-              <th>Location</th>
-              <th>HP</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>
-                <Input
-                  type="number"
-                  variant={['small', 'thin', 'autofill-input']}
-                  value={addOn.engineNum !== null ? addOn.engineNum : ''}
-                  autofill={autofillEngineNum}
-                  onAutofill={(value) => updateAutofillEngineNumData(Number(value))}
-                  onChange={(e: any) => {
-                    handleEditAddOn({ ...addOn, engineNum: e.target.value });
-                    autofillFromEngineNum(Number(e.target.value));
-                  }}
-                />
-              </td>
-              <td>
-                <Input
-                  variant={['small', 'thin']}
-                  value={addOn.model !== null ? addOn.model.trim() : ''}
-                  onChange={(e: any) => handleEditAddOn({ ...addOn, model: e.target.value })}
-                />
-              </td>
-              <td>
-                <Input
-                  variant={['small', 'thin']}
-                  value={addOn.serialNum !== null ? addOn.serialNum : ''}
-                  onChange={(e: any) => handleEditAddOn({ ...addOn, serialNum: e.target.value })}
-                />
-              </td>
-              <td>
-                <Input
-                  variant={['small', 'thin']}
-                  value={addOn.arrNum !== null ? addOn.arrNum : ''}
-                  onChange={(e: any) => handleEditAddOn({ ...addOn, arrNum: e.target.value })}
-                />
-              </td>
-              <td>
-                <Input
-                  variant={['small', 'thin']}
-                  value={addOn.location !== null ? addOn.location.trim() : ''}
-                  onChange={(e: any) => handleEditAddOn({ ...addOn, location: e.target.value })}
-                />
-              </td>
-              <td>
-                <Input
-                  variant={['small', 'thin']}
-                  value={addOn.hp !== null ? addOn.hp : ''}
-                  onChange={(e: any) => handleEditAddOn({ ...addOn, hp: e.target.value })}
-                />
-              </td>
-            </tr>
-          </tbody>
-        </Table>
+    <>
+      <div className="add-ons__list-row" ref={ref}>
+        <div className="add-ons__list-row-content">
+          <Table variant={['plain', 'edit-row-details']} style={{ width: 'fit-content' }}>
+            <thead>
+              <tr>
+                <th>Engine Num</th>
+                <th>Model</th>
+                <th>Serial Num</th>
+                <th>Arr Num</th>
+                <th>Location</th>
+                <th>HP</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <Input
+                    type="number"
+                    variant={['small', 'thin', 'autofill-input']}
+                    value={addOn.engineNum !== null ? addOn.engineNum : ''}
+                    autofill={autofillEngineNum}
+                    onAutofill={(value) => updateAutofillEngineNumData(Number(value))}
+                    onChange={(e: any) => {
+                      handleEditAddOn({ ...addOn, engineNum: e.target.value });
+                      autofillFromEngineNum(Number(e.target.value));
+                    }}
+                  />
+                </td>
+                <td>
+                  <Input
+                    variant={['small', 'thin']}
+                    value={addOn.model !== null ? addOn.model.trim() : ''}
+                    onChange={(e: any) => handleEditAddOn({ ...addOn, model: e.target.value })}
+                  />
+                </td>
+                <td>
+                  <Input
+                    variant={['small', 'thin']}
+                    value={addOn.serialNum !== null ? addOn.serialNum : ''}
+                    onChange={(e: any) => handleEditAddOn({ ...addOn, serialNum: e.target.value })}
+                  />
+                </td>
+                <td>
+                  <Input
+                    variant={['small', 'thin']}
+                    value={addOn.arrNum !== null ? addOn.arrNum : ''}
+                    onChange={(e: any) => handleEditAddOn({ ...addOn, arrNum: e.target.value })}
+                  />
+                </td>
+                <td>
+                  <Input
+                    variant={['small', 'thin']}
+                    value={addOn.location !== null ? addOn.location.trim() : ''}
+                    onChange={(e: any) => handleEditAddOn({ ...addOn, location: e.target.value })}
+                  />
+                </td>
+                <td>
+                  <Input
+                    variant={['small', 'thin']}
+                    value={addOn.hp !== null ? addOn.hp : ''}
+                    onChange={(e: any) => handleEditAddOn({ ...addOn, hp: e.target.value })}
+                  />
+                </td>
+              </tr>
+            </tbody>
+          </Table>
 
-        <Table variant={['plain', 'edit-row-details']} style={{ width: 'fit-content' }}>
-          <thead>
-            <tr>
-              <th>Status</th>
-              <th>Purchased From</th>
-              <th>Notes</th>
-              <th>Oil Pan</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>
-                <Select
-                  style={{ width: '100%' }}
-                  value={addOn.currentStatus ? addOn.currentStatus.trim() : ''}
-                  onChange={(e: any) => handleEditAddOn({ ...addOn, currentStatus: e.target.value })}
-                >
-                  <option>ToreDown</option>
-                  <option>RunnerReady</option>
-                  <option>RunnerNotReady</option>
-                  <option>HoldSoldRunner</option>
-                  <option>CoreEngine</option>
-                  <option>Sold</option>
-                  <option>ShortBlock</option>
-                  <option>LongBlock</option>
-                </Select>
-              </td>
-              <td>
-                <div style={{ width: '21rem' }}>
-                  {showVendorSelect ?
-                    <VendorSelect
-                      variant={['label-full-width']}
-                      value={addOn.purchasedFrom ?? ''}
-                      onChange={(e: any) => handleEditAddOn({ ...addOn, purchasedFrom: e.target.value })}
-                      onBlur={() => setShowVendorSelect(false)}
-                    />
-                    :
-                    <Button
-                      type="button"
-                      style={{ marginLeft: '0.3rem', width: '100%', textAlign: 'start' }}
-                      variant={['no-style', 'x-small']}
-                      onFocus={() => setShowVendorSelect(true)}
-                    >
-                      { addOn.purchasedFrom || 'Select Vendor' }
-                    </Button>
-                  }
-                </div>
-              </td>
-              <td>
-                <Input
-                  variant={['small', 'thin', 'text-area']}
-                  style={{ width: '18rem' }}
-                  value={addOn.notes !== null ? addOn.notes : ''}
-                  onChange={(e: any) => handleEditAddOn({ ...addOn, notes: e.target.value })}
-                />
-              </td>
-              <td>
-                <Select
-                  style={{ width: '100%' }}
-                  value={addOn.oilPan}
-                  onChange={(e: any) => handleEditAddOn({ ...addOn, oilPan: e.target.value })}
-                >
-                  <option>FS</option>
-                  <option>RS</option>
-                  <option>CS</option>
-                </Select>
-              </td>
-            </tr>
-          </tbody>
-        </Table>
+          <Table variant={['plain', 'edit-row-details']} style={{ width: 'fit-content' }}>
+            <thead>
+              <tr>
+                <th>Status</th>
+                <th>Purchased From</th>
+                <th>Notes</th>
+                <th>Oil Pan</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <Select
+                    style={{ width: '100%' }}
+                    value={addOn.currentStatus ? addOn.currentStatus.trim() : ''}
+                    onChange={(e: any) => handleEditAddOn({ ...addOn, currentStatus: e.target.value })}
+                  >
+                    <option>ToreDown</option>
+                    <option>RunnerReady</option>
+                    <option>RunnerNotReady</option>
+                    <option>HoldSoldRunner</option>
+                    <option>CoreEngine</option>
+                    <option>Sold</option>
+                    <option>ShortBlock</option>
+                    <option>LongBlock</option>
+                  </Select>
+                </td>
+                <td>
+                  <div style={{ width: '21rem' }}>
+                    {showVendorSelect ?
+                      <VendorSelect
+                        variant={['label-full-width']}
+                        value={addOn.purchasedFrom ?? ''}
+                        onChange={(e: any) => handleEditAddOn({ ...addOn, purchasedFrom: e.target.value })}
+                        onBlur={() => setShowVendorSelect(false)}
+                      />
+                      :
+                      <Button
+                        type="button"
+                        style={{ marginLeft: '0.3rem', width: '100%', textAlign: 'start' }}
+                        variant={['no-style', 'x-small']}
+                        onFocus={() => setShowVendorSelect(true)}
+                      >
+                        { addOn.purchasedFrom || 'Select Vendor' }
+                      </Button>
+                    }
+                  </div>
+                </td>
+                <td>
+                  <Input
+                    variant={['small', 'thin', 'text-area']}
+                    style={{ width: '18rem' }}
+                    value={addOn.notes !== null ? addOn.notes : ''}
+                    onChange={(e: any) => handleEditAddOn({ ...addOn, notes: e.target.value })}
+                  />
+                </td>
+                <td>
+                  <Select
+                    style={{ width: '100%' }}
+                    value={addOn.oilPan}
+                    onChange={(e: any) => handleEditAddOn({ ...addOn, oilPan: e.target.value })}
+                  >
+                    <option>FS</option>
+                    <option>RS</option>
+                    <option>CS</option>
+                  </Select>
+                </td>
+              </tr>
+            </tbody>
+          </Table>
 
-        <Checkbox
-          variant={['label-align-center', 'label-bold']}
-          label="ECM"
-          checked={addOn.ecm}
-          onChange={(e: any) => handleEditAddOn({ ...addOn, ecm: e.target.checked })}
-        />
-        <Checkbox
-          variant={['label-align-center', 'label-bold']}
-          label="Jake Brake"
-          checked={addOn.jakeBrake}
-          onChange={(e: any) => handleEditAddOn({ ...addOn, jakeBrake: e.target.checked })}
-        />
+          <Checkbox
+            variant={['label-align-center', 'label-bold']}
+            label="ECM"
+            checked={addOn.ecm}
+            onChange={(e: any) => handleEditAddOn({ ...addOn, ecm: e.target.checked })}
+          />
+          <Checkbox
+            variant={['label-align-center', 'label-bold']}
+            label="Jake Brake"
+            checked={addOn.jakeBrake}
+            onChange={(e: any) => handleEditAddOn({ ...addOn, jakeBrake: e.target.checked })}
+          />
+        </div>
+
+        <div className="add-ons__list-row-buttons">
+          <Button type="button" onClick={handleAddToInventory}>Add to Inventory</Button>
+          <Button type="button" onClick={() => handleDuplicateAddOn(addOn)}>Duplicate</Button>
+          <Input
+            style={{ width: '3rem' }}
+            variant={['x-small', 'search']}
+            value={printQty}
+            onChange={(e: any) => setPrintQty(e.target.value)}
+            type="number"
+          >
+            <Button type="button" variant={['search']} onClick={handlePrint}>Print</Button>
+          </Input>
+          <Button variant={['danger']} type="button" onClick={handleDeleteAddOn}>Delete</Button>
+        </div>
       </div>
 
-      <div className="add-ons__list-row-buttons">
-        <Button type="button" onClick={handleAddToInventory}>Add to Inventory</Button>
-        <Button type="button" onClick={() => handleDuplicateAddOn(addOn)}>Duplicate</Button>
-        <Input
-          style={{ width: '3rem' }}
-          variant={['x-small', 'search']}
-          value={printQty}
-          onChange={(e: any) => setPrintQty(e.target.value)}
-          type="number"
-        >
-          <Button type="button" variant={['search']} onClick={handlePrint}>Print</Button>
-        </Input>
-        <Button variant={['danger']} type="button" onClick={handleDeleteAddOn}>Delete</Button>
-      </div>
-    </div>
+      {partTagProps &&
+        <div ref={printRef} style={{ marginTop: '7.5rem', width: '100%' }}>
+          <PartTag properties={partTagProps} />
+        </div>
+      }
+    </>
   );
 }
