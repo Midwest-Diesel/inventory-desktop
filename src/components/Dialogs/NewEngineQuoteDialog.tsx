@@ -59,6 +59,7 @@ export default function NewEngineQuoteDialog({ open, setOpen, engine, onNewQuote
     <>
       <Dialog
         open={open}
+        setOpen={setOpen}
         title="New Engine Quote"
         maxHeight="44rem"
         width={500}
