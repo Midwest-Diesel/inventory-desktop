@@ -136,7 +136,7 @@ export const searchQuotes = async (quote: QuoteSearchData, customerId: number) =
   }
 };
 
-export const getQuotesByEngine = async (model: string) => {
+export const getQuotesByEngineModel = async (model: string): Promise<EngineQuote[]> => {
   try {
     const auth = { withCredentials: true };
     const res = await api.get(`/api/quotes/engine/${model}`, auth);
@@ -144,6 +144,7 @@ export const getQuotesByEngine = async (model: string) => {
     return res.data.reverse();
   } catch (err) {
     console.error(err);
+    return [];
   }
 };
 

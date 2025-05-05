@@ -10,6 +10,7 @@ import { getEnginesByStatus } from "@/scripts/controllers/enginesController";
 import { useAtom } from "jotai";
 import Link from "@/components/Library/Link";
 import { useEffect, useState } from "react";
+import NewEngineQuoteDialog from "@/components/Dialogs/NewEngineQuoteDialog";
 
 
 export default function NewEnginesList() {
@@ -17,22 +18,25 @@ export default function NewEnginesList() {
   const [engines, setEngines] = useState<Engine[]>([]);
   const [engineModel, setEngineModel] = useState<string>('C-7');
   const [filter, setFilter] = useState<string>('all-runner');
+  const [engine, setEngine] = useState<Engine | null>(null);
+  const [newQuoteDialogOpen, setNewQuoteDialogOpen] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchData = async () => {
-      const running = await getEnginesByStatus('RunnerReady');
-      const notRunning = await getEnginesByStatus('RunnerNotReady');
-      const holdRunning = await getEnginesByStatus('HoldSoldRunner');
-      setEnginesData([...running, ...notRunning, ...holdRunning].sort((a: any, b: any) => b.loginDate - a.loginDate));
-      setLoading(false);
-    };
     fetchData();
   }, []);
 
   useEffect(() => {
     setEngines(filterEngines(enginesData, filter));
   }, [enginesData, engineModel]);
+
+  const fetchData = async () => {
+    const running = await getEnginesByStatus('RunnerReady');
+    const notRunning = await getEnginesByStatus('RunnerNotReady');
+    const holdRunning = await getEnginesByStatus('HoldSoldRunner');
+    setEnginesData([...running, ...notRunning, ...holdRunning].sort((a: any, b: any) => b.loginDate - a.loginDate));
+    setLoading(false);
+  };
 
   const isEngineResNotNull = (engine: Engine) => {
     const { turboReman, headNew, headReman, pistonNew, pistonReman, fwhNew, fwhReman, oilPanNew, oilPanReman, oilCoolerNew, oilCoolerReman, frontHsngNew, flywheelNew, ragNew, heuiPumpNew, heuiPumpReman } = engine;
@@ -79,9 +83,22 @@ export default function NewEnginesList() {
     });
   };
 
+  const onNewQuote = async () => {
+    await fetchData();
+  };
+
   
   return (
     <Layout title="New Engines List">
+      {engine &&
+        <NewEngineQuoteDialog
+          open={newQuoteDialogOpen}
+          setOpen={setNewQuoteDialogOpen}
+          engine={engine}
+          onNewQuote={onNewQuote}
+        />
+      }
+
       <div className="new-engines-list">
         <div className="new-engines-list__top-bar">
           {getEngineModels().map((model: string) => {
@@ -111,7 +128,7 @@ export default function NewEnginesList() {
           <Table>
             <thead>
               <tr>
-                <th></th>
+                {/* <th></th> */}
                 <th></th>
                 <th>Stock Number</th>
                 <th>Res</th>
@@ -134,13 +151,21 @@ export default function NewEnginesList() {
               {engines.map((engine: Engine) => {
                 return (
                   <tr key={engine.id}>
-                    <td>
+                    {/* <td>
                       <Button>Hdw</Button>
-                    </td>
+                    </td> */}
                     <td>
-                      <Button>Quote</Button>
+                      <Button
+                        onClick={() => {
+                          setEngine(engine);
+                          setNewQuoteDialogOpen(true);
+                        }}
+                        data-testid="quote-btn"
+                      >
+                        Quote
+                      </Button>
                     </td>
-                    <td><Link href={`/engines/${engine.stockNum}`}>{ engine.stockNum }</Link></td>
+                    <td><Link href={`/engines/${engine.stockNum}`} data-testid="stock-num-link">{ engine.stockNum }</Link></td>
                     <td className="cbx-td"><Checkbox checked={isEngineResNotNull(engine)} disabled /></td>
                     <td className="cbx-td"><Checkbox checked={Boolean(engine.ecm)} disabled /></td>
                     <td className="cbx-td"><Checkbox checked={Boolean(engine.warranty)} disabled /></td>

@@ -1,7 +1,7 @@
 interface ButtonHTML extends React.HTMLProps<HTMLButtonElement> {}
 interface InputHTML extends React.InputHTMLAttributes<HTMLInputElement> {}
 interface TableHTML extends React.HTMLProps<HTMLTableElement> {}
-interface SelectHTML extends React.HTMLProps<HTMLSelectElement> {}
+interface SelectHTML extends React.InputHTMLAttributes<HTMLSelectElement> {}
 
 type User = {
   id: number
@@ -105,6 +105,12 @@ type Quote = {
   piggybackQuotes: PiggybackQuote[]
   part: Part | null
 };
+
+interface EngineQuote extends Quote {
+  serialNum: string
+  hp: string
+  model: string
+}
 
 type PiggybackQuote = {
   id: number

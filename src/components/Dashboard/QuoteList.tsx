@@ -235,7 +235,7 @@ export default function QuoteList({ quotes, setQuotes, setSelectHandwrittenOpen,
           <div className="quote-list-top-bar">
             <Button onClick={() => setSearchDialogOpen(true)}>Search</Button>
             <Button onClick={handleNewQuote}>New</Button>
-            <Button onClick={() => setQuoteListType(quoteListType === 'part' ? 'engine' : 'part')}>
+            <Button onClick={() => setQuoteListType(quoteListType === 'part' ? 'engine' : 'part')} data-testid="engine-quotes-btn">
               { quoteListType === 'part' ? 'Engine Quotes' : 'Part Quotes' }
             </Button>
             <Button
@@ -323,7 +323,7 @@ export default function QuoteList({ quotes, setQuotes, setSelectHandwrittenOpen,
                           }
                         </td>
                         <td style={{ width: '15rem' }}>{ quote.desc }</td>
-                        <td>{ quote.stockNum }</td>
+                        <td data-testid="quote-stock-num">{ quote.stockNum }</td>
                         <td>{ formatCurrency(quote.price) }</td>
                         <td>{ quote.notes }</td>
                         <td className="cbx-td" style={ quote.sale ? { backgroundColor: 'var(--green-dark-2)' } : {}}>

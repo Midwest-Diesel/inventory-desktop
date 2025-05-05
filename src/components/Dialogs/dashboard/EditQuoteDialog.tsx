@@ -132,6 +132,7 @@ export default function EditQuoteDialog({ setQuoteEdited, quote, setQuote }: Pro
             </>
           }
 
+          <br />
           <Button variant={['fit']} type="button" onClick={() => setPartSelectOpen(true)}>Select Part</Button>
           <br />
 

@@ -1,4 +1,4 @@
-import { getQuotesByEngine } from "@/scripts/controllers/quotesController";
+import { getQuotesByEngineModel } from "@/scripts/controllers/quotesController";
 import { useEffect, useState } from "react";
 import Table from "./Library/Table";
 import { formatCurrency, formatDate, formatPhone } from "@/scripts/tools/stringUtils";
@@ -11,11 +11,11 @@ interface Props {
 
 
 export default function NewEnginesQuoteList({ model }: Props) {
-  const [quotes, setQuotes] = useState<Quote[]>([]);
+  const [quotes, setQuotes] = useState<EngineQuote[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
-      const res = await getQuotesByEngine(model);
+      const res = await getQuotesByEngineModel(model);
       setQuotes(res);
     };
     fetchData();
@@ -46,7 +46,7 @@ export default function NewEnginesQuoteList({ model }: Props) {
             </tr>
           </thead>
           <tbody>
-            {quotes.map((quote: Quote) => {
+            {quotes.map((quote: EngineQuote) => {
               return (
                 <tr key={quote.id}>
                   <td>{ formatDate(quote.date) }</td>
@@ -56,9 +56,9 @@ export default function NewEnginesQuoteList({ model }: Props) {
                   <td>{ quote.contact }</td>
                   <td>{ formatPhone(quote.phone) }</td>
                   <td>{ quote.state }</td>
-                  <td>{ quote.stockNum }</td>
+                  <td>{ quote.serialNum }</td>
                   <td>{ quote.desc }</td>
-                  <td>{ quote.stockNum }</td>
+                  <td><Link href={`/engines/${quote.stockNum}`}>{ quote.stockNum }</Link></td>
                   <td>{ formatCurrency(quote.price) }</td>
                   <td>{ quote.notes }</td>
                   <td className="cbx-td"><Checkbox checked={quote.sale} disabled /></td>
