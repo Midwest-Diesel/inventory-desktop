@@ -230,16 +230,17 @@ export default function EditHandwrittenDetails({
     }
 
     if (isSentToAccounting) {
-      if (await confirm('Add this to shipping list?')) {
-        setShippingListDialogOpen(true);
-      }
       if (await confirm('Do you want to add marketing materials?')) {
         setPromotionalDialogOpen(true);
+      } else {
+        if (await confirm('Add this to shipping list?')) {
+          setShippingListDialogOpen(true);
+        } else {
+          const hasCore = handwrittenItems.some((item) => item.location === 'CORE DEPOSIT');
+          await handlePrintCCLabel();
+          await printHandwritten(hasCore, newInvoice);
+        }
       }
-
-      const hasCore = handwrittenItems.some((item) => item.location === 'CORE DEPOSIT');
-      await handlePrintCCLabel();
-      await printHandwritten(hasCore, newInvoice);
     }
 
     // Tracking numbers
@@ -476,7 +477,7 @@ export default function EditHandwrittenDetails({
       invoiceItemChildren: []
     } as any;
 
-    if (row === null || row === undefined) {
+    if (!row) {
       const id = await addHandwrittenItem(item);
       setHandwrittenItems([...handwrittenItems, { id, ...item }]);
     } else {
@@ -491,6 +492,132 @@ export default function EditHandwrittenDetails({
     setShipToState(billToState);
     setShipToZip(billToZip);
     setShipToCompany(billToCompany);
+  };
+
+  const onPrintCCLabel = async () => {
+    await handlePrintCCLabel();
+  };
+
+  const onPrintHandwritten = async () => {
+    const newCustomer = await getCustomerByName(company);
+    const newInvoice = {
+      id: handwritten.id,
+      shipViaId,
+      handwrittenItems: handwrittenItems,
+      customer: newCustomer,
+      date,
+      poNum,
+      billToCompany,
+      billToAddress,
+      billToAddress2,
+      billToCity,
+      billToState,
+      billToZip,
+      billToPhone,
+      fax: contactFax,
+      shipToAddress,
+      shipToAddress2,
+      shipToCity,
+      shipToState,
+      shipToZip,
+      shipToCompany,
+      source,
+      payment,
+      phone: contactPhone,
+      cell: contactCell,
+      email: contactEmail,
+      contactName: contact,
+      shipToContact,
+      invoiceStatus,
+      accountingStatus,
+      shippingStatus,
+      cores: handwritten.cores,
+      coreReturns: handwritten.coreReturns,
+      orderNotes,
+      shippingNotes,
+      mp: Number(mp),
+      cap: Number(cap),
+      br: Number(br),
+      fl: Number(fl),
+      isTaxable,
+      isBlindShipment,
+      isNoPriceInvoice,
+      isThirdParty,
+      isCollect,
+      isSetup,
+      isEndOfDay,
+      thirdPartyAccount,
+      soldBy
+    } as any;
+    const hasCore = handwrittenItems.some((item) => item.location === 'CORE DEPOSIT');
+    await printHandwritten(hasCore, newInvoice);
+  };
+
+  const onAddPromotionals = (mp: number, cap: number, br: number, fl: number) => {
+    setMp(mp);
+    setCap(cap);
+    setBr(br);
+    setFl(fl);
+  };
+
+  const onPromotionalsClose = async () => {
+    if (await confirm('Add this to shipping list?')) {
+      setShippingListDialogOpen(true);
+    } else {
+      const newCustomer = await getCustomerByName(company);
+      const newInvoice = {
+        id: handwritten.id,
+        shipViaId,
+        handwrittenItems: handwrittenItems,
+        customer: newCustomer,
+        date,
+        poNum,
+        billToCompany,
+        billToAddress,
+        billToAddress2,
+        billToCity,
+        billToState,
+        billToZip,
+        billToPhone,
+        fax: contactFax,
+        shipToAddress,
+        shipToAddress2,
+        shipToCity,
+        shipToState,
+        shipToZip,
+        shipToCompany,
+        source,
+        payment,
+        phone: contactPhone,
+        cell: contactCell,
+        email: contactEmail,
+        contactName: contact,
+        shipToContact,
+        invoiceStatus,
+        accountingStatus,
+        shippingStatus,
+        cores: handwritten.cores,
+        coreReturns: handwritten.coreReturns,
+        orderNotes,
+        shippingNotes,
+        mp: Number(mp),
+        cap: Number(cap),
+        br: Number(br),
+        fl: Number(fl),
+        isTaxable,
+        isBlindShipment,
+        isNoPriceInvoice,
+        isThirdParty,
+        isCollect,
+        isSetup,
+        isEndOfDay,
+        thirdPartyAccount,
+        soldBy
+      } as any;
+      const hasCore = handwrittenItems.some((item) => item.location === 'CORE DEPOSIT');
+      await handlePrintCCLabel();
+      await printHandwritten(hasCore, newInvoice);
+    }
   };
 
 
@@ -508,6 +635,16 @@ export default function EditHandwrittenDetails({
         />
       }
 
+      {promotionalDialogOpen &&
+        <PromotionalDialog
+          open={promotionalDialogOpen}
+          setOpen={setPromotionalDialogOpen}
+          handwritten={handwritten}
+          onAddPromotionals={onAddPromotionals}
+          onClose={onPromotionalsClose}
+        />
+      }
+
       {shippingListDialogOpen &&
         <ShippingListDialog
           open={shippingListDialogOpen}
@@ -515,15 +652,8 @@ export default function EditHandwrittenDetails({
           handwrittenItems={handwrittenItems}
           newShippingListRow={newShippingListRow}
           setIsEditing={setIsEditing}
-        />
-      }
-
-      {promotionalDialogOpen &&
-        <PromotionalDialog
-          open={promotionalDialogOpen}
-          setOpen={setPromotionalDialogOpen}
-          setIsEditing={setIsEditing}
-          handwritten={handwritten}
+          onPrintCCLabel={onPrintCCLabel}
+          onPrintHandwritten={onPrintHandwritten}
         />
       }
 

@@ -15,10 +15,12 @@ interface Props {
   handwrittenItems: HandwrittenItem[]
   newShippingListRow: Handwritten | null
   setIsEditing: (value: boolean) => void
+  onPrintCCLabel: () => void
+  onPrintHandwritten: () => void
 }
 
 
-export default function ShippingListDialog({ open, setOpen, handwrittenItems, newShippingListRow, setIsEditing }: Props) {
+export default function ShippingListDialog({ open, setOpen, handwrittenItems, newShippingListRow, setIsEditing, onPrintCCLabel, onPrintHandwritten }: Props) {
   const [handwritten, setHandwritten] = useState<Handwritten | null>(null);
   const [date, setDate] = useState<Date>(new Date());
   const [isCondensed, setIsCondensed] = useState(handwrittenItems.length > 2);
@@ -100,6 +102,8 @@ export default function ShippingListDialog({ open, setOpen, handwrittenItems, ne
         await invoke('add_to_shipping_list', { newShippingListRow: new_shipping_list_row });
       }
     }
+    onPrintCCLabel();
+    onPrintHandwritten();
     setLoading(false);
     setOpen(false);
     setIsEditing(false);

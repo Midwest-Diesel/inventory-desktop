@@ -8,12 +8,13 @@ import { editHandwrittenPromotionals } from "@/scripts/controllers/handwrittensC
 interface Props {
   open: boolean
   setOpen: (open: boolean) => void
-  setIsEditing: (value: boolean) => void
   handwritten: Handwritten
+  onAddPromotionals: (mp: number, cap: number, br: number, fl: number) => void
+  onClose: () => void
 }
 
 
-export default function PromotionalDialog({ open, setOpen, setIsEditing, handwritten }: Props) {
+export default function PromotionalDialog({ open, setOpen, handwritten, onAddPromotionals, onClose }: Props) {
   const [mp, setMp] = useState<number>(handwritten.mp ?? 0);
   const [cap, setCap] = useState<number>(handwritten.cap ?? 0);
   const [br, setBr] = useState<number>(handwritten.br ?? 0);
@@ -21,12 +22,13 @@ export default function PromotionalDialog({ open, setOpen, setIsEditing, handwri
 
   const handleAddPromotionals = async () => {
     await editHandwrittenPromotionals(handwritten.id, mp, cap, br, fl);
+    onAddPromotionals(mp, cap, br, fl);
     handleClose();
   };
 
   const handleClose = () => {
     setOpen(false);
-    setIsEditing(false);
+    onClose()
   };
 
 
@@ -92,8 +94,8 @@ export default function PromotionalDialog({ open, setOpen, setIsEditing, handwri
       </Table>
 
       <div className="form__footer">
-        <Button onClick={handleAddPromotionals} data-testid="submit-btn">Add</Button>
         <Button onClick={handleClose}>Cancel</Button>
+        <Button onClick={handleAddPromotionals} data-testid="submit-btn">Add</Button>
       </div>
     </Dialog>
   );
