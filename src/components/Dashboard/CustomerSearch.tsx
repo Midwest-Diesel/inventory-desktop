@@ -13,7 +13,7 @@ import { useNavState } from "../Navbar/useNavState";
 
 
 export default function CustomerSearch() {
-  const { push } = useNavState();
+  const { push, handleChangeTab, newTab, tabs } = useNavState();
   const [user] = useAtom<User>(userAtom);
   const [selectedCustomer, setSelectedCustomer] = useAtom<Customer>(selectedCustomerAtom);
   const [searchDialogOpen, setSearchDialogOpen] = useState(false);
@@ -88,7 +88,8 @@ export default function CustomerSearch() {
       accountingStatus: '',
       shippingStatus: '',
     } as any;
-    await addHandwritten(newHandwritten);
+    const handwrittenId = await addHandwritten(newHandwritten);
+    await newTab([{ name: 'Handwritten', url: `/handwrittens/${handwrittenId}` }]);
     setToastOpen(true);
   };
 
