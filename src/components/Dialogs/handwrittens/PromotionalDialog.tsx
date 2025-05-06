@@ -28,7 +28,7 @@ export default function PromotionalDialog({ open, setOpen, handwritten, onAddPro
 
   const handleClose = () => {
     setOpen(false);
-    onClose()
+    onClose();
   };
 
 

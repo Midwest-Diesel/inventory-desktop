@@ -27,6 +27,7 @@ import Dropdown from "./Library/Dropdown/Dropdown";
 import DropdownOption from "./Library/Dropdown/DropdownOption";
 import { arrayOfObjectsMatch } from "@/scripts/tools/utils";
 import PromotionalDialog from "./Dialogs/handwrittens/PromotionalDialog";
+import Loading from "./Library/Loading";
 
 interface Props {
   handwritten: Handwritten
@@ -126,6 +127,7 @@ export default function EditHandwrittenDetails({
   const [taxTotal, setTaxTotal] = useState(0);
   const [users, setUsers] = useState<User[]>([]);
   const [emails, setEmails] = useState<string[]>([]);
+  const [loading, setLoading] = useState(false);
   const TAX_RATE = 0.08375;
 
   useEffect(() => {
@@ -291,6 +293,7 @@ export default function EditHandwrittenDetails({
   };
 
   const printHandwritten = async (hasCore: boolean, handwritten: Handwritten) => {
+    setLoading(true);
     const itemTotals: number[] = handwrittenItems.map((item) => (item.qty ?? 0) * (item.unitPrice ?? 0));
     const handwrittenTotal = formatCurrency(itemTotals.reduce((acc, cur) => acc + cur, 0));
     const shipVia = await getFreightCarrierById(shipViaId);
@@ -370,6 +373,7 @@ export default function EditHandwrittenDetails({
     await invoke('print_accounting_invoice', { args: { ...args, items: JSON.stringify(filteredItems) } });
     await invoke('print_shipping_invoice', { args: { ...args, items: itemsWithChildren } });
     if (hasCore) await invoke('print_core_invoice', { args });
+    setLoading(false);
   };
 
   const handlePrintCCLabel = async () => {
@@ -624,6 +628,11 @@ export default function EditHandwrittenDetails({
   return (
     <>
       <PreventNavigation shouldPrevent={!changesSaved} text="Leave without saving changes?" />
+      {loading &&
+        <div style={{ position: 'absolute', inset: 0, alignContent: 'center', backgroundColor: 'rgba(0, 0, 0, 0.4)', zIndex: 1 }}>
+          <Loading />
+        </div>
+      }
 
       {changeCustomerDialogOpen &&
         <ChangeCustomerInfoDialog
