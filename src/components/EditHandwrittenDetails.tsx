@@ -1133,12 +1133,12 @@ export default function EditHandwrittenDetails({
                     <th style={{ color: 'white' }}>Description</th>
                     <th style={{ color: 'white' }}>Unit Price</th>
                     <th style={{ color: 'white' }}>Date</th>
-                    <th style={{ color: 'white' }}></th>
+                    { handwritten.invoiceStatus !== 'SENT TO ACCOUNTING' && <th style={{ color: 'white' }}></th> }
                   </tr>
                 </thead>
                 <tbody>
                   {handwrittenItems.map((item: HandwrittenItem, i: number) => {
-                    const isDisabled = item.desc === 'TAX' || item.partNum === 'FREIGHT' || invoiceStatus === 'SENT TO ACCOUNTING';
+                    const isDisabled = item.desc === 'TAX' || item.partNum === 'FREIGHT' || handwritten.invoiceStatus === 'SENT TO ACCOUNTING';
                     return (
                       <tr key={i}>
                         <td>
@@ -1203,8 +1203,8 @@ export default function EditHandwrittenDetails({
                             type="date"
                           />
                         </td>
-                        <td>
-                          {invoiceStatus !== 'SENT TO ACCOUNTING' &&
+                        {handwritten.invoiceStatus !== 'SENT TO ACCOUNTING' &&
+                          <td>
                             <Button
                               variant={['red-color']}
                               onClick={() => handleDeleteItem(item)}
@@ -1213,8 +1213,8 @@ export default function EditHandwrittenDetails({
                             >
                               Delete
                             </Button>
-                          }
-                        </td>
+                          </td>
+                        }
                       </tr>
                     );
                   })}

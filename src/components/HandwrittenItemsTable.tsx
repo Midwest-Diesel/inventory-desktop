@@ -58,7 +58,7 @@ export default function HandwrittenItemsTable({ className, handwritten, handwrit
   const totalColorStyle = getInvoiceTotal() < 0 ? { color: 'var(--red-2)' } : '';
 
   const handleCoreCharge = async (item: HandwrittenItem) => {
-    if (!await confirm('Are you sure you want to add a core charge?')) return;
+    if (!await confirm('Are you sure you want to add a core charge?') || handwritten.invoiceStatus === 'SENT TO ACCOUNTING') return;
     const newItem = {
       handwrittenId: handwritten.id,
       date: new Date(),
@@ -113,7 +113,7 @@ export default function HandwrittenItemsTable({ className, handwritten, handwrit
           <Table>
             <thead>
               <tr>
-                <th></th>
+                { handwritten.invoiceStatus !== 'SENT TO ACCOUNTING' && <th></th> }
                 <th>Stock Number</th>
                 <th>Location</th>
                 <th>Cost</th>
@@ -128,17 +128,19 @@ export default function HandwrittenItemsTable({ className, handwritten, handwrit
               {handwrittenItems.map((item: HandwrittenItem, i: number) => {
                 return (
                   <tr key={i}>
-                    <td>
-                      {item.location && !item.location.includes('CORE DEPOSIT') &&
-                        <Button
-                          variant={['x-small']}
-                          onClick={() => handleCoreCharge(item)}
-                          data-testid="core-charge-btn"
-                        >
-                          Core Charge
-                        </Button>
-                      }
-                    </td>
+                    {handwritten.invoiceStatus !== 'SENT TO ACCOUNTING' &&
+                      <td>
+                        {item.location && !item.location.includes('CORE DEPOSIT') && 
+                          <Button
+                            variant={['x-small']}
+                            onClick={() => handleCoreCharge(item)}
+                            data-testid="core-charge-btn"
+                          >
+                            Core Charge
+                          </Button>
+                        }
+                      </td>
+                    }
                     <td className="handwritten-items-table__stock-num" style={ textStyles(item) } data-testid="item-stock-num">
                       { item.stockNum }
                       { item.invoiceItemChildren && item.invoiceItemChildren.length > 0 && <Button variant={['x-small']} onClick={() => handleOpenStockNums(item.invoiceItemChildren)}>View</Button> }
