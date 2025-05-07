@@ -70,13 +70,13 @@ export default function Home() {
     if (warranty) await editHandwrittenOrderNotes(id, warranty);
   };
 
-  const handleSubmitNewHandwritten = async (handwritten: Handwritten, warranty: string, qty: number, desc: string, price: number, stockNum: string) => {
+  const handleSubmitNewHandwritten = async (handwritten: Handwritten, warranty: string, qty: number, desc: string, price: number, stockNum: string, cost: number) => {
     const part = selectedHandwrittenPart;
     const newItem = handwritten.handwrittenItems.find((item) => item.partNum === part?.partNum);
     if (newItem) {
       if (await confirm('Part already exists do you want to add qty?')) {
         await editHandwrittenItems({ ...newItem, qty: newItem.qty ?? 0 + qty, handwrittenId: handwritten.id });
-        await addHandwrittenItemChild(newItem.id, { partId: part?.id, qty: qty, cost: price } as HandwrittenItemChild);
+        await addHandwrittenItemChild(newItem.id, { partId: part?.id, qty, cost } as HandwrittenItemChild);
         await editHandwrittenOrderNotes(handwritten.id, warranty);
       } else {
         handleAddToHandwritten(handwritten.id, desc, qty, price, warranty, stockNum);

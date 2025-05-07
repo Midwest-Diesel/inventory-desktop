@@ -145,7 +145,7 @@ export default function HandwrittenItemsTable({ className, handwritten, handwrit
                       { item.stockNum }
                       { item.invoiceItemChildren && item.invoiceItemChildren.length > 0 && <Button variant={['x-small']} onClick={() => handleOpenStockNums(item.invoiceItemChildren)}>View</Button> }
                     </td>
-                    <td>{ item.location }</td>
+                    <td>{ item.invoiceItemChildren.length === 0 && item.location }</td>
                     <td>{ formatCurrency(item.cost) }</td>
                     <td data-testid="item-qty">{ item.qty }</td>
                     <td style={ textStyles(item) } data-testid="item-part-num">
