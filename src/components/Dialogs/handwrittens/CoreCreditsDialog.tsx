@@ -39,11 +39,11 @@ export default function CoreCreditsDialog({ open, setOpen, cores, handwritten }:
         partId: core.part ? core.part.id : null,
         stockNum: core.part ? core.part.stockNum : '',
         location: 'CORE DEPOSIT',
-        cost: core.charge,
+        cost: 0.01,
         qty: -qty,
         partNum: core.partNum,
         desc: core.desc,
-        unitPrice: core.unitPrice,
+        unitPrice: core.charge,
         return: false,
         date: core.date,
         invoiceItemChildren: [],
@@ -97,11 +97,11 @@ export default function CoreCreditsDialog({ open, setOpen, cores, handwritten }:
         <thead>
           <tr>
             <th></th>
-            <th>Date</th>
+            <th>Cost</th>
             <th>Qty</th>
             <th>Part Number</th>
             <th>Description</th>
-            <th>Price</th>
+            <th>Unit Price</th>
           </tr>
         </thead>
         <tbody>
@@ -116,7 +116,7 @@ export default function CoreCreditsDialog({ open, setOpen, cores, handwritten }:
                         variant={['no-arrows', 'label-bold']}
                         label="Qty"
                         value={inputQty}
-                        onChange={(e: any) => setInputQty(e.target.value)}
+                        onChange={(e: any) => setInputQty(Math.max(Math.min(e.target.value, core.qty), 1))}
                         type="number"
                         data-testid="core-qty-input"
                       />
@@ -130,7 +130,7 @@ export default function CoreCreditsDialog({ open, setOpen, cores, handwritten }:
                     />
                   </td>
                 }
-                <td>{ formatDate(core.date) }</td>
+                <td>$0.01</td>
                 <td>{ core.qty }</td>
                 <td>{ core.partNum }</td>
                 <td>{ core.desc }</td>
