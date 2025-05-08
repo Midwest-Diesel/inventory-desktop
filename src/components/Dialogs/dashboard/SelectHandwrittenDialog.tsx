@@ -11,6 +11,7 @@ import Toast from "@/components/Library/Toast";
 import { useAtom } from "jotai";
 import { errorAtom, selectedCustomerAtom, userAtom } from "@/scripts/atoms/state";
 import { confirm } from "@/scripts/config/tauri";
+import { message } from "@tauri-apps/api/dialog";
 
 interface Props {
   open: boolean
@@ -55,6 +56,8 @@ export default function SelectHandwrittenDialog({ open, setOpen, part, customer,
     if (!open) return;
     const fetchData = async () => {
       await resetHandwrittensList();
+      const cost = part.partsCostIn.reduce((acc, val) => acc + val.cost, 0) || 0.01;
+      if (cost === 0.04) await message('Warning: This part has $0.04 cost!', { type: 'warning' });
     };
     fetchData();
   }, [open, selectedCustomer]);
