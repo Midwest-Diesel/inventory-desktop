@@ -106,7 +106,7 @@ export default function CoreCreditsDialog({ open, setOpen, cores, handwritten }:
         </thead>
         <tbody>
           {cores.map((core: Core, i) => {
-            const selected = selectedCores.some((c) => c.id === core.id);
+            const selectedCore = selectedCores.find((c) => c.id === core.id);
             return (
               <tr key={i}>
                 {inputCore && inputCore.id === core.id ?
@@ -116,7 +116,7 @@ export default function CoreCreditsDialog({ open, setOpen, cores, handwritten }:
                         variant={['no-arrows', 'label-bold']}
                         label="Qty"
                         value={inputQty}
-                        onChange={(e: any) => setInputQty(Math.max(Math.min(e.target.value, core.qty), 1))}
+                        onChange={(e: any) => setInputQty(Math.min(e.target.value, core.qty) || '' as any)}
                         type="number"
                         data-testid="core-qty-input"
                       />
@@ -124,9 +124,10 @@ export default function CoreCreditsDialog({ open, setOpen, cores, handwritten }:
                   </td>
                   :
                   <td className="cbx-td">
+                    <p>{ (selectedCore as any)?.selectedQty < core.qty && (selectedCore as any)?.selectedQty }</p>
                     <Checkbox
-                      checked={selected}
-                      onChange={() => handleToggleSelection(core, selected)}
+                      checked={Boolean(selectedCore)}
+                      onChange={() => handleToggleSelection(core, Boolean(selectedCore))}
                     />
                   </td>
                 }
