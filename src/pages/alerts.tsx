@@ -5,9 +5,9 @@ import Button from "@/components/Library/Button";
 import Table from "@/components/Library/Table";
 import { selectedAlertsAtom } from "@/scripts/atoms/components";
 import { alertsAtom } from "@/scripts/atoms/state";
-import { confirm } from "@/scripts/config/tauri";
 import { deleteAlert } from "@/scripts/controllers/alertsController";
 import { formatDate } from "@/scripts/tools/stringUtils";
+import { ask } from "@tauri-apps/api/dialog";
 import { useAtom } from "jotai";
 import { useState } from "react";
 
@@ -24,7 +24,7 @@ export default function Alerts() {
   };
 
   const handleDelete = async (id: number) => {
-    if (!await confirm('Are you sure you want to delete this?')) return;
+    if (!await ask('Are you sure you want to delete this?')) return;
     await deleteAlert(id);
     setAlertsAtom(alertsData.filter((alert: Alert) => alert.id !== id));
   };

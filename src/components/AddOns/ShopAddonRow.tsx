@@ -19,6 +19,7 @@ import { getRatingFromRemarks } from "@/scripts/tools/utils";
 import { getImagesFromPart } from "@/scripts/controllers/imagesController";
 import PartTag from "../PrintableComponents/PartTag";
 import { toPng } from "html-to-image";
+import { ask } from "@tauri-apps/api/dialog";
 
 interface Props {
   addOn: AddOn
@@ -78,7 +79,7 @@ export default function ShopAddonRow({ addOn, handleDuplicateAddOn, partNumList,
   };
 
   const handleDeleteAddOn = async () => {
-    if (!await confirm('Are you sure you want to delete this part?')) return;
+    if (!await ask('Are you sure you want to delete this part?')) return;
     await deleteAddOn(addOn.id);
     setAddons(addOns.filter((a) => a.id !== addOn.id));
   };

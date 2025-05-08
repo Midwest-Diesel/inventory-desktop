@@ -27,6 +27,7 @@ import { useRouter } from "next/router";
 import { FormEvent, useEffect, useState } from "react";
 import { useNavState } from "@/components/Navbar/useNavState";
 import CreditCardBlock from "@/components/CreditCardBlock";
+import { ask } from "@tauri-apps/api/dialog";
 
 
 export default function Handwritten() {
@@ -179,7 +180,7 @@ export default function Handwritten() {
         thirdParty: handwritten?.isThirdParty
       };
       await invoke('print_bol', { args });
-    } else if (await confirm('Print packing slip?')) {
+    } else if (await ask('Print packing slip?')) {
       const billToCityStateZip = `${handwritten?.billToCity}${handwritten?.billToCity ? ',' : ''} ${handwritten?.billToState} ${handwritten?.billToZip}`;
       const shipToCityStateZip = `${handwritten?.shipToCity}${handwritten?.shipToCity ? ',' : ''} ${handwritten?.shipToState} ${handwritten?.shipToZip}`;
       const args = {
@@ -232,7 +233,7 @@ export default function Handwritten() {
         thirdParty: handwritten?.isThirdParty
       };
       await invoke('print_bol', { args });
-    } else if (await confirm('Print packing slip?')) {
+    } else if (await ask('Print packing slip?')) {
       const billToCityStateZip = `${handwritten?.billToCity}${handwritten?.billToCity ? ',' : ''} ${handwritten?.billToState} ${handwritten?.billToZip}`;
       const shipToCityStateZip = `${handwritten?.shipToCity}${handwritten?.shipToCity ? ',' : ''} ${handwritten?.shipToState} ${handwritten?.shipToZip}`;
       const args = {

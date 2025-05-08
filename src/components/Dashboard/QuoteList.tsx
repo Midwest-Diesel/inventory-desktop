@@ -20,6 +20,7 @@ import { confirm } from "@/scripts/config/tauri";
 import EmailQuotesDialog from "../Dialogs/dashboard/EmailQuotesDialog";
 import { getCustomerById } from "@/scripts/controllers/customerController";
 import { isObjectNull } from "@/scripts/tools/utils";
+import { ask } from "@tauri-apps/api/dialog";
 
 interface Props {
   quotes: Quote[]
@@ -123,7 +124,7 @@ export default function QuoteList({ quotes, setQuotes, setSelectHandwrittenOpen,
   };
 
   const handleDelete = async (id: number) => {
-    if (!await confirm('Are you sure you want to delete this quote?')) return;
+    if (!await ask('Are you sure you want to delete this quote?')) return;
     await deleteQuote(id);
     setQuotes(quotes.filter((quote) => quote.id !== id));
     setExpandedQuotes([]);

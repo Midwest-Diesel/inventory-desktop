@@ -14,6 +14,7 @@ import { invoke, confirm } from "@/scripts/config/tauri";
 import { getEngineImages } from "@/scripts/controllers/imagesController";
 import { toPng } from "html-to-image";
 import PartTag from "../PrintableComponents/PartTag";
+import { ask } from "@tauri-apps/api/dialog";
 
 interface Props {
   addOn: EngineAddOn
@@ -68,7 +69,7 @@ export default function EngineAddOnRow({ addOn, handleDuplicateAddOn }: Props) {
   };
 
   const handleDeleteAddOn = async () => {
-    if (!await confirm('Are you sure you want to delete this part?')) return;
+    if (!await ask('Are you sure you want to delete this part?')) return;
     await deleteEngineAddOn(addOn.id);
     setAddons(addOns.filter((a) => a.id !== addOn.id));
   };
@@ -106,7 +107,7 @@ export default function EngineAddOnRow({ addOn, handleDuplicateAddOn }: Props) {
   };
 
   const handleAddToInventory = async () => {
-    if (!await confirm('Are you sure you want to add this engine?')) return;
+    if (!await ask('Are you sure you want to add this engine?')) return;
     await addEngine(addOn);
     await deleteEngineAddOn(addOn.id);
     setAddons(addOns.filter((a) => a.id !== addOn.id));

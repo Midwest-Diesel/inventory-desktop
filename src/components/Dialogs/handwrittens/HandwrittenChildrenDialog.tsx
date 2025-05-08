@@ -5,6 +5,7 @@ import { FormEvent, useEffect, useState } from "react";
 import Button from "@/components/Library/Button";
 import { confirm } from "@/scripts/config/tauri";
 import { deleteHandwrittenItem, deleteHandwrittenItemChild, editHandwrittenItems, editHandwrittenItemsChild, getHandwrittenById } from "@/scripts/controllers/handwrittensController";
+import { ask } from "@tauri-apps/api/dialog";
 
 interface Props {
   open: boolean
@@ -53,11 +54,11 @@ export default function HandwrittenChildrenDialog({ open, setOpen, stockNumChild
   };
 
   const handleDelete = async (item: HandwrittenItemChild) => {
-    if (!await confirm('Are you sure you want to delete this item?')) return;
+    if (!await ask('Are you sure you want to delete this item?')) return;
     if (Boolean(item.parentId)) {
       await deleteHandwrittenItemChild(item.id);
     } else {
-      if (!await confirm('This is the root item, removing it will delete all child stock number items. Do you want to continue?')) return;
+      if (!await ask('This is the root item, removing it will delete all child stock number items. Do you want to continue?')) return;
       await deleteHandwrittenItem(item.id);
     }
     const res = await getHandwrittenById(handwrittenId);

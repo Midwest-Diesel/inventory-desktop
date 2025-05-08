@@ -16,6 +16,7 @@ import Link from "@/components/Library/Link";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useNavState } from "@/components/Navbar/useNavState";
+import { ask } from "@tauri-apps/api/dialog";
 
 
 export default function Return() {
@@ -42,7 +43,7 @@ export default function Return() {
   };
 
   const handleCreditIssued = async () => {
-    if (!returnData || returnData.creditIssued || !await confirm('Are you sure you want to credit this?')) return;
+    if (!returnData || returnData.creditIssued || !await ask('Are you sure you want to credit this?')) return;
     await issueReturnCredit(returnData.id);
     setReturnData({ ...returnData, creditIssued: new Date() });
   };

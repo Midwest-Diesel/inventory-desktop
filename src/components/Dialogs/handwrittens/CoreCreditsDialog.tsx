@@ -6,11 +6,11 @@ import { deleteCore, removeQtyFromCore } from "@/scripts/controllers/coresContro
 import { addHandwritten, addHandwrittenItem } from "@/scripts/controllers/handwrittensController";
 import { useAtom } from "jotai";
 import { userAtom } from "@/scripts/atoms/state";
-import { confirm } from "@/scripts/config/tauri";
 import { FormEvent, useState } from "react";
 import Checkbox from "@/components/Library/Checkbox";
 import Input from "@/components/Library/Input";
 import { useNavState } from "@/components/Navbar/useNavState";
+import { ask } from "@tauri-apps/api/dialog";
 
 interface Props {
   open: boolean
@@ -28,7 +28,7 @@ export default function CoreCreditsDialog({ open, setOpen, cores, handwritten }:
   const [inputCore, setInputCore] = useState<Core | null>(null);
 
   const handleCredit = async () => {
-    if (selectedCores.length === 0 || !await confirm('Are you sure?')) return;
+    if (selectedCores.length === 0 || !await ask('Are you sure?')) return;
     const id = await addHandwritten({ ...handwritten, date: new Date(), salesmanId: user.id } as any);
 
     for (let i = 0; i < selectedCores.length; i++) {

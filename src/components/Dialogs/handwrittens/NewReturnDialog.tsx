@@ -7,8 +7,8 @@ import Button from "@/components/Library/Button";
 import { addReturn, addReturnItem } from "@/scripts/controllers/returnsController";
 import { useAtom } from "jotai";
 import { userAtom } from "@/scripts/atoms/state";
-import { confirm } from "@/scripts/config/tauri";
 import { useNavState } from "@/components/Navbar/useNavState";
+import { ask } from "@tauri-apps/api/dialog";
 
 interface Props {
   open: boolean
@@ -35,7 +35,7 @@ export default function NewReturnDialog({ open, setOpen, handwritten }: Props) {
   };
 
   const submitNewReturn = async () => {
-    if (!handwrittenItems.some((i) => i.return) || !await confirm('Are you sure you want to create a new return?')) return;
+    if (!handwrittenItems.some((i) => i.return) || !await ask('Are you sure you want to create a new return?')) return;
     const newReturn = {
       customer: handwritten.customer,
       handwrittenId: handwritten.id,

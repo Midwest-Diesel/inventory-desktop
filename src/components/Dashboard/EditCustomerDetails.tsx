@@ -5,15 +5,14 @@ import { FormEvent, useEffect, useState } from "react";
 import Input from "@/components/Library/Input";
 import { editCustomer, getCustomerTypes } from "@/scripts/controllers/customerController";
 import Table from "../Library/Table";
-import { confirm } from "@/scripts/config/tauri";
 import { getMapLocationFromCustomer } from "@/scripts/controllers/mapController";
 import EditMapLocDialog from "../Dialogs/customers/EditMapLocDialog";
 import { PreventNavigation } from "../PreventNavigation";
 import SourceSelect from "../Library/Select/SourceSelect";
 import CustomerContactsBlock from "../CustomerContactsBlock";
 import Select from "../Library/Select/Select";
-import Popup from "../Library/Popup";
 import Checkbox from "../Library/Checkbox";
+import { ask } from "@tauri-apps/api/dialog";
 
 interface Props {
   customer: Customer
@@ -51,7 +50,6 @@ export default function CustomerDetails({ customer, setCustomer, setIsEditing }:
   const [loc, setLoc] = useState<MapLocation | null>(null);
   const [changesSaved, setChangesSaved] = useState<boolean>(true);
   const [customerTypes, setCustomerTypes] = useState<string[]>([]);
-  const [popupOpen, setPopupOpen] = useState(false);
 
   useEffect(() => {
     const fetchData = async () =>  {
@@ -63,7 +61,7 @@ export default function CustomerDetails({ customer, setCustomer, setIsEditing }:
 
   const saveChanges = async (e: FormEvent) => {
     e.preventDefault();
-    if (!changesSaved && !await confirm('Are you sure you want to save these changes?')) return;
+    if (!changesSaved && !await ask('Are you sure you want to save these changes?')) return;
     setChangesSaved(false);
     const newCustomer = {
       ...customer,
@@ -103,7 +101,7 @@ export default function CustomerDetails({ customer, setCustomer, setIsEditing }:
     );
     if (Boolean(location) && isLocationChanged) {
       setLoc(location);
-      setPopupOpen(true);
+      if (await ask('Do you want to update the map location?')) setEditLocDialogOpen(true);
     } else {
       setIsEditing(false);
     }
@@ -113,14 +111,6 @@ export default function CustomerDetails({ customer, setCustomer, setIsEditing }:
   return (
     <>
       <PreventNavigation shouldPrevent={!changesSaved} text="Leave without saving changes?" />
-
-      <Popup
-        type="question"
-        text="Do you want to update the map location?"
-        open={popupOpen}
-        setOpen={setPopupOpen}
-        yesCallback={() => setEditLocDialogOpen(true)}
-      />
 
       {editLocDialogOpen &&
         <EditMapLocDialog

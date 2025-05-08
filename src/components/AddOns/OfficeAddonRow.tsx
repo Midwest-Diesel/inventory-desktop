@@ -16,6 +16,7 @@ import Link from "../Library/Link";
 import { getPurchaseOrderByPoNum } from "@/scripts/controllers/purchaseOrderController";
 import { getRatingFromRemarks } from "@/scripts/tools/utils";
 import { selectedAddOnAtom } from "@/scripts/atoms/components";
+import { ask } from "@tauri-apps/api/dialog";
 
 interface Props {
   addOn: AddOn
@@ -68,7 +69,7 @@ export default function OfficeAddonRow({ addOn, partNumList, engineNumList }: Pr
   };
 
   const handleDeleteAddOn = async () => {
-    if (!await confirm('Are you sure you want to delete this part?')) return;
+    if (!await ask('Are you sure you want to delete this part?')) return;
     await deleteAddOn(addOn.id);
     setAddons(addOns.filter((a) => a.id !== addOn.id));
   };
@@ -147,7 +148,7 @@ export default function OfficeAddonRow({ addOn, partNumList, engineNumList }: Pr
     const updatedAddOn = await getAddOnById(addOn.id);
     const partsInfo = await getPartsInfoByPartNum(updatedAddOn.partNum);
     const altParts = [...updatedAddOn.altParts, ...partsInfo.length > 0 ? partsInfo[0].altParts.split(', ') : []];
-    if (!await confirm(`Are you sure you want to add this item?\n\nAlt Parts:\n${altParts.join(', ')}`)) return;
+    if (!await ask(`Are you sure you want to add this item?\n\nAlt Parts:\n${altParts.join(', ')}`)) return;
     setLoading(true);
     const newPart = {
       ...updatedAddOn,

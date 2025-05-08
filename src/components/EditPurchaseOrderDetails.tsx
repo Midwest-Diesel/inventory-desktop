@@ -10,6 +10,7 @@ import VendorDropdown from "./Library/Dropdown/VendorDropdown";
 import { PreventNavigation } from "./PreventNavigation";
 import { confirm } from "@/scripts/config/tauri";
 import Checkbox from "./Library/Checkbox";
+import { ask } from "@tauri-apps/api/dialog";
 
 interface Props {
   poData: PO
@@ -47,7 +48,7 @@ export default function EditPoDetails({ poData, setPo, setIsEditing }: Props) {
 
   const saveChanges = async (e: FormEvent) => {
     e.preventDefault();
-    if (!changesSaved && !await confirm('Are you sure you want to save these changes?')) return;
+    if (!changesSaved && !await ask('Are you sure you want to save these changes?')) return;
     setChangesSaved(false);
     const newPo = {
       id: poData.id,
@@ -96,7 +97,7 @@ export default function EditPoDetails({ poData, setPo, setIsEditing }: Props) {
   };
 
   const handleDeleteItem = async (id: number) => {
-    if (!await confirm('Are you sure you want to delete this item?')) return;
+    if (!await ask('Are you sure you want to delete this item?')) return;
     const newItems = poItems.filter((i: POItem) => i.id !== id);
     await deletePurchaseOrderItem(id);
     setPoItems(newItems);

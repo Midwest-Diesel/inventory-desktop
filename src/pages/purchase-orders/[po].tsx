@@ -15,6 +15,7 @@ import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { confirm, invoke } from "@/scripts/config/tauri";
 import { useNavState } from "@/components/Navbar/useNavState";
+import { ask } from "@tauri-apps/api/dialog";
 
 
 export default function PurchaseOrder() {
@@ -41,7 +42,7 @@ export default function PurchaseOrder() {
   };
 
   const handleReceivedItem = async () => {
-    if (!poData?.id || !await confirm('Are you sure you want to do this?')) return;
+    if (!poData?.id || !await ask('Are you sure you want to do this?')) return;
     await togglePurchaseOrderReceived(poData.id, !poData.isItemReceived);
     const res = await getPurchaseOrderByPoNum(params.po.toString());
     setPoData(res);

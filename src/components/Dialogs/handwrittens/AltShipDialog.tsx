@@ -1,7 +1,7 @@
 import Dialog from "../../Library/Dialog";
 import Button from "@/components/Library/Button";
 import { AltShip, deleteAltShipAddress, editHandwritten, getHandwrittenById } from "@/scripts/controllers/handwrittensController";
-import { confirm } from "@/scripts/config/tauri";
+import { ask } from "@tauri-apps/api/dialog";
 
 interface Props {
   open: boolean
@@ -15,7 +15,7 @@ interface Props {
 
 export default function AltShipDialog({ open, setOpen, handwritten, setHandwritten, altShipData, setAltShipData }: Props) {
   const selectAddress = async (data: AltShip) => {
-    if (!await confirm('Are you sure you want to use this address?')) return;
+    if (!await ask('Are you sure you want to use this address?')) return;
     const newInvoice = {
       ...handwritten,
       shipToAddress: data.shipToAddress,
@@ -30,7 +30,7 @@ export default function AltShipDialog({ open, setOpen, handwritten, setHandwritt
   };
 
   const handleDelete = async (id: number) => {
-    if (!await confirm('Are you sure you want to delete this?')) return;
+    if (!await ask('Are you sure you want to delete this?')) return;
     await deleteAltShipAddress(id);
     setAltShipData(altShipData.filter((data) => data.id !== id));
   };

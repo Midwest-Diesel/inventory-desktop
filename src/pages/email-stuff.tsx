@@ -3,9 +3,10 @@ import { Layout } from "@/components/Layout";
 import Button from "@/components/Library/Button";
 import Loading from "@/components/Library/Loading";
 import { deleteEmailStuffItem, getAllEmailStuff } from "@/scripts/controllers/emailStuffController";
-import { invoke, confirm } from "@/scripts/config/tauri";
+import { invoke } from "@/scripts/config/tauri";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import { ask } from "@tauri-apps/api/dialog";
 
 
 export default function EmailStuff() {
@@ -45,7 +46,7 @@ export default function EmailStuff() {
   };
 
   const handleDelete = async (id: number) => {
-    if (!await confirm('Are you sure you want to do this?')) return;
+    if (!await ask('Are you sure you want to do this?')) return;
     await deleteEmailStuffItem(id);
     setEmailStuff(emailStuff.filter((item) => item.id !== id));
   };

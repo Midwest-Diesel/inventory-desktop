@@ -12,10 +12,10 @@ import RecentQuotes from "@/components/Dashboard/RecentQuotes";
 import { addHandwrittenItem, addHandwrittenItemChild, editHandwrittenItems, editHandwrittenOrderNotes, getHandwrittenById } from "@/scripts/controllers/handwrittensController";
 import SelectHandwrittenDialog from "@/components/Dialogs/dashboard/SelectHandwrittenDialog";
 import { listen } from '@tauri-apps/api/event';
-import { confirm } from "@/scripts/config/tauri";
 import { toggleQuoteSold } from "@/scripts/controllers/quotesController";
 import { useNavState } from "@/components/Navbar/useNavState";
 import { getPartCostIn } from "@/scripts/controllers/partsController";
+import { ask } from "@tauri-apps/api/dialog";
 
 
 export default function Home() {
@@ -74,7 +74,7 @@ export default function Home() {
     const part = selectedHandwrittenPart;
     const newItem = handwritten.handwrittenItems.find((item) => item.partNum === part?.partNum);
     if (newItem) {
-      if (await confirm('Part already exists do you want to add qty?')) {
+      if (await ask('Part already exists do you want to add qty?')) {
         await editHandwrittenItems({ ...newItem, qty: newItem.qty ?? 0 + qty, handwrittenId: handwritten.id });
         await addHandwrittenItemChild(newItem.id, { partId: part?.id, qty, cost } as HandwrittenItemChild);
         await editHandwrittenOrderNotes(handwritten.id, warranty);

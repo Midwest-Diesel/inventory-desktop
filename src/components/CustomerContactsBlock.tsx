@@ -4,6 +4,7 @@ import { addCustomerContact, deleteContact, editContact, editCustomer, getCustom
 import Input from "./Library/Input";
 import { confirm } from "@/scripts/config/tauri";
 import Select from "./Library/Select/Select";
+import { ask } from "@tauri-apps/api/dialog";
 
 interface Props {
   customer: Customer
@@ -45,7 +46,7 @@ export default function CustomerContactsBlock({ customer, setCustomer }: Props) 
   };
 
   const handleDeleteContact = async () => {
-    if (!contact?.id || !await confirm('Are you sure you want to delete this?')) return;
+    if (!contact?.id || !await ask('Are you sure you want to delete this?')) return;
     await deleteContact(contact.id);
     await editCustomer({ ...customer, contact: null });
     const filteredContacts = customer.contacts.filter((c) => c.id !== contact.id);

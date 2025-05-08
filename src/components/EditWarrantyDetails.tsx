@@ -11,6 +11,7 @@ import CustomerDropdown from "./Library/Select/CustomerDropdown";
 import { getCustomerByName } from "@/scripts/controllers/customerController";
 import { confirm } from "@/scripts/config/tauri";
 import { PreventNavigation } from "./PreventNavigation";
+import { ask } from "@tauri-apps/api/dialog";
 
 interface Props {
   warrantyData: Warranty
@@ -32,7 +33,7 @@ export default function EditWarrantyDetails({ warrantyData, setWarranty, setIsEd
 
   const saveChanges = async (e: FormEvent) => {
     e.preventDefault();
-    if (!changesSaved && !await confirm('Are you sure you want to save these changes?')) return;
+    if (!changesSaved && !await ask('Are you sure you want to save these changes?')) return;
     setChangesSaved(false);
     const newCustomer = await getCustomerByName(company);
     const newWarranty = {
@@ -62,7 +63,7 @@ export default function EditWarrantyDetails({ warrantyData, setWarranty, setIsEd
   };
 
   const handleDeleteItem = async (id: number) => {
-    if (!await confirm('Are you sure you want to delete this item?')) return;
+    if (!await ask('Are you sure you want to delete this item?')) return;
     const newItems = warrantyItems.filter((i: WarrantyItem) => i.id !== id);
     await deleteWarrantyItem(id);
     setWarrantyItems(newItems);

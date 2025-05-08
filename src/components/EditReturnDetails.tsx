@@ -12,6 +12,7 @@ import { PreventNavigation } from "./PreventNavigation";
 import UserSelect from "./Library/Select/UserSelect";
 import CustomerSelect from "./Library/Select/CustomerSelect";
 import { getCustomerByName } from "@/scripts/controllers/customerController";
+import { ask } from "@tauri-apps/api/dialog";
 
 interface Props {
   returnData: Return
@@ -49,7 +50,7 @@ export default function EditReturnDetails({ returnData, setReturn, setIsEditing 
 
   const saveChanges = async (e: FormEvent) => {
     e.preventDefault();
-    if (!changesSaved && !await confirm('Are you sure you want to save these changes?')) return;
+    if (!changesSaved && !await ask('Are you sure you want to save these changes?')) return;
     setChangesSaved(false);
     const customerId = (await getCustomerByName(company))?.id;
     const newReturn = {

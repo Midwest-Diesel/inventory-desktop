@@ -28,6 +28,7 @@ import DropdownOption from "./Library/Dropdown/DropdownOption";
 import { arrayOfObjectsMatch } from "@/scripts/tools/utils";
 import PromotionalDialog from "./Dialogs/handwrittens/PromotionalDialog";
 import Loading from "./Library/Loading";
+import { ask } from "@tauri-apps/api/dialog";
 
 interface Props {
   handwritten: Handwritten
@@ -149,7 +150,7 @@ export default function EditHandwrittenDetails({
 
   const saveChanges = async (e: FormEvent) => {
     e.preventDefault();
-    if (!changesSaved && !await confirm('Are you sure you want to save these changes?')) return;
+    if (!changesSaved && !await ask('Are you sure you want to save these changes?')) return;
     setChangesSaved(true);
     const isSentToAccounting = invoiceStatus === 'SENT TO ACCOUNTING' && handwritten.invoiceStatus !== 'SENT TO ACCOUNTING';
     if (isSentToAccounting && handwrittenItems.some((item) => item.cost === 0.04)) {
@@ -233,10 +234,10 @@ export default function EditHandwrittenDetails({
     }
 
     if (isSentToAccounting) {
-      if (await confirm('Do you want to add marketing materials?')) {
+      if (await ask('Do you want to add marketing materials?')) {
         setPromotionalDialogOpen(true);
       } else {
-        if (await confirm('Add this to shipping list?')) {
+        if (await ask('Add this to shipping list?')) {
           setShippingListDialogOpen(true);
         } else {
           const hasCore = handwrittenItems.some((item) => item.location === 'CORE DEPOSIT');
@@ -412,7 +413,7 @@ export default function EditHandwrittenDetails({
   };
 
   const handleDeleteItem = async (item: HandwrittenItem) => {
-    if (!await confirm('Are you sure you want to delete this item?')) return;
+    if (!await ask('Are you sure you want to delete this item?')) return;
     const newItems = handwrittenItems.filter((i: HandwrittenItem) => i.id !== item.id);
     await deleteHandwrittenItem(item.id);
     if (item.location && item.location.includes('CORE DEPOSIT')) await deleteCoreByItemId(item.id);
@@ -566,7 +567,7 @@ export default function EditHandwrittenDetails({
   };
 
   const onPromotionalsClose = async () => {
-    if (await confirm('Add this to shipping list?')) {
+    if (await ask('Add this to shipping list?')) {
       setShippingListDialogOpen(true);
     } else {
       const newCustomer = await getCustomerByName(company);
@@ -624,7 +625,7 @@ export default function EditHandwrittenDetails({
       await printHandwritten(hasCore, newInvoice);
     }
   };
-
+  
 
   return (
     <>

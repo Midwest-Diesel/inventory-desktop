@@ -9,9 +9,9 @@ import Table from "../Library/Table";
 import { addEngineCostOut, deleteEngineCostOut, editEngineCostOut } from "@/scripts/controllers/enginesController";
 import { showSoldPartsAtom, userAtom } from "@/scripts/atoms/state";
 import { useAtom } from "jotai";
-import { confirm } from "@/scripts/config/tauri";
 import { PreventNavigation } from "../PreventNavigation";
 import Loading from "../Library/Loading";
+import { ask } from "@tauri-apps/api/dialog";
 
 interface Props {
   part: Part
@@ -60,7 +60,7 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
 
   const saveChanges = async (e: FormEvent) => {
     e.preventDefault();
-    if (!changesSaved && !await confirm('Are you sure you want to save these changes?')) return;
+    if (!changesSaved && !await ask('Are you sure you want to save these changes?')) return;
     setChangesSaved(false);
     const newPart = {
       id: part.id,
@@ -175,7 +175,7 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
   };
 
   const handleDeleteCostInItem = async (id: number, index: number) => {
-    if (!await confirm('Are you sure you want to delete this item?')) return;
+    if (!await ask('Are you sure you want to delete this item?')) return;
     if (id > 0) {
       const newItems = partCostIn.filter((costin: PartCostIn) => costin.id !== id);
       await deletePartCostIn(id);
@@ -187,7 +187,7 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
   };
 
   const handleDeleteCostOutItem = async (id: number, index: number) => {
-    if (!await confirm('Are you sure you want to delete this item?')) return;
+    if (!await ask('Are you sure you want to delete this item?')) return;
     if (id > 0) {
       const newItems = engineCostOut.filter((costin: EngineCostOut) => costin.id !== id);
       await deleteEngineCostOut(id);
@@ -213,7 +213,7 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
     altsToAdd = Array.from(altsToAdd);
   
     const uniqueAlts = [...altsToAdd].filter((a) => a !== part.partNum && !part.altParts.includes(a));
-    if (!await confirm(`Are you sure you want to ADD: ${uniqueAlts.join(', ')}?`)) return;
+    if (!await ask(`Are you sure you want to ADD: ${uniqueAlts.join(', ')}?`)) return;
     if (uniqueAlts.length === 0) return;
     isLoadingAlts(true);
     await editAltParts(part.partNum, [...altParts, ...uniqueAlts]);
@@ -228,7 +228,7 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
     const input = prompt('Enter part numbers seperated by comma');
     const removedParts = input?.toUpperCase().trim().replace(/\s*,\s*/g, ',').split(',') ?? [];
     const updatedAltString = altParts.filter((a) => !removedParts.includes(a));
-    if (!input || !await confirm(`Are you sure you want to REMOVE: ${removedParts.join(', ')}?\n\n New Alt Parts:\n${updatedAltString.join(', ')}`)) return;
+    if (!input || !await ask(`Are you sure you want to REMOVE: ${removedParts.join(', ')}?\n\n New Alt Parts:\n${updatedAltString.join(', ')}`)) return;
 
     const partsInfo = await getPartsInfoByAltParts(removedParts[0]);
     for (let i = 0; i < partsInfo.length; i++) {

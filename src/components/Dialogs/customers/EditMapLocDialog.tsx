@@ -3,8 +3,8 @@ import Dialog from "@/components/Library/Dialog";
 import Input from "@/components/Library/Input";
 import Select from "@/components/Library/Select/Select";
 import { editMapLocation, getGeoLocation } from "@/scripts/controllers/mapController";
-import { confirm } from "@/scripts/config/tauri";
 import { FormEvent, useState } from "react";
+import { ask } from "@tauri-apps/api/dialog";
 
 interface Props {
   open: boolean
@@ -21,7 +21,7 @@ export default function EditMapLocDialog({ open, setOpen, loc }: Props) {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    if (!loc || !await confirm('Are you sure?')) return;
+    if (!loc || !await ask('Are you sure?')) return;
     const location = (await getGeoLocation(address))[0];
     const newLoc = {
       id: loc.id,
