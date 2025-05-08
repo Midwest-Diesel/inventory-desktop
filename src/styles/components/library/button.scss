@@ -157,6 +157,10 @@
     align-self: center;
   }
 
+  &--no-hover-color:hover {
+    color: white;
+  }
+
   &--hover-move:hover {
     transform: translateY(-1px);
   }

@@ -111,4 +111,18 @@
     flex-direction: column;
     min-width: 20rem;
   }
+
+  th {
+    color: white;
+    font-size: var(--font-sm);
+  }
+
+  p {
+    font-size: var(--font-xsm);
+    padding-left: 0.25rem;
+  }
+
+  button[type="submit"] {
+    background-color: var(--green-dark-2);
+  }
 }

@@ -215,6 +215,7 @@ export default function EditHandwrittenDetails({
     if (!arrayOfObjectsMatch(handwrittenItems, handwritten.handwrittenItems)) {
       for (let i = 0; i < handwrittenItems.length; i++) {
         const item = handwrittenItems[i];
+        if (item.invoiceItemChildren.length > 0) continue;
         const newItem = {
           id: Number(item.id),
           handwrittenId: Number(handwritten.id),

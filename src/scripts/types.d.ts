@@ -263,6 +263,7 @@ type HandwrittenItem = {
 
 type HandwrittenItemChild = {
   id: number
+  parentId: number | null
   partId: number | null
   part: Part | null
   qty: number | null

@@ -106,7 +106,7 @@ export default function HandwrittenItemsTable({ className, handwritten, handwrit
       {handwrittenItems &&
         <>
           <Toast msg={msg} type="error" open={toastOpen} setOpen={setToastOpen} duration={6000} />
-          <HandwrittenChildrenDialog open={childrenOpen} setOpen={setChildrenOpen} stockNumChildren={stockNumChildren} />
+          <HandwrittenChildrenDialog open={childrenOpen} setOpen={setChildrenOpen} stockNumChildren={stockNumChildren} handwrittenId={handwritten.id} setHandwritten={setHandwritten} />
 
           <p><strong>Cost Total: </strong><span style={{ ...costColorStyle }}>{ formatCurrency(getTotalCost()) }</span></p>
           <p><strong>Invoice Total: </strong><span style={{ ...totalColorStyle }}>{ formatCurrency(getInvoiceTotal()) }</span></p>

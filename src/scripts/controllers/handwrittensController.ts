@@ -356,6 +356,15 @@ export const editHandwrittenItems = async (item: HandwrittenItem) => {
   }
 };
 
+export const editHandwrittenItemsChild = async (item: HandwrittenItemChild) => {
+  try {
+    const auth = { withCredentials: true };
+    await api.put('/api/handwrittens/items/child', item, auth);
+  } catch (err) {
+    console.error(err);
+  }
+};
+
 export const editHandwrittenOrderNotes = async (id: number, orderNotes: string) => {
   try {
     const auth = { withCredentials: true };
@@ -389,6 +398,15 @@ export const deleteHandwrittenItem = async (id: number) => {
   try {
     const auth = { withCredentials: true };
     await api.delete(`/api/handwrittens/item/${id}`, auth);
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+export const deleteHandwrittenItemChild = async (id: number) => {
+  try {
+    const auth = { withCredentials: true };
+    await api.delete(`/api/handwrittens/item-child/${id}`, auth);
   } catch (err) {
     console.error(err);
   }
