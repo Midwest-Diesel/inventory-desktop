@@ -3,7 +3,6 @@ import Dialog from "../../Library/Dialog";
 import Input from "@/components/Library/Input";
 import { FormEvent, useEffect, useState } from "react";
 import Button from "@/components/Library/Button";
-import { confirm } from "@/scripts/config/tauri";
 import { deleteHandwrittenItem, deleteHandwrittenItemChild, editHandwrittenItems, editHandwrittenItemsChild, getHandwrittenById } from "@/scripts/controllers/handwrittensController";
 import { ask } from "@tauri-apps/api/dialog";
 
@@ -11,12 +10,12 @@ interface Props {
   open: boolean
   setOpen: (open: boolean) => void
   stockNumChildren: HandwrittenItemChild[]
-  handwrittenId: number
+  handwritten: Handwritten
   setHandwritten: (handwritten: Handwritten) => void
 }
 
 
-export default function HandwrittenChildrenDialog({ open, setOpen, stockNumChildren, handwrittenId, setHandwritten }: Props) {
+export default function HandwrittenChildrenDialog({ open, setOpen, stockNumChildren, handwritten, setHandwritten }: Props) {
   const [items, setItems] = useState<HandwrittenItemChild[]>(stockNumChildren);
 
   useEffect(() => {
@@ -32,6 +31,7 @@ export default function HandwrittenChildrenDialog({ open, setOpen, stockNumChild
 
   const handleSave = async (e: FormEvent) => {
     e.preventDefault();
+    if (handwritten.invoiceStatus === 'SENT TO ACCOUNTING') return;
     for (let i = 0; i < items.length; i++) {
       const oldItem = JSON.stringify({ qty: stockNumChildren[i].qty, partNum: stockNumChildren[i].partNum, cost: stockNumChildren[i].cost });
       const newItem = JSON.stringify({ qty: items[i].qty, partNum: items[i].partNum, cost: items[i].cost });
@@ -42,26 +42,26 @@ export default function HandwrittenChildrenDialog({ open, setOpen, stockNumChild
       } else {
         const newEditItem = {
           ...items[i] as any,
-          handwrittenId,
+          handwrittenId: handwritten.id,
           cost: Number(items[i].cost)
         } as HandwrittenItem;
         await editHandwrittenItems(newEditItem);
       }
     }
-    const res = await getHandwrittenById(handwrittenId);
+    const res = await getHandwrittenById(handwritten.id);
     if (res) setHandwritten(res);
     setOpen(false);
   };
 
   const handleDelete = async (item: HandwrittenItemChild) => {
-    if (!await ask('Are you sure you want to delete this item?')) return;
+    if (!await ask('Are you sure you want to delete this item?') || handwritten.invoiceStatus === 'SENT TO ACCOUNTING') return;
     if (Boolean(item.parentId)) {
       await deleteHandwrittenItemChild(item.id);
     } else {
       if (!await ask('This is the root item, removing it will delete all child stock number items. Do you want to continue?')) return;
       await deleteHandwrittenItem(item.id);
     }
-    const res = await getHandwrittenById(handwrittenId);
+    const res = await getHandwrittenById(handwritten.id);
     if (res) setHandwritten(res);
     setOpen(false);
   };
@@ -77,7 +77,7 @@ export default function HandwrittenChildrenDialog({ open, setOpen, stockNumChild
       className="handwritten-children-dialog"
     >
       <form className="handwritten-children-dialog__content" onSubmit={handleSave}>
-        <Button variant={['fit', 'no-hover-color']} type="submit">Save</Button>
+        <Button variant={['fit', 'no-hover-color']} type="submit" disabled={handwritten.invoiceStatus === 'SENT TO ACCOUNTING'}>Save</Button>
 
         <Table variant={['edit-row-details']}>
           <thead>
@@ -98,6 +98,7 @@ export default function HandwrittenChildrenDialog({ open, setOpen, stockNumChild
                       variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                       value={item.qty || ''}
                       onChange={(e) => editItem({ ...item, qty: Number(e.target.value) })}
+                      disabled={handwritten.invoiceStatus === 'SENT TO ACCOUNTING'}
                     />
                   </td>
                   <td>
@@ -111,10 +112,18 @@ export default function HandwrittenChildrenDialog({ open, setOpen, stockNumChild
                       variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                       value={item.cost ?? ''}
                       onChange={(e) => editItem({ ...item, cost: e.target.value as any })}
+                      disabled={handwritten.invoiceStatus === 'SENT TO ACCOUNTING'}
                     />
                   </td>
                   <td>
-                    <Button variant={['red-color']} onClick={() => handleDelete(item)} type="button">Delete</Button>
+                    <Button
+                      variant={['red-color']}
+                      onClick={() => handleDelete(item)}
+                      type="button"
+                      disabled={handwritten.invoiceStatus === 'SENT TO ACCOUNTING'}
+                    >
+                      Delete
+                    </Button>
                   </td>
                 </tr>
               );

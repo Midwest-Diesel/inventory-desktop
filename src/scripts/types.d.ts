@@ -272,6 +272,13 @@ type HandwrittenItemChild = {
   stockNum: string | null
 };
 
+type SelectHandwrittenDialogResult = {
+  id: number
+  date: Date
+  customer: string
+  billToCompany: string
+};
+
 type AddOn = {
   id: number
   qty: number | null

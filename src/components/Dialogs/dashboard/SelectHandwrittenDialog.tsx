@@ -1,6 +1,6 @@
 import { FormEvent, useEffect, useState } from "react";
 import Dialog from "../../Library/Dialog";
-import { addHandwritten, getHandwrittenById, getHandwrittenCount, getSomeHandwrittens, searchHandwrittens } from "@/scripts/controllers/handwrittensController";
+import { addHandwritten, getHandwrittenById, searchSelectHandwrittensDialogData } from "@/scripts/controllers/handwrittensController";
 import Table from "@/components/Library/Table";
 import { formatDate } from "@/scripts/tools/stringUtils";
 import Pagination from "@/components/Library/Pagination";
@@ -27,8 +27,8 @@ export default function SelectHandwrittenDialog({ open, setOpen, part, customer,
   const [user] = useAtom<User>(userAtom);
   const [selectedCustomer] = useAtom<Customer>(selectedCustomerAtom);
   const [error, setError] = useAtom<string>(errorAtom);
-  const [handwrittensData, setHandwrittensData] = useState<Handwritten[]>([]);
-  const [handwrittens, setHandwrittens] = useState<Handwritten[]>([]);
+  const [handwrittensData, setHandwrittensData] = useState<SelectHandwrittenDialogResult[]>([]);
+  const [handwrittens, setHandwrittens] = useState<SelectHandwrittenDialogResult[]>([]);
   const [handwrittenCount, setHandwrittenCount] = useState<number[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedHandwrittenId, setSelectedHandwrittenId] = useState(0);
@@ -70,19 +70,18 @@ export default function SelectHandwrittenDialog({ open, setOpen, part, customer,
         offset: (currentPage - 1) * LIMIT,
         ...((!search && selectedCustomer?.id) && { customerId: selectedCustomer?.id })
       };
-      const res = await searchHandwrittens(searchData);
+      const res = await searchSelectHandwrittensDialogData(searchData);
       if (res.rows.length > 0) {
-        setHandwrittens(res?.rows);
-        setHandwrittenCount(res?.minItems);
+        setHandwrittens(res.rows);
+        setHandwrittenCount(res.minItems);
         return;
       }
     }
     
-    const pageCount = await getHandwrittenCount();
-    setHandwrittenCount(pageCount);
-    const res = await getSomeHandwrittens(1, LIMIT);
-    setHandwrittensData(res);
-    setHandwrittens(res);
+    const res = await searchSelectHandwrittensDialogData({ billToCompany: '', limit: LIMIT, offset: (currentPage - 1) * LIMIT, customerId: 0 });
+    setHandwrittensData(res.rows);
+    setHandwrittens(res.rows);
+    setHandwrittenCount(res.minItems);
     setSearch('');
   };
   
@@ -95,17 +94,18 @@ export default function SelectHandwrittenDialog({ open, setOpen, part, customer,
         offset: (page - 1) * LIMIT,
         ...((!search && selectedCustomer?.id) && { customerId: selectedCustomer?.id })
       };
-      const res = await searchHandwrittens(searchData);
+      const res = await searchSelectHandwrittensDialogData(searchData);
       if (res.rows.length > 0) {
-        setHandwrittens(res?.rows);
-        setHandwrittenCount(res?.minItems);
+        setHandwrittens(res.rows);
+        setHandwrittenCount(res.minItems);
         setCurrentPage(page);
         return;
       }
     }
     
-    const res = await getSomeHandwrittens(page, LIMIT);
-    setHandwrittens(res);
+    const res = await searchSelectHandwrittensDialogData({ billToCompany: '', limit: LIMIT, offset: (page - 1) * LIMIT, customerId: 0 });
+    setHandwrittens(res.rows);
+    setHandwrittenCount(res.minItems);
     setCurrentPage(page);
   };
 
@@ -120,7 +120,7 @@ export default function SelectHandwrittenDialog({ open, setOpen, part, customer,
         limit: LIMIT,
         offset: (currentPage - 1) * LIMIT
       };
-      const res = await searchHandwrittens(searchData);
+      const res = await searchSelectHandwrittensDialogData(searchData);
       setHandwrittens(res?.rows);
       setHandwrittenCount(res?.minItems);
     } else {
@@ -342,7 +342,7 @@ export default function SelectHandwrittenDialog({ open, setOpen, part, customer,
                   </tr>
                 </thead>
                 <tbody>
-                  {handwrittens.map((handwritten: Handwritten) => {
+                  {handwrittens.map((handwritten: SelectHandwrittenDialogResult) => {
                     return (
                       <tr
                         key={handwritten.id}
@@ -352,7 +352,7 @@ export default function SelectHandwrittenDialog({ open, setOpen, part, customer,
                       >
                         <td>{ handwritten.id }</td>
                         <td>{ formatDate(handwritten.date) }</td>
-                        <td>{ handwritten.customer ? handwritten.customer.company : null }</td>
+                        <td>{ handwritten.customer }</td>
                         <td>{ handwritten.billToCompany }</td>
                       </tr>
                     );

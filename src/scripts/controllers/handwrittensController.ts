@@ -79,10 +79,10 @@ export const getHandwrittenById = async (id: number): Promise<Handwritten | null
   }
 };
 
-export const getSomeHandwrittens = async (page: number, limit: number): Promise<Handwritten[]> => {
+export const getSomeHandwrittens = async (page: number, limit: number, onlyShowRecent = false): Promise<Handwritten[]> => {
   try {
     const auth = { withCredentials: true };
-    const res = await api.get(`/api/handwrittens/limit/${JSON.stringify({ page: (page - 1) * limit, limit: limit })}`, auth);
+    const res = await api.get(`/api/handwrittens/limit/${JSON.stringify({ page: (page - 1) * limit, limit, onlyShowRecent })}`, auth);
     return await parseHandwrittenRes(res.data);
   } catch (err) {
     console.error(err);
@@ -95,6 +95,18 @@ export const searchHandwrittens = async (handwritten: HandwrittenSearchData): Pr
     const auth = { withCredentials: true };
     const res = await api.get(`/api/handwrittens/search/${JSON.stringify(handwritten)}`, auth);
     return { minItems: res.data.minItems, rows: await parseHandwrittenRes(res.data.rows) };
+  } catch (err) {
+    console.error(err);
+    return { minItems: [], rows: [] };
+  }
+};
+
+export const searchSelectHandwrittensDialogData = async (handwritten: HandwrittenSearchData): Promise<{ minItems: number[], rows: SelectHandwrittenDialogResult[] }> => {
+  try {
+    const auth = { withCredentials: true };
+    const res = await api.get(`/api/handwrittens/select-handwritten/${JSON.stringify(handwritten)}`, auth);
+    const rows = res.data.rows.map((row: SelectHandwrittenDialogResult) => ({ ...row, date: parseResDate(row.date as any) }));
+    return { minItems: res.data.minItems, rows };
   } catch (err) {
     console.error(err);
     return { minItems: [], rows: [] };
