@@ -366,7 +366,7 @@ type Part = {
   enteredBy: string | null
   qty: number
   stockNum: string | null
-  purchasePrice: number | null
+  purchasePrice: number
   listPrice: number | null
   remanListPrice: number | null
   fleetPrice: number | null
@@ -1071,18 +1071,25 @@ interface PricingChangesReport {
   oldPercent?: number
 }
 
-type InventoryValueReportParts = { partNum: string, stockNum: string, desc: string, qty: number, purchasePrice: number, totalCost: number };
-type InventoryValueReportCoreEngines = { stockNum: number, loginDate: Date, model: string, serialNum: string, costRemaining: number };
-type InventoryValueReportToreDownEngines = { stockNum: number, loginDate: Date, model: string, serialNum: string, costRemaining: number, toreDownDate: Date };
-type InventoryValueReportRunningEngines = { stockNum: number, serialNum: string, loginDate: Date, costRemaining: number, currentStatus: string };
-type InventoryValueReportShortBlocks = { stockNum: number, model: string, serialNum: string, loginDate: Date, currentStatus: string, costRemaining: number };
-type InventoryValueReportSurplus = { code: string, name: string, date: Date, price: number, costRemaining: number };
+type InventoryValueReportParts = { combinedTotal: number, data: InventoryValueReportPartsData[] };
+type InventoryValueReportCoreEngines = { combinedTotal: number, data: InventoryValueReportCoreEnginesData[] };
+type InventoryValueReportToreDownEngines = { combinedTotal: number, data: InventoryValueReportToreDownEnginesData[] };
+type InventoryValueReportRunningEngines = { combinedTotal: number, data: InventoryValueReportRunningEnginesData[] };
+type InventoryValueReportShortBlocks = { combinedTotal: number, data: InventoryValueReportShortBlocksData[] };
+type InventoryValueReportSurplus = { combinedTotal: number, data: InventoryValueReportSurplusData[] };
+
+type InventoryValueReportPartsData = { partNum: string, stockNum: string, desc: string, qty: number, purchasePrice: number, totalCost: number };
+type InventoryValueReportCoreEnginesData = { stockNum: number, loginDate: Date, model: string, serialNum: string, costRemaining: number };
+type InventoryValueReportToreDownEnginesData = { stockNum: number, loginDate: Date, model: string, serialNum: string, costRemaining: number, toreDownDate: Date };
+type InventoryValueReportRunningEnginesData = { stockNum: number, serialNum: string, loginDate: Date, costRemaining: number, currentStatus: string };
+type InventoryValueReportShortBlocksData = { stockNum: number, model: string, serialNum: string, loginDate: Date, currentStatus: string, costRemaining: number };
+type InventoryValueReportSurplusData = { code: string, name: string, date: Date, price: number, costRemaining: number };
 
 interface InventoryValueReport {
-  parts: InventoryValueReportParts[]
-  coreEngines: InventoryValueReportCoreEngines[]
-  toreDownEngines: InventoryValueReportToreDownEngines[]
-  runningEngines: InventoryValueReportRunningEngines[]
-  shortBlocks: InventoryValueReportShortBlocks[]
-  surplus: InventoryValueReportSurplus[]
+  parts: InventoryValueReportParts
+  coreEngines: InventoryValueReportCoreEngines
+  toreDownEngines: InventoryValueReportToreDownEngines
+  runningEngines: InventoryValueReportRunningEngines
+  shortBlocks: InventoryValueReportShortBlocks
+  surplus: InventoryValueReportSurplus
 }

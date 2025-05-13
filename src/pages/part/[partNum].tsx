@@ -109,11 +109,6 @@ export default function PartDetails() {
     }
   };
 
-  const getTotalCostIn = () => {
-    const value = partCostIn.reduce((acc, val) => acc + (val.cost ?? 0), 0);
-    return value > 0 ? value : 0.01;
-  };
-
   const handleDelete = async () => {
     if (!part?.id || user.accessLevel <= 1 || prompt('Type "confirm" to delete this part') !== 'confirm') return;
     await deletePart(part.id);
@@ -281,10 +276,6 @@ export default function PartDetails() {
                     <td>{ formatDate(part.entryDate) }</td>
                   </tr>
                   <tr>
-                    <th>Purchase Price</th>
-                    <td>{ formatCurrency(getTotalCostIn()) }</td>
-                  </tr>
-                  <tr>
                     <th>Core Family</th>
                     <td>{ part.coreFam }</td>
                   </tr>
@@ -314,6 +305,10 @@ export default function PartDetails() {
                   <tr>
                     <th>Core Price</th>
                     <td>{ formatCurrency(part.corePrice) }</td>
+                  </tr>
+                  <tr>
+                    <th>Purchase Price</th>
+                    <td>{ formatCurrency(part.purchasePrice) }</td>
                   </tr>
                 </tbody>
               </Table>
