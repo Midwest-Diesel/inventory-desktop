@@ -62,7 +62,7 @@ export default function SelectHandwrittenDialog({ open, setOpen, part, customer,
     fetchData();
   }, [open, selectedCustomer]);
 
-  const resetHandwrittensList = async () => {    
+  const resetHandwrittensList = async () => {
     if (search || selectedCustomer?.id) {
       const searchData = {
         billToCompany: search ?? '',

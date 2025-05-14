@@ -13,12 +13,13 @@ interface Props {
 
 export default function PricingChangesTable({ setTableOpen, setReportsOpen }: Props) {
   const [table, setTable] = useState<'parts' | 'coreEngines' | 'toreDownEngines' | 'runningEngines' | 'shortBlocks' | 'surplus' | ''>('');
-  const [parts, setParts] = useState<InventoryValueReportParts[]>([]);
-  const [coreEngines, setCoreEngines] = useState<InventoryValueReportCoreEngines[]>([]);
-  const [toreDownEngines, setToreDownEngines] = useState<InventoryValueReportToreDownEngines[]>([]);
-  const [runningEngines, setRunningEngines] = useState<InventoryValueReportRunningEngines[]>([]);
-  const [shortBlocks, setShortBlocks] = useState<InventoryValueReportShortBlocks[]>([]);
-  const [surplus, setSurplus] = useState<InventoryValueReportSurplus[]>([]);
+  const [parts, setParts] = useState<InventoryValueReportPartsData[]>([]);
+  const [coreEngines, setCoreEngines] = useState<InventoryValueReportCoreEnginesData[]>([]);
+  const [toreDownEngines, setToreDownEngines] = useState<InventoryValueReportToreDownEnginesData[]>([]);
+  const [runningEngines, setRunningEngines] = useState<InventoryValueReportRunningEnginesData[]>([]);
+  const [shortBlocks, setShortBlocks] = useState<InventoryValueReportShortBlocksData[]>([]);
+  const [surplus, setSurplus] = useState<InventoryValueReportSurplusData[]>([]);
+  const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(false);
 
   const handleGoBack = () => {
@@ -29,7 +30,8 @@ export default function PricingChangesTable({ setTableOpen, setReportsOpen }: Pr
   const loadPartsData = async () => {
     setLoading(true);
     const res = await reportInventoryValueParts();
-    setParts(res);
+    setTotal(res.combinedTotal);
+    setParts(res.data);
     setTable('parts');
     setLoading(false);
   };
@@ -37,7 +39,8 @@ export default function PricingChangesTable({ setTableOpen, setReportsOpen }: Pr
   const loadCoreEnginesData = async () => {
     setLoading(true);
     const res = await reportInventoryValueCoreEngines();
-    setCoreEngines(res);
+    setTotal(res.combinedTotal);
+    setCoreEngines(res.data);
     setTable('coreEngines');
     setLoading(false);
   };
@@ -45,7 +48,8 @@ export default function PricingChangesTable({ setTableOpen, setReportsOpen }: Pr
   const loadToreDownEnginesData = async () => {
     setLoading(true);
     const res = await reportInventoryValueToreDownEngines();
-    setToreDownEngines(res);
+    setTotal(res.combinedTotal);
+    setToreDownEngines(res.data);
     setTable('toreDownEngines');
     setLoading(false);
   };
@@ -53,7 +57,8 @@ export default function PricingChangesTable({ setTableOpen, setReportsOpen }: Pr
   const loadRunningEnginesData = async () => {
     setLoading(true);
     const res = await reportInventoryValueRunningEngines();
-    setRunningEngines(res);
+    setTotal(res.combinedTotal);
+    setRunningEngines(res.data);
     setTable('runningEngines');
     setLoading(false);
   };
@@ -61,7 +66,8 @@ export default function PricingChangesTable({ setTableOpen, setReportsOpen }: Pr
   const loadShortBlocksData = async () => {
     setLoading(true);
     const res = await reportInventoryValueShortBlocks();
-    setShortBlocks(res);
+    setTotal(res.combinedTotal);
+    setShortBlocks(res.data);
     setTable('shortBlocks');
     setLoading(false);
   };
@@ -69,7 +75,8 @@ export default function PricingChangesTable({ setTableOpen, setReportsOpen }: Pr
   const loadSurplusData = async () => {
     setLoading(true);
     const res = await reportInventoryValueSurplus();
-    setSurplus(res);
+    setTotal(res.combinedTotal);
+    setSurplus(res.data);
     setTable('surplus');
     setLoading(false);
   };
@@ -104,7 +111,7 @@ export default function PricingChangesTable({ setTableOpen, setReportsOpen }: Pr
       const rowsText = surplus.map((purchase) =>
         [purchase.code, purchase.name, purchase.date, purchase.price, purchase.costRemaining].join('\t')
       ).join('\n');
-      navigator.clipboard.writeText(rowsText);    
+      navigator.clipboard.writeText(rowsText.toString());    
     }
   };
 
@@ -124,6 +131,8 @@ export default function PricingChangesTable({ setTableOpen, setReportsOpen }: Pr
         <Button onClick={handleGoBack}>Back</Button>
         <Button onClick={copyToClipboard}>Copy</Button>
       </div>
+
+      <h3 style={{ textAlign: 'end' }}>{ total > 0 && `Total: ${formatCurrency(total)}` }</h3>
 
       { loading && <Loading /> }
       {table === 'parts' &&

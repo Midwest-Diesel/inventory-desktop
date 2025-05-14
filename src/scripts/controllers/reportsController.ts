@@ -190,69 +190,69 @@ export const reportOutstandingCores = async () => {
   }
 };
 
-export const reportInventoryValueParts = async (): Promise<InventoryValueReportParts[]> => {
+export const reportInventoryValueParts = async (): Promise<InventoryValueReportParts> => {
   try {
     const auth = { withCredentials: true };
     const res = await api.get(`/api/reports/inventory-value/parts`, auth);
-    return parseReportData(res.data);
+    return res.data;
   } catch (err) {
     console.log(err);
-    return [];
+    return { combinedTotal: 0, data: [] };
   }
 };
 
-export const reportInventoryValueCoreEngines = async (): Promise<InventoryValueReportCoreEngines[]> => {
+export const reportInventoryValueCoreEngines = async (): Promise<InventoryValueReportCoreEngines> => {
   try {
     const auth = { withCredentials: true };
     const res = await api.get(`/api/reports/inventory-value/core-engines`, auth);
-    return parseReportData(res.data);
+    return res.data;
   } catch (err) {
     console.log(err);
-    return [];
+    return { combinedTotal: 0, data: [] };
   }
 };
 
-export const reportInventoryValueToreDownEngines = async (): Promise<InventoryValueReportToreDownEngines[]> => {
+export const reportInventoryValueToreDownEngines = async (): Promise<InventoryValueReportToreDownEngines> => {
   try {
     const auth = { withCredentials: true };
     const res = await api.get(`/api/reports/inventory-value/tore-down-engines`, auth);
-    return parseReportData(res.data);
+    return { combinedTotal: res.data.combinedTotal, data: parseReportData(res.data.data) };
   } catch (err) {
     console.log(err);
-    return [];
+    return { combinedTotal: 0, data: [] };
   }
 };
 
-export const reportInventoryValueRunningEngines = async (): Promise<InventoryValueReportRunningEngines[]> => {
+export const reportInventoryValueRunningEngines = async (): Promise<InventoryValueReportRunningEngines> => {
   try {
     const auth = { withCredentials: true };
     const res = await api.get(`/api/reports/inventory-value/running-engines`, auth);
-    return parseReportData(res.data);
+    return { combinedTotal: res.data.combinedTotal, data: parseReportData(res.data.data) };
   } catch (err) {
     console.log(err);
-    return [];
+    return { combinedTotal: 0, data: [] };
   }
 };
 
-export const reportInventoryValueShortBlocks = async (): Promise<InventoryValueReportShortBlocks[]> => {
+export const reportInventoryValueShortBlocks = async (): Promise<InventoryValueReportShortBlocks> => {
   try {
     const auth = { withCredentials: true };
     const res = await api.get(`/api/reports/inventory-value/short-blocks`, auth);
-    return parseReportData(res.data);
+    return { combinedTotal: res.data.combinedTotal, data: parseReportData(res.data.data) };
   } catch (err) {
     console.log(err);
-    return [];
+    return { combinedTotal: 0, data: [] };
   }
 };
 
-export const reportInventoryValueSurplus = async (): Promise<InventoryValueReportSurplus[]> => {
+export const reportInventoryValueSurplus = async (): Promise<InventoryValueReportSurplus> => {
   try {
     const auth = { withCredentials: true };
     const res = await api.get(`/api/reports/inventory-value/surplus`, auth);
-    return parseReportData(res.data);
+    return { combinedTotal: res.data.combinedTotal, data: parseReportData(res.data.data) };
   } catch (err) {
     console.log(err);
-    return [];
+    return { combinedTotal: 0, data: [] };
   }
 };
 
