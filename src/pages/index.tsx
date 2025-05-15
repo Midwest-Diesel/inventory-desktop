@@ -14,7 +14,7 @@ import SelectHandwrittenDialog from "@/components/Dialogs/dashboard/SelectHandwr
 import { listen } from '@tauri-apps/api/event';
 import { toggleQuoteSold } from "@/scripts/controllers/quotesController";
 import { useNavState } from "@/components/Navbar/useNavState";
-import { getPartCostIn } from "@/scripts/controllers/partsController";
+import { getPartById, getPartCostIn } from "@/scripts/controllers/partsController";
 import { ask } from "@tauri-apps/api/dialog";
 
 
@@ -72,7 +72,13 @@ export default function Home() {
 
   const handleSubmitNewHandwritten = async (handwritten: Handwritten, warranty: string, qty: number, desc: string, price: number, stockNum: string, cost: number) => {
     const part = selectedHandwrittenPart;
-    const newItem = handwritten.handwrittenItems.find((item) => item.partNum === part?.partNum);
+    let newItem: HandwrittenItem | null = null;
+    for (const item of handwritten.handwrittenItems) {
+      if (!item.partId) continue;
+      const itemPart = await getPartById(item.partId);
+      if (!itemPart) continue;
+      if (itemPart.altParts.includes(part?.partNum ?? '')) newItem = item;
+    }
     if (newItem) {
       if (await ask('Part already exists do you want to add qty?')) {
         await editHandwrittenItems({ ...newItem, qty: newItem.qty ?? 0 + qty, handwrittenId: handwritten.id });
