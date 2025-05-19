@@ -114,9 +114,9 @@ export default function PrintInvoiceDialog({ open, setOpen, handwritten }: Props
         return { ...rest };
       });
 
-      if (accounting) addToQue('handwrittenAcct', 'print_accounting_handwritten', { ...args, items: filteredItems });
-      if (shipping) addToQue('handwrittenShip', 'print_shipping_handwritten', { ...args, items: itemsWithChildren });
-      if (coreDeposit) addToQue('handwrittenCore', 'print_core_handwritten', args);
+      if (accounting) addToQue('handwrittenAcct', 'print_accounting_handwritten', { ...args, items: filteredItems }, '1100px', '816px');
+      if (shipping) addToQue('handwrittenShip', 'print_shipping_handwritten', { ...args, items: itemsWithChildren }, '1100px', '816px');
+      if (coreDeposit) addToQue('handwrittenCore', 'print_core_handwritten', args, '1100px', '816px');
     }
     if (accounting || shipping || coreDeposit) printQue();
   };

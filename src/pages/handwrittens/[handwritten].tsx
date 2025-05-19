@@ -28,10 +28,12 @@ import { FormEvent, useEffect, useState } from "react";
 import { useNavState } from "@/components/Navbar/useNavState";
 import CreditCardBlock from "@/components/CreditCardBlock";
 import { ask } from "@tauri-apps/api/dialog";
+import { usePrintQue } from "@/components/PrintableComponents/usePrintQue";
 
 
 export default function Handwritten() {
   const { closeBtn, push } = useNavState();
+  const { addToQue, printQue } = usePrintQue();
   const router = useRouter();
   const params = useParams();
   const [user] = useAtom<User>(userAtom);
@@ -261,36 +263,37 @@ export default function Handwritten() {
 
   const handlePrintShippingLabel = async (copies: number) => {
     if (!await confirm(`Print ${copies} shipping label${copies > 1 ? 's' : ''}?`)) return;
-    if (handwritten?.isBlindShipment) {
-      const shipFromCityStateZip = [handwritten?.billToCity, `${handwritten?.billToState} ${handwritten?.billToZip}`].join(', ');
-      const shipToCityStateZip = [handwritten?.shipToCity, `${handwritten?.shipToState} ${handwritten?.shipToZip}`].join(', ');
-      const args = {
-        shipFromCompany: handwritten?.billToCompany ?? '',
-        shipFromAddress: handwritten?.billToAddress ?? '',
-        shipFromAddress2: handwritten?.billToAddress2 ? `"${handwritten?.billToAddress2}" & Chr(11)` : '""',
-        shipFromCityStateZip: shipFromCityStateZip ?? '',
-        shipToCompany: handwritten?.shipToCompany ?? '',
-        shipToAddress: handwritten?.shipToAddress ?? '',
-        shipToAddress2: handwritten?.shipToAddress2 ? `"${handwritten?.shipToAddress2}" & Chr(11)` : '""',
-        shipToCityStateZip: shipToCityStateZip ?? '',
-        copies
-      };
-      await invoke('print_shipping_label', { args });
-    } else {
-      const shipToCityStateZip = [handwritten?.shipToCity, `${handwritten?.shipToState} ${handwritten?.shipToZip}`].join(', ');
-      const args = {
-        shipFromCompany: 'MIDWEST DIESEL',
-        shipFromAddress: '3051 82ND LANE NE',
-        shipFromAddress2: '""',
-        shipFromCityStateZip: 'BLAINE, MN 55449',
-        shipToCompany: handwritten?.shipToCompany ?? '',
-        shipToAddress: handwritten?.shipToAddress ?? '',
-        shipToAddress2: handwritten?.shipToAddress2 ? `"${handwritten?.shipToAddress2}" & Chr(11)` : '""',
-        shipToCityStateZip: shipToCityStateZip ?? '',
-        copies
-      };
-      await invoke('print_shipping_label', { args });
+    for (let i = 0; i < copies; i++) {
+      if (handwritten?.isBlindShipment) {
+        const shipFromCityStateZip = [handwritten?.billToCity, `${handwritten?.billToState} ${handwritten?.billToZip}`].join(', ');
+        const shipToCityStateZip = [handwritten?.shipToCity, `${handwritten?.shipToState} ${handwritten?.shipToZip}`].join(', ');
+        const args = {
+          shipFromCompany: handwritten?.billToCompany ?? '',
+          shipFromAddress: handwritten?.billToAddress ?? '',
+          shipFromAddress2: handwritten?.billToAddress2 ? `${handwritten?.billToAddress2}\n` : '',
+          shipFromCityStateZip: shipFromCityStateZip ?? '',
+          shipToCompany: handwritten?.shipToCompany ?? '',
+          shipToAddress: handwritten?.shipToAddress ?? '',
+          shipToAddress2: handwritten?.shipToAddress2 ? `${handwritten?.shipToAddress2}\n` : '',
+          shipToCityStateZip: shipToCityStateZip ?? '',
+        };
+        addToQue('shippingLabel', 'print_shipping_label', args, '576px', '374.4px');
+      } else {
+        const shipToCityStateZip = [handwritten?.shipToCity, `${handwritten?.shipToState} ${handwritten?.shipToZip}`].join(', ');
+        const args = {
+          shipFromCompany: 'MIDWEST DIESEL',
+          shipFromAddress: '3051 82ND LANE NE',
+          shipFromAddress2: '',
+          shipFromCityStateZip: 'BLAINE, MN 55449',
+          shipToCompany: handwritten?.shipToCompany ?? '',
+          shipToAddress: handwritten?.shipToAddress ?? '',
+          shipToAddress2: handwritten?.shipToAddress2 ? `${handwritten?.shipToAddress2}\n` : '',
+          shipToCityStateZip: shipToCityStateZip ?? '',
+        };
+        addToQue('shippingLabel', 'print_shipping_label', args, '576px', '374.4px');
+      }
     }
+    printQue();
   };
 
   const handlePrintCI = async () => {

@@ -1,0 +1,10 @@
+.shipping-label-template {
+  font-size: var(--font-lg);
+
+  &__ship-to {
+    margin: 2rem 0 0 20%;
+    font-weight: 500;
+    width: 100%;
+    font-size: 32px;
+  }
+}

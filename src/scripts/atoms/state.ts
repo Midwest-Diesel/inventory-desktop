@@ -36,4 +36,4 @@ export const ReturnSearchAtom = atom<any>({});
 export const FreightCarriersAtom = atom<FreightCarrier[]>([]);
 export const tabsAtom = atom<Tab[]>([]);
 export const errorAtom = atom<string>('');
-export const printQueAtom = atom<{ name: string, printCmd: string, data: any }[]>([]);
+export const printQueAtom = atom<{ name: string, printCmd: string, data: any, maxWidth: string, maxHeight: string }[]>([]);

@@ -2,6 +2,7 @@ import { useNavState } from "@/components/Navbar/useNavState";
 import HandwrittenAccountingTemplate from "@/components/PrintableComponents/HandwrittenAccountingTemplate";
 import HandwrittenCoreTemplate from "@/components/PrintableComponents/HandwrittenCoreTemplate";
 import HandwrittenShippingTemplate from "@/components/PrintableComponents/HandwrittenShippingTemplate";
+import ShippingLabelTemplate from "@/components/PrintableComponents/ShippingLabelTemplate";
 import { usePrintQue } from "@/components/PrintableComponents/usePrintQue";
 import { invoke } from "@/scripts/config/tauri";
 import { toPng } from "html-to-image";
@@ -14,6 +15,8 @@ export default function Print() {
   const { backward, tabs, push } = useNavState();
   const [activeSheet, setActiveSheet] = useState('');
   const [data, setData] = useState<any>(null);
+  const [maxWidth, setMaxWidth] = useState('');
+  const [maxHeight, setMaxHeight] = useState('');
 
   useEffect(() => {
     if (tabs.length === 0) push('Home', '/');
@@ -26,6 +29,8 @@ export default function Print() {
     for (let item of que) {
       setActiveSheet(item.name);
       setData(item.data);
+      setMaxWidth(item.maxWidth);
+      setMaxHeight(item.maxHeight);
       await waitForDomPaint();
       if (!printRef.current) continue;
 
@@ -41,10 +46,11 @@ export default function Print() {
 
 
   return (
-    <div ref={printRef} style={{ height: '100vh', backgroundColor: 'white', color: 'black', maxWidth: '1100px', maxHeight: '816px' }}>
+    <div ref={printRef} style={{ height: '100vh', backgroundColor: 'white', color: 'black', maxWidth, maxHeight }}>
       { activeSheet === 'handwrittenAcct' && <HandwrittenAccountingTemplate data={data} /> }
       { activeSheet === 'handwrittenShip' && <HandwrittenShippingTemplate data={data} /> }
       { activeSheet === 'handwrittenCore' && <HandwrittenCoreTemplate data={data} /> }
+      { activeSheet === 'shippingLabel' && <ShippingLabelTemplate data={data} /> }
     </div>
   );
 }

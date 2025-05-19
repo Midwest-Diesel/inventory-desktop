@@ -29,6 +29,7 @@ import { arrayOfObjectsMatch } from "@/scripts/tools/utils";
 import PromotionalDialog from "./Dialogs/handwrittens/PromotionalDialog";
 import Loading from "./Library/Loading";
 import { ask } from "@tauri-apps/api/dialog";
+import { usePrintQue } from "./PrintableComponents/usePrintQue";
 
 interface Props {
   handwritten: Handwritten
@@ -72,6 +73,7 @@ export default function EditHandwrittenDetails({
   setCardName,
   setCardAddress
 }: Props) {
+  const { addToQue, printQue } = usePrintQue();
   const [sourcesData, setSourcesData] = useAtom<string[]>(sourcesAtom);
   const [error, setError] = useAtom<string>(errorAtom);
   const [date, setDate] = useState<Date>(handwritten.date);
@@ -338,7 +340,7 @@ export default function EditHandwrittenDetails({
       collect: handwritten.isCollect ?? false,
       thirdParty: handwritten.isThirdParty ?? false,
       handwrittenTotal,
-      items: JSON.stringify(handwrittenItems.map((item) => {
+      items: handwrittenItems.map((item) => {
         return {
           stockNum: item.stockNum ?? '',
           location: item.location ?? '',
@@ -350,7 +352,7 @@ export default function EditHandwrittenDetails({
           total: formatCurrency((item.qty ?? 0) * (item.unitPrice ?? 0)).replaceAll(',', '|') ?? '$0.00',
           itemChildren: item.invoiceItemChildren
         };
-      })) ?? '[]'
+      }) ?? []
     };
     const itemChildren = handwrittenItems.map((item) => {
       if (item.invoiceItemChildren.length > 0) return item.invoiceItemChildren.map((child) => {
@@ -366,15 +368,16 @@ export default function EditHandwrittenDetails({
         };
       });
     }).filter((item) => item).flat();
-    const itemsWithChildren = JSON.stringify([...JSON.parse(args.items).filter((item: any) => item.itemChildren.length === 0), ...itemChildren ]);
-    const filteredItems = JSON.parse(args.items).map((item: any) => {
+    const itemsWithChildren = [...args.items.filter((item: any) => item.itemChildren.length === 0), ...itemChildren ];
+    const filteredItems = args.items.map((item: any) => {
       const { itemChildren, ...rest } = item;
       return { ...rest };
     });
 
-    await invoke('print_accounting_invoice', { args: { ...args, items: JSON.stringify(filteredItems) } });
-    await invoke('print_shipping_invoice', { args: { ...args, items: itemsWithChildren } });
-    if (hasCore) await invoke('print_core_invoice', { args });
+    addToQue('handwrittenAcct', 'print_accounting_handwritten', { ...args, items: filteredItems });
+    addToQue('handwrittenShip', 'print_shipping_invoice', { ...args, items: itemsWithChildren });
+    if (hasCore) addToQue('handwrittenCore', 'print_core_handwritten', args);
+    printQue();
     setLoading(false);
   };
 

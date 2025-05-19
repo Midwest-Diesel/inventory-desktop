@@ -881,134 +881,76 @@ fn upload_file(file_args: FileArgs) -> Result<(), String> {
 }
 
 #[tauri::command]
-fn print_shipping_label(args: ShippingLabelArgs) -> Result<(), String> {
+fn print_shipping_label(imageData: String) -> Result<(), String> {
   if let Ok(val) = env::var("DISABLE_PRINTING") {
     if val == "TRUE" { return Ok(()) }
   }
+  let data = decode(imageData.split(',').nth(1).unwrap()).map_err(|e| e.to_string())?;
+  let file_path = "C:/mwd/scripts/screenshots/shipping_label.png";
   let printer = "\\\\FRONT-DESK\\Zebra  ZP 450-200 dpi";
-  let vbs_script = format!(
-    r#"
-    Dim doc, sheet1
-    Set doc = CreateObject("Word.Application")
-    doc.Visible = False
-    Set sheet1 = doc.Documents.Open("\\MWD1-SERVER\Server\shippingLabelTemplate.docx")
 
-    Sub ReplaceTextAndColor(sheet, findText, replaceText)
-      With sheet.Content.Find
-        .Text = findText
-        .Replacement.Text = replaceText
-        .Wrap = 1
-        .MatchWholeWord = True
-        .Execute , , , , , , , , , , 2
-      End With
-    End Sub
+  let img = ImageReader::new(Cursor::new(&data))
+    .with_guessed_format()
+    .map_err(|e| e.to_string())?
+    .decode()
+    .map_err(|e| e.to_string())?;
 
-    Call ReplaceTextAndColor(sheet1, "<SHIP_FROM_COMPANY>", "{}")
-    Call ReplaceTextAndColor(sheet1, "<SHIP_FROM_ADDRESS>", "{}")
-    Call ReplaceTextAndColor(sheet1, "<SHIP_FROM_ADDRESS_2>", {})
-    Call ReplaceTextAndColor(sheet1, "<SHIP_FROM_CITY_STATE_ZIP>", "{}")
-    Call ReplaceTextAndColor(sheet1, "<SHIP_TO_COMPANY>", "{}")
-    Call ReplaceTextAndColor(sheet1, "<SHIP_TO_ADDRESS>", "{}")
-    Call ReplaceTextAndColor(sheet1, "<SHIP_TO_ADDRESS_2>", {})
-    Call ReplaceTextAndColor(sheet1, "<SHIP_TO_CITY_STATE_ZIP>", "{}")
-
-    doc.ActivePrinter = "{}"
-    sheet1.PrintOut , , , , , , , {}
-    sheet1.Close False
-    doc.Quit
-    "#,
-    args.shipFromCompany,
-    args.shipFromAddress,
-    args.shipFromAddress2,
-    args.shipFromCityStateZip,
-    args.shipToCompany,
-    args.shipToAddress,
-    args.shipToAddress2,
-    args.shipToCityStateZip,
-    printer,
-    args.copies
+  let rotated_img: DynamicImage = image::DynamicImage::ImageRgba8(rotate90(&img));
+  let upscaled_img = image::imageops::resize(
+    &rotated_img,
+    rotated_img.width() * 2,
+    rotated_img.height() * 2,
+    FilterType::Lanczos3,
   );
 
-  let vbs_path = "C:/mwd/scripts/generate_shipping_label.vbs";
-  write(&vbs_path, vbs_script).unwrap();
+  {
+    let mut file = File::create(file_path).map_err(|e| e.to_string())?;
+    upscaled_img.write_to(&mut file, ImageOutputFormat::Png).map_err(|e| e.to_string())?;
+  }
 
-  let mut cmd = Command::new("wscript.exe");
-  cmd.arg(vbs_path);
-  cmd.output().unwrap();
+  Command::new("mspaint")
+    .current_dir("C:/mwd/scripts/screenshots")
+    .args([file_path, "/pt", printer])
+    .output()
+    .map_err(|e| e.to_string())?;
+
   Ok(())
 }
 
 #[tauri::command]
-fn print_cc_label(args: CCLabelArgs) -> Result<(), String> {
+fn print_cc_label(imageData: String) -> Result<(), String> {
   if let Ok(val) = env::var("DISABLE_PRINTING") {
     if val == "TRUE" { return Ok(()) }
   }
+  let data = decode(imageData.split(',').nth(1).unwrap()).map_err(|e| e.to_string())?;
+  let file_path = "C:/mwd/scripts/screenshots/cc_label.png";
   let printer = "\\\\FRONT-DESK\\ZDesigner GC420d";
-  let vbs_script = format!(
-    r#"
-    Dim doc, sheet1
-    Set doc = CreateObject("Word.Application")
-    doc.Visible = False
-    Set sheet1 = doc.Documents.Open("\\MWD1-SERVER\Server\ccLabelTemplate.docx")
 
-    With sheet1.Content.Find
-      .Text = "<CARD_NUM>"
-      .Replacement.Text = "{}"
-      .Wrap = 1
-      .Execute , , , , , , , , , , 2
-    End With
-    With sheet1.Content.Find
-      .Text = "<EXP_DATE>"
-      .Replacement.Text = "{}"
-      .Wrap = 1
-      .Execute , , , , , , , , , , 2
-    End With
-    With sheet1.Content.Find
-      .Text = "<CVV>"
-      .Replacement.Text = "{}"
-      .Wrap = 1
-      .Execute , , , , , , , , , , 2
-    End With
-    With sheet1.Content.Find
-      .Text = "<CARD_ZIP>"
-      .Replacement.Text = "{}"
-      .Wrap = 1
-      .Execute , , , , , , , , , , 2
-    End With
-    With sheet1.Content.Find
-      .Text = "<CARD_NAME>"
-      .Replacement.Text = "{}"
-      .Wrap = 1
-      .Execute , , , , , , , , , , 2
-    End With
-    With sheet1.Content.Find
-      .Text = "<CARD_ADDRESS>"
-      .Replacement.Text = "{}"
-      .Wrap = 1
-      .Execute , , , , , , , , , , 2
-    End With
+  let img = ImageReader::new(Cursor::new(&data))
+    .with_guessed_format()
+    .map_err(|e| e.to_string())?
+    .decode()
+    .map_err(|e| e.to_string())?;
 
-    doc.ActivePrinter = "{}"
-    sheet1.PrintOut , , , , , , , {}
-    sheet1.Close False
-    doc.Quit
-    "#,
-    args.cardNum,
-    args.expDate,
-    args.cvv,
-    args.cardZip,
-    args.cardName,
-    args.cardAddress,
-    printer,
-    1
+  let rotated_img: DynamicImage = image::DynamicImage::ImageRgba8(rotate90(&img));
+  let upscaled_img = image::imageops::resize(
+    &rotated_img,
+    rotated_img.width() * 2,
+    rotated_img.height() * 2,
+    FilterType::Lanczos3,
   );
 
-  let vbs_path = "C:/mwd/scripts/generate_cc_label.vbs";
-  write(&vbs_path, vbs_script).unwrap();
+  {
+    let mut file = File::create(file_path).map_err(|e| e.to_string())?;
+    upscaled_img.write_to(&mut file, ImageOutputFormat::Png).map_err(|e| e.to_string())?;
+  }
 
-  let mut cmd = Command::new("wscript.exe");
-  cmd.arg(vbs_path);
-  cmd.output().unwrap();
+  Command::new("mspaint")
+    .current_dir("C:/mwd/scripts/screenshots")
+    .args([file_path, "/pt", printer])
+    .output()
+    .map_err(|e| e.to_string())?;
+
   Ok(())
 }
 
@@ -1140,12 +1082,12 @@ fn print_bol(args: BOLArgs) -> Result<(), String> {
 
 #[tauri::command]
 fn print_accounting_handwritten(imageData: String) -> Result<(), String> {
-  // if let Ok(val) = env::var("DISABLE_PRINTING") {
-  //   if val == "TRUE" { return Ok(()) }
-  // }
+  if let Ok(val) = env::var("DISABLE_PRINTING") {
+    if val == "TRUE" { return Ok(()) }
+  }
   let data = decode(imageData.split(',').nth(1).unwrap()).map_err(|e| e.to_string())?;
   let file_path = "C:/mwd/scripts/screenshots/accounting_handwritten.png";
-  let printer = "Brother MFC-L3770CDW series";
+  let printer = "Brother HL-L5200DW series";
 
   let img = ImageReader::new(Cursor::new(&data))
     .with_guessed_format()
@@ -1177,12 +1119,12 @@ fn print_accounting_handwritten(imageData: String) -> Result<(), String> {
 
 #[tauri::command]
 fn print_shipping_handwritten(imageData: String) -> Result<(), String> {
-  // if let Ok(val) = env::var("DISABLE_PRINTING") {
-  //   if val == "TRUE" { return Ok(()) }
-  // }
+  if let Ok(val) = env::var("DISABLE_PRINTING") {
+    if val == "TRUE" { return Ok(()) }
+  }
   let data = decode(imageData.split(',').nth(1).unwrap()).map_err(|e| e.to_string())?;
   let file_path = "C:/mwd/scripts/screenshots/shipping_handwritten.png";
-  let printer = "Brother MFC-L3770CDW series";
+  let printer = "\\\\JIM-PC\\HP LaserJet Pro M402-M403 n-dne PCL 6";
 
   let img = ImageReader::new(Cursor::new(&data))
     .with_guessed_format()
@@ -1214,12 +1156,12 @@ fn print_shipping_handwritten(imageData: String) -> Result<(), String> {
 
 #[tauri::command]
 fn print_core_handwritten(imageData: String) -> Result<(), String> {
-  // if let Ok(val) = env::var("DISABLE_PRINTING") {
-  //   if val == "TRUE" { return Ok(()) }
-  // }
+  if let Ok(val) = env::var("DISABLE_PRINTING") {
+    if val == "TRUE" { return Ok(()) }
+  }
   let data = decode(imageData.split(',').nth(1).unwrap()).map_err(|e| e.to_string())?;
   let file_path = "C:/mwd/scripts/screenshots/core_handwritten.png";
-  let printer = "Brother MFC-L3770CDW series";
+  let printer = "Brother HL-L5200DW series";
 
   let img = ImageReader::new(Cursor::new(&data))
     .with_guessed_format()
@@ -1320,791 +1262,187 @@ fn print_coo() -> Result<(), String> {
 }
 
 #[tauri::command]
-fn _print_part_tag(args: PartTagArgs) -> Result<(), String> {
+fn print_return(imageData: String) -> Result<(), String> {
   if let Ok(val) = env::var("DISABLE_PRINTING") {
     if val == "TRUE" { return Ok(()) }
   }
-  let printer = "ZDesigner GC420d (EPL)";
-  let vbs_script = format!(
-    r#"
-    Dim doc, sheet1
-    Set doc = CreateObject("Word.Application")
-    doc.Visible = False
-    Set sheet1 = doc.Documents.Open("\\MWD1-SERVER\Server\part_tag_template.rtf")
+  let data = decode(imageData.split(',').nth(1).unwrap()).map_err(|e| e.to_string())?;
+  let file_path = "C:/mwd/scripts/screenshots/return.png";
+  let printer = "Brother MFC-L3770CDW series";
 
-    Sub ReplaceAndSetColor(sheet, findText, replaceText)
-      With sheet.Content.Find
-        .Text = findText
-        .Replacement.Text = replaceText
-        .Wrap = 1
-        .MatchWholeWord = True
-        .Execute , , , , , , , , , , 2
-      End With
-    End Sub
+  let img = ImageReader::new(Cursor::new(&data))
+    .with_guessed_format()
+    .map_err(|e| e.to_string())?
+    .decode()
+    .map_err(|e| e.to_string())?;
 
-    Sub ReplaceTextInShapes(sheet, findText, replaceText)
-      Dim shape
-      For Each shape In sheet.Shapes
-        If Not shape.TextFrame Is Nothing Then
-          If shape.TextFrame.HasText Then
-            With shape.TextFrame.TextRange.Find
-              .Text = findText
-              .Replacement.Text = replaceText
-              .Wrap = 1
-              .MatchWholeWord = True
-              .Execute , , , , , , , , , , 2
-            End With
-          End If
-        If InStr(shape.TextFrame.TextRange.Text, replaceText) > 0 Then
-          If findText = "<STOCK_NUM>" Then
-            shape.TextFrame.TextRange.Font.Name = "IDAutomationHC39M Free Version"
-          End If
-        End If
-        End If
-      Next
-    End Sub
-
-    Sub ReplaceTextAndFont(sheet, findText, replaceText, fontName)
-      With sheet.Content.Find
-        .Text = findText
-        .Replacement.Text = replaceText
-        .Replacement.Font.Name = fontName
-        .Wrap = 1
-        .MatchWholeWord = True
-        .Execute , , , , , , , , , , 2
-      End With
-
-      Dim shape
-      For Each shape In sheet.Shapes
-        If Not shape.TextFrame Is Nothing Then
-          If shape.TextFrame.HasText Then
-            With shape.TextFrame.TextRange.Find
-              .Text = findText
-              .Replacement.Text = replaceText
-              .Replacement.Font.Name = fontName
-              .Wrap = 1
-              .MatchWholeWord = True
-              .Execute , , , , , , , , , , 2
-            End With
-          End If
-        End If
-      Next
-    End Sub
-
-Sub HideAllImages(sheet, hasPictures)
-    Dim shape
-    ' Hide all Shapes (if the image is a Shape)
-    For Each shape In sheet.Shapes
-        If shape.Type = msoPicture Then
-            shape.Visible = Not hasPictures
-        End If
-    Next
-
-    Dim inlineShape
-    ' Hide all InlineShapes (if the image is an InlineShape)
-    For Each inlineShape In sheet.InlineShapes
-        inlineShape.Range.Font.Hidden = hasPictures
-    Next
-End Sub
-
-    Call ReplaceAndSetColor(sheet1, "<STOCK_NUM>", "{}")
-    Call ReplaceTextAndFont(sheet1, "<BARCODE>", "*{}*", "IDAutomationHC39M Free Version")
-    Call ReplaceTextInShapes(sheet1, "<MODEL>", "{}")
-    Call ReplaceTextInShapes(sheet1, "<SERIAL_NUM>", "{}")
-    Call ReplaceTextInShapes(sheet1, "<HP>", "{}")
-    Call ReplaceTextInShapes(sheet1, "<LOCATION>", "{}")
-    Call ReplaceTextInShapes(sheet1, "<REMARKS>", "{}")
-    Call ReplaceAndSetColor(sheet1, "<DATE>", "{}")
-    Call ReplaceAndSetColor(sheet1, "<PART_NUM>", "{}")
-    Call ReplaceAndSetColor(sheet1, "<RATING>", "{}")
-    Call HideAllImages(sheet1, {})
-
-    doc.ActivePrinter = "{}"
-    sheet1.PrintOut , , , , , , , {}
-    sheet1.Close False
-    doc.Quit
-    "#,
-    args.stockNum,
-    args.stockNum,
-    args.model,
-    args.serialNum,
-    args.hp,
-    args.location,
-    args.remarks,
-    args.date,
-    args.partNum,
-    args.rating,
-    if args.hasPictures { "True" } else { "False" },
-    printer,
-    args.copies
+  let rotated_img: DynamicImage = image::DynamicImage::ImageRgba8(rotate90(&img));
+  let upscaled_img = image::imageops::resize(
+    &rotated_img,
+    rotated_img.width() * 2,
+    rotated_img.height() * 2,
+    FilterType::Lanczos3,
   );
 
-  let vbs_path = "C:/mwd/scripts/print_part_tag.vbs";
-  write(&vbs_path, vbs_script).unwrap();
+  {
+    let mut file = File::create(file_path).map_err(|e| e.to_string())?;
+    upscaled_img.write_to(&mut file, ImageOutputFormat::Png).map_err(|e| e.to_string())?;
+  }
 
-  let mut cmd = Command::new("wscript.exe");
-  cmd.arg(vbs_path);
-  cmd.output().unwrap();
+  Command::new("mspaint")
+    .current_dir("C:/mwd/scripts/screenshots")
+    .args([file_path, "/pt", printer])
+    .output()
+    .map_err(|e| e.to_string())?;
+
   Ok(())
 }
 
 #[tauri::command]
-fn print_return(args: PrintReturnArgs) -> Result<(), String> {
+fn print_warranty(imageData: String) -> Result<(), String> {
   if let Ok(val) = env::var("DISABLE_PRINTING") {
     if val == "TRUE" { return Ok(()) }
   }
+  let data = decode(imageData.split(',').nth(1).unwrap()).map_err(|e| e.to_string())?;
+  let file_path = "C:/mwd/scripts/screenshots/warranty.png";
   let printer = "Brother MFC-L3770CDW series";
-  let vbs_script = format!(
-    r#"
-    Dim doc, sheet1
-    Set doc = CreateObject("Word.Application")
-    doc.Visible = False
-    Set sheet1 = doc.Documents.Open("\\MWD1-SERVER\Server\returnTemplate.rtf")
 
-    Sub ReplaceTextAndColor(sheet, findText, replaceText)
-      With sheet.Content.Find
-        .Text = findText
-        .Replacement.Text = replaceText
-        .Wrap = 1
-        .MatchWholeWord = True
-        .Execute , , , , , , , , , , 2
-      End With
-    End Sub
+  let img = ImageReader::new(Cursor::new(&data))
+    .with_guessed_format()
+    .map_err(|e| e.to_string())?
+    .decode()
+    .map_err(|e| e.to_string())?;
 
-    Sub ReplaceTextInShapes(sheet, findText, replaceText)
-      Dim shape
-      For Each shape In sheet.Shapes
-        If Not shape.TextFrame Is Nothing Then
-          If shape.TextFrame.HasText Then
-            With shape.TextFrame.TextRange.Find
-              .Text = findText
-              .Replacement.Text = replaceText
-              .Wrap = 1
-              .MatchWholeWord = True
-              .Execute , , , , , , , , , , 2
-            End With
-          End If
-        End If
-      Next
-    End Sub
-
-    Call ReplaceTextAndColor(sheet1, "<CREATED_BY>", "{}")
-    Call ReplaceTextAndColor(sheet1, "<DATE>", "{}")
-    Call ReplaceTextAndColor(sheet1, "<PO_NUM>", "{}")
-    Call ReplaceTextAndColor(sheet1, "<ID>", "{}")
-    Call ReplaceTextAndColor(sheet1, "<INVOICE_DATE>", "{}")
-    Call ReplaceTextAndColor(sheet1, "<BILL_TO_COMPANY>", "{}")
-    Call ReplaceTextAndColor(sheet1, "<SHIP_TO_COMPANY>", "{}")
-    Call ReplaceTextAndColor(sheet1, "<BILL_TO_ADDRESS>", "{}")
-    Call ReplaceTextAndColor(sheet1, "<BILL_TO_CITY>", "{}")
-    Call ReplaceTextAndColor(sheet1, "<BILL_TO_STATE>", "{}")
-    Call ReplaceTextAndColor(sheet1, "<BILL_TO_ZIP>", "{}")
-    Call ReplaceTextAndColor(sheet1, "<BILL_TO_PHONE>", "{}")
-    Call ReplaceTextAndColor(sheet1, "<DATE_CALLED>", "{}")
-    Call ReplaceTextAndColor(sheet1, "<SALESMAN>", "{}")
-    Call ReplaceTextInShapes(sheet1, "<RETURN_REASON>", "{}")
-    Call ReplaceTextInShapes(sheet1, "<RETURN_NOTES>", "{}")
-    Call ReplaceTextInShapes(sheet1, "<RETURN_PAYMENT_TERMS>", "{}")
-    Call ReplaceTextAndColor(sheet1, "<PAYMENT>", "{}")
-    Call ReplaceTextAndColor(sheet1, "<RESTOCK_FEE>", "{}")
-
-    Dim jsonData, item, table, row, i
-    jsonData = {:?}
-
-    If Len(jsonData) > 2 Then
-      Dim items
-      items = Split(jsonData, "}},")
-      Set table = sheet1.Tables(1)
-
-      For i = LBound(items) To UBound(items)
-        Dim fields, keyValue, j
-        If i > 0 Or table.Rows.Count = 1 Then
-          table.Rows.Add
-        End If
-
-        Set row = table.Rows(table.Rows.Count)
-        fields = Split(items(i), ",")
-
-        For j = LBound(fields) To UBound(fields)
-          keyValue = Split(fields(j), ":")
-          keyValue(0) = Replace(keyValue(0), "[{{", "")
-          keyValue(0) = Replace(keyValue(0), "{{", "")
-          If UBound(keyValue) >= 1 Then
-            keyValue(1) = Replace(keyValue(1), "}}]", "")
-          End If
-
-          Select Case keyValue(0)
-            Case "cost"
-              Dim cost
-              cost = keyValue(1)
-              cost = Replace(cost, "|", ",")
-              row.Cells(1).Range.Text = cost
-              row.Cells(1).Range.Font.Bold = False
-            Case "stockNum"
-              row.Cells(2).Range.Text = keyValue(1)
-            Case "qty"
-              row.Cells(3).Range.Text = keyValue(1)
-            Case "partNum"
-              row.Cells(4).Range.Text = keyValue(1)
-            Case "desc"
-              row.Cells(5).Range.Text = keyValue(1)
-            Case "unitPrice"
-              Dim unitPrice
-              unitPrice = keyValue(1)
-              unitPrice = Replace(unitPrice, "|", ",")
-              row.Cells(6).Range.Text = unitPrice
-            Case "total"
-              Dim total
-              total = keyValue(1)
-              total = Replace(total, "|", ",")
-              row.Cells(7).Range.Text = total
-          End Select
-        Next
-      Next
-    End If
-
-    doc.ActivePrinter = "{}"
-    sheet1.PrintOut , , , , , , , {}
-    sheet1.Close False
-    doc.Quit
-    "#,
-    args.createdBy,
-    args.date,
-    args.poNum,
-    args.id,
-    args.invoiceDate,
-    args.billToCompany,
-    args.shipToCompany,
-    args.billToAddress,
-    args.billToCity,
-    args.billToState,
-    args.billToZip,
-    args.billToPhone,
-    args.dateCalled,
-    args.salesman,
-    args.returnReason,
-    args.returnNotes,
-    args.returnPaymentTerms,
-    args.payment,
-    args.restockFee,
-    args.items.replace("\"", "").replace("\\", ""),
-    printer,
-    1
+  let rotated_img: DynamicImage = image::DynamicImage::ImageRgba8(rotate90(&img));
+  let upscaled_img = image::imageops::resize(
+    &rotated_img,
+    rotated_img.width() * 2,
+    rotated_img.height() * 2,
+    FilterType::Lanczos3,
   );
 
-  let vbs_path = "C:/mwd/scripts/print_return.vbs";
-  write(&vbs_path, vbs_script).unwrap();
+  {
+    let mut file = File::create(file_path).map_err(|e| e.to_string())?;
+    upscaled_img.write_to(&mut file, ImageOutputFormat::Png).map_err(|e| e.to_string())?;
+  }
 
-  let mut cmd = Command::new("wscript.exe");
-  cmd.arg(vbs_path);
-  cmd.output().unwrap();
+  Command::new("mspaint")
+    .current_dir("C:/mwd/scripts/screenshots")
+    .args([file_path, "/pt", printer])
+    .output()
+    .map_err(|e| e.to_string())?;
+
   Ok(())
 }
 
 #[tauri::command]
-fn print_warranty(args: PrintWarrantyArgs) -> Result<(), String> {
+fn print_packing_slip(imageData: String) -> Result<(), String> {
   if let Ok(val) = env::var("DISABLE_PRINTING") {
     if val == "TRUE" { return Ok(()) }
   }
+  let data = decode(imageData.split(',').nth(1).unwrap()).map_err(|e| e.to_string())?;
+  let file_path = "C:/mwd/scripts/screenshots/packing_slip.png";
   let printer = "Brother MFC-L3770CDW series";
-  let vbs_script = format!(
-    r#"
-    Dim doc, sheet1
-    Set doc = CreateObject("Word.Application")
-    doc.Visible = False
-    Set sheet1 = doc.Documents.Open("\\MWD1-SERVER\Server\warrantyTemplate.docx")
 
-    Sub ReplaceTextAndColor(sheet, findText, replaceText)
-      If InStr(replaceText, "Claim Completed") > 0 Then
-        With sheet.Content.Find
-          .Text = findText
-          .Replacement.Text = replaceText
-          .Replacement.Font.Color = RGB(214, 0, 0)
-          .Wrap = 1
-          .MatchWholeWord = True
-          .Execute , , , , , , , , , , 2
-        End With
-      Else
-        With sheet.Content.Find
-          .Text = findText
-          .Replacement.Text = replaceText
-          .Wrap = 1
-          .MatchWholeWord = True
-          .Execute , , , , , , , , , , 2
-        End With
-      End If
-    End Sub
+  let img = ImageReader::new(Cursor::new(&data))
+    .with_guessed_format()
+    .map_err(|e| e.to_string())?
+    .decode()
+    .map_err(|e| e.to_string())?;
 
-    Sub ReplaceTextInShapes(sheet, findText, replaceText)
-      Dim footer
-      Set footer = sheet.Sections(1).Footers(1)
-      Dim shape
-      Dim parts
-      Dim part
-      Dim i
-      parts = Split(replaceText, "|||")
-
-      For Each shape In footer.Range.ShapeRange
-        If Not shape.TextFrame Is Nothing Then
-          If shape.TextFrame.HasText Then
-            For i = 0 To UBound(parts)
-              part = Trim(parts(i))
-              If i < UBound(parts) Then
-                part = part & Chr(11) & findText
-              End If
-
-              With shape.TextFrame.TextRange.Find
-                .Text = findText
-                .Replacement.Text = part
-                .Wrap = 1
-                .MatchWholeWord = True
-                .Execute , , , , , , , , , , 2
-              End With
-            Next
-          End If
-        End If
-      Next
-    End Sub
-
-    Call ReplaceTextAndColor(sheet1, "<VENDOR>", "{}")
-    Call ReplaceTextAndColor(sheet1, "<CREATED_DATE>", "{}")
-    Call ReplaceTextAndColor(sheet1, "<ID>", "{}")
-    Call ReplaceTextAndColor(sheet1, "<VENDOR_WARRANTY_ID>", "{}")
-    Call ReplaceTextAndColor(sheet1, "Claim Completed: <DATE>", "{}")
-    Call ReplaceTextAndColor(sheet1, "<BILL_TO_ADDRESS>", "{}")
-    Call ReplaceTextAndColor(sheet1, "<SHIP_TO_ADDRESS>", "{}")
-    Call ReplaceTextInShapes(sheet1, "<REASON>", Replace("{}", "…", ""))
-    Call ReplaceTextInShapes(sheet1, "<PAYMENT_TERMS>", "{}")
-    Call ReplaceTextInShapes(sheet1, "<RESTOCK_FEE>", "{}")
-    Call ReplaceTextInShapes(sheet1, "<VENDOR_REPORT>", Replace("{}", "…", ""))
-
-    Dim jsonData, item, table, row, i
-    jsonData = {:?}
-
-    If Len(jsonData) > 2 Then
-      Dim items
-      items = Split(jsonData, "}},")
-      Set table = sheet1.Tables(1)
-
-      For i = LBound(items) To UBound(items)
-        Dim fields, keyValue, j
-        If i > 0 Or table.Rows.Count = 1 Then
-          table.Rows.Add
-        End If
-
-        Set row = table.Rows(table.Rows.Count)
-        fields = Split(items(i), ",")
-
-        For j = LBound(fields) To UBound(fields)
-          keyValue = Split(fields(j), ":")
-          keyValue(0) = Replace(keyValue(0), "[{{", "")
-          keyValue(0) = Replace(keyValue(0), "{{", "")
-          If UBound(keyValue) >= 1 Then
-            keyValue(1) = Replace(keyValue(1), "}}]", "")
-          End If
-
-          Select Case keyValue(0)
-            Case "qty"
-              row.Cells(1).Range.Text = keyValue(1)
-              row.Cells(1).Range.Font.Bold = False
-            Case "partNum"
-              row.Cells(2).Range.Text = keyValue(1)
-            Case "desc"
-              row.Cells(3).Range.Text = keyValue(1)
-            Case "stockNum"
-              row.Cells(4).Range.Text = keyValue(1)
-            Case "cost"
-              Dim cost
-              cost = keyValue(1)
-              cost = Replace(cost, "|", ",")
-              row.Cells(5).Range.Text = cost
-            Case "price"
-              Dim price
-              price = keyValue(1)
-              price = Replace(price, "|", ",")
-              row.Cells(6).Range.Text = price
-            Case "hasVendorReplacedPart"
-              If LCase(Trim(keyValue(1))) = "true" Then
-                row.Cells(7).Range.Text = ChrW(&H2705)
-              Else
-                row.Cells(7).Range.Text = ChrW(&H274C)
-              End If
-            Case "isCustomerCredited"
-              If LCase(Trim(keyValue(1))) = "true" Then
-                row.Cells(8).Range.Text = ChrW(&H2705)
-              Else
-                row.Cells(8).Range.Text = ChrW(&H274C)
-              End If
-            Case "vendorCredit"
-              Dim vendorCredit
-              vendorCredit = keyValue(1)
-              vendorCredit = Replace(vendorCredit, "|", ",")
-              row.Cells(9).Range.Text = vendorCredit
-          End Select
-        Next
-      Next
-    End If
-
-    doc.ActivePrinter = "{}"
-    sheet1.PrintOut , , , , , , , {}
-    sheet1.Close False
-    doc.Quit
-    "#,
-    args.vendor,
-    args.createdDate,
-    args.id,
-    args.vendorWarrantyId,
-    args.completed,
-    args.billToAddress,
-    args.shipToAddress,
-    args.claimReason,
-    args.paymentTerms,
-    args.restockFee,
-    args.vendorReport,
-    args.items.replace("\"", "").replace("\\", ""),
-    printer,
-    1
+  let rotated_img: DynamicImage = image::DynamicImage::ImageRgba8(rotate90(&img));
+  let upscaled_img = image::imageops::resize(
+    &rotated_img,
+    rotated_img.width() * 2,
+    rotated_img.height() * 2,
+    FilterType::Lanczos3,
   );
 
-  let vbs_path = "C:/mwd/scripts/print_warranty.vbs";
-  write(&vbs_path, vbs_script).unwrap();
+  {
+    let mut file = File::create(file_path).map_err(|e| e.to_string())?;
+    upscaled_img.write_to(&mut file, ImageOutputFormat::Png).map_err(|e| e.to_string())?;
+  }
 
-  let mut cmd = Command::new("wscript.exe");
-  cmd.arg(vbs_path);
-  cmd.output().unwrap();
+  Command::new("mspaint")
+    .current_dir("C:/mwd/scripts/screenshots")
+    .args([file_path, "/pt", printer])
+    .output()
+    .map_err(|e| e.to_string())?;
+
   Ok(())
 }
 
 #[tauri::command]
-fn print_packing_slip(args: PrintPackingSlipArgs) -> Result<(), String> {
+fn print_packing_slip_blind(imageData: String) -> Result<(), String> {
   if let Ok(val) = env::var("DISABLE_PRINTING") {
     if val == "TRUE" { return Ok(()) }
   }
+  let data = decode(imageData.split(',').nth(1).unwrap()).map_err(|e| e.to_string())?;
+  let file_path = "C:/mwd/scripts/screenshots/packing_slip_blind.png";
   let printer = "Brother MFC-L3770CDW series";
-  let vbs_script = format!(
-    r#"
-    Dim doc, sheet1
-    Set doc = CreateObject("Word.Application")
-    doc.Visible = False
-    Set sheet1 = doc.Documents.Open("\\MWD1-SERVER\Server\packingSlipTemplate.docx")
 
-    Sub ReplaceTextAndColor(sheet, findText, replaceText)
-      With sheet.Content.Find
-        .Text = findText
-        .Replacement.Text = replaceText
-        .Wrap = 1
-        .MatchWholeWord = True
-        .Execute , , , , , , , , , , 2
-      End With
-    End Sub
+  let img = ImageReader::new(Cursor::new(&data))
+    .with_guessed_format()
+    .map_err(|e| e.to_string())?
+    .decode()
+    .map_err(|e| e.to_string())?;
 
-    Call ReplaceTextAndColor(sheet1, "<INVOICE_DATE>", "{}")
-    Call ReplaceTextAndColor(sheet1, "<PO_NUM>", "{}")
-    Call ReplaceTextAndColor(sheet1, "<BILL_TO_COMPANY>", "{}")
-    Call ReplaceTextAndColor(sheet1, "<BILL_TO_ADDRESS>", "{}")
-    Call ReplaceTextAndColor(sheet1, "<BILL_TO_ADDRESS_2>", {})
-    Call ReplaceTextAndColor(sheet1, "<BILL_TO_CITY_STATE_ZIP>", "{}")
-    Call ReplaceTextAndColor(sheet1, "<SHIP_TO_COMPANY>", "{}")
-    Call ReplaceTextAndColor(sheet1, "<SHIP_TO_CONTACT>", {})
-    Call ReplaceTextAndColor(sheet1, "<SHIP_TO_ADDRESS>", "{}")
-    Call ReplaceTextAndColor(sheet1, "<SHIP_TO_ADDRESS_2>", {})
-    Call ReplaceTextAndColor(sheet1, "<SHIP_TO_CITY_STATE_ZIP>", "{}")
-
-    Dim jsonData, item, table, row, i
-    jsonData = {:?}
-
-    If Len(jsonData) > 2 Then
-      Dim items
-      items = Split(jsonData, "}},")
-      Set table = sheet1.Tables(1)
-
-      For i = LBound(items) To UBound(items)
-        Dim fields, keyValue, j
-        If i > 0 Or table.Rows.Count = 1 Then
-          table.Rows.Add
-        End If
-
-        Set row = table.Rows(table.Rows.Count)
-        fields = Split(items(i), ",")
-
-        For j = LBound(fields) To UBound(fields)
-          keyValue = Split(fields(j), ":")
-          keyValue(0) = Replace(keyValue(0), "[{{", "")
-          keyValue(0) = Replace(keyValue(0), "{{", "")
-          If UBound(keyValue) >= 1 Then
-            keyValue(1) = Replace(keyValue(1), "}}]", "")
-          End If
-
-          Select Case keyValue(0)
-            Case "qty"
-              row.Cells(1).Range.Text = keyValue(1)
-              row.Cells(1).Range.Font.Bold = False
-            Case "partNum"
-              row.Cells(2).Range.Text = keyValue(1)
-            Case "desc"
-              row.Cells(3).Range.Text = keyValue(1)
-            Case "price"
-              If keyValue(1) = "-9999" Then
-                If row.Parent.Columns.Count >= 4 Then row.Parent.Columns(4).Delete
-              Else
-                row.Cells(4).Range.Text = Replace(keyValue(1), "|", ",")
-              End If
-            Case "total"
-              If keyValue(1) = "-9999" Then
-                If row.Parent.Columns.Count >= 5 Then row.Parent.Columns(5).Delete
-              Else
-                row.Cells(5).Range.Text = Replace(keyValue(1), "|", ",")
-              End If
-          End Select
-        Next
-      Next
-    End If
-
-    doc.ActivePrinter = "{}"
-    sheet1.PrintOut , , , , , , , {}
-    sheet1.Close False
-    doc.Quit
-    "#,
-    args.invoiceDate,
-    args.poNum,
-    args.billToCompany,
-    args.billToAddress,
-    args.billToAddress2,
-    args.billToCityStateZip,
-    args.shipToCompany,
-    args.shipToContact,
-    args.shipToAddress,
-    args.shipToAddress2,
-    args.shipToCityStateZip,
-    args.items.replace("\"", "").replace("\\", ""),
-    printer,
-    1
+  let rotated_img: DynamicImage = image::DynamicImage::ImageRgba8(rotate90(&img));
+  let upscaled_img = image::imageops::resize(
+    &rotated_img,
+    rotated_img.width() * 2,
+    rotated_img.height() * 2,
+    FilterType::Lanczos3,
   );
 
-  let vbs_path = "C:/mwd/scripts/print_packing_slip.vbs";
-  write(&vbs_path, vbs_script).unwrap();
+  {
+    let mut file = File::create(file_path).map_err(|e| e.to_string())?;
+    upscaled_img.write_to(&mut file, ImageOutputFormat::Png).map_err(|e| e.to_string())?;
+  }
 
-  let mut cmd = Command::new("wscript.exe");
-  cmd.arg(vbs_path);
-  cmd.output().unwrap();
+  Command::new("mspaint")
+    .current_dir("C:/mwd/scripts/screenshots")
+    .args([file_path, "/pt", printer])
+    .output()
+    .map_err(|e| e.to_string())?;
+
   Ok(())
 }
 
 #[tauri::command]
-fn print_packing_slip_blind(args: PrintPackingSlipBlindArgs) -> Result<(), String> {
+fn print_po(imageData: String) -> Result<(), String> {
   if let Ok(val) = env::var("DISABLE_PRINTING") {
     if val == "TRUE" { return Ok(()) }
   }
+  let data = decode(imageData.split(',').nth(1).unwrap()).map_err(|e| e.to_string())?;
+  let file_path = "C:/mwd/scripts/screenshots/po.png";
   let printer = "Brother MFC-L3770CDW series";
-  let vbs_script = format!(
-    r#"
-    Dim doc, sheet1
-    Set doc = CreateObject("Word.Application")
-    doc.Visible = False
-    Set sheet1 = doc.Documents.Open("\\MWD1-SERVER\Server\packingSlipBlindTemplate.docx")
 
-    Sub ReplaceTextAndColor(sheet, findText, replaceText)
-      With sheet.Content.Find
-        .Text = findText
-        .Replacement.Text = replaceText
-        .Wrap = 1
-        .MatchWholeWord = True
-        .Execute , , , , , , , , , , 2
-      End With
-    End Sub
+  let img = ImageReader::new(Cursor::new(&data))
+    .with_guessed_format()
+    .map_err(|e| e.to_string())?
+    .decode()
+    .map_err(|e| e.to_string())?;
 
-    Call ReplaceTextAndColor(sheet1, "<INVOICE_DATE>", "{}")
-    Call ReplaceTextAndColor(sheet1, "<BILL_TO_COMPANY>", "{}")
-    Call ReplaceTextAndColor(sheet1, "<BILL_TO_ADDRESS>", "{}")
-    Call ReplaceTextAndColor(sheet1, "<BILL_TO_ADDRESS_2>", {})
-    Call ReplaceTextAndColor(sheet1, "<BILL_TO_CITY_STATE_ZIP>", "{}")
-    Call ReplaceTextAndColor(sheet1, "<SHIP_TO_COMPANY>", "{}")
-    Call ReplaceTextAndColor(sheet1, "<SHIP_TO_CONTACT>", {})
-    Call ReplaceTextAndColor(sheet1, "<SHIP_TO_ADDRESS>", "{}")
-    Call ReplaceTextAndColor(sheet1, "<SHIP_TO_ADDRESS_2>", {})
-    Call ReplaceTextAndColor(sheet1, "<SHIP_TO_CITY_STATE_ZIP>", "{}")
-
-    Dim jsonData, item, table, row, i
-    jsonData = {:?}
-
-    If Len(jsonData) > 2 Then
-      Dim items
-      items = Split(jsonData, "}},")
-      Set table = sheet1.Tables(1)
-
-      For i = LBound(items) To UBound(items)
-        Dim fields, keyValue, j
-        If i > 0 Or table.Rows.Count = 1 Then
-          table.Rows.Add
-        End If
-
-        Set row = table.Rows(table.Rows.Count)
-        fields = Split(items(i), ",")
-
-        For j = LBound(fields) To UBound(fields)
-          keyValue = Split(fields(j), ":")
-          keyValue(0) = Replace(keyValue(0), "[{{", "")
-          keyValue(0) = Replace(keyValue(0), "{{", "")
-          If UBound(keyValue) >= 1 Then
-            keyValue(1) = Replace(keyValue(1), "}}]", "")
-          End If
-
-          Select Case keyValue(0)
-            Case "qty"
-              row.Cells(1).Range.Text = keyValue(1)
-              row.Cells(1).Range.Font.Bold = False
-            Case "partNum"
-              row.Cells(2).Range.Text = keyValue(1)
-            Case "desc"
-              row.Cells(3).Range.Text = keyValue(1)
-          End Select
-        Next
-      Next
-    End If
-
-    doc.ActivePrinter = "{}"
-    sheet1.PrintOut , , , , , , , {}
-    sheet1.Close False
-    doc.Quit
-    "#,
-    args.invoiceDate,
-    args.billToCompany,
-    args.billToAddress,
-    args.billToAddress2,
-    args.billToCityStateZip,
-    args.shipToCompany,
-    args.shipToContact,
-    args.shipToAddress,
-    args.shipToAddress2,
-    args.shipToCityStateZip,
-    args.items.replace("\"", "").replace("\\", ""),
-    printer,
-    1
+  let rotated_img: DynamicImage = image::DynamicImage::ImageRgba8(rotate90(&img));
+  let upscaled_img = image::imageops::resize(
+    &rotated_img,
+    rotated_img.width() * 2,
+    rotated_img.height() * 2,
+    FilterType::Lanczos3,
   );
 
-  let vbs_path = "C:/mwd/scripts/print_packing_slip_blind.vbs";
-  write(&vbs_path, vbs_script).unwrap();
-
-  let mut cmd = Command::new("wscript.exe");
-  cmd.arg(vbs_path);
-  cmd.output().unwrap();
-  Ok(())
-}
-
-#[tauri::command]
-fn print_po(args: PrintPOArgs) -> Result<(), String> {
-  if let Ok(val) = env::var("DISABLE_PRINTING") {
-    if val == "TRUE" { return Ok(()) }
+  {
+    let mut file = File::create(file_path).map_err(|e| e.to_string())?;
+    upscaled_img.write_to(&mut file, ImageOutputFormat::Png).map_err(|e| e.to_string())?;
   }
-  let printer = "Brother MFC-L3770CDW series";
-  let vbs_script = format!(
-    r#"
-    Dim doc, sheet1
-    Set doc = CreateObject("Word.Application")
-    doc.Visible = False
-    Set sheet1 = doc.Documents.Open("\\MWD1-SERVER\Server\poTemplate.docx")
 
-    Sub ReplaceTextAndColor(sheet, findText, replaceText)
-      With sheet.Content.Find
-        .Text = findText
-        .Replacement.Text = replaceText
-        .Wrap = 1
-        .MatchWholeWord = True
-        .Execute , , , , , , , , , , 2
-      End With
-    End Sub
+  Command::new("mspaint")
+    .current_dir("C:/mwd/scripts/screenshots")
+    .args([file_path, "/pt", printer])
+    .output()
+    .map_err(|e| e.to_string())?;
 
-    Call ReplaceTextAndColor(sheet1, "<ID>", "{}")
-    Call ReplaceTextAndColor(sheet1, "<VENDOR>", "{}")
-    Call ReplaceTextAndColor(sheet1, "<ADDRESS>", "{}")
-    Call ReplaceTextAndColor(sheet1, "<CITY>", "{}")
-    Call ReplaceTextAndColor(sheet1, "<STATE>", "{}")
-    Call ReplaceTextAndColor(sheet1, "<ZIP>", "{}")
-    Call ReplaceTextAndColor(sheet1, "<PHONE>", "{}")
-    Call ReplaceTextAndColor(sheet1, "<FAX>", "{}")
-    Call ReplaceTextAndColor(sheet1, "<PAYMENT_TERMS>", "{}")
-    Call ReplaceTextAndColor(sheet1, "<PURCHASED_FOR>", "{}")
-    Call ReplaceTextAndColor(sheet1, "<SPECIAL_INSTRUCTIONS>", "{}")
-    Call ReplaceTextAndColor(sheet1, "<COMMENTS>", "{}")
-    Call ReplaceTextAndColor(sheet1, "<DATE>", "{}")
-    Call ReplaceTextAndColor(sheet1, "<ORDERED_BY>", "{}")
-
-    Dim jsonData, item, table, row, i
-    jsonData = {:?}
-
-    If Len(jsonData) > 2 Then
-      Dim items
-      items = Split(jsonData, "}},")
-      Set table = sheet1.Tables(1)
-
-      For i = LBound(items) To UBound(items)
-        Dim fields, keyValue, j
-        If i > 0 Or table.Rows.Count = 1 Then
-          table.Rows.Add
-        End If
-
-        Set row = table.Rows(table.Rows.Count)
-        fields = Split(items(i), ",")
-
-        For j = LBound(fields) To UBound(fields)
-          keyValue = Split(fields(j), ":")
-          keyValue(0) = Replace(keyValue(0), "[{{", "")
-          keyValue(0) = Replace(keyValue(0), "{{", "")
-          If UBound(keyValue) >= 1 Then
-            keyValue(1) = Replace(keyValue(1), "}}]", "")
-          End If
-
-          Select Case keyValue(0)
-            Case "qty"
-              row.Cells(1).Range.Text = keyValue(1)
-              row.Cells(1).Range.Font.Bold = False
-            Case "desc"
-              row.Cells(2).Range.Text = keyValue(1)
-            Case "price"
-              Dim price
-              price = keyValue(1)
-              price = Replace(price, "|", ",")
-              row.Cells(3).Range.Text = price
-            Case "total"
-              Dim total
-              total = keyValue(1)
-              total = Replace(total, "|", ",")
-              row.Cells(4).Range.Text = total
-          End Select
-        Next
-      Next
-    End If
-
-    doc.ActivePrinter = "{}"
-    sheet1.PrintOut , , , , , , , {}
-    sheet1.Close False
-    doc.Quit
-    "#,
-    args.id,
-    args.vendor,
-    args.address,
-    args.city,
-    args.state,
-    args.zip,
-    args.phone,
-    args.fax,
-    args.paymentTerms,
-    args.purchasedFor,
-    args.specialInstructions,
-    args.comments,
-    args.date,
-    args.orderedBy,
-    args.items.replace("\"", "").replace("\\", ""),
-    printer,
-    1
-  );
-
-  let vbs_path = "C:/mwd/scripts/print_po.vbs";
-  write(&vbs_path, vbs_script).unwrap();
-
-  let mut cmd = Command::new("wscript.exe");
-  cmd.arg(vbs_path);
-  cmd.output().unwrap();
   Ok(())
 }
 
