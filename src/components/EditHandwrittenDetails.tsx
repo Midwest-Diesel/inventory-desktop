@@ -438,7 +438,6 @@ export default function EditHandwrittenDetails({
   };
 
   const toggleTaxable = async (value: boolean) => {
-    if (!await confirm(`${value ? 'Make this' : 'Remove this as'} taxable?`)) return;
     setIsTaxable(value);
     await editHandwrittenTaxable(handwritten.id, value);
     if (value) {

@@ -1,9 +1,9 @@
 import { FormEvent, useEffect, useState } from "react";
 import Dialog from "../../Library/Dialog";
-import { invoke } from "@/scripts/config/tauri";
 import Checkbox from "@/components/Library/Checkbox";
 import Button from "@/components/Library/Button";
 import { formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
+import { usePrintQue } from "@/components/PrintableComponents/usePrintQue";
 
 interface Props {
   open: boolean
@@ -13,9 +13,11 @@ interface Props {
 
 
 export default function PrintInvoiceDialog({ open, setOpen, handwritten }: Props) {
+  const { addToQue, printQue } = usePrintQue();
   const [accounting, setAccounting] = useState(true);
   const [shipping, setShipping] = useState(true);
   const [coreDeposit, setCoreDeposit] = useState(false);
+  const MAX_ROWS = 12;
 
   useEffect(() => {
     if (!open) return;
@@ -27,62 +29,73 @@ export default function PrintInvoiceDialog({ open, setOpen, handwritten }: Props
     setOpen(false);
     const itemTotals: number[] = handwritten?.handwrittenItems.map((item) => (item?.qty ?? 0) * (item?.unitPrice ?? 0)) ?? [];
     const handwrittenTotal = formatCurrency(itemTotals.reduce((acc, cur) => acc + cur, 0));
-    const args = {
-      billToCompany: handwritten?.billToCompany ?? '',
-      billToAddress: handwritten?.billToAddress ?? '',
-      billToAddress2: handwritten?.billToAddress2 ?? '',
-      billToCity: handwritten?.billToCity ?? '',
-      billToState: handwritten?.billToState ?? '',
-      billToZip: handwritten?.billToZip ?? '',
-      billToCountry: handwritten?.billToCountry ?? '',
-      shipToCompany: handwritten?.shipToCompany ?? '',
-      shipToAddress: handwritten?.shipToAddress ?? '',
-      shipToAddress2: handwritten?.shipToAddress2 ?? '',
-      shipToCity: handwritten?.shipToCity ?? '',
-      shipToState: handwritten?.shipToState ?? '',
-      shipToZip: handwritten?.shipToZip ?? '',
-      shipToContact: handwritten?.shipToContact ?? '',
-      shipToCountry: '',
-      accountNum: '',
-      paymentType: handwritten?.payment ?? '',
-      createdBy: handwritten?.createdBy ?? '',
-      soldBy: handwritten?.soldBy ?? '',
-      handwrittenId: Number(handwritten?.id),
-      date: formatDate(handwritten?.date) ?? '',
-      contact: handwritten?.shipToContact ?? '',
-      poNum: handwritten?.poNum ?? '',
-      shipVia: handwritten?.shipVia?.name ?? '',
-      source: handwritten?.source ?? '',
-      invoiceNotes: handwritten?.orderNotes ? handwritten?.orderNotes.replace(/[\n\r]/g, '  ').replaceAll('…', '...') : '',
-      shippingNotes: handwritten?.shippingNotes ? handwritten?.shippingNotes.replace(/[\n\r]/g, '  ').replaceAll('…', '...') : '',
-      mp: `${handwritten?.mp ?? 0} Mousepads`,
-      cap: `${handwritten?.cap ?? 0} Hats`,
-      br: `${handwritten?.br ?? 0} Brochures`,
-      fl: `${handwritten?.fl ?? 0} Flashlights`,
-      setup: handwritten?.isSetup ?? false,
-      taxable: handwritten?.isTaxable ?? false,
-      blind: handwritten?.isBlindShipment ?? false,
-      npi: handwritten?.isNoPriceInvoice ?? false,
-      collect: handwritten?.isCollect ?? false,
-      thirdParty: handwritten?.isThirdParty ?? false,
-      handwrittenTotal,
-      items: JSON.stringify(handwritten?.handwrittenItems.map((item) => {
-        return {
+
+    const splitItems = (items: any[], size: number) => {
+      const chunks = [];
+      for (let i = 0; i < items.length; i += size) {
+        chunks.push(items.slice(i, i + size));
+      }
+      return chunks;
+    };
+    const itemChunks = splitItems(handwritten?.handwrittenItems ?? [], MAX_ROWS);
+
+    for (let i = 0; i < itemChunks.length; i++) {
+      const chunk = itemChunks[i];
+      const args = {
+        billToCompany: handwritten?.billToCompany ?? '',
+        billToAddress: handwritten?.billToAddress ?? '',
+        billToAddress2: handwritten?.billToAddress2 ?? '',
+        billToCity: handwritten?.billToCity ?? '',
+        billToState: handwritten?.billToState ?? '',
+        billToZip: handwritten?.billToZip ?? '',
+        billToCountry: handwritten?.billToCountry ?? '',
+        shipToCompany: handwritten?.shipToCompany ?? '',
+        shipToAddress: handwritten?.shipToAddress ?? '',
+        shipToAddress2: handwritten?.shipToAddress2 ?? '',
+        shipToCity: handwritten?.shipToCity ?? '',
+        shipToState: handwritten?.shipToState ?? '',
+        shipToZip: handwritten?.shipToZip ?? '',
+        shipToContact: handwritten?.shipToContact ?? '',
+        shipToCountry: '',
+        accountNum: '',
+        paymentType: handwritten?.payment ?? '',
+        createdBy: handwritten?.createdBy ?? '',
+        soldBy: handwritten?.soldBy ?? '',
+        legacyId: Number(handwritten?.legacyId),
+        handwrittenId: Number(handwritten?.id),
+        date: formatDate(handwritten?.date) ?? '',
+        contact: handwritten?.shipToContact ?? '',
+        poNum: handwritten?.poNum ?? '',
+        shipVia: handwritten?.shipVia?.name ?? '',
+        source: handwritten?.source ?? '',
+        invoiceNotes: handwritten?.orderNotes ? handwritten?.orderNotes.replace(/[\n\r]/g, '  ').replaceAll('…', '...') : '',
+        shippingNotes: handwritten?.shippingNotes ? handwritten?.shippingNotes.replace(/[\n\r]/g, '  ').replaceAll('…', '...') : '',
+        mp: `${handwritten?.mp ?? 0} Mousepads`,
+        cap: `${handwritten?.cap ?? 0} Hats`,
+        br: `${handwritten?.br ?? 0} Brochures`,
+        fl: `${handwritten?.fl ?? 0} Flashlights`,
+        setup: handwritten?.isSetup ?? false,
+        taxable: handwritten?.isTaxable ?? false,
+        blind: handwritten?.isBlindShipment ?? false,
+        npi: handwritten?.isNoPriceInvoice ?? false,
+        collect: handwritten?.isCollect ?? false,
+        thirdParty: handwritten?.isThirdParty ?? false,
+        handwrittenTotal,
+        items: chunk.map((item) => ({
           stockNum: item.stockNum ?? '',
           location: item.location ?? '',
           cost: formatCurrency(item.cost).replaceAll(',', '|') ?? '$0.00',
           qty: item.qty,
           partNum: item.partNum ?? '',
           desc: item.desc ?? '',
-          unitPrice: formatCurrency((item?.unitPrice ?? 0)).replaceAll(',', '|') ?? '$0.00',
-          total: formatCurrency((item?.qty ?? 0) * (item?.unitPrice ?? 0)).replaceAll(',', '|') ?? '$0.00',
+          unitPrice: formatCurrency(item.unitPrice ?? 0).replaceAll(',', '|') ?? '$0.00',
+          total: formatCurrency((item.qty ?? 0) * (item.unitPrice ?? 0)).replaceAll(',', '|') ?? '$0.00',
           itemChildren: item.invoiceItemChildren
-        };
-      })) || '[]'
-    };
-    const itemChildren = handwritten?.handwrittenItems.map((item) => {
-      if (item.invoiceItemChildren.length > 0) return item.invoiceItemChildren.map((child) => {
-        return {
+        })) || []
+      };
+
+      const itemChildren = chunk.flatMap((item) =>
+        (item.invoiceItemChildren ?? []).map((child: HandwrittenItemChild) => ({
           cost: formatCurrency(child.cost).replaceAll(',', '|') || '$0.00',
           qty: child.qty,
           partNum: child.partNum,
@@ -91,18 +104,21 @@ export default function PrintInvoiceDialog({ open, setOpen, handwritten }: Props
           location: child.part?.location,
           unitPrice: formatCurrency((item?.unitPrice ?? 0)).replaceAll(',', '|') || '$0.00',
           total: formatCurrency((child?.qty ?? 0) * (item?.unitPrice ?? 0)).replaceAll(',', '|') || '$0.00'
-        };
-      });
-    }).filter((item) => item).flat();
-    const itemsWithChildren = JSON.stringify([...JSON.parse(args.items).filter((item: any) => item.itemChildren.length === 0), ...(itemChildren ?? []) ]);
-    const filteredItems = JSON.parse(args.items).map((item: any) => {
-      const { itemChildren, ...rest } = item;
-      return { ...rest };
-    });
+        }))
+      );
 
-    if (accounting) await invoke('print_accounting_invoice', { args: { ...args, items: JSON.stringify(filteredItems) } });
-    if (shipping) await invoke('print_shipping_invoice', { args: { ...args, items: itemsWithChildren } });
-    if (coreDeposit) await invoke('print_core_invoice', { args });
+      const itemsWithChildren = [...args.items.filter((item: any) => item.itemChildren.length === 0), ...(itemChildren ?? [])];
+
+      const filteredItems = args.items.map((item: any) => {
+        const { itemChildren, ...rest } = item;
+        return { ...rest };
+      });
+
+      if (accounting) addToQue('handwrittenAcct', 'print_accounting_handwritten', { ...args, items: filteredItems });
+      if (shipping) addToQue('handwrittenShip', 'print_shipping_handwritten', { ...args, items: itemsWithChildren });
+      if (coreDeposit) addToQue('handwrittenCore', 'print_core_handwritten', args);
+    }
+    if (accounting || shipping || coreDeposit) printQue();
   };
 
 

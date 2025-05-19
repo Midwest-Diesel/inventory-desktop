@@ -60,6 +60,7 @@
 @import "./components/sales-end-of-day-dialog";
 @import "./components/addon-alt-parts-dialog";
 @import "./components/printable-components/part-tag";
+@import "./components/printable-components/handwritten";
 
 * {
   box-sizing: border-box;
@@ -152,6 +153,10 @@ button:disabled:hover {
   align-items: center;
   display: flex;
   justify-content: center;
+}
+
+.print-placeholder {
+  color: var(--grey-light-2);
 }
 
 @media print {

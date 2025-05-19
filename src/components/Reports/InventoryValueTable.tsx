@@ -89,27 +89,27 @@ export default function PricingChangesTable({ setTableOpen, setReportsOpen }: Pr
       navigator.clipboard.writeText(rowsText);    
     } else if (table === 'coreEngines') {
       const rowsText = coreEngines.map((engine) =>
-        [engine.stockNum, engine.loginDate, engine.model, engine.serialNum, engine.costRemaining].join('\t')
+        [engine.stockNum, formatDate(engine.loginDate), engine.model, engine.serialNum, engine.costRemaining].join('\t')
       ).join('\n');
       navigator.clipboard.writeText(rowsText);    
     } else if (table === 'toreDownEngines') {
       const rowsText = toreDownEngines.map((engine) =>
-        [engine.stockNum, engine.loginDate, engine.model, engine.serialNum, engine.costRemaining, engine.toreDownDate].join('\t')
+        [engine.stockNum, formatDate(engine.loginDate), engine.model, engine.serialNum, engine.costRemaining, formatDate(engine.toreDownDate)].join('\t')
       ).join('\n');
       navigator.clipboard.writeText(rowsText);    
     } else if (table === 'runningEngines') {
       const rowsText = runningEngines.map((engine) =>
-        [engine.stockNum, engine.serialNum, engine.loginDate, engine.costRemaining, engine.currentStatus].join('\t')
+        [engine.stockNum, engine.serialNum, formatDate(engine.loginDate), engine.costRemaining, engine.currentStatus].join('\t')
       ).join('\n');
       navigator.clipboard.writeText(rowsText);    
     } else if (table === 'shortBlocks') {
       const rowsText = shortBlocks.map((block) =>
-        [block.stockNum, block.model, block.serialNum, block.loginDate, block.currentStatus, block.costRemaining].join('\t')
+        [block.stockNum, block.model, block.serialNum, formatDate(block.loginDate), block.currentStatus, block.costRemaining].join('\t')
       ).join('\n');
       navigator.clipboard.writeText(rowsText);    
     } else {
       const rowsText = surplus.map((purchase) =>
-        [purchase.code, purchase.name, purchase.date, purchase.price, purchase.costRemaining].join('\t')
+        [purchase.code, purchase.name, formatDate(purchase.date), purchase.price, purchase.costRemaining].join('\t')
       ).join('\n');
       navigator.clipboard.writeText(rowsText.toString());    
     }

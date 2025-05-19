@@ -9,7 +9,6 @@ of them when replacing a printer.
 
 use image::{io::Reader as ImageReader, ImageOutputFormat, DynamicImage, imageops::{rotate90, resize, FilterType}};
 use serde::{Deserialize, Serialize};
-use serde_json::to_string;
 use tauri::Manager;
 use std::{fs::remove_file, process::Command, env};
 use std::fs::{write};
@@ -20,7 +19,6 @@ use std::path::{Path};
 use zip::read::ZipArchive;
 use base64::{engine::general_purpose::STANDARD as BASE64_STANDARD, Engine, decode};
 use url::Url;
-use dotenv::dotenv;
 
 #[derive(Deserialize, Debug)]
 struct LatestVersionInfo {
@@ -385,9 +383,9 @@ async fn main() {
       print_shipping_label,
       print_cc_label,
       print_bol,
-      print_accounting_invoice,
-      print_shipping_invoice,
-      print_core_invoice,
+      print_accounting_handwritten,
+      print_shipping_handwritten,
+      print_core_handwritten,
       print_ci,
       print_coo,
       print_part_tag,
@@ -402,7 +400,7 @@ async fn main() {
 }
 
 fn create_directories() {
-  let directories = vec!["scripts", "updates"];
+  let directories = vec!["scripts", "scripts/screenshots", "updates"];
   for dir_name in directories {
     if std::fs::read_dir(format!("C:/MWD/{}", dir_name)).is_err() {
       std::fs::create_dir(format!("C:/MWD/{}", dir_name));
@@ -1141,611 +1139,113 @@ fn print_bol(args: BOLArgs) -> Result<(), String> {
 }
 
 #[tauri::command]
-fn print_accounting_invoice(args: AccountingInvoiceArgs) -> Result<(), String> {
-  if let Ok(val) = env::var("DISABLE_PRINTING") {
-    if val == "TRUE" { return Ok(()) }
-  }
-  let printer = "Brother HL-L5200DW series";
-  let json_data = to_string(&args.items).unwrap();
-  let vbs_script = format!(
-    r#"
-    Dim doc, sheet1
-    Set doc = CreateObject("Word.Application")
-    doc.Visible = False
-    Set sheet1 = doc.Documents.Open("\\MWD1-SERVER\Server\handwrittenAccountingTemplate.docx")
+fn print_accounting_handwritten(imageData: String) -> Result<(), String> {
+  // if let Ok(val) = env::var("DISABLE_PRINTING") {
+  //   if val == "TRUE" { return Ok(()) }
+  // }
+  let data = decode(imageData.split(',').nth(1).unwrap()).map_err(|e| e.to_string())?;
+  let file_path = "C:/mwd/scripts/screenshots/accounting_handwritten.png";
+  let printer = "Brother MFC-L3770CDW series";
 
-    Sub ReplaceAndSetColor(sheet, findText, replaceText)
-      If Len(replaceText) > 0 Then
-        If InStr(replaceText, "ADDRESS 2") > 0 Then
-          With sheet.Content.Find
-            .Text = findText
-            .Replacement.Text = replaceText
-            .Wrap = 1
-            .MatchWholeWord = True
-            .Execute , , , , , , , , , , 2
-          End With
-        Else
-          With sheet.Content.Find
-            .Text = findText
-            .Replacement.Text = replaceText
-            .Replacement.Font.Color = 0
-            .Wrap = 1
-            .MatchWholeWord = True
-            .Execute , , , , , , , , , , 2
-          End With
-        End If
+  let img = ImageReader::new(Cursor::new(&data))
+    .with_guessed_format()
+    .map_err(|e| e.to_string())?
+    .decode()
+    .map_err(|e| e.to_string())?;
 
-        Dim footer
-        Set footer = sheet.Sections(1).Footers(1)
-        With footer.Range.Find
-          .Text = findText
-          .Replacement.Text = replaceText
-          .Replacement.Font.Color = 0
-          .Wrap = 1
-          .MatchWholeWord = True
-          .Execute , , , , , , , , , , 2
-        End With
-      End If
-    End Sub
-
-    Call ReplaceAndSetColor(sheet1, "BILL TO COMPANY", "{}")
-    Call ReplaceAndSetColor(sheet1, "BILL TO ADDRESS", "{}")
-    Call ReplaceAndSetColor(sheet1, "BILL_TO_ADDRESS_2", "{}")
-    Call ReplaceAndSetColor(sheet1, "BILL TO CITY", "{}")
-    Call ReplaceAndSetColor(sheet1, "BILL TO STATE", "{}")
-    Call ReplaceAndSetColor(sheet1, "BILL TO ZIP", "{}")
-    Call ReplaceAndSetColor(sheet1, "BILL TO COUNTRY", "{}")
-    Call ReplaceAndSetColor(sheet1, "SHIP TO COMPANY", "{}")
-    Call ReplaceAndSetColor(sheet1, "SHIP TO ADDRESS", "{}")
-    Call ReplaceAndSetColor(sheet1, "SHIP_TO_ADDRESS_2", "{}")
-    Call ReplaceAndSetColor(sheet1, "SHIP TO CITY", "{}")
-    Call ReplaceAndSetColor(sheet1, "SHIP TO STATE", "{}")
-    Call ReplaceAndSetColor(sheet1, "SHIP TO ZIP", "{}")
-    Call ReplaceAndSetColor(sheet1, "SHIP TO CONTACT", "{}")
-    Call ReplaceAndSetColor(sheet1, "SHIP TO COUNTRY", "{}")
-    Call ReplaceAndSetColor(sheet1, "ACCOUNT NUMBER", "{}")
-    Call ReplaceAndSetColor(sheet1, "PAYMENT TYPE", "{}")
-    Call ReplaceAndSetColor(sheet1, "CREATED_BY", "{}")
-    Call ReplaceAndSetColor(sheet1, "SOLD_BY", "{}")
-    Call ReplaceAndSetColor(sheet1, "INVOICE#", "{}")
-    Call ReplaceAndSetColor(sheet1, "INVOICE DATE", "{}")
-    Call ReplaceAndSetColor(sheet1, "CONTACT NAME", "{}")
-    Call ReplaceAndSetColor(sheet1, "PO#", "{}")
-    Call ReplaceAndSetColor(sheet1, "SHIP VIA", "{}")
-    Call ReplaceAndSetColor(sheet1, "INVOICE NOTES", "{}")
-    Call ReplaceAndSetColor(sheet1, "SHIPPING NOTES", "{}")
-    Call ReplaceAndSetColor(sheet1, "HANDWRITTEN_TOTAL", "{}")
-
-    Dim cc
-    For Each cc In sheet1.ContentControls
-      If cc.Tag = "taxable" Then
-        cc.Checked = {}
-      ElseIf cc.Tag = "blind" Then
-        cc.Checked = {}
-      ElseIf cc.Tag = "npi" Then
-        cc.Checked = {}
-      ElseIf cc.Tag = "collect" Then
-        cc.Checked = {}
-      ElseIf cc.Tag = "3rdParty" Then
-        cc.Checked = {}
-      ElseIf cc.Tag = "setup" Then
-        cc.Checked = {}
-      End If
-    Next
-
-    Dim handwrittenItems, jsonData, item, table, row, i
-    jsonData = {:?}
-
-    If Len(jsonData) > 2 Then
-      Dim items
-      items = Split(jsonData, "}},")
-      Set table = sheet1.Tables(1)
-
-      For i = LBound(items) To UBound(items)
-        Dim fields, keyValue, j
-        If i > 0 Or table.Rows.Count = 1 Then
-          table.Rows.Add
-        End If
-
-        Set row = table.Rows(table.Rows.Count)
-        fields = Split(items(i), ",")
-
-        For j = LBound(fields) To UBound(fields)
-          keyValue = Split(fields(j), ":")
-          keyValue(0) = Replace(keyValue(0), "[{{", "")
-          keyValue(0) = Replace(keyValue(0), "{{", "")
-          If UBound(keyValue) >= 1 Then
-            keyValue(1) = Replace(keyValue(1), "}}]", "")
-          End If
-
-          Select Case keyValue(0)
-            Case "cost"
-              Dim cost
-              cost = keyValue(1)
-              cost = Replace(cost, "|", ",")
-              row.Cells(1).Range.Text = cost
-              row.Cells(1).Range.Font.Bold = False
-            Case "qty"
-              row.Cells(2).Range.Text = keyValue(1)
-            Case "partNum"
-              row.Cells(3).Range.Text = keyValue(1)
-            Case "desc"
-              row.Cells(4).Range.Text = keyValue(1)
-            Case "stockNum"
-              row.Cells(5).Range.Text = keyValue(1)
-            Case "location"
-              row.Cells(6).Range.Text = keyValue(1)
-            Case "unitPrice"
-              Dim unitPrice
-              unitPrice = keyValue(1)
-              unitPrice = Replace(unitPrice, "|", ",")
-              row.Cells(7).Range.Text = unitPrice
-            Case "total"
-              Dim total
-              total = keyValue(1)
-              total = Replace(total, "|", ",")
-              row.Cells(8).Range.Text = total
-          End Select
-        Next
-      Next
-    End If
-
-    doc.ActivePrinter = "{}"
-    sheet1.PrintOut
-    sheet1.Close False
-    doc.Quit
-    "#,
-    args.billToCompany,
-    args.billToAddress,
-    if args.billToAddress2 != "" {args.billToAddress2} else {"BILL TO ADDRESS 2".to_string()},
-    args.billToCity,
-    args.billToState,
-    args.billToZip,
-    args.billToCountry,
-    args.shipToCompany,
-    args.shipToAddress,
-    if args.shipToAddress2 != "" {args.shipToAddress2} else {"SHIP TO ADDRESS 2".to_string()},
-    args.shipToCity,
-    args.shipToState,
-    args.shipToZip,
-    args.shipToContact,
-    args.shipToCountry,
-    args.accountNum,
-    args.paymentType,
-    args.createdBy,
-    args.soldBy,
-    args.handwrittenId,
-    args.date,
-    args.contact,
-    args.poNum,
-    args.shipVia,
-    args.invoiceNotes,
-    args.shippingNotes,
-    args.handwrittenTotal,
-    if args.taxable {"True"} else {"False"},
-    if args.blind {"True"} else {"False"},
-    if args.npi {"True"} else {"False"},
-    if args.collect {"True"} else {"False"},
-    if args.thirdParty {"True"} else {"False"},
-    if args.setup {"True"} else {"False"},
-    json_data.replace("\"", "").replace("\\", ""),
-    printer
+  let rotated_img: DynamicImage = image::DynamicImage::ImageRgba8(rotate90(&img));
+  let upscaled_img = image::imageops::resize(
+    &rotated_img,
+    rotated_img.width() * 2,
+    rotated_img.height() * 2,
+    FilterType::Lanczos3,
   );
 
-  let vbs_path = "C:/mwd/scripts/generate_accounting_invoice.vbs";
-  write(&vbs_path, vbs_script).unwrap();
+  {
+    let mut file = File::create(file_path).map_err(|e| e.to_string())?;
+    upscaled_img.write_to(&mut file, ImageOutputFormat::Png).map_err(|e| e.to_string())?;
+  }
 
-  let mut cmd = Command::new("wscript.exe");
-  cmd.arg(vbs_path);
-  cmd.output().unwrap();
+  Command::new("mspaint")
+    .current_dir("C:/mwd/scripts/screenshots")
+    .args([file_path, "/pt", printer])
+    .output()
+    .map_err(|e| e.to_string())?;
+
   Ok(())
 }
 
 #[tauri::command]
-fn print_shipping_invoice(args: ShippingInvoiceArgs) -> Result<(), String> {
-  if let Ok(val) = env::var("DISABLE_PRINTING") {
-    if val == "TRUE" { return Ok(()) }
-  }
-  let printer = "\\\\JIM-PC\\HP LaserJet Pro M402-M403 n-dne PCL 6";
-  let json_data = to_string(&args.items).unwrap();
-  let vbs_script = format!(
-    r#"
-    Dim doc, sheet1
-    Set doc = CreateObject("Word.Application")
-    doc.Visible = False
-    Set sheet1 = doc.Documents.Open("\\MWD1-SERVER\Server\handwrittenShippingTemplate.docx")
+fn print_shipping_handwritten(imageData: String) -> Result<(), String> {
+  // if let Ok(val) = env::var("DISABLE_PRINTING") {
+  //   if val == "TRUE" { return Ok(()) }
+  // }
+  let data = decode(imageData.split(',').nth(1).unwrap()).map_err(|e| e.to_string())?;
+  let file_path = "C:/mwd/scripts/screenshots/shipping_handwritten.png";
+  let printer = "Brother MFC-L3770CDW series";
 
-    Sub ReplaceAndSetColor(sheet, findText, replaceText)
-      If Len(replaceText) > 0 Then
-        If InStr(replaceText, "ADDRESS 2") > 0 Then
-          With sheet.Content.Find
-            .Text = findText
-            .Replacement.Text = replaceText
-            .Wrap = 1
-            .MatchWholeWord = True
-            .Execute , , , , , , , , , , 2
-          End With
-        Else
-          With sheet.Content.Find
-            .Text = findText
-            .Replacement.Text = replaceText
-            .Replacement.Font.Color = 0
-            .Wrap = 1
-            .MatchWholeWord = True
-            .Execute , , , , , , , , , , 2
-          End With
-        End If
+  let img = ImageReader::new(Cursor::new(&data))
+    .with_guessed_format()
+    .map_err(|e| e.to_string())?
+    .decode()
+    .map_err(|e| e.to_string())?;
 
-        Dim footer
-        Set footer = sheet.Sections(1).Footers(1)
-        With footer.Range.Find
-          .Text = findText
-          .Replacement.Text = replaceText
-          .Replacement.Font.Color = 0
-          .Wrap = 1
-          .MatchWholeWord = True
-          .Execute , , , , , , , , , , 2
-        End With
-      End If
-    End Sub
-
-    Call ReplaceAndSetColor(sheet1, "BILL TO COMPANY", "{}")
-    Call ReplaceAndSetColor(sheet1, "BILL TO ADDRESS", "{}")
-    Call ReplaceAndSetColor(sheet1, "BILL_TO_ADDRESS_2", "{}")
-    Call ReplaceAndSetColor(sheet1, "BILL TO CITY", "{}")
-    Call ReplaceAndSetColor(sheet1, "BILL TO STATE", "{}")
-    Call ReplaceAndSetColor(sheet1, "BILL TO ZIP", "{}")
-    Call ReplaceAndSetColor(sheet1, "BILL TO COUNTRY", "{}")
-    Call ReplaceAndSetColor(sheet1, "SHIP TO COMPANY", "{}")
-    Call ReplaceAndSetColor(sheet1, "SHIP TO ADDRESS", "{}")
-    Call ReplaceAndSetColor(sheet1, "SHIP_TO_ADDRESS_2", "{}")
-    Call ReplaceAndSetColor(sheet1, "SHIP TO CITY", "{}")
-    Call ReplaceAndSetColor(sheet1, "SHIP TO STATE", "{}")
-    Call ReplaceAndSetColor(sheet1, "SHIP TO ZIP", "{}")
-    Call ReplaceAndSetColor(sheet1, "SHIP TO CONTACT", "{}")
-    Call ReplaceAndSetColor(sheet1, "SHIP TO COUNTRY", "{}")
-    Call ReplaceAndSetColor(sheet1, "ACCOUNT NUMBER", "{}")
-    Call ReplaceAndSetColor(sheet1, "PAYMENT TYPE", "{}")
-    Call ReplaceAndSetColor(sheet1, "CREATED_BY", "{}")
-    Call ReplaceAndSetColor(sheet1, "SOLD_BY", "{}")
-    Call ReplaceAndSetColor(sheet1, "INVOICE#", "{}")
-    Call ReplaceAndSetColor(sheet1, "INVOICE DATE", "{}")
-    Call ReplaceAndSetColor(sheet1, "CONTACT NAME", "{}")
-    Call ReplaceAndSetColor(sheet1, "PO#", "{}")
-    Call ReplaceAndSetColor(sheet1, "SHIP VIA", "{}")
-    Call ReplaceAndSetColor(sheet1, "INVOICE NOTES", "{}")
-    Call ReplaceAndSetColor(sheet1, "SHIPPING NOTES", "{}")
-    Call ReplaceAndSetColor(sheet1, "Mousepads", "{}")
-    Call ReplaceAndSetColor(sheet1, "Hats", "{}")
-    Call ReplaceAndSetColor(sheet1, "Brochures", "{}")
-    Call ReplaceAndSetColor(sheet1, "Flashlights", "{}")
-
-    Dim cc
-    For Each cc In sheet1.ContentControls
-      If cc.Tag = "taxable" Then
-        cc.Checked = {}
-      ElseIf cc.Tag = "blind" Then
-        cc.Checked = {}
-      ElseIf cc.Tag = "npi" Then
-        cc.Checked = {}
-      ElseIf cc.Tag = "collect" Then
-        cc.Checked = {}
-      ElseIf cc.Tag = "3rdParty" Then
-        cc.Checked = {}
-      ElseIf cc.Tag = "setup" Then
-        cc.Checked = {}
-      End If
-    Next
-
-    Dim handwrittenItems, jsonData, item, table, row, i
-    jsonData = {:?}
-
-    If Len(jsonData) > 2 Then
-      Dim items
-      items = Split(jsonData, "}},")
-      Set table = sheet1.Tables(1)
-
-      For i = LBound(items) To UBound(items)
-        Dim fields, keyValue, j
-        If i > 0 Or table.Rows.Count = 1 Then
-          table.Rows.Add
-        End If
-
-        Set row = table.Rows(table.Rows.Count)
-        fields = Split(items(i), ",")
-
-        For j = LBound(fields) To UBound(fields)
-          keyValue = Split(fields(j), ":")
-          keyValue(0) = Replace(keyValue(0), "[{{", "")
-          keyValue(0) = Replace(keyValue(0), "{{", "")
-          If UBound(keyValue) >= 1 Then
-            keyValue(1) = Replace(keyValue(1), "}}]", "")
-          End If
-
-          Select Case keyValue(0)
-            Case "cost"
-              Dim cost
-              cost = keyValue(1)
-              cost = Replace(cost, "|", ",")
-              row.Cells(1).Range.Text = cost
-              row.Cells(1).Range.Font.Bold = False
-            Case "qty"
-              row.Cells(2).Range.Text = keyValue(1)
-            Case "partNum"
-              row.Cells(3).Range.Text = keyValue(1)
-            Case "desc"
-              row.Cells(4).Range.Text = keyValue(1)
-            Case "stockNum"
-              row.Cells(5).Range.Text = keyValue(1)
-            Case "location"
-              row.Cells(6).Range.Text = keyValue(1)
-            Case "unitPrice"
-              Dim unitPrice
-              unitPrice = keyValue(1)
-              unitPrice = Replace(unitPrice, "|", ",")
-              row.Cells(7).Range.Text = unitPrice
-            Case "total"
-              Dim total
-              total = keyValue(1)
-              total = Replace(total, "|", ",")
-              row.Cells(8).Range.Text = total
-          End Select
-        Next
-      Next
-    End If
-
-    doc.ActivePrinter = "{}"
-    sheet1.PrintOut
-    sheet1.Close False
-    doc.Quit
-    "#,
-    args.billToCompany,
-    args.billToAddress,
-    if args.billToAddress2 != "" {args.billToAddress2} else {"BILL TO ADDRESS 2".to_string()},
-    args.billToCity,
-    args.billToState,
-    args.billToZip,
-    args.billToCountry,
-    args.shipToCompany,
-    args.shipToAddress,
-    if args.shipToAddress2 != "" {args.shipToAddress2} else {"SHIP TO ADDRESS 2".to_string()},
-    args.shipToCity,
-    args.shipToState,
-    args.shipToZip,
-    args.shipToContact,
-    args.shipToCountry,
-    args.accountNum,
-    args.paymentType,
-    args.createdBy,
-    args.soldBy,
-    args.handwrittenId,
-    args.date,
-    args.contact,
-    args.poNum,
-    args.shipVia,
-    args.invoiceNotes,
-    args.shippingNotes,
-    args.mp,
-    args.cap,
-    args.br,
-    args.fl,
-    if args.taxable {"True"} else {"False"},
-    if args.blind {"True"} else {"False"},
-    if args.npi {"True"} else {"False"},
-    if args.collect {"True"} else {"False"},
-    if args.thirdParty {"True"} else {"False"},
-    if args.setup {"True"} else {"False"},
-    json_data.replace("\"", "").replace("\\", ""),
-    printer
+  let rotated_img: DynamicImage = image::DynamicImage::ImageRgba8(rotate90(&img));
+  let upscaled_img = image::imageops::resize(
+    &rotated_img,
+    rotated_img.width() * 2,
+    rotated_img.height() * 2,
+    FilterType::Lanczos3,
   );
 
-  let vbs_path = "C:/mwd/scripts/generate_shipping_invoice.vbs";
-  write(&vbs_path, vbs_script).unwrap();
+  {
+    let mut file = File::create(file_path).map_err(|e| e.to_string())?;
+    upscaled_img.write_to(&mut file, ImageOutputFormat::Png).map_err(|e| e.to_string())?;
+  }
 
-  let mut cmd = Command::new("wscript.exe");
-  cmd.arg(vbs_path);
-  cmd.output().unwrap();
+  Command::new("mspaint")
+    .current_dir("C:/mwd/scripts/screenshots")
+    .args([file_path, "/pt", printer])
+    .output()
+    .map_err(|e| e.to_string())?;
+
   Ok(())
 }
 
 #[tauri::command]
-fn print_core_invoice(args: AccountingInvoiceArgs) -> Result<(), String> {
-  if let Ok(val) = env::var("DISABLE_PRINTING") {
-    if val == "TRUE" { return Ok(()) }
-  }
-  let printer = "Brother HL-L5200DW series";
-  let json_data = to_string(&args.items).unwrap();
-  let vbs_script = format!(
-    r#"
-    Dim doc, sheet1
-    Set doc = CreateObject("Word.Application")
-    doc.Visible = False
-    Set sheet1 = doc.Documents.Open("\\MWD1-SERVER\Server\handwrittenCoreTemplate.docx")
+fn print_core_handwritten(imageData: String) -> Result<(), String> {
+  // if let Ok(val) = env::var("DISABLE_PRINTING") {
+  //   if val == "TRUE" { return Ok(()) }
+  // }
+  let data = decode(imageData.split(',').nth(1).unwrap()).map_err(|e| e.to_string())?;
+  let file_path = "C:/mwd/scripts/screenshots/core_handwritten.png";
+  let printer = "Brother MFC-L3770CDW series";
 
-    Sub ReplaceAndSetColor(sheet, findText, replaceText)
-      If Len(replaceText) > 0 Then
-        If InStr(replaceText, "ADDRESS 2") > 0 Then
-          With sheet.Content.Find
-            .Text = findText
-            .Replacement.Text = replaceText
-            .Wrap = 1
-            .MatchWholeWord = True
-            .Execute , , , , , , , , , , 2
-          End With
-        Else
-          With sheet.Content.Find
-            .Text = findText
-            .Replacement.Text = replaceText
-            .Replacement.Font.Color = 0
-            .Wrap = 1
-            .MatchWholeWord = True
-            .Execute , , , , , , , , , , 2
-          End With
-        End If
+  let img = ImageReader::new(Cursor::new(&data))
+    .with_guessed_format()
+    .map_err(|e| e.to_string())?
+    .decode()
+    .map_err(|e| e.to_string())?;
 
-        Dim footer
-        Set footer = sheet.Sections(1).Footers(1)
-        With footer.Range.Find
-          .Text = findText
-          .Replacement.Text = replaceText
-          .Replacement.Font.Color = 0
-          .Wrap = 1
-          .MatchWholeWord = True
-          .Execute , , , , , , , , , , 2
-        End With
-      End If
-    End Sub
-
-    Call ReplaceAndSetColor(sheet1, "BILL TO COMPANY", "{}")
-    Call ReplaceAndSetColor(sheet1, "BILL TO ADDRESS", "{}")
-    Call ReplaceAndSetColor(sheet1, "BILL_TO_ADDRESS_2", "{}")
-    Call ReplaceAndSetColor(sheet1, "BILL TO CITY", "{}")
-    Call ReplaceAndSetColor(sheet1, "BILL TO STATE", "{}")
-    Call ReplaceAndSetColor(sheet1, "BILL TO ZIP", "{}")
-    Call ReplaceAndSetColor(sheet1, "BILL TO COUNTRY", "{}")
-    Call ReplaceAndSetColor(sheet1, "SHIP TO COMPANY", "{}")
-    Call ReplaceAndSetColor(sheet1, "SHIP TO ADDRESS", "{}")
-    Call ReplaceAndSetColor(sheet1, "SHIP_TO_ADDRESS_2", "{}")
-    Call ReplaceAndSetColor(sheet1, "SHIP TO CITY", "{}")
-    Call ReplaceAndSetColor(sheet1, "SHIP TO STATE", "{}")
-    Call ReplaceAndSetColor(sheet1, "SHIP TO ZIP", "{}")
-    Call ReplaceAndSetColor(sheet1, "SHIP TO CONTACT", "{}")
-    Call ReplaceAndSetColor(sheet1, "SHIP TO COUNTRY", "{}")
-    Call ReplaceAndSetColor(sheet1, "ACCOUNT NUMBER", "{}")
-    Call ReplaceAndSetColor(sheet1, "PAYMENT TYPE", "{}")
-    Call ReplaceAndSetColor(sheet1, "CREATED_BY", "{}")
-    Call ReplaceAndSetColor(sheet1, "SOLD_BY", "{}")
-    Call ReplaceAndSetColor(sheet1, "INVOICE#", "{}")
-    Call ReplaceAndSetColor(sheet1, "INVOICE DATE", "{}")
-    Call ReplaceAndSetColor(sheet1, "CONTACT NAME", "{}")
-    Call ReplaceAndSetColor(sheet1, "PO#", "{}")
-    Call ReplaceAndSetColor(sheet1, "SHIP VIA", "{}")
-    Call ReplaceAndSetColor(sheet1, "INVOICE NOTES", "{}")
-    Call ReplaceAndSetColor(sheet1, "SHIPPING NOTES", "{}")
-    Call ReplaceAndSetColor(sheet1, "HANDWRITTEN_TOTAL", "{}")
-
-    Dim cc
-    For Each cc In sheet1.ContentControls
-      If cc.Tag = "taxable" Then
-        cc.Checked = {}
-      ElseIf cc.Tag = "blind" Then
-        cc.Checked = {}
-      ElseIf cc.Tag = "npi" Then
-        cc.Checked = {}
-      ElseIf cc.Tag = "collect" Then
-        cc.Checked = {}
-      ElseIf cc.Tag = "3rdParty" Then
-        cc.Checked = {}
-      ElseIf cc.Tag = "setup" Then
-        cc.Checked = {}
-      End If
-    Next
-
-    Dim handwrittenItems, jsonData, item, table, row, i
-    jsonData = {:?}
-
-If Len(jsonData) > 2 Then
-      Dim items
-      items = Split(jsonData, "}},")
-      Set table = sheet1.Tables(1)
-
-      For i = LBound(items) To UBound(items)
-        Dim fields, keyValue, j
-        If i > 0 Or table.Rows.Count = 1 Then
-          table.Rows.Add
-        End If
-
-        Set row = table.Rows(table.Rows.Count)
-        fields = Split(items(i), ",")
-
-        For j = LBound(fields) To UBound(fields)
-          keyValue = Split(fields(j), ":")
-          keyValue(0) = Replace(keyValue(0), "[{{", "")
-          keyValue(0) = Replace(keyValue(0), "{{", "")
-          If UBound(keyValue) >= 1 Then
-            keyValue(1) = Replace(keyValue(1), "}}]", "")
-          End If
-
-          Select Case keyValue(0)
-            Case "cost"
-              Dim cost
-              cost = keyValue(1)
-              cost = Replace(cost, "|", ",")
-              row.Cells(1).Range.Text = cost
-              row.Cells(1).Range.Font.Bold = False
-            Case "qty"
-              row.Cells(2).Range.Text = keyValue(1)
-            Case "partNum"
-              row.Cells(3).Range.Text = keyValue(1)
-            Case "desc"
-              row.Cells(4).Range.Text = keyValue(1)
-            Case "stockNum"
-              row.Cells(5).Range.Text = keyValue(1)
-            Case "location"
-              row.Cells(6).Range.Text = keyValue(1)
-            Case "unitPrice"
-              Dim unitPrice
-              unitPrice = keyValue(1)
-              unitPrice = Replace(unitPrice, "|", ",")
-              row.Cells(7).Range.Text = unitPrice
-            Case "total"
-              Dim total
-              total = keyValue(1)
-              total = Replace(total, "|", ",")
-              row.Cells(8).Range.Text = total
-          End Select
-        Next
-      Next
-    End If
-
-    doc.ActivePrinter = "{}"
-    sheet1.PrintOut
-    sheet1.Close False
-    doc.Quit
-    "#,
-    args.billToCompany,
-    args.billToAddress,
-    if args.billToAddress2 != "" {args.billToAddress2} else {"BILL TO ADDRESS 2".to_string()},
-    args.billToCity,
-    args.billToState,
-    args.billToZip,
-    args.billToCountry,
-    args.shipToCompany,
-    args.shipToAddress,
-    if args.shipToAddress2 != "" {args.shipToAddress2} else {"SHIP TO ADDRESS 2".to_string()},
-    args.shipToCity,
-    args.shipToState,
-    args.shipToZip,
-    args.shipToContact,
-    args.shipToCountry,
-    args.accountNum,
-    args.paymentType,
-    args.createdBy,
-    args.soldBy,
-    args.handwrittenId,
-    args.date,
-    args.contact,
-    args.poNum,
-    args.shipVia,
-    args.invoiceNotes,
-    args.shippingNotes,
-    args.handwrittenTotal,
-    if args.taxable {"True"} else {"False"},
-    if args.blind {"True"} else {"False"},
-    if args.npi {"True"} else {"False"},
-    if args.collect {"True"} else {"False"},
-    if args.thirdParty {"True"} else {"False"},
-    if args.setup {"True"} else {"False"},
-    json_data.replace("\"", "").replace("\\", ""),
-    printer
+  let rotated_img: DynamicImage = image::DynamicImage::ImageRgba8(rotate90(&img));
+  let upscaled_img = image::imageops::resize(
+    &rotated_img,
+    rotated_img.width() * 2,
+    rotated_img.height() * 2,
+    FilterType::Lanczos3,
   );
 
-  let vbs_path = "C:/mwd/scripts/generate_core_invoice.vbs";
-  write(&vbs_path, vbs_script).unwrap();
+  {
+    let mut file = File::create(file_path).map_err(|e| e.to_string())?;
+    upscaled_img.write_to(&mut file, ImageOutputFormat::Png).map_err(|e| e.to_string())?;
+  }
 
-  let mut cmd = Command::new("wscript.exe");
-  cmd.arg(vbs_path);
-  cmd.output().unwrap();
+  Command::new("mspaint")
+    .current_dir("C:/mwd/scripts/screenshots")
+    .args([file_path, "/pt", printer])
+    .output()
+    .map_err(|e| e.to_string())?;
+
   Ok(())
 }
 
