@@ -1387,11 +1387,10 @@ fn print_po(imageData: String) -> Result<(), String> {
     .decode()
     .map_err(|e| e.to_string())?;
 
-  let rotated_img: DynamicImage = image::DynamicImage::ImageRgba8(rotate90(&img));
   let upscaled_img = image::imageops::resize(
-    &rotated_img,
-    rotated_img.width() * 2,
-    rotated_img.height() * 2,
+    &img,
+    img.width() * 2,
+    img.height() * 2,
     FilterType::Lanczos3,
   );
 

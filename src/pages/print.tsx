@@ -4,6 +4,7 @@ import HandwrittenAccountingTemplate from "@/components/PrintableComponents/Hand
 import HandwrittenCoreTemplate from "@/components/PrintableComponents/HandwrittenCoreTemplate";
 import HandwrittenShippingTemplate from "@/components/PrintableComponents/HandwrittenShippingTemplate";
 import PackingSlipTemplate from "@/components/PrintableComponents/PackingSlipTemplate";
+import PurchaseOrderTemplate from "@/components/PrintableComponents/PurchaseOrderTemplate";
 import ReturnTemplate from "@/components/PrintableComponents/ReturnTemplate";
 import ShippingLabelTemplate from "@/components/PrintableComponents/ShippingLabelTemplate";
 import { usePrintQue } from "@/components/PrintableComponents/usePrintQue";
@@ -59,6 +60,7 @@ export default function Print() {
       { activeSheet === 'warranty' && <WarrantyTemplate data={data} /> }
       { activeSheet === 'return' && <ReturnTemplate data={data} /> }
       { activeSheet === 'packingSlip' && <PackingSlipTemplate data={data} /> }
+      { activeSheet === 'po' && <PurchaseOrderTemplate data={data} /> }
     </div>
   );
 }

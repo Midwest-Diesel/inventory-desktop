@@ -16,10 +16,12 @@ import { useEffect, useState } from "react";
 import { confirm, invoke } from "@/scripts/config/tauri";
 import { useNavState } from "@/components/Navbar/useNavState";
 import { ask } from "@tauri-apps/api/dialog";
+import { usePrintQue } from "@/components/PrintableComponents/usePrintQue";
 
 
 export default function PurchaseOrder() {
   const { closeBtn, push } = useNavState();
+  const { addToQue, printQue } = usePrintQue();
   const params = useParams();
   const [user] = useAtom<User>(userAtom);
   const [poData, setPoData] = useState<PO | null>(null);
@@ -65,16 +67,17 @@ export default function PurchaseOrder() {
       comments: poData?.comments ?? '',
       date: formatDate(poData?.date) ?? '',
       orderedBy: poData?.orderedBy ?? '',
-      items: JSON.stringify(poData?.poItems.map((item) => {
+      items: poData?.poItems.map((item) => {
         return {
           qty: item.qty ?? '',
           desc: item.desc ?? '',
-          price: formatCurrency(item.unitPrice).replaceAll(',', '|') || '$0.00',
-          total: formatCurrency((item.unitPrice ?? 0) * (item.qty ?? 0)).replaceAll(',', '|') || '$0.00',
+          price: formatCurrency(item.unitPrice) || '$0.00',
+          total: formatCurrency((item.unitPrice ?? 0) * (item.qty ?? 0)) || '$0.00',
         };
-      })) || '[]'
+      }) || []
     };
-    await invoke('print_po', { args });
+    addToQue('po', 'print_po', args, '816px', '1090px');
+    printQue();
   };
 
 
