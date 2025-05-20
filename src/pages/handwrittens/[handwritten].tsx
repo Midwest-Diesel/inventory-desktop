@@ -332,7 +332,8 @@ export default function Handwritten() {
   const handlePrintCCLabel = async () => {
     if (!await confirm('Print a CC label?')) return;
     if (!cardNum || !expDate || !cvv) return;
-    await invoke('print_cc_label', { args: { cardNum: Number(cardNum), expDate, cvv: Number(cvv), cardZip, cardName, cardAddress } });
+    addToQue('ccLabel', 'print_cc_label', { cardNum, expDate, cvv, cardZip, cardName, cardAddress }, '200px', '135px');
+    printQue();
   };
 
   const handleTakeoffs = (e: FormEvent) => {

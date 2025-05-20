@@ -924,6 +924,11 @@ fn print_cc_label(imageData: String) -> Result<(), String> {
   }
   let data = decode(imageData.split(',').nth(1).unwrap()).map_err(|e| e.to_string())?;
   let file_path = "C:/mwd/scripts/screenshots/cc_label.png";
+  /* 
+    PRINTER DIMENSION SETTNGS (windows printer settings > printer > printer preferences):
+    width: 3 in
+    height: 1 in
+  */
   let printer = "\\\\FRONT-DESK\\ZDesigner GC420d";
 
   let img = ImageReader::new(Cursor::new(&data))
@@ -932,11 +937,10 @@ fn print_cc_label(imageData: String) -> Result<(), String> {
     .decode()
     .map_err(|e| e.to_string())?;
 
-  let rotated_img: DynamicImage = image::DynamicImage::ImageRgba8(rotate90(&img));
   let upscaled_img = image::imageops::resize(
-    &rotated_img,
-    rotated_img.width() * 2,
-    rotated_img.height() * 2,
+    &img,
+    img.width() * 2,
+    img.height() * 2,
     FilterType::Lanczos3,
   );
 
@@ -1313,11 +1317,10 @@ fn print_warranty(imageData: String) -> Result<(), String> {
     .decode()
     .map_err(|e| e.to_string())?;
 
-  let rotated_img: DynamicImage = image::DynamicImage::ImageRgba8(rotate90(&img));
   let upscaled_img = image::imageops::resize(
-    &rotated_img,
-    rotated_img.width() * 2,
-    rotated_img.height() * 2,
+    &img,
+    img.width() * 2,
+    img.height() * 2,
     FilterType::Lanczos3,
   );
 

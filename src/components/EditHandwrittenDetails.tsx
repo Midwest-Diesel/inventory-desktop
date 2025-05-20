@@ -374,16 +374,17 @@ export default function EditHandwrittenDetails({
       return { ...rest };
     });
 
-    addToQue('handwrittenAcct', 'print_accounting_handwritten', { ...args, items: filteredItems });
-    addToQue('handwrittenShip', 'print_shipping_invoice', { ...args, items: itemsWithChildren });
-    if (hasCore) addToQue('handwrittenCore', 'print_core_handwritten', args);
+    addToQue('handwrittenAcct', 'print_accounting_handwritten', { ...args, items: filteredItems }, '576px', '374.4px');
+    addToQue('handwrittenShip', 'print_shipping_invoice', { ...args, items: itemsWithChildren }, '576px', '374.4px');
+    if (hasCore) addToQue('handwrittenCore', 'print_core_handwritten', args, '576px', '374.4px');
     printQue();
     setLoading(false);
   };
 
   const handlePrintCCLabel = async () => {
     if (!cardNum || !expDate || !cvv) return;
-    await invoke('print_cc_label', { args: { cardNum: Number(cardNum), expDate, cvv: Number(cvv), cardZip, cardName, cardAddress } });
+    addToQue('ccLabel', 'print_cc_label', { cardNum, expDate, cvv, cardZip, cardName, cardAddress }, '230.4px', '120px');
+    printQue();
   };
 
   const handleAltShip = async () => {

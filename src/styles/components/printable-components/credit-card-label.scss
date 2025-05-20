@@ -1,0 +1,8 @@
+.cc-label-template {
+  font-size: var(--font-md);
+
+  &__row {
+    display: flex;
+    gap: 1rem;
+  }
+}

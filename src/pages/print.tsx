@@ -1,9 +1,11 @@
 import { useNavState } from "@/components/Navbar/useNavState";
+import CreditCardLabelTemplate from "@/components/PrintableComponents/CreditCardLabelTemplate";
 import HandwrittenAccountingTemplate from "@/components/PrintableComponents/HandwrittenAccountingTemplate";
 import HandwrittenCoreTemplate from "@/components/PrintableComponents/HandwrittenCoreTemplate";
 import HandwrittenShippingTemplate from "@/components/PrintableComponents/HandwrittenShippingTemplate";
 import ShippingLabelTemplate from "@/components/PrintableComponents/ShippingLabelTemplate";
 import { usePrintQue } from "@/components/PrintableComponents/usePrintQue";
+import WarrantyTemplate from "@/components/PrintableComponents/WarrantyTemplate";
 import { invoke } from "@/scripts/config/tauri";
 import { toPng } from "html-to-image";
 import { useEffect, useRef, useState } from "react";
@@ -51,6 +53,8 @@ export default function Print() {
       { activeSheet === 'handwrittenShip' && <HandwrittenShippingTemplate data={data} /> }
       { activeSheet === 'handwrittenCore' && <HandwrittenCoreTemplate data={data} /> }
       { activeSheet === 'shippingLabel' && <ShippingLabelTemplate data={data} /> }
+      { activeSheet === 'ccLabel' && <CreditCardLabelTemplate data={data} /> }
+      { activeSheet === 'warranty' && <WarrantyTemplate data={data} /> }
     </div>
   );
 }
