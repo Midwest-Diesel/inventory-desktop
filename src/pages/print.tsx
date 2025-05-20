@@ -3,6 +3,7 @@ import CreditCardLabelTemplate from "@/components/PrintableComponents/CreditCard
 import HandwrittenAccountingTemplate from "@/components/PrintableComponents/HandwrittenAccountingTemplate";
 import HandwrittenCoreTemplate from "@/components/PrintableComponents/HandwrittenCoreTemplate";
 import HandwrittenShippingTemplate from "@/components/PrintableComponents/HandwrittenShippingTemplate";
+import PackingSlipTemplate from "@/components/PrintableComponents/PackingSlipTemplate";
 import ReturnTemplate from "@/components/PrintableComponents/ReturnTemplate";
 import ShippingLabelTemplate from "@/components/PrintableComponents/ShippingLabelTemplate";
 import { usePrintQue } from "@/components/PrintableComponents/usePrintQue";
@@ -57,6 +58,7 @@ export default function Print() {
       { activeSheet === 'ccLabel' && <CreditCardLabelTemplate data={data} /> }
       { activeSheet === 'warranty' && <WarrantyTemplate data={data} /> }
       { activeSheet === 'return' && <ReturnTemplate data={data} /> }
+      { activeSheet === 'packingSlip' && <PackingSlipTemplate data={data} /> }
     </div>
   );
 }

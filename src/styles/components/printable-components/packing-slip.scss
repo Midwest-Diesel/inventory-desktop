@@ -1,0 +1,44 @@
+.packing-slip-template {
+  .table {
+    font-size: 14px;
+    margin-top: 2rem;
+
+    th {
+      background-color: white;
+      color: black;
+      padding: 0 0.1rem;
+    }
+
+    td {
+      background-color: white;
+      padding: 0 0.1rem;
+      font-size: 13px;
+    }
+  }
+
+  header {
+    border-bottom: 5px solid black;
+    margin-bottom: 0.5rem;
+    padding-bottom: 0.3rem;
+    text-align: center;
+
+    img {
+      width: 15rem;
+    }
+
+    h1 {
+      margin: 1rem 0;
+    }
+  }
+
+  &__phone {
+    display: flex;
+    gap: 2rem;
+    justify-content: center;
+  }
+
+  &__header-row {
+    display: flex;
+    justify-content: space-between;
+  }
+}

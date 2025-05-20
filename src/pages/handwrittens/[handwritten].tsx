@@ -57,6 +57,7 @@ export default function Handwritten() {
   const [takeoffsOpen, setTakeoffsOpen] = useState(false);
   const [taxTotal, setTaxTotal] = useState(0);
   const TAX_RATE = 0.08375;
+  const MAX_ROWS = 20;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -183,34 +184,7 @@ export default function Handwritten() {
       };
       await invoke('print_bol', { args });
     } else if (await ask('Print packing slip?')) {
-      const billToCityStateZip = `${handwritten?.billToCity}${handwritten?.billToCity ? ',' : ''} ${handwritten?.billToState} ${handwritten?.billToZip}`;
-      const shipToCityStateZip = `${handwritten?.shipToCity}${handwritten?.shipToCity ? ',' : ''} ${handwritten?.shipToState} ${handwritten?.shipToZip}`;
-      const args = {
-        invoiceDate: formatDate(handwritten?.date) ?? '',
-        poNum: handwritten?.poNum ?? '',
-        billToCompany: handwritten?.billToCompany ?? '',
-        billToAddress: handwritten?.billToAddress ?? '',
-        billToAddress2: handwritten?.billToAddress2 ? `"${handwritten?.billToAddress2}" & Chr(11)` : '""',
-        billToCityStateZip,
-        shipToCompany: handwritten?.shipToCompany ?? '',
-        shipToContact: handwritten?.shipToContact ? `"${handwritten?.shipToContact}" & Chr(11)` : '""',
-        shipToAddress: handwritten?.shipToAddress ?? '',
-        shipToAddress2: handwritten?.shipToAddress2 ? `"${handwritten?.shipToAddress2}" & Chr(11)` : '""',
-        shipToCityStateZip,
-        items: JSON.stringify(handwritten?.handwrittenItems.map((item) => {
-          const price = formatCurrency(item.unitPrice).replaceAll(',', '|') || '$0.00';
-          const total = formatCurrency((item?.unitPrice ?? 0) * (item?.qty ?? 0)).replaceAll(',', '|') || '$0.00';
-
-          return {
-            qty: item.qty ?? '',
-            partNum: item.partNum ?? '',
-            desc: item.desc ?? '',
-            price: handwritten?.isNoPriceInvoice ? '-9999' : price,
-            total: handwritten?.isNoPriceInvoice ? '-9999' : total
-          };
-        })) || '[]'
-      };
-      await invoke('print_packing_slip', { args });
+      printPackingSlip(false);
     }
   };
 
@@ -236,29 +210,53 @@ export default function Handwritten() {
       };
       await invoke('print_bol', { args });
     } else if (await ask('Print packing slip?')) {
+      printPackingSlip(true);
+    }
+  };
+
+  const printPackingSlip = (blind: boolean) => {
+    const splitItems = (items: any[], size: number) => {
+      const chunks = [];
+      for (let i = 0; i < items.length; i += size) {
+        chunks.push(items.slice(i, i + size));
+      }
+      return chunks;
+    };
+    const itemChunks = splitItems(handwritten?.handwrittenItems ?? [], MAX_ROWS);
+
+    for (let i = 0; i < itemChunks.length; i++) {
+      const chunk = itemChunks[i];
       const billToCityStateZip = `${handwritten?.billToCity}${handwritten?.billToCity ? ',' : ''} ${handwritten?.billToState} ${handwritten?.billToZip}`;
       const shipToCityStateZip = `${handwritten?.shipToCity}${handwritten?.shipToCity ? ',' : ''} ${handwritten?.shipToState} ${handwritten?.shipToZip}`;
       const args = {
         invoiceDate: formatDate(handwritten?.date) ?? '',
+        poNum: handwritten?.poNum ?? '',
         billToCompany: handwritten?.billToCompany ?? '',
         billToAddress: handwritten?.billToAddress ?? '',
-        billToAddress2: handwritten?.billToAddress2 ? `"${handwritten?.billToAddress2}" & Chr(11)` : '""',
+        billToAddress2: handwritten?.billToAddress2 ?? '',
         billToCityStateZip,
         shipToCompany: handwritten?.shipToCompany ?? '',
-        shipToContact: handwritten?.shipToContact ? `"${handwritten?.shipToContact}" & Chr(11)` : '""',
+        shipToContact: handwritten?.shipToContact ?? '',
         shipToAddress: handwritten?.shipToAddress ?? '',
-        shipToAddress2: handwritten?.shipToAddress2 ? `"${handwritten?.shipToAddress2}" & Chr(11)` : '""',
+        shipToAddress2: handwritten?.shipToAddress2 ?? '',
         shipToCityStateZip,
-        items: JSON.stringify(handwritten?.handwrittenItems.map((item) => {
+        blind,
+        items: chunk.map((item) => {
+          const price = formatCurrency(item.unitPrice) || '$0.00';
+          const total = formatCurrency((item?.unitPrice ?? 0) * (item?.qty ?? 0)) || '$0.00';
+
           return {
             qty: item.qty ?? '',
             partNum: item.partNum ?? '',
-            desc: item.desc ?? ''
+            desc: item.desc ?? '',
+            price: handwritten?.isNoPriceInvoice ? '' : price,
+            total: handwritten?.isNoPriceInvoice ? '' : total
           };
-        })) || '[]'
+        }) || []
       };
-      await invoke('print_packing_slip_blind', { args });
+      addToQue('packingSlip', 'print_packing_slip', args, '816px', '1090px');
     }
+    printQue();
   };
 
   const handlePrintShippingLabel = async (copies: number) => {
