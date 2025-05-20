@@ -1,0 +1,45 @@
+.return-template {
+  .table {
+    font-size: 14px;
+
+    th {
+      background-color: white;
+      color: black;
+      padding: 0 0.1rem;
+    }
+
+    td {
+      background-color: white;
+      padding: 0 0.1rem;
+      font-size: 13px;
+    }
+  }
+
+  header {
+    display: flex;
+    justify-content: space-between;
+
+    h2 {
+      font-size: 15px;
+    }
+  }
+
+  &__middle-section {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+  }
+
+  &__column {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    width: 391px;
+  }
+
+  &__row {
+    display: flex;
+    gap: 2rem;
+    margin-top: 1rem;
+  }
+}

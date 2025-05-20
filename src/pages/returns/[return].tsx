@@ -7,7 +7,7 @@ import Loading from "@/components/Library/Loading";
 import Table from "@/components/Library/Table";
 import ReturnItemsTable from "@/components/ReturnItemsTable";
 import { userAtom } from "@/scripts/atoms/state";
-import { confirm, invoke } from "@/scripts/config/tauri";
+import { confirm } from "@/scripts/config/tauri";
 import { deleteReturn, getReturnById, issueReturnCredit } from "@/scripts/controllers/returnsController";
 import { formatCurrency, formatDate, formatPhone } from "@/scripts/tools/stringUtils";
 import { setTitle } from "@/scripts/tools/utils";
@@ -17,10 +17,12 @@ import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useNavState } from "@/components/Navbar/useNavState";
 import { ask } from "@tauri-apps/api/dialog";
+import { usePrintQue } from "@/components/PrintableComponents/usePrintQue";
 
 
 export default function Return() {
   const { closeBtn, backward, push } = useNavState();
+  const { addToQue, printQue } = usePrintQue();
   const params = useParams();
   const [user] = useAtom<User>(userAtom);
   const [returnData, setReturnData] = useState<Return | null>(null);
@@ -53,36 +55,37 @@ export default function Return() {
     const args = {
       createdBy: returnData?.salesman?.initials ?? '',
       date: formatDate(new Date()),
-      poNum: returnData?.poNum || '',
+      poNum: returnData?.poNum ?? '',
       id: returnData?.id,
       invoiceDate: formatDate(returnData?.invoiceDate),
-      billToCompany: returnData?.billToCompany || '',
-      shipToCompany: returnData?.shipToCompany || '',
-      billToAddress: returnData?.billToAddress || '',
-      billToCity: returnData?.billToCity || '',
-      billToState: returnData?.billToState || '',
-      billToZip: returnData?.billToZip || '',
-      billToPhone: returnData?.billToPhone || '',
+      billToCompany: returnData?.billToCompany ?? '',
+      shipToCompany: returnData?.shipToCompany ?? '',
+      billToAddress: returnData?.billToAddress ?? '',
+      billToCity: returnData?.billToCity ?? '',
+      billToState: returnData?.billToState ?? '',
+      billToZip: returnData?.billToZip ?? '',
+      billToPhone: returnData?.billToPhone ?? '',
       dateCalled: formatDate(returnData?.dateCalled),
-      salesman: user.initials || '',
-      returnReason: returnData?.returnReason || '',
-      returnNotes: returnData?.returnNotes || '',
-      returnPaymentTerms: returnData?.returnPaymentTerms || '',
-      payment: returnData?.payment || '',
-      restockFee: returnData?.restockFee || '',
-      items: JSON.stringify(returnData?.returnItems.map((item) => {
+      salesman: user.initials ?? '',
+      returnReason: returnData?.returnReason ?? '',
+      returnNotes: returnData?.returnNotes ?? '',
+      returnPaymentTerms: returnData?.returnPaymentTerms ?? '',
+      payment: returnData?.payment ?? '',
+      restockFee: returnData?.restockFee ?? '',
+      items: returnData?.returnItems.map((item) => {
         return {
-          cost: formatCurrency(item.cost).replaceAll(',', '|') || '$0.00',
-          stockNum: item.stockNum || '',
+          cost: formatCurrency(item.cost) || '$0.00',
+          stockNum: item.stockNum ?? '',
           qty: item.qty,
-          partNum: item.partNum || '',
-          desc: item.desc || '',
-          unitPrice: formatCurrency(item.unitPrice).replaceAll(',', '|') || '$0.00',
-          total: formatCurrency((item.qty ?? 0) * (item.unitPrice ?? 0)).replaceAll(',', '|') || '$0.00'
+          partNum: item.partNum ?? '',
+          desc: item.desc ?? '',
+          unitPrice: formatCurrency(item.unitPrice) || '$0.00',
+          total: formatCurrency((item.qty ?? 0) * (item.unitPrice ?? 0)) || '$0.00'
         };
-      })) || '[]'
+      }) || []
     };
-    await invoke('print_return', { args });
+    addToQue('return', 'print_return', args, '816px', '1090px');
+    printQue();
   };
 
   
