@@ -14,12 +14,14 @@ import { useAtom } from "jotai";
 import Link from "@/components/Library/Link";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { confirm, invoke } from "@/scripts/config/tauri";
+import { confirm } from "@/scripts/config/tauri";
 import { useNavState } from "@/components/Navbar/useNavState";
+import { usePrintQue } from "@/components/PrintableComponents/usePrintQue";
 
 
 export default function Warranty() {
   const { closeBtn, push } = useNavState();
+  const { addToQue, printQue } = usePrintQue();
   const params = useParams();
   const [user] = useAtom<User>(userAtom);
   const [warrantyData, setWarrantyData] = useState<Warranty | null>(null);
@@ -52,33 +54,34 @@ export default function Warranty() {
     let claimReason: string[] = [];
     let vendorReport: string[] = [];
     const args = {
-      vendor: warrantyData?.vendor || '',
+      vendor: warrantyData?.vendor ?? '',
       createdDate: formatDate(warrantyData?.date ?? null),
-      id: Number(warrantyData?.id),
+      id: warrantyData?.id,
       vendorWarrantyId: Number(warrantyData?.vendorWarrantyNum),
       completed: warrantyData?.completed ? `Claim Completed: ${formatDate(warrantyData?.completedDate)}` : '',
-      billToAddress: warrantyData?.customer?.billToAddress || '',
-      shipToAddress: warrantyData?.customer?.shipToAddress || '',
-      paymentTerms: warrantyData?.return?.returnPaymentTerms || ' ',
-      restockFee: warrantyData?.return?.restockFee || ' ',
-      items: JSON.stringify(warrantyData?.warrantyItems.map((item: WarrantyItem, i: number) => {
-        claimReason.push(`[Row ${i + 1}] ${item?.claimReason?.replaceAll('"', `'`)}`);
-        vendorReport.push(`[Row ${i + 1}] ${item?.vendorReport?.replaceAll('"', `'`)}`);
+      billToAddress: warrantyData?.customer?.billToAddress ?? '',
+      shipToAddress: warrantyData?.customer?.shipToAddress ?? '',
+      paymentTerms: warrantyData?.return?.returnPaymentTerms ?? ' ',
+      restockFee: warrantyData?.return?.restockFee ?? ' ',
+      items: warrantyData?.warrantyItems.map((item: WarrantyItem, i: number) => {
+        if (item.claimReason) claimReason.push(`[Row ${i + 1}] ${item.claimReason}`);
+        if (item.vendorReport) vendorReport.push(`[Row ${i + 1}] ${item.vendorReport}`);
 
         return {
-          qty: item.qty || '',
-          partNum: item.partNum || '',
-          desc: item.desc || '',
-          stockNum: item.stockNum || '',
-          cost: formatCurrency(item.cost).replaceAll(',', '|') || '$0.00',
-          price: formatCurrency(item.price).replaceAll(',', '|') || '$0.00',
+          qty: item.qty ?? '',
+          partNum: item.partNum ?? '',
+          desc: item.desc ?? '',
+          stockNum: item.stockNum ?? '',
+          cost: formatCurrency(item.cost) || '$0.00',
+          price: formatCurrency(item.price) || '$0.00',
           hasVendorReplacedPart: item.hasVendorReplacedPart,
           isCustomerCredited: item.isCustomerCredited,
-          vendorCredit: formatCurrency(item.vendorCredit).replaceAll(',', '|') || '$0.00'
+          vendorCredit: formatCurrency(item.vendorCredit) || '$0.00'
         };
-      })) || '[]'
+      }) || []
     };
-    await invoke('print_warranty', { args: { ...args, claimReason: claimReason.join('|||'), vendorReport: vendorReport.join('|||') }});
+    addToQue('warranty', 'print_warranty', { ...args, claimReason, vendorReport }, '816px', '1090px');
+    printQue();
   };
 
 
