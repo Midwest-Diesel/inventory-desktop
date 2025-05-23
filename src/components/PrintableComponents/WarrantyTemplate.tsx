@@ -1,4 +1,5 @@
-import Table from "../Library/Table"
+import Image from "next/image";
+import Table from "../Library/Table";
 
 interface Props {
   data: {
@@ -32,7 +33,7 @@ export default function WarrantyTemplate({ data }: Props) {
   return (
     <div className="warranty-template">
       <header>
-        <img src="/images/midwest-diesel.jpg" alt="" />
+        <Image src="/images/midwest-diesel.jpg" alt="" />
         <h1>Warranty Claim</h1>
       </header>
       
@@ -76,8 +77,8 @@ export default function WarrantyTemplate({ data }: Props) {
                 <td style={{ textAlign: 'center' }}>{ item.hasVendorReplacedPart && 'X' }</td>
                 <td style={{ textAlign: 'center' }}>{ item.isCustomerCredited && 'X' }</td>
                 <td>{ item.vendorCredit }</td>
-              </tr>
-            )
+             ; </tr>
+            );
           })}
         </tbody>
       </Table>
@@ -88,7 +89,7 @@ export default function WarrantyTemplate({ data }: Props) {
             <h4>Reason for Warranty Claim</h4>
             <p style={{ minHeight: '10rem' }}>
               {data.claimReason.map((text, i) => {
-                return <div key={i}>{ text }</div>
+                return <div key={i}>{ text }</div>;
               })}
             </p>
           </div>
@@ -105,7 +106,7 @@ export default function WarrantyTemplate({ data }: Props) {
           <h4>Report From Vendor</h4>
           <p>
             {data.vendorReport.map((text, i) => {
-              return <div key={i}>{ text }</div>
+              return <div key={i}>{ text }</div>;
             })}
           </p>
         </div>

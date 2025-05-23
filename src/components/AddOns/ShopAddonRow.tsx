@@ -10,16 +10,14 @@ import { useEffect, useRef, useState } from "react";
 import Input from "../Library/Input";
 import Link from "../Library/Link";
 import { getAutofillEngine, getEngineByStockNum } from "@/scripts/controllers/enginesController";
-import { invoke, confirm } from "@/scripts/config/tauri";
 import { formatDate } from "@/scripts/tools/stringUtils";
 import VendorSelect from "../Library/Select/VendorSelect";
 import { getPurchaseOrderByPoNum } from "@/scripts/controllers/purchaseOrderController";
-import { selectedPoAddOnAtom } from "@/scripts/atoms/components";
 import { getRatingFromRemarks } from "@/scripts/tools/utils";
 import { getImagesFromPart } from "@/scripts/controllers/imagesController";
-import PartTag from "../PrintableComponents/PartTag";
-import { toPng } from "html-to-image";
 import { ask } from "@tauri-apps/api/dialog";
+import { usePrintQue } from "../PrintableComponents/usePrintQue";
+import { selectedPoAddOnAtom } from "@/scripts/atoms/components";
 
 interface Props {
   addOn: AddOn
@@ -31,15 +29,14 @@ interface Props {
 
 export default function ShopAddonRow({ addOn, handleDuplicateAddOn, partNumList, engineNumList }: Props) {
   const [selectedPoData, setSelectedPoData] = useAtom<{ selectedPoAddOn: PO | null, addOn: AddOn | null, receivedItemsDialogOpen: boolean }>(selectedPoAddOnAtom);
+  const { addToQue, printQue } = usePrintQue();
   const [addOns, setAddons] = useAtom<AddOn[]>(shopAddOnsAtom);
   const [poLink, setPoLink] = useState<string>(addOn.po ? `${addOn.po}` : '');
   const [autofillPartNum, setAutofillPartNum] = useState('');
   const [autofillEngineNum, setAutofillEngineNum] = useState('');
   const [showVendorSelect, setShowVendorSelect] = useState(false);
   const [printQty, setPrintQty] = useState(1);
-  const [partTagProps, setPartTagProps] = useState<any>(null);
   const ref = useRef<HTMLDivElement>(null);
-  const printRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!showVendorSelect) return;
@@ -49,24 +46,6 @@ export default function ShopAddonRow({ addOn, handleDuplicateAddOn, partNumList,
       select.length > 0 && select[select.length - 1].focus();
     }, 30);
   }, [showVendorSelect]);
-
-  useEffect(() => {
-    const captureImage = async () => {
-      if (!partTagProps || !printRef.current) {
-        setPartTagProps(null);
-        return;
-      }
-      const copies = Number(prompt('How many tags do you want to print?', '1'));
-      if (copies <= 0) {
-        setPartTagProps(null);
-        return;
-      }
-      const imageData = await toPng(printRef.current);
-      await invoke('print_part_tag', { imageData });
-      setPartTagProps(null);
-    };
-    setTimeout(() => captureImage(), 500);
-  }, [partTagProps]);
 
   const handleEditAddOn = async (newAddOn: AddOn) => {
     const updatedAddOns = addOns.map((a: AddOn) => {
@@ -157,18 +136,23 @@ export default function ShopAddonRow({ addOn, handleDuplicateAddOn, partNumList,
   const handlePrint = async () => {
     const engine = await getEngineByStockNum(addOn.engineNum);
     const pictures = await getImagesFromPart(addOn.partNum);
-    setPartTagProps({
-      stockNum: addOn.stockNum ?? '',
-      model: engine?.model ?? '',
-      serialNum: engine?.serialNum ?? '',
-      hp: engine?.horsePower ?? '',
-      location: addOn.location ?? '',
-      remarks: addOn.remarks ?? '',
-      date: formatDate(addOn.entryDate) ?? '',
-      partNum: addOn.partNum ?? '',
-      rating: addOn.rating,
-      hasPictures: pictures.length > 0
-    });
+
+    for (let i = 0; i < printQty; i++) {
+      const args = {
+        stockNum: addOn.stockNum ?? '',
+        model: engine?.model ?? '',
+        serialNum: engine?.serialNum ?? '',
+        hp: engine?.horsePower ?? '',
+        location: addOn.location ?? '',
+        remarks: addOn.remarks ?? '',
+        date: formatDate(addOn.entryDate) ?? '',
+        partNum: addOn.partNum ?? '',
+        rating: addOn.rating,
+        hasPictures: pictures.length > 0
+      };
+      addToQue('partTag', 'print_part_tag', args, '1500px', '1000px');
+    }
+    printQue();
   };
 
   const handleOpenPO = async (e: any) => {
@@ -432,12 +416,6 @@ export default function ShopAddonRow({ addOn, handleDuplicateAddOn, partNumList,
           <Button type="button" variant={['danger']} onClick={handleDeleteAddOn}>Delete</Button>
         </div>
       </div>
-
-      {partTagProps &&
-        <div ref={printRef} style={{ marginTop: '10rem', width: '100%' }}>
-          <PartTag properties={partTagProps} />
-        </div>
-      }
     </>
   );
 }

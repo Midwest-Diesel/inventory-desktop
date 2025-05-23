@@ -20,16 +20,15 @@ import { getEngineByStockNum, getEngineCostRemaining } from "@/scripts/controlle
 import PartCostIn from "@/components/PartCostIn";
 import StockNumPicturesDialog from "@/components/Dialogs/StockNumPicturesDialog";
 import { setTitle } from "@/scripts/tools/utils";
-import { invoke } from "@/scripts/config/tauri";
 import Modal from "@/components/Library/Modal";
 import { getSurplusCostRemaining } from "@/scripts/controllers/surplusController";
 import { useNavState } from "@/components/Navbar/useNavState";
-import { toPng } from "html-to-image";
-import PartTag from "@/components/PrintableComponents/PartTag";
+import { usePrintQue } from "@/components/PrintableComponents/usePrintQue";
 
 
 export default function PartDetails() {
   const { closeBtn, push } = useNavState();
+  const { addToQue, printQue } = usePrintQue();
   const params = useParams();
   const printRef = useRef<HTMLDivElement>(null);
   const [user] = useAtom<User>(userAtom);
@@ -45,7 +44,6 @@ export default function PartDetails() {
   const [engineCostOut, setEngineCostOut] = useState<EngineCostOut[]>([]);
   const [costAlertMsg, setCostAlertMsg] = useState('');
   const [costAlertOpen, setCostAlertOpen] = useState(false);
-  const [partTagProps, setPartTagProps] = useState<any>(null);
 
   useEffect(() => {
     fetchData();
@@ -61,25 +59,6 @@ export default function PartDetails() {
     };
     fetchTables();
   }, [isEditingPart]);
-
-  useEffect(() => {
-    // Print part tag
-    const captureImage = async () => {
-      if (!partTagProps || !printRef.current) {
-        setPartTagProps(null);
-        return;
-      }
-      const copies = Number(prompt('How many tags do you want to print?', '1'));
-      if (copies <= 0) {
-        setPartTagProps(null);
-        return;
-      }
-      const imageData = await toPng(printRef.current);
-      await invoke('print_part_tag', { imageData });
-      setPartTagProps(null);
-    };
-    setTimeout(() => captureImage(), 500);
-  }, [partTagProps]);
 
   useEffect(() => {}, [pictures, snPictures, part]);
 
@@ -124,19 +103,26 @@ export default function PartDetails() {
   };
 
   const handlePrint = async () => {
+    const copies = Number(prompt('How many tags do you want to print?', '1'));
+    if (copies <= 0) return;
     const pictures = await getImagesFromPart(part?.partNum ?? '') ?? [];
-    setPartTagProps({
-      stockNum: part?.stockNum ?? '',
-      model: engine?.model ?? '',
-      serialNum: engine?.serialNum ?? '',
-      hp: engine?.horsePower ?? '',
-      location: part?.location ?? '',
-      remarks: part?.remarks ?? '',
-      date: formatDate(part?.entryDate) ?? '',
-      partNum: part?.partNum ?? '',
-      rating: part?.rating,
-      hasPictures: pictures.length > 0
-    });
+
+    for (let i = 0; i < copies; i++) {
+      const args = {
+        stockNum: part?.stockNum ?? '',
+        model: engine?.model ?? '',
+        serialNum: engine?.serialNum ?? '',
+        hp: engine?.horsePower ?? '',
+        location: part?.location ?? '',
+        remarks: part?.remarks ?? '',
+        date: formatDate(part?.entryDate) ?? '',
+        partNum: part?.partNum ?? '',
+        rating: part?.rating,
+        hasPictures: pictures.length > 0
+      };
+      addToQue('partTag', 'print_part_tag', args, '1500px', '1000px');
+    }
+    printQue();
   };
 
 
@@ -433,12 +419,6 @@ export default function PartDetails() {
         </div>
         :
         <Loading />
-      }
-
-      {partTagProps &&
-        <div ref={printRef} style={{ marginTop: '10rem' }}>
-          <PartTag properties={partTagProps} />
-        </div>
       }
     </Layout>
   );

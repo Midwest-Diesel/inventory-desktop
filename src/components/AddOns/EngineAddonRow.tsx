@@ -10,11 +10,9 @@ import { useAtom } from "jotai";
 import { engineAddOnsAtom } from "@/scripts/atoms/state";
 import { formatDate } from "@/scripts/tools/stringUtils";
 import VendorSelect from "../Library/Select/VendorSelect";
-import { invoke, confirm } from "@/scripts/config/tauri";
 import { getEngineImages } from "@/scripts/controllers/imagesController";
-import { toPng } from "html-to-image";
-import PartTag from "../PrintableComponents/PartTag";
 import { ask } from "@tauri-apps/api/dialog";
+import { usePrintQue } from "../PrintableComponents/usePrintQue";
 
 interface Props {
   addOn: EngineAddOn
@@ -23,13 +21,12 @@ interface Props {
 
 
 export default function EngineAddOnRow({ addOn, handleDuplicateAddOn }: Props) {
+  const { addToQue, printQue } = usePrintQue();
   const [addOns, setAddons] = useAtom<EngineAddOn[]>(engineAddOnsAtom);
   const [autofillEngineNum, setAutofillEngineNum] = useState('');
   const [showVendorSelect, setShowVendorSelect] = useState(false);
   const [printQty, setPrintQty] = useState(1);
-  const [partTagProps, setPartTagProps] = useState<any>(null);
   const ref = useRef<HTMLDivElement>(null);
-  const printRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!showVendorSelect) return;
@@ -39,24 +36,6 @@ export default function EngineAddOnRow({ addOn, handleDuplicateAddOn }: Props) {
       select.length > 0 && select[select.length - 2].focus();
     }, 30);
   }, [showVendorSelect]);
-
-  useEffect(() => {
-    const captureImage = async () => {
-      if (!partTagProps || !printRef.current) {
-        setPartTagProps(null);
-        return;
-      }
-      const copies = Number(prompt('How many tags do you want to print?', '1'));
-      if (copies <= 0) {
-        // setPartTagProps(null);
-        return;
-      }
-      const imageData = await toPng(printRef.current);
-      await invoke('print_part_tag', { imageData });
-      setPartTagProps(null);
-    };
-    setTimeout(() => captureImage(), 500);
-  }, [partTagProps]);
   
   const handleEditAddOn = (newAddOn: EngineAddOn) => {
     const updatedAddOns = addOns.map((a: EngineAddOn) => {
@@ -115,18 +94,22 @@ export default function EngineAddOnRow({ addOn, handleDuplicateAddOn }: Props) {
 
   const handlePrint = async () => {
     const pictures = await getEngineImages(addOn.engineNum);
-    setPartTagProps({
-      stockNum: addOn.engineNum?.toString() ?? '',
-      model: addOn.model ?? '',
-      serialNum: addOn.serialNum ?? '',
-      hp: addOn.hp ?? '',
-      location: addOn.location ?? '',
-      remarks: addOn.notes ?? '',
-      date: formatDate(addOn.entryDate) ?? '',
-      partNum: addOn.arrNum ?? '',
-      rating: '0',
-      hasPictures: pictures.length > 0
-    });
+    for (let i = 0; i < printQty; i++) {
+      const args = {
+        stockNum: addOn.engineNum?.toString() ?? '',
+        model: addOn.model ?? '',
+        serialNum: addOn.serialNum ?? '',
+        hp: addOn.hp ?? '',
+        location: addOn.location ?? '',
+        remarks: addOn.notes ?? '',
+        date: formatDate(addOn.entryDate) ?? '',
+        partNum: addOn.arrNum ?? '',
+        rating: '0',
+        hasPictures: pictures.length > 0
+      };
+      addToQue('partTag', 'print_part_tag', args, '1500px', '1000px');
+    }
+    printQue();
   };
   
 
@@ -299,12 +282,6 @@ export default function EngineAddOnRow({ addOn, handleDuplicateAddOn }: Props) {
           <Button variant={['danger']} type="button" onClick={handleDeleteAddOn}>Delete</Button>
         </div>
       </div>
-
-      {partTagProps &&
-        <div ref={printRef} style={{ marginTop: '7.5rem', width: '100%' }}>
-          <PartTag properties={partTagProps} />
-        </div>
-      }
     </>
   );
 }

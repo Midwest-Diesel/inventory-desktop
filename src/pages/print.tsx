@@ -4,6 +4,7 @@ import HandwrittenAccountingTemplate from "@/components/PrintableComponents/Hand
 import HandwrittenCoreTemplate from "@/components/PrintableComponents/HandwrittenCoreTemplate";
 import HandwrittenShippingTemplate from "@/components/PrintableComponents/HandwrittenShippingTemplate";
 import PackingSlipTemplate from "@/components/PrintableComponents/PackingSlipTemplate";
+import PartTag from "@/components/PrintableComponents/PartTag";
 import PurchaseOrderTemplate from "@/components/PrintableComponents/PurchaseOrderTemplate";
 import ReturnTemplate from "@/components/PrintableComponents/ReturnTemplate";
 import ShippingLabelTemplate from "@/components/PrintableComponents/ShippingLabelTemplate";
@@ -52,6 +53,7 @@ export default function Print() {
 
   return (
     <div ref={printRef} style={{ height: '100vh', backgroundColor: 'white', color: 'black', maxWidth, maxHeight }}>
+      { activeSheet === 'partTag' && <PartTag data={data} /> }
       { activeSheet === 'handwrittenAcct' && <HandwrittenAccountingTemplate data={data} /> }
       { activeSheet === 'handwrittenShip' && <HandwrittenShippingTemplate data={data} /> }
       { activeSheet === 'handwrittenCore' && <HandwrittenCoreTemplate data={data} /> }

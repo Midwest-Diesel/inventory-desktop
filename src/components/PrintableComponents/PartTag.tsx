@@ -2,7 +2,7 @@ import Image from "next/image";
 import Barcode from "../Library/Barcode";
 
 interface Props {
-  properties: {
+  data: {
     stockNum: string
     model: string
     serialNum: string
@@ -17,8 +17,8 @@ interface Props {
 }
 
 
-export default function PartTag({ properties }: Props) {
-  const { stockNum, model, serialNum, hp, location, remarks, date, partNum, rating, hasPictures } = properties;
+export default function PartTag({ data }: Props) {
+  const { stockNum, model, serialNum, hp, location, remarks, date, partNum, rating, hasPictures } = data;
   return (
     <div className="part-tag">
       <div className="part-tag__header">
@@ -34,10 +34,8 @@ export default function PartTag({ properties }: Props) {
       <div className="part-tag__middle">
         <p className="part-tag__location">{ location.replaceAll(' ', '_') }</p>
         <p className="part-tag__remarks">{ remarks }</p>
-        <div className="part-tag__barcode-container">
-          <div className="part-tag__barcode">
-            <Barcode value={stockNum ?? ''} />
-          </div>
+        <div className="part-tag__barcode">
+          <Barcode value={stockNum ?? ''} />
         </div>
       </div>
 

@@ -1,4 +1,4 @@
-import Table from "../Library/Table"
+import Table from "../Library/Table";
 
 interface Props {
   data: {
@@ -124,7 +124,7 @@ export default function ReturnTemplate({ data }: Props) {
                 <td>{ item.unitPrice }</td>
                 <td>{ item.total }</td>
               </tr>
-            )
+            );
           })}
         </tbody>
       </Table>

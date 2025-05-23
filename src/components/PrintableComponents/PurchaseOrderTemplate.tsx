@@ -1,4 +1,5 @@
-import Table from "../Library/Table"
+import Image from "next/image";
+import Table from "../Library/Table";
 
 interface Props {
   data: {
@@ -30,7 +31,7 @@ export default function PurchaseOrderTemplate({ data }: Props) {
   return (
     <div className="po-template">
       <header>
-        <img src="/images/midwest-diesel.jpg" alt="" />
+        <Image src="/images/midwest-diesel.jpg" alt="" />
         <h1>Purchase Order { data.id }</h1>
       </header>
       

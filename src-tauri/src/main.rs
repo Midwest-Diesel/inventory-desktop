@@ -1477,6 +1477,9 @@ fn email_end_of_day(args: EmailEndOfDayArgs) {
 
 #[tauri::command]
 fn print_part_tag(imageData: String) -> Result<(), String> {
+  if let Ok(val) = env::var("DISABLE_PRINTING") {
+    if val == "TRUE" { return Ok(()) }
+  }
   let data = decode(imageData.split(',').nth(1).unwrap()).map_err(|e| e.to_string())?;
   let file_path = "C:/mwd/scripts/screenshots/part_tag.png";
   let printer = "D550 Printer";
@@ -1488,9 +1491,16 @@ fn print_part_tag(imageData: String) -> Result<(), String> {
     .map_err(|e| e.to_string())?;
 
   let rotated_img: DynamicImage = image::DynamicImage::ImageRgba8(rotate90(&img));
+  let upscaled_img = image::imageops::resize(
+    &rotated_img,
+    rotated_img.width() * 2,
+    rotated_img.height() * 2,
+    FilterType::Lanczos3,
+  );
+
   {
     let mut file = File::create(file_path).map_err(|e| e.to_string())?;
-    rotated_img.write_to(&mut file, ImageOutputFormat::Png).map_err(|e| e.to_string())?;
+    upscaled_img.write_to(&mut file, ImageOutputFormat::Png).map_err(|e| e.to_string())?;
   }
 
   Command::new("mspaint")
