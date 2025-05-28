@@ -42,7 +42,8 @@ export default function PartDetails() {
   const [costRemaining, setCostRemaining] = useState<number | null>(null);
   const [partCostIn, setPartCostIn] = useState<PartCostIn[]>([]);
   const [engineCostOut, setEngineCostOut] = useState<EngineCostOut[]>([]);
-  const [costAlertMsg, setCostAlertMsg] = useState('');
+  const [costAlertAmount, setCostAlertAmount] = useState('');
+  const [costAlertPurchasedFrom, setCostAlertPurchasedFrom] = useState('');
   const [costAlertOpen, setCostAlertOpen] = useState(false);
 
   useEffect(() => {
@@ -77,13 +78,18 @@ export default function PartDetails() {
 
     const costRes = await getEngineCostRemaining(part.engineNum ?? 0);
     setCostRemaining(costRes);
+    if (Number(costRes) > 0) {
+      setCostAlertAmount(formatCurrency(costRes));
+      setCostAlertOpen(true);
+    }
     
     setPartCostIn(await getPartCostIn(part.stockNum ?? ''));
     setEngineCostOut(await getPartEngineCostOut(part.stockNum ?? ''));
 
     const costRemaining = await getSurplusCostRemaining(part.purchasedFrom ?? '');
     if (Number(costRemaining) > 0) {
-      setCostAlertMsg(`${formatCurrency(costRemaining)} remaining on ${part.purchasedFrom}`);
+      setCostAlertAmount(formatCurrency(costRemaining));
+      setCostAlertPurchasedFrom(part.purchasedFrom ?? '');
       setCostAlertOpen(true);
     }
   };
@@ -134,8 +140,17 @@ export default function PartDetails() {
           open={costAlertOpen}
           setOpen={setCostAlertOpen}
         >
-          <h1>Cost Remaining</h1>
-          <h2>{ costAlertMsg }</h2>
+          <h2>If you are selling this part</h2>
+          <h1>STOP!!!</h1>
+          <br />
+          {costAlertPurchasedFrom &&
+            <>
+              <h2>This part is from:</h2>
+              <h1>{ costAlertPurchasedFrom }</h1>
+            </>
+          }
+          <h2>Cost Remaining:</h2>
+          <h1>{ costAlertAmount }</h1>
         </Modal>
       }
 

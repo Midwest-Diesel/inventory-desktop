@@ -260,8 +260,8 @@ export default function EngineDetailsPage() {
                         <td>{ formatCurrency(getTotalCostIn()) }</td>
                       </tr>
                       <tr>
-                        <th style={getTotalCostIn() - getTotalCostOut() > 0 ? { color: 'var(--red-2)' } : { color: 'var(--green-light-1)' }}>Cost Remaining</th>
-                        <td>{ formatCurrency(getTotalCostIn() - getTotalCostOut()) }</td>
+                        <th style={(engine.costRemaining ?? 0) > 0 ? { color: 'var(--red-2)' } : { color: 'var(--green-light-1)' }}>Cost Remaining</th>
+                        <td>{ formatCurrency(engine.costRemaining) }</td>
                       </tr>
                     </tbody>
                   </Table>

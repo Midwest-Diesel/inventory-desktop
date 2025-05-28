@@ -64,17 +64,6 @@ export const getEnginesByStatus = async (status: string) => {
   }
 };
 
-export const getEngineById = async (id: number) => {
-  try {
-    const auth = { withCredentials: true };
-    const res = await api.get(`/api/engines/id/${id}`, auth);
-    res.data = parseEngineRes(res.data);
-    return res.data[0];
-  } catch (err) {
-    console.error(err);
-  }
-};
-
 export const getEngineByStockNum = async (stockNum: number | null): Promise<Engine | null> => {
   try {
     const auth = { withCredentials: true };
