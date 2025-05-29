@@ -16,7 +16,7 @@ interface Props {
 export default function AltShipDialog({ open, setOpen, handwritten, setHandwritten, altShipData, setAltShipData }: Props) {
   const selectAddress = async (data: AltShip) => {
     if (!await ask('Are you sure you want to use this address?')) return;
-    const newInvoice = {
+    const newHandwritten = {
       ...handwritten,
       shipToAddress: data.shipToAddress,
       shipToAddress2: data.shipToAddress2,
@@ -24,8 +24,9 @@ export default function AltShipDialog({ open, setOpen, handwritten, setHandwritt
       shipToState: data.shipToState,
       shipToZip: data.shipToZip,
       shipToCompany: data.shipToCompany,
-    } as Handwritten;
-    await editHandwritten(newInvoice);
+      soldBy: handwritten.soldById
+    } as any;
+    await editHandwritten(newHandwritten);
     setHandwritten(await getHandwrittenById(handwritten.id));
   };
 

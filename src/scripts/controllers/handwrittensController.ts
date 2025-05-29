@@ -133,13 +133,14 @@ export const getHandwrittenCount = async () => {
   }
 };
 
-export const getAltShipByHandwritten = async (handwrittenId: number) => {
+export const getAltShipByHandwritten = async (handwrittenId: number): Promise<AltShip[]> => {
   try {
     const auth = { withCredentials: true };
     const res = await api.get(`/api/handwrittens/alt-ship/${handwrittenId}`, auth);
     return res.data;
   } catch (err) {
     console.error(err);
+    return [];
   }
 };
 

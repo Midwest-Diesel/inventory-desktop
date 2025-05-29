@@ -1,5 +1,5 @@
 import { errorAtom, sourcesAtom } from "@/scripts/atoms/state";
-import { addAltShipAddress, addHandwrittenItem, deleteHandwrittenItem, editHandwritten, editHandwrittenItems, editHandwrittenTaxable, getHandwrittenEmails } from "@/scripts/controllers/handwrittensController";
+import { addAltShipAddress, addHandwrittenItem, AltShip, deleteHandwrittenItem, editHandwritten, editHandwrittenItems, editHandwrittenTaxable, getAltShipByHandwritten, getHandwrittenEmails } from "@/scripts/controllers/handwrittensController";
 import { useAtom } from "jotai";
 import { FormEvent, Fragment, useEffect, useState } from "react";
 import GridItem from "./Library/Grid/GridItem";
@@ -388,16 +388,17 @@ export default function EditHandwrittenDetails({
   };
 
   const handleAltShip = async () => {
-    if (!isShipToDataChanged()) return;
+    const altShip = await getAltShipByHandwritten(handwritten.id);    
+    if (!isShipToDataChanged() || altShip.some((a: AltShip) => a.shipToAddress === handwritten.shipToAddress)) return;
     await addAltShipAddress({
       handwrittenId: handwritten.id,
-      shipToAddress: shipToAddress,
-      shipToAddress2: shipToAddress2,
-      shipToCity: shipToCity,
-      shipToState: shipToState,
-      shipToZip: shipToZip,
+      shipToAddress: handwritten.shipToAddress ?? '',
+      shipToAddress2: handwritten.shipToAddress2 ?? '',
+      shipToCity: handwritten.shipToCity ?? '',
+      shipToState: handwritten.shipToState ?? '',
+      shipToZip: handwritten.shipToZip ?? '',
       shipToContact: contact,
-      shipToCompany: shipToCompany,
+      shipToCompany: handwritten.shipToCompany ?? ''
     });
   };
 
