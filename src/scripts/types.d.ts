@@ -726,6 +726,18 @@ type POReceivedItem = {
   POItemId: number | null
 };
 
+type AltShip = {
+  id: number
+  customerId: number
+  shipToAddress: string
+  shipToAddress2: string
+  shipToCity: string
+  shipToState: string
+  shipToZip: string
+  shipToContact: string
+  shipToCompany: string
+};
+
 type EmailStuff = {
   id: number
   name: string

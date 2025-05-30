@@ -16,18 +16,6 @@ interface HandwrittenSearchData {
   offset: number
 }
 
-export interface AltShip {
-  id?: number
-  handwrittenId: number
-  shipToAddress: string
-  shipToAddress2: string
-  shipToCity: string
-  shipToState: string
-  shipToZip: string
-  shipToContact: string
-  shipToCompany: string
-}
-
 
 export const parseHandwrittenRes = (data: any) => {
   return data.map((invoice: any) => {
@@ -130,17 +118,6 @@ export const getHandwrittenCount = async () => {
     return res.data;
   } catch (err) {
     console.error(err);
-  }
-};
-
-export const getAltShipByHandwritten = async (handwrittenId: number): Promise<AltShip[]> => {
-  try {
-    const auth = { withCredentials: true };
-    const res = await api.get(`/api/handwrittens/alt-ship/${handwrittenId}`, auth);
-    return res.data;
-  } catch (err) {
-    console.error(err);
-    return [];
   }
 };
 
@@ -275,15 +252,6 @@ export const addBlankHandwritten = async (data: { date: Date, userId: number, cu
   }
 };
 
-export const addAltShipAddress = async (altShip: AltShip) => {
-  try {
-    const auth = { withCredentials: true };
-    await api.post('/api/handwrittens/alt-ship', altShip, auth);
-  } catch (err) {
-    console.error(err);
-  }
-};
-
 export const addHandwrittenItemChild = async (handwrittenId: number, item: HandwrittenItemChild) => {
   try {
     const auth = { withCredentials: true };
@@ -393,15 +361,6 @@ export const deleteHandwritten = async (id: number) => {
   try {
     const auth = { withCredentials: true };
     await api.delete(`/api/handwrittens/${id}`, auth);
-  } catch (err) {
-    console.error(err);
-  }
-};
-
-export const deleteAltShipAddress = async (id: number) => {
-  try {
-    const auth = { withCredentials: true };
-    await api.delete(`/api/handwrittens/alt-ship/${id}`, auth);
   } catch (err) {
     console.error(err);
   }

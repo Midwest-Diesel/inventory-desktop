@@ -15,7 +15,7 @@ import Loading from "@/components/Library/Loading";
 import Table from "@/components/Library/Table";
 import { userAtom } from "@/scripts/atoms/state";
 import { supabase } from "@/scripts/config/supabase";
-import { AltShip, deleteHandwritten, editHandwrittenShipTo, getAltShipByHandwritten, getHandwrittenById } from "@/scripts/controllers/handwrittensController";
+import { deleteHandwritten, editHandwrittenShipTo, getHandwrittenById } from "@/scripts/controllers/handwrittensController";
 import { formatCurrency, formatDate, formatPhone, parseResDate } from "@/scripts/tools/stringUtils";
 import { setTitle } from "@/scripts/tools/utils";
 import { RealtimePostgresInsertPayload, RealtimePostgresUpdatePayload } from "@supabase/supabase-js";
@@ -29,6 +29,7 @@ import { useNavState } from "@/components/Navbar/useNavState";
 import CreditCardBlock from "@/components/CreditCardBlock";
 import { ask } from "@tauri-apps/api/dialog";
 import { usePrintQue } from "@/components/PrintableComponents/usePrintQue";
+import { getAltShipByCustomerId } from "@/scripts/controllers/altShipController";
 
 
 export default function Handwritten() {
@@ -87,7 +88,7 @@ export default function Handwritten() {
 
     const fetchData = async () => {
       if (handwritten) {
-        const altShip = await getAltShipByHandwritten(handwritten.id);
+        const altShip = await getAltShipByCustomerId(handwritten.customer.id);
         setAltShipData(altShip);
         setPayment(handwritten.payment ?? '');
       }
@@ -347,31 +348,6 @@ export default function Handwritten() {
     if (!item && !itemChild) return;
     setTakeoffsOpen(true);
     setTakeoffItem(item);
-  };
-
-  const handleSameAsBillTo = async () => {
-    const { shipToAddress, shipToAddress2, shipToCity, shipToState, shipToZip, shipToCompany } = handwritten as Handwritten;
-    const isBlank = [shipToAddress, shipToAddress2, shipToCity, shipToState, shipToZip, shipToCompany].filter((h) => h).length === 0;
-    if (!isBlank && !await confirm('Replace Ship To Data?')) return;
-    const data = {
-      id: handwritten?.id,
-      shipToAddress: handwritten?.billToAddress ?? '',
-      shipToAddress2: handwritten?.billToAddress2 ?? '',
-      shipToCity: handwritten?.billToCity ?? '',
-      shipToState: handwritten?.billToState ?? '',
-      shipToZip: handwritten?.billToZip ?? '',
-      shipToCompany: handwritten?.billToCompany ?? ''
-    } as any;
-    setHandwritten({
-      ...(handwritten ?? {} as Handwritten),
-      shipToAddress: handwritten?.billToAddress ?? '',
-      shipToAddress2: handwritten?.billToAddress2 ?? '',
-      shipToCity: handwritten?.billToCity ?? '',
-      shipToState: handwritten?.billToState ?? '',
-      shipToZip: handwritten?.billToZip ?? '',
-      shipToCompany: handwritten?.billToCompany ?? ''
-    });
-    await editHandwrittenShipTo(data);
   };
   
 

@@ -1,5 +1,5 @@
 import { errorAtom, sourcesAtom } from "@/scripts/atoms/state";
-import { addAltShipAddress, addHandwrittenItem, AltShip, deleteHandwrittenItem, editHandwritten, editHandwrittenItems, editHandwrittenTaxable, getAltShipByHandwritten, getHandwrittenEmails } from "@/scripts/controllers/handwrittensController";
+import { addHandwrittenItem, deleteHandwrittenItem, editHandwritten, editHandwrittenItems, editHandwrittenTaxable, getHandwrittenEmails } from "@/scripts/controllers/handwrittensController";
 import { useAtom } from "jotai";
 import { FormEvent, Fragment, useEffect, useState } from "react";
 import GridItem from "./Library/Grid/GridItem";
@@ -13,7 +13,6 @@ import CustomerDropdown from "./Library/Select/CustomerDropdown";
 import { getCustomerByName } from "@/scripts/controllers/customerController";
 import { getAllSources } from "@/scripts/controllers/sourcesController";
 import { deleteCoreByItemId, editCoreCustomer } from "@/scripts/controllers/coresController";
-import { confirm, invoke } from "@/scripts/config/tauri";
 import ShippingListDialog from "./Dialogs/handwrittens/ShippingListDialog";
 import Checkbox from "./Library/Checkbox";
 import { PreventNavigation } from "./PreventNavigation";
@@ -30,10 +29,12 @@ import PromotionalDialog from "./Dialogs/handwrittens/PromotionalDialog";
 import Loading from "./Library/Loading";
 import { ask } from "@tauri-apps/api/dialog";
 import { usePrintQue } from "./PrintableComponents/usePrintQue";
+import { addAltShipAddress, getAltShipByCustomerId } from "@/scripts/controllers/altShipController";
+import AltShipDialog from "./Dialogs/handwrittens/AltShipDialog";
 
 interface Props {
   handwritten: Handwritten
-  setHandwritten: (handwritten: Handwritten) => void
+  setHandwritten: (handwritten: Handwritten | null) => void
   setIsEditing: (value: boolean) => void
   setPromptLeaveWindow: (value: boolean) => void
   cardNum: number
@@ -130,6 +131,8 @@ export default function EditHandwrittenDetails({
   const [taxTotal, setTaxTotal] = useState(0);
   const [users, setUsers] = useState<User[]>([]);
   const [emails, setEmails] = useState<string[]>([]);
+  const [altShipOpen, setAltShipOpen] = useState(false);
+  const [altShipData, setAltShipData] = useState<AltShip[]>([]);
   const [loading, setLoading] = useState(false);
   const TAX_RATE = 0.08375;
 
@@ -388,18 +391,17 @@ export default function EditHandwrittenDetails({
   };
 
   const handleAltShip = async () => {
-    const altShip = await getAltShipByHandwritten(handwritten.id);    
+    const altShip = await getAltShipByCustomerId(handwritten.customer.id);    
     if (!isShipToDataChanged() || altShip.some((a: AltShip) => a.shipToAddress === handwritten.shipToAddress)) return;
     await addAltShipAddress({
-      handwrittenId: handwritten.id,
+      customerId: handwritten.customer.id,
       shipToAddress: handwritten.shipToAddress ?? '',
       shipToAddress2: handwritten.shipToAddress2 ?? '',
       shipToCity: handwritten.shipToCity ?? '',
       shipToState: handwritten.shipToState ?? '',
       shipToZip: handwritten.shipToZip ?? '',
-      shipToContact: contact,
       shipToCompany: handwritten.shipToCompany ?? ''
-    });
+    } as AltShip);
   };
 
   const isShipToDataChanged = () => {
@@ -695,7 +697,20 @@ export default function EditHandwrittenDetails({
                 Stop Editing
               </Button>
             </div>
+
+            <div className="handwritten-details__top-bar">
+              <Button onClick={() => setAltShipOpen(!altShipOpen)} disabled={altShipData.length === 0}>Alt Ship</Button>
+            </div>
           </div>
+
+          <AltShipDialog
+            open={altShipOpen}
+            setOpen={setAltShipOpen}
+            handwritten={handwritten}
+            setHandwritten={setHandwritten}
+            altShipData={altShipData}
+            setAltShipData={setAltShipData}
+          />
 
           <Grid rows={1} cols={12} gap={1}>
             <GridItem colStart={1} colEnd={4} breakpoints={[{ width: 1600, colStart: 1, colEnd: 8 }]} variant={['low-opacity-bg']}>
