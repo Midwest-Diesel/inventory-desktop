@@ -468,9 +468,8 @@ fn install_update() {
       let script_path = "C:\\MWD\\updates\\restart_app.bat";
       std::fs::write(script_path, batch_script).unwrap();
 
-      Command::new("C:\\Windows\\System32\\cmd.exe")
-        .arg("/C")
-        .arg(script_path)
+      Command::new("cmd.exe")
+        .args(&["/C", "start", "", script_path])
         .spawn()
         .unwrap();
 
