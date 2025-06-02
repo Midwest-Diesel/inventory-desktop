@@ -69,12 +69,17 @@
   &__header {
     display: flex;
     gap: 2rem;
-    margin-bottom: 1.3rem;
     position: relative;
 
     h2 {
       font-size: var(--font-xl);
     }
+  }
+
+  &__top-bar {
+    display: flex;
+    gap: 0.5rem;
+    margin: 0.4rem 0;
   }
 
   &__row {

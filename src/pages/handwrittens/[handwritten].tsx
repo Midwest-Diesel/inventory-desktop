@@ -29,7 +29,7 @@ import { useNavState } from "@/components/Navbar/useNavState";
 import CreditCardBlock from "@/components/CreditCardBlock";
 import { ask } from "@tauri-apps/api/dialog";
 import { usePrintQue } from "@/components/PrintableComponents/usePrintQue";
-import { getAltShipByCustomerId } from "@/scripts/controllers/altShipController";
+import { addAltShipAddress, getAltShipByCustomerId } from "@/scripts/controllers/altShipController";
 
 
 export default function Handwritten() {
@@ -128,7 +128,7 @@ export default function Handwritten() {
       e.preventDefault();
       e.returnValue = '';
     }
-    
+
     window.addEventListener('beforeunload', confirmLeave);
     return () => {
       window.removeEventListener('beforeunload', confirmLeave);
@@ -349,7 +349,29 @@ export default function Handwritten() {
     setTakeoffsOpen(true);
     setTakeoffItem(item);
   };
-  
+
+  const handleAltShip = async () => {
+    if (!handwritten) return;
+    const altShip = await getAltShipByCustomerId(handwritten.customer.id);
+    if (altShip.some((a: AltShip) => (
+      a.shipToAddress === handwritten.shipToAddress &&
+      a.shipToAddress2 === handwritten.shipToAddress2 &&
+      a.shipToCity === handwritten.shipToCity &&
+      a.shipToState === handwritten.shipToState &&
+      a.shipToZip === handwritten.shipToZip &&
+      a.shipToCompany === handwritten.shipToCompany
+    ))) return;
+    await addAltShipAddress({
+      customerId: handwritten.customer.id,
+      shipToAddress: handwritten.shipToAddress ?? '',
+      shipToAddress2: handwritten.shipToAddress2 ?? '',
+      shipToCity: handwritten.shipToCity ?? '',
+      shipToState: handwritten.shipToState ?? '',
+      shipToZip: handwritten.shipToZip ?? '',
+      shipToCompany: handwritten.shipToCompany ?? ''
+    } as AltShip);
+  };
+
 
   return (
     <Layout title="Handwritten Details">
@@ -425,6 +447,7 @@ export default function Handwritten() {
               setHandwritten={setHandwritten}
               altShipData={altShipData}
               setAltShipData={setAltShipData}
+              onChangeAltShip={handleAltShip}
             />
 
             <Grid rows={1} cols={12} gap={1}>

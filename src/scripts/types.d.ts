@@ -734,7 +734,6 @@ type AltShip = {
   shipToCity: string
   shipToState: string
   shipToZip: string
-  shipToContact: string
   shipToCompany: string
 };
 

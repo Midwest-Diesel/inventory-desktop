@@ -13,10 +13,11 @@ interface Props {
   setHandwritten: (handwritten: Handwritten | null) => void
   altShipData: AltShip[]
   setAltShipData: (data: AltShip[]) => void
+  onChangeAltShip: () => void
 }
 
 
-export default function AltShipDialog({ open, setOpen, handwritten, setHandwritten, altShipData, setAltShipData }: Props) {
+export default function AltShipDialog({ open, setOpen, handwritten, setHandwritten, altShipData, setAltShipData, onChangeAltShip }: Props) {
   const [shipToCompany, setShipToCompany] = useState('');
   const [shipToAddress, setShipToAddress] = useState('');
   const [shipToAddress2, setShipToAddress2] = useState('');
@@ -41,6 +42,7 @@ export default function AltShipDialog({ open, setOpen, handwritten, setHandwritt
     } as any;
     await editHandwritten(newHandwritten);
     setHandwritten(await getHandwrittenById(handwritten.id));
+    onChangeAltShip();
   };
 
   const handleDelete = async (id: number) => {

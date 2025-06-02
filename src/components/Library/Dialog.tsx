@@ -101,7 +101,7 @@ export default function Dialog({ children, className = '', variant = [], title, 
           <div className="dialog__handlebar draggable"></div>
           <div {...props}>
             <h3 className="dialog__title">{title}</h3>
-            { hasCloseBtn && <Button variant={["X"]} onClick={closeDialog}>X</Button> }
+            { hasCloseBtn && <Button type="button" variant={["X"]} onClick={closeDialog}>X</Button> }
             <div className="dialog__content" style={{ maxHeight: maxHeight }}>
               {children}
             </div>
