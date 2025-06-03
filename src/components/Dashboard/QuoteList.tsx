@@ -40,7 +40,7 @@ export default function QuoteList({ quotes, setQuotes, setSelectHandwrittenOpen,
   const [quotesOpen, setQuotesOpen] = useState(localStorage.getItem('quotesOpen') === 'true' || localStorage.getItem('quotesOpen') === null ? true : false);
   const [searchDialogOpen, setSearchDialogOpen] = useState(false);
   const [quoteEdited, setQuoteEdited] = useState<Quote | null>(null);
-  const [quoteListType, setQuoteListType] = useState('part');
+  const [quoteListType, setQuoteListType] = useState<'part' | 'engine'>('part');
   const [searchData, setSearchData] = useState<any>(null);
   const [selectedCustomer] = useAtom<Customer>(selectedCustomerAtom);
   const [customer, setCustomer] = useState<Customer | null>(null);
@@ -121,6 +121,9 @@ export default function QuoteList({ quotes, setQuotes, setSelectHandwrittenOpen,
     await addQuote(newQuote);
     await handleChangePage(null, page);
     setToastOpen(true);
+    setFilterByCustomer(false);
+    setFilterByPart(false);
+    setQuoteListType('part');
   };
 
   const handleDelete = async (id: number) => {
