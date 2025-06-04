@@ -380,9 +380,9 @@ export default function EditHandwrittenDetails({
       return { ...rest };
     });
 
-    addToQue('handwrittenAcct', 'print_accounting_handwritten', { ...args, items: filteredItems }, '576px', '374.4px');
-    addToQue('handwrittenShip', 'print_shipping_invoice', { ...args, items: itemsWithChildren }, '576px', '374.4px');
-    if (hasCore) addToQue('handwrittenCore', 'print_core_handwritten', args, '576px', '374.4px');
+    addToQue('handwrittenAcct', 'print_accounting_handwritten', { ...args, items: filteredItems }, '1100px', '816px');
+    addToQue('handwrittenShip', 'print_shipping_handwritten', { ...args, items: itemsWithChildren }, '1100px', '816px');
+    if (hasCore) addToQue('handwrittenCore', 'print_core_handwritten', args, '1100px', '816px');
     printQue();
     setLoading(false);
   };

@@ -72,7 +72,7 @@ export default function HandwrittenAccountingTemplate({ data }: Props) {
                 <td>{ data.billToState || <span className="print-placeholder">BILL TO STATE</span> }</td>
                 <td>{ data.billToZip || <span className="print-placeholder">BILL TO ZIP</span> }</td>
                 <td style={{ paddingLeft: '0.5rem' }} className="no-border">
-                  <strong>TAXABLE</strong> <Image src={data.taxable ? '/images/icons/cbx-filled.png' : '/images/icons/cbx-empty.png'} alt="" />
+                  <strong>TAXABLE</strong> <Image src={data.taxable ? '/images/icons/cbx-filled.png' : '/images/icons/cbx-empty.png'} alt="" width={10} height={10} />
                 </td>
               </tr>
               <tr><td colSpan={3}>{ data.billToCountry || <span className="print-placeholder">BILL TO COUNTRY</span> }</td></tr>
@@ -120,13 +120,13 @@ export default function HandwrittenAccountingTemplate({ data }: Props) {
       </div>
 
       <div className="handwritten-acct-template__checkboxes">
-        <strong>BLIND <Image src={data.blind ? '/images/icons/cbx-filled.png' : '/images/icons/cbx-empty.png'} alt="" /></strong>
-        <strong>NPI <Image src={data.npi ? '/images/icons/cbx-filled.png' : '/images/icons/cbx-empty.png'} alt="" /></strong>
-        <strong>SETUP <Image src={data.setup ? '/images/icons/cbx-filled.png' : '/images/icons/cbx-empty.png'} alt="" /></strong>
+        <strong>BLIND <Image src={data.blind ? '/images/icons/cbx-filled.png' : '/images/icons/cbx-empty.png'} alt="" width={10} height={10} /></strong>
+        <strong>NPI <Image src={data.npi ? '/images/icons/cbx-filled.png' : '/images/icons/cbx-empty.png'} alt="" width={10} height={10} /></strong>
+        <strong>SETUP <Image src={data.setup ? '/images/icons/cbx-filled.png' : '/images/icons/cbx-empty.png'} alt="" width={10} height={10} /></strong>
       </div>
       <div className="handwritten-acct-template__checkboxes">
-        <strong>COLLECT <Image src={data.collect ? '/images/icons/cbx-filled.png' : '/images/icons/cbx-empty.png'} alt="" /></strong>
-        <strong>3RD PARTY BILL <Image src={data.thirdParty ? '/images/icons/cbx-filled.png' : '/images/icons/cbx-empty.png'} alt="" /></strong>
+        <strong>COLLECT <Image src={data.collect ? '/images/icons/cbx-filled.png' : '/images/icons/cbx-empty.png'} alt="" width={10} height={10} /></strong>
+        <strong>3RD PARTY BILL <Image src={data.thirdParty ? '/images/icons/cbx-filled.png' : '/images/icons/cbx-empty.png'} alt="" width={10} height={10} /></strong>
         <><strong>ACCOUNT #</strong> { data.accountNum }</>
       </div>
 
