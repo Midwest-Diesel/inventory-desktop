@@ -2,27 +2,20 @@ import { FormEvent, useEffect, useState } from "react";
 import Dialog from "../../Library/Dialog";
 import Input from "../../Library/Input";
 import Button from "../../Library/Button";
-import { searchAltParts } from "@/scripts/services/partsService";
 import { useAtom } from "jotai";
-import { lastPartSearchAtom, partsQtyAtom, recentQuotesAtom, showSoldPartsAtom, userAtom } from "@/scripts/atoms/state";
-import { addRecentSearch, getQuotesByPartNum } from "@/scripts/services/recentSearchesService";
-import { selectedAlertsAtom } from "@/scripts/atoms/components";
+import { lastPartSearchAtom, showSoldPartsAtom, userAtom } from "@/scripts/atoms/state";
+import { addRecentSearch } from "@/scripts/services/recentSearchesService";
 import { isObjectNull } from "@/scripts/tools/utils";
-import { detectAlerts } from "@/scripts/services/alertsService";
 
 
 interface Props {
   open: boolean
   setOpen: (open: boolean) => void
-  setParts: (parts: Part[]) => void
-  setLoading: (loading: boolean) => void
+  handleSearch: (partNum: string, stockNum: string, desc: string, location: string, qty: number, remarks: string, rating: number, purchasedFrom: string, serialNum: string, hp: string, page: number, isAltSearch: boolean) => Promise<void>
 }
 
-export default function AltPartsSearchDialog({ open, setOpen, setParts, setLoading }: Props) {
-  const [partsQty, setPartsQty] = useAtom<number[]>(partsQtyAtom);
-  const [recentQuoteSearches, setRecentQuoteSearches ] = useAtom<RecentQuoteSearch[]>(recentQuotesAtom);
+export default function AltPartsSearchDialog({ open, setOpen, handleSearch }: Props) {
   const [lastSearch, setLastSearch] = useAtom<string>(lastPartSearchAtom);
-  const [selectedAlerts, setSelectedAlerts] = useAtom<Alert[]>(selectedAlertsAtom);
   const [user] = useAtom<User>(userAtom);
   const [showSoldParts] = useAtom<boolean>(showSoldPartsAtom);
   const prevSearches = JSON.parse(localStorage.getItem('altPartSearches')!);
@@ -53,7 +46,7 @@ export default function AltPartsSearchDialog({ open, setOpen, setParts, setLoadi
 
       const hasValidSearchCriteria = (partNum && partNum !== '*') || stockNum || desc || location || qty || remarks || rating || purchasedFrom || serialNum || hp;
       if (hasValidSearchCriteria) {
-        handleSearch(partNum, stockNum, desc, location, qty, remarks, rating, purchasedFrom, serialNum, hp);
+        handleSearch(partNum, stockNum, desc, location, qty, remarks, rating, purchasedFrom, serialNum, hp, 1, true);
       }
     }
   }, [showSoldParts]);
@@ -84,21 +77,10 @@ export default function AltPartsSearchDialog({ open, setOpen, setParts, setLoadi
     if (isObjectNull({ stockNum, desc, location, qty, remarks, rating, purchasedFrom, serialNum, hp }) && (partNum === '*' || partNum === '')) {
       window.location.reload();
     } else {
-      await handleSearch(partNum, stockNum, desc, location, qty, remarks, rating, purchasedFrom, serialNum, hp);
+      await handleSearch(partNum, stockNum, desc, location, qty, remarks, rating, purchasedFrom, serialNum, hp, 1, true);
       if (partNum && partNum !== '*') await addRecentSearch({ partNum: partNum.replace('*', ''), salespersonId: user.id });
     }
     setLastSearch(partNum.replace('*', ''));
-  };
-
-  const handleSearch = async (partNum: string, stockNum: string, desc: string, location: string, qty: number, remarks: string, rating: number, purchasedFrom: string, serialNum: string, hp: string) => {
-    setLoading(true);
-    setRecentQuoteSearches(await getQuotesByPartNum(partNum));
-    const results = await searchAltParts({ partNum, stockNum, desc, location, qty, remarks, rating, purchasedFrom, showSoldParts, serialNum, hp }) as Part[] || [];
-    setPartsQty(results.map((part) => part.qty));
-    const alerts = await detectAlerts(partNum);
-    setSelectedAlerts([...selectedAlerts, ...alerts]);
-    setParts(results);
-    setLoading(false);
   };
 
 

@@ -2,19 +2,17 @@ import { FormEvent, useEffect, useState } from "react";
 import Dialog from "../../Library/Dialog";
 import Input from "../../Library/Input";
 import Button from "../../Library/Button";
-import { searchAltParts } from "@/scripts/services/partsService";
-import { showSoldPartsAtom } from "@/scripts/atoms/state";
 import { useAtom } from "jotai";
-
+import { showSoldPartsAtom } from "@/scripts/atoms/state";
 
 interface Props {
   open: boolean
   setOpen: (open: boolean) => void
-  setParts: (parts: Part[]) => void
-  setLoading: (loading: boolean) => void
+  handleSearch: (searchData: PartSearchData) => Promise<void>
 }
 
-export default function PiggybackPartSearchDialog({ open, setOpen, setParts, setLoading }: Props) {
+
+export default function PiggybackPartSearchDialog({ open, setOpen, handleSearch }: Props) {
   const [showSoldParts] = useAtom<boolean>(showSoldPartsAtom);
   const [partNum, setPartNum] = useState('*');
   const [stockNum, setStockNum] = useState('');
@@ -24,11 +22,12 @@ export default function PiggybackPartSearchDialog({ open, setOpen, setParts, set
   const [remarks, setRemarks] = useState('');
   const [rating, setRating] = useState<number>('' as any);
   const [purchasedFrom, setPurchasedFrom] = useState('');
+  const [serialNum, setSerialNum] = useState('');
+  const [hp, setHp] = useState('');
 
   useEffect(() => {
     document.getElementById('alt-part-search-input')?.focus();
   }, [open]);
-
 
   const clearInputs = () => {
     setPartNum('*');
@@ -39,19 +38,14 @@ export default function PiggybackPartSearchDialog({ open, setOpen, setParts, set
     setRemarks('');
     setRating('' as any);
     setPurchasedFrom('');
+    setSerialNum('');
+    setHp('');
   };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setOpen(false);
-    await handleSearch(partNum);
-  };
-
-  const handleSearch = async (partNum: string) => {
-    setLoading(true);
-    const results = await searchAltParts({ partNum, stockNum, desc, location, qty, remarks, rating, purchasedFrom, showSoldParts }) as Part[];
-    setParts(results);
-    setLoading(false);
+    await handleSearch({ partNum, stockNum, desc, location, qty, remarks, rating, purchasedFrom, serialNum, hp, showSoldParts });
   };
 
 
@@ -122,6 +116,20 @@ export default function PiggybackPartSearchDialog({ open, setOpen, setParts, set
           variant={['small', 'thin', 'label-no-stack', 'label-space-between']}
           value={purchasedFrom}
           onChange={(e: any) => setPurchasedFrom(e.target.value)}
+        />
+
+        <Input
+          label="Serial Number"
+          variant={['small', 'thin', 'label-no-stack', 'label-space-between']}
+          value={serialNum}
+          onChange={(e: any) => setSerialNum(e.target.value)}
+        />
+
+        <Input
+          label="HP"
+          variant={['small', 'thin', 'label-no-stack', 'label-space-between']}
+          value={hp}
+          onChange={(e: any) => setHp(e.target.value)}
         />
 
         <div className="form__footer">

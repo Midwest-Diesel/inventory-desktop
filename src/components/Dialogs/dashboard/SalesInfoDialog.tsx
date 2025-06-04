@@ -22,9 +22,9 @@ export default function SalesInfo({ open, setOpen }: Props) {
   useEffect(() => {
     const fetchData = async () => {
       if (!open) return;
-      const search = await searchParts(prevSearches);
-      if (!search || search.length === 0) return;
-      const res = await getSalesInfo(search[0].altParts.join('|'));
+      const search = await searchParts(prevSearches, 0, 99999999);
+      if (search.rows.length === 0) return;
+      const res = await getSalesInfo(search.rows[0].altParts.join('|'));
       if (!res) return;
       setSales(res.sales);
       setQuotes(res.quotes);

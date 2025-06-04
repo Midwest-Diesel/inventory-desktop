@@ -392,6 +392,20 @@ type Part = {
   coreFam: string | null
 };
 
+interface PartSearchData {
+  partNum?: string
+  stockNum?: string
+  desc?: string
+  location?: string
+  qty?: number
+  remarks?: string
+  rating?: number
+  purchasedFrom?: string
+  serialNum?: string
+  hp?: string
+  showSoldParts: boolean
+}
+
 type RecentPartSearch = {
   id: number
   salesmanId: number

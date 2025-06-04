@@ -2,10 +2,10 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import Button from "@/components/Library/Button";
 import { useAtom } from "jotai";
-import { partsQtyAtom, quotesAtom, selectedCustomerAtom, showSoldPartsAtom, userAtom } from "@/scripts/atoms/state";
+import { partsQtyAtom, quotesAtom, recentQuotesAtom, selectedCustomerAtom, showSoldPartsAtom, userAtom } from "@/scripts/atoms/state";
 import PartsSearchDialog from "@/components/Dialogs/dashboard/PartsSearchDialog";
 import AltPartsSearchDialog from "@/components/Dialogs/dashboard/AltPartsSearchDialog";
-import { getAltsByPartNum, getPartsQty, getSomeParts } from "@/scripts/services/partsService";
+import { getAltsByPartNum, getPartsQty, getSomeParts, searchAltParts, searchParts } from "@/scripts/services/partsService";
 import SalesInfoDialog from "@/components/Dialogs/dashboard/SalesInfoDialog";
 import Link from "@/components/Library/Link";
 import Loading from "@/components/Library/Loading";
@@ -16,6 +16,9 @@ import { getSearchedPartNum } from "@/scripts/tools/search";
 import { addQuote } from "@/scripts/services/quotesService";
 import CoreFamilySearchDialog from "@/components/Dialogs/dashboard/SearchCoreFamilyDialog";
 import PartsTable from "@/components/Dashboard/PartsTable";
+import { selectedAlertsAtom } from "@/scripts/atoms/components";
+import { detectAlerts } from "@/scripts/services/alertsService";
+import { getQuotesByPartNum } from "@/scripts/services/recentSearchesService";
 
 interface Props {
   selectHandwrittenOpen: boolean
@@ -29,7 +32,9 @@ export default function PartSearchSection({ selectHandwrittenOpen, setSelectHand
   const [partsQty, setPartsQty] = useAtom<number[]>(partsQtyAtom);
   const [quotesData, setQuotesData] = useAtom<Quote[]>(quotesAtom);
   const [selectedCustomer] = useAtom<Customer>(selectedCustomerAtom);
+  const [selectedAlerts, setSelectedAlerts] = useAtom<Alert[]>(selectedAlertsAtom);
   const [showSoldParts, setShowSoldParts] = useAtom<boolean>(showSoldPartsAtom);
+  const [recentQuoteSearches, setRecentQuoteSearches] = useAtom<RecentQuoteSearch[]>(recentQuotesAtom);
   const [partsData, setPartsData] = useState<Part[]>([]);
   const [parts, setParts] = useState<Part[]>([]);
   const [partsOpen, setPartsOpen] = useState(localStorage.getItem('partsOpen') === 'true' || localStorage.getItem('partsOpen') === null ? true : false);
@@ -89,23 +94,6 @@ export default function PartSearchSection({ selectHandwrittenOpen, setSelectHand
     );
   };
 
-  const handleSearchData = async (parts: Part[]) => {
-    if (!parts) {
-      setParts([]);
-      setPartsQty((await getPartsQty(showSoldParts)));
-      setParts(await getSomeParts(1, LIMIT, showSoldParts));
-    } else if (parts.length === 0) {
-      setParts([]);
-      setParts([]);
-      setPartsQty([]);
-    } else {
-      setPartsData(parts);
-      setPartsQty(parts.map((part) => part.qty));
-      setParts(parts.slice((currentPage - 1) * LIMIT, LIMIT));
-    }
-    setLoading(false);
-  };
-
   const findPartsOnEngines = async () => {
     const partNum = getSearchedPartNum();
     const alts = await getAltsByPartNum(partNum);
@@ -152,6 +140,23 @@ export default function PartSearchSection({ selectHandwrittenOpen, setSelectHand
     setSelectedHandwrittenPart(part);
   };
 
+  const handleSearch = async (partNum: string, stockNum: string, desc: string, location: string, qty: number, remarks: string, rating: number, purchasedFrom: string, serialNum: string, hp: string, page: number, isAltSearch: boolean, showAlerts = true) => {
+    setLoading(true);
+    setRecentQuoteSearches(await getQuotesByPartNum(partNum));
+    const results = (isAltSearch ?
+      await searchAltParts({ partNum, stockNum, desc, location, qty, remarks, rating, purchasedFrom, serialNum, hp, showSoldParts }, page, LIMIT)
+      :
+      await searchParts({ partNum, stockNum, desc, location, qty, remarks, rating, purchasedFrom, serialNum, hp, showSoldParts }, page, LIMIT)
+    );
+    if (showAlerts) {
+      const alerts = await detectAlerts(partNum);
+      setSelectedAlerts([...selectedAlerts, ...alerts]);
+    }
+    setParts(results.rows);
+    setPartsQty(results.minItems);
+    setLoading(false);
+  };
+
   const onChangePage = async (_: any, page: number) => {
     if (page === currentPage || !pageLoaded) return;
     setLoading(true);
@@ -159,7 +164,8 @@ export default function PartSearchSection({ selectHandwrittenOpen, setSelectHand
     const partSearch = JSON.parse(localStorage.getItem('partSearches')!);
 
     if (!isObjectNull(altSearch ? { ...altSearch, partNum: altSearch.partNum.replace('*', '')} : {}) || !isObjectNull(partSearch || {})) {
-      setParts(partsData.slice((page - 1) * LIMIT, (page - 1) * LIMIT + LIMIT));
+      const { partNum, stockNum, desc, location, qty, remarks, rating, purchasedFrom, serialNum, hp } = (partSearch || altSearch);
+      await handleSearch(partNum, stockNum, desc, location, qty, remarks, rating, purchasedFrom, serialNum, hp, page, isObjectNull(partSearch || {}), false);
     } else {
       const res = await getSomeParts(page, LIMIT, showSoldParts);
       setParts(res);
@@ -172,8 +178,8 @@ export default function PartSearchSection({ selectHandwrittenOpen, setSelectHand
   return (
     <div className="part-search">
       { isValidSearch && <SalesInfoDialog open={salesInfoOpen} setOpen={setSalesInfoOpen} /> }
-      <PartsSearchDialog open={partsSearchOpen} setOpen={setPartsSearchOpen} setParts={handleSearchData} setLoading={setLoading} />
-      <AltPartsSearchDialog open={altPartsSearchOpen} setOpen={setAltPartsSearchOpen} setParts={handleSearchData} setLoading={setLoading} />
+      <PartsSearchDialog open={partsSearchOpen} setOpen={setPartsSearchOpen} handleSearch={handleSearch} />
+      <AltPartsSearchDialog open={altPartsSearchOpen} setOpen={setAltPartsSearchOpen} handleSearch={handleSearch} />
       <PartsOnEnginesDialog open={partsOnEngsOpen} setOpen={setPartsOnEngsOpen} searchResults={partsOnEngs} />
       <CoreFamilySearchDialog open={coreFamilyOpen} setOpen={setCoreFamilyOpen} />
 

@@ -3,22 +3,6 @@ import { parseResDate } from "../tools/stringUtils";
 import { isObjectNull } from "../tools/utils";
 import { checkImageExists } from "./imagesService";
 
-interface PartSearchData {
-  partNum?: string
-  stockNum?: string
-  desc?: string
-  location?: string
-  qty?: number
-  remarks?: string
-  rating?: number
-  ourCost?: number
-  entryDate?: Date
-  purchasedFrom?: string
-  serialNum?: string
-  hp?: string
-  showSoldParts: boolean
-}
-
 
 const parsePartsData = async (parts: any) => {
   const partsWithImages = await Promise.all(parts.map(async (part: any) => {
@@ -172,30 +156,34 @@ export const getAltsByPartNum = async (partNum: string) => {
   }
 };
 
-export const searchParts = async (part: PartSearchData) => {
+export const searchParts = async (part: PartSearchData, page: number, limit: number): Promise<{ minItems: number[], rows: Part[] }> => {
   try {
-    if (isObjectNull(part)) return null;
+    if (isObjectNull(part)) return { minItems: [], rows: [] };
     const auth = { withCredentials: true };
-    const res = await api.get(`/api/parts/search/${JSON.stringify(part)}`, auth);
-    return await parsePartsData(res.data);
+    const res = await api.get(`/api/parts/search/${JSON.stringify(part)}?offset=${(page - 1) * limit}&limit=${limit}`, auth);
+    return { minItems: res.data.minItems, rows: await parsePartsData(res.data.rows) };
   } catch (err) {
     console.error(err);
+    return { minItems: [], rows: [] };
   }
 };
 
-export const searchAltParts = async (part: PartSearchData) => {
+export const searchAltParts = async (part: PartSearchData, page: number, limit: number): Promise<{ minItems: number[], rows: Part[] }> => {
   try {
-    if (isObjectNull(part)) return null;
+    if (isObjectNull(part)) return { minItems: [], rows: [] };
     const filteredPart = Object.fromEntries(
       Object.entries(part).filter(
         ([key, value]) => value !== '' && value !== null && value !== '*'
       )
     );
     const auth = { withCredentials: true };
-    const res = await api.get(`/api/parts/searchAlt/${encodeURIComponent(JSON.stringify(filteredPart))}`, auth);
-    return await parsePartsData(res.data) || [];
+    const res = await api.get(`/api/parts/searchAlt/${encodeURIComponent(JSON.stringify(filteredPart))}?offset=${(page - 1) * limit}&limit=${limit}`, auth);
+    console.log(res.data);
+    
+    return { minItems: res.data.minItems, rows: await parsePartsData(res.data.rows) };
   } catch (err) {
     console.error(err);
+    return { minItems: [], rows: [] };
   }
 };
 
@@ -263,8 +251,8 @@ export const addPart = async (part: Part, partInfoExists: boolean, updateLoading
       await addAltParts(partNum, includedAlts, updateLoading);
       // Updates alt parts
       let altsToAdd: any[] = [];
-      const res = await searchAltParts({ partNum: `*${filteredAlts[0]}`, showSoldParts: true }) ?? [];
-      res.forEach((part) => {
+      const res = await searchAltParts({ partNum: `*${filteredAlts[0]}`, showSoldParts: true }, 1, 999999999) ?? [];
+      res.rows.forEach((part) => {
         altsToAdd.push(...part.altParts);
       });
       altsToAdd = Array.from(new Set(altsToAdd.reverse()));

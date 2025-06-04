@@ -6,7 +6,7 @@ import { useAtom } from "jotai";
 import { showSoldPartsAtom, userAtom } from "@/scripts/atoms/state";
 import Button from "@/components/Library/Button";
 import { getCustomerById } from "@/scripts/services/customerService";
-import { getPartById, getPartsQty, getSomeParts } from "@/scripts/services/partsService";
+import { getPartById, getPartsQty, getSomeParts, searchAltParts } from "@/scripts/services/partsService";
 import PiggybackPartSearchDialog from "./PiggybackPartSearchDialog";
 import Loading from "@/components/Library/Loading";
 import { addQuote, piggybackQuote } from "@/scripts/services/quotesService";
@@ -22,7 +22,7 @@ interface Props {
 
 export default function PiggybackQuoteDialog({ open, setOpen, quote, handleChangeQuotesPage, quotesPage }: Props) {
   const [user] = useAtom<User>(userAtom);
-  const [showSoldParts, setShowSoldParts] = useAtom<boolean>(showSoldPartsAtom);
+  const [showSoldParts] = useAtom<boolean>(showSoldPartsAtom);
   const [partsData, setPartsData] = useState<Part[]>([]);
   const [parts, setParts] = useState<Part[]>([]);
   const [partCount, setPartCount] = useState<number[]>([]);
@@ -32,7 +32,9 @@ export default function PiggybackQuoteDialog({ open, setOpen, quote, handleChang
   const [loading, setLoading] = useState(false);
   const [isSearchMode, setIsSearchMode] = useState(false);
   const [showRemarksList, setShowRemarksList] = useState<{ [id: number]: boolean }>({});
-  
+  const [searchData, setSearchData] = useState<PartSearchData>({ showSoldParts: true });
+  const LIMIT = 26;
+
   useEffect(() => {
     const fetchData = async () => {
       resetPartsList();
@@ -52,19 +54,17 @@ export default function PiggybackQuoteDialog({ open, setOpen, quote, handleChang
   const resetPartsList = async () => {
     const pageCount = await getPartsQty(showSoldParts);
     setPartCount(pageCount);
-    const res = await getSomeParts(1, 26, showSoldParts);
+    const res = await getSomeParts(1, LIMIT, showSoldParts);
     setPartsData(res);
     setParts(res);
   };
   
-  const handleChangePage = async (data: any, page: number) => {
+  const handleChangePage = async (_: any, page: number) => {
     if (page === currentPage) return;
     if (isSearchMode) {
-      const start = (page - 1) * 26;
-      const end = start + 26;
-      setParts(partsData.slice(start, end));
+      handleSearch(searchData);
     } else {
-      const res = await getSomeParts(page, 26, showSoldParts);
+      const res = await getSomeParts(page, LIMIT, showSoldParts);
       setParts(res);
     }
     setCurrentPage(page);
@@ -97,18 +97,21 @@ export default function PiggybackQuoteDialog({ open, setOpen, quote, handleChang
     setOpen(false);
   };
 
-  const handleSearchParts = async (results: Part[]) => {
+  const handleSearch = async (search: PartSearchData) => {
+    setLoading(true);
     setIsSearchMode(true);
-    setPartsData(results);
-    setParts(results.slice(0, 26));
-    setPartCount(results.map((part) => part.qty));
+    setSearchData(search);
+    const results = await searchAltParts(search, currentPage, LIMIT);
+    setParts(results.rows);
+    setPartCount(results.minItems);
     setCurrentPage(1);
+    setLoading(false);
   };
 
 
   return (
     <>
-      <PiggybackPartSearchDialog open={partSearchOpen} setOpen={setPartSearchOpen} setLoading={setLoading} setParts={handleSearchParts} />
+      <PiggybackPartSearchDialog open={partSearchOpen} setOpen={setPartSearchOpen} handleSearch={handleSearch} />
 
       <Dialog
         open={open}
@@ -168,7 +171,7 @@ export default function PiggybackQuoteDialog({ open, setOpen, quote, handleChang
                 data={partsData}
                 setData={handleChangePage}
                 minData={partCount}
-                pageSize={26}
+                pageSize={LIMIT}
               />
             </div>
             <Button onClick={handlePiggybackQuote} className="piggyback-quote-dialog__submit-btn">Submit</Button>
