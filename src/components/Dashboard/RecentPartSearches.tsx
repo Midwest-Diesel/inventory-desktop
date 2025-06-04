@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import Tabs from "../Library/Tabs";
 import { supabase } from "@/scripts/config/supabase";
 import { RealtimePostgresInsertPayload } from "@supabase/supabase-js";
-import { getRecentPartSearches } from "@/scripts/controllers/recentSearchesController";
+import { getRecentPartSearches } from "@/scripts/services/recentSearchesService";
 
 
 export default function RecentPartSearches() {

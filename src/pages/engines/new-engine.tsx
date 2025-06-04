@@ -6,7 +6,7 @@ import Select from "@/components/Library/Select/Select";
 import Table from "@/components/Library/Table";
 import NewEnginesQuoteList from "@/components/NewEnginesQuoteList";
 import { enginesAtom } from "@/scripts/atoms/state";
-import { getEnginesByStatus } from "@/scripts/controllers/enginesController";
+import { getEnginesByStatus } from "@/scripts/services/enginesService";
 import { useAtom } from "jotai";
 import Link from "@/components/Library/Link";
 import { useEffect, useState } from "react";

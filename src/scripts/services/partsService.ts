@@ -1,7 +1,7 @@
 import api from "../config/axios";
 import { parseResDate } from "../tools/stringUtils";
 import { isObjectNull } from "../tools/utils";
-import { checkImageExists } from "./imagesController";
+import { checkImageExists } from "./imagesService";
 
 interface PartSearchData {
   partNum?: string

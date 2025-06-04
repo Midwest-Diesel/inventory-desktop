@@ -4,7 +4,7 @@ import Loading from "@/components/Library/Loading";
 import Pagination from "@/components/Library/Pagination";
 import Table from "@/components/Library/Table";
 import { invoke } from "@/scripts/config/tauri";
-import { getEndOfDayHandwrittens, getHandwrittenCount, getHandwrittenCountByStatus, getSomeHandwrittens, getSomeHandwrittensByStatus } from "@/scripts/controllers/handwrittensController";
+import { getEndOfDayHandwrittens, getHandwrittenCount, getHandwrittenCountByStatus, getSomeHandwrittens, getSomeHandwrittensByStatus } from "@/scripts/services/handwrittensService";
 import { formatDate } from "@/scripts/tools/stringUtils";
 import Link from "@/components/Library/Link";
 import { useEffect, useState } from "react";

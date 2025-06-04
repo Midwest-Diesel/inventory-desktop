@@ -2,11 +2,11 @@ import { picturesAtom, userAtom, alertsAtom, snPicturesAtom, tabsAtom } from "@/
 import { useAtom } from "jotai";
 import { useEffect, useState } from "react";
 import Login from "./Login";
-import { getUser } from "@/scripts/controllers/userController";
-import { getAlerts } from "@/scripts/controllers/alertsController";
+import { getUser } from "@/scripts/services/userService";
+import { getAlerts } from "@/scripts/services/alertsService";
 import { checkUpdate } from '@tauri-apps/api/updater';
 import UpdateModal from "./Modals/UpdateModal";
-import { getTabsByUser } from "@/scripts/controllers/tabsController";
+import { getTabsByUser } from "@/scripts/services/tabsService";
 
 interface Props {
   children: any

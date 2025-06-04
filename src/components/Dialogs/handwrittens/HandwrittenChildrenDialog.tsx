@@ -3,7 +3,7 @@ import Dialog from "../../Library/Dialog";
 import Input from "@/components/Library/Input";
 import { FormEvent, useEffect, useState } from "react";
 import Button from "@/components/Library/Button";
-import { deleteHandwrittenItem, deleteHandwrittenItemChild, editHandwrittenItems, editHandwrittenItemsChild, getHandwrittenById } from "@/scripts/controllers/handwrittensController";
+import { deleteHandwrittenItem, deleteHandwrittenItemChild, editHandwrittenItems, editHandwrittenItemsChild, getHandwrittenById } from "@/scripts/services/handwrittensService";
 import { ask } from "@tauri-apps/api/dialog";
 
 interface Props {

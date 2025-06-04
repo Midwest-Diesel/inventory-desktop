@@ -4,13 +4,13 @@ import Table from "../Library/Table";
 import Select from "../Library/Select/Select";
 import { useEffect, useRef, useState } from "react";
 import Input from "../Library/Input";
-import { addEngine, getAutofillEngine } from "@/scripts/controllers/enginesController";
-import { deleteEngineAddOn } from "@/scripts/controllers/engineAddOnsController";
+import { addEngine, getAutofillEngine } from "@/scripts/services/enginesService";
+import { deleteEngineAddOn } from "@/scripts/services/engineAddOnsService";
 import { useAtom } from "jotai";
 import { engineAddOnsAtom } from "@/scripts/atoms/state";
 import { formatDate } from "@/scripts/tools/stringUtils";
 import VendorSelect from "../Library/Select/VendorSelect";
-import { getEngineImages } from "@/scripts/controllers/imagesController";
+import { getEngineImages } from "@/scripts/services/imagesService";
 import { ask } from "@tauri-apps/api/dialog";
 import { usePrintQue } from "../PrintableComponents/usePrintQue";
 

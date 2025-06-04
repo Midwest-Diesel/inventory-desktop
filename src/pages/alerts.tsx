@@ -5,7 +5,7 @@ import Button from "@/components/Library/Button";
 import Table from "@/components/Library/Table";
 import { selectedAlertsAtom } from "@/scripts/atoms/components";
 import { alertsAtom } from "@/scripts/atoms/state";
-import { deleteAlert } from "@/scripts/controllers/alertsController";
+import { deleteAlert } from "@/scripts/services/alertsService";
 import { formatDate } from "@/scripts/tools/stringUtils";
 import { ask } from "@tauri-apps/api/dialog";
 import { useAtom } from "jotai";

@@ -5,9 +5,9 @@ import Button from "@/components/Library/Button";
 import { PreventNavigation } from "@/components/PreventNavigation";
 import { selectedPoAddOnAtom } from "@/scripts/atoms/components";
 import { shopAddOnsAtom } from "@/scripts/atoms/state";
-import { addAddOn, editAddOn, getAllAddOns } from "@/scripts/controllers/addOnsController";
-import { getAllEngineNums } from "@/scripts/controllers/enginesController";
-import { getAllPartNums } from "@/scripts/controllers/partsController";
+import { addAddOn, editAddOn, getAllAddOns } from "@/scripts/services/addOnsService";
+import { getAllEngineNums } from "@/scripts/services/enginesService";
+import { getAllPartNums } from "@/scripts/services/partsService";
 import { useAtom } from "jotai";
 import { Fragment, useEffect, useState } from "react";
 

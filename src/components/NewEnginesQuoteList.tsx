@@ -1,4 +1,4 @@
-import { getQuotesByEngineModel } from "@/scripts/controllers/quotesController";
+import { getQuotesByEngineModel } from "@/scripts/services/quotesService";
 import { useEffect, useState } from "react";
 import Table from "./Library/Table";
 import { formatCurrency, formatDate, formatPhone } from "@/scripts/tools/stringUtils";

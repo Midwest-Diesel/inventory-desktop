@@ -4,7 +4,7 @@ import Button from "../../Library/Button";
 import { FormEvent, useEffect, useState } from "react";
 import Table from "@/components/Library/Table";
 import { formatCurrency } from "@/scripts/tools/stringUtils";
-import { getPartsByCoreFamily } from "@/scripts/controllers/partsController";
+import { getPartsByCoreFamily } from "@/scripts/services/partsService";
 import Link from "@/components/Library/Link";
 
 interface Props {

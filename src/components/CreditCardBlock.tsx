@@ -1,4 +1,4 @@
-import { editHandwrittenPaymentType } from "@/scripts/controllers/handwrittensController";
+import { editHandwrittenPaymentType } from "@/scripts/services/handwrittensService";
 import Button from "./Library/Button";
 import Input from "./Library/Input";
 import Select from "./Library/Select/Select";

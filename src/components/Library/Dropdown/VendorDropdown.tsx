@@ -4,7 +4,7 @@ import DropdownOption from "./DropdownOption";
 import React from "react";
 import { useAtom } from "jotai";
 import { vendorsDataAtom } from "@/scripts/atoms/state";
-import { getVendors } from "@/scripts/controllers/vendorsController";
+import { getVendors } from "@/scripts/services/vendorsService";
 
 interface Props {
   variant?: ('label-inline' | 'label-space-between' | 'label-full-width' | 'label-stack' | 'large' | 'no-margin' | 'label-full-height' | 'fill' | 'gap' | 'label-bold')[]

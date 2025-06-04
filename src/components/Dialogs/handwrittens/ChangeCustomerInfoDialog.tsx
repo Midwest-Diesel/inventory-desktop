@@ -2,7 +2,7 @@ import { FormEvent, useState } from "react";
 import Button from "@/components/Library/Button";
 import Modal from "@/components/Library/Modal";
 import Input from "@/components/Library/Input";
-import { editCustomer } from "@/scripts/controllers/customerController";
+import { editCustomer } from "@/scripts/services/customerService";
 
 interface Props {
   open: boolean

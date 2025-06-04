@@ -12,7 +12,7 @@ import Loading from "@/components/Library/Loading";
 import Table from "@/components/Library/Table";
 import { useNavState } from "@/components/Navbar/useNavState";
 import { userAtom } from "@/scripts/atoms/state";
-import { deleteEngine, getEngineByStockNum } from "@/scripts/controllers/enginesController";
+import { deleteEngine, getEngineByStockNum } from "@/scripts/services/enginesService";
 import { formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
 import { setTitle } from "@/scripts/tools/utils";
 import { useAtom } from "jotai";

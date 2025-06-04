@@ -7,7 +7,7 @@ import Pagination from "@/components/Library/Pagination";
 import Table from "@/components/Library/Table";
 import PurchaseOrderItemsTable from "@/components/PurchaseOrderItemsTable";
 import { POSearchAtom } from "@/scripts/atoms/state";
-import { addBlankPurchaseOrder, getPurchaseOrdersCount, getSomePurchaseOrders, searchPurchaseOrders } from "@/scripts/controllers/purchaseOrderController";
+import { addBlankPurchaseOrder, getPurchaseOrdersCount, getSomePurchaseOrders, searchPurchaseOrders } from "@/scripts/services/purchaseOrderService";
 import { formatDate } from "@/scripts/tools/stringUtils";
 import { useAtom } from "jotai";
 import Link from "@/components/Library/Link";

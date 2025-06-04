@@ -2,13 +2,13 @@ import { FormEvent, useEffect, useState } from "react";
 import Dialog from "../../Library/Dialog";
 import Input from "../../Library/Input";
 import Button from "../../Library/Button";
-import { searchParts } from "@/scripts/controllers/partsController";
-import { addRecentSearch, getQuotesByPartNum } from "@/scripts/controllers/recentSearchesController";
+import { searchParts } from "@/scripts/services/partsService";
+import { addRecentSearch, getQuotesByPartNum } from "@/scripts/services/recentSearchesService";
 import { useAtom } from "jotai";
 import { alertsAtom, lastPartSearchAtom, partsQtyAtom, recentQuotesAtom, showSoldPartsAtom, userAtom } from "@/scripts/atoms/state";
 import { selectedAlertsAtom } from "@/scripts/atoms/components";
 import { isObjectNull } from "@/scripts/tools/utils";
-import { detectAlerts } from "@/scripts/controllers/alertsController";
+import { detectAlerts } from "@/scripts/services/alertsService";
 
 
 interface Props {

@@ -1,7 +1,7 @@
 import { FormEvent, useEffect, useState } from "react";
 import Dialog from "../../Library/Dialog";
 import Input from "../../Library/Input";
-import { searchQuotes } from "@/scripts/controllers/quotesController";
+import { searchQuotes } from "@/scripts/services/quotesService";
 import Button from "../../Library/Button";
 import { parseDateInputValue } from "@/scripts/tools/stringUtils";
 import SourceSelect from "@/components/Library/Select/SourceSelect";

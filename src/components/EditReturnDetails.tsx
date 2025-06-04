@@ -1,4 +1,4 @@
-import { editReturn, getReturnById } from "@/scripts/controllers/returnsController";
+import { editReturn, getReturnById } from "@/scripts/services/returnsService";
 import { FormEvent, useState } from "react";
 import Input from "./Library/Input";
 import Button from "./Library/Button";
@@ -11,7 +11,7 @@ import { confirm } from "@/scripts/config/tauri";
 import { PreventNavigation } from "./PreventNavigation";
 import UserSelect from "./Library/Select/UserSelect";
 import CustomerSelect from "./Library/Select/CustomerSelect";
-import { getCustomerByName } from "@/scripts/controllers/customerController";
+import { getCustomerByName } from "@/scripts/services/customerService";
 import { ask } from "@tauri-apps/api/dialog";
 
 interface Props {

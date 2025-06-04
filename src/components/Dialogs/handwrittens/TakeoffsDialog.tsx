@@ -1,9 +1,9 @@
 import Button from "@/components/Library/Button";
 import Dialog from "@/components/Library/Dialog";
 import Input from "@/components/Library/Input";
-import { editHandwrittenTakeoffState, getHandwrittenById } from "@/scripts/controllers/handwrittensController";
-import { addPart, addPartCostIn, editPartCostIn, getPartById, getPartCostIn, handlePartTakeoff } from "@/scripts/controllers/partsController";
-import { getSurplusByCode, zeroAllSurplusItems } from "@/scripts/controllers/surplusController";
+import { editHandwrittenTakeoffState, getHandwrittenById } from "@/scripts/services/handwrittensService";
+import { addPart, addPartCostIn, editPartCostIn, getPartById, getPartCostIn, handlePartTakeoff } from "@/scripts/services/partsService";
+import { getSurplusByCode, zeroAllSurplusItems } from "@/scripts/services/surplusService";
 import { formatDate } from "@/scripts/tools/stringUtils";
 import { useParams } from "next/navigation";
 import { FormEvent, useEffect, useState } from "react";

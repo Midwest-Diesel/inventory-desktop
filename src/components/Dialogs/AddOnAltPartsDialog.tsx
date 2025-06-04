@@ -1,9 +1,9 @@
 import { FormEvent, useEffect, useState } from "react";
 import Dialog from "../Library/Dialog";
-import { getPartsInfoByPartNum } from "@/scripts/controllers/partsController";
+import { getPartsInfoByPartNum } from "@/scripts/services/partsService";
 import Input from "../Library/Input";
 import Button from "../Library/Button";
-import { editAddOnAltParts } from "@/scripts/controllers/addOnsController";
+import { editAddOnAltParts } from "@/scripts/services/addOnsService";
 
 interface Props {
   open: boolean

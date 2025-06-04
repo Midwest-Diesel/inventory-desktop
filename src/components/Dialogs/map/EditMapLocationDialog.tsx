@@ -3,7 +3,7 @@ import Button from "@/components/Library/Button";
 import Dialog from "@/components/Library/Dialog";
 import Input from "@/components/Library/Input";
 import Select from "@/components/Library/Select/Select";
-import { getCustomerById, getCustomers } from "@/scripts/controllers/customerController";
+import { getCustomerById, getCustomers } from "@/scripts/services/customerService";
 
 interface Props {
   open: boolean

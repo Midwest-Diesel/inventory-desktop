@@ -3,7 +3,7 @@ import { Layout } from "@/components/Layout";
 import Button from "@/components/Library/Button";
 import Link from "@/components/Library/Link";
 import Table from "@/components/Library/Table";
-import { getAllCores } from "@/scripts/controllers/coresController";
+import { getAllCores } from "@/scripts/services/coresService";
 import { formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
 import { useEffect, useState } from "react";
 

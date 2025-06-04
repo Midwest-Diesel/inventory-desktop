@@ -7,7 +7,7 @@ import Loading from "@/components/Library/Loading";
 import Table from "@/components/Library/Table";
 import WarrantyItemsTableDetails from "@/components/WarrantyItemsTableDetails";
 import { userAtom } from "@/scripts/atoms/state";
-import { deleteWarranty, editWarrantyCompleted, getWarrantyById } from "@/scripts/controllers/warrantiesController";
+import { deleteWarranty, editWarrantyCompleted, getWarrantyById } from "@/scripts/services/warrantiesService";
 import { formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
 import { setTitle } from "@/scripts/tools/utils";
 import { useAtom } from "jotai";

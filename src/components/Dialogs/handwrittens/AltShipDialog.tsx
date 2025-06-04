@@ -1,8 +1,8 @@
 import Input from "@/components/Library/Input";
 import Dialog from "../../Library/Dialog";
 import Button from "@/components/Library/Button";
-import { deleteAltShipAddress, editAltShipAddress } from "@/scripts/controllers/altShipController";
-import { editHandwritten, getHandwrittenById } from "@/scripts/controllers/handwrittensController";
+import { deleteAltShipAddress, editAltShipAddress } from "@/scripts/services/altShipService";
+import { editHandwritten, getHandwrittenById } from "@/scripts/services/handwrittensService";
 import { ask } from "@tauri-apps/api/dialog";
 import { FormEvent, useEffect, useState } from "react";
 

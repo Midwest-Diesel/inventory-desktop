@@ -5,7 +5,7 @@ import Grid from "@/components/Library/Grid/Grid";
 import GridItem from "@/components/Library/Grid/GridItem";
 import Table from "@/components/Library/Table";
 import { Layout } from "@/components/Layout";
-import { addPart, getPartsInfoByPartNum } from "@/scripts/controllers/partsController";
+import { addPart, getPartsInfoByPartNum } from "@/scripts/services/partsService";
 import Error from "@/components/Errors/Error";
 import Input from "@/components/Library/Input";
 import { useNavState } from "@/components/Navbar/useNavState";

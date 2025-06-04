@@ -4,7 +4,7 @@ import Input from "../../Library/Input";
 import Button from "../../Library/Button";
 import { useAtom } from "jotai";
 import { alertsAtom, userAtom } from "@/scripts/atoms/state";
-import { addAlert, getAlerts } from "@/scripts/controllers/alertsController";
+import { addAlert, getAlerts } from "@/scripts/services/alertsService";
 
 interface Props {
   open: boolean

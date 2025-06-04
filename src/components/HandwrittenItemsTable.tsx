@@ -1,8 +1,8 @@
 import { cap, formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
 import Table from "./Library/Table";
 import Button from "./Library/Button";
-import { addHandwrittenItem } from "@/scripts/controllers/handwrittensController";
-import { addCore } from "@/scripts/controllers/coresController";
+import { addHandwrittenItem } from "@/scripts/services/handwrittensService";
+import { addCore } from "@/scripts/services/coresService";
 import HandwrittenChildrenDialog from "./Dialogs/handwrittens/HandwrittenChildrenDialog";
 import { useEffect, useState } from "react";
 import Toast from "./Library/Toast";

@@ -2,7 +2,7 @@ import { FormEvent, useState } from "react";
 import Dialog from "../../Library/Dialog";
 import Input from "../../Library/Input";
 import Button from "../../Library/Button";
-import { searchHandwrittens } from "@/scripts/controllers/handwrittensController";
+import { searchHandwrittens } from "@/scripts/services/handwrittensService";
 import Select from "@/components/Library/Select/Select";
 import { paymentTypes } from "@/pages/handwrittens/index";
 import { parseDateInputValue } from "@/scripts/tools/stringUtils";

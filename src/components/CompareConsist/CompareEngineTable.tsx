@@ -1,4 +1,4 @@
-import { getAllEngines, getEnginesByEngineData } from "@/scripts/controllers/enginesController";
+import { getAllEngines, getEnginesByEngineData } from "@/scripts/services/enginesService";
 import { useEffect, useState } from "react";
 import Table from "../Library/Table";
 import Link from "../Library/Link";
@@ -8,7 +8,7 @@ import Button from "../Library/Button";
 import Pagination from "../Library/Pagination";
 import Loading from "../Library/Loading";
 import CompareConsistHistoryDialog from "../Dialogs/CompareConsistHistoryDialog";
-import { addCompareData } from "@/scripts/controllers/compareConsistController";
+import { addCompareData } from "@/scripts/services/compareConsistService";
 import { useNavState } from "../Navbar/useNavState";
 
 interface Props {

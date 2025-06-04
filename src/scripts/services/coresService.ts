@@ -1,6 +1,6 @@
 import api from "../config/axios";
 import { parseResDate } from "../tools/stringUtils";
-import { deleteHandwrittenItem } from "./handwrittensController";
+import { deleteHandwrittenItem } from "./handwrittensService";
 
 
 const parseCoreDataRes = (data: any) => {

@@ -3,7 +3,7 @@ import { Layout } from "@/components/Layout";
 import Button from "@/components/Library/Button";
 import { PreventNavigation } from "@/components/PreventNavigation";
 import { engineAddOnsAtom } from "@/scripts/atoms/state";
-import { addEngineAddOn, editEngineAddOn, getAllEngineAddOns } from "@/scripts/controllers/engineAddOnsController";
+import { addEngineAddOn, editEngineAddOn, getAllEngineAddOns } from "@/scripts/services/engineAddOnsService";
 import { useAtom } from "jotai";
 import { FormEvent, Fragment, useEffect, useState } from "react";
 

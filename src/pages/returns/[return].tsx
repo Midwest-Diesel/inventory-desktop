@@ -8,7 +8,7 @@ import Table from "@/components/Library/Table";
 import ReturnItemsTable from "@/components/ReturnItemsTable";
 import { userAtom } from "@/scripts/atoms/state";
 import { confirm } from "@/scripts/config/tauri";
-import { deleteReturn, getReturnById, issueReturnCredit } from "@/scripts/controllers/returnsController";
+import { deleteReturn, getReturnById, issueReturnCredit } from "@/scripts/services/returnsService";
 import { formatCurrency, formatDate, formatPhone } from "@/scripts/tools/stringUtils";
 import { setTitle } from "@/scripts/tools/utils";
 import { useAtom } from "jotai";

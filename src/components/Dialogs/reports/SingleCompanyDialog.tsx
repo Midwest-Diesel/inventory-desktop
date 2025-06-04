@@ -2,7 +2,7 @@ import Button from "@/components/Library/Button";
 import Dialog from "@/components/Library/Dialog";
 import Input from "@/components/Library/Input";
 import CustomerSelect from "@/components/Library/Select/CustomerSelect";
-import { reportSingleCompany } from "@/scripts/controllers/reportsController";
+import { reportSingleCompany } from "@/scripts/services/reportsService";
 import { parseDateInputValue } from "@/scripts/tools/stringUtils";
 import { useState } from "react";
 

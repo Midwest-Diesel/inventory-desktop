@@ -4,7 +4,7 @@ import { invoke } from "@/scripts/config/tauri";
 import { getVersion } from "@tauri-apps/api/app";
 import { checkUpdate } from "@tauri-apps/api/updater";
 import { useEffect, useState } from "react";
-import { logout } from "@/scripts/controllers/userController";
+import { logout } from "@/scripts/services/userService";
 import { useAtom } from "jotai";
 import { userAtom } from "@/scripts/atoms/state";
 import { cap } from "@/scripts/tools/stringUtils";

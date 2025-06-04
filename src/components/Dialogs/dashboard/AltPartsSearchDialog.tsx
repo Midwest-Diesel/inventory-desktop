@@ -2,13 +2,13 @@ import { FormEvent, useEffect, useState } from "react";
 import Dialog from "../../Library/Dialog";
 import Input from "../../Library/Input";
 import Button from "../../Library/Button";
-import { searchAltParts } from "@/scripts/controllers/partsController";
+import { searchAltParts } from "@/scripts/services/partsService";
 import { useAtom } from "jotai";
-import { alertsAtom, lastPartSearchAtom, partsQtyAtom, recentQuotesAtom, showSoldPartsAtom, userAtom } from "@/scripts/atoms/state";
-import { addRecentSearch, getQuotesByPartNum } from "@/scripts/controllers/recentSearchesController";
+import { lastPartSearchAtom, partsQtyAtom, recentQuotesAtom, showSoldPartsAtom, userAtom } from "@/scripts/atoms/state";
+import { addRecentSearch, getQuotesByPartNum } from "@/scripts/services/recentSearchesService";
 import { selectedAlertsAtom } from "@/scripts/atoms/components";
 import { isObjectNull } from "@/scripts/tools/utils";
-import { detectAlerts } from "@/scripts/controllers/alertsController";
+import { detectAlerts } from "@/scripts/services/alertsService";
 
 
 interface Props {
@@ -23,7 +23,6 @@ export default function AltPartsSearchDialog({ open, setOpen, setParts, setLoadi
   const [recentQuoteSearches, setRecentQuoteSearches ] = useAtom<RecentQuoteSearch[]>(recentQuotesAtom);
   const [lastSearch, setLastSearch] = useAtom<string>(lastPartSearchAtom);
   const [selectedAlerts, setSelectedAlerts] = useAtom<Alert[]>(selectedAlertsAtom);
-  const [alertsData] = useAtom<Alert[]>(alertsAtom);
   const [user] = useAtom<User>(userAtom);
   const [showSoldParts] = useAtom<boolean>(showSoldPartsAtom);
   const prevSearches = JSON.parse(localStorage.getItem('altPartSearches')!);

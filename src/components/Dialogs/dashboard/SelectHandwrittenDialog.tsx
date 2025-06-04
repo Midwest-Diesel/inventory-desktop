@@ -1,6 +1,6 @@
 import { FormEvent, useEffect, useState } from "react";
 import Dialog from "../../Library/Dialog";
-import { addHandwritten, getHandwrittenById, searchSelectHandwrittensDialogData } from "@/scripts/controllers/handwrittensController";
+import { getHandwrittenById, searchSelectHandwrittensDialogData } from "@/scripts/services/handwrittensService";
 import Table from "@/components/Library/Table";
 import { formatDate } from "@/scripts/tools/stringUtils";
 import Pagination from "@/components/Library/Pagination";
@@ -10,8 +10,7 @@ import Checkbox from "@/components/Library/Checkbox";
 import Toast from "@/components/Library/Toast";
 import { useAtom } from "jotai";
 import { errorAtom, selectedCustomerAtom, userAtom } from "@/scripts/atoms/state";
-import { confirm } from "@/scripts/config/tauri";
-import { message } from "@tauri-apps/api/dialog";
+import { ask, message } from "@tauri-apps/api/dialog";
 
 interface Props {
   open: boolean
@@ -128,53 +127,6 @@ export default function SelectHandwrittenDialog({ open, setOpen, part, customer,
     }
   };
 
-  const handleNewHandwritten = async () => {
-    if (!customer) return;
-    const newHandwritten = {
-      customer,
-      date: new Date(),
-      poNum: '',
-      billToCompany: customer.company,
-      billToAddress: customer.billToAddress,
-      billToAddress2: customer.billToAddress2,
-      billToCity: customer.billToCity,
-      billToState: customer.billToState,
-      billToZip: customer.billToZip,
-      billToCountry: null,
-      billToPhone: customer.billToPhone,
-      fax: '',
-      shipToCompany: customer.company,
-      shipToAddress: customer.shipToAddress,
-      shipToAddress2: customer.shipToAddress2,
-      shipToCity: customer.shipToCity,
-      shipToState: customer.shipToState,
-      shipToZip: customer.shipToZip,
-      source: null,
-      contactName: '',
-      payment: customer.paymentType,
-      salesmanId: user.id,
-      phone: '',
-      cell: null,
-      engineSerialNum: '',
-      isBlindShipment: false,
-      isNoPriceInvoice: false,
-      isTaxable: customer.isTaxable,
-      shipViaId: null,
-      cardNum: '',
-      expDate: '',
-      cvv: null,
-      cardZip: null,
-      cardName: '',
-      invoiceStatus: 'INVOICE PENDING',
-      accountingStatus: '',
-      shippingStatus: '',
-    } as any;
-    await addHandwritten(newHandwritten);
-    setToastOpen(true);
-    await handleSearch();
-    setHandwrittenCustomer(selectedCustomer);
-  };
-
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (!selectedHandwrittenId) return;
@@ -185,7 +137,7 @@ export default function SelectHandwrittenDialog({ open, setOpen, part, customer,
       return;
     }
 
-    if (await confirm('Add warranty?')) {
+    if (await ask('Add warranty?')) {
       setShowWarranty(true);
     } else {
       setOpen(false);

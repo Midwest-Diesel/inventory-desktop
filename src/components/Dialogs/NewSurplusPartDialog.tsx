@@ -3,7 +3,7 @@ import Dialog from "../Library/Dialog";
 import Button from "../Library/Button";
 import Input from "../Library/Input";
 import { parseDateInputValue } from "@/scripts/tools/stringUtils";
-import { addSurplus, getAllSurplus } from "@/scripts/controllers/surplusController";
+import { addSurplus, getAllSurplus } from "@/scripts/services/surplusService";
 
 interface Props {
   open: boolean

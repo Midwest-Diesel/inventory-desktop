@@ -2,7 +2,7 @@ import { formatCurrency } from "@/scripts/tools/stringUtils";
 import Dialog from "../Library/Dialog";
 import Table from "../Library/Table";
 import { useEffect, useState } from "react";
-import { getEngineProfit } from "@/scripts/controllers/enginesController";
+import { getEngineProfit } from "@/scripts/services/enginesService";
 
 interface Props {
   open: boolean

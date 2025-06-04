@@ -2,7 +2,7 @@ import { FormEvent, useEffect, useState } from "react";
 import Dialog from "../../Library/Dialog";
 import Input from "../../Library/Input";
 import Button from "../../Library/Button";
-import { searchAltParts } from "@/scripts/controllers/partsController";
+import { searchAltParts } from "@/scripts/services/partsService";
 import { showSoldPartsAtom } from "@/scripts/atoms/state";
 import { useAtom } from "jotai";
 

@@ -5,7 +5,7 @@ import GridItem from "./Library/Grid/GridItem";
 import Input from "./Library/Input";
 import Table from "./Library/Table";
 import { parseDateInputValue } from "@/scripts/tools/stringUtils";
-import { addPurchaseOrderItem, deletePurchaseOrderItem, editPurchaseOrder, editPurchaseOrderItem, getPurchaseOrderById } from "@/scripts/controllers/purchaseOrderController";
+import { addPurchaseOrderItem, deletePurchaseOrderItem, editPurchaseOrder, editPurchaseOrderItem, getPurchaseOrderById } from "@/scripts/services/purchaseOrderService";
 import VendorDropdown from "./Library/Dropdown/VendorDropdown";
 import { PreventNavigation } from "./PreventNavigation";
 import { confirm } from "@/scripts/config/tauri";

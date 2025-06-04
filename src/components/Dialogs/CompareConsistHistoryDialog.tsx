@@ -1,7 +1,7 @@
 import Dialog from "../Library/Dialog";
 import Button from "../Library/Button";
 import { useEffect, useState } from "react";
-import { getCompareDataByCustomer } from "@/scripts/controllers/compareConsistController";
+import { getCompareDataByCustomer } from "@/scripts/services/compareConsistService";
 import { formatDate } from "@/scripts/tools/stringUtils";
 import Table from "../Library/Table";
 import { useNavState } from "../Navbar/useNavState";

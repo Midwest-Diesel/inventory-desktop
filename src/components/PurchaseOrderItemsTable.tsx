@@ -1,7 +1,7 @@
 import { formatCurrency } from "@/scripts/tools/stringUtils";
 import Table from "./Library/Table";
 import Checkbox from "./Library/Checkbox";
-import { togglePurchaseOrderItemReceived } from "@/scripts/controllers/purchaseOrderController";
+import { togglePurchaseOrderItemReceived } from "@/scripts/services/purchaseOrderService";
 import { confirm } from "@/scripts/config/tauri";
 
 interface Props {

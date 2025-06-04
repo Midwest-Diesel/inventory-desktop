@@ -34,7 +34,7 @@ import SingleCompanyEnginesTable from "@/components/Reports/SingleCompanyEngines
 import SingleCompanyPartsTable from "@/components/Reports/SingleCompanyPartsTable";
 import SingleCompanyTable from "@/components/Reports/SingleCompanyTable";
 import TheMachinesTable from "@/components/Reports/TheMachinesTable";
-import { reportNoLocationParts, reportOutstandingCores, reportPBB } from "@/scripts/controllers/reportsController";
+import { reportNoLocationParts, reportOutstandingCores, reportPBB } from "@/scripts/services/reportsService";
 import { useState } from "react";
 
 

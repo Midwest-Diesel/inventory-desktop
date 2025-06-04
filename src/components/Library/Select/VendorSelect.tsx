@@ -3,7 +3,7 @@ import Select from "./Select";
 import Loading from "../Loading";
 import { useEffect } from "react";
 import { vendorsDataAtom } from "@/scripts/atoms/state";
-import { getVendors } from "@/scripts/controllers/vendorsController";
+import { getVendors } from "@/scripts/services/vendorsService";
 
 interface Props extends SelectHTML {
   variant?: ('label-inline' | 'label-space-between' | 'label-full-width' | 'label-stack' | 'label-bold')[]

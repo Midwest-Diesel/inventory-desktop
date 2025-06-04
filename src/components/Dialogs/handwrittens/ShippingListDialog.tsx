@@ -7,7 +7,7 @@ import { invoke } from "@/scripts/config/tauri";
 import { isDateInCurrentOrNextWeek } from "@/scripts/tools/utils";
 import Button from "@/components/Library/Button";
 import Loading from "@/components/Library/Loading";
-import { getHandwrittenById } from "@/scripts/controllers/handwrittensController";
+import { getHandwrittenById } from "@/scripts/services/handwrittensService";
 
 interface Props {
   open: boolean

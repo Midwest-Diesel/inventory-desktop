@@ -5,7 +5,7 @@ import Table from "@/components/Library/Table";
 import { useEffect, useState } from "react";
 import Link from "@/components/Library/Link";
 import Loading from "@/components/Library/Loading";
-import { getSomeCompletedReturns, getSomeReturns } from "@/scripts/controllers/returnsController";
+import { getSomeCompletedReturns, getSomeReturns } from "@/scripts/services/returnsService";
 import { cap, formatDate } from "@/scripts/tools/stringUtils";
 
 

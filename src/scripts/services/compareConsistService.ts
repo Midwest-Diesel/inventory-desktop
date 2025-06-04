@@ -1,6 +1,6 @@
 import api from "../config/axios";
 import { parseResDate } from "../tools/stringUtils";
-import { getEngineCostRemaining } from "./enginesController";
+import { getEngineCostRemaining } from "./enginesService";
 
 
 const parseCompareDataRes = (data: any) => {

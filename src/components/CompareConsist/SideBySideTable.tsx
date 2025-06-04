@@ -4,7 +4,7 @@ import Table from "../Library/Table";
 import Checkbox from "../Library/Checkbox";
 import Input from "../Library/Input";
 import { formatCurrency } from "@/scripts/tools/stringUtils";
-import { addQuote } from "@/scripts/controllers/quotesController";
+import { addQuote } from "@/scripts/services/quotesService";
 import { useAtom } from "jotai";
 import { userAtom } from "@/scripts/atoms/state";
 import { invoke } from "@/scripts/config/tauri";

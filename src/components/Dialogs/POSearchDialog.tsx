@@ -5,7 +5,7 @@ import Button from "../Library/Button";
 import Select from "../Library/Select/Select";
 import { useAtom } from "jotai";
 import { POSearchAtom } from "@/scripts/atoms/state";
-import { searchPurchaseOrders } from "@/scripts/controllers/purchaseOrderController";
+import { searchPurchaseOrders } from "@/scripts/services/purchaseOrderService";
 import { parseDateInputValue } from "@/scripts/tools/stringUtils";
 
 interface Props {

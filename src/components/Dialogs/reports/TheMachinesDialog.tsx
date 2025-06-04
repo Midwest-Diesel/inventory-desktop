@@ -2,7 +2,7 @@ import Button from "@/components/Library/Button";
 import Dialog from "@/components/Library/Dialog";
 import Input from "@/components/Library/Input";
 import Loading from "@/components/Library/Loading";
-import { addGonculatorData, deleteGonculatorData, reportTheMachines } from "@/scripts/controllers/reportsController";
+import { addGonculatorData, deleteGonculatorData, reportTheMachines } from "@/scripts/services/reportsService";
 import { FormEvent, useState } from "react";
 import * as XLSX from "xlsx";
 

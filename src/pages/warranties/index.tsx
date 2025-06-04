@@ -6,7 +6,7 @@ import Pagination from "@/components/Library/Pagination";
 import Table from "@/components/Library/Table";
 import WarrantyItemsTable from "@/components/WarrantyItemsTable";
 import { userAtom, warrantySearchAtom } from "@/scripts/atoms/state";
-import { addWarranty, editWarranty, getSomeWarranties, getWarrantyCount, searchWarranties } from "@/scripts/controllers/warrantiesController";
+import { addWarranty, editWarranty, getSomeWarranties, getWarrantyCount, searchWarranties } from "@/scripts/services/warrantiesService";
 import { formatDate } from "@/scripts/tools/stringUtils";
 import { useAtom } from "jotai";
 import Link from "@/components/Library/Link";

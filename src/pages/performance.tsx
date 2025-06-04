@@ -1,6 +1,6 @@
 import { Layout } from "@/components/Layout";
 import Table from "@/components/Library/Table";
-import { getPerformance } from "@/scripts/controllers/reportsController";
+import { getPerformance } from "@/scripts/services/reportsService";
 import { formatCurrency } from "@/scripts/tools/stringUtils";
 import { useEffect, useState } from "react";
 

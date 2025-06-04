@@ -4,7 +4,7 @@ import Table from "../../Library/Table";
 import Checkbox from "@/components/Library/Checkbox";
 import { useState } from "react";
 import Button from "@/components/Library/Button";
-import { addReturn, addReturnItem } from "@/scripts/controllers/returnsController";
+import { addReturn, addReturnItem } from "@/scripts/services/returnsService";
 import { useAtom } from "jotai";
 import { userAtom } from "@/scripts/atoms/state";
 import { useNavState } from "@/components/Navbar/useNavState";

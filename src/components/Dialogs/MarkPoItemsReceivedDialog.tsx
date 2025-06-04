@@ -1,7 +1,7 @@
 import Dialog from "../Library/Dialog";
 import Table from "../Library/Table";
 import { formatCurrency } from "@/scripts/tools/stringUtils";
-import { addPurchaseOrderReceivedItem, togglePurchaseOrderItemReceived, togglePurchaseOrderReceived } from "@/scripts/controllers/purchaseOrderController";
+import { addPurchaseOrderReceivedItem, togglePurchaseOrderItemReceived, togglePurchaseOrderReceived } from "@/scripts/services/purchaseOrderService";
 import { useEffect, useState } from "react";
 import Button from "../Library/Button";
 

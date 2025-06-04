@@ -1,6 +1,6 @@
 import { FormEvent, useState } from "react";
-import { addQuote } from "@/scripts/controllers/quotesController";
-import { getCustomerByName } from "@/scripts/controllers/customerController";
+import { addQuote } from "@/scripts/services/quotesService";
+import { getCustomerByName } from "@/scripts/services/customerService";
 import Dialog from "../Library/Dialog";
 import Input from "../Library/Input";
 import SourceSelect from "../Library/Select/SourceSelect";

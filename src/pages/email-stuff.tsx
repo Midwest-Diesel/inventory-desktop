@@ -2,7 +2,7 @@ import NewEmailAttachmentDialog from "@/components/Dialogs/NewEmailAttachmentDia
 import { Layout } from "@/components/Layout";
 import Button from "@/components/Library/Button";
 import Loading from "@/components/Library/Loading";
-import { deleteEmailStuffItem, getAllEmailStuff } from "@/scripts/controllers/emailStuffController";
+import { deleteEmailStuffItem, getAllEmailStuff } from "@/scripts/services/emailStuffService";
 import { invoke } from "@/scripts/config/tauri";
 import Image from "next/image";
 import { useEffect, useState } from "react";

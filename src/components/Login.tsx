@@ -1,4 +1,4 @@
-import { getUser, loginUser } from "@/scripts/controllers/userController";
+import { getUser, loginUser } from "@/scripts/services/userService";
 import Button from "./Library/Button";
 import { useAtom } from "jotai";
 import { userAtom } from "@/scripts/atoms/state";

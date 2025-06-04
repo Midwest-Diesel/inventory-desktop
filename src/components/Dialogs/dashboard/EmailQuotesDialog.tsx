@@ -6,7 +6,7 @@ import Button from "@/components/Library/Button";
 import Input from "@/components/Library/Input";
 import Table from "@/components/Library/Table";
 import Pagination from "@/components/Library/Pagination";
-import { getQuotesByCustomer } from "@/scripts/controllers/quotesController";
+import { getQuotesByCustomer } from "@/scripts/services/quotesService";
 import Loading from "@/components/Library/Loading";
 
 interface Props {

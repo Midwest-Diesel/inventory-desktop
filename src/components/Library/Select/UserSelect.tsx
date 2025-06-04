@@ -2,7 +2,7 @@ import { useAtom } from "jotai";
 import Select from "./Select";
 import Loading from "../Loading";
 import { useEffect } from "react";
-import { getAllUsers } from "@/scripts/controllers/userController";
+import { getAllUsers } from "@/scripts/services/userService";
 import { usersAtom } from "@/scripts/atoms/state";
 
 interface Props extends SelectHTML {

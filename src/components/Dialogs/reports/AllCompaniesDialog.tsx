@@ -1,7 +1,7 @@
 import Button from "@/components/Library/Button";
 import Dialog from "@/components/Library/Dialog";
 import Input from "@/components/Library/Input";
-import { reportAllCompanies } from "@/scripts/controllers/reportsController";
+import { reportAllCompanies } from "@/scripts/services/reportsService";
 import { parseDateInputValue } from "@/scripts/tools/stringUtils";
 import { FormEvent, useState } from "react";
 

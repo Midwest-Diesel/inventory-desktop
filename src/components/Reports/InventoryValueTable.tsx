@@ -2,7 +2,7 @@ import Button from "../Library/Button";
 import Loading from "../Library/Loading";
 import Table from "../Library/Table";
 import { useState } from "react";
-import { reportInventoryValueCoreEngines, reportInventoryValueParts, reportInventoryValueRunningEngines, reportInventoryValueShortBlocks, reportInventoryValueSurplus, reportInventoryValueToreDownEngines } from "@/scripts/controllers/reportsController";
+import { reportInventoryValueCoreEngines, reportInventoryValueParts, reportInventoryValueRunningEngines, reportInventoryValueShortBlocks, reportInventoryValueSurplus, reportInventoryValueToreDownEngines } from "@/scripts/services/reportsService";
 import { formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
 
 interface Props {

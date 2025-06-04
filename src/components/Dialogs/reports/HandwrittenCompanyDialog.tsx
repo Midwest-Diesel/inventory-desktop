@@ -2,7 +2,7 @@ import Button from "@/components/Library/Button";
 import Dialog from "@/components/Library/Dialog";
 import Input from "@/components/Library/Input";
 import CustomerSelect from "@/components/Library/Select/CustomerSelect";
-import { reportHandwrittenCompany } from "@/scripts/controllers/reportsController";
+import { reportHandwrittenCompany } from "@/scripts/services/reportsService";
 import { useState } from "react";
 
 interface Props {

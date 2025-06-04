@@ -3,7 +3,7 @@ import Dialog from "../../Library/Dialog";
 import Table from "@/components/Library/Table";
 import Pagination from "@/components/Library/Pagination";
 import Button from "@/components/Library/Button";
-import { getPartById, getPartsQty, getSomeParts } from "@/scripts/controllers/partsController";
+import { getPartById, getPartsQty, getSomeParts } from "@/scripts/services/partsService";
 import Loading from "@/components/Library/Loading";
 import PiggybackPartSearchDialog from "./PiggybackPartSearchDialog";
 import { useAtom } from "jotai";

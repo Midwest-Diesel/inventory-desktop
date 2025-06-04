@@ -15,7 +15,7 @@ import Loading from "@/components/Library/Loading";
 import Table from "@/components/Library/Table";
 import { userAtom } from "@/scripts/atoms/state";
 import { supabase } from "@/scripts/config/supabase";
-import { deleteHandwritten, editHandwrittenShipTo, getHandwrittenById } from "@/scripts/controllers/handwrittensController";
+import { deleteHandwritten, editHandwrittenShipTo, getHandwrittenById } from "@/scripts/services/handwrittensService";
 import { formatCurrency, formatDate, formatPhone, parseResDate } from "@/scripts/tools/stringUtils";
 import { setTitle } from "@/scripts/tools/utils";
 import { RealtimePostgresInsertPayload, RealtimePostgresUpdatePayload } from "@supabase/supabase-js";
@@ -29,7 +29,7 @@ import { useNavState } from "@/components/Navbar/useNavState";
 import CreditCardBlock from "@/components/CreditCardBlock";
 import { ask } from "@tauri-apps/api/dialog";
 import { usePrintQue } from "@/components/PrintableComponents/usePrintQue";
-import { addAltShipAddress, getAltShipByCustomerId } from "@/scripts/controllers/altShipController";
+import { addAltShipAddress, getAltShipByCustomerId } from "@/scripts/services/altShipService";
 
 
 export default function Handwritten() {

@@ -2,7 +2,7 @@ import { useAtom } from "jotai";
 import Select from "./Select";
 import Loading from "../Loading";
 import { useEffect } from "react";
-import { getAllFreightCarriers } from "@/scripts/controllers/freightCarriersController";
+import { getAllFreightCarriers } from "@/scripts/services/freightCarriersService";
 import { FreightCarriersAtom } from "@/scripts/atoms/state";
 
 interface Props extends SelectHTML {

@@ -4,7 +4,7 @@ import GridItem from "../Library/Grid/GridItem";
 import Grid from "../Library/Grid/Grid";
 import { formatCurrency, formatPhone } from "@/scripts/tools/stringUtils";
 import Table from "../Library/Table";
-import { getCustomerSalesHistory } from "@/scripts/controllers/customerController";
+import { getCustomerSalesHistory } from "@/scripts/services/customerService";
 import CustomerContactsBlock from "../CustomerContactsBlock";
 
 interface Props {

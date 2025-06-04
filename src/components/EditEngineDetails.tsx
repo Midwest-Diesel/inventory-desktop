@@ -4,7 +4,7 @@ import Button from "./Library/Button";
 import GridItem from "./Library/Grid/GridItem";
 import Grid from "./Library/Grid/Grid";
 import { parseDateInputValue } from "@/scripts/tools/stringUtils";
-import { addEngineCostIn, addEngineCostOut, deleteEngineCostIn, deleteEngineCostOut, editEngine, editEngineCostIn, editEngineCostOut, editEnginePartsTable } from "@/scripts/controllers/enginesController";
+import { addEngineCostIn, addEngineCostOut, deleteEngineCostIn, deleteEngineCostOut, editEngine, editEngineCostIn, editEngineCostOut, editEnginePartsTable } from "@/scripts/services/enginesService";
 import Checkbox from "./Library/Checkbox";
 import Table from "./Library/Table";
 import Select from "./Library/Select/Select";

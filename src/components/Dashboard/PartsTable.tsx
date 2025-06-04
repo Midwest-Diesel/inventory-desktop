@@ -1,0 +1,143 @@
+import Image from "next/image";
+import Table from "../Library/Table";
+import Button from "../Library/Button";
+import { extractStatusColors, formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
+import Pagination from "../Library/Pagination";
+import Link from "../Library/Link";
+import { partsQtyAtom } from "@/scripts/atoms/state";
+import { useAtom } from "jotai";
+import { getImagesFromPart, getImagesFromStockNum } from "@/scripts/services/imagesService";
+import { useState } from "react";
+import PartPicturesDialog from "../Dialogs/PartPicturesDialog";
+import StockNumPicturesDialog from "../Dialogs/StockNumPicturesDialog";
+
+interface Props {
+  parts: Part[]
+  partsData: Part[]
+  quotePart: (part: Part) => void
+  onChangePage: (data: any, page: number) => void
+  onOpenSelectHandwrittenDialog: (part: Part) => void
+  limit: number
+}
+
+
+export default function PartsTable({ parts, partsData, quotePart, onChangePage, onOpenSelectHandwrittenDialog, limit }: Props) {
+  const [partsQty] = useAtom<number[]>(partsQtyAtom);
+  const [partImages, setPartImages] = useState<Picture[]>([]);
+  const [picturesPartNum, setPicturesPartNum] = useState<string>('');
+  const [snImages, setSnImages] = useState<Picture[]>([]);
+  const [picturesStockNum, setPicturesStockNum] = useState<string>('');
+  const [partImagesOpen, setPartImagesOpen] = useState(false);
+  const [snImagesOpen, setSnImagesOpen] = useState(false);
+  const getTotalQty = () => partsQty.reduce((acc, part) => acc + part, 0);
+
+  const openPartImages = async (part: Part) => {
+    setPartImages(await getImagesFromPart(part.partNum));
+    setPicturesPartNum(part.partNum);
+    setPartImagesOpen(true);
+  };
+
+  const openStockNumImages = async (part: Part) => {
+    setSnImages(await getImagesFromStockNum(part.stockNum ?? ''));
+    setPicturesStockNum(part.stockNum ?? '');
+    setSnImagesOpen(true);
+  };
+
+  const partCostStyles = (part: Part) => {
+    return part.purchasePrice > 0.01 ? { color: 'var(--orange-1)', fontWeight: 'bold' } : {};
+  };
+
+
+  return (
+    <>
+      <PartPicturesDialog open={partImagesOpen} setOpen={setPartImagesOpen} pictures={partImages} partNum={picturesPartNum} />
+      <StockNumPicturesDialog open={snImagesOpen} setOpen={setSnImagesOpen} pictures={snImages} stockNum={picturesStockNum} />
+
+      <div style={{ width:'fit-content', overflow: 'auto', maxHeight: '68vh' }}>
+        <Table data-testid="part-search-table">
+          <thead>
+            <tr>
+              <th>Total Qty <span className="parts-search__total-qty">{ getTotalQty() }</span></th>
+              <th>Part Number</th>
+              <th>Entry Date</th>
+              <th>Qty</th>
+              <th>Description</th>
+              <th>Stock Number</th>
+              <th>Location</th>
+              <th>Remarks</th>
+              <th>Our Cost</th>
+              <th>New Price</th>
+              <th>Reman Price</th>
+              <th>Serial Number</th>
+              <th>HP</th>
+            </tr>
+          </thead>
+          <tbody className="parts-list">
+            {parts && parts.map((part: Part, i) => {
+              const status = extractStatusColors(part.remarks);
+              return (
+                <tr key={i}>
+                  <td className="parts-list__left-col table-buttons">
+                    <Button variant={['x-small']} onClick={() => quotePart(part)} data-testid="quote-part-btn">Quote Part</Button>
+                    <Button variant={['x-small']} onClick={() => onOpenSelectHandwrittenDialog(part)} data-testid="add-item-btn">Add to Handwritten</Button>
+                  </td>
+                  <td>
+                    <div className="parts-list__left-content">
+                      {part.imageExists &&
+                        <Button
+                          variant={['plain', 'hover-move']}
+                          style={{ padding: '0.1rem' }}
+                          onClick={() => openPartImages(part)}
+                        >
+                          <Image src="/images/icons/image.svg" alt="detail" width={20} height={20} style={{ alignSelf: 'center' }} />
+                        </Button>
+                      }
+                      <Link href={`/part/${part.id}`} data-testid="part-num-link">{ part.partNum }</Link>
+                    </div>  
+                  </td>
+                  <td>{ formatDate(part.entryDate) }</td>
+                  <td style={part.qty > 0 ? {} : { color: 'var(--red-2)', fontWeight: 'bold' }} data-testid="qty">{ part.qty }</td>
+                  <td style={{ width: '16rem' }}>{ part.desc }</td>
+                  <td>
+                    <div className="parts-list__left-content">
+                      {part.snImageExists &&
+                        <Button
+                          variant={['plain', 'hover-move']}
+                          style={{ padding: '0.1rem' }}
+                          onClick={() => openStockNumImages(part)}
+                        >
+                          <Image src="/images/icons/image.svg" alt="detail" width={20} height={20} style={{ alignSelf: 'center' }} />
+                        </Button>
+                      }
+                      <span data-testid="stock-num">{ part.stockNum }</span>
+                    </div>
+                  </td>
+                  <td>{ part.location }</td>
+                  <td style={{ width:'22rem', fontSize:'var(--font-xsm)', backgroundColor:`var(--status-${status})`, color: `${status ? 'black' : 'white'}` }}>
+                    { part.remarks }
+                  </td>
+                  <td style={partCostStyles(part)}>{ formatCurrency(part.purchasePrice) }</td>
+                  <td style={{ fontSize: 'var(--font-xsm)' }}>
+                    <strong>List:</strong> { formatCurrency(part.listPrice) }<br />
+                    <strong>Fleet:</strong> { formatCurrency(part.fleetPrice) }
+                  </td>
+                  <td>{ formatCurrency(part.remanListPrice) }</td>
+                  <td>{ (part as any).serialNum }</td>
+                  <td>{ (part as any).horsePower }</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </Table>
+
+        <Pagination
+          data={partsData}
+          setData={onChangePage}
+          minData={partsQty}
+          pageSize={limit}
+        />
+      </div>
+      { parts.length === 0 && <p>No parts data found...</p> }
+    </>
+  );
+}

@@ -1,7 +1,7 @@
 import Button from "@/components/Library/Button";
 import Dialog from "@/components/Library/Dialog";
 import Input from "@/components/Library/Input";
-import { reportRecentSearches } from "@/scripts/controllers/reportsController";
+import { reportRecentSearches } from "@/scripts/services/reportsService";
 import { useState } from "react";
 
 interface Props {

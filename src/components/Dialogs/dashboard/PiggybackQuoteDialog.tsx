@@ -5,11 +5,11 @@ import Pagination from "@/components/Library/Pagination";
 import { useAtom } from "jotai";
 import { showSoldPartsAtom, userAtom } from "@/scripts/atoms/state";
 import Button from "@/components/Library/Button";
-import { getCustomerById } from "@/scripts/controllers/customerController";
-import { getPartById, getPartsQty, getSomeParts } from "@/scripts/controllers/partsController";
+import { getCustomerById } from "@/scripts/services/customerService";
+import { getPartById, getPartsQty, getSomeParts } from "@/scripts/services/partsService";
 import PiggybackPartSearchDialog from "./PiggybackPartSearchDialog";
 import Loading from "@/components/Library/Loading";
-import { addQuote, piggybackQuote } from "@/scripts/controllers/quotesController";
+import { addQuote, piggybackQuote } from "@/scripts/services/quotesService";
 
 interface Props {
   open: boolean

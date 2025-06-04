@@ -4,7 +4,7 @@ import Table from "../../Library/Table";
 import Link from "../../Library/Link";
 import { getSalesByYear } from "@/scripts/tools/search";
 import { useEffect, useState } from "react";
-import { getSalesInfo, searchParts } from "@/scripts/controllers/partsController";
+import { getSalesInfo, searchParts } from "@/scripts/services/partsService";
 
 interface Props {
   open: boolean

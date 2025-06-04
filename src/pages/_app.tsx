@@ -2,7 +2,7 @@ import { Provider } from 'jotai';
 import GlobalData from '@/components/GlobalData';
 import { useEffect } from 'react';
 import { APIProvider } from "@vis.gl/react-google-maps";
-import { addTab, getTabsByUser } from '@/scripts/controllers/tabsController';
+import { addTab, getTabsByUser } from '@/scripts/services/tabsService';
 import { useNavState } from '@/components/Navbar/useNavState';
 import '../styles/globals.scss';
 

@@ -5,7 +5,7 @@ import { Layout } from "@/components/Layout";
 import Button from "@/components/Library/Button";
 import Table from "@/components/Library/Table";
 import { userAtom } from "@/scripts/atoms/state";
-import { getAllSurplus } from "@/scripts/controllers/surplusController";
+import { getAllSurplus } from "@/scripts/services/surplusService";
 import { formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
 import { useAtom } from "jotai";
 import { useEffect, useState } from "react";

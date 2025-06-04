@@ -1,10 +1,10 @@
 import { formatCurrency } from "@/scripts/tools/stringUtils";
 import Table from "./Library/Table";
 import Checkbox from "./Library/Checkbox";
-import { editReturnItem } from "@/scripts/controllers/returnsController";
+import { editReturnItem } from "@/scripts/services/returnsService";
 import Button from "./Library/Button";
 import { confirm } from "@/scripts/config/tauri";
-import { editPart } from "@/scripts/controllers/partsController";
+import { editPart } from "@/scripts/services/partsService";
 import { useNavState } from "./Navbar/useNavState";
 
 interface Props {

@@ -7,7 +7,7 @@ import Loading from "@/components/Library/Loading";
 import Table from "@/components/Library/Table";
 import PurchaseOrderItemsTable from "@/components/PurchaseOrderItemsTable";
 import { userAtom } from "@/scripts/atoms/state";
-import { deletePurchaseOrder, getPurchaseOrderByPoNum, togglePurchaseOrderReceived } from "@/scripts/controllers/purchaseOrderController";
+import { deletePurchaseOrder, getPurchaseOrderByPoNum, togglePurchaseOrderReceived } from "@/scripts/services/purchaseOrderService";
 import { formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
 import { setTitle } from "@/scripts/tools/utils";
 import { useAtom } from "jotai";

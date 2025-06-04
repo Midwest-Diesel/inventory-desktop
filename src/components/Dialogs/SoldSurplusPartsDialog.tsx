@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import Dialog from "../Library/Dialog";
 import Table from "../Library/Table";
-import { getSurplusSoldParts } from "@/scripts/controllers/surplusController";
+import { getSurplusSoldParts } from "@/scripts/services/surplusService";
 import { formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
 import Link from "../Library/Link";
 

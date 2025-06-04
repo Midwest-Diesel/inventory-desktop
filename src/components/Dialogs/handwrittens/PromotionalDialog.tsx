@@ -3,7 +3,7 @@ import Dialog from "../../Library/Dialog";
 import Table from "../../Library/Table";
 import Input from "@/components/Library/Input";
 import Button from "@/components/Library/Button";
-import { editHandwrittenPromotionals } from "@/scripts/controllers/handwrittensController";
+import { editHandwrittenPromotionals } from "@/scripts/services/handwrittensService";
 
 interface Props {
   open: boolean

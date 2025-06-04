@@ -1,5 +1,5 @@
 import { errorAtom, sourcesAtom } from "@/scripts/atoms/state";
-import { addHandwrittenItem, deleteHandwrittenItem, editHandwritten, editHandwrittenItems, editHandwrittenTaxable, getHandwrittenEmails } from "@/scripts/controllers/handwrittensController";
+import { addHandwrittenItem, deleteHandwrittenItem, editHandwritten, editHandwrittenItems, editHandwrittenTaxable, getHandwrittenEmails } from "@/scripts/services/handwrittensService";
 import { useAtom } from "jotai";
 import { FormEvent, Fragment, useEffect, useState } from "react";
 import GridItem from "./Library/Grid/GridItem";
@@ -10,17 +10,17 @@ import { formatCurrency, formatDate, parseDateInputValue } from "@/scripts/tools
 import Button from "./Library/Button";
 import Table from "./Library/Table";
 import CustomerDropdown from "./Library/Select/CustomerDropdown";
-import { getCustomerByName } from "@/scripts/controllers/customerController";
-import { getAllSources } from "@/scripts/controllers/sourcesController";
-import { deleteCoreByItemId, editCoreCustomer } from "@/scripts/controllers/coresController";
+import { getCustomerByName } from "@/scripts/services/customerService";
+import { getAllSources } from "@/scripts/services/sourcesService";
+import { deleteCoreByItemId, editCoreCustomer } from "@/scripts/services/coresService";
 import ShippingListDialog from "./Dialogs/handwrittens/ShippingListDialog";
 import Checkbox from "./Library/Checkbox";
 import { PreventNavigation } from "./PreventNavigation";
 import ChangeCustomerInfoDialog from "./Dialogs/handwrittens/ChangeCustomerInfoDialog";
-import { addTrackingNumber, deleteTrackingNumber, editTrackingNumber } from "@/scripts/controllers/trackingNumbersController";
+import { addTrackingNumber, deleteTrackingNumber, editTrackingNumber } from "@/scripts/services/trackingNumbersService";
 import FreightCarrierSelect from "./Library/Select/FreightCarrierSelect";
-import { getFreightCarrierById } from "@/scripts/controllers/freightCarriersController";
-import { getAllUsers } from "@/scripts/controllers/userController";
+import { getFreightCarrierById } from "@/scripts/services/freightCarriersService";
+import { getAllUsers } from "@/scripts/services/userService";
 import CreditCardBlock from "./CreditCardBlock";
 import Dropdown from "./Library/Dropdown/Dropdown";
 import DropdownOption from "./Library/Dropdown/DropdownOption";
@@ -29,7 +29,7 @@ import PromotionalDialog from "./Dialogs/handwrittens/PromotionalDialog";
 import Loading from "./Library/Loading";
 import { ask } from "@tauri-apps/api/dialog";
 import { usePrintQue } from "./PrintableComponents/usePrintQue";
-import { addAltShipAddress, getAltShipByCustomerId } from "@/scripts/controllers/altShipController";
+import { addAltShipAddress, getAltShipByCustomerId } from "@/scripts/services/altShipService";
 import AltShipDialog from "./Dialogs/handwrittens/AltShipDialog";
 
 interface Props {
