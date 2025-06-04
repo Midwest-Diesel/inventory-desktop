@@ -2,7 +2,7 @@ import { Layout } from "@/components/Layout";
 import { useParams } from "next/navigation";
 import Image from "next/image";
 import { formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { getImagesFromPart, getImagesFromStockNum } from "@/scripts/services/imagesService";
 import Table from "@/components/Library/Table";
 import Button from "@/components/Library/Button";
@@ -30,7 +30,6 @@ export default function PartDetails() {
   const { closeBtn, push } = useNavState();
   const { addToQue, printQue } = usePrintQue();
   const params = useParams();
-  const printRef = useRef<HTMLDivElement>(null);
   const [user] = useAtom<User>(userAtom);
   const [part, setPart] = useState<Part | null>(null);
   const [engine, setEngine] = useState<Engine | null>(null);
