@@ -18,18 +18,18 @@ interface HandwrittenSearchData {
 
 
 export const parseHandwrittenRes = (data: any) => {
-  return data.map((invoice: any) => {
+  return data.map((handwritten: any) => {
     return {
-      ...invoice,
-      date: invoice.date && parseResDate(invoice.date),
-      handwrittenItems: filterNullObjValuesArr(invoice.handwrittenItems.filter((item: HandwrittenItem) => item)).map((item: any) => {
+      ...handwritten,
+      date: handwritten.date && parseResDate(handwritten.date),
+      handwrittenItems: filterNullObjValuesArr(handwritten.handwrittenItems.filter((item: HandwrittenItem) => item)).map((item: any) => {
         return {
           ...item,
           date: item.date && parseResDate(item.date),
           invoiceItemChildren: item.invoiceItemChildren ? item.invoiceItemChildren : []
         };
       }).sort((a: any, b: any) => a.id - b.id).reverse(),
-      coreReturns: invoice.coreReturns ? invoice.coreReturns.map((item: any) => {
+      coreReturns: handwritten.coreReturns ? handwritten.coreReturns.map((item: any) => {
         return {
           ...item,
           date: item.date && parseResDate(item.date),

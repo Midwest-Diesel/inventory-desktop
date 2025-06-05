@@ -5,17 +5,12 @@ export const formatDate = (date: Date | null | undefined): string => {
 
 export const parseResDate = (date: string): Date | null => {
   if (!date || typeof date !== 'string') return null;
-  const [datePart, timePart] = date.split('T');
-  const dateChars = datePart.split('-');
-  const timeChars = timePart ? timePart.split(':') : [0, 0, 0];
-  const parsedDate = new Date(
-    Number(dateChars[0]),
-    Number(dateChars[1]) - 1,
-    Number(dateChars[2]),
-    Number(timeChars[0]),
-    Number(timeChars[1]),
-  );
-  return parsedDate;
+  if (date.includes('T')) {
+    const parsed = new Date(date);
+    return isNaN(parsed.getTime()) ? null : parsed;
+  }
+  const [year, month, day] = date.split('-').map(Number);
+  return new Date(Date.UTC(year, month - 1, day + 1));
 };
 
 export const formatTime = (date: Date): string => {

@@ -45,7 +45,7 @@ const parseQuotesRes = (data: any) => {
 
 // === GET routes === //
 
-export const getSomeQuotes = async (page: number, limit: number, partNum: string, customerId: number, isEngineQuote = false) => {
+export const getSomeQuotes = async (page: number, limit: number, partNum: string, customerId: number, isEngineQuote = false): Promise<{ minItems: number[], rows: Quote[] }> => {
   try {
     const auth = { withCredentials: true };
     const res = await api.get(`/api/quotes/limit/${JSON.stringify({ page: (page - 1) * limit, limit, partNum, customerId, isEngineQuote })}`, auth);
@@ -53,6 +53,7 @@ export const getSomeQuotes = async (page: number, limit: number, partNum: string
     return res.data;
   } catch (err) {
     console.error(err);
+    return { minItems: [], rows: [] }
   }
 };
 

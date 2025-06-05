@@ -8,13 +8,14 @@ import RecentQuotes from "@/components/Dashboard/RecentQuotes";
 import { addHandwrittenItem, addHandwrittenItemChild, editHandwrittenItems, editHandwrittenOrderNotes } from "@/scripts/services/handwrittensService";
 import SelectHandwrittenDialog from "@/components/Dialogs/dashboard/SelectHandwrittenDialog";
 import { listen } from '@tauri-apps/api/event';
-import { toggleQuoteSold } from "@/scripts/services/quotesService";
+import { addQuote, getSomeQuotes, toggleQuoteSold } from "@/scripts/services/quotesService";
 import { useNavState } from "@/components/Navbar/useNavState";
 import { getPartById, getPartCostIn } from "@/scripts/services/partsService";
 import { ask } from "@tauri-apps/api/dialog";
 import CustomerSection from "./CustomerSection";
 import QuotesSection from "./QuotesSection";
 import PartSearchSection from "./PartSearchSection";
+import Toast from "@/components/Library/Toast";
 
 
 export default function DashboardContainer() {
@@ -28,6 +29,11 @@ export default function DashboardContainer() {
   const [selectedHandwrittenPart, setSelectedHandwrittenPart] = useState<Part | null>(null);
   const [quotes, setQuotes] = useState<Quote[]>([]);
   const [handwrittenQuote, setHandwrittenQuote] = useState<Quote | null>(null);
+  const [quoteEdited, setQuoteEdited] = useState<Quote | null>(null);
+  const [newQuoteToastOpen, setNewQuoteToastOpen] = useState(false);
+  const [filterByCustomer, setFilterByCustomer] = useState(false);
+  const [filterByPart, setFilterByPart] = useState(false);
+  const [quoteListType, setQuoteListType] = useState<'part' | 'engine'>('part');
   
   useEffect(() => {
     const fetchData = async () => {
@@ -102,9 +108,37 @@ export default function DashboardContainer() {
     }
   };
 
+  const handleNewQuote = async (part?: Part) => {
+    const newQuote: any = {
+      date: new Date(),
+      source: null,
+      customerId: customer?.id,
+      contact: customer ? customer.contact : '',
+      phone: customer ? customer.phone : '',
+      state: customer ? customer.billToState : '',
+      partNum: part?.partNum,
+      desc: part?.desc,
+      stockNum: part?.stockNum,
+      price: 0,
+      notes: null,
+      salesmanId: user.id,
+      partId: part?.id
+    };
+    await addQuote(newQuote);
+    const res = await getSomeQuotes(1, 26, '', 0, false);
+    setQuotes(res.rows);
+    setNewQuoteToastOpen(true);
+    setFilterByCustomer(false);
+    setFilterByPart(false);
+    setQuoteListType('part');
+    setQuoteEdited(res.rows[0]);
+  };
+
 
   return (
     <main>
+      <Toast msg="Created quote" type="success" open={newQuoteToastOpen} setOpen={setNewQuoteToastOpen} />
+
       {selectedHandwrittenPart &&
         <SelectHandwrittenDialog
           open={selectHandwrittenOpen}
@@ -127,11 +161,21 @@ export default function DashboardContainer() {
         setHandwrittenCustomer={setHandwrittenCustomer}
         setSelectHandwrittenOpen={setSelectHandwrittenOpen}
         setSelectedHandwrittenPart={setSelectedHandwrittenPart}
+        setFilterByCustomer={setFilterByCustomer}
+        setFilterByPart={setFilterByPart}
+        setQuoteListType={setQuoteListType}
+        setQuoteEdited={setQuoteEdited}
+        quoteEdited={quoteEdited}
+        filterByCustomer={filterByCustomer}
+        filterByPart={filterByPart}
+        quoteListType={quoteListType}
+        handleNewQuote={handleNewQuote}
       />
       <PartSearchSection
         selectHandwrittenOpen={selectHandwrittenOpen}
         setSelectHandwrittenOpen={setSelectHandwrittenOpen}
         setSelectedHandwrittenPart={setSelectedHandwrittenPart}
+        handleNewQuote={handleNewQuote}
       />
     </main>
   );

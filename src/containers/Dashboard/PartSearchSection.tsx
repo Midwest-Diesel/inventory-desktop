@@ -24,10 +24,11 @@ interface Props {
   selectHandwrittenOpen: boolean
   setSelectHandwrittenOpen: (value: boolean) => void
   setSelectedHandwrittenPart: (part: Part) => void
+  handleNewQuote: (part?: Part) => Promise<void>
 }
 
 
-export default function PartSearchSection({ selectHandwrittenOpen, setSelectHandwrittenOpen, setSelectedHandwrittenPart }: Props) {
+export default function PartSearchSection({ selectHandwrittenOpen, setSelectHandwrittenOpen, setSelectedHandwrittenPart, handleNewQuote }: Props) {
   const [user] = useAtom<User>(userAtom);
   const [partsQty, setPartsQty] = useAtom<number[]>(partsQtyAtom);
   const [quotesData, setQuotesData] = useAtom<Quote[]>(quotesAtom);
@@ -113,25 +114,7 @@ export default function PartSearchSection({ selectHandwrittenOpen, setSelectHand
   };
 
   const quotePart = async (part: Part) => {
-    const newQuote = {
-      source: null,
-      customerId: selectedCustomer.id,
-      contact: selectedCustomer.contact,
-      phone: selectedCustomer.phone,
-      state: selectedCustomer.billToState,
-      partNum: part.partNum,
-      desc: part.desc,
-      stockNum: part.stockNum,
-      price: 0,
-      notes: '',
-      salesmanId: user.id,
-      date: new Date(),
-      rating: part.rating,
-      email: selectedCustomer.email,
-      partId: part.id
-    } as any;
-    await addQuote(newQuote);
-    setQuotesData([{ ...newQuote, customer: selectedCustomer, part: part, salesman: user }, ...quotesData]);
+    await handleNewQuote(part);
   };
 
   const onOpenSelectHandwrittenDialog = (part: Part) => {
