@@ -2,52 +2,53 @@ import { errorAtom, sourcesAtom } from "@/scripts/atoms/state";
 import { addHandwrittenItem, deleteHandwrittenItem, editHandwritten, editHandwrittenItems, editHandwrittenTaxable, getHandwrittenEmails } from "@/scripts/services/handwrittensService";
 import { useAtom } from "jotai";
 import { FormEvent, Fragment, useEffect, useState } from "react";
-import GridItem from "./Library/Grid/GridItem";
-import Input from "./Library/Input";
-import Grid from "./Library/Grid/Grid";
-import Select from "./Library/Select/Select";
+import GridItem from "../Library/Grid/GridItem";
+import Input from "../Library/Input";
+import Grid from "../Library/Grid/Grid";
+import Select from "../Library/Select/Select";
 import { formatCurrency, formatDate, parseDateInputValue } from "@/scripts/tools/stringUtils";
-import Button from "./Library/Button";
-import Table from "./Library/Table";
-import CustomerDropdown from "./Library/Select/CustomerDropdown";
+import Button from "../Library/Button";
+import Table from "../Library/Table";
+import CustomerDropdown from "../Library/Select/CustomerDropdown";
 import { getCustomerByName } from "@/scripts/services/customerService";
 import { getAllSources } from "@/scripts/services/sourcesService";
 import { deleteCoreByItemId, editCoreCustomer } from "@/scripts/services/coresService";
-import ShippingListDialog from "./Dialogs/handwrittens/ShippingListDialog";
-import Checkbox from "./Library/Checkbox";
-import { PreventNavigation } from "./PreventNavigation";
-import ChangeCustomerInfoDialog from "./Dialogs/handwrittens/ChangeCustomerInfoDialog";
+import ShippingListDialog from "../Dialogs/handwrittens/ShippingListDialog";
+import Checkbox from "../Library/Checkbox";
+import { PreventNavigation } from "../PreventNavigation";
+import ChangeCustomerInfoDialog from "../Dialogs/handwrittens/ChangeCustomerInfoDialog";
 import { addTrackingNumber, deleteTrackingNumber, editTrackingNumber } from "@/scripts/services/trackingNumbersService";
-import FreightCarrierSelect from "./Library/Select/FreightCarrierSelect";
+import FreightCarrierSelect from "../Library/Select/FreightCarrierSelect";
 import { getFreightCarrierById } from "@/scripts/services/freightCarriersService";
 import { getAllUsers } from "@/scripts/services/userService";
-import CreditCardBlock from "./CreditCardBlock";
-import Dropdown from "./Library/Dropdown/Dropdown";
-import DropdownOption from "./Library/Dropdown/DropdownOption";
+import CreditCardBlock from "../CreditCardBlock";
+import Dropdown from "../Library/Dropdown/Dropdown";
+import DropdownOption from "../Library/Dropdown/DropdownOption";
 import { arrayOfObjectsMatch } from "@/scripts/tools/utils";
-import PromotionalDialog from "./Dialogs/handwrittens/PromotionalDialog";
-import Loading from "./Library/Loading";
+import PromotionalDialog from "../Dialogs/handwrittens/PromotionalDialog";
+import Loading from "../Library/Loading";
 import { ask } from "@tauri-apps/api/dialog";
-import { usePrintQue } from "./PrintableComponents/usePrintQue";
-import { addAltShipAddress, getAltShipByCustomerId } from "@/scripts/services/altShipService";
-import AltShipDialog from "./Dialogs/handwrittens/AltShipDialog";
+import { usePrintQue } from "../PrintableComponents/usePrintQue";
+import { getAltShipByCustomerId } from "@/scripts/services/altShipService";
+import AltShipDialog from "../Dialogs/handwrittens/AltShipDialog";
 
 interface Props {
   handwritten: Handwritten
   setHandwritten: (handwritten: Handwritten | null) => void
+  handleAltShip: () => Promise<void>
   setIsEditing: (value: boolean) => void
   setPromptLeaveWindow: (value: boolean) => void
-  cardNum: number
+  cardNum: string
   expDate: string
-  cvv: number
+  cvv: string
   cardZip: string
   cardName: string
   cardAddress: string
   payment: string
   setPayment: (value: string) => void
-  setCardNum: (value: number) => void
+  setCardNum: (value: string) => void
   setExpDate: (value: string) => void
-  setCvv: (value: number) => void
+  setCvv: (value: string) => void
   setCardZip: (value: string) => void
   setCardName: (value: string) => void
   setCardAddress: (value: string) => void
@@ -57,6 +58,7 @@ interface Props {
 export default function EditHandwrittenDetails({
   handwritten,
   setHandwritten,
+  handleAltShip,
   setIsEditing,
   setPromptLeaveWindow,
   cardNum,
@@ -302,6 +304,14 @@ export default function EditHandwrittenDetails({
     }
   };
 
+  const stopEditing = async () => {
+    if (changesSaved) {
+      setIsEditing(false);
+    } else if (await ask('Do you want to leave without saving?')) {
+      setIsEditing(false);
+    }
+  };
+
   const printHandwritten = async (hasCore: boolean, handwritten: Handwritten) => {
     setLoading(true);
     const itemTotals: number[] = handwrittenItems.map((item) => (item.qty ?? 0) * (item.unitPrice ?? 0));
@@ -391,27 +401,6 @@ export default function EditHandwrittenDetails({
     if (!cardNum || !expDate || !cvv) return;
     addToQue('ccLabel', 'print_cc_label', { cardNum, expDate, cvv, cardZip, cardName, cardAddress }, '230.4px', '120px');
     printQue();
-  };
-
-  const handleAltShip = async () => {
-    const altShip = await getAltShipByCustomerId(handwritten.customer.id);
-    if (altShip.some((a: AltShip) => (
-      a.shipToAddress === handwritten.shipToAddress &&
-      a.shipToAddress2 === handwritten.shipToAddress2 &&
-      a.shipToCity === handwritten.shipToCity &&
-      a.shipToState === handwritten.shipToState &&
-      a.shipToZip === handwritten.shipToZip &&
-      a.shipToCompany === handwritten.shipToCompany
-    ))) return;
-    await addAltShipAddress({
-      customerId: handwritten.customer.id,
-      shipToAddress: handwritten.shipToAddress ?? '',
-      shipToAddress2: handwritten.shipToAddress2 ?? '',
-      shipToCity: handwritten.shipToCity ?? '',
-      shipToState: handwritten.shipToState ?? '',
-      shipToZip: handwritten.shipToZip ?? '',
-      shipToCompany: handwritten.shipToCompany ?? ''
-    } as AltShip);
   };
 
   const editHandwrittenItem = (item: HandwrittenItem, i: number) => {
@@ -703,7 +692,7 @@ export default function EditHandwrittenDetails({
                 <Button
                   className="edit-handwritten-details__close-btn"
                   type="button"
-                  onClick={() => setIsEditing(false)}
+                  onClick={stopEditing}
                   data-testid="stop-edit-btn"
                 >
                   Stop Editing

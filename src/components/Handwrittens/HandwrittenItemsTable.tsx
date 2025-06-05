@@ -1,11 +1,11 @@
 import { cap, formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
-import Table from "./Library/Table";
-import Button from "./Library/Button";
+import Table from "../Library/Table";
+import Button from "../Library/Button";
 import { addHandwrittenItem } from "@/scripts/services/handwrittensService";
 import { addCore } from "@/scripts/services/coresService";
-import HandwrittenChildrenDialog from "./Dialogs/handwrittens/HandwrittenChildrenDialog";
+import HandwrittenChildrenDialog from "../Dialogs/handwrittens/HandwrittenChildrenDialog";
 import { useEffect, useState } from "react";
-import Toast from "./Library/Toast";
+import Toast from "../Library/Toast";
 import { confirm } from "@/scripts/config/tauri";
 import { ask } from "@tauri-apps/api/dialog";
 
