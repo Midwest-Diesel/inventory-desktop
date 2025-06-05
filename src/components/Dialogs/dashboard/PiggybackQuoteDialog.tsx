@@ -1,4 +1,4 @@
-import { MouseEvent, useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import Dialog from "../../Library/Dialog";
 import Table from "@/components/Library/Table";
 import Pagination from "@/components/Library/Pagination";
@@ -15,7 +15,7 @@ interface Props {
   open: boolean
   setOpen: (open: boolean) => void
   quote: Quote
-  handleChangeQuotesPage: (_: any, page: number) => void
+  handleChangeQuotesPage: (_: any, page: number) => Promise<void>
   quotesPage: number
 }
 
@@ -91,8 +91,8 @@ export default function PiggybackQuoteDialog({ open, setOpen, quote, handleChang
       email: customer?.email,
       partId: part?.id
     };
-    const id = await addQuote(newQuote) as any;
-    await piggybackQuote(quote.id, id);
+    const id = await addQuote(newQuote);
+    await piggybackQuote(quote.id, Number(id));
     await handleChangeQuotesPage(null, quotesPage);
     setOpen(false);
   };

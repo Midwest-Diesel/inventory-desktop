@@ -53,7 +53,7 @@ export const getSomeQuotes = async (page: number, limit: number, partNum: string
     return res.data;
   } catch (err) {
     console.error(err);
-    return { minItems: [], rows: [] }
+    return { minItems: [], rows: [] };
   }
 };
 
