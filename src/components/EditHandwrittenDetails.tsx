@@ -715,89 +715,8 @@ export default function EditHandwrittenDetails({
               <Button type="button" onClick={() => setAltShipOpen(!altShipOpen)} disabled={altShipData.length === 0}>Alt Ship</Button>
             </div>
 
-            <Grid rows={1} cols={12} gap={1}>
-              <GridItem colStart={1} colEnd={4} breakpoints={[{ width: 1600, colStart: 1, colEnd: 8 }]} variant={['low-opacity-bg']}>
-                <Table variant={['plain', 'edit-row-details']}>
-                  <tbody>
-                    <tr>
-                      <th>Date</th>
-                      <td>
-                        <Input
-                          variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
-                          value={parseDateInputValue(date)}
-                          type="date"
-                          onChange={(e: any) => setDate(new Date(e.target.value))}
-                        />
-                      </td>
-                    </tr>
-                    <tr>
-                      <th>Customer</th>
-                      <td>
-                        <CustomerDropdown
-                          variant={['fill', 'label-full-width', 'label-full-height', 'no-margin']}
-                          value={company}
-                          onChange={(value: any) => setCompany(value)}
-                          maxHeight="15rem"
-                        />
-                      </td>
-                    </tr>
-                    <tr>
-                      <th>PO Number</th>
-                      <td>
-                        <Input
-                          variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
-                          value={poNum}
-                          onChange={(e: any) => setPoNum(e.target.value)}
-                          data-testid="po-num"
-                        />
-                      </td>
-                    </tr>
-                    <tr>
-                      <th>Source</th>
-                      <td>
-                        <Select
-                          variant={['label-space-between']}
-                          value={source}
-                          onChange={(e: any) => setSource(e.target.value)}
-                          data-testid="source"
-                        >
-                          <option value="">-- SELECT A SOURCE --</option>
-                          {sourcesData.map((source: string, i) => {
-                            return <option key={i} value={source}>{source}</option>;
-                          })}
-                        </Select>
-                      </td>
-                    </tr>
-                    <tr>
-                      <th>Sold By</th>
-                      <td>
-                        <Select
-                          variant={['label-space-between']}
-                          value={soldBy}
-                          onChange={(e: any) => setSoldBy(Number(e.target.value))}
-                        >
-                          {users.map((user: User) => {
-                            if (user.subtype === 'sales') return <option key={user.id} value={user.id}>{ user.initials }</option>;
-                          })}
-                        </Select>
-                      </td>
-                    </tr>
-                    <tr>
-                      <th>Contact</th>
-                      <td>
-                        <Input
-                          variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
-                          value={contact}
-                          onChange={(e: any) => setContact(e.target.value)}
-                          data-testid="contact"
-                        />
-                      </td>
-                    </tr>
-                  </tbody>
-                </Table>
-              </GridItem>
-
-              <GridItem colStart={4} colEnd={8} breakpoints={[{ width: 1600, colStart: 1, colEnd: 6 }]} variant={['low-opacity-bg']}>
+            <Grid rows={1} cols={11} gap={1}>
+              <GridItem colStart={1} colEnd={5} breakpoints={[{ width: 1600, colStart: 1, colEnd: 6 }]} variant={['low-opacity-bg']}>
                 <Table variant={['plain', 'edit-row-details']}>
                   <tbody>
                     <tr>
@@ -880,96 +799,8 @@ export default function EditHandwrittenDetails({
                   </tbody>
                 </Table>
               </GridItem>
-
-              <GridItem colStart={8} colEnd={12} breakpoints={[{ width: 1600, colStart: 6, colEnd: 12 }]} variant={['low-opacity-bg']}>
-                <Table variant={['plain', 'edit-row-details']}>
-                  <tbody>
-                    <tr>
-                      <th>Shipping Company</th>
-                      <td>
-                        <Input
-                          variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
-                          value={shipToCompany}
-                          onChange={(e: any) => setShipToCompany(e.target.value)}
-                          data-testid="ship-to-company"
-                        />
-                      </td>
-                    </tr>
-                    <tr>
-                      <th>Shipping Address</th>
-                      <td>
-                        <Input
-                          variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
-                          value={shipToAddress}
-                          onChange={(e: any) => setShipToAddress(e.target.value)}
-                          data-testid="ship-to-address"
-                        />
-                      </td>
-                    </tr>
-                    <tr>
-                      <th>Shipping Address 2</th>
-                      <td>
-                        <Input
-                          variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
-                          value={shipToAddress2}
-                          onChange={(e: any) => setShipToAddress2(e.target.value)}
-                          data-testid="ship-to-address-2"
-                        />
-                      </td>
-                    </tr>
-                    <tr>
-                      <th>Shipping City</th>
-                      <td>
-                        <Input
-                          variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
-                          value={shipToCity}
-                          onChange={(e: any) => setShipToCity(e.target.value)}
-                          data-testid="ship-to-city"
-                        />
-                      </td>
-                    </tr>
-                    <tr>
-                      <th>Shipping State</th>
-                      <td>
-                        <Input
-                          variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
-                          value={shipToState}
-                          onChange={(e: any) => setShipToState(e.target.value)}
-                          data-testid="ship-to-state"
-                        />
-                      </td>
-                    </tr>
-                    <tr>
-                      <th>Shipping Zip</th>
-                      <td>
-                        <Input
-                          variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
-                          value={shipToZip}
-                          onChange={(e: any) => setShipToZip(e.target.value)}
-                          data-testid="ship-to-zip"
-                        />
-                      </td>
-                    </tr>
-                    <tr>
-                      <th>Ship Via</th>
-                      <td>
-                        <FreightCarrierSelect
-                          variant={['label-bold']}
-                          value={shipViaId ?? ''}
-                          onChange={(e: any) => handleEditShipVia(e.target.value)}
-                          data-testid="ship-via"
-                        />
-                      </td>
-                    </tr>
-                  </tbody>
-                </Table>
-              </GridItem>
-
-              <GridItem colStart={12} colEnd={14} variant={['no-style']}>
-                <Button variant={['xx-small']} onClick={handleSameAsBillTo} type="button">Same as Bill To</Button>
-              </GridItem>
-
-              <GridItem colStart={3} colEnd={7} rowEnd={3} variant={['low-opacity-bg']} className="no-print">
+              
+              <GridItem colStart={5} colEnd={9} variant={['low-opacity-bg']} className="no-print">
                 <CreditCardBlock
                   handwritten={handwritten}
                   setPromptLeaveWindow={setPromptLeaveWindow}
@@ -990,7 +821,178 @@ export default function EditHandwrittenDetails({
                 />
               </GridItem>
 
-              <GridItem colStart={7} colEnd={11} variant={['low-opacity-bg']}>
+              <GridItem colStart={9} colEnd={12} breakpoints={[{ width: 1600, colStart: 1, colEnd: 8 }]} variant={['low-opacity-bg']}>
+                <Table variant={['plain', 'edit-row-details']}>
+                  <tbody>
+                    <tr>
+                      <th>Date</th>
+                      <td>
+                        <Input
+                          variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+                          value={parseDateInputValue(date)}
+                          type="date"
+                          onChange={(e: any) => setDate(new Date(e.target.value))}
+                        />
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>Customer</th>
+                      <td>
+                        <CustomerDropdown
+                          variant={['fill', 'label-full-width', 'label-full-height', 'no-margin']}
+                          value={company}
+                          onChange={(value: any) => setCompany(value)}
+                          maxHeight="15rem"
+                        />
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>PO Number</th>
+                      <td>
+                        <Input
+                          variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+                          value={poNum}
+                          onChange={(e: any) => setPoNum(e.target.value)}
+                          data-testid="po-num"
+                        />
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>Source</th>
+                      <td>
+                        <Select
+                          variant={['label-space-between']}
+                          value={source}
+                          onChange={(e: any) => setSource(e.target.value)}
+                          data-testid="source"
+                        >
+                          <option value="">-- SELECT A SOURCE --</option>
+                          {sourcesData.map((source: string, i) => {
+                            return <option key={i} value={source}>{source}</option>;
+                          })}
+                        </Select>
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>Sold By</th>
+                      <td>
+                        <Select
+                          variant={['label-space-between']}
+                          value={soldBy}
+                          onChange={(e: any) => setSoldBy(Number(e.target.value))}
+                        >
+                          {users.map((user: User) => {
+                            if (user.subtype === 'sales') return <option key={user.id} value={user.id}>{ user.initials }</option>;
+                          })}
+                        </Select>
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>Contact</th>
+                      <td>
+                        <Input
+                          variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+                          value={contact}
+                          onChange={(e: any) => setContact(e.target.value)}
+                          data-testid="contact"
+                        />
+                      </td>
+                    </tr>
+                  </tbody>
+                </Table>
+              </GridItem>
+
+              <GridItem colStart={1} colEnd={5} breakpoints={[{ width: 1600, colStart: 6, colEnd: 12 }]} variant={['no-style']}>
+                <GridItem variant={['no-style']}>
+                  <Button variant={['xx-small']} onClick={handleSameAsBillTo} type="button">Same as Bill To</Button>
+                </GridItem>
+
+                <GridItem variant={['low-opacity-bg']}>
+                  <Table variant={['plain', 'edit-row-details']}>
+                    <tbody>
+                      <tr>
+                        <th>Shipping Company</th>
+                        <td>
+                          <Input
+                            variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+                            value={shipToCompany}
+                            onChange={(e: any) => setShipToCompany(e.target.value)}
+                            data-testid="ship-to-company"
+                          />
+                        </td>
+                      </tr>
+                      <tr>
+                        <th>Shipping Address</th>
+                        <td>
+                          <Input
+                            variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+                            value={shipToAddress}
+                            onChange={(e: any) => setShipToAddress(e.target.value)}
+                            data-testid="ship-to-address"
+                          />
+                        </td>
+                      </tr>
+                      <tr>
+                        <th>Shipping Address 2</th>
+                        <td>
+                          <Input
+                            variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+                            value={shipToAddress2}
+                            onChange={(e: any) => setShipToAddress2(e.target.value)}
+                            data-testid="ship-to-address-2"
+                          />
+                        </td>
+                      </tr>
+                      <tr>
+                        <th>Shipping City</th>
+                        <td>
+                          <Input
+                            variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+                            value={shipToCity}
+                            onChange={(e: any) => setShipToCity(e.target.value)}
+                            data-testid="ship-to-city"
+                          />
+                        </td>
+                      </tr>
+                      <tr>
+                        <th>Shipping State</th>
+                        <td>
+                          <Input
+                            variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+                            value={shipToState}
+                            onChange={(e: any) => setShipToState(e.target.value)}
+                            data-testid="ship-to-state"
+                          />
+                        </td>
+                      </tr>
+                      <tr>
+                        <th>Shipping Zip</th>
+                        <td>
+                          <Input
+                            variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+                            value={shipToZip}
+                            onChange={(e: any) => setShipToZip(e.target.value)}
+                            data-testid="ship-to-zip"
+                          />
+                        </td>
+                      </tr>
+                      <tr>
+                        <th>Ship Via</th>
+                        <td>
+                          <FreightCarrierSelect
+                            variant={['label-bold']}
+                            value={shipViaId ?? ''}
+                            onChange={(e: any) => handleEditShipVia(e.target.value)}
+                            data-testid="ship-via"
+                          />
+                        </td>
+                      </tr>
+                    </tbody>
+                  </Table>
+                </GridItem>
+              </GridItem>
+
+              <GridItem colStart={5} colEnd={9} variant={['low-opacity-bg']}>
                 <Table variant={['plain', 'edit-row-details']}>
                   <tbody>
                     <tr>

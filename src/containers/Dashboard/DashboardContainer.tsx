@@ -110,8 +110,6 @@ export default function DashboardContainer() {
           open={selectHandwrittenOpen}
           setOpen={setSelectHandwrittenOpen}
           part={selectedHandwrittenPart}
-          customer={handwrittenCustomer}
-          setHandwrittenCustomer={setHandwrittenCustomer}
           onSubmit={handleSubmitNewHandwritten}
         />
       }

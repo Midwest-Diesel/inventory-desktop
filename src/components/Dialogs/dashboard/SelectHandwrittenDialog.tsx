@@ -9,21 +9,18 @@ import Button from "@/components/Library/Button";
 import Checkbox from "@/components/Library/Checkbox";
 import Toast from "@/components/Library/Toast";
 import { useAtom } from "jotai";
-import { errorAtom, selectedCustomerAtom, userAtom } from "@/scripts/atoms/state";
+import { errorAtom, selectedCustomerAtom } from "@/scripts/atoms/state";
 import { ask, message } from "@tauri-apps/api/dialog";
 
 interface Props {
   open: boolean
   setOpen: (open: boolean) => void
   part: Part
-  customer: Customer | null
-  setHandwrittenCustomer: (customer: Customer) => void
   onSubmit: (handwritten: Handwritten, warranty: string, qty: number, desc: string, price: number, stockNum: string, cost: number) => void
 }
 
 
-export default function SelectHandwrittenDialog({ open, setOpen, part, customer, setHandwrittenCustomer, onSubmit }: Props) {
-  const [user] = useAtom<User>(userAtom);
+export default function SelectHandwrittenDialog({ open, setOpen, part, onSubmit }: Props) {
   const [selectedCustomer] = useAtom<Customer>(selectedCustomerAtom);
   const [error, setError] = useAtom<string>(errorAtom);
   const [handwrittensData, setHandwrittensData] = useState<SelectHandwrittenDialogResult[]>([]);
@@ -42,6 +39,7 @@ export default function SelectHandwrittenDialog({ open, setOpen, part, customer,
   const [search, setSearch] = useState('');
   const [toastOpen, setToastOpen] = useState(false);
   const [showWarranty, setShowWarranty] = useState(false);
+  const [showButons, setShowButtons] = useState(true);
   const LIMIT = 26;
   
   useEffect(() => {
@@ -129,6 +127,7 @@ export default function SelectHandwrittenDialog({ open, setOpen, part, customer,
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    setShowButtons(false);
     if (!selectedHandwrittenId) return;
     const handwritten = await getHandwrittenById(selectedHandwrittenId);
     if (!handwritten) return;
@@ -144,10 +143,12 @@ export default function SelectHandwrittenDialog({ open, setOpen, part, customer,
       const cost = part.partsCostIn.reduce((acc, val) => acc + val.cost, 0) || 0.01;
       onSubmit(handwritten, '', Number(qty), desc, Number(price), part.stockNum ?? '', cost);
     }
+    setShowButtons(true);
   };
 
   const handleSubmitWarranty = async (e: FormEvent) => {
     e.preventDefault();
+    setShowButtons(false);
     const handwritten = await getHandwrittenById(selectedHandwrittenId);
     if (!handwritten) return;
 
@@ -163,6 +164,7 @@ export default function SelectHandwrittenDialog({ open, setOpen, part, customer,
     const filteredWar = new Set(fullWar);
     const cost = part.partsCostIn.reduce((acc, val) => acc + val.cost, 0) || 0.01;
     onSubmit(handwritten, [...Array.from(filteredWar)].join('\n').trim(), Number(qty), desc, Number(price), part.stockNum ?? '', cost);
+    setShowButtons(true);
   };
 
 
@@ -213,22 +215,16 @@ export default function SelectHandwrittenDialog({ open, setOpen, part, customer,
                 data-testid="custom-warranty"
               />
             </div>
-            <div className="form__footer">
-              <Button type="submit" data-testid="warranty-submit-btn">Submit</Button>
-              <Button type="submit" onClick={() => setNoVerbage(true)}>Cancel Warranty</Button>
-            </div>
+            {showButons &&
+              <div className="form__footer">
+                <Button type="submit" data-testid="warranty-submit-btn">Submit</Button>
+                <Button type="submit" onClick={() => setNoVerbage(true)}>Cancel Warranty</Button>
+              </div>
+            }
           </form>
           :
           <>
             <form onSubmit={handleSubmit} className="select-handwritten-form">
-              {/* <Button
-                variant={['x-small', 'fit']}
-                onClick={handleNewHandwritten}
-                type="button"
-                disabled={!customer?.company}
-              >
-                New Handwritten
-              </Button> */}
               {part &&
                 <div style={{ display: 'flex', gap: '1rem', marginBottom: '0.3rem' }}>
                   <p><strong>Part Num</strong> { part.partNum }</p>
@@ -263,7 +259,7 @@ export default function SelectHandwrittenDialog({ open, setOpen, part, customer,
                   data-testid="select-handwritten-price"
                 />
               </div>
-              <Button type="submit" variant={['fit']} data-testid="select-handwritten-submit-btn">Add Item to Handwritten</Button>
+              { showButons && <Button type="submit" variant={['fit']} data-testid="select-handwritten-submit-btn">Add Item to Handwritten</Button> }
             </form>
 
             <form
