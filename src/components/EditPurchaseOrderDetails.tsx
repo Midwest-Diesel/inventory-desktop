@@ -8,7 +8,6 @@ import { parseDateInputValue } from "@/scripts/tools/stringUtils";
 import { addPurchaseOrderItem, deletePurchaseOrderItem, editPurchaseOrder, editPurchaseOrderItem, getPurchaseOrderById } from "@/scripts/services/purchaseOrderService";
 import VendorDropdown from "./Library/Dropdown/VendorDropdown";
 import { PreventNavigation } from "./PreventNavigation";
-import { confirm } from "@/scripts/config/tauri";
 import Checkbox from "./Library/Checkbox";
 import { ask } from "@tauri-apps/api/dialog";
 
@@ -90,6 +89,14 @@ export default function EditPoDetails({ poData, setPo, setIsEditing }: Props) {
     setIsEditing(false);
   };
 
+  const stopEditing = async () => {
+    if (changesSaved) {
+      setIsEditing(false);
+    } else if (await ask('Do you want to leave without saving?')) {
+      setIsEditing(false);
+    }
+  };
+
   const handleEditItem = async (item: POItem, i: number) => {
     const newItems = [...poItems];
     newItems[i] = item;
@@ -142,7 +149,7 @@ export default function EditPoDetails({ poData, setPo, setIsEditing }: Props) {
               <Button
                 className="edit-purchase-order-details__close-btn"
                 type="button"
-                onClick={() => setIsEditing(false)}
+                onClick={stopEditing}
               >
                 Stop Editing
               </Button>

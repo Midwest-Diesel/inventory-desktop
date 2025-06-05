@@ -72,7 +72,7 @@ export default function ImportantCustomersMap() {
       const map = new google.maps.Map(mapRef.current, {
         zoom: 9,
         center: startPos,
-        mapId: 'ldT4&DjKDaAaivn%uumtvEya@Jxw9CC',
+        mapId: 'a2dddb21852be68532c48ddd',
         mapTypeControl: false,
         streetViewControl: false,
       });

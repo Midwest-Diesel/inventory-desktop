@@ -12,7 +12,6 @@ import EditEnginePartsTable from "./EditEnginePartsTable";
 import { enginePartsTableAtom } from "@/scripts/atoms/state";
 import { useAtom } from "jotai";
 import { PreventNavigation } from "./PreventNavigation";
-import { confirm } from "@/scripts/config/tauri";
 import { ask } from "@tauri-apps/api/dialog";
 
 interface Props {
@@ -231,6 +230,14 @@ export default function EditEngineDetails({ engine, setEngine, setIsEditing, eng
     setIsEditing(false);
   };
 
+  const stopEditing = async () => {
+    if (changesSaved) {
+      setIsEditing(false);
+    } else if (await ask('Do you want to leave without saving?')) {
+      setIsEditing(false);
+    }
+  };
+
   const handleNewEngineCostInRowChange = (field: keyof EngineCostIn, value: string | number) => {
     setNewEngineCostInRow((prev : EngineCostIn) => ({ ...prev, [field]: value }));
   };
@@ -321,7 +328,7 @@ export default function EditEngineDetails({ engine, setEngine, setIsEditing, eng
               <Button
                 className="edit-engine-details__close-btn"
                 type="button"
-                onClick={() => setIsEditing(false)}
+                onClick={stopEditing}
               >
                 Stop Editing
               </Button>

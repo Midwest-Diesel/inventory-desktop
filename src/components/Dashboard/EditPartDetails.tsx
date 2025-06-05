@@ -7,7 +7,7 @@ import Input from "@/components/Library/Input";
 import { addAltParts, addPartCostIn, deletePartCostIn, editAltParts, editPart, editPartCostIn, getPartsInfoByAltParts, getPartsInfoByPartNum } from "@/scripts/services/partsService";
 import Table from "../Library/Table";
 import { addEngineCostOut, deleteEngineCostOut, editEngineCostOut } from "@/scripts/services/enginesService";
-import { showSoldPartsAtom, userAtom } from "@/scripts/atoms/state";
+import { userAtom } from "@/scripts/atoms/state";
 import { useAtom } from "jotai";
 import { PreventNavigation } from "../PreventNavigation";
 import Loading from "../Library/Loading";
@@ -26,7 +26,6 @@ interface Props {
 
 export default function PartDetails({ part, setPart, setIsEditingPart, partCostInData, engineCostOutData, setPartCostInData, setEngineCostOutData }: Props) {
   const [user] = useAtom<User>(userAtom);
-  const [showSoldParts] = useAtom<boolean>(showSoldPartsAtom);
   const [desc, setDesc] = useState<string>(part.desc ?? '');
   const [qty, setQty] = useState<number>(part.qty);
   const [stockNum, setStockNum] = useState<string>(part.stockNum ?? '');
@@ -43,7 +42,7 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
   const [remanFleetPrice, setRemanFleetPrice] = useState<number | null>(part.remanFleetPrice);
   const [corePrice, setCorePrice] = useState<number | null>(part.corePrice);
   const [engineStockNum, setEngineStockNum] = useState<number | null>(part.engineNum);
-  const [purchasePrice, setPurchasePrice] = useState<number | null>(part.purchasePrice);
+  const [purchasePrice] = useState<number | null>(part.purchasePrice);
   const [altParts, setAltParts] = useState<string[]>(part.altParts);
   const [weightDims, setWeightDims] = useState<string>(part.weightDims ?? '');
   const [specialNotes, setSpecialNotes] = useState<string>(part.specialNotes ?? '');
@@ -142,6 +141,14 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
 
     setPart(newPart);
     setIsEditingPart(false);
+  };
+
+  const stopEditing = async () => {
+    if (changesSaved) {
+      setIsEditingPart(false);
+    } else if (await ask('Do you want to leave without saving?')) {
+      setIsEditingPart(false);
+    }
   };
 
   const handleNewPartCostInRowChange = (field: keyof PartCostIn, value: string | number) => {
@@ -268,7 +275,7 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
             <Button
               className="edit-part-details__close-btn"
               type="button"
-              onClick={() => setIsEditingPart(false)}
+              onClick={stopEditing}
               data-testid="stop-editing"
             >
               Stop Editing

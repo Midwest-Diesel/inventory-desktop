@@ -107,6 +107,14 @@ export default function CustomerDetails({ customer, setCustomer, setIsEditing }:
     }
   };
 
+  const stopEditing = async () => {
+    if (changesSaved) {
+      setIsEditing(false);
+    } else if (await ask('Do you want to leave without saving?')) {
+      setIsEditing(false);
+    }
+  };
+
   
   return (
     <>
@@ -142,7 +150,7 @@ export default function CustomerDetails({ customer, setCustomer, setIsEditing }:
                 <Button
                   className="edit-customer-details__close-btn"
                   type="button"
-                  onClick={() => setIsEditing(false)}
+                  onClick={stopEditing}
                 >
                   Stop Editing
                 </Button>

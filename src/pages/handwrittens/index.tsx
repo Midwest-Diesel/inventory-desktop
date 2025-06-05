@@ -1,6 +1,6 @@
 import CustomerDropdownDialog from "@/components/Dialogs/CustomerSelectDialog";
 import HandwrittensSearchDialog from "@/components/Dialogs/handwrittens/HandwrittensSearchDialog";
-import HandwrittenItemsTable from "@/components/HandwrittenItemsTable";
+import HandwrittenItemsTable from "@/components/Handwrittens/HandwrittenItemsTable";
 import { Layout } from "@/components/Layout";
 import Button from "@/components/Library/Button";
 import Loading from "@/components/Library/Loading";

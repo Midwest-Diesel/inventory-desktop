@@ -9,17 +9,17 @@ import { paymentTypes } from "@/pages/handwrittens";
 interface Props {
   handwritten: Handwritten
   setPromptLeaveWindow: (value: boolean) => void
-  cardNum: number
+  cardNum: string
   expDate: string
-  cvv: number
+  cvv: string
   cardZip: string
   cardName: string
   cardAddress: string
   payment: string
   setPayment: (value: string) => void
-  setCardNum: (value: number) => void
+  setCardNum: (value: string) => void
   setExpDate: (value: string) => void
-  setCvv: (value: number) => void
+  setCvv: (value: string) => void
   setCardZip: (value: string) => void
   setCardName: (value: string) => void
   setCardAddress: (value: string) => void

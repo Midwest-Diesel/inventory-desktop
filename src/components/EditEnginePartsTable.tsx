@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useEffect, useState } from 'react';
+import React, { ChangeEvent } from 'react';
 import Table from "./Library/Table";
 import Input from './Library/Input';
 import { useAtom } from 'jotai';

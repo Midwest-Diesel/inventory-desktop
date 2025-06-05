@@ -7,7 +7,6 @@ import { parseDateInputValue } from "@/scripts/tools/stringUtils";
 import Grid from "./Library/Grid/Grid";
 import SourceSelect from "./Library/Select/SourceSelect";
 import Table from "./Library/Table";
-import { confirm } from "@/scripts/config/tauri";
 import { PreventNavigation } from "./PreventNavigation";
 import UserSelect from "./Library/Select/UserSelect";
 import CustomerSelect from "./Library/Select/CustomerSelect";
@@ -85,7 +84,15 @@ export default function EditReturnDetails({ returnData, setReturn, setIsEditing 
     setReturn(res);
     setIsEditing(false);
   };
-  
+
+  const stopEditing = async () => {
+    if (changesSaved) {
+      setIsEditing(false);
+    } else if (await ask('Do you want to leave without saving?')) {
+      setIsEditing(false);
+    }
+  };
+
 
   return (
     <>
@@ -108,7 +115,7 @@ export default function EditReturnDetails({ returnData, setReturn, setIsEditing 
               <Button
                 className="edit-return-details__close-btn"
                 type="button"
-                onClick={() => setIsEditing(false)}
+                onClick={stopEditing}
               >
                 Stop Editing
               </Button>

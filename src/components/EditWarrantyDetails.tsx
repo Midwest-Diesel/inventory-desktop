@@ -4,12 +4,11 @@ import Grid from "./Library/Grid/Grid";
 import GridItem from "./Library/Grid/GridItem";
 import Input from "./Library/Input";
 import Table from "./Library/Table";
-import { formatDate, parseDateInputValue, parseResDate } from "@/scripts/tools/stringUtils";
+import { parseDateInputValue } from "@/scripts/tools/stringUtils";
 import { addWarrantyItem, deleteWarrantyItem, editWarranty, editWarrantyItem, getWarrantyById } from "@/scripts/services/warrantiesService";
 import Checkbox from "./Library/Checkbox";
 import CustomerDropdown from "./Library/Select/CustomerDropdown";
 import { getCustomerByName } from "@/scripts/services/customerService";
-import { confirm } from "@/scripts/config/tauri";
 import { PreventNavigation } from "./PreventNavigation";
 import { ask } from "@tauri-apps/api/dialog";
 
@@ -54,6 +53,14 @@ export default function EditWarrantyDetails({ warrantyData, setWarranty, setIsEd
     }
     setWarranty(await getWarrantyById(warrantyData.id));
     setIsEditing(false);
+  };
+
+  const stopEditing = async () => {
+    if (changesSaved) {
+      setIsEditing(false);
+    } else if (await ask('Do you want to leave without saving?')) {
+      setIsEditing(false);
+    }
   };
 
   const handleEditItem = async (item: WarrantyItem, i: number) => {
@@ -111,7 +118,7 @@ export default function EditWarrantyDetails({ warrantyData, setWarranty, setIsEd
               <Button
                 className="edit-warranty-details__close-btn"
                 type="button"
-                onClick={() => setIsEditing(false)}
+                onClick={stopEditing}
               >
                 Stop Editing
               </Button>
