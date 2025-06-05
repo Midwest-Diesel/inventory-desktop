@@ -158,6 +158,15 @@ export default function EditHandwrittenDetails({
     setTaxTotal(Number((taxItemsAmount * TAX_RATE).toFixed(2)));
   }, [handwrittenItems]);
 
+  useEffect(() => {
+    setShipToAddress(handwritten.shipToAddress ?? '');
+    setShipToAddress2(handwritten.shipToAddress2 ?? '');
+    setShipToCity(handwritten.shipToCity ?? '');
+    setShipToState(handwritten.shipToState ?? '');
+    setShipToZip(handwritten.shipToZip ?? '');
+    setShipToCompany(handwritten.shipToCompany ?? '');
+  }, [handwritten]);
+
   const saveChanges = async (e: FormEvent) => {
     e.preventDefault();
     if (!changesSaved && !await ask('Are you sure you want to save these changes?')) return;
