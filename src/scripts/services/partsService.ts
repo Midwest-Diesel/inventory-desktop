@@ -178,8 +178,6 @@ export const searchAltParts = async (part: PartSearchData, page: number, limit: 
     );
     const auth = { withCredentials: true };
     const res = await api.get(`/api/parts/searchAlt/${encodeURIComponent(JSON.stringify(filteredPart))}?offset=${(page - 1) * limit}&limit=${limit}`, auth);
-    console.log(res.data);
-    
     return { minItems: res.data.minItems, rows: await parsePartsData(res.data.rows) };
   } catch (err) {
     console.error(err);

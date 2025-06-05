@@ -66,7 +66,6 @@ export function useNavState() {
           if (!prevPage) return tab;
           const newHistory = [...tab.history.slice(0, tab.urlIndex + 1), { name: prevPage.name, url: prevPage.url }];
           selectedTab = { ...tab, history: newHistory, urlIndex: newHistory.length - 1 };
-          console.log(selectedTab);
           return selectedTab;
         }
         return tab;

@@ -16,7 +16,7 @@ export const getPerformance = async () => {
     const res = await api.get(`/api/reports/performance`, auth);
     return { sales: res.data } as any;
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -26,7 +26,7 @@ export const reportSingleCompany = async (customer: string, startDate: Date | nu
     const res = await api.get(`/api/reports/single-company/${JSON.stringify({customer, startDate, endDate})}`, auth);
     return parseReportData(res.data);
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -36,7 +36,7 @@ export const reportAllCompanies = async (startDate: Date | null, endDate: Date |
     const res = await api.get(`/api/reports/all-companies/${JSON.stringify({startDate, endDate})}`, auth);
     return parseReportData(res.data);
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -46,7 +46,7 @@ export const reportAllParts = async (startDate: Date | null, endDate: Date | nul
     const res = await api.get(`/api/reports/all-parts/${JSON.stringify({startDate, endDate})}`, auth);
     return res.data;
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -56,7 +56,7 @@ export const reportPartDesc = async (keyword: string, startDate: Date | null, en
     const res = await api.get(`/api/reports/part-desc/${JSON.stringify({keyword, startDate, endDate})}`, auth);
     return res.data;
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -66,7 +66,7 @@ export const reportAllEngines = async (startDate: Date | null, endDate: Date | n
     const res = await api.get(`/api/reports/all-engines/${JSON.stringify({startDate, endDate})}`, auth);
     return res.data;
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -76,7 +76,7 @@ export const reportAllSources = async (startDate: Date | null, endDate: Date | n
     const res = await api.get(`/api/reports/all-sources/${JSON.stringify({startDate, endDate})}`, auth);
     return res.data;
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -86,7 +86,7 @@ export const reportAllSalesmen = async (startDate: Date | null, endDate: Date | 
     const res = await api.get(`/api/reports/all-salesmen/${JSON.stringify({startDate, endDate})}`, auth);
     return res.data;
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -96,7 +96,7 @@ export const reportTheMachines = async () => {
     const res = await api.get(`/api/reports/the-machines`, auth);
     return res.data;
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -106,7 +106,7 @@ export const reportArielSales = async (startDate: Date | null, endDate: Date | n
     const res = await api.get(`/api/reports/ariel-sales/${JSON.stringify({startDate, endDate})}`, auth);
     return parseReportData(res.data);
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -116,7 +116,7 @@ export const reportSingleCompanyParts = async (customer: string, startDate: Date
     const res = await api.get(`/api/reports/single-company-parts/${JSON.stringify({customer, startDate, endDate})}`, auth);
     return parseReportData(res.data);
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -126,7 +126,7 @@ export const reportSingleCompanyEngines = async (customer: string, startDate: Da
     const res = await api.get(`/api/reports/single-company-engines/${JSON.stringify({customer, startDate, endDate})}`, auth);
     return parseReportData(res.data);
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -136,7 +136,7 @@ export const reportHandwrittenCompany = async (customer: string, year: number) =
     const res = await api.get(`/api/reports/handwrittens-company/${JSON.stringify({customer, year})}`, auth);
     return res.data;
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -146,7 +146,7 @@ export const reportPBB = async () => {
     const res = await api.get(`/api/reports/pbb`, auth);
     return res.data;
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -156,7 +156,7 @@ export const reportNoLocationParts = async () => {
     const res = await api.get(`/api/reports/no-location-parts`, auth);
     return res.data;
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -166,7 +166,7 @@ export const reportRecentSearches = async (partNum: string) => {
     const res = await api.get(`/api/reports/recent-searches/${JSON.stringify({partNum})}`, auth);
     return parseReportData(res.data);
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -176,7 +176,7 @@ export const reportEmails = async (startDate: Date | null, endDate: Date | null)
     const res = await api.get(`/api/reports/emails/${JSON.stringify({startDate, endDate})}`, auth);
     return parseReportData(res.data);
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -186,7 +186,7 @@ export const reportOutstandingCores = async () => {
     const res = await api.get(`/api/reports/outstanding-cores`, auth);
     return parseReportData(res.data);
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -196,7 +196,7 @@ export const reportInventoryValueParts = async (): Promise<InventoryValueReportP
     const res = await api.get(`/api/reports/inventory-value/parts`, auth);
     return res.data;
   } catch (err) {
-    console.log(err);
+    console.error(err);
     return { combinedTotal: 0, data: [] };
   }
 };
@@ -207,7 +207,7 @@ export const reportInventoryValueCoreEngines = async (): Promise<InventoryValueR
     const res = await api.get(`/api/reports/inventory-value/core-engines`, auth);
     return res.data;
   } catch (err) {
-    console.log(err);
+    console.error(err);
     return { combinedTotal: 0, data: [] };
   }
 };
@@ -218,7 +218,7 @@ export const reportInventoryValueToreDownEngines = async (): Promise<InventoryVa
     const res = await api.get(`/api/reports/inventory-value/tore-down-engines`, auth);
     return { combinedTotal: res.data.combinedTotal, data: parseReportData(res.data.data) };
   } catch (err) {
-    console.log(err);
+    console.error(err);
     return { combinedTotal: 0, data: [] };
   }
 };
@@ -229,7 +229,7 @@ export const reportInventoryValueRunningEngines = async (): Promise<InventoryVal
     const res = await api.get(`/api/reports/inventory-value/running-engines`, auth);
     return { combinedTotal: res.data.combinedTotal, data: parseReportData(res.data.data) };
   } catch (err) {
-    console.log(err);
+    console.error(err);
     return { combinedTotal: 0, data: [] };
   }
 };
@@ -240,7 +240,7 @@ export const reportInventoryValueShortBlocks = async (): Promise<InventoryValueR
     const res = await api.get(`/api/reports/inventory-value/short-blocks`, auth);
     return { combinedTotal: res.data.combinedTotal, data: parseReportData(res.data.data) };
   } catch (err) {
-    console.log(err);
+    console.error(err);
     return { combinedTotal: 0, data: [] };
   }
 };
@@ -251,7 +251,7 @@ export const reportInventoryValueSurplus = async (): Promise<InventoryValueRepor
     const res = await api.get(`/api/reports/inventory-value/surplus`, auth);
     return { combinedTotal: res.data.combinedTotal, data: parseReportData(res.data.data) };
   } catch (err) {
-    console.log(err);
+    console.error(err);
     return { combinedTotal: 0, data: [] };
   }
 };
@@ -263,7 +263,7 @@ export const addGonculatorData = async (partList: string[]) => {
     const auth = { withCredentials: true };
     await api.post(`/api/reports/the-machines`, { partList }, auth);
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -274,6 +274,6 @@ export const deleteGonculatorData = async () => {
     const auth = { withCredentials: true };
     await api.delete(`/api/reports/the-machines`, auth);
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };

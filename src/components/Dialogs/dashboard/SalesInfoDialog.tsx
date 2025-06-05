@@ -18,11 +18,10 @@ export default function SalesInfo({ open, setOpen }: Props) {
   const [counters, setCounters] = useState({ new: 0, recon: 0, used: 0, core: 0 });
   const prevSearches = JSON.parse(localStorage.getItem('altPartSearches')!) ?? JSON.parse(localStorage.getItem('partSearches')!);
 
-
   useEffect(() => {
     const fetchData = async () => {
       if (!open) return;
-      const search = await searchParts(prevSearches, 0, 99999999);
+      const search = await searchParts(prevSearches, 1, 99999999);
       if (search.rows.length === 0) return;
       const res = await getSalesInfo(search.rows[0].altParts.join('|'));
       if (!res) return;
