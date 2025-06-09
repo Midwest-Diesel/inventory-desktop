@@ -149,6 +149,7 @@ export default function EditQuoteDialog({ setQuoteEdited, quote, setQuote }: Pro
             value={price}
             onChange={(e: any) => setPrice(e.target.value)}
             type="number"
+            step="any"
             required
           />
 

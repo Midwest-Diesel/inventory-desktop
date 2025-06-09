@@ -1,5 +1,5 @@
 import { errorAtom, sourcesAtom } from "@/scripts/atoms/state";
-import { addHandwrittenItem, deleteHandwrittenItem, editHandwritten, editHandwrittenItems, editHandwrittenTaxable, getHandwrittenEmails } from "@/scripts/services/handwrittensService";
+import { addHandwrittenItem, deleteHandwrittenItem, editHandwritten, editHandwrittenItem, editHandwrittenTaxable, getHandwrittenEmails } from "@/scripts/services/handwrittensService";
 import { useAtom } from "jotai";
 import { FormEvent, Fragment, useEffect, useState } from "react";
 import GridItem from "../Library/Grid/GridItem";
@@ -52,6 +52,7 @@ interface Props {
   setCardZip: (value: string) => void
   setCardName: (value: string) => void
   setCardAddress: (value: string) => void
+  setAddQtyDialogOpen: (value: boolean) => void
 }
 
 
@@ -74,11 +75,12 @@ export default function EditHandwrittenDetails({
   setCvv,
   setCardZip,
   setCardName,
-  setCardAddress
+  setCardAddress,
+  setAddQtyDialogOpen
 }: Props) {
   const { addToQue, printQue } = usePrintQue();
   const [sourcesData, setSourcesData] = useAtom<string[]>(sourcesAtom);
-  const [error, setError] = useAtom<string>(errorAtom);
+  const [, setError] = useAtom<string>(errorAtom);
   const [date, setDate] = useState<Date>(handwritten.date);
   const [poNum, setPoNum] = useState<string>(handwritten.poNum ?? '');
   const [company, setCompany] = useState<string>(handwritten.customer?.company ?? '');
@@ -231,24 +233,23 @@ export default function EditHandwrittenDetails({
     setNewShippingListRow(newInvoice);
     await editHandwritten(newInvoice);
     await editCoreCustomer(handwritten.id, newCustomer?.id ?? null);
-    
+
     if (!arrayOfObjectsMatch(handwrittenItems, handwritten.handwrittenItems)) {
       for (let i = 0; i < handwrittenItems.length; i++) {
         const item = handwrittenItems[i];
-        if (item.invoiceItemChildren.length > 0) continue;
         const newItem = {
           id: Number(item.id),
           handwrittenId: Number(handwritten.id),
           stockNum: item.stockNum,
           location: item.location,
-          cost: Number(item.cost),
-          qty: Number(item.qty),
+          cost: item.stockNum ? Number(item.cost) : 0,
+          qty: item.stockNum ? Number(item.qty) : 0,
           partNum: item.partNum,
           desc: item.desc,
           unitPrice: Number(item.unitPrice),
-          date: item.date,
+          date: item.date
         } as HandwrittenItem;
-        await editHandwrittenItems(newItem);
+        await editHandwrittenItem(newItem);
       }
     }
 
@@ -412,7 +413,7 @@ export default function EditHandwrittenDetails({
     printQue();
   };
 
-  const editHandwrittenItem = (item: HandwrittenItem, i: number) => {
+  const handleEditItem = (item: HandwrittenItem, i: number) => {
     const newItems = [...handwrittenItems];
     newItems[i] = item;
     setHandwrittenItems(newItems);
@@ -492,7 +493,7 @@ export default function EditHandwrittenDetails({
       const id = await addHandwrittenItem(item);
       setHandwrittenItems([...handwrittenItems, { id, ...item }]);
     } else {
-      await editHandwrittenItems(item);
+      await editHandwrittenItem(item);
     }
   };
 
@@ -711,6 +712,7 @@ export default function EditHandwrittenDetails({
 
             <div className="edit-handwritten-details__top-bar">
               <Button type="button" onClick={() => setAltShipOpen(!altShipOpen)} disabled={altShipData.length === 0}>Alt Ship</Button>
+              <Button type="button" onClick={() => setAddQtyDialogOpen(true)} data-testid="add-qty-io-btn">Add Qty | I/O</Button>
             </div>
 
             <Grid rows={1} cols={11} gap={1}>
@@ -1168,31 +1170,32 @@ export default function EditHandwrittenDetails({
                           <td>
                             <Input
                               value={item.stockNum ?? ''}
-                              onChange={(e: any) => editHandwrittenItem({ ...item, stockNum: e.target.value }, i)}
+                              onChange={(e: any) => handleEditItem({ ...item, stockNum: e.target.value }, i)}
                               disabled={isDisabled}
                             />
                           </td>
                           <td>
                             <Input
                               value={item.location ?? ''}
-                              onChange={(e: any) => editHandwrittenItem({ ...item, location: e.target.value }, i)}
+                              onChange={(e: any) => handleEditItem({ ...item, location: e.target.value }, i)}
                               disabled={isDisabled}
                             />
                           </td>
                           <td>
                             <Input
                               value={item.cost ?? ''}
-                              type="number"
-                              onChange={(e: any) => editHandwrittenItem({ ...item, cost: e.target.value }, i)}
+                              onChange={(e: any) => handleEditItem({ ...item, cost: e.target.value }, i)}
                               disabled={isDisabled}
                               data-testid="item-cost"
+                              type="number"
+                              step="any"
                             />
                           </td>
                           <td>
                             <Input
                               value={item.qty ?? ''}
                               type="number"
-                              onChange={(e: any) => editHandwrittenItem({ ...item, qty: e.target.value }, i)}
+                              onChange={(e: any) => handleEditItem({ ...item, qty: e.target.value }, i)}
                               disabled={isDisabled}
                               data-testid="item-qty"
                             />
@@ -1200,29 +1203,30 @@ export default function EditHandwrittenDetails({
                           <td>
                             <Input
                               value={item.partNum ?? ''}
-                              onChange={(e: any) => editHandwrittenItem({ ...item, partNum: e.target.value }, i)}
+                              onChange={(e: any) => handleEditItem({ ...item, partNum: e.target.value }, i)}
                               disabled={isDisabled}
                             />
                           </td>
                           <td>
                             <Input
                               value={item.desc ?? ''}
-                              onChange={(e: any) => editHandwrittenItem({ ...item, desc: e.target.value }, i)}
+                              onChange={(e: any) => handleEditItem({ ...item, desc: e.target.value }, i)}
                               disabled={isDisabled}
                             />
                           </td>
                           <td>
                             <Input
                               value={item.desc === 'TAX' ? taxTotal : item.unitPrice ?? ''}
-                              type="number"
-                              onChange={(e: any) => editHandwrittenItem({ ...item, unitPrice: e.target.value }, i)}
+                              onChange={(e: any) => handleEditItem({ ...item, unitPrice: e.target.value }, i)}
                               disabled={isDisabled}
+                              type="number"
+                              step="any"
                             />
                           </td>
                           <td>
                             <Input
                               value={parseDateInputValue(item.date)}
-                              onChange={(e: any) => editHandwrittenItem({ ...item, date: new Date(e.target.value) }, i)}
+                              onChange={(e: any) => handleEditItem({ ...item, date: new Date(e.target.value) }, i)}
                               disabled={isDisabled}
                               type="date"
                             />

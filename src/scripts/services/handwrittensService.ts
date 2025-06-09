@@ -16,6 +16,25 @@ interface HandwrittenSearchData {
   offset: number
 }
 
+interface NewHandwrittenItem {
+  handwrittenId: number
+  date: Date
+  desc: string | null
+  partNum: string | null
+  stockNum: string | null
+  unitPrice: number
+  qty: number
+  cost: number
+  location: string | null
+  partId: number | null
+}
+
+interface NewHandwrittenItemChild {
+  partId: number
+  qty: number
+  cost: number
+}
+
 
 export const parseHandwrittenRes = (data: any) => {
   return data.map((handwritten: any) => {
@@ -232,7 +251,7 @@ export const addHandwritten = async (handwritten: Handwritten) => {
   }
 };
 
-export const addHandwrittenItem = async (item: HandwrittenItem) => {
+export const addHandwrittenItem = async (item: NewHandwrittenItem) => {
   try {
     const auth = { withCredentials: true };
     const res = await api.post('/api/handwrittens/item', item, auth);
@@ -252,10 +271,10 @@ export const addBlankHandwritten = async (data: { date: Date, userId: number, cu
   }
 };
 
-export const addHandwrittenItemChild = async (handwrittenId: number, item: HandwrittenItemChild) => {
+export const addHandwrittenItemChild = async (parentId: number, item: NewHandwrittenItemChild) => {
   try {
     const auth = { withCredentials: true };
-    await api.post('/api/handwrittens/child', { handwrittenId, item }, auth);
+    await api.post('/api/handwrittens/child', { parentId, item }, auth);
   } catch (err) {
     console.error(err);
   }
@@ -328,7 +347,7 @@ export const editHandwritten = async (invoice: Handwritten) => {
   }
 };
 
-export const editHandwrittenItems = async (item: HandwrittenItem) => {
+export const editHandwrittenItem = async (item: HandwrittenItem) => {
   try {
     const auth = { withCredentials: true };
     await api.put('/api/handwrittens/items', item, auth);
@@ -337,7 +356,7 @@ export const editHandwrittenItems = async (item: HandwrittenItem) => {
   }
 };
 
-export const editHandwrittenItemsChild = async (item: HandwrittenItemChild) => {
+export const editHandwrittenItemChild = async (item: HandwrittenItemChild) => {
   try {
     const auth = { withCredentials: true };
     await api.put('/api/handwrittens/items/child', item, auth);

@@ -242,6 +242,7 @@ export default function EditWarrantyDetails({ warrantyData, setWarranty, setIsEd
                         <td>
                           <Input
                             type="number"
+                            step="any"
                             value={item.cost ?? ''}
                             onChange={(e: any) => handleEditItem({ ...item, cost: e.target.value }, i)}
                           />
@@ -249,6 +250,7 @@ export default function EditWarrantyDetails({ warrantyData, setWarranty, setIsEd
                         <td>
                           <Input
                             type="number"
+                            step="any"
                             value={item.price ?? ''}
                             onChange={(e: any) => handleEditItem({ ...item, price: e.target.value }, i)}
                           />

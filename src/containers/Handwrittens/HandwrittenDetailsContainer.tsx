@@ -1,5 +1,7 @@
+import AddQtyDialog from "@/components/Dialogs/handwrittens/AddQtyDialog";
 import EditHandwrittenDetails from "@/components/Handwrittens/EditHandwrittenDetails";
 import HandwrittenDetails from "@/components/Handwrittens/HandwrittenDetails";
+import Toast from "@/components/Library/Toast";
 import { useNavState } from "@/components/Navbar/useNavState";
 import { confirm } from "@/scripts/config/tauri";
 import { addAltShipAddress, getAltShipByCustomerId } from "@/scripts/services/altShipService";
@@ -23,7 +25,10 @@ export default function HandwrittenDetailsContainer() {
   const [cardAddress, setCardAddress] = useState('');
   const [payment, setPayment] = useState('');
   const [promptLeaveWindow, setPromptLeaveWindow] = useState(false);
+  const [addQtyDialogOpen, setAddQtyDialogOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+  const [msg, setToastMsg] = useState('');
+  const [toastOpen, setToastOpen] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -34,6 +39,15 @@ export default function HandwrittenDetailsContainer() {
       if (res?.invoiceStatus === 'INVOICE PENDING') {
         setIsEditing(true);
       }
+
+      const itemsWithChildren = res?.handwrittenItems.filter((item) => item.invoiceItemChildren && item.invoiceItemChildren.length > 0) ?? [];
+      itemsWithChildren.forEach((item) => {
+        const res = item.invoiceItemChildren.find((child) => child.cost === 0.04);
+        if (res) {
+          setToastMsg(`Cost still detected on item <span style="color: var(--orange-1)">${res.partNum}</span>!`);
+          setToastOpen(true);
+        }
+      });
     };
     fetchData();
   }, [params]);
@@ -105,6 +119,18 @@ export default function HandwrittenDetailsContainer() {
 
   return (
     <div>
+      <Toast msg={msg} type="error" open={toastOpen} setOpen={setToastOpen} duration={6000} />
+
+      {handwritten &&
+        <AddQtyDialog
+          open={addQtyDialogOpen}
+          setOpen={setAddQtyDialogOpen}
+          handwritten={handwritten}
+          setHandwritten={setHandwritten}
+          setIsEditing={setIsEditing}
+        />
+      }
+
       {handwritten && !isEditing &&
         <HandwrittenDetails
           handwritten={handwritten}
@@ -126,6 +152,7 @@ export default function HandwrittenDetailsContainer() {
           setCardZip={setCardZip}
           setCardName={setCardName}
           setCardAddress={setCardAddress}
+          setAddQtyDialogOpen={setAddQtyDialogOpen}
         />
       }
 
@@ -150,6 +177,7 @@ export default function HandwrittenDetailsContainer() {
           setCardZip={setCardZip}
           setCardName={setCardName}
           setCardAddress={setCardAddress}
+          setAddQtyDialogOpen={setAddQtyDialogOpen}
         />
       }
     </div>

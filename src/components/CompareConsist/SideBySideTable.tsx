@@ -352,6 +352,7 @@ export default function SideBySideTable({ customer, customerEngineData, mwdEngin
           label="Price"
           variant={['label-stack', 'small']}
           type="number"
+          step="any"
           value={price}
           onChange={(e: any) => setPrice(e.target.value)}
         />

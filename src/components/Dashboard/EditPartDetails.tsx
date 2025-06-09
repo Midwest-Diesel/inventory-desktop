@@ -407,6 +407,7 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
                       value={listPrice ?? ''}
                       onChange={(e: any) => setListPrice(e.target.value)}
                       type="number"
+                      step="any"
                     />
                   </td>
                 </tr>
@@ -418,6 +419,7 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
                       value={fleetPrice ?? ''}
                       onChange={(e: any) => setFleetPrice(e.target.value)}
                       type="number"
+                      step="any"
                     />
                   </td>
                 </tr>
@@ -429,6 +431,7 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
                       value={remanListPrice ?? ''}
                       onChange={(e: any) => setRemanListPrice(e.target.value)}
                       type="number"
+                      step="any"
                     />
                   </td>
                 </tr>
@@ -440,6 +443,7 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
                       value={remanFleetPrice ?? ''}
                       onChange={(e: any) => setRemanFleetPrice(e.target.value)}
                       type="number"
+                      step="any"
                     />
                   </td>
                 </tr>
@@ -451,6 +455,7 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
                       value={corePrice ?? ''}
                       onChange={(e: any) => setCorePrice(e.target.value)}
                       type="number"
+                      step="any"
                     />
                   </td>
                 </tr>
@@ -571,6 +576,7 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
                           value={item.cost ?? ''}
                           onChange={(e: any) => handleChangePartCostIn({ ...item, cost: e.target.value }, i)}
                           type="number"
+                          step="any"
                         />
                       </td>
                       <td>
@@ -623,6 +629,7 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
                       value={newPartCostInRow.cost}
                       onChange={(e: any) => handleNewPartCostInRowChange('cost', e.target.value)}
                       type="number"
+                      step="any"
                     />
                   </td>
                   <td>
@@ -690,6 +697,7 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
                           value={item.cost ?? ''}
                           onChange={(e: any) => handleChangeEngineCostOut({ ...item, cost: e.target.value }, i)}
                           type="number"
+                          step="any"
                         />
                       </td>
                       <td>
@@ -742,6 +750,7 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
                       value={newEngineCostOutRow.cost}
                       onChange={(e: any) => handleNewEngineCostOutRowChange('cost', e.target.value)}
                       type="number"
+                      step="any"
                     />
                   </td>
                   <td>

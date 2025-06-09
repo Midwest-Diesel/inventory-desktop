@@ -45,10 +45,18 @@
   overflow-y: auto;
 
   &__left-col {
-    text-align: center;
+    width: 6.5rem;
 
     button {
-      margin-top: 0.2rem;
+      padding: 0.26rem;
+
+      &:hover {
+        background-color: transparent;
+      }
+    }
+
+    .button--danger img {
+      padding-right: 0.05rem;
     }
   }
 

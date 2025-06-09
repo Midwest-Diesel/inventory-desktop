@@ -46,6 +46,7 @@ interface Props {
   setCardZip: (value: string) => void
   setCardName: (value: string) => void
   setCardAddress: (value: string) => void
+  setAddQtyDialogOpen: (value: boolean) => void
 }
 
 
@@ -68,7 +69,8 @@ export default function HandwrittenDetails({
   setCvv,
   setCardZip,
   setCardName,
-  setCardAddress
+  setCardAddress,
+  setAddQtyDialogOpen
 }: Props) {
   const { closeBtn, push } = useNavState();
   const { addToQue, printQue } = usePrintQue();
@@ -362,6 +364,7 @@ export default function HandwrittenDetails({
           <Button onClick={() => setCoreCreditsOpen(!coreCreditsOpen)} disabled={handwritten.cores.length === 0} data-testid="core-credit-btn">Core Credit</Button>
           <Button onClick={() => setAltShipOpen(!altShipOpen)} disabled={altShipData.length === 0}>Alt Ship</Button>
           <Button onClick={() => setReturnsOpen(!returnsOpen)} data-testid="new-return-btn">New Return</Button>
+          <Button onClick={() => setAddQtyDialogOpen(true)} data-testid="add-qty-io-btn">Add Qty | I/O</Button>
         </div>
 
         <CoreCreditsDialog open={coreCreditsOpen} setOpen={setCoreCreditsOpen} cores={handwritten.cores} handwritten={handwritten} />

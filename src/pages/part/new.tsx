@@ -211,6 +211,7 @@ export default function NewPart() {
                       variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                       value={listPrice}
                       type="number"
+                      step="any"
                       onChange={(e: any) => setListPrice(e.target.value)}
                     />
                   </td>
@@ -222,6 +223,7 @@ export default function NewPart() {
                       variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                       value={fleetPrice}
                       type="number"
+                      step="any"
                       onChange={(e: any) => setFleetPrice(e.target.value)}
                     />
                   </td>
@@ -307,128 +309,6 @@ export default function NewPart() {
               </tbody>
             </Table>
           </GridItem>
-
-          {/* <GridItem colStart={1} colEnd={12} variant={['no-style']}>
-            <h2>Part Cost In</h2>
-            <Table>
-              <thead>
-                <tr>
-                  <th>Invoice Number</th>
-                  <th>Cost</th>
-                  <th>Cost Type</th>
-                  <th>Vendor</th>
-                  <th>Note</th>
-                  <th></th>
-                </tr>
-              </thead>
-              <tbody>
-                {partCostIn.map((item: PartCostIn, i: number) => { 
-                  return (
-                    <tr key={i}>
-                      <td>
-                        <Input
-                          value={item.invoiceNum}
-                          type="number"
-                          onChange={(e: any) => handleChangePartCostIn({ ...item, invoiceNum: e.target.value }, i)}
-                        />
-                      </td>
-                      <td>
-                        <Input
-                          value={item.cost}
-                          type="number"
-                          onChange={(e: any) => handleChangePartCostIn({ ...item, cost: e.target.value }, i)}
-                        />
-                      </td>
-                      <td>
-                        <Input
-                          value={item.costType}
-                          onChange={(e: any) => handleChangePartCostIn({ ...item, costType: e.target.value }, i)}
-                        />
-                      </td>
-                      <td>
-                        <Input
-                          value={item.vendor}
-                          onChange={(e: any) => handleChangePartCostIn({ ...item, vendor: e.target.value }, i)}
-                        />
-                      </td>
-                      <td>
-                        <Input
-                          value={item.note}
-                          onChange={(e: any) => handleChangePartCostIn({ ...item, note: e.target.value }, i)}
-                        />
-                      </td>
-                      <td>
-                        <Button
-                          variant={['red-color']}
-                          onClick={() => handleDeleteCostInItem(item.id)}
-                          type="button"
-                        >
-                          Delete
-                        </Button>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </Table>
-          </GridItem>
-
-          <GridItem colStart={1} colEnd={12} variant={['no-style']}>
-            <h2>Engine Cost Out</h2>
-            <Table>
-              <thead>
-                <tr>
-                  <th>Stock Number</th>
-                  <th>Cost</th>
-                  <th>Cost Type</th>
-                  <th>Note</th>
-                  <th></th>
-                </tr>
-              </thead>
-              <tbody>
-                {engineCostOut.map((item: EngineCostOut, i: number) => { 
-                  return (
-                    <tr key={i}>
-                      <td>
-                        <Input
-                          value={item.stockNum}
-                          onChange={(e: any) => handleChangeEngineCostOut({ ...item, stockNum: e.target.value }, i)}
-                        />
-                      </td>
-                      <td>
-                        <Input
-                          value={item.cost}
-                          type="number"
-                          onChange={(e: any) => handleChangeEngineCostOut({ ...item, cost: e.target.value }, i)}
-                        />
-                      </td>
-                      <td>
-                        <Input
-                          value={item.costType}
-                          onChange={(e: any) => handleChangeEngineCostOut({ ...item, costType: e.target.value }, i)}
-                        />
-                      </td>
-                      <td>
-                        <Input
-                          value={item.note}
-                          onChange={(e: any) => handleChangeEngineCostOut({ ...item, note: e.target.value }, i)}
-                        />
-                      </td>
-                      <td>
-                        <Button
-                          variant={['red-color']}
-                          onClick={() => handleDeleteCostOutItem(item.id)}
-                          type="button"
-                        >
-                          Delete
-                        </Button>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </Table>
-          </GridItem> */}
         </Grid>
       </form>
     </Layout>

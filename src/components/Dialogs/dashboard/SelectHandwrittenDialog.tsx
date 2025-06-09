@@ -253,6 +253,7 @@ export default function SelectHandwrittenDialog({ open, setOpen, part, onSubmit 
                   variant={['x-small', 'thin', 'label-bold', 'label-stack', 'label-fit-content']}
                   label="Price"
                   type="number"
+                  step="any"
                   value={price ?? ''}
                   onChange={(e: any) => setPrice(e.target.value)}
                   required

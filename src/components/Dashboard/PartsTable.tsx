@@ -17,11 +17,12 @@ interface Props {
   quotePart: (part: Part) => void
   onChangePage: (data: any, page: number) => void
   onOpenSelectHandwrittenDialog: (part: Part) => void
+  onQuickPick: (part: Part) => Promise<void>
   limit: number
 }
 
 
-export default function PartsTable({ parts, partsData, quotePart, onChangePage, onOpenSelectHandwrittenDialog, limit }: Props) {
+export default function PartsTable({ parts, partsData, quotePart, onChangePage, onOpenSelectHandwrittenDialog, onQuickPick, limit }: Props) {
   const [partsQty] = useAtom<number[]>(partsQtyAtom);
   const [partImages, setPartImages] = useState<Picture[]>([]);
   const [picturesPartNum, setPicturesPartNum] = useState<string>('');
@@ -77,9 +78,16 @@ export default function PartsTable({ parts, partsData, quotePart, onChangePage, 
               const status = extractStatusColors(part.remarks);
               return (
                 <tr key={i}>
-                  <td className="parts-list__left-col table-buttons">
-                    <Button variant={['x-small']} onClick={() => quotePart(part)} data-testid="quote-part-btn">Quote Part</Button>
-                    <Button variant={['x-small']} onClick={() => onOpenSelectHandwrittenDialog(part)} data-testid="add-item-btn">Add to Handwritten</Button>
+                  <td className="parts-list__left-col table-buttons table-buttons--grid">
+                    <Button variant={['x-small', 'fit']} onClick={() => quotePart(part)} data-testid="quote-part-btn">
+                      <Image alt="Quote part" src="/images/icons/clipboard.svg" width={17} height={17} />
+                    </Button>
+                    <Button variant={['x-small', 'fit']} onClick={() => onOpenSelectHandwrittenDialog(part)} data-testid="add-item-btn">
+                      <Image alt="Add to handwritten" src="/images/icons/invoice.svg" width={17} height={17} />
+                    </Button>
+                    <Button variant={['x-small', 'fit']} onClick={() => onQuickPick(part)} data-testid="add-item-btn">
+                      <Image alt="Quick pick" src="/images/icons/crosshair.svg" width={17} height={17} />
+                    </Button>
                   </td>
                   <td>
                     <div className="parts-list__left-content">

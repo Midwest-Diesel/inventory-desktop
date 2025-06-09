@@ -2,7 +2,7 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import Button from "@/components/Library/Button";
 import { useAtom } from "jotai";
-import { partsQtyAtom, quotesAtom, recentQuotesAtom, selectedCustomerAtom, showSoldPartsAtom, userAtom } from "@/scripts/atoms/state";
+import { partsQtyAtom, quickPickItemIdAtom, recentQuotesAtom, selectedCustomerAtom, showSoldPartsAtom, userAtom } from "@/scripts/atoms/state";
 import PartsSearchDialog from "@/components/Dialogs/dashboard/PartsSearchDialog";
 import AltPartsSearchDialog from "@/components/Dialogs/dashboard/AltPartsSearchDialog";
 import { getAltsByPartNum, getPartsQty, getSomeParts, searchAltParts, searchParts } from "@/scripts/services/partsService";
@@ -13,12 +13,12 @@ import { isObjectNull } from "@/scripts/tools/utils";
 import { getPartsOnEngines } from "@/scripts/services/compareConsistService";
 import PartsOnEnginesDialog from "@/components/Dialogs/dashboard/PartsOnEnginesDialog";
 import { getSearchedPartNum } from "@/scripts/tools/search";
-import { addQuote } from "@/scripts/services/quotesService";
 import CoreFamilySearchDialog from "@/components/Dialogs/dashboard/SearchCoreFamilyDialog";
 import PartsTable from "@/components/Dashboard/PartsTable";
 import { selectedAlertsAtom } from "@/scripts/atoms/components";
 import { detectAlerts } from "@/scripts/services/alertsService";
 import { getQuotesByPartNum } from "@/scripts/services/recentSearchesService";
+import { addHandwrittenItemChild } from "@/scripts/services/handwrittensService";
 
 interface Props {
   selectHandwrittenOpen: boolean
@@ -30,12 +30,12 @@ interface Props {
 
 export default function PartSearchSection({ selectHandwrittenOpen, setSelectHandwrittenOpen, setSelectedHandwrittenPart, handleNewQuote }: Props) {
   const [user] = useAtom<User>(userAtom);
-  const [partsQty, setPartsQty] = useAtom<number[]>(partsQtyAtom);
-  const [quotesData, setQuotesData] = useAtom<Quote[]>(quotesAtom);
+  const [, setPartsQty] = useAtom<number[]>(partsQtyAtom);
   const [selectedCustomer] = useAtom<Customer>(selectedCustomerAtom);
   const [selectedAlerts, setSelectedAlerts] = useAtom<Alert[]>(selectedAlertsAtom);
   const [showSoldParts, setShowSoldParts] = useAtom<boolean>(showSoldPartsAtom);
-  const [recentQuoteSearches, setRecentQuoteSearches] = useAtom<RecentQuoteSearch[]>(recentQuotesAtom);
+  const [, setRecentQuoteSearches] = useAtom<RecentQuoteSearch[]>(recentQuotesAtom);
+  const [quickPickItemId] = useAtom<number>(quickPickItemIdAtom);
   const [partsData, setPartsData] = useState<Part[]>([]);
   const [parts, setParts] = useState<Part[]>([]);
   const [partsOpen, setPartsOpen] = useState(localStorage.getItem('partsOpen') === 'true' || localStorage.getItem('partsOpen') === null ? true : false);
@@ -157,6 +157,11 @@ export default function PartSearchSection({ selectHandwrittenOpen, setSelectHand
     setLoading(false);
   };
 
+  const onQuickPick = async (part: Part) => {
+    if (quickPickItemId === 0) return;
+    await addHandwrittenItemChild(quickPickItemId, { partId: part.id, qty: 1, cost: 0.04 });
+  };
+
 
   return (
     <div className="part-search">
@@ -233,6 +238,7 @@ export default function PartSearchSection({ selectHandwrittenOpen, setSelectHand
             quotePart={quotePart}
             onChangePage={onChangePage}
             onOpenSelectHandwrittenDialog={onOpenSelectHandwrittenDialog}
+            onQuickPick={onQuickPick}
             limit={LIMIT}
           />
         </>

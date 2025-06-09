@@ -1,13 +1,13 @@
 import { cap, formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
 import Table from "../Library/Table";
 import Button from "../Library/Button";
-import { addHandwrittenItem } from "@/scripts/services/handwrittensService";
+import { addHandwrittenItem, getHandwrittenById } from "@/scripts/services/handwrittensService";
 import { addCore } from "@/scripts/services/coresService";
 import HandwrittenChildrenDialog from "../Dialogs/handwrittens/HandwrittenChildrenDialog";
 import { useEffect, useState } from "react";
-import Toast from "../Library/Toast";
-import { confirm } from "@/scripts/config/tauri";
 import { ask } from "@tauri-apps/api/dialog";
+import { useAtom } from "jotai";
+import { quickPickItemIdAtom } from "@/scripts/atoms/state";
 
 interface Props {
   className?: string
@@ -19,21 +19,15 @@ interface Props {
 
 
 export default function HandwrittenItemsTable({ className, handwritten, handwrittenItems, setHandwritten, taxTotal }: Props) {
+  const [, setQuickPickItemId] = useAtom<number>(quickPickItemIdAtom);
   const [childrenOpen, setChildrenOpen] = useState(false);
   const [stockNumChildren, setStockNumChildren] = useState<HandwrittenItemChild[]>([]);
-  const [msg, setToastMsg] = useState('');
-  const [toastOpen, setToastOpen] = useState(false);
+  const [quickPickEnabled, setQuickPickEnabled] = useState(false);
 
   useEffect(() => {
-    const itemsWithChildren = handwrittenItems.filter((item) => item.invoiceItemChildren && item.invoiceItemChildren.length > 0);
-    itemsWithChildren.forEach((item) => {
-      const res = item.invoiceItemChildren.find((child) => child.cost === 0.04);
-      if (res) {
-        setToastMsg(`Cost still detected on item <span style="color: var(--orange-1)">${res.partNum}</span>!`);
-        setToastOpen(true);
-      }
-    });
-  }, []);
+    if (stockNumChildren.length === 0) return;
+    setStockNumChildren(handwritten.handwrittenItems.find((item) => item.id === stockNumChildren[0].parentId)?.invoiceItemChildren ?? []);
+  },[handwritten]);
 
   const textStyles = (item: HandwrittenItem) => {
     const styles = {} as any;
@@ -66,12 +60,12 @@ export default function HandwrittenItemsTable({ className, handwritten, handwrit
       desc: item.desc,
       partNum: 'CORE DEPOSIT',
       stockNum: item.stockNum,
-      unitPrice: item.unitPrice,
-      qty: item.qty,
+      unitPrice: Number(item.unitPrice),
+      qty: Number(item.qty),
       cost: 0.01,
       location: 'CORE DEPOSIT',
       partId: item.partId
-    } as HandwrittenItem;
+    };
     const newItemId = await addHandwrittenItem(newItem);
     
     const priority = cap((prompt('Enter core priority', 'Low') || 'Low').toLowerCase());
@@ -93,7 +87,8 @@ export default function HandwrittenItemsTable({ className, handwritten, handwrit
       handwrittenItemId: newItemId
     } as any;
     await addCore(newCore);
-    handwritten.cores && setHandwritten({ ...handwritten, cores: [...handwritten.cores, newCore], handwrittenItems: [newItem, ...handwritten.handwrittenItems] });
+    const res = await getHandwrittenById(handwritten.id);
+    if (res) setHandwritten(res);
   };
 
   const handleOpenStockNums = (children: HandwrittenItemChild[]) => {
@@ -101,12 +96,16 @@ export default function HandwrittenItemsTable({ className, handwritten, handwrit
     setStockNumChildren(children);
   };
 
+  const toggleQuickPick = (item: HandwrittenItem) => {
+    setQuickPickEnabled(!quickPickEnabled);
+    setQuickPickItemId(item.id);
+  };
+
 
   return (
     <div className={`handwritten-items-table ${className && className}`}>
       {handwrittenItems &&
         <>
-          <Toast msg={msg} type="error" open={toastOpen} setOpen={setToastOpen} duration={6000} />
           <HandwrittenChildrenDialog open={childrenOpen} setOpen={setChildrenOpen} stockNumChildren={stockNumChildren} handwritten={handwritten} setHandwritten={setHandwritten} />
 
           <p><strong>Cost Total: </strong><span style={{ ...costColorStyle }}>{ formatCurrency(getTotalCost()) }</span></p>
@@ -139,6 +138,9 @@ export default function HandwrittenItemsTable({ className, handwritten, handwrit
                           >
                             Core Charge
                           </Button>
+                        }
+                        {item.stockNum === 'In/Out' &&
+                          <Button variant={['x-small']} onClick={() => toggleQuickPick(item)}>{ quickPickEnabled ? 'Disable' : 'Enable' } Quick Pick</Button>
                         }
                       </td>
                     }

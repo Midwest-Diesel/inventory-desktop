@@ -62,6 +62,7 @@ export default function NewSurplusPartDialog({ open, setOpen, setSurplus }: Prop
           label="Price"
           variant={['label-space-between', 'label-full-width', 'small', 'thin']}
           type="number"
+          step="any"
           value={price}
           onChange={(e: any) => setPrice(e.target.value)}
           required

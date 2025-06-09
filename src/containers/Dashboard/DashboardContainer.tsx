@@ -5,7 +5,7 @@ import { isObjectNull } from "@/scripts/tools/utils";
 import { getRecentPartSearches } from "@/scripts/services/recentSearchesService";
 import RecentPartSearches from "@/components/Dashboard/RecentPartSearches";
 import RecentQuotes from "@/components/Dashboard/RecentQuotes";
-import { addHandwrittenItem, addHandwrittenItemChild, editHandwrittenItems, editHandwrittenOrderNotes } from "@/scripts/services/handwrittensService";
+import { addHandwrittenItem, addHandwrittenItemChild, editHandwrittenItem, editHandwrittenOrderNotes } from "@/scripts/services/handwrittensService";
 import SelectHandwrittenDialog from "@/components/Dialogs/dashboard/SelectHandwrittenDialog";
 import { listen } from '@tauri-apps/api/event';
 import { addQuote, getSomeQuotes, toggleQuoteSold } from "@/scripts/services/quotesService";
@@ -63,14 +63,14 @@ export default function DashboardContainer() {
       handwrittenId: id,
       date: new Date(),
       desc: desc,
-      partNum: selectedHandwrittenPart?.partNum,
-      stockNum: selectedHandwrittenPart?.stockNum,
+      partNum: selectedHandwrittenPart?.partNum ?? null,
+      stockNum: selectedHandwrittenPart?.stockNum ?? null,
       unitPrice: price,
       qty: qty,
       cost,
-      location: selectedHandwrittenPart?.location,
-      partId: selectedHandwrittenPart?.id,
-    } as HandwrittenItem;
+      location: selectedHandwrittenPart?.location ?? null,
+      partId: selectedHandwrittenPart?.id ?? null,
+    };
     await addHandwrittenItem(newItem);
     if (warranty) await editHandwrittenOrderNotes(id, warranty);
   };
@@ -86,8 +86,18 @@ export default function DashboardContainer() {
     }
     if (newItem) {
       if (await ask('Part already exists do you want to add qty?')) {
-        await editHandwrittenItems({ ...newItem, qty: newItem.qty ?? 0 + qty, handwrittenId: handwritten.id });
-        await addHandwrittenItemChild(newItem.id, { partId: part?.id, qty, cost } as HandwrittenItemChild);
+        if (!part) {
+          alert('No part data');
+          return;
+        }
+        // Turn the line item into a blank container for item children if it isn't already
+        if (newItem.stockNum) {
+          const originalItem = handwritten.handwrittenItems[0];
+          await addHandwrittenItemChild(originalItem.id, { partId: originalItem.partId ?? 0, qty: originalItem.qty ?? 0, cost: originalItem.cost ?? 0 });
+          await editHandwrittenItem({ ...newItem, stockNum: null, qty: 0, cost: 0, handwrittenId: handwritten.id });
+        }
+        // Add child to item 
+        await addHandwrittenItemChild(newItem.id, { partId: part.id, qty, cost });
         await editHandwrittenOrderNotes(handwritten.id, warranty);
       } else {
         handleAddToHandwritten(handwritten.id, desc, qty, price, warranty, stockNum);

@@ -81,6 +81,7 @@ export default function TakeoffsDialog({ open, setOpen, item, setHandwritten }: 
             value={cost ?? ''}
             onChange={(e: any) => setCost(e.target.value)}
             type="number"
+            step="any"
             data-testid="change-cost"
           />
         }

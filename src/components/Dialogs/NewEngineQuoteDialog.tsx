@@ -99,6 +99,7 @@ export default function NewEngineQuoteDialog({ open, setOpen, engine, onNewQuote
             value={price}
             onChange={(e: any) => setPrice(e.target.value)}
             type="number"
+            step="any"
             required
             data-testid="price"
           />

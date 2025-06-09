@@ -559,7 +559,9 @@ export default function EditEngineDetails({ engine, setEngine, setIsEditing, eng
                         variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                         value={sellPrice ?? ''}
                         type="number"
+                        step="any"
                         onChange={(e: any) => setSellPrice(e.target.value)}
+                        
                       />
                     </td>
                   </tr>
@@ -570,6 +572,7 @@ export default function EditEngineDetails({ engine, setEngine, setIsEditing, eng
                         variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                         value={askingPrice ?? ''}
                         type="number"
+                        step="any"
                         onChange={(e: any) => setAskingPrice(e.target.value)}
                       />
                     </td>
@@ -640,6 +643,7 @@ export default function EditEngineDetails({ engine, setEngine, setIsEditing, eng
                             value={item.cost ?? ''}
                             onChange={(e: any) => handleChangeEngineCostIn({ ...item, cost: e.target.value }, i)}
                             type="number"
+                            step="any"
                           />
                         </td>
                         <td>
@@ -699,6 +703,7 @@ export default function EditEngineDetails({ engine, setEngine, setIsEditing, eng
                         value={newEngineCostInRow.cost}
                         onChange={(e: any) => handleNewEngineCostInRowChange('cost', e.target.value)}
                         type="number"
+                        step="any"
                       />
                     </td>
                     <td>
@@ -774,6 +779,7 @@ export default function EditEngineDetails({ engine, setEngine, setIsEditing, eng
                             value={item.cost ?? ''}
                             onChange={(e: any) => handleChangeEngineCostOut({ ...item, cost: e.target.value }, i)}
                             type="number"
+                            step="any"
                           />
                         </td>
                         <td>
@@ -826,6 +832,7 @@ export default function EditEngineDetails({ engine, setEngine, setIsEditing, eng
                         value={newEngineCostOutRow.cost}
                         onChange={(e: any) => handleNewEngineCostOutRowChange('cost', e.target.value)}
                         type="number"
+                        step="any"
                       />
                     </td>
                     <td>

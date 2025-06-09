@@ -450,6 +450,7 @@ export default function EditPoDetails({ poData, setPo, setIsEditing }: Props) {
                             value={item.unitPrice ?? ''}
                             onChange={(e: any) => handleEditItem({ ...item, unitPrice: e.target.value }, i)}
                             type="number"
+                            step="any"
                             required
                           />
                         </td>
@@ -458,6 +459,7 @@ export default function EditPoDetails({ poData, setPo, setIsEditing }: Props) {
                             value={item.totalPrice ?? ''}
                             onChange={(e: any) => handleEditItem({ ...item, totalPrice: e.target.value }, i)}
                             type="number"
+                            step="any"
                             required
                           />
                         </td>

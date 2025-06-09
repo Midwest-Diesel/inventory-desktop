@@ -338,6 +338,7 @@ export default function ShopAddonRow({ addOn, handleDuplicateAddOn, partNumList,
                   <Input
                     variant={['small', 'thin']}
                     type="number"
+                    step="any"
                     value={addOn.newPrice !== null ? addOn.newPrice : ''}
                     onChange={(e: any) => handleEditAddOn({ ...addOn, newPrice: e.target.value })}
                   />
@@ -346,6 +347,7 @@ export default function ShopAddonRow({ addOn, handleDuplicateAddOn, partNumList,
                   <Input
                     variant={['small', 'thin']}
                     type="number"
+                    step="any"
                     value={addOn.remanPrice !== null ? addOn.remanPrice : ''}
                     onChange={(e: any) => handleEditAddOn({ ...addOn, remanPrice: e.target.value })}
                   />
@@ -354,6 +356,7 @@ export default function ShopAddonRow({ addOn, handleDuplicateAddOn, partNumList,
                   <Input
                     variant={['small', 'thin']}
                     type="number"
+                    step="any"
                     value={addOn.dealerPrice !== null ? addOn.dealerPrice : ''}
                     onChange={(e: any) => handleEditAddOn({ ...addOn, dealerPrice: e.target.value })}
                   />
