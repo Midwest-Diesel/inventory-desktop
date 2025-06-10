@@ -14,9 +14,9 @@ import { useAtom } from "jotai";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { confirm, invoke } from "@/scripts/config/tauri";
-import { useNavState } from "@/components/Navbar/useNavState";
+import { useNavState } from "@/hooks/useNavState";
 import { ask } from "@tauri-apps/api/dialog";
-import { usePrintQue } from "@/components/PrintableComponents/usePrintQue";
+import { usePrintQue } from "@/hooks/usePrintQue";
 
 
 export default function PurchaseOrder() {
@@ -30,7 +30,7 @@ export default function PurchaseOrder() {
   useEffect(() => {
     const fetchData = async () => {
       if (!params) return;
-      const res = await getPurchaseOrderByPoNum(params.po.toString());
+      const res = await getPurchaseOrderByPoNum(params.po?.toString() ?? '');
       setTitle(`${res?.purchasedFrom} PO`);
       setPoData(res);
     };
@@ -46,7 +46,7 @@ export default function PurchaseOrder() {
   const handleReceivedItem = async () => {
     if (!poData?.id || !await ask('Are you sure you want to do this?')) return;
     await togglePurchaseOrderReceived(poData.id, !poData.isItemReceived);
-    const res = await getPurchaseOrderByPoNum(params.po.toString());
+    const res = await getPurchaseOrderByPoNum(params.po?.toString() ?? '');
     setPoData(res);
   };
 

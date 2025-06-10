@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
-import { useNavState } from './Navbar/useNavState';
+import { useNavState } from '../hooks/useNavState';
 import { ask } from '@tauri-apps/api/dialog';
 
 interface Props {

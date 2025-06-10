@@ -28,9 +28,9 @@ import { arrayOfObjectsMatch } from "@/scripts/tools/utils";
 import PromotionalDialog from "../Dialogs/handwrittens/PromotionalDialog";
 import Loading from "../Library/Loading";
 import { ask } from "@tauri-apps/api/dialog";
-import { usePrintQue } from "../PrintableComponents/usePrintQue";
 import { getAltShipByCustomerId } from "@/scripts/services/altShipService";
 import AltShipDialog from "../Dialogs/handwrittens/AltShipDialog";
+import { usePrintQue } from "@/hooks/usePrintQue";
 
 interface Props {
   handwritten: Handwritten

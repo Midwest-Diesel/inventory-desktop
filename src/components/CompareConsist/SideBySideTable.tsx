@@ -8,7 +8,7 @@ import { addQuote } from "@/scripts/services/quotesService";
 import { useAtom } from "jotai";
 import { userAtom } from "@/scripts/atoms/state";
 import { invoke } from "@/scripts/config/tauri";
-import { useNavState } from "../Navbar/useNavState";
+import { useNavState } from "../../hooks/useNavState";
 
 interface Props {
   customer: Customer | null

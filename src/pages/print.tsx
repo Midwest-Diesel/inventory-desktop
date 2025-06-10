@@ -1,4 +1,4 @@
-import { useNavState } from "@/components/Navbar/useNavState";
+import { useNavState } from "@/hooks/useNavState";
 import CreditCardLabelTemplate from "@/components/PrintableComponents/CreditCardLabelTemplate";
 import HandwrittenAccountingTemplate from "@/components/PrintableComponents/HandwrittenAccountingTemplate";
 import HandwrittenCoreTemplate from "@/components/PrintableComponents/HandwrittenCoreTemplate";
@@ -8,7 +8,7 @@ import PartTag from "@/components/PrintableComponents/PartTag";
 import PurchaseOrderTemplate from "@/components/PrintableComponents/PurchaseOrderTemplate";
 import ReturnTemplate from "@/components/PrintableComponents/ReturnTemplate";
 import ShippingLabelTemplate from "@/components/PrintableComponents/ShippingLabelTemplate";
-import { usePrintQue } from "@/components/PrintableComponents/usePrintQue";
+import { usePrintQue } from "@/hooks/usePrintQue";
 import WarrantyTemplate from "@/components/PrintableComponents/WarrantyTemplate";
 import { invoke } from "@/scripts/config/tauri";
 import { toPng } from "html-to-image";

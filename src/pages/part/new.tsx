@@ -8,7 +8,7 @@ import { Layout } from "@/components/Layout";
 import { addPart, getPartsInfoByPartNum } from "@/scripts/services/partsService";
 import Error from "@/components/Errors/Error";
 import Input from "@/components/Library/Input";
-import { useNavState } from "@/components/Navbar/useNavState";
+import { useNavState } from "@/hooks/useNavState";
 import { ask } from "@tauri-apps/api/dialog";
 
 

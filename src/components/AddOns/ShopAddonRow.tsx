@@ -16,7 +16,7 @@ import { getPurchaseOrderByPoNum } from "@/scripts/services/purchaseOrderService
 import { getRatingFromRemarks } from "@/scripts/tools/utils";
 import { getImagesFromPart } from "@/scripts/services/imagesService";
 import { ask } from "@tauri-apps/api/dialog";
-import { usePrintQue } from "../PrintableComponents/usePrintQue";
+import { usePrintQue } from "@/hooks/usePrintQue";
 import { selectedPoAddOnAtom } from "@/scripts/atoms/components";
 
 interface Props {

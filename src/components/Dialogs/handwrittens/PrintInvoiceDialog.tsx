@@ -3,7 +3,7 @@ import Dialog from "../../Library/Dialog";
 import Checkbox from "@/components/Library/Checkbox";
 import Button from "@/components/Library/Button";
 import { formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
-import { usePrintQue } from "@/components/PrintableComponents/usePrintQue";
+import { usePrintQue } from "@/hooks/usePrintQue";
 
 interface Props {
   open: boolean

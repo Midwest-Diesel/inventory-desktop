@@ -21,11 +21,15 @@ export default function RecentPartSearches() {
   };
 
   useEffect(() => {
-    supabase
+    const channel = supabase
       .channel('recentSearches')
-      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'recentSearches' }, refreshRecentSearches)
-      .subscribe();
-  }, [recentPartSearches]);
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'recentSearches' }, refreshRecentSearches);
+    channel.subscribe();
+
+    return () => {
+      channel.unsubscribe();
+    };
+  }, []);
 
   const refreshRecentSearches = async (e: RealtimePostgresInsertPayload<RecentPartSearch>) => {
     const newSearchData = e.new = { ...e.new, date: parseResDate(e.new.date as any), salesman: user.initials } as any;

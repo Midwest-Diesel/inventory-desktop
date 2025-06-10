@@ -7,10 +7,10 @@ import Pagination from "@/components/Library/Pagination";
 import Input from "@/components/Library/Input";
 import Button from "@/components/Library/Button";
 import Checkbox from "@/components/Library/Checkbox";
-import Toast from "@/components/Library/Toast";
 import { useAtom } from "jotai";
-import { errorAtom, selectedCustomerAtom } from "@/scripts/atoms/state";
+import { selectedCustomerAtom } from "@/scripts/atoms/state";
 import { ask, message } from "@tauri-apps/api/dialog";
+import { useToast } from "@/hooks/useToast";
 
 interface Props {
   open: boolean
@@ -21,8 +21,8 @@ interface Props {
 
 
 export default function SelectHandwrittenDialog({ open, setOpen, part, onSubmit }: Props) {
+  const toast = useToast();
   const [selectedCustomer] = useAtom<Customer>(selectedCustomerAtom);
-  const [error, setError] = useAtom<string>(errorAtom);
   const [handwrittensData, setHandwrittensData] = useState<SelectHandwrittenDialogResult[]>([]);
   const [handwrittens, setHandwrittens] = useState<SelectHandwrittenDialogResult[]>([]);
   const [handwrittenCount, setHandwrittenCount] = useState<number[]>([]);
@@ -37,7 +37,6 @@ export default function SelectHandwrittenDialog({ open, setOpen, part, onSubmit 
   const [injectorWar, setInjectorWar] = useState(false);
   const [customWar, setCustomWar] = useState(false);
   const [search, setSearch] = useState('');
-  const [toastOpen, setToastOpen] = useState(false);
   const [showWarranty, setShowWarranty] = useState(false);
   const [showButons, setShowButtons] = useState(true);
   const LIMIT = 26;
@@ -132,7 +131,7 @@ export default function SelectHandwrittenDialog({ open, setOpen, part, onSubmit 
     const handwritten = await getHandwrittenById(selectedHandwrittenId);
     if (!handwritten) return;
     if (handwritten.invoiceStatus === 'SENT TO ACCOUNTING') {
-      setError('Can\'t add items to handwritten when status is SENT TO ACCOUNTING');
+      toast.sendToast('Can\'t add items to handwritten when status is SENT TO ACCOUNTING', 'error');
       return;
     }
 
@@ -170,8 +169,6 @@ export default function SelectHandwrittenDialog({ open, setOpen, part, onSubmit 
 
   return (
     <>
-      <Toast msg="Created handwritten" type="success" open={toastOpen} setOpen={setToastOpen} />
-    
       <Dialog
         open={open}
         setOpen={(value: boolean) => {

@@ -5,10 +5,10 @@ import Input from "../Library/Input";
 import { addCustomer, getCustomerByName } from "@/scripts/services/customerService";
 import { addHandwritten } from "@/scripts/services/handwrittensService";
 import { isObjectNull } from "@/scripts/tools/utils";
-import { useNavState } from "../Navbar/useNavState";
+import { useNavState } from "../../hooks/useNavState";
 import { userAtom } from "@/scripts/atoms/state";
 import { useAtom } from "jotai";
-import Toast from "../Library/Toast";
+import { useToast } from "@/hooks/useToast";
 
 interface Props {
   selectedCustomer: Customer
@@ -20,10 +20,10 @@ interface Props {
 
 export default function CustomerSearch({ selectedCustomer, setSelectedCustomer, expandedDetailsOpen, setExpandedDetailsOpen }: Props) {
   const { push, newTab } = useNavState();
+  const toast = useToast();
   const [user] = useAtom<User>(userAtom);
   const [searchDialogOpen, setSearchDialogOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
-  const [toastOpen, setToastOpen] = useState(false);
 
   const handleCustomerSearch = (e: FormEvent) => {
     e.preventDefault();
@@ -85,7 +85,7 @@ export default function CustomerSearch({ selectedCustomer, setSelectedCustomer, 
     } as any;
     const handwrittenId = await addHandwritten(newHandwritten);
     await newTab([{ name: 'Handwritten', url: `/handwrittens/${handwrittenId}` }]);
-    setToastOpen(true);
+    toast.sendToast('Created handwritten', 'success');
   };
   
     
@@ -123,7 +123,6 @@ export default function CustomerSearch({ selectedCustomer, setSelectedCustomer, 
         </Input>
       </form>
 
-      <Toast msg="Created handwritten" type="success" open={toastOpen} setOpen={setToastOpen} />
       <CustomerSearchDialog open={searchDialogOpen} setOpen={setSearchDialogOpen} searchTerm={searchTerm} />
     </div>
   );

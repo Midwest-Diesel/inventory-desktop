@@ -5,7 +5,7 @@ import { editReturnItem } from "@/scripts/services/returnsService";
 import Button from "./Library/Button";
 import { confirm } from "@/scripts/config/tauri";
 import { editPart } from "@/scripts/services/partsService";
-import { useNavState } from "./Navbar/useNavState";
+import { useNavState } from "../hooks/useNavState";
 
 interface Props {
   className?: string

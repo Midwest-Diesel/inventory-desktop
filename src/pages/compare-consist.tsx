@@ -11,7 +11,7 @@ import { getCustomerById, getCustomers } from "@/scripts/services/customerServic
 import { useAtom } from "jotai";
 import { useEffect, useState } from "react";
 import Button from "@/components/Library/Button";
-import { useNavState } from "@/components/Navbar/useNavState";
+import { useNavState } from "@/hooks/useNavState";
 
 
 export default function CompareConsist() {

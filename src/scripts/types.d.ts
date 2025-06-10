@@ -801,6 +801,13 @@ type Alert = {
   note: string | null
 };
 
+type Toast = {
+  id?: number
+  msg: string
+  type: 'error' | 'success' | 'warning' | 'info' | 'none'
+  duration?: number
+};
+
 type MapLocation = {
   id: number
   name: string

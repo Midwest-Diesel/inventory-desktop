@@ -8,7 +8,7 @@ import Grid from "@/components/Library/Grid/Grid";
 import GridItem from "@/components/Library/Grid/GridItem";
 import Loading from "@/components/Library/Loading";
 import Table from "@/components/Library/Table";
-import { useNavState } from "@/components/Navbar/useNavState";
+import { useNavState } from "@/hooks/useNavState";
 import { selectedCustomerAtom, userAtom } from "@/scripts/atoms/state";
 import { deleteCustomer, getCustomerById, getCustomerSalesHistory } from "@/scripts/services/customerService";
 import { deleteMapLocationByCustomer, getMapLocationFromCustomer } from "@/scripts/services/mapService";

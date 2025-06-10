@@ -1,4 +1,4 @@
-import { picturesAtom, userAtom, alertsAtom, snPicturesAtom, tabsAtom } from "@/scripts/atoms/state";
+import { userAtom, alertsAtom, tabsAtom } from "@/scripts/atoms/state";
 import { useAtom } from "jotai";
 import { useEffect, useState } from "react";
 import Login from "./Login";
@@ -7,6 +7,7 @@ import { getAlerts } from "@/scripts/services/alertsService";
 import { checkUpdate } from '@tauri-apps/api/updater';
 import UpdateModal from "./Modals/UpdateModal";
 import { getTabsByUser } from "@/scripts/services/tabsService";
+import ToastContainer from "@/containers/ToastContainer";
 
 interface Props {
   children: any
@@ -14,11 +15,11 @@ interface Props {
 
 
 export default function GlobalData({ children }: Props) {
-  const [userData, setUserData] = useAtom<User>(userAtom);
+  const [, setUserData] = useAtom<User>(userAtom);
   const [tabs, setTabs] = useAtom<Tab[]>(tabsAtom);
+  const [, setAlertsData] = useAtom<Alert[]>(alertsAtom);
   const [user, setUser] = useState<User>();
   const [loaded, setLoaded] = useState(false);
-  const [alertsData, setAlertsData] = useAtom<Alert[]>(alertsAtom);
   const [updateDialogOpen, setUpdateDialogOpen] = useState(false);
 
   useEffect(() => {
@@ -57,6 +58,7 @@ export default function GlobalData({ children }: Props) {
   return (
     <>
       <UpdateModal open={updateDialogOpen} setOpen={setUpdateDialogOpen} />
+      <ToastContainer />
       { user ? children : loaded && <Login /> }
     </>
   );

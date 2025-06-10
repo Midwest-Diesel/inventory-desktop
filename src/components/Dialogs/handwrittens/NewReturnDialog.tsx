@@ -7,7 +7,7 @@ import Button from "@/components/Library/Button";
 import { addReturn, addReturnItem } from "@/scripts/services/returnsService";
 import { useAtom } from "jotai";
 import { userAtom } from "@/scripts/atoms/state";
-import { useNavState } from "@/components/Navbar/useNavState";
+import { useNavState } from "@/hooks/useNavState";
 import { ask } from "@tauri-apps/api/dialog";
 
 interface Props {

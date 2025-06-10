@@ -38,3 +38,4 @@ export const tabsAtom = atom<Tab[]>([]);
 export const errorAtom = atom<string>('');
 export const printQueAtom = atom<{ name: string, printCmd: string, data: any, maxWidth: string, maxHeight: string }[]>([]);
 export const quickPickItemIdAtom = atom<number>(0);
+export const toastAtom = atom<Toast[]>([]);

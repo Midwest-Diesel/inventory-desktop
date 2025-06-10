@@ -9,7 +9,7 @@ import Pagination from "../Library/Pagination";
 import Loading from "../Library/Loading";
 import CompareConsistHistoryDialog from "../Dialogs/CompareConsistHistoryDialog";
 import { addCompareData } from "@/scripts/services/compareConsistService";
-import { useNavState } from "../Navbar/useNavState";
+import { useNavState } from "../../hooks/useNavState";
 
 interface Props {
   openSideBySide: (engine: Engine) => void

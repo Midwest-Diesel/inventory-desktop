@@ -20,10 +20,10 @@ import { useAtom } from "jotai";
 import Link from "@/components/Library/Link";
 import { useParams } from "next/navigation";
 import { FormEvent, useEffect, useState } from "react";
-import { useNavState } from "@/components/Navbar/useNavState";
+import { useNavState } from "@/hooks/useNavState";
 import CreditCardBlock from "@/components/CreditCardBlock";
 import { ask } from "@tauri-apps/api/dialog";
-import { usePrintQue } from "@/components/PrintableComponents/usePrintQue";
+import { usePrintQue } from "@/hooks/usePrintQue";
 import { getAltShipByCustomerId } from "@/scripts/services/altShipService";
 
 interface Props {
@@ -100,13 +100,20 @@ export default function HandwrittenDetails({
       }
     };
     fetchData();
-    supabase
+  }, [handwritten]);
+
+  useEffect(() => {
+    const channel = supabase
       .channel('pendingInvoicesItems')
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'pendingInvoicesItems' }, refreshHandwrittenItems)
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'pendingInvoicesItemsChildren' }, refreshHandwrittenItemsChildren)
-      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'pendingInvoices' }, refreshHandwrittenOrderNotes)
-      .subscribe();
-  }, [handwritten]);
+      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'pendingInvoices' }, refreshHandwrittenOrderNotes);
+    channel.subscribe();
+
+    return () => {
+      channel.unsubscribe();
+    };
+  }, []);
 
   const refreshHandwrittenItems = async (e: RealtimePostgresInsertPayload<HandwrittenItem>) => {
     const newItems = [...(handwritten?.handwrittenItems ?? []), { ...e.new, date: parseResDate(e.new.date as any) }];

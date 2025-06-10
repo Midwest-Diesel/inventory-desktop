@@ -10,7 +10,7 @@ import Grid from "@/components/Library/Grid/Grid";
 import GridItem from "@/components/Library/Grid/GridItem";
 import Loading from "@/components/Library/Loading";
 import Table from "@/components/Library/Table";
-import { useNavState } from "@/components/Navbar/useNavState";
+import { useNavState } from "@/hooks/useNavState";
 import { userAtom } from "@/scripts/atoms/state";
 import { deleteEngine, getEngineByStockNum } from "@/scripts/services/enginesService";
 import { formatCurrency, formatDate } from "@/scripts/tools/stringUtils";

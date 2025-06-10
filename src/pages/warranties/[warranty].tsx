@@ -15,8 +15,8 @@ import Link from "@/components/Library/Link";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { confirm } from "@/scripts/config/tauri";
-import { useNavState } from "@/components/Navbar/useNavState";
-import { usePrintQue } from "@/components/PrintableComponents/usePrintQue";
+import { useNavState } from "@/hooks/useNavState";
+import { usePrintQue } from "@/hooks/usePrintQue";
 
 
 export default function Warranty() {

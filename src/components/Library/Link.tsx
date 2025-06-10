@@ -1,5 +1,5 @@
 import { default as NavLink } from "next/link";
-import { useNavState } from "../Navbar/useNavState";
+import { useNavState } from "../../hooks/useNavState";
 import { useRef } from "react";
 
 interface Props {

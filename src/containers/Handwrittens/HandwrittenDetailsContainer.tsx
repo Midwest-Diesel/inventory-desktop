@@ -1,8 +1,8 @@
 import AddQtyDialog from "@/components/Dialogs/handwrittens/AddQtyDialog";
 import EditHandwrittenDetails from "@/components/Handwrittens/EditHandwrittenDetails";
 import HandwrittenDetails from "@/components/Handwrittens/HandwrittenDetails";
-import Toast from "@/components/Library/Toast";
-import { useNavState } from "@/components/Navbar/useNavState";
+import { useNavState } from "@/hooks/useNavState";
+import { useToast } from "@/hooks/useToast";
 import { confirm } from "@/scripts/config/tauri";
 import { addAltShipAddress, getAltShipByCustomerId } from "@/scripts/services/altShipService";
 import { getHandwrittenById } from "@/scripts/services/handwrittensService";
@@ -15,6 +15,7 @@ import { useEffect, useState } from "react";
 export default function HandwrittenDetailsContainer() {
   const params = useParams();
   const router = useRouter();
+  const toast = useToast();
   const { push } = useNavState();
   const [handwritten, setHandwritten] = useState<Handwritten | null>(null);
   const [cardNum, setCardNum] = useState('');
@@ -27,8 +28,6 @@ export default function HandwrittenDetailsContainer() {
   const [promptLeaveWindow, setPromptLeaveWindow] = useState(false);
   const [addQtyDialogOpen, setAddQtyDialogOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const [msg, setToastMsg] = useState('');
-  const [toastOpen, setToastOpen] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -44,8 +43,7 @@ export default function HandwrittenDetailsContainer() {
       itemsWithChildren.forEach((item) => {
         const res = item.invoiceItemChildren.find((child) => child.cost === 0.04);
         if (res) {
-          setToastMsg(`Cost still detected on item <span style="color: var(--orange-1)">${res.partNum}</span>!`);
-          setToastOpen(true);
+          toast.sendToast(`Cost still detected on item <span style="color: var(--orange-1)">${res.partNum}</span>!`, 'error', 6000);
         }
       });
     };
@@ -119,8 +117,6 @@ export default function HandwrittenDetailsContainer() {
 
   return (
     <div>
-      <Toast msg={msg} type="error" open={toastOpen} setOpen={setToastOpen} duration={6000} />
-
       {handwritten &&
         <AddQtyDialog
           open={addQtyDialogOpen}

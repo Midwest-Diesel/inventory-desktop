@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { getCompareDataByCustomer } from "@/scripts/services/compareConsistService";
 import { formatDate } from "@/scripts/tools/stringUtils";
 import Table from "../Library/Table";
-import { useNavState } from "../Navbar/useNavState";
+import { useNavState } from "../../hooks/useNavState";
 
 interface Props {
   open: boolean

@@ -85,13 +85,6 @@ export default function ImportantCustomersMap() {
     let clickEvent: any;
     let closeWindowsEvent: any;
 
-    supabase
-      .channel('mapLocations')
-      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'mapLocations' }, addRealtimeMapChanges)
-      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'mapLocations' }, editRealtimeMapChanges)
-      .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'mapLocations' }, deleteRealtimeMapChanges)
-      .subscribe();
-    
     const loadMarkers = async () => {
       const { AdvancedMarkerElement, PinElement } = await google.maps.importLibrary("marker") as google.maps.MarkerLibrary;
       const { InfoWindow } = google.maps;
@@ -149,6 +142,19 @@ export default function ImportantCustomersMap() {
       google.maps.event.removeListener(clickEvent);
     };    
   }, [filteredLocations, listOfLocations, mapInstanceRef]);
+
+  useEffect(() => {
+    const channel = supabase
+      .channel('mapLocations')
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'mapLocations' }, addRealtimeMapChanges)
+      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'mapLocations' }, editRealtimeMapChanges)
+      .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'mapLocations' }, deleteRealtimeMapChanges);
+    channel.subscribe();
+    
+    return () => {
+      channel.unsubscribe();
+    };
+  }, []);
 
   const addRealtimeMapChanges = async (e: RealtimePostgresInsertPayload<MapLocation>) => {
     const payload: any = e.new;

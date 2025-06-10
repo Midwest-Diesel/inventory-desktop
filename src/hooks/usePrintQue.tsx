@@ -1,5 +1,5 @@
 import { useAtom } from "jotai";
-import { useNavState } from "../Navbar/useNavState";
+import { useNavState } from "./useNavState";
 import { printQueAtom } from "@/scripts/atoms/state";
 
 

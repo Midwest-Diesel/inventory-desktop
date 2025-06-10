@@ -15,9 +15,9 @@ import { useAtom } from "jotai";
 import Link from "@/components/Library/Link";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { useNavState } from "@/components/Navbar/useNavState";
+import { useNavState } from "@/hooks/useNavState";
 import { ask } from "@tauri-apps/api/dialog";
-import { usePrintQue } from "@/components/PrintableComponents/usePrintQue";
+import { usePrintQue } from "@/hooks/usePrintQue";
 
 
 export default function Return() {

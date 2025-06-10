@@ -9,7 +9,7 @@ import { userAtom } from "@/scripts/atoms/state";
 import { FormEvent, useState } from "react";
 import Checkbox from "@/components/Library/Checkbox";
 import Input from "@/components/Library/Input";
-import { useNavState } from "@/components/Navbar/useNavState";
+import { useNavState } from "@/hooks/useNavState";
 import { ask } from "@tauri-apps/api/dialog";
 
 interface Props {

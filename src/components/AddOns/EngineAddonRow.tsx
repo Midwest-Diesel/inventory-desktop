@@ -12,7 +12,7 @@ import { formatDate } from "@/scripts/tools/stringUtils";
 import VendorSelect from "../Library/Select/VendorSelect";
 import { getEngineImages } from "@/scripts/services/imagesService";
 import { ask } from "@tauri-apps/api/dialog";
-import { usePrintQue } from "../PrintableComponents/usePrintQue";
+import { usePrintQue } from "@/hooks/usePrintQue";
 
 interface Props {
   addOn: EngineAddOn

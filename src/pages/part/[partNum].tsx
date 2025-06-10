@@ -22,8 +22,8 @@ import StockNumPicturesDialog from "@/components/Dialogs/StockNumPicturesDialog"
 import { setTitle } from "@/scripts/tools/utils";
 import Modal from "@/components/Library/Modal";
 import { getSurplusCostRemaining } from "@/scripts/services/surplusService";
-import { useNavState } from "@/components/Navbar/useNavState";
-import { usePrintQue } from "@/components/PrintableComponents/usePrintQue";
+import { useNavState } from "@/hooks/useNavState";
+import { usePrintQue } from "@/hooks/usePrintQue";
 
 
 export default function PartDetails() {

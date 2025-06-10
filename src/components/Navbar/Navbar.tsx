@@ -3,7 +3,7 @@ import { useAtom } from "jotai";
 import OfficeNavbar from "./OfficeNavbar";
 import ShopNavbar from "./ShopNavbar";
 import Button from "../Library/Button";
-import { useNavState } from "./useNavState";
+import { useNavState } from "../../hooks/useNavState";
 import ContextMenu from "../Library/ContextMenu";
 import { useEffect, useState } from "react";
 // import { changeSelectedTab, deleteTab, renameTab } from "@/scripts/controllers/tabsController";

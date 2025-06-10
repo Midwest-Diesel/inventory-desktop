@@ -3,8 +3,9 @@ import Navbar from "./Navbar/Navbar";
 import AlertModal from "./Modals/AlertModal";
 import { useAtom } from "jotai";
 import { selectedAlertsAtom } from "@/scripts/atoms/components";
-import { errorAtom, userAtom } from "@/scripts/atoms/state";
+import { userAtom } from "@/scripts/atoms/state";
 import Toast from "./Library/Toast";
+import { useToast } from "@/hooks/useToast";
 
 interface Props {
   children: React.ReactNode
@@ -13,9 +14,9 @@ interface Props {
 
 
 export function Layout({ children, title }: Props) {
+  const toast = useToast();
   const [user] = useAtom<User>(userAtom);
   const [alerts, setAlerts] = useAtom<Alert[]>(selectedAlertsAtom);
-  const [error, setError] = useAtom<string>(errorAtom);
 
   useEffect(() => {
     document.title = title ? `${title} | Inventory` : 'Inventory';
@@ -32,15 +33,6 @@ export function Layout({ children, title }: Props) {
     <div>
       <AlertModal alerts={alerts} setAlerts={setAlerts} />
       { user && <Navbar /> }
-      {error &&
-        <Toast
-          type="error"
-          msg={error}
-          duration={8000}
-          open={error !== ''}
-          setOpen={(value: boolean) => !value && setError('')}
-        />
-      }
       <div className="layout__container">
         <div className="layout__main-content">
           { children }
