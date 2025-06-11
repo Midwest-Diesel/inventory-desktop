@@ -12,22 +12,20 @@ import { quickPickItemIdAtom } from "@/scripts/atoms/state";
 interface Props {
   className?: string
   handwritten: Handwritten
-  handwrittenItems: HandwrittenItem[]
   setHandwritten: (handwritten: Handwritten) => void
   taxTotal: number
 }
 
 
-export default function HandwrittenItemsTable({ className, handwritten, handwrittenItems, setHandwritten, taxTotal }: Props) {
-  const [, setQuickPickItemId] = useAtom<number>(quickPickItemIdAtom);
+export default function HandwrittenItemsTable({ className, handwritten, setHandwritten, taxTotal }: Props) {
+  const [quickPickItemId, setQuickPickItemId] = useAtom<number>(quickPickItemIdAtom);
   const [childrenOpen, setChildrenOpen] = useState(false);
   const [stockNumChildren, setStockNumChildren] = useState<HandwrittenItemChild[]>([]);
-  const [quickPickEnabled, setQuickPickEnabled] = useState(false);
 
   useEffect(() => {
     if (stockNumChildren.length === 0) return;
     setStockNumChildren(handwritten.handwrittenItems.find((item) => item.id === stockNumChildren[0].parentId)?.invoiceItemChildren ?? []);
-  },[handwritten]);
+  }, [handwritten]);
 
   const textStyles = (item: HandwrittenItem) => {
     const styles = {} as any;
@@ -44,10 +42,10 @@ export default function HandwrittenItemsTable({ className, handwritten, handwrit
   };
 
   const getTotalCost = (): number => {
-    return (handwrittenItems as any).reduce((acc: number, item: HandwrittenItem) => item.cost !== 0.04 && item.cost !== 0.01 && acc + ((item.cost ?? 0) * (item.qty ?? 0)), 0);
+    return (handwritten.handwrittenItems as any).reduce((acc: number, item: HandwrittenItem) => item.cost !== 0.04 && item.cost !== 0.01 && acc + ((item.cost ?? 0) * (item.qty ?? 0)), 0);
   };
   const getInvoiceTotal = (): number => {
-    return handwrittenItems.reduce((acc, item) => acc + ((item.unitPrice ?? 0) * (item.qty ?? 0)), 0);
+    return handwritten.handwrittenItems.reduce((acc, item) => acc + ((item.unitPrice ?? 0) * (item.qty ?? 0)), 0);
   };
   const costColorStyle = getTotalCost() < 0 ? { color: 'var(--red-2)' } : '';
   const totalColorStyle = getInvoiceTotal() < 0 ? { color: 'var(--red-2)' } : '';
@@ -97,14 +95,13 @@ export default function HandwrittenItemsTable({ className, handwritten, handwrit
   };
 
   const toggleQuickPick = (item: HandwrittenItem) => {
-    setQuickPickEnabled(!quickPickEnabled);
-    setQuickPickItemId(item.id);
+    setQuickPickItemId(quickPickItemId ? 0 : item.id);
   };
 
 
   return (
     <div className={`handwritten-items-table ${className && className}`}>
-      {handwrittenItems &&
+      {handwritten.handwrittenItems &&
         <>
           <HandwrittenChildrenDialog open={childrenOpen} setOpen={setChildrenOpen} stockNumChildren={stockNumChildren} handwritten={handwritten} setHandwritten={setHandwritten} />
 
@@ -125,12 +122,12 @@ export default function HandwrittenItemsTable({ className, handwritten, handwrit
               </tr>
             </thead>
             <tbody>
-              {handwrittenItems.map((item: HandwrittenItem, i: number) => {
+              {handwritten.handwrittenItems.map((item: HandwrittenItem, i: number) => {
                 return (
                   <tr key={i}>
                     {handwritten.invoiceStatus !== 'SENT TO ACCOUNTING' &&
                       <td>
-                        {item.location && !item.location.includes('CORE DEPOSIT') && 
+                        {item.location && !item.location.includes('CORE DEPOSIT') && item.invoiceItemChildren.length === 0 &&
                           <Button
                             variant={['x-small']}
                             onClick={() => handleCoreCharge(item)}
@@ -139,8 +136,8 @@ export default function HandwrittenItemsTable({ className, handwritten, handwrit
                             Core Charge
                           </Button>
                         }
-                        {item.stockNum === 'In/Out' &&
-                          <Button variant={['x-small']} onClick={() => toggleQuickPick(item)}>{ quickPickEnabled ? 'Disable' : 'Enable' } Quick Pick</Button>
+                        {item.invoiceItemChildren.some((i) => i.stockNum === 'In/Out') &&
+                          <Button variant={['x-small']} onClick={() => toggleQuickPick(item)}>{ quickPickItemId > 0 ? 'Disable' : 'Enable' } Quick Pick</Button>
                         }
                       </td>
                     }

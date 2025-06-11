@@ -35,9 +35,7 @@ export default function HandwrittenDetailsContainer() {
       const res = await getHandwrittenById(Number(params.handwritten));
       setTitle(`${res?.id} Handwritten`);
       setHandwritten(res);
-      if (res?.invoiceStatus === 'INVOICE PENDING') {
-        setIsEditing(true);
-      }
+      if (res?.invoiceStatus === 'INVOICE PENDING') setIsEditing(true);
 
       const itemsWithChildren = res?.handwrittenItems.filter((item) => item.invoiceItemChildren && item.invoiceItemChildren.length > 0) ?? [];
       itemsWithChildren.forEach((item) => {

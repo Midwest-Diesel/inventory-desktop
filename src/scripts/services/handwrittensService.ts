@@ -30,7 +30,7 @@ interface NewHandwrittenItem {
 }
 
 interface NewHandwrittenItemChild {
-  partId: number
+  partId: number | null
   qty: number
   cost: number
 }
@@ -80,6 +80,17 @@ export const getHandwrittenById = async (id: number): Promise<Handwritten | null
     const coreReturns = await getCoreReturnsByCustomer(res.data[0].customer.id);
     res.data[0].coreReturns = coreReturns;
     return parseHandwrittenRes(res.data)[0];
+  } catch (err) {
+    console.error(err);
+    return null;
+  }
+};
+
+export const getHandwrittenItemById = async (id: number): Promise<HandwrittenItem | null> => {
+  try {
+    const auth = { withCredentials: true };
+    const res = await api.get(`/api/handwrittens/item/id/${id}`, auth);
+    return { ...res.data, date: parseResDate(res.data.date) };
   } catch (err) {
     console.error(err);
     return null;

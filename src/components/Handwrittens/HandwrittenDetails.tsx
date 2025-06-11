@@ -116,13 +116,8 @@ export default function HandwrittenDetails({
   }, []);
 
   const refreshHandwrittenItems = async (e: RealtimePostgresInsertPayload<HandwrittenItem>) => {
-    const newItems = [...(handwritten?.handwrittenItems ?? []), { ...e.new, date: parseResDate(e.new.date as any) }];
     const res = await getHandwrittenById(Number(params.handwritten));
-    if (!res) {
-      location.reload();
-      return;
-    }
-    setHandwritten({ ...res, handwrittenItems: newItems });
+    setHandwritten(res);
   };
 
   const refreshHandwrittenItemsChildren = (e: RealtimePostgresInsertPayload<HandwrittenItemChild>) => {
@@ -635,7 +630,6 @@ export default function HandwrittenDetails({
             <HandwrittenItemsTable
               className="handwritten-items-table--handwrittens-page"
               handwritten={handwritten}
-              handwrittenItems={handwritten.handwrittenItems}
               setHandwritten={setHandwritten}
               taxTotal={taxTotal}
             />

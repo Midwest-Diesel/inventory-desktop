@@ -38,18 +38,20 @@ export default function AddQtyDialog({ open, setOpen, handwritten, setHandwritte
       date: new Date(),
       desc: part.desc,
       partNum: part.partNum,
-      stockNum: 'In/Out',
+      stockNum: null,
       unitPrice,
-      qty: 1,
-      cost: 0.04,
+      qty: 0,
+      cost: 0,
       location: null,
-      partId: part.id
+      partId: null
     };
     const id = await addHandwrittenItem(newItem);
     const newChild = {
-      partId: part.id,
-      qty: qty - 1,
-      cost: 0.04
+      partId: null,
+      qty,
+      cost: 0.04,
+      partNum: part.partNum,
+      stockNum: 'In/Out'
     }
     await addHandwrittenItemChild(id, newChild);
 

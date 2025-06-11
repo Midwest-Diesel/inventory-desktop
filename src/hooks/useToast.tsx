@@ -1,16 +1,21 @@
 import { toastAtom } from "@/scripts/atoms/state";
 import { useAtom } from "jotai";
 
+let idCounter = 0;
 
 export function useToast() {
-  const [toasts, setToasts] = useAtom<Toast[]>(toastAtom);
+  const [, setToasts] = useAtom<Toast[]>(toastAtom);
 
   const sendToast = (msg: string, type: 'error' | 'success' | 'warning' | 'info' | 'none', duration = 6000) => {
-    setToasts([...toasts, { msg, type, duration, id: toasts.length }]);
+    const id = idCounter++;
+    const newToast = { msg, type, duration, id };
+
+    setToasts((prev) => [...prev, newToast]);
+
     setTimeout(() => {
-      setToasts(toasts.filter((t) => t.id !== toasts.length))
-    }, duration ?? 6000);
+      setToasts(prev => prev.filter((t) => t.id !== id));
+    }, duration);
   };
-  
+
   return { sendToast };
 }

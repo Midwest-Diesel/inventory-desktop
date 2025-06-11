@@ -18,7 +18,8 @@ import PartsTable from "@/components/Dashboard/PartsTable";
 import { selectedAlertsAtom } from "@/scripts/atoms/components";
 import { detectAlerts } from "@/scripts/services/alertsService";
 import { getQuotesByPartNum } from "@/scripts/services/recentSearchesService";
-import { addHandwrittenItemChild } from "@/scripts/services/handwrittensService";
+import { addHandwrittenItemChild, deleteHandwrittenItemChild, editHandwrittenItemChild, getHandwrittenItemById } from "@/scripts/services/handwrittensService";
+import { useToast } from "@/hooks/useToast";
 
 interface Props {
   selectHandwrittenOpen: boolean
@@ -29,6 +30,7 @@ interface Props {
 
 
 export default function PartSearchSection({ selectHandwrittenOpen, setSelectHandwrittenOpen, setSelectedHandwrittenPart, handleNewQuote }: Props) {
+  const toast = useToast();
   const [user] = useAtom<User>(userAtom);
   const [, setPartsQty] = useAtom<number[]>(partsQtyAtom);
   const [selectedCustomer] = useAtom<Customer>(selectedCustomerAtom);
@@ -158,8 +160,20 @@ export default function PartSearchSection({ selectHandwrittenOpen, setSelectHand
   };
 
   const onQuickPick = async (part: Part) => {
-    if (quickPickItemId === 0) return;
-    await addHandwrittenItemChild(quickPickItemId, { partId: part.id, qty: 1, cost: 0.04 });
+    if (quickPickItemId === 0) {
+      alert('No line item selected for quick pick');
+      return;
+    }
+    toast.sendToast('Quick picked item', 'success');
+    await addHandwrittenItemChild(quickPickItemId, { partId: part.id, qty: part.qty, cost: part.purchasePrice });
+    const item = await getHandwrittenItemById(quickPickItemId);
+    const child = item?.invoiceItemChildren.find((i) => i.stockNum === 'In/Out');
+    if (!child) return;
+    if (child.qty! - part.qty <= 0) {
+      await deleteHandwrittenItemChild(child.id);
+    } else {
+      await editHandwrittenItemChild({ ...child, qty: child.qty! - part.qty });
+    }
   };
 
 
