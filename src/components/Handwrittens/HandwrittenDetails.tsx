@@ -322,7 +322,7 @@ export default function HandwrittenDetails({
 
     if (!item && !itemChild) return;
     setTakeoffsOpen(true);
-    setTakeoffItem(item);
+    setTakeoffItem(item || itemChild);
   };
 
 

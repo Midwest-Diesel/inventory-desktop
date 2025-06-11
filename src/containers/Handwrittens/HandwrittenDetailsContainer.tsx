@@ -71,7 +71,7 @@ export default function HandwrittenDetailsContainer() {
       }
     };
     
-    router.events.on('routeChangeStart', handleRouteChangeStart);  
+    router.events.on('routeChangeStart', handleRouteChangeStart);
     return () => {
       router.events.off('routeChangeStart', handleRouteChangeStart);
     };

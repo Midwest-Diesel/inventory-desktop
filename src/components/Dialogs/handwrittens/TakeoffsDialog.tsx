@@ -4,7 +4,7 @@ import Input from "@/components/Library/Input";
 import { editHandwrittenTakeoffState, getHandwrittenById } from "@/scripts/services/handwrittensService";
 import { addPart, addPartCostIn, editPartCostIn, getPartById, getPartCostIn, handlePartTakeoff } from "@/scripts/services/partsService";
 import { getSurplusByCode, zeroAllSurplusItems } from "@/scripts/services/surplusService";
-import { formatDate } from "@/scripts/tools/stringUtils";
+import { formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
 import { useParams } from "next/navigation";
 import { FormEvent, useEffect, useState } from "react";
 
@@ -18,7 +18,7 @@ interface Props {
 
 export default function TakeoffsDialog({ open, setOpen, item, setHandwritten }: Props) {
   const params = useParams();
-  const [qty, setQty] = useState<number | null>(item.qty);
+  const [qty, setQty] = useState<number>(item.qty ?? 0);
   const [part, setPart] = useState<Part | null>(null);
 
   useEffect(() => {
@@ -32,11 +32,17 @@ export default function TakeoffsDialog({ open, setOpen, item, setHandwritten }: 
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    if (!item.partId) return;
-    const part: Part | null = await getPartById(item.partId);
-    await handlePartTakeoff(item.partId, Number(qty));
-    await editHandwrittenTakeoffState(item.id, true);
     if (!part) return;
+    if (part.qty - qty < 0) {
+      alert('Part qty cannot go below 0');
+      return;
+    }
+    if (part.purchasePrice !== item.cost) {
+      alert(`Part cost of ${formatCurrency(part.purchasePrice)} Doesn't equal line item cost of ${formatCurrency(item.cost)}`)
+      return;
+    }
+    await handlePartTakeoff(part.id, Number(qty));
+    await editHandwrittenTakeoffState(item.id, true);
     
     const surplus: Surplus | null = await getSurplusByCode(part.purchasedFrom ?? '');
     if (surplus && surplus.price - Number(item.cost) <= 0) await zeroAllSurplusItems(surplus.code);

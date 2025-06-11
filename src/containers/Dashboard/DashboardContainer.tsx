@@ -25,7 +25,7 @@ export default function DashboardContainer() {
   const [recentPartSearches, setRecentPartSearches] = useAtom<RecentPartSearch[]>(recentPartSearchesAtom);
   const [recentQuoteSearches] = useAtom<RecentQuoteSearch[]>(recentQuotesAtom);
   const [customer] = useAtom<Customer>(selectedCustomerAtom);
-  const [handwrittenCustomer, setHandwrittenCustomer] = useState<Customer | null>(null);
+  const [, setHandwrittenCustomer] = useState<Customer | null>(null);
   const [selectHandwrittenOpen, setSelectHandwrittenOpen] = useState(false);
   const [selectedHandwrittenPart, setSelectedHandwrittenPart] = useState<Part | null>(null);
   const [quotes, setQuotes] = useState<Quote[]>([]);

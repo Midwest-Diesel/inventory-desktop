@@ -230,6 +230,10 @@ export default function PartDetails() {
                     <td data-testid="qty">{ part.qty }</td>
                   </tr>
                   <tr>
+                    <th>Qty Sold</th>
+                    <td data-testid="qty-sold">{ part.qtySold }</td>
+                  </tr>
+                  <tr>
                     <th>Stock Number</th>
                     <td>
                       <div className="part-details__stock-pics">
