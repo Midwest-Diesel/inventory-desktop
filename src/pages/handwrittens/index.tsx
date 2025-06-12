@@ -218,7 +218,6 @@ export default function Handwrittens() {
           <HandwrittenItemsTable
             className="handwritten-items-table--handwrittens-page"
             handwritten={focusedHandwritten}
-            handwrittenItems={focusedHandwritten.handwrittenItems}
             setHandwritten={setFocusedHandwritten}
             taxTotal={taxTotal}
           />

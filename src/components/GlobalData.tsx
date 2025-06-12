@@ -1,4 +1,4 @@
-import { userAtom, alertsAtom, tabsAtom } from "@/scripts/atoms/state";
+import { userAtom, alertsAtom, tabsAtom, tooltipAtom } from "@/scripts/atoms/state";
 import { useAtom } from "jotai";
 import { useEffect, useState } from "react";
 import Login from "./Login";
@@ -8,6 +8,7 @@ import { checkUpdate } from '@tauri-apps/api/updater';
 import UpdateModal from "./Modals/UpdateModal";
 import { getTabsByUser } from "@/scripts/services/tabsService";
 import ToastContainer from "@/containers/ToastContainer";
+import Tooltip from "./Library/Tooltip";
 
 interface Props {
   children: any
@@ -18,6 +19,7 @@ export default function GlobalData({ children }: Props) {
   const [, setUserData] = useAtom<User>(userAtom);
   const [tabs, setTabs] = useAtom<Tab[]>(tabsAtom);
   const [, setAlertsData] = useAtom<Alert[]>(alertsAtom);
+  const [tooltip] = useAtom<string>(tooltipAtom);
   const [user, setUser] = useState<User>();
   const [loaded, setLoaded] = useState(false);
   const [updateDialogOpen, setUpdateDialogOpen] = useState(false);
@@ -59,6 +61,7 @@ export default function GlobalData({ children }: Props) {
     <>
       <UpdateModal open={updateDialogOpen} setOpen={setUpdateDialogOpen} />
       <ToastContainer />
+      { tooltip && <Tooltip msg={tooltip} /> }
       { user ? children : loaded && <Login /> }
     </>
   );

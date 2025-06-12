@@ -12,6 +12,7 @@ import { deleteQuote, toggleAddToEmail, toggleQuoteSold } from "@/scripts/servic
 import { confirm } from "@/scripts/config/tauri";
 import { useAtom } from "jotai";
 import { quotesAtom } from "@/scripts/atoms/state";
+import { useTooltip } from "@/hooks/useTooltip";
 
 interface Props {
   quotes: Quote[]
@@ -28,6 +29,7 @@ interface Props {
 
 
 export default function QuoteList({ quotes, setQuotes, onInvoiceQuote, onChangePage, onQuotePiggyback, handleEmail, setQuoteEdited, page, limit, count }: Props) {
+  const tooltip = useTooltip();
   const [quotesData, setQuotesData] = useAtom<Quote[]>(quotesAtom);
   const [expandedQuotes, setExpandedQuotes] = useState<number[]>([]);
 
@@ -100,18 +102,39 @@ export default function QuoteList({ quotes, setQuotes, onInvoiceQuote, onChangeP
                       }
                     </td>
                     <td className="table-buttons table-buttons--grid quote-list__btn-grid">
-                      <Button variant={['fit']} onClick={() => onQuotePiggyback(quote)}>
+                      <Button
+                        variant={['fit']}
+                        onClick={() => onQuotePiggyback(quote)}
+                        onMouseEnter={() => tooltip.set('Piggyback Quote')}
+                        onMouseLeave={() => tooltip.set('')}
+                      >
                         <Image alt="Quote piggyback" src="/images/icons/box-arrow-up.svg" width={17} height={17} />
                       </Button>
-                      <Button variant={['fit']} onClick={() => setQuoteEdited(quote)}>
+                      <Button
+                        variant={['fit']}
+                        onClick={() => setQuoteEdited(quote)}
+                        onMouseEnter={() => tooltip.set('Edit')}
+                        onMouseLeave={() => tooltip.set('')}
+                      >
                         <Image alt="Edit" src="/images/icons/edit.svg" width={17} height={17} />
                       </Button>
                       {quote.customer &&
-                        <Button variant={['fit']} onClick={() => handleEmail(quote)}>
+                        <Button
+                          variant={['fit']}
+                          onClick={() => handleEmail(quote)}
+                          onMouseEnter={() => tooltip.set('Email')}
+                          onMouseLeave={() => tooltip.set('')}
+                        >
                           <Image alt="Email" src="/images/icons/email.svg" width={17} height={17} />
                         </Button>
                       }
-                      <Button variant={['fit']} onClick={() => onInvoiceQuote(quote)} data-testid="invoice-btn">
+                      <Button
+                        variant={['fit']}
+                        onClick={() => onInvoiceQuote(quote)}
+                        data-testid="invoice-btn"
+                        onMouseEnter={() => tooltip.set('Add to Handwritten')}
+                        onMouseLeave={() => tooltip.set('')}
+                      >
                         <Image alt="Add to handwritten" src="/images/icons/invoice.svg" width={17} height={17} />
                       </Button>
                       <Button variant={['fit', 'danger']} onClick={() => handleDelete(quote.id)} data-testid="delete-quote">

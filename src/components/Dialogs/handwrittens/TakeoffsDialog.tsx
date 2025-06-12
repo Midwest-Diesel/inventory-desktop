@@ -28,7 +28,7 @@ export default function TakeoffsDialog({ open, setOpen, item, setHandwritten }: 
       setPart(res);
     };
     fetchData();
-  })
+  });
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -38,7 +38,7 @@ export default function TakeoffsDialog({ open, setOpen, item, setHandwritten }: 
       return;
     }
     if (part.purchasePrice !== item.cost) {
-      alert(`Part cost of ${formatCurrency(part.purchasePrice)} Doesn't equal line item cost of ${formatCurrency(item.cost)}`)
+      alert(`Part cost of ${formatCurrency(part.purchasePrice)} Doesn't equal line item cost of ${formatCurrency(item.cost)}`);
       return;
     }
     await handlePartTakeoff(part.id, Number(qty));

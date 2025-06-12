@@ -52,7 +52,7 @@ export default function AddQtyDialog({ open, setOpen, handwritten, setHandwritte
       cost: 0.04,
       partNum: part.partNum,
       stockNum: 'In/Out'
-    }
+    };
     await addHandwrittenItemChild(id, newChild);
 
     const res = await getHandwrittenById(handwritten.id);

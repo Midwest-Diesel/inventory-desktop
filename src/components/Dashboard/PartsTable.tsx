@@ -10,6 +10,7 @@ import { getImagesFromPart, getImagesFromStockNum } from "@/scripts/services/ima
 import { useState } from "react";
 import PartPicturesDialog from "../Dialogs/PartPicturesDialog";
 import StockNumPicturesDialog from "../Dialogs/StockNumPicturesDialog";
+import { useTooltip } from "@/hooks/useTooltip";
 
 interface Props {
   parts: Part[]
@@ -23,6 +24,7 @@ interface Props {
 
 
 export default function PartsTable({ parts, partsData, quotePart, onChangePage, onOpenSelectHandwrittenDialog, onQuickPick, limit }: Props) {
+  const tooltip = useTooltip();
   const [partsQty] = useAtom<number[]>(partsQtyAtom);
   const [partImages, setPartImages] = useState<Picture[]>([]);
   const [picturesPartNum, setPicturesPartNum] = useState<string>('');
@@ -79,13 +81,31 @@ export default function PartsTable({ parts, partsData, quotePart, onChangePage, 
               return (
                 <tr key={i}>
                   <td className="parts-list__left-col table-buttons table-buttons--grid">
-                    <Button variant={['x-small', 'fit']} onClick={() => quotePart(part)} data-testid="quote-part-btn">
+                    <Button
+                      variant={['x-small', 'fit']}
+                      onClick={() => quotePart(part)}
+                      data-testid="quote-part-btn"
+                      onMouseEnter={() => tooltip.set('Quote Part')}
+                      onMouseLeave={() => tooltip.set('')}
+                    >
                       <Image alt="Quote part" src="/images/icons/clipboard.svg" width={17} height={17} />
                     </Button>
-                    <Button variant={['x-small', 'fit']} onClick={() => onOpenSelectHandwrittenDialog(part)} data-testid="add-item-btn">
+                    <Button
+                      variant={['x-small', 'fit']}
+                      onClick={() => onOpenSelectHandwrittenDialog(part)}
+                      data-testid="add-item-btn"
+                      onMouseEnter={() => tooltip.set('Add to Handwritten')}
+                      onMouseLeave={() => tooltip.set('')}
+                    >
                       <Image alt="Add to handwritten" src="/images/icons/invoice.svg" width={17} height={17} />
                     </Button>
-                    <Button variant={['x-small', 'fit']} onClick={() => onQuickPick(part)} data-testid="add-item-btn">
+                    <Button
+                      variant={['x-small', 'fit']}
+                      onClick={() => onQuickPick(part)}
+                      data-testid="add-item-btn"
+                      onMouseEnter={() => tooltip.set('Quick Pick')}
+                      onMouseLeave={() => tooltip.set('')}
+                    >
                       <Image alt="Quick pick" src="/images/icons/crosshair.svg" width={17} height={17} />
                     </Button>
                   </td>
@@ -101,7 +121,7 @@ export default function PartsTable({ parts, partsData, quotePart, onChangePage, 
                         </Button>
                       }
                       <Link href={`/part/${part.id}`} data-testid="part-num-link">{ part.partNum }</Link>
-                    </div>  
+                    </div>
                   </td>
                   <td>{ formatDate(part.entryDate) }</td>
                   <td style={part.qty > 0 ? {} : { color: 'var(--red-2)', fontWeight: 'bold' }} data-testid="qty">{ part.qty }</td>
