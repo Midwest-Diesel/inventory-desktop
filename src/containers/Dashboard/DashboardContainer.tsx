@@ -127,7 +127,7 @@ export default function DashboardContainer() {
       phone: customer ? customer.phone : '',
       state: customer ? customer.billToState : '',
       partNum: part?.partNum,
-      desc: part?.desc,
+      desc: part?.desc ?? '',
       stockNum: part?.stockNum,
       price: 0,
       notes: null,

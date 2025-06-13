@@ -56,7 +56,7 @@ export default function Alerts() {
                   <tr key={alert.id}>
                     <td>
                       <Button variant={['x-small', 'blue']} onClick={() => handleEdit(alert)} data-testid="edit-btn">Edit</Button>
-                      <Button variant={['x-small']} onClick={() => handleDelete(alert.id)} data-testid="delete-btn">Delete</Button>
+                      <Button variant={['x-small', 'danger']} onClick={() => handleDelete(alert.id)} data-testid="delete-btn">Delete</Button>
                     </td>
                     <td>{ formatDate(alert.date) }</td>
                     <td>{ alert.addedBy }</td>

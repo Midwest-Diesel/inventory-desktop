@@ -31,7 +31,7 @@ export default function PurchaseOrderTemplate({ data }: Props) {
   return (
     <div className="po-template">
       <header>
-        <Image src="/images/midwest-diesel.jpg" alt="" />
+        <Image src="/images/midwest-diesel.jpg" alt="" width={50} height={70} />
         <h1>Purchase Order { data.id }</h1>
       </header>
       

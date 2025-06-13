@@ -10,7 +10,7 @@ export const parseResDate = (date: string): Date | null => {
     return isNaN(parsed.getTime()) ? null : parsed;
   }
   const [year, month, day] = date.split('-').map(Number);
-  return new Date(Date.UTC(year, month - 1, day + 1));
+  return new Date(year, month - 1, day);
 };
 
 export const formatTime = (date: Date): string => {
