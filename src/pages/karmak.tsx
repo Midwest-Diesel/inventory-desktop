@@ -13,7 +13,7 @@ import { useEffect, useState } from "react";
 export default function Karmak() {
   const [handwrittensData, setHandwrittensData] = useState<Handwritten[]>([]);
   const [handwrittens, setHandwrittens] = useState<Handwritten[]>([]);
-  const [handwrittensMin, setHandwrittensMin] = useState<number[]>([]);
+  const [pageCount, setPageCount] = useState(0);
   const [currentStatus, setCurrentStatus] = useState('all');
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
@@ -26,10 +26,10 @@ export default function Karmak() {
   const fetchData = async () => {
     setLoading(true);
     setCurrentPage(1);
-    setHandwrittensMin(await getHandwrittenCount());
     const res = await getSomeHandwrittens(1, LIMIT);
-    setHandwrittensData(res);
-    setHandwrittens(res);
+    setHandwrittensData(res.rows);
+    setHandwrittens(res.rows);
+    setPageCount(res.pageCount);
     setLoading(false);
   };
 
@@ -37,7 +37,8 @@ export default function Karmak() {
     if (currentStatus === 'all') {
       setCurrentPage(page);
       const res = await getSomeHandwrittens(page, LIMIT);
-      setHandwrittens(res);
+        setHandwrittens(res.rows);
+        setPageCount(res.pageCount);
     } else {
       await handleFilterStatus(currentStatus as AccountingStatus, page);
     }
@@ -48,10 +49,11 @@ export default function Karmak() {
     setCurrentPage(page);
     setLoading(true);
     setCurrentStatus(status);
-    setHandwrittensMin(await getHandwrittenCountByStatus(status));
+    setPageCount(await getHandwrittenCountByStatus(status));
     const res = await getSomeHandwrittensByStatus(page, LIMIT, status);
     setHandwrittensData(res);
-    setHandwrittens(res);
+    setHandwrittens(res.rows);
+    setPageCount(res.pageCount);
     setLoading(false);
   };
 
@@ -126,7 +128,7 @@ export default function Karmak() {
           <Pagination
             data={handwrittensData}
             setData={handleChangePage}
-            minData={handwrittensMin}
+            pageCount={pageCount}
             pageSize={LIMIT}
             page={currentPage}
           />

@@ -40,23 +40,25 @@ export const getReturnById = async (id: number) => {
   }
 };
 
-export const getSomeReturns = async (page: number, limit: number, isShopPanel: boolean) => {
+export const getSomeReturns = async (page: number, limit: number, isShopPanel: boolean): Promise<{ pageCount: number, rows: Return[] }> => {
   try {
     const auth = { withCredentials: true };
     const res = await api.get(`/api/returns/limit/${JSON.stringify({ page: (page - 1) * limit, limit, isShopPanel })}`, auth);
-    return { minItems: res.data.minItems, rows: parseReturnRes(res.data.rows) };
+    return { pageCount: res.data.pageCount, rows: parseReturnRes(res.data.rows) };
   } catch (err) {
     console.error(err);
+    return { pageCount: 0, rows: [] };
   }
 };
 
-export const getSomeCompletedReturns = async (page: number, limit: number) => {
+export const getSomeCompletedReturns = async (page: number, limit: number): Promise<{ pageCount: number, rows: Return[] }> => {
   try {
     const auth = { withCredentials: true };
     const res = await api.get(`/api/returns/limit/completed/${JSON.stringify({ page: (page - 1) * limit, limit })}`, auth);
-    return { minItems: res.data.minItems, rows: parseReturnRes(res.data.rows) };
+    return { pageCount: res.data.pageCount, rows: parseReturnRes(res.data.rows) };
   } catch (err) {
     console.error(err);
+    return { pageCount: 0, rows: [] };
   }
 };
 
@@ -64,7 +66,7 @@ export const searchReturns = async (returnData: ReturnSearchData) => {
   try {
     const auth = { withCredentials: true };
     const res = await api.get(`/api/returns/search/${JSON.stringify(returnData)}`, auth);
-    return { minItems: res.data.minItems, rows: parseReturnRes(res.data.rows) };
+    return { pageCount: res.data.pageCount, rows: parseReturnRes(res.data.rows) };
   } catch (err) {
     console.error(err);
   }

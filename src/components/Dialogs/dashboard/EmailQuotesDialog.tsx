@@ -21,7 +21,7 @@ export default function SalesInfo({ open, setOpen, quote }: Props) {
   const [quotes, setQuotes] = useState<Quote[]>([quote]);
   const [customerQuotes, setCustomerQuotes] = useState<Quote[]>([]);
   const [paginatedQuotes, setPaginatedQuotes] = useState<Quote[]>([]);
-  const [pageCount, setCount] = useState<number[]>([]);
+  const [pageCount, setPageCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const LIMIT = 26;
 
@@ -32,7 +32,7 @@ export default function SalesInfo({ open, setOpen, quote }: Props) {
     const fetchData = async () => {
       const res = await getQuotesByCustomer(quote.customer?.id ?? null);
       setCustomerQuotes(res.rows);
-      setCount(res.minItems);
+      setPageCount(res.pageCount);
       setLoading(false);
     };
     fetchData();
@@ -217,7 +217,7 @@ export default function SalesInfo({ open, setOpen, quote }: Props) {
             <Pagination
               data={customerQuotes}
               setData={handleChangePage}
-              minData={pageCount}
+              pageCount={pageCount}
               pageSize={LIMIT}
             />
           </>

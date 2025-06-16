@@ -7,7 +7,7 @@ import Pagination from "@/components/Library/Pagination";
 import Table from "@/components/Library/Table";
 import PurchaseOrderItemsTable from "@/components/PurchaseOrderItemsTable";
 import { POSearchAtom } from "@/scripts/atoms/state";
-import { addBlankPurchaseOrder, getPurchaseOrdersCount, getSomePurchaseOrders, searchPurchaseOrders } from "@/scripts/services/purchaseOrderService";
+import { addBlankPurchaseOrder, getSomePurchaseOrders, searchPurchaseOrders } from "@/scripts/services/purchaseOrderService";
 import { formatDate } from "@/scripts/tools/stringUtils";
 import { useAtom } from "jotai";
 import Link from "@/components/Library/Link";
@@ -18,7 +18,7 @@ export default function PurchaseOrders() {
   const [searchData] = useAtom(POSearchAtom);
   const [purchaseOrdersData, setPurchaseOrdersData] = useState<PO[]>([]);
   const [purchaseOrders, setPurchaseOrders] = useState<PO[]>([]);
-  const [purchaseOrderCount, setPurchaseOrderCount] = useState<number[]>([]);
+  const [pageCount, setPageCount] = useState(0);
   const [focusedPurchaseOrder, setFocusedPurchaseOrder] = useState<PO | null>(null);
   const [showIncomming, setShowIncomming] = useState(false);
   const [showSearchDialog, setShowSearchDialog] = useState(false);
@@ -29,16 +29,15 @@ export default function PurchaseOrders() {
   useEffect(() => {
     const fetchData = async () => {
       const res = await getSomePurchaseOrders(1, LIMIT, showIncomming);
-      setPurchaseOrdersData(res);
-      setPurchaseOrders(res);
-      const count = await getPurchaseOrdersCount(showIncomming);
-      setPurchaseOrderCount(count);
+      setPurchaseOrdersData(res.rows);
+      setPurchaseOrders(res.rows);
+      setPageCount(res.pageCount);
       setLoading(false);
     };
     fetchData();
   }, [showIncomming]);
 
-  const handleChangePage = async (data: any, page: number) => {
+  const handleChangePage = async (_: any, page: number) => {
     if (page === currentPage) return;
     setLoading(true);
     const hasValidSearchCriteria = (
@@ -52,12 +51,12 @@ export default function PurchaseOrders() {
 
     if (hasValidSearchCriteria) {
       const res = await searchPurchaseOrders({ ...searchData, offset: (page - 1) * LIMIT });
-      setPurchaseOrders(res?.rows);
-      setPurchaseOrderCount(res?.minItems);
+      setPurchaseOrders(res.rows);
+      setPageCount(res.pageCount);
     } else {
       const res = await getSomePurchaseOrders(page, LIMIT, showIncomming);
-      setPurchaseOrderCount(await getPurchaseOrdersCount(showIncomming));
-      setPurchaseOrders(res);
+      setPurchaseOrders(res.rows);
+      setPageCount(res.pageCount);
     }
     setCurrentPage(page);
     setLoading(false);
@@ -73,7 +72,7 @@ export default function PurchaseOrders() {
 
   return (
     <Layout title="Purchase Orders">
-      <POSearchDialog open={showSearchDialog} setOpen={setShowSearchDialog} setPurchaseOrders={setPurchaseOrders} setMinItems={setPurchaseOrderCount} limit={LIMIT} page={currentPage} />
+      <POSearchDialog open={showSearchDialog} setOpen={setShowSearchDialog} setPurchaseOrders={setPurchaseOrders} setMinItems={setPageCount} limit={LIMIT} page={currentPage} />
 
       <div className="purchase-orders-page__container">
         <div className="purchase-orders-page">
@@ -127,7 +126,7 @@ export default function PurchaseOrders() {
               <Pagination
                 data={purchaseOrdersData}
                 setData={handleChangePage}
-                minData={purchaseOrderCount}
+                pageCount={pageCount}
                 pageSize={LIMIT}
               />
             </div>

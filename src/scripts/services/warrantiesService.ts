@@ -51,33 +51,25 @@ export const getWarrantyById = async (id: number) => {
   }
 };
 
-export const getSomeWarranties = async (page: number, limit: number) => {
+export const getSomeWarranties = async (page: number, limit: number): Promise<{ pageCount: number, rows: Warranty[] }> => {
   try {
     const auth = { withCredentials: true };
     const res = await api.get(`/api/warranties/limit/${JSON.stringify({ page: (page - 1) * limit, limit })}`, auth);
-    return parseWarrantyRes(res.data);
+    return { pageCount: res.data.pageCount, rows: parseWarrantyRes(res.data.rows) };
   } catch (err) {
     console.error(err);
+    return { pageCount: 0, rows: [] };
   }
 };
 
-export const searchWarranties = async (search: SearchData) => {
+export const searchWarranties = async (search: SearchData): Promise<{ pageCount: number, rows: Warranty[] }> => {
   try {
     const auth = { withCredentials: true };
     const res = await api.get(`/api/warranties/search/${JSON.stringify(search)}`, auth);
-    return { minItems: res.data.minItems, rows: parseWarrantyRes(res.data.rows)};
+    return { pageCount: res.data.pageCount, rows: parseWarrantyRes(res.data.rows) };
   } catch (err) {
     console.error(err);
-  }
-};
-
-export const getWarrantyCount = async () => {
-  try {
-    const auth = { withCredentials: true };
-    const res = await api.get(`/api/warranties/count`, auth);
-    return res.data;
-  } catch (err) {
-    console.error(err);
+    return { pageCount: 0, rows: [] };
   }
 };
 

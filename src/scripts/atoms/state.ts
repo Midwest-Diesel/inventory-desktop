@@ -19,7 +19,6 @@ export const partsAtom = atom<Part[]>([]);
 export const enginesAtom = atom<Engine[]>([]);
 export const recentPartSearchesAtom = atom<RecentPartSearch[]>([]);
 export const recentQuotesAtom = atom<RecentQuoteSearch[]>([]);
-export const partsQtyAtom = atom<number[]>([]);
 export const lastPartSearchAtom = atom<string>('');
 export const selectedCustomerAtom = atom<Customer>({} as Customer);
 export const sourcesAtom = atom<string[]>([]);

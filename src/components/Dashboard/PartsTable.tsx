@@ -4,8 +4,6 @@ import Button from "../Library/Button";
 import { extractStatusColors, formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
 import Pagination from "../Library/Pagination";
 import Link from "../Library/Link";
-import { partsQtyAtom } from "@/scripts/atoms/state";
-import { useAtom } from "jotai";
 import { getImagesFromPart, getImagesFromStockNum } from "@/scripts/services/imagesService";
 import { useState } from "react";
 import PartPicturesDialog from "../Dialogs/PartPicturesDialog";
@@ -15,6 +13,8 @@ import { useTooltip } from "@/hooks/useTooltip";
 interface Props {
   parts: Part[]
   partsData: Part[]
+  pageCount: number
+  partsQty: number
   quotePart: (part: Part) => void
   onChangePage: (data: any, page: number) => void
   onOpenSelectHandwrittenDialog: (part: Part) => void
@@ -23,16 +23,14 @@ interface Props {
 }
 
 
-export default function PartsTable({ parts, partsData, quotePart, onChangePage, onOpenSelectHandwrittenDialog, onQuickPick, limit }: Props) {
+export default function PartsTable({ parts, partsData, pageCount, partsQty, quotePart, onChangePage, onOpenSelectHandwrittenDialog, onQuickPick, limit }: Props) {
   const tooltip = useTooltip();
-  const [partsQty] = useAtom<number[]>(partsQtyAtom);
   const [partImages, setPartImages] = useState<Picture[]>([]);
   const [picturesPartNum, setPicturesPartNum] = useState<string>('');
   const [snImages, setSnImages] = useState<Picture[]>([]);
   const [picturesStockNum, setPicturesStockNum] = useState<string>('');
   const [partImagesOpen, setPartImagesOpen] = useState(false);
   const [snImagesOpen, setSnImagesOpen] = useState(false);
-  const getTotalQty = () => partsQty.reduce((acc, part) => acc + part, 0);
 
   const openPartImages = async (part: Part) => {
     setPartImages(await getImagesFromPart(part.partNum));
@@ -60,7 +58,7 @@ export default function PartsTable({ parts, partsData, quotePart, onChangePage, 
         <Table data-testid="part-search-table">
           <thead>
             <tr>
-              <th>Total Qty <span className="parts-search__total-qty">{ getTotalQty() }</span></th>
+              <th>Total Qty <span className="parts-search__total-qty">{ partsQty }</span></th>
               <th>Part Number</th>
               <th>Entry Date</th>
               <th>Qty</th>
@@ -161,7 +159,7 @@ export default function PartsTable({ parts, partsData, quotePart, onChangePage, 
         <Pagination
           data={partsData}
           setData={onChangePage}
-          minData={partsQty}
+          pageCount={pageCount}
           pageSize={limit}
         />
       </div>

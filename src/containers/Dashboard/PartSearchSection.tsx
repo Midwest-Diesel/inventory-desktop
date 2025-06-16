@@ -2,10 +2,10 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import Button from "@/components/Library/Button";
 import { useAtom } from "jotai";
-import { partsQtyAtom, quickPickItemIdAtom, recentQuotesAtom, selectedCustomerAtom, showSoldPartsAtom, userAtom } from "@/scripts/atoms/state";
+import { quickPickItemIdAtom, recentQuotesAtom, selectedCustomerAtom, showSoldPartsAtom, userAtom } from "@/scripts/atoms/state";
 import PartsSearchDialog from "@/components/Dialogs/dashboard/PartsSearchDialog";
 import AltPartsSearchDialog from "@/components/Dialogs/dashboard/AltPartsSearchDialog";
-import { getAltsByPartNum, getPartsQty, getSomeParts, searchAltParts, searchParts } from "@/scripts/services/partsService";
+import { getAltsByPartNum, getSomeParts, searchAltParts, searchParts } from "@/scripts/services/partsService";
 import SalesInfoDialog from "@/components/Dialogs/dashboard/SalesInfoDialog";
 import Link from "@/components/Library/Link";
 import Loading from "@/components/Library/Loading";
@@ -32,7 +32,6 @@ interface Props {
 export default function PartSearchSection({ selectHandwrittenOpen, setSelectHandwrittenOpen, setSelectedHandwrittenPart, handleNewQuote }: Props) {
   const toast = useToast();
   const [user] = useAtom<User>(userAtom);
-  const [, setPartsQty] = useAtom<number[]>(partsQtyAtom);
   const [selectedCustomer] = useAtom<Customer>(selectedCustomerAtom);
   const [selectedAlerts, setSelectedAlerts] = useAtom<Alert[]>(selectedAlertsAtom);
   const [showSoldParts, setShowSoldParts] = useAtom<boolean>(showSoldPartsAtom);
@@ -40,6 +39,8 @@ export default function PartSearchSection({ selectHandwrittenOpen, setSelectHand
   const [quickPickItemId] = useAtom<number>(quickPickItemIdAtom);
   const [partsData, setPartsData] = useState<Part[]>([]);
   const [parts, setParts] = useState<Part[]>([]);
+  const [pageCount, setPageCount] = useState(0);
+  const [partsQty, setPartsQty] = useState(0);
   const [partsOpen, setPartsOpen] = useState(localStorage.getItem('partsOpen') === 'true' || localStorage.getItem('partsOpen') === null ? true : false);
   const [partsSearchOpen, setPartsSearchOpen] = useState(false);
   const [altPartsSearchOpen, setAltPartsSearchOpen] = useState(false);
@@ -58,9 +59,10 @@ export default function PartSearchSection({ selectHandwrittenOpen, setSelectHand
       if (searchInputExists() || pageLoaded) return;
       setLoading(true);
       const res = await getSomeParts(1, LIMIT, showSoldParts);
-      setPartsData(res);
-      setParts(res);
-      setPartsQty((await getPartsQty(showSoldParts)));
+      setPartsData(res.rows);
+      setParts(res.rows);
+      setPageCount(res.pageCount);
+      setPartsQty(res.totalQty);  
       setLoading(false);
     };
     fetchData();
@@ -72,9 +74,10 @@ export default function PartSearchSection({ selectHandwrittenOpen, setSelectHand
     const fetchData = async () => {
       setLoading(true);
       const res = await getSomeParts(1, LIMIT, showSoldParts);
-      setPartsData(res);
-      setParts(res);
-      setPartsQty((await getPartsQty(showSoldParts)));
+      setPartsData(res.rows);
+      setParts(res.rows);
+      setPageCount(res.pageCount);
+      setPartsQty(res.totalQty);
       setLoading(false);
     };
     fetchData();
@@ -138,7 +141,8 @@ export default function PartSearchSection({ selectHandwrittenOpen, setSelectHand
       setSelectedAlerts([...selectedAlerts, ...alerts]);
     }
     setParts(results.rows);
-    setPartsQty(results.minItems);
+    setPageCount(results.pageCount);
+    setPartsQty(results.totalQty);
     setLoading(false);
   };
 
@@ -153,7 +157,9 @@ export default function PartSearchSection({ selectHandwrittenOpen, setSelectHand
       await handleSearch(partNum, stockNum, desc, location, qty, remarks, rating, purchasedFrom, serialNum, hp, page, isObjectNull(partSearch || {}), false);
     } else {
       const res = await getSomeParts(page, LIMIT, showSoldParts);
-      setParts(res);
+      setParts(res.rows);
+      setPageCount(res.pageCount);
+      setPartsQty(res.totalQty);
     }
     setCurrentPage(page);
     setLoading(false);
@@ -249,6 +255,8 @@ export default function PartSearchSection({ selectHandwrittenOpen, setSelectHand
           <PartsTable
             parts={parts}
             partsData={partsData}
+            pageCount={pageCount}
+            partsQty={partsQty}
             quotePart={quotePart}
             onChangePage={onChangePage}
             onOpenSelectHandwrittenDialog={onOpenSelectHandwrittenDialog}

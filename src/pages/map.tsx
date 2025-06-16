@@ -46,7 +46,7 @@ export default function ImportantCustomersMap() {
   const [filterType, setFilterType] = useState("all");
   const [filterCustomerType, setFilterCustomerType] = useState("all");
   const [filterSalesman, setFilterSalesman] = useState("all");
-  const [minLocations, setMinLocations] = useState<number[]>([]);
+  const [locationsCount, setLocationsCount] = useState(0);
   const [cluster, setCluster] = useState<MarkerClusterer | null>(null);
   const [loading, setLoading] = useState(false);
   const LIMIT = 30;
@@ -188,7 +188,7 @@ export default function ImportantCustomersMap() {
 
   const handlePageChange = (_: any, page: number) => {
     setListDisplayItems(filteredLocations.slice((page - 1) * LIMIT, page * LIMIT));
-    setMinLocations(filteredLocations as any);
+    setLocationsCount(filteredLocations.length);
   };
   
   const getPinStyles = (str: string) => {
@@ -470,9 +470,9 @@ export default function ImportantCustomersMap() {
               <Pagination
                 data={filteredLocations}
                 setData={handlePageChange}
-                minData={minLocations}
+                pageCount={locationsCount}
                 pageSize={LIMIT}
-                btnCount={3}
+                buttonsDisplayed={3}
               />
             </div>
           </div>

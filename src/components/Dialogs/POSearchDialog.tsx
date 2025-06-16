@@ -12,7 +12,7 @@ interface Props {
   open: boolean
   setOpen: (open: boolean) => void
   setPurchaseOrders: (purchaseOrders: PO[]) => void
-  setMinItems: (minItems: number[]) => void
+  setMinItems: (pageCount: number) => void
   limit: number
   page: number
 }
@@ -50,7 +50,7 @@ export default function POSearchDialog({ open, setOpen, setPurchaseOrders, setMi
     };
     const res = await searchPurchaseOrders(searchData);
     setPurchaseOrders(res?.rows);
-    setMinItems(res?.minItems);
+    setMinItems(res?.pageCount);
     setSearchData(searchData);
   };
 

@@ -25,7 +25,7 @@ export default function PiggybackQuoteDialog({ open, setOpen, quote, handleChang
   const [showSoldParts] = useAtom<boolean>(showSoldPartsAtom);
   const [partsData, setPartsData] = useState<Part[]>([]);
   const [parts, setParts] = useState<Part[]>([]);
-  const [partCount, setPartCount] = useState<number[]>([]);
+  const [partCount, setPartCount] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
   const [selectedPartId, setSelectedPartId] = useState(0);
   const [partSearchOpen, setPartSearchOpen] = useState(false);
@@ -55,8 +55,8 @@ export default function PiggybackQuoteDialog({ open, setOpen, quote, handleChang
     const pageCount = await getPartsQty(showSoldParts);
     setPartCount(pageCount);
     const res = await getSomeParts(1, LIMIT, showSoldParts);
-    setPartsData(res);
-    setParts(res);
+    setPartsData(res.rows);
+    setParts(res.rows);
   };
   
   const handleChangePage = async (_: any, page: number) => {
@@ -65,7 +65,8 @@ export default function PiggybackQuoteDialog({ open, setOpen, quote, handleChang
       handleSearch(searchData);
     } else {
       const res = await getSomeParts(page, LIMIT, showSoldParts);
-      setParts(res);
+      setParts(res.rows);
+      setPartCount(res.pageCount);
     }
     setCurrentPage(page);
   };
@@ -103,7 +104,7 @@ export default function PiggybackQuoteDialog({ open, setOpen, quote, handleChang
     setSearchData(search);
     const results = await searchAltParts(search, currentPage, LIMIT);
     setParts(results.rows);
-    setPartCount(results.minItems);
+    setPartCount(results.pageCount);
     setCurrentPage(1);
     setLoading(false);
   };
@@ -170,7 +171,7 @@ export default function PiggybackQuoteDialog({ open, setOpen, quote, handleChang
               <Pagination
                 data={partsData}
                 setData={handleChangePage}
-                minData={partCount}
+                pageCount={partCount}
                 pageSize={LIMIT}
               />
             </div>

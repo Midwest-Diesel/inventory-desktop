@@ -2,11 +2,11 @@ import api from "../config/axios";
 import { parseResDate } from "../tools/stringUtils";
 
 
-const parseCustomerRes = (data: any) => {
+const parseCustomerRes = (data: any[]) => {
   return data.map((customer: any) => {
     return {
       ...customer,
-      dateContacted: parseResDate(customer.dateContacted),
+      dateContacted: customer.dateContacted && parseResDate(customer.dateContacted),
     };
   });
 };
@@ -17,23 +17,21 @@ export const getCustomers = async (): Promise<Customer[]> => {
   try {
     const auth = { withCredentials: true };
     const res = await api.get('/api/customers', auth);
-    res.data = parseCustomerRes(res.data);
-    return res.data;
+    return parseCustomerRes(res.data);
   } catch (err) {
     console.error(err);
     return [];
   }
 };
 
-export const getSomeCustomers = async (page: number, limit: number): Promise<Customer[]> => {
+export const getSomeCustomers = async (page: number, limit: number): Promise<{ pageCount: number, rows: Customer[] }> => {
   try {
     const auth = { withCredentials: true };
     const res = await api.get(`/api/customers/limit/${JSON.stringify({ page: (page - 1) * limit, limit: limit })}`, auth);
-    res.data = parseCustomerRes(res.data);
-    return res.data;
+    return { pageCount: res.data.pageCount, rows: parseCustomerRes(res.data.rows) };
   } catch (err) {
     console.error(err);
-    return [];
+    return { pageCount: 0, rows: [] };
   }
 };
 

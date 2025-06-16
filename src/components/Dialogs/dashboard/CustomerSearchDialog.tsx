@@ -20,7 +20,7 @@ export default function CustomerSearchDialog({ open, setOpen, searchTerm }: Prop
   const [customersData, setCustomersData] = useAtom<Customer[]>(customersAtom);
   const [searchedCustomers, setSearchedCustomers] = useState<Customer[]>([]);
   const [selectedCustomer, setSelectedCustomer] = useAtom<Customer>(selectedCustomerAtom);
-  const [customersMin, setCustomersMin] = useState<number[]>([]);
+  const [pageCount, setPageCount] = useState(0);
   const [customers, setCustomers] = useState<Customer[]>(customersData);
   const [customerTypes, setCustomerTypes] = useState<string[]>([]);
   const [page, setPage] = useState<number>(1);
@@ -34,10 +34,9 @@ export default function CustomerSearchDialog({ open, setOpen, searchTerm }: Prop
 
   useEffect(() => {
     const fetchData = async () => {
-      const pageCount = await getCustomersCount();
-      setCustomersMin(pageCount);
       const res = await getSomeCustomers(1, 25);
-      setCustomersData(res);
+      setCustomersData(res.rows);
+      setPageCount(res.pageCount);
       const types = await getCustomerTypes();
       setCustomerTypes(types);
     };
@@ -71,7 +70,7 @@ export default function CustomerSearchDialog({ open, setOpen, searchTerm }: Prop
       setCustomers(searchedCustomers.slice(startIndex, endIndex));
     } else {
       const res = await getSomeCustomers(page, 25);
-      setCustomers(res);
+      setCustomers(res.rows);
     }
   };
 
@@ -167,7 +166,7 @@ export default function CustomerSearchDialog({ open, setOpen, searchTerm }: Prop
       <Pagination
         data={isSearching ? searchedCustomers : customersData}
         setData={handleChangePage}
-        minData={isSearching ? searchedCustomers : customersMin}
+        pageCount={pageCount}
         pageSize={25}
       />
       { displayedCustomers.length === 0 && <p>No results</p> }

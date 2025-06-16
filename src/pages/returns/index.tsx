@@ -12,8 +12,7 @@ import { cap, formatDate } from "@/scripts/tools/stringUtils";
 export default function Returns() {
   const [returnsData, setReturnsData] = useState<Return[]>([]);
   const [returns, setReturns] = useState<Return[]>(returnsData);
-  const [returnMin, setReturnMin] = useState<number[]>([]);
-  const [openSearch, setOpenSearch] = useState(false);
+  const [pageCount, setPageCount] = useState(0);
   const [displayedPanel, setDisplayedPanel] = useState<string>('shop');
   const [loading, setLoading] = useState(true);
   const LIMIT = 26;
@@ -24,20 +23,20 @@ export default function Returns() {
 
   const fetchData = async () => {
     const res = await getSomeReturns(1, LIMIT, true);
-    setReturnsData(res?.rows);
-    setReturnMin(res?.minItems);
+    setReturnsData(res.rows);
+    setPageCount(res.pageCount);
     setLoading(false);
   };
 
   const handleChangePage = async (_: any, page: number) => {
     if (displayedPanel === 'completed') {
       const res = await getSomeCompletedReturns(page, LIMIT);
-      setReturns(res?.rows);
-      setReturnMin(res?.minItems);
+      setReturns(res.rows);
+      setPageCount(res.pageCount);
     } else {
       const res = await getSomeReturns(page, LIMIT, displayedPanel === 'shop' ? true : false);
-      setReturns(res?.rows);
-      setReturnMin(res?.minItems);
+      setReturns(res.rows);
+      setPageCount(res.pageCount);
     }
   };
 
@@ -47,7 +46,6 @@ export default function Returns() {
       <div className="returns">
         <h1>{ `${cap(displayedPanel)} Returns` }</h1>
         <div className="returns__top-bar">
-          {/* <Button onClick={() => setOpenSearch(true)}>Search</Button> */}
           <Button onClick={() => setDisplayedPanel('shop')} data-testid="shop-btn">Shop Returns</Button>
           <Button onClick={() => setDisplayedPanel('accounting')} data-testid="accounting-btn">Accounting Returns</Button>
           <Button onClick={() => setDisplayedPanel('completed')} data-testid="completed-btn">Completed Returns</Button>
@@ -85,7 +83,7 @@ export default function Returns() {
             <Pagination
               data={returnsData}
               setData={handleChangePage}
-              minData={returnMin}
+              pageCount={pageCount}
               pageSize={LIMIT}
             />
           </>
@@ -124,7 +122,7 @@ export default function Returns() {
             <Pagination
               data={returnsData}
               setData={handleChangePage}
-              minData={returnMin}
+              pageCount={pageCount}
               pageSize={LIMIT}
             />
           </>
@@ -163,7 +161,7 @@ export default function Returns() {
             <Pagination
               data={returnsData}
               setData={handleChangePage}
-              minData={returnMin}
+              pageCount={pageCount}
               pageSize={LIMIT}
             />
           </>

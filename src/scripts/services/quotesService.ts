@@ -45,15 +45,15 @@ const parseQuotesRes = (data: any) => {
 
 // === GET routes === //
 
-export const getSomeQuotes = async (page: number, limit: number, partNum: string, customerId: number, isEngineQuote = false): Promise<{ minItems: number[], rows: Quote[] }> => {
+export const getSomeQuotes = async (page: number, limit: number, partNum: string, customerId: number, isEngineQuote = false): Promise<{ pageCount: number, rows: Quote[] }> => {
   try {
     const auth = { withCredentials: true };
     const res = await api.get(`/api/quotes/limit/${JSON.stringify({ page: (page - 1) * limit, limit, partNum, customerId, isEngineQuote })}`, auth);
-    res.data = { minItems: res.data.minItems, rows: parseQuotesRes(res.data.rows)};
+    res.data = { pageCount: res.data.pageCount, rows: parseQuotesRes(res.data.rows)};
     return res.data;
   } catch (err) {
     console.error(err);
-    return { minItems: [], rows: [] };
+    return { pageCount: 0, rows: [] };
   }
 };
 
@@ -69,30 +69,31 @@ export const getSomeQuotesByPartNum = async (page: number, limit: number, partNu
 
 export const getQuotesByCustomer = async (id: number | null): Promise<any> => {
   try {
-    if (!id) return { rows: [], minItems: [] };
+    if (!id) return { rows: [], pageCount: [] };
     const auth = { withCredentials: true };
     const res = await api.get(`/api/quotes/customer/${id}`, auth);
     return {
       rows: parseQuotesRes(res.data.rows) ?? [],
-      minItems: res.data.minItems ?? []
+      pageCount: res.data.pageCount ?? []
     };
   } catch (err) {
     console.error(err);
   }
 };
 
-export const getSomeUnsoldQuotesByPartNum = async (page: number, limit: number, partNum: string, customerId: number, includeAlts: boolean) => {
+export const getSomeUnsoldQuotesByPartNum = async (page: number, limit: number, partNum: string, customerId: number, includeAlts: boolean): Promise<{ pageCount: number, rows: Quote[] }> => {
   try {
     const auth = { withCredentials: true };
     const res = await api.get(`/api/quotes/unsold-quotes/part-num/${JSON.stringify({ page: (page - 1) * limit, limit, partNum, customerId, includeAlts })}`, auth);
     return {
-      minQuotes: res.data.minQuotes || [],
-      rows: res.data.rows ? res.data.rows.map((row: any) => {
+      pageCount: res.data.pageCount,
+      rows: res.data.rows.map((row: any) => {
         return { ...row, date: parseResDate(row.date) };
-      }) : []
+      })
     };
   } catch (err) {
     console.error(err);
+    return { pageCount: 0, rows: [] };
   }
 };
 
@@ -130,7 +131,7 @@ export const searchQuotes = async (quote: QuoteSearchData, customerId: number) =
   try {
     const auth = { withCredentials: true };
     const res = await api.get(`/api/quotes/search/${encodeURIComponent(JSON.stringify({ ...quote, customerId }))}`, auth);
-    res.data = { minItems: res.data.minItems, rows: parseQuotesRes(res.data.rows)};
+    res.data = { pageCount: res.data.pageCount, rows: parseQuotesRes(res.data.rows)};
     return res.data;
   } catch (err) {
     console.error(err);

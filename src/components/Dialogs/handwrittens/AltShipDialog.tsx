@@ -134,7 +134,7 @@ export default function AltShipDialog({ open, setOpen, handwritten, setHandwritt
           />
           <Input
             variant={['label-bold']}
-            label="Ship to Address2"
+            label="Ship to Address 2"
             value={shipToAddress2}
             onChange={(e) => setShipToAddress2(e.target.value)}
           />

@@ -48,33 +48,25 @@ export const getPurchaseOrderByPoNum = async (poNum: string | null): Promise<PO 
   }
 };
 
-export const getSomePurchaseOrders = async (page: number, limit: number, showIncomming: boolean) => {
+export const getSomePurchaseOrders = async (page: number, limit: number, showIncomming: boolean): Promise<{ pageCount: number, rows: PO[] }> => {
   try {
     const auth = { withCredentials: true };
     const res = await api.get(`/api/po/limit/${JSON.stringify({ page: (page - 1) * limit, limit, showIncomming })}`, auth);
-    return parsePoDataRes(res.data);
+    return { pageCount: res.data.pageCount, rows: parsePoDataRes(res.data.rows) };
   } catch (err) {
     console.error(err);
+    return { pageCount: 0, rows: [] };
   }
 };
 
-export const searchPurchaseOrders = async (searchData: SearchData) => {
+export const searchPurchaseOrders = async (searchData: SearchData): Promise<{ pageCount: number, rows: PO[] }> => {
   try {
     const auth = { withCredentials: true };
     const res = await api.get(`/api/po/search/${JSON.stringify(searchData)}`, auth);
-    return { minItems: res.data.minItems, rows: parsePoDataRes(res.data.rows) };
+    return { pageCount: res.data.pageCount, rows: parsePoDataRes(res.data.rows) };
   } catch (err) {
     console.error(err);
-  }
-};
-
-export const getPurchaseOrdersCount = async (showIncomming: boolean) => {
-  try {
-    const auth = { withCredentials: true };
-    const res = await api.get(`/api/po/count/${JSON.stringify({ showIncomming })}`, auth);
-    return res.data;
-  } catch (err) {
-    console.error(err);
+    return { pageCount: 0, rows: [] };
   }
 };
 

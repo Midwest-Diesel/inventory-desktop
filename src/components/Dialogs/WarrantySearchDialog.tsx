@@ -12,7 +12,7 @@ interface Props {
   open: boolean
   setOpen: (open: boolean) => void
   setWarranties: (warranties: Warranty[]) => void
-  setMinItems: (minItems: number[]) => void
+  setMinItems: (pageCount: number) => void
   limit: number
 }
 
@@ -43,7 +43,7 @@ export default function WarrantySearchDialog({ open, setOpen, setWarranties, set
     };
     const res = await searchWarranties(searchData);
     setWarranties(res?.rows);
-    setMinItems(res?.minItems);
+    setMinItems(res?.pageCount);
     setSearchData(searchData);
   };
 

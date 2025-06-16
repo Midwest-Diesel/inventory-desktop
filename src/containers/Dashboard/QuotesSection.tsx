@@ -34,9 +34,9 @@ interface Props {
 
 
 export default function QuotesSection({ quotes, setQuotes, setHandwrittenQuote, setHandwrittenCustomer, setSelectHandwrittenOpen, setSelectedHandwrittenPart, setFilterByCustomer, setFilterByPart, setQuoteListType, setQuoteEdited, filterByCustomer, filterByPart, quoteListType, quoteEdited, handleNewQuote }: Props) {
-  const [quotesData, setQuotesData] = useAtom<Quote[]>(quotesAtom);
+  const [, setQuotesData] = useAtom<Quote[]>(quotesAtom);
   const [lastSearch] = useAtom<string>(lastPartSearchAtom);
-  const [count, setCount] = useState<number[]>([]);
+  const [pageCount, setPageCount] = useState(0);
   const [quotesOpen, setQuotesOpen] = useState(localStorage.getItem('quotesOpen') === 'true' || localStorage.getItem('quotesOpen') === null ? true : false);
   const [searchDialogOpen, setSearchDialogOpen] = useState(false);
   const [searchData, setSearchData] = useState<any>(null);
@@ -99,13 +99,13 @@ export default function QuotesSection({ quotes, setQuotes, setHandwrittenQuote, 
     if (searchData && !resetSearch) {
       const res = await searchQuotes({ ...searchData, page: (page - 1) * LIMIT, limit: LIMIT }, filterByCustomer ? customer.id : 0);
       setQuotes(res.rows);
-      setCount(res.minItems);
+      setPageCount(res.pageCount);
       return;
     }
 
     const res = await getSomeQuotes(page, LIMIT, filterByPart ? partNum : '', filterByCustomer ? customer.id : 0, quoteListType === 'engine');
     setQuotes(res.rows);
-    setCount(res.minItems);
+    setPageCount(res.pageCount);
     setPage(page);
   };
 
@@ -150,7 +150,7 @@ export default function QuotesSection({ quotes, setQuotes, setHandwrittenQuote, 
           open={searchDialogOpen}
           setOpen={setSearchDialogOpen}
           setQuotes={setQuotes}
-          setCount={setCount}
+          setCount={setPageCount}
           filterByCustomer={filterByCustomer}
           searchData={searchData}
           setSearchData={setSearchData}
@@ -210,7 +210,7 @@ export default function QuotesSection({ quotes, setQuotes, setHandwrittenQuote, 
           setQuoteEdited={setQuoteEdited}
           page={page}
           limit={LIMIT}
-          count={count}
+          count={pageCount}
         />
       }
     </div>

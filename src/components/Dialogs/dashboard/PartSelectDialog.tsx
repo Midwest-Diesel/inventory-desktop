@@ -3,7 +3,7 @@ import Dialog from "../../Library/Dialog";
 import Table from "@/components/Library/Table";
 import Pagination from "@/components/Library/Pagination";
 import Button from "@/components/Library/Button";
-import { getPartById, getPartsQty, getSomeParts, searchAltParts } from "@/scripts/services/partsService";
+import { getPartById, getSomePartsMin, searchAltParts } from "@/scripts/services/partsService";
 import Loading from "@/components/Library/Loading";
 import PiggybackPartSearchDialog from "./PiggybackPartSearchDialog";
 import { useAtom } from "jotai";
@@ -18,9 +18,9 @@ interface Props {
 
 export default function PartSelectDialog({ open, setOpen, onSubmit }: Props) {
   const [showSoldParts] = useAtom<boolean>(showSoldPartsAtom);
-  const [partsData, setPartsData] = useState<Part[]>([]);
-  const [parts, setParts] = useState<Part[]>([]);
-  const [partCount, setPartCount] = useState<number[]>([]);
+  const [partsData, setPartsData] = useState<PartMin[]>([]);
+  const [parts, setParts] = useState<PartMin[]>([]);
+  const [partCount, setPartCount] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState(0);
   const [selectedPartId, setSelectedPartId] = useState(0);
   const [partSearchOpen, setPartSearchOpen] = useState(false);
@@ -47,20 +47,20 @@ export default function PartSelectDialog({ open, setOpen, onSubmit }: Props) {
   };
 
   const resetPartsList = async () => {
-    const pageCount = await getPartsQty(showSoldParts);
-    setPartCount(pageCount);
-    const res = await getSomeParts(1, LIMIT, showSoldParts);
-    setPartsData(res);
-    setParts(res);
+    const res = await getSomePartsMin(1, LIMIT, showSoldParts);
+    setPartsData(res.rows);
+    setParts(res.rows);
+    setPartCount(res.pageCount);
   };
   
   const handleChangePage = async (_: any, page: number) => {
-    if (page === currentPage) return;
+    if (page === currentPage || page === 0) return;
     if (isSearchMode) {
       await handleSearch(searchData);
     } else {
-      const res = await getSomeParts(page, LIMIT, showSoldParts);
-      setParts(res);
+      const res = await getSomePartsMin(page, LIMIT, showSoldParts);
+      setParts(res.rows);
+      setPartCount(res.pageCount);
     }
     setCurrentPage(page);
   };
@@ -77,7 +77,7 @@ export default function PartSelectDialog({ open, setOpen, onSubmit }: Props) {
     setSearchData(search);
     const results = await searchAltParts(search, currentPage, LIMIT);
     setParts(results.rows);
-    setPartCount(results.minItems);
+    setPartCount(results.pageCount);
     setCurrentPage(1);
     setLoading(false);
   };
@@ -114,7 +114,7 @@ export default function PartSelectDialog({ open, setOpen, onSubmit }: Props) {
                   </tr>
                 </thead>
                 <tbody>
-                  {parts.map((part: Part) => {
+                  {parts.map((part: PartMin) => {
                     return (
                       <tr key={part.id} onClick={() => setSelectedPartId(part.id)} className={part.id === selectedPartId ? 'select-handwritten-dialog--selected' : ''} style={{ position: 'relative' }}>
                         <td>{ part.qty }</td>
@@ -144,7 +144,7 @@ export default function PartSelectDialog({ open, setOpen, onSubmit }: Props) {
               <Pagination
                 data={partsData}
                 setData={handleChangePage}
-                minData={partCount}
+                pageCount={partCount}
                 pageSize={LIMIT}
               />
             </div>

@@ -25,7 +25,7 @@ export default function SelectHandwrittenDialog({ open, setOpen, part, onSubmit 
   const [selectedCustomer] = useAtom<Customer>(selectedCustomerAtom);
   const [handwrittensData, setHandwrittensData] = useState<SelectHandwrittenDialogResult[]>([]);
   const [handwrittens, setHandwrittens] = useState<SelectHandwrittenDialogResult[]>([]);
-  const [handwrittenCount, setHandwrittenCount] = useState<number[]>([]);
+  const [handwrittenCount, setHandwrittenCount] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedHandwrittenId, setSelectedHandwrittenId] = useState(0);
   const [desc, setDesc] = useState('');
@@ -69,7 +69,7 @@ export default function SelectHandwrittenDialog({ open, setOpen, part, onSubmit 
       const res = await searchSelectHandwrittensDialogData(searchData);
       if (res.rows.length > 0) {
         setHandwrittens(res.rows);
-        setHandwrittenCount(res.minItems);
+        setHandwrittenCount(res.pageCount);
         return;
       }
     }
@@ -77,7 +77,7 @@ export default function SelectHandwrittenDialog({ open, setOpen, part, onSubmit 
     const res = await searchSelectHandwrittensDialogData({ billToCompany: '', limit: LIMIT, offset: (currentPage - 1) * LIMIT, customerId: 0 });
     setHandwrittensData(res.rows);
     setHandwrittens(res.rows);
-    setHandwrittenCount(res.minItems);
+    setHandwrittenCount(res.pageCount);
     setSearch('');
   };
   
@@ -93,7 +93,7 @@ export default function SelectHandwrittenDialog({ open, setOpen, part, onSubmit 
       const res = await searchSelectHandwrittensDialogData(searchData);
       if (res.rows.length > 0) {
         setHandwrittens(res.rows);
-        setHandwrittenCount(res.minItems);
+        setHandwrittenCount(res.pageCount);
         setCurrentPage(page);
         return;
       }
@@ -101,7 +101,7 @@ export default function SelectHandwrittenDialog({ open, setOpen, part, onSubmit 
     
     const res = await searchSelectHandwrittensDialogData({ billToCompany: '', limit: LIMIT, offset: (page - 1) * LIMIT, customerId: 0 });
     setHandwrittens(res.rows);
-    setHandwrittenCount(res.minItems);
+    setHandwrittenCount(res.pageCount);
     setCurrentPage(page);
   };
 
@@ -118,7 +118,7 @@ export default function SelectHandwrittenDialog({ open, setOpen, part, onSubmit 
       };
       const res = await searchSelectHandwrittensDialogData(searchData);
       setHandwrittens(res?.rows);
-      setHandwrittenCount(res?.minItems);
+      setHandwrittenCount(res?.pageCount);
     } else {
       resetHandwrittensList();
     }
@@ -309,7 +309,7 @@ export default function SelectHandwrittenDialog({ open, setOpen, part, onSubmit 
               <Pagination
                 data={handwrittensData}
                 setData={handleChangePage}
-                minData={handwrittenCount}
+                pageCount={handwrittenCount}
                 pageSize={LIMIT}
               />
             </div>

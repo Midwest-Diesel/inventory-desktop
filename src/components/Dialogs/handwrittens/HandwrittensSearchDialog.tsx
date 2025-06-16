@@ -14,7 +14,7 @@ interface Props {
   open: boolean
   setOpen: (open: boolean) => void
   setHandwrittens: (invoices: Handwritten[]) => void
-  setMinItems: (minItems: number[]) => void
+  setMinItems: (pageCount: number) => void
   limit: number
 }
 
@@ -53,8 +53,8 @@ export default function HandwrittensSearchDialog({ open, setOpen, setHandwritten
       offset: 0
     };
     const res = await searchHandwrittens(searchData);
-    setHandwrittens(res?.rows);
-    setMinItems(res?.minItems);
+    setHandwrittens(res.rows);
+    setMinItems(res.pageCount);
     setHandwrittenSearchData(searchData);
   };
 

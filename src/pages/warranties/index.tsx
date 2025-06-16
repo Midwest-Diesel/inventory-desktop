@@ -6,7 +6,7 @@ import Pagination from "@/components/Library/Pagination";
 import Table from "@/components/Library/Table";
 import WarrantyItemsTable from "@/components/WarrantyItemsTable";
 import { userAtom, warrantySearchAtom } from "@/scripts/atoms/state";
-import { addWarranty, editWarranty, getSomeWarranties, getWarrantyCount, searchWarranties } from "@/scripts/services/warrantiesService";
+import { addWarranty, editWarranty, getSomeWarranties, searchWarranties } from "@/scripts/services/warrantiesService";
 import { formatDate } from "@/scripts/tools/stringUtils";
 import { useAtom } from "jotai";
 import Link from "@/components/Library/Link";
@@ -20,26 +20,23 @@ export default function Warranties() {
   const [searchData] = useAtom(warrantySearchAtom);
   const [warrantiesData, setWarrantiesData] = useState<Warranty[]>([]);
   const [warranties, setWarranties] = useState<Warranty[]>([]);
-  const [warrantiesMin, setWarrantiesMin] = useState<number[]>([]);
+  const [pageCount, setPageCount] = useState(0);
   const [focusedWarranty, setFocusedHandwritten] = useState<Warranty | null>(null);
   const [warrantySearchOpen, setWarrantySearchOpen] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [page, setPage] = useState(1);
   const LIMIT = 26;
   
   useEffect(() => {
     const fetchData = async () => {
-      const pageCount = await getWarrantyCount();
-      setWarrantiesMin(pageCount);
-
       const res = await getSomeWarranties(1, LIMIT);
-      setWarrantiesData(res);
+      setWarrantiesData(res.rows);
+      setPageCount(res.pageCount);
       setLoading(false);
     };
     fetchData();
   }, []);
 
-  const handleChangePage = async (data: any, page: number) => {
+  const handleChangePage = async (_: any, page: number) => {
     setLoading(true);
     const hasValidSearchCriteria = (
       searchData.id ||
@@ -50,14 +47,13 @@ export default function Warranties() {
 
     if (hasValidSearchCriteria) {
       const res = await searchWarranties({ ...searchData, offset: (page - 1) * LIMIT });
-      setWarrantiesMin(res?.minItems);
-      setWarranties(res?.rows);
+      setPageCount(res.pageCount);
+      setWarranties(res.rows);
     } else{
       const res = await getSomeWarranties(page, LIMIT);
-      setWarrantiesMin(await getWarrantyCount());
-      setWarranties(res);
+      setWarranties(res.rows);
+      setPageCount(res.pageCount);
     }
-    setPage(page);
     setLoading(false);
   };
 
@@ -70,7 +66,8 @@ export default function Warranties() {
     } as Warranty;
     await editWarranty(updatedWarranty);
     const res = await getSomeWarranties(1, LIMIT);
-    setWarrantiesData(res);
+    setWarrantiesData(res.rows);
+    setPageCount(res.pageCount);
   };
 
   const handleNewWarranty = async () => {
@@ -92,7 +89,7 @@ export default function Warranties() {
 
   return (
     <Layout title="Warranties">
-      <WarrantySearchDialog open={warrantySearchOpen} setOpen={setWarrantySearchOpen} setWarranties={setWarranties} limit={LIMIT} setMinItems={setWarrantiesMin} />
+      <WarrantySearchDialog open={warrantySearchOpen} setOpen={setWarrantySearchOpen} setWarranties={setWarranties} limit={LIMIT} setMinItems={setPageCount} />
 
       <div className="warranties__container">
         <div className="warranties">
@@ -140,7 +137,7 @@ export default function Warranties() {
               <Pagination
                 data={warrantiesData}
                 setData={handleChangePage}
-                minData={warrantiesMin}
+                pageCount={pageCount}
                 pageSize={LIMIT}
               />
             </div>

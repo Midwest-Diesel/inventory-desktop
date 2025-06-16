@@ -97,37 +97,37 @@ export const getHandwrittenItemById = async (id: number): Promise<HandwrittenIte
   }
 };
 
-export const getSomeHandwrittens = async (page: number, limit: number, onlyShowRecent = false): Promise<Handwritten[]> => {
+export const getSomeHandwrittens = async (page: number, limit: number, onlyShowRecent = false): Promise<{ pageCount: number, rows: Handwritten[] }> => {
   try {
     const auth = { withCredentials: true };
     const res = await api.get(`/api/handwrittens/limit/${JSON.stringify({ page: (page - 1) * limit, limit, onlyShowRecent })}`, auth);
-    return await parseHandwrittenRes(res.data);
+    return { pageCount: res.data.pageCount, rows: await parseHandwrittenRes(res.data.rows) };
   } catch (err) {
     console.error(err);
-    return [];
+    return { pageCount: 0, rows: [] };
   }
 };
 
-export const searchHandwrittens = async (handwritten: HandwrittenSearchData): Promise<{ minItems: number[], rows: Handwritten[] }> => {
+export const searchHandwrittens = async (handwritten: HandwrittenSearchData): Promise<{ pageCount: number, rows: Handwritten[] }> => {
   try {
     const auth = { withCredentials: true };
     const res = await api.get(`/api/handwrittens/search/${JSON.stringify(handwritten)}`, auth);
-    return { minItems: res.data.minItems, rows: await parseHandwrittenRes(res.data.rows) };
+    return { pageCount: res.data.pageCount, rows: await parseHandwrittenRes(res.data.rows) };
   } catch (err) {
     console.error(err);
-    return { minItems: [], rows: [] };
+    return { pageCount: 0, rows: [] };
   }
 };
 
-export const searchSelectHandwrittensDialogData = async (handwritten: HandwrittenSearchData): Promise<{ minItems: number[], rows: SelectHandwrittenDialogResult[] }> => {
+export const searchSelectHandwrittensDialogData = async (handwritten: HandwrittenSearchData): Promise<{ pageCount: number, rows: SelectHandwrittenDialogResult[] }> => {
   try {
     const auth = { withCredentials: true };
     const res = await api.get(`/api/handwrittens/select-handwritten/${JSON.stringify(handwritten)}`, auth);
     const rows = res.data.rows.map((row: SelectHandwrittenDialogResult) => ({ ...row, date: parseResDate(row.date as any) }));
-    return { minItems: res.data.minItems, rows };
+    return { pageCount: res.data.pageCount, rows };
   } catch (err) {
     console.error(err);
-    return { minItems: [], rows: [] };
+    return { pageCount: 0, rows: [] };
   }
 };
 
@@ -183,18 +183,19 @@ export const getHandwrittenCountByStatus = async (status: string) => {
   }
 };
 
-export const getSomeUnsoldItems = async (page: number, limit: number, salesmanId: number) => {
+export const getSomeUnsoldItems = async (page: number, limit: number, salesmanId: number): Promise<{ pageCount: number, rows: SalesEndOfDayItem[] }> => {
   try {
     const auth = { withCredentials: true };
     const res = await api.get(`/api/handwrittens/unsold-items/${JSON.stringify({ page: (page - 1) * limit, limit, salesmanId })}`, auth);
     return {
-      minItems: res.data.minItems || [],
-      rows: res.data.rows ? res.data.rows.map((item: any) => {
+      pageCount: res.data.pageCount,
+      rows: res.data.rows.map((item: any) => {
         return { ...item, date: parseResDate(item.date) };
-      }) : []
+      })
     };
   } catch (err) {
     console.error(err);
+    return { pageCount: 0, rows: [] };
   }
 };
 

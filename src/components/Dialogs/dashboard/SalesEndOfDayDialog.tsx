@@ -20,11 +20,11 @@ export default function SalesEndOfDayDialog({ open, setOpen }: Props) {
   const [quotesDataAtom, setQuotesDataAtom] = useAtom<Quote[]>(quotesAtom);
   const [itemsData, setItemsData] = useState<SalesEndOfDayItem[]>([]);
   const [items, setItems] = useState<SalesEndOfDayItem[]>([]);
-  const [itemsMin, setItemsMin] = useState<number[]>([]);
+  const [itemsCount, setItemsCount] = useState(0);
   const [selectedItem, setSelectedItem] = useState<SalesEndOfDayItem | null>(null);
   const [quotesData, setQuotesData] = useState<Quote[]>([]);
   const [quotes, setQuotes] = useState<Quote[]>([]);
-  const [quotesMin, setQuotesMin] = useState<number[]>([]);
+  const [quotesCount, setQuotesCount] = useState(0);
   const [showAlts, setShowAlts] = useState(true);
   const LIMIT = 40;
   
@@ -32,8 +32,8 @@ export default function SalesEndOfDayDialog({ open, setOpen }: Props) {
     const fetchData = async () => {
       if (!open) return;
       const res = await getSomeUnsoldItems(1, LIMIT, user.id);
-      setItemsMin(res?.minItems);
-      setItemsData(res?.rows);
+      setItemsCount(res.pageCount);
+      setItemsData(res.rows);
     };
     fetchData();
   }, [open]);
@@ -42,8 +42,8 @@ export default function SalesEndOfDayDialog({ open, setOpen }: Props) {
     const fetchData = async () => {
       if (!open || !selectedItem) return;
       const res = await getSomeUnsoldQuotesByPartNum(1, LIMIT, selectedItem.partNum, selectedItem.customer.id, showAlts);
-      setQuotesData(res?.rows);
-      setQuotesMin(res?.minQuotes);
+      setQuotesData(res.rows);
+      setQuotesCount(res.pageCount);
     };
     fetchData();
   }, [open, showAlts]);
@@ -148,7 +148,7 @@ export default function SalesEndOfDayDialog({ open, setOpen }: Props) {
           <Pagination
             data={itemsData}
             setData={handleChangeItemsPage}
-            minData={itemsMin}
+            pageCount={itemsCount}
             pageSize={LIMIT}
           />
         </>
@@ -191,7 +191,7 @@ export default function SalesEndOfDayDialog({ open, setOpen }: Props) {
           <Pagination
             data={quotesData}
             setData={handleChangeQuotesPage}
-            minData={quotesMin}
+            pageCount={quotesCount}
             pageSize={LIMIT}
           />
         </>

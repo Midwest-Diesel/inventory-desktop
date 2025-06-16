@@ -13,7 +13,7 @@ interface Props {
   open: boolean
   setOpen: (open: boolean) => void
   setQuotes: (quotes: Quote[]) => void
-  setCount: (minItems: number[]) => void
+  setCount: (pageCount: number) => void
   filterByCustomer: boolean
   searchData: any
   setSearchData: (data: any) => void
@@ -95,7 +95,7 @@ export default function QuoteSearchDialog({ open, setOpen, setQuotes, setCount, 
       setSearchData(quoteSearch);
       const res = await searchQuotes(quoteSearch, filterByCustomer ? Number(localStorage.getItem("customerId")) : 0);
       setQuotes(res.rows);
-      setCount(res.minItems);
+      setCount(res.pageCount);
     } else {
       setSearchData(null);
       backupFunction(null, page, true);

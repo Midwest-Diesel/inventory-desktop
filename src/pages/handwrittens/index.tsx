@@ -7,7 +7,7 @@ import Loading from "@/components/Library/Loading";
 import Pagination from "@/components/Library/Pagination";
 import Table from "@/components/Library/Table";
 import { handwrittenSearchAtom, userAtom } from "@/scripts/atoms/state";
-import { addHandwritten, getHandwrittenCount, getHandwrittensByDate, getMostRecentHandwrittenDate, getSomeHandwrittens, getYeserdayCOGS, getYeserdaySales, searchHandwrittens } from "@/scripts/services/handwrittensService";
+import { addHandwritten, getHandwrittenCount, getSomeHandwrittens, getYeserdayCOGS, getYeserdaySales, searchHandwrittens } from "@/scripts/services/handwrittensService";
 import { formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
 import { useAtom } from "jotai";
 import Link from "@/components/Library/Link";
@@ -23,7 +23,7 @@ export default function Handwrittens() {
   const [handwrittens, setHandwrittens] = useState<Handwritten[]>([]);
   const [focusedHandwritten, setFocusedHandwritten] = useState<Handwritten | null>(null);
   const [yesterdayInvoices, setYesterdayInvoices] = useState<Handwritten[]>(handwrittensData);
-  const [handwrittenCount, setHandwrittenCount] = useState<number[]>([]);
+  const [handwrittenCount, setHandwrittenCount] = useState(0);
   const [openSearch, setOpenSearch] = useState(false);
   const [customerSelectOpen, setCustomerSelectOpen] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -37,9 +37,6 @@ export default function Handwrittens() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const pageCount = await getHandwrittenCount();
-      setHandwrittenCount(pageCount);
-      
       setTotalSales(await getYeserdaySales());
       setTotalCOGS(await getYeserdayCOGS());
       setLoading(false);
@@ -65,9 +62,11 @@ export default function Handwrittens() {
     if (hasValidSearchCriteria) {
       const res = await searchHandwrittens({ ...searchData, offset: (page - 1) * LIMIT });
       setHandwrittens(res.rows);
+      setHandwrittenCount(res.pageCount);
     } else {
       const res = await getSomeHandwrittens(page, LIMIT);
-      setHandwrittens(res);
+      setHandwrittens(res.rows);
+      setHandwrittenCount(res.pageCount);
     }
     setCurrentPage(page);
     setLoading(false);
@@ -139,7 +138,8 @@ export default function Handwrittens() {
     await addHandwritten(newHandwritten);
     const res = await getSomeHandwrittens(1, LIMIT);
     setCurrentPage(1);
-    setHandwrittens(res);
+    setHandwrittens(res.rows);
+    setHandwrittenCount(res.pageCount);
   };
 
   const handleFocusHandwritten = (handwritten: Handwritten) => {
@@ -207,7 +207,7 @@ export default function Handwrittens() {
               <Pagination
                 data={handwrittensData}
                 setData={handleChangePage}
-                minData={handwrittenCount}
+                pageCount={handwrittenCount}
                 pageSize={LIMIT}
               />
             </div>

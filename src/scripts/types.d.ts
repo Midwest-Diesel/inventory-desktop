@@ -392,6 +392,16 @@ type Part = {
   coreFam: string | null
 };
 
+type PartMin = {
+  id: number
+  qty: number
+  partNum: string
+  stockNum: string | null
+  desc: string | null
+  location: string | null
+  remarks: string | null
+};
+
 interface PartSearchData {
   partNum?: string
   stockNum?: string

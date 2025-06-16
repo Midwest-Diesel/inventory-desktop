@@ -3,24 +3,20 @@ import Button from "../Library/Button";
 import Loading from "../Library/Loading";
 import Table from "../Library/Table";
 import { getSupabaseFile } from "@/scripts/config/supabase";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Pagination from "../Library/Pagination";
 
 interface Props {
   setTableOpen: (open: boolean) => void
   data: PricingChangesReport[]
+  pageCount: number
   setReportsOpen: (open: boolean) => void
 }
 
 
-export default function PricingChangesTable({ setTableOpen, data, setReportsOpen }: Props) {
-  const [dataMin, setDataMin] = useState<number[]>([]);
+export default function PricingChangesTable({ setTableOpen, data, pageCount, setReportsOpen }: Props) {
   const [list, setList] = useState<PricingChangesReport[]>([]);
   const LIMIT = 200;
-
-  useEffect(() => {
-    setDataMin(data.map((_, i) => i));
-  }, [data]);
 
   const handleGoBack = () => {
     setTableOpen(false);
@@ -154,7 +150,7 @@ export default function PricingChangesTable({ setTableOpen, data, setReportsOpen
       <Pagination
         data={data}
         setData={handleChangePage}
-        minData={dataMin}
+        pageCount={pageCount}
         pageSize={LIMIT}
       />
     </>

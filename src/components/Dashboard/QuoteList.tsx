@@ -24,7 +24,7 @@ interface Props {
   setQuoteEdited: (quote: Quote | null) => void
   page: number
   limit: number
-  count: any[]
+  count: number
 }
 
 
@@ -65,7 +65,7 @@ export default function QuoteList({ quotes, setQuotes, onInvoiceQuote, onChangeP
 
   return (
     <div className="quote-list">
-      <div style={{ height: '21.5rem', width: 'fit-content', overflow: 'auto' }}>
+      <div style={{ height: 'fit-content', width: 'fit-content', overflow: 'auto' }}>
         <Table data-testid="part-quotes">
           <thead>
             <tr>
@@ -209,7 +209,7 @@ export default function QuoteList({ quotes, setQuotes, onInvoiceQuote, onChangeP
         <Pagination
           data={quotesData}
           setData={onChangePage}
-          minData={count}
+          pageCount={count}
           pageSize={limit}
         />
       </div>
