@@ -65,7 +65,7 @@ export default function QuoteList({ quotes, setQuotes, onInvoiceQuote, onChangeP
 
   return (
     <div className="quote-list">
-      <div style={{ height: quotes.length > 3 ? '21.5rem' : 'fit-content', width: 'fit-content', overflow: 'auto' }}>
+      <div style={{ height: quotes.length > 3 ? '19rem' : 'fit-content', width: 'fit-content', overflow: 'auto' }}>
         <Table data-testid="part-quotes">
           <thead>
             <tr>

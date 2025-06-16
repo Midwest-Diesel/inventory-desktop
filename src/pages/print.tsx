@@ -39,11 +39,10 @@ export default function Print() {
       setMaxHeight(item.maxHeight);
       await waitForDomPaint();
       if (!printRef.current) continue;
-
       const imageData = await toPng(printRef.current);
-      await invoke(item.printCmd, { imageData });
+      invoke(item.printCmd, { imageData });
     }
-
+    
     setActiveSheet('');
     setData(null);
     clearQue();
