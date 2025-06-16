@@ -39,3 +39,4 @@ export const printQueAtom = atom<{ name: string, printCmd: string, data: any, ma
 export const quickPickItemIdAtom = atom<number>(0);
 export const toastAtom = atom<Toast[]>([]);
 export const tooltipAtom = atom<string>('');
+export const accountingPageFilterAtom = atom<'' | 'all' | 'IN PROCESS' | 'COMPLETE'>('all');

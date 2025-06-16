@@ -141,16 +141,6 @@ export const getHandwrittensByDate = async (date: Date) => {
   }
 };
 
-export const getHandwrittenCount = async () => {
-  try {
-    const auth = { withCredentials: true };
-    const res = await api.get('/api/handwrittens/count', auth);
-    return res.data;
-  } catch (err) {
-    console.error(err);
-  }
-};
-
 export const getFreightCarrierFromShipVia = async (name: string) => {
   try {
     const auth = { withCredentials: true };
@@ -161,25 +151,17 @@ export const getFreightCarrierFromShipVia = async (name: string) => {
   }
 };
 
-export const getSomeHandwrittensByStatus = async (page: number, limit: number, status: string) => {
+export const getSomeHandwrittensByStatus = async (page: number, limit: number, status: string): Promise<{ pageCount: number, rows: Handwritten[] }> => {
   try {
     const auth = { withCredentials: true };
     const res = await api.get(`/api/handwrittens/status/${JSON.stringify({ page: (page - 1) * limit, limit, status })}`, auth);
-    return res.data.map((row: any) => {
-      return { ...row, date: parseResDate(row.date), };
+    const parsedData = res.data.rows.map((row: any) => {
+      return { ...row, date: parseResDate(row.date) };
     });
+    return { pageCount: res.data.pageCount, rows: parsedData };
   } catch (err) {
     console.error(err);
-  }
-};
-
-export const getHandwrittenCountByStatus = async (status: string) => {
-  try {
-    const auth = { withCredentials: true };
-    const res = await api.get(`/api/handwrittens/status-count/${status || 'new'}`, auth);
-    return res.data;
-  } catch (err) {
-    console.error(err);
+    return { pageCount: 0, rows: [] };
   }
 };
 

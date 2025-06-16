@@ -4,23 +4,34 @@ import Loading from "@/components/Library/Loading";
 import Pagination from "@/components/Library/Pagination";
 import Table from "@/components/Library/Table";
 import { invoke } from "@/scripts/config/tauri";
-import { getEndOfDayHandwrittens, getHandwrittenCount, getHandwrittenCountByStatus, getSomeHandwrittens, getSomeHandwrittensByStatus } from "@/scripts/services/handwrittensService";
+import { getEndOfDayHandwrittens, getSomeHandwrittens, getSomeHandwrittensByStatus } from "@/scripts/services/handwrittensService";
 import { formatDate } from "@/scripts/tools/stringUtils";
 import Link from "@/components/Library/Link";
 import { useEffect, useState } from "react";
+import { useAtom } from "jotai";
+import { accountingPageFilterAtom } from "@/scripts/atoms/state";
+
+type AccountingStatus = '' | 'all' | 'IN PROCESS' | 'COMPLETE';
 
 
 export default function Karmak() {
+  const [currentStatus, setCurrentStatus] = useAtom(accountingPageFilterAtom);
   const [handwrittensData, setHandwrittensData] = useState<Handwritten[]>([]);
   const [handwrittens, setHandwrittens] = useState<Handwritten[]>([]);
   const [pageCount, setPageCount] = useState(0);
-  const [currentStatus, setCurrentStatus] = useState('all');
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const LIMIT = 60;
 
   useEffect(() => {
-    fetchData();
+    const init = async () => {
+      if (currentStatus !== 'all') {
+        await handleFilterStatus(currentStatus, 1, true);
+        return;
+      }
+      fetchData();
+    };
+    init();
   }, []);
 
   const fetchData = async () => {
@@ -37,21 +48,20 @@ export default function Karmak() {
     if (currentStatus === 'all') {
       setCurrentPage(page);
       const res = await getSomeHandwrittens(page, LIMIT);
-        setHandwrittens(res.rows);
-        setPageCount(res.pageCount);
+      setHandwrittens(res.rows);
+      setPageCount(res.pageCount);
     } else {
-      await handleFilterStatus(currentStatus as AccountingStatus, page);
+      await handleFilterStatus(currentStatus, page);
     }
   };
   
-  const handleFilterStatus = async (status: AccountingStatus, page: number) => {
-    if (currentStatus === status && currentPage === page) return;
+  const handleFilterStatus = async (status: AccountingStatus, page: number, force = false) => {
+    if (currentStatus === status && currentPage === page && !force) return;
     setCurrentPage(page);
     setLoading(true);
     setCurrentStatus(status);
-    setPageCount(await getHandwrittenCountByStatus(status));
     const res = await getSomeHandwrittensByStatus(page, LIMIT, status);
-    setHandwrittensData(res);
+    setHandwrittensData(res.rows);
     setHandwrittens(res.rows);
     setPageCount(res.pageCount);
     setLoading(false);

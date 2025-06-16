@@ -9,12 +9,11 @@ import Pagination from "../Library/Pagination";
 interface Props {
   setTableOpen: (open: boolean) => void
   data: PricingChangesReport[]
-  pageCount: number
   setReportsOpen: (open: boolean) => void
 }
 
 
-export default function PricingChangesTable({ setTableOpen, data, pageCount, setReportsOpen }: Props) {
+export default function PricingChangesTable({ setTableOpen, data, setReportsOpen }: Props) {
   const [list, setList] = useState<PricingChangesReport[]>([]);
   const LIMIT = 200;
 
@@ -150,7 +149,7 @@ export default function PricingChangesTable({ setTableOpen, data, pageCount, set
       <Pagination
         data={data}
         setData={handleChangePage}
-        pageCount={pageCount}
+        pageCount={data.length}
         pageSize={LIMIT}
       />
     </>

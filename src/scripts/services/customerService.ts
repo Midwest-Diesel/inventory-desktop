@@ -45,13 +45,14 @@ export const getCustomersCount = async () => {
   }
 };
 
-export const searchCustomers = async (data: { name: string, phone: string, state: string, zip: string, country: string, customerType: string }) => {
+export const searchCustomers = async (data: { name: string, phone: string, state: string, zip: string, country: string, customerType: string }): Promise<Customer[]> => {
   try {
     const auth = { withCredentials: true };
     const res = await api.get(`/api/customers/search/${JSON.stringify(data)}`, auth);
     return parseCustomerRes(res.data);
   } catch (err) {
     console.error(err);
+    return [];
   }
 };
 
