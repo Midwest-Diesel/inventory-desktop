@@ -7,7 +7,7 @@ of them when replacing a printer.
 
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-use image::{io::Reader as ImageReader, ImageOutputFormat, DynamicImage, imageops::{rotate90, resize, FilterType}};
+use image::{io::Reader as ImageReader, ImageOutputFormat, DynamicImage, imageops::{rotate90, FilterType}};
 use serde::{Deserialize, Serialize};
 use tauri::Manager;
 use std::{fs::remove_file, process::Command, env};

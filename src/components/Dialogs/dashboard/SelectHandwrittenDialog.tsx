@@ -8,7 +8,7 @@ import Input from "@/components/Library/Input";
 import Button from "@/components/Library/Button";
 import Checkbox from "@/components/Library/Checkbox";
 import { useAtom } from "jotai";
-import { selectedCustomerAtom } from "@/scripts/atoms/state";
+import { selectedCustomerAtom, selectedHandwrittenIdAtom } from "@/scripts/atoms/state";
 import { ask, message } from "@tauri-apps/api/dialog";
 import { useToast } from "@/hooks/useToast";
 
@@ -23,11 +23,11 @@ interface Props {
 export default function SelectHandwrittenDialog({ open, setOpen, part, onSubmit }: Props) {
   const toast = useToast();
   const [selectedCustomer] = useAtom<Customer>(selectedCustomerAtom);
+  const [selectedHandwrittenId, setSelectedHandwrittenId] = useAtom(selectedHandwrittenIdAtom);
   const [handwrittensData, setHandwrittensData] = useState<SelectHandwrittenDialogResult[]>([]);
   const [handwrittens, setHandwrittens] = useState<SelectHandwrittenDialogResult[]>([]);
   const [handwrittenCount, setHandwrittenCount] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
-  const [selectedHandwrittenId, setSelectedHandwrittenId] = useState(0);
   const [desc, setDesc] = useState('');
   const [qty, setQty] = useState<number | null>(null);
   const [price, setPrice] = useState<number | null>(null);

@@ -27,12 +27,14 @@ export default function OfficeNavbar() {
         <Link href="/add-ons/office">Office</Link>
         <Link href="/add-ons/engine">Engine</Link>
       </NavDropdown>
-      <Link href="/email-stuff" className="navbar__link">Email Stuff</Link>
-      <Link href="/performance" className="navbar__link">Performance</Link>
       <Link href="/karmak" className="navbar__link">Accounting</Link>
-      <Link href="/reports" className="navbar__link">Reports</Link>
+      <Link href="/email-stuff" className="navbar__link">Email Stuff</Link>
+      <NavDropdown label="Tools">
+        <Link href="/reports">Reports</Link>
+        <Link href="/performance" className="navbar__link">Performance</Link>
+        <Link href="/image-upload" className="navbar__link">Image Upload</Link>
+      </NavDropdown>
       <Link href="/alerts" className="navbar__link">Alerts</Link>
-      <Link href="/image-upload" className="navbar__link">Image Upload</Link>
       <Link href="/map" className="navbar__link">Map</Link>
       <Link href="/about" className="navbar__link">About</Link>
     </>

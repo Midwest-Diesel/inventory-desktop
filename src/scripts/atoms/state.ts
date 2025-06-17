@@ -21,6 +21,7 @@ export const recentPartSearchesAtom = atom<RecentPartSearch[]>([]);
 export const recentQuotesAtom = atom<RecentQuoteSearch[]>([]);
 export const lastPartSearchAtom = atom<string>('');
 export const selectedCustomerAtom = atom<Customer>({} as Customer);
+export const selectedHandwrittenIdAtom = atom<number>(0);
 export const sourcesAtom = atom<string[]>([]);
 export const alertsAtom = atom<Alert[]>([]);
 export const enginePartsTableAtom = atom<EnginePartsTable>({} as EnginePartsTable);
