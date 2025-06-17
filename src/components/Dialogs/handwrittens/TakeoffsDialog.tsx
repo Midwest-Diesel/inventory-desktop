@@ -13,10 +13,11 @@ interface Props {
   setOpen: (open: boolean) => void
   item: HandwrittenItem | HandwrittenItemChild
   setHandwritten: (handwritten: Handwritten | null) => void
+  onSubmit: () => void
 }
 
 
-export default function TakeoffsDialog({ open, setOpen, item, setHandwritten }: Props) {
+export default function TakeoffsDialog({ open, setOpen, item, setHandwritten, onSubmit }: Props) {
   const params = useParams();
   const [qty, setQty] = useState<number>(item.qty ?? 0);
   const [part, setPart] = useState<Part | null>(null);
@@ -51,12 +52,14 @@ export default function TakeoffsDialog({ open, setOpen, item, setHandwritten }: 
       const partCostIn: PartCostIn | null = res.find((p: PartCostIn) => p.vendor === part.purchasedFrom) ?? null;
       if (partCostIn) await editPartCostIn({ ...partCostIn, cost: item.cost });
     } else {
-      const newStockNum = part.stockNum?.split('').slice(0, 2).join('').toUpperCase() !== 'UP' ? part.stockNum : `${part.stockNum} (${formatDate(new Date())})`;
-      await addPart({ ...part, qty: 0, stockNum: newStockNum }, true);
+      const isPartUP = part.stockNum?.split('').slice(0, 2).join('').toUpperCase() === 'UP';
+      const newStockNum = isPartUP ? `${part.stockNum} (${formatDate(new Date())})` : part.stockNum;
+      await addPart({ ...part, qty: 0, qtySold: Number(qty), stockNum: newStockNum }, true);
       await addPartCostIn(newStockNum ?? '', Number(item.cost), null, part.purchasedFrom ?? '', 'PurchasePrice', '');
     }
 
     const res = await getHandwrittenById(Number(params.handwritten));
+    onSubmit();
     setHandwritten(res);
     setOpen(false);
   };

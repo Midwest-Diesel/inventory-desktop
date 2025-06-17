@@ -420,7 +420,7 @@ export default function ImportantCustomersMap() {
           <Button type="submit">Filter</Button>
           <Button type="button" onClick={handleClearFilters}>Clear Filters</Button>
           <br />
-          <Button type="button" onClick={handleFilterTopCustomers}>Top 100 Customers</Button>
+          <Button type="button" onClick={handleFilterTopCustomers}>Top Customers</Button>
           {/* <Button type="button" onClick={handleFilterNewLeads}>New Leads</Button> */}
         </div>
       </form>

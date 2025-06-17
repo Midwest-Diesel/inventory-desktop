@@ -19,7 +19,7 @@ import { invoke, confirm } from "@/scripts/config/tauri";
 import { useAtom } from "jotai";
 import Link from "@/components/Library/Link";
 import { useParams } from "next/navigation";
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 import { useNavState } from "@/hooks/useNavState";
 import CreditCardBlock from "@/components/CreditCardBlock";
 import { ask } from "@tauri-apps/api/dialog";
@@ -85,6 +85,7 @@ export default function HandwrittenDetails({
   const [takeoffItem, setTakeoffItem] = useState<HandwrittenItem | HandwrittenItemChild | null>(null);
   const [takeoffsOpen, setTakeoffsOpen] = useState(false);
   const [taxTotal, setTaxTotal] = useState(0);
+  const takeoffRef = useRef<HTMLFormElement>(null);
   const TAX_RATE = 0.08375;
   const MAX_ROWS = 20;
 
@@ -325,11 +326,16 @@ export default function HandwrittenDetails({
     setTakeoffItem(item || itemChild);
   };
 
+  const onSubmitTakeoff = () => {
+    setTakeoff('');
+    takeoffRef.current?.focus();
+  };
+
 
   return (
     <>
       <PrintInvoiceDialog open={printInvoiceOpen} setOpen={setPrintInvoiceOpen} handwritten={handwritten} />
-      { takeoffItem && <TakeoffsDialog open={takeoffsOpen} setOpen={setTakeoffsOpen} item={takeoffItem} setHandwritten={setHandwritten} /> }
+      { takeoffItem && <TakeoffsDialog open={takeoffsOpen} setOpen={setTakeoffsOpen} item={takeoffItem} setHandwritten={setHandwritten} onSubmit={onSubmitTakeoff} /> }
 
       <div className="handwritten-details">
         <div className="handwritten-details__header">
@@ -688,7 +694,7 @@ export default function HandwrittenDetails({
           </GridItem>
         </Grid>
 
-        <form onSubmit={handleTakeoffs}>
+        <form ref={takeoffRef} onSubmit={handleTakeoffs}>
           <br />
           <Input
             variant={['label-bold', 'label-stack', 'small']}

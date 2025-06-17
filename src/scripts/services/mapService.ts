@@ -30,13 +30,14 @@ export const getMapLocationFromCustomer = async (id: number) => {
   }
 };
 
-export const getMapTopCustomers = async () => {
+export const getMapTopCustomers = async (): Promise<number[]> => {
   try {
     const auth = { withCredentials: true };
     const res = await api.get('/api/map/top-customers', auth);
-    return res.data;
+    return res.data.slice(0, 100);
   } catch (err) {
     console.error(err);
+    return [];
   }
 };
 
