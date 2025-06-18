@@ -85,7 +85,7 @@ export default function HandwrittenDetails({
   const [takeoffItem, setTakeoffItem] = useState<HandwrittenItem | HandwrittenItemChild | null>(null);
   const [takeoffsOpen, setTakeoffsOpen] = useState(false);
   const [taxTotal, setTaxTotal] = useState(0);
-  const takeoffRef = useRef<HTMLFormElement>(null);
+  const takeoffInputRef = useRef<HTMLInputElement>(null);
   const TAX_RATE = 0.08375;
   const MAX_ROWS = 20;
 
@@ -324,14 +324,23 @@ export default function HandwrittenDetails({
 
   const onSubmitTakeoff = () => {
     setTakeoff('');
-    takeoffRef.current?.focus();
+    takeoffInputRef.current?.focus();
   };
 
 
   return (
     <>
       <PrintInvoiceDialog open={printInvoiceOpen} setOpen={setPrintInvoiceOpen} handwritten={handwritten} />
-      { takeoffItem && <TakeoffsDialog open={takeoffsOpen} setOpen={setTakeoffsOpen} item={takeoffItem} setHandwritten={setHandwritten} onSubmit={onSubmitTakeoff} /> }
+      {takeoffItem &&
+        <TakeoffsDialog
+          open={takeoffsOpen}
+          setOpen={setTakeoffsOpen}
+          item={takeoffItem}
+          setHandwritten={setHandwritten}
+          onSubmit={onSubmitTakeoff}
+          takeoffInputRef={takeoffInputRef}
+        />
+      }
 
       <div className="handwritten-details">
         <div className="handwritten-details__header">
@@ -690,9 +699,10 @@ export default function HandwrittenDetails({
           </GridItem>
         </Grid>
 
-        <form ref={takeoffRef} onSubmit={handleTakeoffs}>
+        <form onSubmit={handleTakeoffs}>
           <br />
           <Input
+            ref={takeoffInputRef}
             variant={['label-bold', 'label-stack', 'small']}
             label="Takeoff"
             value={takeoff}

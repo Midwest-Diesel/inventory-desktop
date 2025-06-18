@@ -1,5 +1,5 @@
 import { generateClasses, parseClasses } from "@/scripts/tools/utils";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, forwardRef } from "react";
 
 interface Props extends InputHTML {
   children?: any
@@ -14,7 +14,7 @@ interface Props extends InputHTML {
 }
 
 
-export default function Input({ children, className = '', labelClass = '', autofill = '', onAutofill, variant = [], label, cols, rows, ...props }: Props) {
+const Input = forwardRef<HTMLInputElement, Props>(({ children, className = '', labelClass = '', autofill = '', onAutofill, variant = [], label, cols, rows, ...props }, ref) => {
   const labelClassList = variant.filter((v) => v.includes('label'));
   const classes = generateClasses(className, variant ? variant.filter((v) => !labelClassList.includes(v)) : [], 'input');
   const labelClasses = generateClasses(labelClass, labelClassList, 'input');
@@ -64,6 +64,7 @@ export default function Input({ children, className = '', labelClass = '', autof
               {...parseClasses(classes)}
               {...props}
               autoComplete="new-password"
+              ref={ref}
             />
             :
             <div style={{ position: 'relative' }}>
@@ -81,4 +82,6 @@ export default function Input({ children, className = '', labelClass = '', autof
       { children }
     </label>
   );
-}
+});
+
+export default Input;

@@ -6,7 +6,7 @@ import { addPart, addPartCostIn, editPartCostIn, getPartById, getPartCostIn, han
 import { getSurplusByCode, zeroAllSurplusItems } from "@/scripts/services/surplusService";
 import { formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
 import { useParams } from "react-router-dom";
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, RefObject, useEffect, useState } from "react";
 
 interface Props {
   open: boolean
@@ -14,10 +14,11 @@ interface Props {
   item: HandwrittenItem | HandwrittenItemChild
   setHandwritten: (handwritten: Handwritten | null) => void
   onSubmit: () => void
+  takeoffInputRef: RefObject<HTMLInputElement>
 }
 
 
-export default function TakeoffsDialog({ open, setOpen, item, setHandwritten, onSubmit }: Props) {
+export default function TakeoffsDialog({ open, setOpen, item, setHandwritten, onSubmit, takeoffInputRef }: Props) {
   const params = useParams();
   const [qty, setQty] = useState<number>(item.qty ?? 0);
   const [part, setPart] = useState<Part | null>(null);
@@ -61,6 +62,7 @@ export default function TakeoffsDialog({ open, setOpen, item, setHandwritten, on
     const res = await getHandwrittenById(Number(params.handwritten));
     onSubmit();
     setHandwritten(res);
+    takeoffInputRef.current?.focus();
     setOpen(false);
   };
 
