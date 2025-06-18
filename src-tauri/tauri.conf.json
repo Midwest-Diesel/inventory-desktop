@@ -4,12 +4,12 @@
     "beforeBuildCommand": "npm run build",
     "beforeDevCommand": "npm run dev",
     "devPath": "http://localhost:3000",
-    "distDir": "../out",
+    "distDir": "../dist",
     "withGlobalTauri": true
   },
   "package": {
     "productName": "Inventory",
-    "version": "0.23.3"
+    "version": "0.23.5"
   },
   "tauri": {
     "allowlist": {
