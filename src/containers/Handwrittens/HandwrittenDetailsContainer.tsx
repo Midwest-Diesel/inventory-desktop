@@ -8,6 +8,7 @@ import { setTitle } from "@/scripts/tools/utils";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { PreventNavigation } from "@/components/PreventNavigation";
+import Loading from "@/components/Library/Loading";
 
 
 export default function HandwrittenDetailsContainer() {
@@ -24,10 +25,12 @@ export default function HandwrittenDetailsContainer() {
   const [promptLeaveWindow, setPromptLeaveWindow] = useState(false);
   const [addQtyDialogOpen, setAddQtyDialogOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
       if (!params) return;
+      setLoading(true);
       const res = await getHandwrittenById(Number(params.handwritten));
       setTitle(`${res?.id} Handwritten`);
       setHandwritten(res);
@@ -40,6 +43,7 @@ export default function HandwrittenDetailsContainer() {
           toast.sendToast(`Cost still detected on item <span style="color: var(--orange-1)">${res.partNum}</span>!`, 'error', 6000);
         }
       });
+      setLoading(false);
     };
     fetchData();
   }, [params]);
@@ -77,68 +81,74 @@ export default function HandwrittenDetailsContainer() {
 
 
   return (
-    <div>
-      <PreventNavigation shouldPrevent={promptLeaveWindow} text="Leave without printing credit card?" />
+    <>
+      {loading ?
+        <Loading />
+        :
+        <div>
+          <PreventNavigation shouldPrevent={promptLeaveWindow} text="Leave without printing credit card?" />
 
-      {handwritten &&
-        <AddQtyDialog
-          open={addQtyDialogOpen}
-          setOpen={setAddQtyDialogOpen}
-          handwritten={handwritten}
-          setHandwritten={setHandwritten}
-          setIsEditing={setIsEditing}
-        />
-      }
+          {handwritten &&
+            <AddQtyDialog
+              open={addQtyDialogOpen}
+              setOpen={setAddQtyDialogOpen}
+              handwritten={handwritten}
+              setHandwritten={setHandwritten}
+              setIsEditing={setIsEditing}
+            />
+          }
 
-      {handwritten && !isEditing &&
-        <HandwrittenDetails
-          handwritten={handwritten}
-          setHandwritten={setHandwritten}
-          handleAltShip={handleAltShip}
-          setIsEditing={setIsEditing}
-          setPromptLeaveWindow={setPromptLeaveWindow}
-          cardNum={cardNum}
-          expDate={expDate}
-          cvv={cvv}
-          cardZip={cardZip}
-          cardName={cardName}
-          cardAddress={cardAddress}
-          payment={payment}
-          setPayment={setPayment}
-          setCardNum={setCardNum}
-          setExpDate={setExpDate}
-          setCvv={setCvv}
-          setCardZip={setCardZip}
-          setCardName={setCardName}
-          setCardAddress={setCardAddress}
-          setAddQtyDialogOpen={setAddQtyDialogOpen}
-        />
-      }
+          {handwritten && !isEditing &&
+            <HandwrittenDetails
+              handwritten={handwritten}
+              setHandwritten={setHandwritten}
+              handleAltShip={handleAltShip}
+              setIsEditing={setIsEditing}
+              setPromptLeaveWindow={setPromptLeaveWindow}
+              cardNum={cardNum}
+              expDate={expDate}
+              cvv={cvv}
+              cardZip={cardZip}
+              cardName={cardName}
+              cardAddress={cardAddress}
+              payment={payment}
+              setPayment={setPayment}
+              setCardNum={setCardNum}
+              setExpDate={setExpDate}
+              setCvv={setCvv}
+              setCardZip={setCardZip}
+              setCardName={setCardName}
+              setCardAddress={setCardAddress}
+              setAddQtyDialogOpen={setAddQtyDialogOpen}
+            />
+          }
 
-      {handwritten && isEditing &&
-        <EditHandwrittenDetails
-          handwritten={handwritten}
-          setHandwritten={setHandwritten}
-          handleAltShip={handleAltShip}
-          setIsEditing={setIsEditing}
-          setPromptLeaveWindow={setPromptLeaveWindow}
-          cardNum={cardNum}
-          expDate={expDate}
-          cvv={cvv}
-          cardZip={cardZip}
-          cardName={cardName}
-          cardAddress={cardAddress}
-          payment={payment}
-          setPayment={setPayment}
-          setCardNum={setCardNum}
-          setExpDate={setExpDate}
-          setCvv={setCvv}
-          setCardZip={setCardZip}
-          setCardName={setCardName}
-          setCardAddress={setCardAddress}
-          setAddQtyDialogOpen={setAddQtyDialogOpen}
-        />
+          {handwritten && isEditing &&
+            <EditHandwrittenDetails
+              handwritten={handwritten}
+              setHandwritten={setHandwritten}
+              handleAltShip={handleAltShip}
+              setIsEditing={setIsEditing}
+              setPromptLeaveWindow={setPromptLeaveWindow}
+              cardNum={cardNum}
+              expDate={expDate}
+              cvv={cvv}
+              cardZip={cardZip}
+              cardName={cardName}
+              cardAddress={cardAddress}
+              payment={payment}
+              setPayment={setPayment}
+              setCardNum={setCardNum}
+              setExpDate={setExpDate}
+              setCvv={setCvv}
+              setCardZip={setCardZip}
+              setCardName={setCardName}
+              setCardAddress={setCardAddress}
+              setAddQtyDialogOpen={setAddQtyDialogOpen}
+            />
+          }
+        </div>
       }
-    </div>
+    </>
   );
 }
