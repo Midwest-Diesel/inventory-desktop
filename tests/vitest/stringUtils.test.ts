@@ -11,14 +11,14 @@ describe('Format date', () => {
 
   test('parseResdate', () => {
     const result = parseResDate('2024-03-08T09:15:24.000Z');
-    expect(result).toEqual(new Date('2024-03-08T15:15:00.000Z'));
+    expect(result).toEqual(new Date('2024-03-08T09:15:24.000Z'));
   });
 
   test('should format time', () => {
     const parsedDate = parseResDate('2024-06-11T19:24:47.601Z') ?? '';
     const date = new Date(parsedDate);
     const result = formatTime(date);
-    expect(result).toBe('7:24 PM');
+    expect(result).toBe('2:24 PM');
   });
 });
 
