@@ -13,12 +13,12 @@ import Table from "@/components/Library/Table";
 import { userAtom } from "@/scripts/atoms/state";
 import { supabase } from "@/scripts/config/supabase";
 import { deleteHandwritten, getHandwrittenById } from "@/scripts/services/handwrittensService";
-import { formatCurrency, formatDate, formatPhone, parseResDate } from "@/scripts/tools/stringUtils";
-import { RealtimePostgresInsertPayload, RealtimePostgresUpdatePayload } from "@supabase/supabase-js";
+import { formatCurrency, formatDate, formatPhone } from "@/scripts/tools/stringUtils";
+import { RealtimePostgresUpdatePayload } from "@supabase/supabase-js";
 import { invoke, confirm } from "@/scripts/config/tauri";
 import { useAtom } from "jotai";
 import Link from "@/components/Library/Link";
-import { useParams } from "next/navigation";
+import { useParams } from "react-router-dom";
 import { FormEvent, useEffect, useRef, useState } from "react";
 import { useNavState } from "@/hooks/useNavState";
 import CreditCardBlock from "@/components/CreditCardBlock";
@@ -107,7 +107,6 @@ export default function HandwrittenDetails({
     const channel = supabase
       .channel('pendingInvoicesItems')
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'pendingInvoicesItems' }, refreshHandwrittenItems)
-      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'pendingInvoicesItemsChildren' }, refreshHandwrittenItemsChildren)
       .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'pendingInvoices' }, refreshHandwrittenOrderNotes);
     channel.subscribe();
 
@@ -116,12 +115,9 @@ export default function HandwrittenDetails({
     };
   }, []);
 
-  const refreshHandwrittenItems = async (e: RealtimePostgresInsertPayload<HandwrittenItem>) => {
+  const refreshHandwrittenItems = async () => {
     const res = await getHandwrittenById(Number(params.handwritten));
     setHandwritten(res);
-  };
-
-  const refreshHandwrittenItemsChildren = (e: RealtimePostgresInsertPayload<HandwrittenItemChild>) => {
   };
 
   const refreshHandwrittenOrderNotes = async (e: RealtimePostgresUpdatePayload<Handwritten>) => {

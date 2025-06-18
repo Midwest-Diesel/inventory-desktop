@@ -16,8 +16,8 @@ import { deleteEngine, getEngineByStockNum } from "@/scripts/services/enginesSer
 import { formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
 import { setTitle } from "@/scripts/tools/utils";
 import { useAtom } from "jotai";
-import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 
 
 export default function EngineDetailsPage() {
@@ -48,12 +48,6 @@ export default function EngineDetailsPage() {
     return engineCostIn
       .filter((num) => num.cost !== 0.04 && num.cost !== 0.01 && num.costType !== 'ReconPrice' && !num?.engineStockNum?.toString().includes('UP'))
       .reduce((acc, val) => acc + Number(val.cost), 0);
-  };
-
-  const getTotalCostOut = () => {
-    return engineCostOut
-      .filter((num) => num.cost !== 0.04 && num.cost !== 0.01 && num.costType !== 'ReconPrice' && !num?.stockNum?.toString().includes('UP'))
-      .reduce((acc, val) => acc + (val?.cost ?? 0), 0);
   };
 
   const getPurchaseCost = () => {

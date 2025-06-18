@@ -15,7 +15,7 @@ interface Props {
 
 export default function EditAlertDialog({ open, setOpen, alert }: Props) {
   const [user] = useAtom<User>(userAtom);
-  const [alertsData, setAlertsAtom] = useAtom<Alert[]>(alertsAtom);
+  const [, setAlertsAtom] = useAtom<Alert[]>(alertsAtom);
   const [type, setType] = useState(alert?.type ?? '');
   const [partNum, setPartNum] = useState(alert?.partNum ?? '');
   const [note, setNote] = useState(alert?.note ?? '');

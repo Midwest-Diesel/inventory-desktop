@@ -52,8 +52,8 @@ export default function NewEnginesList() {
     }, []);
 
     engineModels.sort((a: string, b: string) => {
-      const numA = parseFloat(a.match(/[\d\.]+/)?.[0] || 'Infinity');
-      const numB = parseFloat(b.match(/[\d\.]+/)?.[0] || 'Infinity');
+      const numA = parseFloat(a.match(/[\d]+/)?.[0] || 'Infinity');
+      const numB = parseFloat(b.match(/[\d]+/)?.[0] || 'Infinity');
       const textA = a.match(/[a-zA-Z]+/)?.[0] || '';
       const textB = b.match(/[a-zA-Z]+/)?.[0] || '';
       const startsWithNumberA = /^\d/.test(a);

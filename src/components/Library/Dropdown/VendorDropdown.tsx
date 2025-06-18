@@ -47,7 +47,7 @@ export default function VendorDropdown({ variant, label, value, onChange, maxHei
         <DropdownOption value="">-- SELECT A VENDOR --</DropdownOption>
         {vendors.length > 0 && (vendors as any).sort((a: Vendor, b: Vendor) => a.name && a.name.localeCompare(b.name ?? '')).map((vendor: Vendor) => {
           return (
-            <DropdownOption key={vendor.id} value={vendor.name ?? ''} data={vendor}>{ vendor.name }</DropdownOption>
+            <DropdownOption key={vendor.id} value={vendor.name ?? ''}>{ vendor.name }</DropdownOption>
           );
         })}
       </Dropdown>

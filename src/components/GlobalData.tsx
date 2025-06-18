@@ -6,7 +6,6 @@ import { getUser } from "@/scripts/services/userService";
 import { getAlerts } from "@/scripts/services/alertsService";
 import { checkUpdate } from '@tauri-apps/api/updater';
 import UpdateModal from "./Modals/UpdateModal";
-import { getTabsByUser } from "@/scripts/services/tabsService";
 import ToastContainer from "@/containers/ToastContainer";
 import Tooltip from "./Library/Tooltip";
 
@@ -17,7 +16,7 @@ interface Props {
 
 export default function GlobalData({ children }: Props) {
   const [, setUserData] = useAtom<User>(userAtom);
-  const [tabs, setTabs] = useAtom<Tab[]>(tabsAtom);
+  const [, setTabs] = useAtom<Tab[]>(tabsAtom);
   const [, setAlertsData] = useAtom<Alert[]>(alertsAtom);
   const [tooltip] = useAtom<string>(tooltipAtom);
   const [user, setUser] = useState<User>();
@@ -40,10 +39,29 @@ export default function GlobalData({ children }: Props) {
       }]);
     };
     fetchData();
+
+    const handleMiddleClick = async (e: MouseEvent) => {
+      if (e.button === 1) {
+        const target = e.target as HTMLElement;
+        const link = target.closest('a');
+        if (!link) return;
+        e.preventDefault();
+        e.stopImmediatePropagation();
+  
+        // const url = link.getAttribute('data-href');
+        // await push(link.textContent, url);
+      }
+    };
+    document.addEventListener('auxclick', handleMiddleClick);
+  
+    return () => {
+      document.removeEventListener('auxclick', handleMiddleClick);
+    };
   }, []);
 
   const handleGetUser = async () => {
     const res = await getUser();
+    if (!res) return;
     setUser(res);
     (setUserData as any)(res);
   };

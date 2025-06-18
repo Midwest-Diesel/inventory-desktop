@@ -1,4 +1,3 @@
-import Image from "next/image";
 import { useEffect, useState } from "react";
 import Button from "@/components/Library/Button";
 import { useAtom } from "jotai";
@@ -193,7 +192,7 @@ export default function PartSearchSection({ selectHandwrittenOpen, setSelectHand
 
       <div className="parts-search__header no-select" onClick={togglePartsOpen}>
         <h2>Parts Search</h2>
-        <Image src={`/images/icons/arrow-${partsOpen ? 'up' : 'down'}.svg`} alt="arrow" width={25} height={25} />
+        <img src={`/images/icons/arrow-${partsOpen ? 'up' : 'down'}.svg`} alt="arrow" width={25} height={25} />
       </div>
 
       {partsOpen &&

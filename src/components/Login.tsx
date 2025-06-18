@@ -9,9 +9,9 @@ import Error from "./Errors/Error";
 
 
 export default function Login() {
-  const [userData, setUserData] = useAtom<User>(userAtom);
+  const [, setUserData] = useAtom<User>(userAtom);
   const [username, setUsername] = useState(localStorage.getItem('username') || '');
-  const [password, setPassword] = useState(process.env.NEXT_PUBLIC_PASSWORD || '');
+  const [password, setPassword] = useState(import.meta.env.VITE_PUBLIC_PASSWORD || '');
   const [loginBtnVisible, setLoginBtnVisible] = useState(true);
   const [error, setError] = useState('');
 

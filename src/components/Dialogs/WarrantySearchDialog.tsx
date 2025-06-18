@@ -18,7 +18,7 @@ interface Props {
 
 
 export default function WarrantySearchDialog({ open, setOpen, setWarranties, setMinItems, limit }: Props) {
-  const [searchData, setSearchData] = useAtom(warrantySearchAtom);
+  const [, setSearchData] = useAtom(warrantySearchAtom);
   const [id, setId] = useState<number>('' as any);
   const [partNum, setPartNum] = useState('');
   const [vendor, setVendor] = useState('');

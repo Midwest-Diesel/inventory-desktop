@@ -45,7 +45,6 @@ export default function EditEngineDetails({ engine, setEngine, setIsEditing, eng
   const [testRun, setTestRun] = useState<boolean>(engine.testRun);
   const [ecm, setEcm] = useState<boolean>(engine.ecm);
   const [askingPrice, setAskingPrice] = useState<number | null>(engine.askingPrice);
-  const [purchasePrice, setPurchasePrice] = useState<number | null>(engine.purchasePrice);
   const [torque, setTorque] = useState<string>(engine.torque ?? '');
   const [pan, setPan] = useState<string>(engine.pan ?? '');
   const [application, setApplication] = useState<string>(engine.application ?? '');
@@ -148,7 +147,7 @@ export default function EditEngineDetails({ engine, setEngine, setIsEditing, eng
       testRun,
       ecm,
       askingPrice,
-      purchasePrice,
+      purchasePrice: engine.purchasePrice,
       torque,
       pan,
       application,

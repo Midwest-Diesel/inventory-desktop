@@ -186,7 +186,7 @@ export const searchAltParts = async (part: PartSearchData, page: number, limit: 
     if (isObjectNull(part)) return { pageCount: 0, totalQty: 0, rows: [] };
     const filteredPart = Object.fromEntries(
       Object.entries(part).filter(
-        ([key, value]) => value !== '' && value !== null && value !== '*'
+        ([, value]) => value !== '' && value !== null && value !== '*'
       )
     );
     const auth = { withCredentials: true };

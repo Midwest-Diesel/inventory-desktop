@@ -26,7 +26,6 @@ export default function EngineSearchDialog({ open, setOpen, engines, setEngines 
   const [testRun, setTestRun] = useState<'' | 'TRUE' | 'FALSE'>('');
   const [mileage, setMileage] = useState('');
   const [currentStatus, setCurrentStatus] = useState<EngineStatus | null>(null);
-  const statusList: EngineStatus[] = ['ToreDown', 'RunnerReady', 'RunnerNotReady', 'HoldSoldRunner', 'CoreEngine', 'Sold', 'ShortBlock', 'LongBlock'];
 
   const clearInputs = () => {
     setStockNum('' as any);

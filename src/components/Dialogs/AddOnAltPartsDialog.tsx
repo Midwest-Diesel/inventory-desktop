@@ -15,7 +15,6 @@ interface Props {
 
 export default function AddOnAltPartsDialog({ open, setOpen, addOn, partNumList }: Props) {
   const [autofillPartNum, setAutofillPartNum] = useState('');
-  const [addOnPartNum, setAddOnPartNum] = useState<string>(addOn?.partNum ?? '');
   const [partNum, setPartNum] = useState('');
   const [alts, setAlts] = useState<string[]>([]);
   const [savedBtnText, setSavedBtnText] = useState('Save');
@@ -65,9 +64,9 @@ export default function AddOnAltPartsDialog({ open, setOpen, addOn, partNumList 
       className="addon-alt-parts-dialog"
     >
       <form onSubmit={handleNewAlt}>
-        <h2>{ addOnPartNum }</h2>
+        <h2>{ addOn?.partNum }</h2>
         <ul>
-          <li>{ addOnPartNum }</li>
+          <li>{ addOn?.partNum }</li>
           {alts && alts.map((alt) => {
             return (
               <li key={alt}>

@@ -1,5 +1,4 @@
-import { useEffect, useState } from "react";
-import Image from "next/image";
+import { useEffect, useRef, useState } from "react";
 import Dialog from "../Library/Dialog";
 import Loading from "../Library/Loading";
 import Checkbox from "../Library/Checkbox";
@@ -21,27 +20,24 @@ interface Props {
 
 export default function PartPicturesDialog({ open, setOpen, pictures, partNum }: Props) {
   const [loading, setLoading] = useState(true);
-  const [loadedCount, setLoadedCount] = useState(0);
   const [selectedImages, setSelectedImages] = useState<string[]>([]);
+  const loadedCount = useRef(0);
 
   useEffect(() => {
-    if (pictures.length === 0) {
-      setLoading(false);
-      return;
-    }
+    if (!open) return;
     setLoading(true);
-    setLoadedCount(0);
-  }, [pictures]);
-
-  useEffect(() => {
-    if (loadedCount === pictures.length) {
-      setLoading(false);
-      setSelectedImages(pictures.map((pic) => pic.name));
-    }
-  }, [loadedCount, pictures]);
+    loadedCount.current = 0;
+    setSelectedImages([]);
+  }, [open]);
 
   const handleImageLoad = () => {
-    setLoadedCount((count) => count + 1);
+    loadedCount.current += 1;
+    if (loadedCount.current === pictures.length) {
+      setTimeout(() => {
+        setSelectedImages(pictures.map((pic) => pic.name));
+        setLoading(false);
+      }, 0);
+    }
   };
 
   const editSelectedImages = (checked: boolean, name: string) => {
@@ -83,7 +79,7 @@ export default function PartPicturesDialog({ open, setOpen, pictures, partNum }:
       {pictures.map((pic: Picture, i) => {
         return (
           <div key={i} className="part-pictures-dialog__img-container">
-            <Image
+            <img
               src={`data:image/png;base64,${pic.url}`}
               alt={pic.name}
               width={240}

@@ -1,4 +1,4 @@
-import Image from "next/image";
+
 import Dialog from "../Library/Dialog";
 import Checkbox from "../Library/Checkbox";
 import { useEffect, useState } from "react";
@@ -59,7 +59,7 @@ export default function StockNumPicturesDialog({ open, setOpen, pictures = [], s
       {pictures.map((pic: Picture, i) => {
         return (
           <div key={i} className="part-pictures-dialog__img-container">
-            <Image
+            <img
               key={i}
               src={`data:image/png;base64,${pic.url}`}
               alt={pic.name}

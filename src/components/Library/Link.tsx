@@ -1,4 +1,3 @@
-import { default as NavLink } from "next/link";
 import { useNavState } from "../../hooks/useNavState";
 import { useRef } from "react";
 
@@ -21,7 +20,7 @@ export default function Link({ children, href, style, className, ...props }: Pro
 
   
   return (
-    <NavLink
+    <a
       ref={ref}
       href="#"
       data-href={href}
@@ -34,6 +33,6 @@ export default function Link({ children, href, style, className, ...props }: Pro
       {...props}
     >
       { children }
-    </NavLink>
+    </a>
   );
 }

@@ -2,7 +2,6 @@ import { useAtom } from "jotai";
 import Table from "../Library/Table";
 import { recentQuotesAtom } from "@/scripts/atoms/state";
 import { formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
-import Image from "next/image";
 import { useState } from "react";
 
 
@@ -22,7 +21,7 @@ export default function RecentQuotes() {
         <>
           <div className="recent-part-searches__header no-select" onClick={toggleRecentSearches}>
             <h2>Recent Quotes</h2>
-            <Image src={`/images/icons/arrow-${recentSearchesOpen ? 'up' : 'down'}.svg`} alt="arrow" width={25} height={25} />
+            <img src={`/images/icons/arrow-${recentSearchesOpen ? 'up' : 'down'}.svg`} alt="arrow" width={25} height={25} />
           </div>
           <div className="recent-quotes__table-container">
             {recentSearchesOpen &&

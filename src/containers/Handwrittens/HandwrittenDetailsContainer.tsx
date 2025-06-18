@@ -1,22 +1,18 @@
 import AddQtyDialog from "@/components/Dialogs/handwrittens/AddQtyDialog";
 import EditHandwrittenDetails from "@/components/Handwrittens/EditHandwrittenDetails";
 import HandwrittenDetails from "@/components/Handwrittens/HandwrittenDetails";
-import { useNavState } from "@/hooks/useNavState";
 import { useToast } from "@/hooks/useToast";
-import { confirm } from "@/scripts/config/tauri";
 import { addAltShipAddress, getAltShipByCustomerId } from "@/scripts/services/altShipService";
 import { getHandwrittenById } from "@/scripts/services/handwrittensService";
 import { setTitle } from "@/scripts/tools/utils";
-import { useParams } from "next/navigation";
-import { useRouter } from "next/router";
+import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { PreventNavigation } from "@/components/PreventNavigation";
 
 
 export default function HandwrittenDetailsContainer() {
   const params = useParams();
-  const router = useRouter();
   const toast = useToast();
-  const { push } = useNavState();
   const [handwritten, setHandwritten] = useState<Handwritten | null>(null);
   const [cardNum, setCardNum] = useState('');
   const [expDate, setExpDate] = useState('');
@@ -57,39 +53,6 @@ export default function HandwrittenDetailsContainer() {
     fetchData();
   }, [isEditing]);
 
-  useEffect(() => {
-    const handleRouteChangeStart = async (url: string) => {
-      router.events.off('routeChangeStart', handleRouteChangeStart);
-      if (!promptLeaveWindow) {
-        router.push(url);
-        return;
-      }
-      router.replace(location.href);
-      const exit = await confirm("Leave the page before printing the credit card label?");
-      if (exit) {
-        await push(url, url);
-      }
-    };
-    
-    router.events.on('routeChangeStart', handleRouteChangeStart);
-    return () => {
-      router.events.off('routeChangeStart', handleRouteChangeStart);
-    };
-  }, [promptLeaveWindow]);
-
-  useEffect(() => {
-    if (!promptLeaveWindow) return;
-    function confirmLeave(e: any) {
-      e.preventDefault();
-      e.returnValue = '';
-    }
-
-    window.addEventListener('beforeunload', confirmLeave);
-    return () => {
-      window.removeEventListener('beforeunload', confirmLeave);
-    };
-  }, [promptLeaveWindow]);
-
   const handleAltShip = async () => {
     if (!handwritten) return;
     const altShip = await getAltShipByCustomerId(handwritten.customer.id);
@@ -115,6 +78,8 @@ export default function HandwrittenDetailsContainer() {
 
   return (
     <div>
+      <PreventNavigation shouldPrevent={promptLeaveWindow} text="Leave without printing credit card?" />
+
       {handwritten &&
         <AddQtyDialog
           open={addQtyDialogOpen}

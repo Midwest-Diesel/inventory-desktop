@@ -15,7 +15,7 @@ interface Props {
 }
 
 export default function PartsSearchDialog({ open, setOpen, handleSearch }: Props) {
-  const [lastSearch, setLastSearch] = useAtom<string>(lastPartSearchAtom);
+  const [, setLastSearch] = useAtom<string>(lastPartSearchAtom);
   const [user] = useAtom<User>(userAtom);
   const [showSoldParts] = useAtom<boolean>(showSoldPartsAtom);
   const prevSearches = JSON.parse(localStorage.getItem('partSearches')!);

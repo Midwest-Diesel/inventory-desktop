@@ -2,7 +2,7 @@ import { useAtom } from "jotai";
 import Table from "../Library/Table";
 import { recentPartSearchesAtom, userAtom } from "@/scripts/atoms/state";
 import { formatDate, formatTime, parseResDate } from "@/scripts/tools/stringUtils";
-import Image from "next/image";
+
 import { useEffect, useState } from "react";
 import Tabs from "../Library/Tabs";
 import { supabase } from "@/scripts/config/supabase";
@@ -45,7 +45,7 @@ export default function RecentPartSearches() {
     <div className="recent-part-searches">
       <div className="recent-part-searches__header no-select" onClick={toggleRecentSearchOpen}>
         <h2>Recent Part Searches</h2>
-        <Image src={`/images/icons/arrow-${recentSearchesOpen ? 'up' : 'down'}.svg`} alt="arrow" width={25} height={25} />
+        <img src={`/images/icons/arrow-${recentSearchesOpen ? 'up' : 'down'}.svg`} alt="arrow" width={25} height={25} />
       </div>
 
       {recentSearchesOpen &&

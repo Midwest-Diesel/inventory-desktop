@@ -4,7 +4,7 @@ import Input from "../../Library/Input";
 import Button from "../../Library/Button";
 import { searchHandwrittens } from "@/scripts/services/handwrittensService";
 import Select from "@/components/Library/Select/Select";
-import { paymentTypes } from "@/pages/handwrittens/index";
+import { paymentTypes } from "@/scripts/logic/handwrittens";
 import { parseDateInputValue } from "@/scripts/tools/stringUtils";
 import SourceSelect from "@/components/Library/Select/SourceSelect";
 import { useAtom } from "jotai";
@@ -20,7 +20,7 @@ interface Props {
 
 
 export default function HandwrittensSearchDialog({ open, setOpen, setHandwrittens, setMinItems, limit }: Props) {
-  const [handwrittenSearchData, setHandwrittenSearchData] = useAtom(handwrittenSearchAtom);
+  const [, setHandwrittenSearchData] = useAtom(handwrittenSearchAtom);
   const [id, setId] = useState<number>('' as any);
   const [date, setDate] = useState<Date | null>(null);
   const [poNum, setPoNum] = useState('');

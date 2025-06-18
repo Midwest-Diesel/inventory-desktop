@@ -1,6 +1,3 @@
-'use client';
-
-import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import { useNavState } from '../hooks/useNavState';
 import { ask } from '@tauri-apps/api/dialog';
@@ -13,7 +10,6 @@ interface Props {
 
 export const PreventNavigation = ({ shouldPrevent = true, text }: Props) => {
   const { backward, push } = useNavState();
-  const router = useRouter();
 
   useEffect(() => {
     const handleClick = async (e: MouseEvent) => {
@@ -22,7 +18,7 @@ export const PreventNavigation = ({ shouldPrevent = true, text }: Props) => {
       if (shouldPrevent) {
         e.preventDefault();
         e.stopImmediatePropagation();
-        if (await ask('Are you sure you want to leave the page?')) push(link?.textContent || 'Home', link?.getAttribute('data-href') || '/');
+        if (await ask(text ?? 'Are you sure you want to leave the page?')) push(link?.textContent || 'Home', link?.getAttribute('data-href') || '/');
       }
     };
 
@@ -51,7 +47,7 @@ export const PreventNavigation = ({ shouldPrevent = true, text }: Props) => {
       window.removeEventListener('popstate', handlePopState);
       window.removeEventListener('beforeunload', handleBeforeUnload);
     };
-  }, [shouldPrevent, router]);
+  }, [shouldPrevent]);
 
   
   return (<></>);

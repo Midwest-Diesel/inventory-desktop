@@ -28,7 +28,7 @@ interface Props {
 
 
 export default function ShopAddonRow({ addOn, handleDuplicateAddOn, partNumList, engineNumList }: Props) {
-  const [selectedPoData, setSelectedPoData] = useAtom<{ selectedPoAddOn: PO | null, addOn: AddOn | null, receivedItemsDialogOpen: boolean }>(selectedPoAddOnAtom);
+  const [, setSelectedPoData] = useAtom<{ selectedPoAddOn: PO | null, addOn: AddOn | null, receivedItemsDialogOpen: boolean }>(selectedPoAddOnAtom);
   const { addToQue, printQue } = usePrintQue();
   const [addOns, setAddons] = useAtom<AddOn[]>(shopAddOnsAtom);
   const [poLink, setPoLink] = useState<string>(addOn.po ? `${addOn.po}` : '');
@@ -43,7 +43,7 @@ export default function ShopAddonRow({ addOn, handleDuplicateAddOn, partNumList,
     setTimeout(() => {
       if (!ref.current) return;
       const select = ref.current.querySelectorAll('select');
-      select.length > 0 && select[select.length - 1].focus();
+      if (select.length > 0) select[select.length - 1].focus();
     }, 30);
   }, [showVendorSelect]);
 

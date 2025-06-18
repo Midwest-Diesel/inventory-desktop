@@ -10,7 +10,6 @@ import { useEffect, useRef, useState } from "react";
 import Input from "../Library/Input";
 import { getAutofillEngine } from "@/scripts/services/enginesService";
 import Loading from "../Library/Loading";
-import { confirm } from "@/scripts/config/tauri";
 import VendorSelect from "../Library/Select/VendorSelect";
 import Link from "../Library/Link";
 import { getPurchaseOrderByPoNum } from "@/scripts/services/purchaseOrderService";
@@ -27,7 +26,7 @@ interface Props {
 
 export default function OfficeAddonRow({ addOn, partNumList, engineNumList }: Props) {
   const [addOns, setAddons] = useAtom<AddOn[]>(shopAddOnsAtom);
-  const [selectedAddOnData, setSelectedAddOnData] = useAtom<{ addOn: AddOn | null, dialogOpen: boolean }>(selectedAddOnAtom);
+  const [, setSelectedAddOnData] = useAtom<{ addOn: AddOn | null, dialogOpen: boolean }>(selectedAddOnAtom);
   const [poLink, setPoLink] = useState<string>(addOn.po ? `${addOn.po}` : '');
   const [autofillPartNum, setAutofillPartNum] = useState('');
   const [autofillEngineNum, setAutofillEngineNum] = useState('');
@@ -53,7 +52,7 @@ export default function OfficeAddonRow({ addOn, partNumList, engineNumList }: Pr
     setTimeout(() => {
       if (!ref.current) return;
       const select = ref.current.querySelectorAll('select');
-      select.length > 0 && select[select.length - 1].focus();
+      if (select.length > 0) select[select.length - 1].focus();
     }, 30);
   }, [showVendorSelect]);
 

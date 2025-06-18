@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const getUrl = () => {
-  if (process.env.NODE_ENV === 'production') {
+  if (import.meta.env.PROD) {
     return 'https://inventory-server.up.railway.app';
   } else {
     return 'http://localhost:8000';

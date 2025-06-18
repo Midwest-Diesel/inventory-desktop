@@ -1,4 +1,4 @@
-import Image from "next/image";
+
 import Table from "../Library/Table";
 
 interface Props {
@@ -33,7 +33,7 @@ export default function WarrantyTemplate({ data }: Props) {
   return (
     <div className="warranty-template">
       <header>
-        <Image src="/images/midwest-diesel.jpg" alt="" width={50} height={70} />
+        <img src="/images/midwest-diesel.jpg" alt="" width={50} height={70} />
         <h1>Warranty Claim</h1>
       </header>
       

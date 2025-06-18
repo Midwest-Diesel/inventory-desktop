@@ -7,7 +7,7 @@ import Pagination from "@/components/Library/Pagination";
 import Table from "@/components/Library/Table";
 import { enginesAtom } from "@/scripts/atoms/state";
 import { getEnginesByStatus } from "@/scripts/services/enginesService";
-import { formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
+import { formatDate } from "@/scripts/tools/stringUtils";
 import { useAtom } from "jotai";
 import Link from "@/components/Library/Link";
 import { useEffect, useState } from "react";

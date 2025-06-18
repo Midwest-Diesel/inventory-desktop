@@ -41,8 +41,8 @@
 
 #       - name: Build Tauri App
 #         env:
-#           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
-#           NEXT_PUBLIC_SUPABASE_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_KEY }}
+#           VITE_PUBLIC_SUPABASE_URL: ${{ secrets.VITE_PUBLIC_SUPABASE_URL }}
+#           VITE_PUBLIC_SUPABASE_KEY: ${{ secrets.VITE_PUBLIC_SUPABASE_KEY }}
 #           TAURI_PRIVATE_KEY: ${{ secrets.TAURI_PRIVATE_KEY }}
 #           TAURI_KEY_PASSWORD: ${{ secrets.TAURI_KEY_PASSWORD }}
 #         run: |
@@ -56,8 +56,8 @@
 #       - uses: tauri-apps/tauri-action@v0
 #         env:
 #           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
-#           NEXT_PUBLIC_SUPABASE_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_KEY }}
+#           VITE_PUBLIC_SUPABASE_URL: ${{ secrets.VITE_PUBLIC_SUPABASE_URL }}
+#           VITE_PUBLIC_SUPABASE_KEY: ${{ secrets.VITE_PUBLIC_SUPABASE_KEY }}
 #           TAURI_PRIVATE_KEY: ${{ secrets.TAURI_PRIVATE_KEY }}
 #           TAURI_KEY_PASSWORD: ${{ secrets.TAURI_KEY_PASSWORD }}
 #         with:

@@ -1,7 +1,9 @@
+/* eslint-disable */
 interface ButtonHTML extends React.HTMLProps<HTMLButtonElement> {}
 interface InputHTML extends React.InputHTMLAttributes<HTMLInputElement> {}
 interface TableHTML extends React.HTMLProps<HTMLTableElement> {}
 interface SelectHTML extends React.InputHTMLAttributes<HTMLSelectElement> {}
+/* eslint-enable */
 
 type User = {
   id: number
@@ -973,10 +975,6 @@ interface SingleCompany {
   qty: number
   unitPrice: number
   total: number
-}
-
-interface CountryReport {
-
 }
 
 interface AllCompaniesReport {

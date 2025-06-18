@@ -6,7 +6,6 @@ import GridItem from "@/components/Library/Grid/GridItem";
 import Table from "@/components/Library/Table";
 import { Layout } from "@/components/Layout";
 import { addPart, getPartsInfoByPartNum } from "@/scripts/services/partsService";
-import Error from "@/components/Errors/Error";
 import Input from "@/components/Library/Input";
 import { useNavState } from "@/hooks/useNavState";
 import { ask } from "@tauri-apps/api/dialog";
@@ -28,11 +27,8 @@ export default function NewPart() {
   const [listPrice, setListPrice] = useState<number>(0);
   const [fleetPrice, setFleetPrice] = useState<number>(0);
   const [engineStockNum, setEngineStockNum] = useState<number>(0);
-  const [purchasePrice, setPurchasePrice] = useState<number>(0);
+  const [purchasePrice] = useState<number>(0);
   const [altParts, setAltParts] = useState<string[]>([]);
-  const [partCostIn, setPartCostIn] = useState<PartCostIn[]>([]);
-  const [engineCostOut, setEngineCostOut] = useState<EngineCostOut[]>([]);
-  const [error, setError] = useState('');
 
   const saveChanges = async (e: FormEvent) => {
     e.preventDefault();
@@ -61,24 +57,10 @@ export default function NewPart() {
     await push('Home', '/');
   };
 
-  const handleChangePartCostIn = (item: PartCostIn, i: number) => {
-    const newItems = [...partCostIn];
-    newItems[i] = item;
-    setPartCostIn(newItems);
-  };
-
-  const handleChangeEngineCostOut = (item: EngineCostOut, i: number) => {
-    const newItems = [...engineCostOut];
-    newItems[i] = item;
-    setEngineCostOut(newItems);
-  };
-
   
   return (
     <Layout title="New Part">
       <form className="edit-part-details" onSubmit={(e) => saveChanges(e)}>
-        <Error msg={error} />
-
         <div className="edit-part-details__header">
           <Button
             variant={['X', 'save']}

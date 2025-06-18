@@ -1,8 +1,8 @@
-import { expect } from '@jest/globals';
+import { describe, expect, test } from 'vitest';
 import { getSalesByYear } from "@/scripts/tools/search";
 
 describe('Get sales by year', () => {
-  it('should return sales by year', () => {
+  test('should return sales by year', () => {
     const sales = [
       { soldToDate: new Date('2022-01-01'), qtySold: 1 },
       { soldToDate: new Date('2022-01-01'), qtySold: 3 },

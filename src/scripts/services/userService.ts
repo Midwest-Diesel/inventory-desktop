@@ -8,7 +8,7 @@ interface UserLogin {
 
 // === GET routes === //
 
-export const getUser = async () => {
+export const getUser = async (): Promise<User | null> => {
   try {
     const config = {
       headers: { 'Content-Type': 'application/json' },
@@ -16,7 +16,7 @@ export const getUser = async () => {
     };
     const res = await api.get('/api/account', config);
     // Disable deprecated warning message
-    if (process.env.NODE_ENV === 'development') {
+    if (import.meta.env.DEV) {
       // const originalError = console.error;
       // console.error = (...args: any) => {
       //   if (location.pathname !== '/' && args[0].includes('findDOMNode is deprecated')) return;
@@ -26,6 +26,7 @@ export const getUser = async () => {
     return res.data.user;
   } catch (err) {
     console.error(`Unrelated Error: ${err}`);
+    return null;
   }
 };
 
@@ -44,6 +45,7 @@ const checkSession = async () => {
     const auth = { withCredentials: true };
     await api.get('/api/account/session-check', auth);
   } catch (err) {
+    console.error(err);
     location.reload();
   }
 };

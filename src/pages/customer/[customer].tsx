@@ -15,7 +15,7 @@ import { deleteMapLocationByCustomer, getMapLocationFromCustomer } from "@/scrip
 import { formatCurrency, formatPhone } from "@/scripts/tools/stringUtils";
 import { setTitle } from "@/scripts/tools/utils";
 import { useAtom } from "jotai";
-import { useParams } from "next/navigation";
+import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 
 
@@ -23,7 +23,7 @@ export default function Customer() {
   const { closeBtn, push } = useNavState();
   const params = useParams();
   const [user] = useAtom<User>(userAtom);
-  const [selectedCustomer, setSelectedCustomer] = useAtom<Customer>(selectedCustomerAtom);
+  const [, setSelectedCustomer] = useAtom<Customer>(selectedCustomerAtom);
   const [customer, setCustomer] = useState<Customer | null>(null);
   const [salesHistory, setSalesHistory] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
@@ -38,7 +38,7 @@ export default function Customer() {
       setCustomer(customerRes);
       setSalesHistory(await getCustomerSalesHistory(id));
       setTitle(customerRes.company);
-      if (!Boolean(await getMapLocationFromCustomer(id))) setIsOnMap(false);
+      if (!await getMapLocationFromCustomer(id)) setIsOnMap(false);
     };
     fetchData();
   }, [params]);

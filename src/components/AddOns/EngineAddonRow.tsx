@@ -33,7 +33,7 @@ export default function EngineAddOnRow({ addOn, handleDuplicateAddOn }: Props) {
     setTimeout(() => {
       if (!ref.current) return;
       const select = ref.current.querySelectorAll('select');
-      select.length > 0 && select[select.length - 2].focus();
+      if (select.length > 0) select[select.length - 2].focus();
     }, 30);
   }, [showVendorSelect]);
   

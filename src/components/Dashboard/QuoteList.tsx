@@ -1,5 +1,5 @@
 /* eslint-disable */
-import Image from "next/image";
+
 import { Fragment, useState } from "react";
 import Button from "../Library/Button";
 import Table from "@/components/Library/Table";
@@ -97,7 +97,7 @@ export default function QuoteList({ quotes, setQuotes, onInvoiceQuote, onChangeP
                     <td rowSpan={isExpanded ? 2 : 1}>
                       {quote.piggybackQuotes.length > 0 &&
                         <Button variant={['no-style']} onClick={() => toggleExpandedQuotes(quote.id, !isExpanded)}>
-                          <Image src={`/images/icons/arrow-${isExpanded ? 'up' : 'down'}.svg`} alt="Arrow" width={25} height={25} />
+                          <img src={`/images/icons/arrow-${isExpanded ? 'up' : 'down'}.svg`} alt="Arrow" width={25} height={25} />
                         </Button>
                       }
                     </td>
@@ -108,7 +108,7 @@ export default function QuoteList({ quotes, setQuotes, onInvoiceQuote, onChangeP
                         onMouseEnter={() => tooltip.set('Piggyback Quote')}
                         onMouseLeave={() => tooltip.set('')}
                       >
-                        <Image alt="Quote piggyback" src="/images/icons/box-arrow-up.svg" width={17} height={17} />
+                        <img alt="Quote piggyback" src="/images/icons/box-arrow-up.svg" width={17} height={17} />
                       </Button>
                       <Button
                         variant={['fit']}
@@ -116,7 +116,7 @@ export default function QuoteList({ quotes, setQuotes, onInvoiceQuote, onChangeP
                         onMouseEnter={() => tooltip.set('Edit')}
                         onMouseLeave={() => tooltip.set('')}
                       >
-                        <Image alt="Edit" src="/images/icons/edit.svg" width={17} height={17} />
+                        <img alt="Edit" src="/images/icons/edit.svg" width={17} height={17} />
                       </Button>
                       {quote.customer &&
                         <Button
@@ -125,7 +125,7 @@ export default function QuoteList({ quotes, setQuotes, onInvoiceQuote, onChangeP
                           onMouseEnter={() => tooltip.set('Email')}
                           onMouseLeave={() => tooltip.set('')}
                         >
-                          <Image alt="Email" src="/images/icons/email.svg" width={17} height={17} />
+                          <img alt="Email" src="/images/icons/email.svg" width={17} height={17} />
                         </Button>
                       }
                       <Button
@@ -135,10 +135,10 @@ export default function QuoteList({ quotes, setQuotes, onInvoiceQuote, onChangeP
                         onMouseEnter={() => tooltip.set('Add to Handwritten')}
                         onMouseLeave={() => tooltip.set('')}
                       >
-                        <Image alt="Add to handwritten" src="/images/icons/invoice.svg" width={17} height={17} />
+                        <img alt="Add to handwritten" src="/images/icons/invoice.svg" width={17} height={17} />
                       </Button>
                       <Button variant={['fit', 'danger']} onClick={() => handleDelete(quote.id)} data-testid="delete-quote">
-                        <Image alt="Delete" src="/images/icons/delete.svg" width={17} height={17} />
+                        <img alt="Delete" src="/images/icons/delete.svg" width={17} height={17} />
                       </Button>
                     </td>
                     <td>{ formatDate(quote.date) }</td>

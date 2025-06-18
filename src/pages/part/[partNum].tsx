@@ -1,6 +1,6 @@
 import { Layout } from "@/components/Layout";
-import { useParams } from "next/navigation";
-import Image from "next/image";
+import { useParams } from "react-router-dom";
+
 import { formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
 import { useEffect, useState } from "react";
 import { getImagesFromPart, getImagesFromStockNum } from "@/scripts/services/imagesService";
@@ -201,7 +201,7 @@ export default function PartDetails() {
                 variant={['plain','hover-move']}
                 onClick={() => setPicturesOpen(true)}
               >
-                <Image
+                <img
                   src="/images/icons/image.svg"
                   alt="detail"
                   width={20}
@@ -243,7 +243,7 @@ export default function PartDetails() {
                             variant={['plain','hover-move']}
                             onClick={() => setSnPicturesOpen(true)}
                           >
-                            <Image
+                            <img
                               src="/images/icons/image.svg"
                               alt="detail"
                               width={20}

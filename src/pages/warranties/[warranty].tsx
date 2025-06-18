@@ -12,7 +12,7 @@ import { formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
 import { setTitle } from "@/scripts/tools/utils";
 import { useAtom } from "jotai";
 import Link from "@/components/Library/Link";
-import { useParams } from "next/navigation";
+import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { confirm } from "@/scripts/config/tauri";
 import { useNavState } from "@/hooks/useNavState";
@@ -51,8 +51,8 @@ export default function Warranty() {
 
   const handlePrint = async () => {
     if (!await confirm('Print warranty?')) return;
-    let claimReason: string[] = [];
-    let vendorReport: string[] = [];
+    const claimReason: string[] = [];
+    const vendorReport: string[] = [];
     const args = {
       vendor: warrantyData?.vendor ?? '',
       createdDate: formatDate(warrantyData?.date ?? null),

@@ -1,9 +1,9 @@
-import { expect } from '@jest/globals';
+import { describe, expect, test } from 'vitest';
 import { arrayOfObjectsMatch, filterNullObjValuesArr, generateClasses, getRatingFromRemarks, isObjectNull, parseClasses } from "@/scripts/tools/utils";
 
 
 describe('Generate classes', () => {
-  it('should return a string with the class name and the variants', () => {
+  test('should return a string with the class name and the variants', () => {
     const className = '';
     const variantList = ['primary', 'secondary'];
     const result = generateClasses(className, variantList, 'button');
@@ -12,13 +12,13 @@ describe('Generate classes', () => {
 });
 
 describe('Parse classes', () => {
-  it('should return an object with the classes', () => {
+  test('should return an object with the classes', () => {
     const classes = 'button button--primary button--secondary';
     const result = parseClasses(classes);
     expect(result).toEqual({ className: 'button button--primary button--secondary' });
   });
 
-  it('should return an empty object', () => {
+  test('should return an empty object', () => {
     const classes = '';
     const result = parseClasses(classes);
     expect(result).toEqual({});
@@ -26,20 +26,20 @@ describe('Parse classes', () => {
 });
 
 describe('IsObjectNull', () => {
-  it('should return true', () => {
+  test('should return true', () => {
     const obj = { a: '', b: null };
     const result = isObjectNull(obj);
     expect(result).toBe(true);
   });
 
   describe('should return false', () => {
-    it('1)', () => {
+    test('1)', () => {
       const obj = { a: 'test', b: null };
       const result = isObjectNull(obj);
       expect(result).toBe(false);
     });
 
-    it('2)', () => {
+    test('2)', () => {
       const obj = { a: 0 };
       const result = isObjectNull(obj);
       expect(result).toBe(false);
@@ -48,13 +48,13 @@ describe('IsObjectNull', () => {
 });
 
 describe('filterNullObjValuesArr', () => {
-  it('should return empty array', () => {
+  test('should return empty array', () => {
     const arr = [{ a: '', b: null }, { a: '', b: null }];
     const result = filterNullObjValuesArr(arr);
     expect(result).toEqual([]);
   });
 
-  it('should return one element', () => {
+  test('should return one element', () => {
     const arr = [{ a: 'test', b: null }, { a: '', b: null }];
     const result = filterNullObjValuesArr(arr);
     expect(result).toEqual([{ a: 'test', b: null }]);
@@ -62,26 +62,26 @@ describe('filterNullObjValuesArr', () => {
 });
 
 describe('getRatingFromString', () => {
-  it('should return rating from decimal', () => {
+  test('should return rating from decimal', () => {
     const rating1 = getRatingFromRemarks('(8.0) T/O LOOKS OK W/ CAM # 9Y0266 W/ TIMING ADVANCE');
     expect(rating1).toEqual('8.0');
     const rating2 = getRatingFromRemarks('(8.0)T/O LOOKS OK W/ CAM # 9Y0266 W/ TIMING ADVANCE');
     expect(rating2).toEqual('8.0');
   });
 
-  it('should return 0.0', () => {
+  test('should return 0.0', () => {
     const rating = getRatingFromRemarks('FUEL PUMP CORE, RACK BAR STUCK, HSNG #7W3906, CAM #7W3103');
     expect(rating).toEqual('0.0');
   });
 
-  it('should return 0.0 when not at start', () => {
+  test('should return 0.0 when not at start', () => {
     const rating1 = getRatingFromRemarks('FUEL PUMP CORE, (6.5) RACK BAR STUCK, HSNG #7W3906, CAM #7W3103');
     expect(rating1).toEqual('0.0');
     const rating2 = getRatingFromRemarks('FUEL PUMP CORE, RACK BAR STUCK, HSNG #7W3906, (6.5)CAM #7W3103');
     expect(rating2).toEqual('0.0');
   });
 
-  it('should return rating from integer', () => {
+  test('should return rating from integer', () => {
     const rating1 = getRatingFromRemarks('(10) NTO, ECM MOUNTING BRACKET, YELLOW, LOOKS VERY NICE');
     expect(rating1).toEqual('10.0');
     const rating2 = getRatingFromRemarks('(10)NTO, ECM MOUNTING BRACKET, YELLOW, LOOKS VERY NICE');
@@ -90,25 +90,25 @@ describe('getRatingFromString', () => {
 });
 
 describe('arrayOfObjectsMatch', () => {
-  it('Arrays are matching', () => {
+  test('Arrays are matching', () => {
     const arr1 = [{ id: 1, name: 'John', color: 'blue' }];
     const arr2 = [{ color: 'blue', id: 1, name: 'John' }];
     expect(arrayOfObjectsMatch(arr1, arr2)).toEqual(true);
   });
 
-  it('Arrays don\'t match', () => {
+  test('Arrays don\'t match', () => {
     const arr1 = [{ id: 1, name: 'John', color: 'green' }];
     const arr2 = [{ color: 'blue', id: 2, name: 'John' }];
     expect(arrayOfObjectsMatch(arr1, arr2)).toEqual(false);
   });
 
-  it('Arrays have different sizes', () => {
+  test('Arrays have different sizes', () => {
     const arr1 = [{ id: 1, name: 'John', color: 'blue', rank: 5 }];
     const arr2 = [{ color: 'blue', id: 1, name: 'John' }];
     expect(arrayOfObjectsMatch(arr1, arr2)).toEqual(false);
   });
 
-  it('Handle null values', () => {
+  test('Handle null values', () => {
     const arr1 = [{ id: 1, name: 'John', color: null }];
     const arr2 = [{ color: 'blue', id: 1, name: 'John' }];
     expect(arrayOfObjectsMatch(arr1, arr2)).toEqual(false);

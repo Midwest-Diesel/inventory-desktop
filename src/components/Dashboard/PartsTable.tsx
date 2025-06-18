@@ -1,4 +1,4 @@
-import Image from "next/image";
+
 import Table from "../Library/Table";
 import Button from "../Library/Button";
 import { extractStatusColors, formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
@@ -86,7 +86,7 @@ export default function PartsTable({ parts, partsData, pageCount, partsQty, quot
                       onMouseEnter={() => tooltip.set('Quote Part')}
                       onMouseLeave={() => tooltip.set('')}
                     >
-                      <Image alt="Quote part" src="/images/icons/clipboard.svg" width={17} height={17} />
+                      <img alt="Quote part" src="/images/icons/clipboard.svg" width={17} height={17} />
                     </Button>
                     <Button
                       variant={['x-small', 'fit']}
@@ -95,7 +95,7 @@ export default function PartsTable({ parts, partsData, pageCount, partsQty, quot
                       onMouseEnter={() => tooltip.set('Add to Handwritten')}
                       onMouseLeave={() => tooltip.set('')}
                     >
-                      <Image alt="Add to handwritten" src="/images/icons/invoice.svg" width={17} height={17} />
+                      <img alt="Add to handwritten" src="/images/icons/invoice.svg" width={17} height={17} />
                     </Button>
                     <Button
                       variant={['x-small', 'fit']}
@@ -104,7 +104,7 @@ export default function PartsTable({ parts, partsData, pageCount, partsQty, quot
                       onMouseEnter={() => tooltip.set('Quick Pick')}
                       onMouseLeave={() => tooltip.set('')}
                     >
-                      <Image alt="Quick pick" src="/images/icons/crosshair.svg" width={17} height={17} />
+                      <img alt="Quick pick" src="/images/icons/crosshair.svg" width={17} height={17} />
                     </Button>
                   </td>
                   <td>
@@ -115,7 +115,7 @@ export default function PartsTable({ parts, partsData, pageCount, partsQty, quot
                           style={{ padding: '0.1rem' }}
                           onClick={() => openPartImages(part)}
                         >
-                          <Image src="/images/icons/image.svg" alt="detail" width={20} height={20} style={{ alignSelf: 'center' }} />
+                          <img src="/images/icons/image.svg" alt="detail" width={20} height={20} style={{ alignSelf: 'center' }} />
                         </Button>
                       }
                       <Link href={`/part/${part.id}`} data-testid="part-num-link">{ part.partNum }</Link>
@@ -132,7 +132,7 @@ export default function PartsTable({ parts, partsData, pageCount, partsQty, quot
                           style={{ padding: '0.1rem' }}
                           onClick={() => openStockNumImages(part)}
                         >
-                          <Image src="/images/icons/image.svg" alt="detail" width={20} height={20} style={{ alignSelf: 'center' }} />
+                          <img src="/images/icons/image.svg" alt="detail" width={20} height={20} style={{ alignSelf: 'center' }} />
                         </Button>
                       }
                       <span data-testid="stock-num">{ part.stockNum }</span>

@@ -5,7 +5,7 @@ import { FormEvent, useEffect, useState } from "react";
 import Button from "@/components/Library/Button";
 import { deleteHandwrittenItemChild, editHandwrittenItemChild, getHandwrittenById } from "@/scripts/services/handwrittensService";
 import { ask } from "@tauri-apps/api/dialog";
-import Image from "next/image";
+
 import PartSelectDialog from "../dashboard/PartSelectDialog";
 
 interface Props {
@@ -121,14 +121,14 @@ export default function HandwrittenChildrenDialog({ open, setOpen, stockNumChild
                           onClick={() => setChildEdited(item)}
                           disabled={handwritten.invoiceStatus === 'SENT TO ACCOUNTING'}
                         >
-                          <Image src="/images/icons/edit.svg" alt="Edit" width={17} height={17} draggable={false} />
+                          <img src="/images/icons/edit.svg" alt="Edit" width={17} height={17} draggable={false} />
                         </Button>
                         <Button
                           variant={['danger']}
                           onClick={() => handleDelete(item)}
                           disabled={handwritten.invoiceStatus === 'SENT TO ACCOUNTING'}
                         >
-                          <Image src="/images/icons/delete.svg" alt="Delete" width={17} height={17} draggable={false} />
+                          <img src="/images/icons/delete.svg" alt="Delete" width={17} height={17} draggable={false} />
                         </Button>
                       </div>
                     </td>

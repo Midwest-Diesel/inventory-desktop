@@ -48,7 +48,7 @@ export default function Modal({ children, className = '', variant = [], title, c
     if (setOpen) {
       setOpen(false);
     } else {
-      onClose && onClose();
+      if (onClose) onClose();
     }
   };
     

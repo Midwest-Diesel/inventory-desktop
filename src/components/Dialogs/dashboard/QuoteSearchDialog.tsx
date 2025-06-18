@@ -41,7 +41,7 @@ export default function QuoteSearchDialog({ open, setOpen, setQuotes, setCount, 
     if (searchData && open) {
       const { id, date, salesmanId, source, customer, contact, phone, state, partNum, desc, stockNum, sale } = searchData;
       setId(id || '' as any);
-      setDate(new Date(date) || null);
+      setDate(new Date(date));
       setSalesmanId(salesmanId || '' as any);
       setSource(source || '');
       setCustomer(customer || '');

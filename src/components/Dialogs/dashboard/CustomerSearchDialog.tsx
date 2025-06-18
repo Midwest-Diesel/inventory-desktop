@@ -5,7 +5,7 @@ import { useAtom } from "jotai";
 import { customersAtom, selectedCustomerAtom } from "@/scripts/atoms/state";
 import { FormEvent, useEffect, useState } from "react";
 import Link from "../../Library/Link";
-import { getCustomersCount, getCustomerTypes, getSomeCustomers, searchCustomers } from "@/scripts/services/customerService";
+import { getCustomerTypes, getSomeCustomers, searchCustomers } from "@/scripts/services/customerService";
 import Button from "@/components/Library/Button";
 import Input from "@/components/Library/Input";
 import Select from "@/components/Library/Select/Select";

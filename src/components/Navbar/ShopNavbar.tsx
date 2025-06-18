@@ -1,4 +1,4 @@
-import Image from "next/image";
+
 import NavDropdown from "../Library/Dropdown/NavDropdown";
 import Link from "../Library/Link";
 
@@ -7,7 +7,7 @@ export default function ShopNavbar() {
   return (
     <>
       <Link className="navbar__title" href="/">
-        <Image src="/images/icons/home-icon.svg" alt="home button" width={10} height={10} />
+        <img src="/images/icons/home-icon.svg" alt="home button" width={10} height={10} />
       </Link>
       <Link href="/handwrittens" className="navbar__link">Handwrittens</Link>
       <NavDropdown label="Engines">

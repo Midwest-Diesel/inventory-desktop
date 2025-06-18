@@ -13,7 +13,7 @@ import { formatCurrency, formatDate, formatPhone } from "@/scripts/tools/stringU
 import { setTitle } from "@/scripts/tools/utils";
 import { useAtom } from "jotai";
 import Link from "@/components/Library/Link";
-import { useParams } from "next/navigation";
+import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useNavState } from "@/hooks/useNavState";
 import { ask } from "@tauri-apps/api/dialog";

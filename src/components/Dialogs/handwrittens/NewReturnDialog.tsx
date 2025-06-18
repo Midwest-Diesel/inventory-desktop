@@ -21,8 +21,6 @@ export default function NewReturnDialog({ open, setOpen, handwritten }: Props) {
   const { push } = useNavState();
   const [user] = useAtom<User>(userAtom);
   const [handwrittenItems, setHandwrittenItems] = useState<HandwrittenItem[]>(handwritten.handwrittenItems);
-  const [returnNotes, setReturnNotes] = useState('');
-  const [returnReason, setReturnReason] = useState('');
 
   const toggleIsReturn = (index: number) => {
     const newHandwrittenItems = handwrittenItems.map((item, i) => {
@@ -44,8 +42,8 @@ export default function NewReturnDialog({ open, setOpen, handwritten }: Props) {
       dateCalled: new Date(),
       dateReceived: null,
       creditIssued: null,
-      returnNotes: returnNotes,
-      returnReason: returnReason,
+      returnNotes: '',
+      returnReason: '',
       returnPaymentTerms: null,
       restockFee: null,
       billToCompany: handwritten.billToCompany,

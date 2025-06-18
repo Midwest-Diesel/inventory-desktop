@@ -4,7 +4,7 @@ import Input from "./Library/Input";
 import Select from "./Library/Select/Select";
 import Table from "./Library/Table";
 import { useRef } from "react";
-import { paymentTypes } from "@/pages/handwrittens";
+import { paymentTypes } from "@/scripts/logic/handwrittens";
 
 interface Props {
   handwritten: Handwritten

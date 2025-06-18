@@ -106,15 +106,9 @@ export default function PrintInvoiceDialog({ open, setOpen, handwritten }: Props
           total: formatCurrency((child?.qty ?? 0) * (item?.unitPrice ?? 0)).replaceAll(',', '|') || '$0.00'
         }))
       );
-
       const itemsWithChildren = [...args.items.filter((item: any) => item.itemChildren.length === 0), ...(itemChildren ?? [])];
 
-      const filteredItems = args.items.map((item: any) => {
-        const { itemChildren, ...rest } = item;
-        return { ...rest };
-      });
-
-      if (accounting) addToQue('handwrittenAcct', 'print_accounting_handwritten', { ...args, items: filteredItems }, '1100px', '816px');
+      if (accounting) addToQue('handwrittenAcct', 'print_accounting_handwritten', { ...args, items: args.items }, '1100px', '816px');
       if (shipping) addToQue('handwrittenShip', 'print_shipping_handwritten', { ...args, items: itemsWithChildren }, '1100px', '816px');
       if (coreDeposit) addToQue('handwrittenCore', 'print_core_handwritten', args, '1100px', '816px');
     }

@@ -4,7 +4,7 @@ import Button from "@/components/Library/Button";
 import Loading from "@/components/Library/Loading";
 import { deleteEmailStuffItem, getAllEmailStuff } from "@/scripts/services/emailStuffService";
 import { invoke } from "@/scripts/config/tauri";
-import Image from "next/image";
+
 import { useEffect, useState } from "react";
 import { ask } from "@tauri-apps/api/dialog";
 
@@ -69,7 +69,7 @@ export default function EmailStuff() {
               <div key={item.id} className="email-stuff-page__item">
                 <h2>{ item.name }</h2>
                 {!hasImageError &&
-                  <Image
+                  <img
                     src={`data:image/png;base64,${item.images[0].data}`}
                     alt={item.name}
                     width={100}

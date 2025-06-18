@@ -1,6 +1,6 @@
 import { Layout } from "@/components/Layout";
 import Button from "@/components/Library/Button";
-import { addMapLocation, deleteMapLocation, editMapLocation, fixMapLocation, getBrokenLocations, getGeoLocation, getMapLocations, getMapNewLeads, getMapTopCustomers } from "@/scripts/services/mapService";
+import { addMapLocation, deleteMapLocation, editMapLocation, fixMapLocation, getBrokenLocations, getGeoLocation, getMapLocations, getMapTopCustomers } from "@/scripts/services/mapService";
 import { FormEvent, Fragment, useEffect, useRef, useState } from "react";
 import { Loader } from "@googlemaps/js-api-loader";
 import { MarkerClusterer } from "@googlemaps/markerclusterer";
@@ -31,7 +31,7 @@ type LocationFormData = {
 
 export default function ImportantCustomersMap() {
   const [user] = useAtom<User>(userAtom);
-  const startPos = { lat: 44.98022676149887, lng: -93.35875786260717 };
+  const startPos = { lat: 44.980227, lng: -93.358758 };
   const mapRef = useRef<HTMLDivElement | null>(null);
   const mapInstanceRef = useRef<google.maps.Map | null>(null);
   const markersRef = useRef<Map<number, google.maps.marker.AdvancedMarkerElement>>(new Map());
@@ -48,7 +48,7 @@ export default function ImportantCustomersMap() {
   const [filterSalesman, setFilterSalesman] = useState("all");
   const [locationsCount, setLocationsCount] = useState(0);
   const [cluster, setCluster] = useState<MarkerClusterer | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const LIMIT = 30;
 
   useEffect(() => {
@@ -59,11 +59,12 @@ export default function ImportantCustomersMap() {
       setListOfLocations(res);
       setFilteredLocations(res);
       handleFilters(res);
+      setLoading(false);
     };
     fetchData();
 
     const loader = new Loader({
-      apiKey: process.env.NEXT_PUBLIC_MAPS_API ?? '',
+      apiKey: import.meta.env.VITE_PUBLIC_MAPS_API ?? '',
       version: "weekly",
     });
 
@@ -138,7 +139,7 @@ export default function ImportantCustomersMap() {
     loadMarkers();
 
     return () => {
-      closeWindowsEvent && closeWindowsEvent.removeEventListener();
+      if (closeWindowsEvent) closeWindowsEvent.removeEventListener();
       google.maps.event.removeListener(clickEvent);
     };    
   }, [filteredLocations, listOfLocations, mapInstanceRef]);
@@ -216,10 +217,11 @@ export default function ImportantCustomersMap() {
     switch (loc.type) {
     case 'customer':
       return loc.salesman;
-    case 'vendor':
+    case 'vendor': {
       const img = document.createElement('img');
       img.src = '/images/shop.svg';
       return img;
+    }
     default:
       return '';
     }
@@ -301,7 +303,7 @@ export default function ImportantCustomersMap() {
   };
 
   const handleFilters = (locations: MapLocation[]) => {
-    cluster && cluster.clearMarkers();
+    if (cluster) cluster.clearMarkers();
     const filteredLocations = locations.filter((loc) => {
       const matchesName = filterName === '' || loc.name.toLowerCase().includes(filterName.toLowerCase());
       const matchesType = filterType === 'all' || loc.type === filterType;
@@ -313,7 +315,7 @@ export default function ImportantCustomersMap() {
   };
 
   const handleClearFilters = () => {
-    cluster && cluster.clearMarkers();
+    if (cluster) cluster.clearMarkers();
     setFilterName('');
     setFilterType('all');
     setFilterCustomerType('all');
@@ -322,18 +324,10 @@ export default function ImportantCustomersMap() {
   };
 
   const handleFilterTopCustomers = async () => {
-    cluster && cluster.clearMarkers();
+    if (cluster) cluster.clearMarkers();
     const topCustomers: number[] = await getMapTopCustomers();
     const newList = listOfLocations.filter((loc) => {
       return loc.customer && topCustomers.includes(loc.customer.id);
-    });
-    setFilteredLocations(newList);
-  };
-
-  const handleFilterNewLeads = async () => {
-    const newLeads: number[] = await getMapNewLeads();
-    const newList = listOfLocations.filter((loc) => {
-      return loc.customer && newLeads.includes(loc.customer.id);
     });
     setFilteredLocations(newList);
   };

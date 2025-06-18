@@ -5,7 +5,7 @@ import { editHandwrittenTakeoffState, getHandwrittenById } from "@/scripts/servi
 import { addPart, addPartCostIn, editPartCostIn, getPartById, getPartCostIn, handlePartTakeoff } from "@/scripts/services/partsService";
 import { getSurplusByCode, zeroAllSurplusItems } from "@/scripts/services/surplusService";
 import { formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
-import { useParams } from "next/navigation";
+import { useParams } from "react-router-dom";
 import { FormEvent, useEffect, useState } from "react";
 
 interface Props {

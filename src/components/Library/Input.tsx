@@ -28,7 +28,7 @@ export default function Input({ children, className = '', labelClass = '', autof
           (inputRef.current as HTMLInputElement).value = autofill;
           const event = new Event('input', { bubbles: true });
           inputRef.current.dispatchEvent(event);
-          onAutofill && onAutofill(autofill);
+          if (onAutofill) onAutofill(autofill);
         }
       }
     };

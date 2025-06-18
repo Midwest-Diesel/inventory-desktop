@@ -38,7 +38,6 @@ export default function EditPoDetails({ poData, setPo, setIsEditing }: Props) {
   const [specialInstructions, setSpecialInstructions] = useState<string>(poData.specialInstructions ?? '');
   const [comments, setComments] = useState<string>(poData.comments ?? '');
   const [purchasedFor, setPurchasedFor] = useState<string>(poData.purchasedFor ?? '');
-  const [isItemReceived, setIsItemReceived] = useState<boolean>(poData.isItemReceived);
   const [orderedBy, setOrderedBy] = useState<string>(poData.orderedBy ?? '');
   const [vendorContact, setVendorContact] = useState<string>(poData.vendorContact ?? '');
   const [shippingMethod, setShippingMethod] = useState<string>(poData.shippingMethod ?? '');
@@ -70,7 +69,7 @@ export default function EditPoDetails({ poData, setPo, setIsEditing }: Props) {
       specialInstructions,
       comments,
       purchasedFor,
-      isItemReceived,
+      isItemReceived: poData.isItemReceived,
       vendorContact,
       shippingMethod,
     } as PO;

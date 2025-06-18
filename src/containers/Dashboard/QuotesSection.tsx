@@ -11,7 +11,6 @@ import { getPartById } from "@/scripts/services/partsService";
 import { getSomeQuotes, searchQuotes } from "@/scripts/services/quotesService";
 import { isObjectNull } from "@/scripts/tools/utils";
 import { useAtom } from "jotai";
-import Image from "next/image";
 import { useEffect, useState } from "react";
 
 interface Props {
@@ -134,7 +133,7 @@ export default function QuotesSection({ quotes, setQuotes, setHandwrittenQuote, 
     <div>
       <div className="quote-list__header no-select" onClick={toggleQuotesOpen}>
         <h2>Quotes</h2>
-        <Image src={`/images/icons/arrow-${quotesOpen ? 'up' : 'down'}.svg`} alt="arrow" width={25} height={25} />
+        <img src={`/images/icons/arrow-${quotesOpen ? 'up' : 'down'}.svg`} alt="arrow" width={25} height={25} />
       </div>
 
       {quoteEmailed &&

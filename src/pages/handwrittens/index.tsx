@@ -14,15 +14,12 @@ import Link from "@/components/Library/Link";
 import { useEffect, useState } from "react";
 
 
-export const paymentTypes = ['Net 30', 'Wire Transfer', 'EBPP - Secure', 'Visa', 'Mastercard', 'AMEX', 'Discover', 'Comchek', 'T-Check', 'Check', 'Cash', 'Card on File', 'Net 10', 'No Charge'].sort();
-
 export default function Handwrittens() {
   const [user] = useAtom<User>(userAtom);
   const [handwrittenSearchData] = useAtom(handwrittenSearchAtom);
   const [handwrittensData] = useState<Handwritten[]>([]);
   const [handwrittens, setHandwrittens] = useState<Handwritten[]>([]);
   const [focusedHandwritten, setFocusedHandwritten] = useState<Handwritten | null>(null);
-  const [yesterdayInvoices, setYesterdayInvoices] = useState<Handwritten[]>(handwrittensData);
   const [handwrittenCount, setHandwrittenCount] = useState(0);
   const [openSearch, setOpenSearch] = useState(false);
   const [customerSelectOpen, setCustomerSelectOpen] = useState(false);
@@ -74,26 +71,6 @@ export default function Handwrittens() {
 
   const handleSearch = (results: Handwritten[]) => {
     setHandwrittens(results);
-  };
-
-  const sumInvoiceCosts = (handwrittenItems: HandwrittenItem[]): number => {
-    return handwrittenItems
-      .filter((item) => (item.cost ?? 0) > 0.04 && item.isTakeoffDone && item.desc != 'TAX')
-      .reduce((acc, item) => acc + ((item.cost ?? 0) * (item.qty ?? 0)), 0);
-  };
-
-  const sumHandwrittenItems = (handwrittenItems: HandwrittenItem[]): number => {
-    return handwrittenItems
-      .filter((item) => (item.unitPrice ?? 0) > 0.04 && item.isTakeoffDone && item.desc != 'TAX')
-      .reduce((acc, item) => acc + ((item.unitPrice ?? 0) * (item.qty ?? 0)), 0);
-  };
-
-  const getTotalCogs = (): number => {
-    return yesterdayInvoices.reduce((acc, handwritten) => acc + sumInvoiceCosts(handwritten.handwrittenItems), 0);
-  };
-
-  const getTotalSales = (): number => {
-    return yesterdayInvoices.reduce((acc, handwritten) => acc + sumHandwrittenItems(handwritten.handwrittenItems), 0);
   };
 
   const handleNewHandwritten = async (customer: Customer) => {

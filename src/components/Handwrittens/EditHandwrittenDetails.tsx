@@ -102,8 +102,8 @@ export default function EditHandwrittenDetails({
   const [shipToContact, setShipToContact] = useState<string>(handwritten.shipToContact ?? '');
   const [contact, setContact] = useState<string>(handwritten.contactName ?? '');
   const [contactPhone, setContactPhone] = useState<string>(handwritten.phone ?? '');
-  const [contactCell, setContactCell] = useState<string>(handwritten.cell ?? '');
-  const [contactFax, setContactFax] = useState<string>(handwritten.fax ?? '');
+  const [contactCell] = useState<string>(handwritten.cell ?? '');
+  const [contactFax] = useState<string>(handwritten.fax ?? '');
   const [contactEmail, setContactEmail] = useState<string>(handwritten.email ?? '');
   const [invoiceStatus, setInvoiceStatus] = useState<InvoiceStatus>(handwritten.invoiceStatus);
   const [accountingStatus, setAccountingStatus] = useState<AccountingStatus>(handwritten.accountingStatus ?? '');
@@ -268,7 +268,7 @@ export default function EditHandwrittenDetails({
     }
 
     // Tracking numbers
-    let deletedNumbers = [];
+    const deletedNumbers: number[] = [];
     for (let i = 0; i < handwritten.trackingNumbers.length; i++) {
       const id = handwritten.trackingNumbers[i].id;
       if (!trackingNumbers.some((num) => num.id === id)) {
@@ -395,12 +395,8 @@ export default function EditHandwrittenDetails({
       });
     }).filter((item) => item).flat();
     const itemsWithChildren = [...args.items.filter((item: any) => item.itemChildren.length === 0), ...itemChildren ];
-    const filteredItems = args.items.map((item: any) => {
-      const { itemChildren, ...rest } = item;
-      return { ...rest };
-    });
 
-    addToQue('handwrittenAcct', 'print_accounting_handwritten', { ...args, items: filteredItems }, '1100px', '816px');
+    addToQue('handwrittenAcct', 'print_accounting_handwritten', { ...args, items: args.items }, '1100px', '816px');
     addToQue('handwrittenShip', 'print_shipping_handwritten', { ...args, items: itemsWithChildren }, '1100px', '816px');
     if (hasCore) addToQue('handwrittenCore', 'print_core_handwritten', args, '1100px', '816px');
     printQue();

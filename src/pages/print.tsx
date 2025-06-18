@@ -32,7 +32,7 @@ export default function Print() {
   const waitForDomPaint = () => new Promise((resolve) => requestAnimationFrame(() => setTimeout(resolve, 50)));
 
   const handlePrint = async () => {
-    for (let item of que) {
+    for (const item of que) {
       setActiveSheet(item.name);
       setData(item.data);
       setMaxWidth(item.maxWidth);

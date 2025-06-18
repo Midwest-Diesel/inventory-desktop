@@ -1,7 +1,7 @@
 import { test, expect, Page } from '@playwright/test';
 
 test.describe.configure({ mode: 'serial' });
-let page: Page
+let page: Page;
 
 
 test.beforeAll(async ({ browser }) => {

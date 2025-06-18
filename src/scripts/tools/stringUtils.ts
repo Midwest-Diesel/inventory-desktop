@@ -34,9 +34,9 @@ export const formatCurrency = (amount: any): string => {
   amount = parseFloat(amount);
   if (typeof amount !== 'number' || isNaN(amount)) return '$0.00';
   if (!amount) return '$0.00';
-  let [integerPart, decimalPart] = amount.toFixed(2).split('.');
-  integerPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  return `$${integerPart}.${decimalPart}`;
+  const [integerPart, decimalPart] = amount.toFixed(2).split('.');
+  const newIntPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  return `$${newIntPart}.${decimalPart}`;
 };
 
 export const formatPhone = (value: string | null | undefined, noParens?: boolean) => {

@@ -23,7 +23,6 @@ interface Props {
 
 export default function CustomerDetails({ customer, setCustomer, setIsEditing }: Props) {
   const [company, setCompany] = useState<string>(customer.company ?? '');
-  const [contact, setContact] = useState<string>(customer.contact ?? '');
   const [phone, setPhone] = useState<string>(customer.phone ?? '');
   const [billToPhone, setBillToPhone] = useState<string>(customer.billToPhone ?? '');
   const [email, setEmail] = useState<string>(customer.email ?? '');
@@ -67,7 +66,7 @@ export default function CustomerDetails({ customer, setCustomer, setIsEditing }:
       ...customer,
       id: customer.id,
       company,
-      contact,
+      contact: customer.contact,
       phone,
       email,
       customerType,

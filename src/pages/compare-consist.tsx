@@ -19,12 +19,8 @@ export default function CompareConsist() {
   const [customerData, setCustomersData] = useAtom<Customer[]>(customersAtom);
   const [customer, setCustomer] = useState<Customer | null>(null);
   const [company, setCompany] = useState('');
-  const [model, setModel] = useState('');
   const [serialNum, setSerialNum] = useState('');
   const [arrNum, setArrNum] = useState('');
-  const [horsePower, setHorsePower] = useState('');
-  const [changeCustomer, setChangeCustomer] = useState(false);
-  const [notes, setNotes] = useState('');
 
   const [headNew, setNewHead] = useState('');
   const [blockNew, setNewBlock] = useState('');
@@ -81,7 +77,6 @@ export default function CompareConsist() {
   const [mwdEngine, setMwdEngine] = useState<Engine | null>(null);
   const urlSearchParams = new URLSearchParams(window.location.search);
   const params: any = Object.fromEntries(urlSearchParams.entries());
-  const [searchOpen, setSearchOpen] = useState(false);
   const [searchData, setSearchData] = useState<CompareConsist[]>([]);
 
 
@@ -91,7 +86,6 @@ export default function CompareConsist() {
         const res = await getCustomerById(params.c);
         setCustomer(res);
         setCompany(res.company);
-        setModel(res.model);
       } else {
         setCustomer(null);
       }
@@ -167,7 +161,6 @@ export default function CompareConsist() {
 
   const handleChangeCustomer = (value: string) => {
     setCompany(value);
-    setChangeCustomer(false);
     if (!value) {
       push('Compare Consist', '/compare-consist');
       return;
@@ -233,7 +226,6 @@ export default function CompareConsist() {
     const res = await searchCompareData(customer?.id ?? 0, serialNum, arrNum);
     setSearchData(res);
     if (res[0]) loadCompareData(res[0]);
-    setSearchOpen(true);
   };
 
 

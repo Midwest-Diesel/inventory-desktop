@@ -19,7 +19,7 @@ interface Props {
 
 
 export default function POSearchDialog({ open, setOpen, setPurchaseOrders, setMinItems, limit, page }: Props) {
-  const [searchData, setSearchData] = useAtom(POSearchAtom);
+  const [, setSearchData] = useAtom(POSearchAtom);
   const [poNum, setPoNum] = useState<number>('' as any);
   const [date, setDate] = useState<Date | null>(null);
   const [purchasedFrom, setPurchasedFrom] = useState('');

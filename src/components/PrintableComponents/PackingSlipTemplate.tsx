@@ -1,4 +1,4 @@
-import Image from "next/image";
+
 import Table from "../Library/Table";
 
 interface Props {
@@ -32,7 +32,7 @@ export default function PackingSlipTemplate({ data }: Props) {
       <header>
         {!data.blind &&
           <>
-            <Image src="/images/midwest-diesel.jpg" alt="" width={50} height={70} />
+            <img src="/images/midwest-diesel.jpg" alt="" width={50} height={70} />
             <div className="packing-slip-template__phone">
               <p><strong>Phone:</strong> (888) 866-3406</p>
               <p><strong>Fax:</strong> (763) 450-2197</p>

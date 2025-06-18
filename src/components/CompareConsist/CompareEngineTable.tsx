@@ -9,7 +9,6 @@ import Pagination from "../Library/Pagination";
 import Loading from "../Library/Loading";
 import CompareConsistHistoryDialog from "../Dialogs/CompareConsistHistoryDialog";
 import { addCompareData } from "@/scripts/services/compareConsistService";
-import { useNavState } from "../../hooks/useNavState";
 
 interface Props {
   openSideBySide: (engine: Engine) => void
@@ -19,17 +18,14 @@ interface Props {
 
 
 export default function CompareEngineTable({ openSideBySide, getEngineData, customerId }: Props) {
-  const { push } = useNavState();
   const [paginatedEngines, setPaginatedEngines] = useState<Engine[]>([]);
   const [loading, setLoading] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [enginesData, setEnginesData] = useState<Engine[]>([]);
   const [engines, setEngines] = useState<Engine[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
       const res = (await getAllEngines()).sort((a: any, b: any) => b.stockNum - a.stockNum);
-      setEnginesData(res);
       setEngines(res);
       setLoading(false);
       await findComparableEngines();
@@ -53,12 +49,6 @@ export default function CompareEngineTable({ openSideBySide, getEngineData, cust
   const findComparableEngines = async () => {
     const newEngineData = await getEnginesByEngineData(getEngineData());
     setEngines(newEngineData.sort((a: any, b: any) => b.stockNum - a.stockNum));
-  };
-
-  const handleLoadBlankRecord = () => {
-    const url = new URL(location.href);
-    url.searchParams.delete('r');
-    push(url.pathname, url.href);
   };
 
 
