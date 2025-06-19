@@ -462,26 +462,11 @@ fn install_update() {
       "%SystemRoot%\\System32\\timeout.exe" /T 1 /NOBREAK > NUL
       taskkill /F /IM Inventory.exe > NUL 2>&1
       start "" "C:\\MWD\\Inventory.exe"
-      "%SystemRoot%\\System32\\timeout.exe" /T 2 /NOBREAK > NUL
-      start "" "C:\MWD\updates\relaunch.bat"
-      del "%~f0" & exit
-      "#;
-      let relaunch_script = r#"
-      @echo off
-      echo Restarting Inventory.exe...
-      :wait_loop
-      "%SystemRoot%\\System32\\timeout.exe" /T 2 /NOBREAK > NUL
-      tasklist | find /I "Inventory.exe" > NUL
-      if %ERRORLEVEL% == 0 goto wait_loop
-
-      start "" "C:\\MWD\\Inventory.exe"
       del "%~f0" & exit
       "#;
 
       let script_path = "C:\\MWD\\updates\\restart_app.bat";
-      let relaunch_script_path = "C:\\MWD\\updates\\relaunch_script.bat";
       std::fs::write(script_path, batch_script).unwrap();
-      std::fs::write(relaunch_script_path, relaunch_script).unwrap();
 
       let _ = Command::new("cmd.exe")
           .args(["/C", script_path])
