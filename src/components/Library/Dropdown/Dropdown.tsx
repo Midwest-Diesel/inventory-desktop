@@ -12,10 +12,11 @@ interface Props {
   label?: string
   value?: string
   onChange?: (value?: any, data?: any) => void
+  onBlur?: (value: string) => void
   maxHeight?: string
 }
 
-export default function Dropdown({ children, className = '', variant = [], label = '', value = '', onChange, maxHeight = "none" }: Props) {
+export default function Dropdown({ children, className = '', variant = [], label = '', value = '', onChange, onBlur, maxHeight = "none" }: Props) {
   const classes = generateClasses(className, variant.filter((v) => !["label-stack", "label-space-between", "label-bold"].includes(v)), "dropdown");
   const [isOpen, setIsOpen] = useState(false);
   const [idProp, setIdProp] = useState('');
@@ -90,7 +91,8 @@ export default function Dropdown({ children, className = '', variant = [], label
               {variant.includes("input") ?
                 <Input
                   value={value}
-                  onChange={(e: any) => onChange && onChange(e.target.value)}
+                  onChange={(e) => onChange && onChange(e.target.value)}
+                  onBlur={(e) => onBlur && onBlur(e.target.value)}
                 />
                 :
                 <input
@@ -100,11 +102,12 @@ export default function Dropdown({ children, className = '', variant = [], label
                   placeholder="Search..."
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
+                  onBlur={(e) => onBlur && onBlur(e.target.value)}
                 />
               }
 
               {/* Dropdown options */}
-              <div style={{ maxHeight, overflowY: "auto" }}>
+              <div style={{ maxHeight, overflowY: "auto", overflowX: 'hidden' }}>
                 {filteredOptions.length > 0 ? (
                   filteredOptions.map((child: any, i: number) => {
                     const { value, children, data } = child.props;
@@ -121,11 +124,12 @@ export default function Dropdown({ children, className = '', variant = [], label
             </>
           ) : (
             variant.includes("input") ?
-              <div style={{ maxHeight, overflowY: "auto" }}>
+              <div style={{ maxHeight, overflowY: "auto", overflowX: 'hidden' }}>
                 <Input
                   value={value}
                   onChange={(e: any) => onChange && onChange(e.target.value)}
                   onFocus={() => setIsOpen(true)}
+                  onBlur={(e) => onBlur && onBlur(e.target.value)}
                 />
               </div>
               :

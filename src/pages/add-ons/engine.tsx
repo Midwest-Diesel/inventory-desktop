@@ -52,7 +52,7 @@ export default function AddOnsEngine() {
 
   return (
     <Layout title="Add Ons">
-      <PreventNavigation shouldPrevent={shouldPreventLeave} />
+      <PreventNavigation shouldPrevent={shouldPreventLeave} text="Do you want to leave without saving?" />
 
       <div className="add-ons">
         <h1>Engine Add Ons</h1>

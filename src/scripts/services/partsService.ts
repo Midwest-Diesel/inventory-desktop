@@ -63,13 +63,14 @@ export const getPartByPartNum = async (partNum: string) => {
   }
 };
 
-export const getPartByEngineNum = async (engineNum: number) => {
+export const getPartByEngineNum = async (engineNum: number): Promise<Part | null> => {
   try {
     const auth = { withCredentials: true };
     const res = await api.get(`/api/parts/engine-num/${engineNum}`, auth);
     return (await parsePartsData(res.data))[0];
   } catch (err) {
     console.error(err);
+    return null;
   }
 };
 

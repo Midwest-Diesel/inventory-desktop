@@ -123,10 +123,10 @@ export default function OfficeAddonRow({ addOn, partNumList, engineNumList }: Pr
   
       const newAddOn = {
         ...addOn,
-        stockNum: part.stockNum || '',
-        engineNum: Number(res.stockNum) || null,
-        hp: res.horsePower || '',
-        serialNum: res.serialNum || '',
+        stockNum: part?.stockNum ?? '',
+        engineNum: Number(res.stockNum),
+        hp: res.horsePower ?? '',
+        serialNum: res.serialNum ?? '',
       } as AddOn;
 
       const isDuplicate = addOns.some((a) => a.stockNum === newAddOn.stockNum);

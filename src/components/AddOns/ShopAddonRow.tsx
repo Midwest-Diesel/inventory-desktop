@@ -9,7 +9,7 @@ import { getPartByEngineNum, getPartsInfoByPartNum } from "@/scripts/services/pa
 import { useEffect, useRef, useState } from "react";
 import Input from "../Library/Input";
 import Link from "../Library/Link";
-import { getAutofillEngine, getEngineByStockNum } from "@/scripts/services/enginesService";
+import { getEngineByStockNum } from "@/scripts/services/enginesService";
 import { formatDate } from "@/scripts/tools/stringUtils";
 import VendorSelect from "../Library/Select/VendorSelect";
 import { getPurchaseOrderByPoNum } from "@/scripts/services/purchaseOrderService";
@@ -18,25 +18,35 @@ import { getImagesFromPart } from "@/scripts/services/imagesService";
 import { ask } from "@tauri-apps/api/dialog";
 import { usePrintQue } from "@/hooks/usePrintQue";
 import { selectedPoAddOnAtom } from "@/scripts/atoms/components";
+import { useClickOutside } from "@/hooks/useClickOutside";
 
 interface Props {
   addOn: AddOn
   handleDuplicateAddOn: (addOn: AddOn) => void
   partNumList: string[]
-  engineNumList: string[]
+}
+
+function commonPrefixLength(a: string, b: string) {
+  let i = 0;
+  while (i < a.length && i < b.length && a[i] === b[i]) i++;
+  return i;
 }
 
 
-export default function ShopAddonRow({ addOn, handleDuplicateAddOn, partNumList, engineNumList }: Props) {
+export default function ShopAddonRow({ addOn, handleDuplicateAddOn, partNumList }: Props) {
   const [, setSelectedPoData] = useAtom<{ selectedPoAddOn: PO | null, addOn: AddOn | null, receivedItemsDialogOpen: boolean }>(selectedPoAddOnAtom);
   const { addToQue, printQue } = usePrintQue();
   const [addOns, setAddons] = useAtom<AddOn[]>(shopAddOnsAtom);
   const [poLink, setPoLink] = useState<string>(addOn.po ? `${addOn.po}` : '');
-  const [autofillPartNum, setAutofillPartNum] = useState('');
-  const [autofillEngineNum, setAutofillEngineNum] = useState('');
+  const [partNum, setPartNum] = useState<string>(addOn.partNum ?? '');
+  const [engineNum, setEngineNum] = useState<string>(addOn.engineNum?.toString() ?? '');
+  const [showPartNumSelect, setShowPartNumSelect] = useState(false);
   const [showVendorSelect, setShowVendorSelect] = useState(false);
   const [printQty, setPrintQty] = useState(1);
   const ref = useRef<HTMLDivElement>(null);
+  const partNumListRefs = useRef<(HTMLLIElement | null)[]>([]);
+  const partNumRef = useRef<HTMLDivElement>(null);
+  useClickOutside(partNumRef, () => setShowPartNumSelect(false));
 
   useEffect(() => {
     if (!showVendorSelect) return;
@@ -46,6 +56,29 @@ export default function ShopAddonRow({ addOn, handleDuplicateAddOn, partNumList,
       if (select.length > 0) select[select.length - 1].focus();
     }, 30);
   }, [showVendorSelect]);
+
+  useEffect(() => {
+    if (!showPartNumSelect) return;
+    const partNumMatch = (addOn.partNum ?? '').toUpperCase();
+    let bestIndex = -1;
+    let bestScore = -1;
+
+    partNumList.forEach((num, i) => {
+      const score = commonPrefixLength(partNumMatch, num.toUpperCase());
+      if (score > bestScore) {
+        bestScore = score;
+        bestIndex = i;
+      }
+    });
+
+    if (bestIndex >= 0 && partNumListRefs.current[bestIndex]) {
+      const listEl: any = document.querySelector('.add-ons__list-select');
+      const item = partNumListRefs.current[bestIndex];
+      if (listEl && item) {
+        listEl.scrollTop = item.offsetTop - listEl.offsetTop + 24;
+      }
+    }
+  }, [showPartNumSelect, addOn.partNum, partNumList]);
 
   const handleEditAddOn = async (newAddOn: AddOn) => {
     const updatedAddOns = addOns.map((a: AddOn) => {
@@ -65,17 +98,9 @@ export default function ShopAddonRow({ addOn, handleDuplicateAddOn, partNumList,
 
   const autofillFromPartNum = (partNum: string) => {
     if (!partNum) {
-      setAutofillPartNum('');
+      setPartNum('');
     } else {
-      setAutofillPartNum(partNumList.find((p) => p.startsWith(partNum)) ?? '');
-    }
-  };
-
-  const autofillFromEngineNum = async (engineNum: number) => {
-    if (!engineNum) {
-      setAutofillEngineNum('');
-    } else {
-      setAutofillEngineNum(engineNumList.find((p) => p.startsWith(`${engineNum}`)) ?? '');
+      setPartNum(partNumList.find((p) => p.startsWith(partNum)) ?? '');
     }
   };
 
@@ -94,40 +119,39 @@ export default function ShopAddonRow({ addOn, handleDuplicateAddOn, partNumList,
       return a;
     });
     setAddons(updatedAddOns);
-    setAutofillPartNum('');
+    setPartNum('');
   };
 
   const updateAutofillEngineNumData = async (value: number) => {
-    if (value === 0 || value === 1 || value === 99) {
-      console.warn("Engine number is invalid:", value);
-      return;
-    }
-  
+    if (value === 0 || value === 1 || value === 99) return;
     try {
-      const res = await getAutofillEngine(value);
+      const res = await getEngineByStockNum(value);
       const part = await getPartByEngineNum(value);
       if (!res) {
         alert("Engine not in inventory, please notify Matt!");
         return;
       }
+      if (!part) {
+        alert("Part not in inventory, please notify Matt!");
+        return;
+      }
   
       const newAddOn = {
         ...addOn,
-        stockNum: part.stockNum || '',
-        engineNum: Number(res.stockNum) || null,
-        hp: res.horsePower || '',
-        serialNum: res.serialNum || '',
+        stockNum: part.stockNum ?? '',
+        engineNum: Number(res.stockNum),
+        hp: res.horsePower ?? '',
+        serialNum: res.serialNum ?? '',
       } as AddOn;
 
       const isDuplicate = addOns.some((a) => a.stockNum === newAddOn.stockNum);
       if (isDuplicate) {
         alert("Duplicate StockNumber, already added to add-on sheet or in inventory");
-        return;
       }
   
       const updatedAddOns = addOns.map((a: AddOn) => (a.id === addOn.id ? newAddOn : a));
       setAddons(updatedAddOns);
-      setAutofillEngineNum('');
+      setEngineNum('');
     } catch (error) {
       console.error("Error updating autofill engine number:", error);
     }
@@ -163,6 +187,13 @@ export default function ShopAddonRow({ addOn, handleDuplicateAddOn, partNumList,
     setSelectedPoData({ selectedPoAddOn: po, addOn, receivedItemsDialogOpen: true });
   };
 
+  const handlePartNumSelectClick = (num: string) => {
+    handleEditAddOn({ ...addOn, partNum: num });
+    autofillFromPartNum(num.toUpperCase());
+    updateAutofillPartNumData(num);
+    setShowPartNumSelect(false);
+  };
+
 
   return (
     <>
@@ -190,35 +221,55 @@ export default function ShopAddonRow({ addOn, handleDuplicateAddOn, partNumList,
                   />
                 </td>
                 <td>
-                  <Input
-                    variant={['small', 'thin', 'autofill-input']}
-                    value={addOn.partNum !== null ? addOn.partNum : ''}
-                    autofill={autofillPartNum}
-                    onAutofill={(value) => updateAutofillPartNumData(value)}
-                    onChange={(e: any) => {
-                      handleEditAddOn({ ...addOn, partNum: e.target.value.toUpperCase() });
-                      autofillFromPartNum(e.target.value.toUpperCase());
-                    }}
-                  />
+                  <div ref={partNumRef} style={{ position: 'relative' }}>
+                    <Input
+                      variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold', 'search', 'autofill-input']}
+                      value={addOn.partNum ?? ''}
+                      autofill={partNum}
+                      onAutofill={(value) => updateAutofillPartNumData(value)}
+                      onChange={(e: any) => {
+                        handleEditAddOn({ ...addOn, partNum: e.target.value.toUpperCase() });
+                        autofillFromPartNum(e.target.value.toUpperCase());
+                      }}
+                    >
+                      <Button variant={['x-small']} type="button" onClick={() => setShowPartNumSelect(!showPartNumSelect)} tabIndex={-1}>
+                        <img src={`/images/icons/arrow-${showPartNumSelect ? 'up' : 'down'}.svg`} alt="Part number dropdown" width="10rem" />
+                      </Button>
+                    </Input>
+
+                    {showPartNumSelect &&
+                      <ul className="add-ons__list-select" tabIndex={-1}>
+                        {partNumList.map((num, i) => {
+                          return (
+                            <li
+                              key={i}
+                              ref={(el) => partNumListRefs.current[i] = el}
+                              onClick={() => handlePartNumSelectClick(num)}
+                            >
+                              { num }
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    }
+                  </div>
                 </td>
                 <td>
                   <Input
                     variant={['small', 'thin']}
                     value={addOn.desc !== null ? addOn.desc : ''}
                     onChange={(e: any) => handleEditAddOn({ ...addOn, desc: e.target.value })}
+                    onFocus={() => setShowPartNumSelect(false)}
                   />
                 </td>
                 <td>
                   <Input
-                    variant={['small', 'thin', 'autofill-input']}
+                    variant={['small', 'thin']}
                     type="number"
-                    autofill={autofillEngineNum}
-                    onAutofill={(value) => updateAutofillEngineNumData(Number(value))}
+                    autofill={engineNum}
+                    onBlur={(e) => updateAutofillEngineNumData(Number(e.target.value))}
                     value={addOn.engineNum !== null ? addOn.engineNum : ''}
-                    onChange={(e: any) => {
-                      handleEditAddOn({ ...addOn, engineNum: e.target.value });
-                      autofillFromEngineNum(Number(e.target.value));
-                    }}
+                    onChange={(e: any) => handleEditAddOn({ ...addOn, engineNum: e.target.value })}
                   />
                 </td>
                 <td>

@@ -50,7 +50,8 @@ export default function AddOnsOffice() {
 
   return (
     <Layout title="Add Ons">
-      <PreventNavigation shouldPrevent={shouldPreventLeave} />
+      <PreventNavigation shouldPrevent={shouldPreventLeave} text="Do you want to leave without saving?" />
+      
       { selectedAddOnData.dialogOpen &&
         <AddOnAltPartsDialog
           open={selectedAddOnData.dialogOpen}

@@ -33,4 +33,26 @@
     margin: auto 0.5rem auto auto;
     flex-direction: column;
   }
+
+  &__list-select {
+    position: absolute;
+    top: 0.78rem;
+    left: 0;
+    max-height: 20rem;
+    overflow-y: auto;
+    overflow-x: hidden;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    background-color: var(--grey-dark-3);
+    z-index: 2;
+    list-style: none;
+    padding: 0.1rem 0.3rem;
+
+    li {
+      cursor: pointer;
+
+      &:hover {
+        color: var(--yellow-1);
+      }
+    }
+  }
 }
