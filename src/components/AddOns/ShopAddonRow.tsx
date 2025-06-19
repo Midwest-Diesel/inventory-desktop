@@ -182,7 +182,7 @@ export default function ShopAddonRow({ addOn, handleDuplicateAddOn, partNumList 
   const handleOpenPO = async (e: any) => {
     if (!e.target.value) return;
     const po = await getPurchaseOrderByPoNum(e.target.value);
-    if (!po) return;
+    if (!po || po.poItems.length === 0) return;
     setPoLink(`${po.poNum}`);
     setSelectedPoData({ selectedPoAddOn: po, addOn, receivedItemsDialogOpen: true });
   };
