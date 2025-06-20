@@ -6,7 +6,7 @@ let page: Page;
 
 test.beforeAll(async ({ browser }) => {
   page = await browser.newPage();
-  await page.goto('http://localhost:3000/engines/new-engine');
+  await page.goto('http://localhost:3001/engines/new-engine');
   await page.getByTestId('username').fill('bennett');
   await page.getByTestId('login-btn').click();
   await page.waitForSelector('.navbar');
@@ -23,7 +23,7 @@ test.describe('Quotes', () => {
     await page.getByTestId('desc').fill('C-7 Engine');
     await page.getByTestId('price').fill('100');
     await page.getByTestId('save-btn').click();
-    await page.goto('http://localhost:3000');
+    await page.goto('http://localhost:3001');
     await page.waitForLoadState('networkidle');
     await page.getByTestId('engine-quotes-btn').click();
     await page.waitForLoadState('networkidle');

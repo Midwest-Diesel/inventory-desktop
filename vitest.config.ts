@@ -10,6 +10,6 @@ export default defineConfig({
     tsconfigPaths(),
   ],
   test: {
-    dir: './tests/vitest'
+    dir: './src/tests/vitest'
   }
 });

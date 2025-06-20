@@ -12,7 +12,7 @@ let qty = 0;
 test.beforeAll(async ({ browser }) => {
   page = await browser.newPage();
   page.on('dialog', (dialog) => dialog.accept('confirm'));
-  await page.goto('http://localhost:3000/handwrittens');
+  await page.goto('http://localhost:3001/handwrittens');
   await page.getByTestId('username').fill('bennett');
   await page.getByTestId('login-btn').click();
   await page.waitForSelector('.navbar');
@@ -91,7 +91,7 @@ test.describe('Basic Functionality', () => {
 
 test.describe('Handwritten items', () => {
   test('Add handwritten items', async () => {
-    await page.goto('http://localhost:3000');
+    await page.goto('http://localhost:3001');
     partNum = await page.getByTestId('part-num-link').first().textContent() ?? '';
     stockNum = await page.getByTestId('stock-num').first().textContent() ?? '';
     qty = Number(await page.getByTestId('qty').first().textContent());
@@ -138,7 +138,7 @@ test.describe('Handwritten items', () => {
 
 test.describe('Cores', () => {
   test('Core charge', async () => {
-    await page.goto('http://localhost:3000/handwrittens');
+    await page.goto('http://localhost:3001/handwrittens');
     await page.getByTestId('link').first().click();
     await page.waitForLoadState('networkidle');
     await page.getByTestId('save-btn').click();
@@ -148,13 +148,13 @@ test.describe('Cores', () => {
     await expect(page.getByTestId('item-part-num').first()).toHaveText('CORE DEPOSIT');
     await expect(page.getByTestId('item-stock-num').first()).toHaveText(stockNum);
   
-    await page.goto('http://localhost:3000/cores');
+    await page.goto('http://localhost:3001/cores');
     await page.waitForLoadState('networkidle');
     await expect(page.getByTestId('part-num').first()).toHaveText(partNum);
   });
 
   test('Core deposit', async () => {
-    await page.goto('http://localhost:3000/handwrittens');
+    await page.goto('http://localhost:3001/handwrittens');
     await page.getByTestId('link').first().click();
     await page.waitForLoadState('networkidle');
     await page.getByTestId('save-btn').click();
@@ -177,7 +177,7 @@ test.describe('Cores', () => {
 
 test.describe('Takeoffs', () => {
   test('Takeoff qty UP stock number', async () => {
-    await page.goto('http://localhost:3000/handwrittens');
+    await page.goto('http://localhost:3001/handwrittens');
     await page.getByTestId('link').nth(1).click();
     await page.waitForLoadState('networkidle');
     await page.getByTestId('save-btn').click();
@@ -191,7 +191,7 @@ test.describe('Takeoffs', () => {
     await page.waitForTimeout(100);
     await page.reload();
 
-    await page.goto('http://localhost:3000');
+    await page.goto('http://localhost:3001');
     await page.waitForLoadState('networkidle');
     await altSearch(page, { stockNum });
     await expect(page.getByTestId('qty').first()).toHaveText(`${qty - 6}`);
@@ -214,7 +214,7 @@ test.describe('Takeoffs', () => {
 
 test.describe('SENT TO ACCOUNTING', () => {
   test('Prompt for promotional materials', async () => {
-    await page.goto('http://localhost:3000/handwrittens');
+    await page.goto('http://localhost:3001/handwrittens');
     await page.getByTestId('link').nth(1).click();
     await page.waitForLoadState('networkidle');
     await page.getByTestId('item-cost').nth(1).fill('60');
@@ -238,7 +238,7 @@ test.describe('SENT TO ACCOUNTING', () => {
 
 test.describe('Clean up', () => {
   test('Delete handwritten', async () => {
-    await page.goto('http://localhost:3000/handwrittens');
+    await page.goto('http://localhost:3001/handwrittens');
     const oldIdLocator = page.getByTestId('link').first();
     await expect(oldIdLocator).toBeVisible();
     const oldId = await oldIdLocator.textContent();
