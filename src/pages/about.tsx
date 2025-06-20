@@ -34,9 +34,8 @@ export default function About() {
     }
   };
 
-  const clearSavedPartSearch = () => {
-    localStorage.removeItem("altPartSearches");
-    localStorage.removeItem("partSearches");
+  const clearLocalStorage = () => {
+    localStorage.clear();
   };
 
 
@@ -48,7 +47,7 @@ export default function About() {
         { !status && <Button variant={['fit']} onClick={checkForUpdates}>Check For Updates</Button> }
         { status && <p className="about-page__status-text">{ status }</p> }
 
-        <Button variant={['fit']} onClick={clearSavedPartSearch}>Clear Saved Part Search</Button>
+        <Button variant={['fit']} onClick={clearLocalStorage}>Clear Local Storage</Button>
         <Button variant={['fit']} onClick={logout}>Logout</Button>
       </div>
     </Layout>
