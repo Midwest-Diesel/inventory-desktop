@@ -306,6 +306,7 @@ type AddOn = {
   hp: string | null
   serialNum: string | null
   altParts: string[]
+  isPrinted: boolean
 };
 
 type EngineAddOn = {

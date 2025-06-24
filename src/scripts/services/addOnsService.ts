@@ -21,13 +21,25 @@ export const getAllAddOns = async (): Promise<AddOn[]> => {
   }
 };
 
-export const getAddOnById = async (id: number) => {
+export const getOfficeAddOns = async (): Promise<AddOn[]> => {
   try {
     const auth = { withCredentials: true };
-    const res = await api.get(`/api/add-ons/${id}`, auth);
+    const res = await api.get('/api/add-ons/office', auth);
+    return parseAddOnDataRes(res.data);
+  } catch (err) {
+    console.error(err);
+    return [];
+  }
+};
+
+export const getAddOnById = async (id: number): Promise<AddOn | null> => {
+  try {
+    const auth = { withCredentials: true };
+    const res = await api.get(`/api/add-ons/id/${id}`, auth);
     return parseAddOnDataRes(res.data)[0];
   } catch (err) {
     console.error(err);
+    return null;
   }
 };
 
@@ -48,6 +60,15 @@ export const editAddOnAltParts = async (id: number, altParts: string) => {
   try {
     const auth = { withCredentials: true };
     await api.patch('/api/add-ons/alt-parts', { id, altParts }, auth);
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+export const editAddOnPrintStatus = async (id: number, isPrinted: boolean) => {
+  try {
+    const auth = { withCredentials: true };
+    await api.patch('/api/add-ons/is-printed', { id, isPrinted }, auth);
   } catch (err) {
     console.error(err);
   }

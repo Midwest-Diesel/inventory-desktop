@@ -3,7 +3,7 @@ import Dialog from "../../Library/Dialog";
 import Button from "@/components/Library/Button";
 import { deleteAltShipAddress, editAltShipAddress } from "@/scripts/services/altShipService";
 import { editHandwritten, getHandwrittenById } from "@/scripts/services/handwrittensService";
-import { ask } from "@tauri-apps/api/dialog";
+import { ask } from "@/scripts/config/tauri";
 import { FormEvent, useEffect, useState } from "react";
 
 interface Props {

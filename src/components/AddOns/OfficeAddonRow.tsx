@@ -8,37 +8,41 @@ import { deleteAddOn, editAddOnAltParts, getAddOnById } from "@/scripts/services
 import { addPart, checkForNewPartNum, getPartByEngineNum, getPartsInfoByPartNum } from "@/scripts/services/partsService";
 import { useEffect, useRef, useState } from "react";
 import Input from "../Library/Input";
-import { getAutofillEngine } from "@/scripts/services/enginesService";
+import { getAutofillEngine, getEngineCostRemaining } from "@/scripts/services/enginesService";
 import Loading from "../Library/Loading";
 import VendorSelect from "../Library/Select/VendorSelect";
 import Link from "../Library/Link";
 import { getPurchaseOrderByPoNum } from "@/scripts/services/purchaseOrderService";
 import { getRatingFromRemarks } from "@/scripts/tools/utils";
-import { selectedAddOnAtom } from "@/scripts/atoms/components";
-import { ask } from "@tauri-apps/api/dialog";
+import { selectedPoAddOnAtom } from "@/scripts/atoms/components";
+import { useClickOutside } from "@/hooks/useClickOutside";
+import { commonPrefixLength } from "@/scripts/logic/addOns";
+import { ask } from "@/scripts/config/tauri";
+import { formatCurrency } from "@/scripts/tools/stringUtils";
 
 interface Props {
   addOn: AddOn
   partNumList: string[]
-  engineNumList: string[]
+  setSelectedAddOnData: (addOn: AddOn | null) => void
 }
 
 
-export default function OfficeAddonRow({ addOn, partNumList, engineNumList }: Props) {
+export default function OfficeAddonRow({ addOn, partNumList, setSelectedAddOnData }: Props) {
+  const [, setSelectedPoData] = useAtom<{ selectedPoAddOn: PO | null, addOn: AddOn | null, receivedItemsDialogOpen: boolean }>(selectedPoAddOnAtom);
   const [addOns, setAddons] = useAtom<AddOn[]>(shopAddOnsAtom);
-  const [, setSelectedAddOnData] = useAtom<{ addOn: AddOn | null, dialogOpen: boolean }>(selectedAddOnAtom);
   const [poLink, setPoLink] = useState<string>(addOn.po ? `${addOn.po}` : '');
-  const [autofillPartNum, setAutofillPartNum] = useState('');
-  const [autofillEngineNum, setAutofillEngineNum] = useState('');
+  const [partNum, setPartNum] = useState<string>(addOn.partNum ?? '');
+  const [engineNum, setEngineNum] = useState<string>(addOn.engineNum?.toString() ?? '');
+  const [engineCostRemaining, setEngineCostRemaining] = useState(0);
   const [loading, setLoading] = useState(false);
   const [loadingProgress, setLoadingProgress] = useState('');
+  const [showPartNumSelect, setShowPartNumSelect] = useState(false);
   const [showVendorSelect, setShowVendorSelect] = useState(false);
   const [isNewPart, setIsNewPart] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    handlePoLink(addOn.po);
-  }, []);
+  const partNumListRefs = useRef<(HTMLLIElement | null)[]>([]);
+  const partNumRef = useRef<HTMLDivElement>(null);
+  useClickOutside(partNumRef, () => setShowPartNumSelect(false));
 
   useEffect(() => {
     const fetchData = async () => {
@@ -48,6 +52,15 @@ export default function OfficeAddonRow({ addOn, partNumList, engineNumList }: Pr
   }, []);
 
   useEffect(() => {
+    const fetchData = async () => {
+      if (!addOn.engineNum) return;
+      const cost = await getEngineCostRemaining(addOn.engineNum);
+      setEngineCostRemaining(cost);
+    };
+    fetchData();
+  }, [engineNum]);
+
+  useEffect(() => {
     if (!showVendorSelect) return;
     setTimeout(() => {
       if (!ref.current) return;
@@ -55,6 +68,29 @@ export default function OfficeAddonRow({ addOn, partNumList, engineNumList }: Pr
       if (select.length > 0) select[select.length - 1].focus();
     }, 30);
   }, [showVendorSelect]);
+
+  useEffect(() => {
+    if (!showPartNumSelect) return;
+    const partNumMatch = (addOn.partNum ?? '').toUpperCase();
+    let bestIndex = -1;
+    let bestScore = -1;
+
+    partNumList.forEach((num, i) => {
+      const score = commonPrefixLength(partNumMatch, num.toUpperCase());
+      if (score > bestScore) {
+        bestScore = score;
+        bestIndex = i;
+      }
+    });
+
+    if (bestIndex >= 0 && partNumListRefs.current[bestIndex]) {
+      const listEl: any = document.querySelector('.add-ons__list-select');
+      const item = partNumListRefs.current[bestIndex];
+      if (listEl && item) {
+        listEl.scrollTop = item.offsetTop - listEl.offsetTop + 24;
+      }
+    }
+  }, [showPartNumSelect, addOn.partNum, partNumList]);
 
   const handleEditAddOn = async (newAddOn: AddOn) => {
     if (addOn.partNum !== newAddOn.partNum) await editAddOnAltParts(addOn.id, '');
@@ -75,17 +111,9 @@ export default function OfficeAddonRow({ addOn, partNumList, engineNumList }: Pr
 
   const autofillFromPartNum = (partNum: string) => {
     if (!partNum) {
-      setAutofillPartNum('');
+      setPartNum('');
     } else {
-      setAutofillPartNum(partNumList.find((p) => p.startsWith(partNum)) ?? '');
-    }
-  };
-
-  const autofillFromEngineNum = async (engineNum: number) => {
-    if (!engineNum) {
-      setAutofillEngineNum('');
-    } else {
-      setAutofillEngineNum(engineNumList.find((p) => p.startsWith(`${engineNum}`)) ?? '');
+      setPartNum(partNumList.find((p) => p.startsWith(partNum)) ?? '');
     }
   };
 
@@ -104,15 +132,11 @@ export default function OfficeAddonRow({ addOn, partNumList, engineNumList }: Pr
       return a;
     });
     setAddons(updatedAddOns);
-    setAutofillPartNum('');
+    setPartNum('');
   };
 
   const updateAutofillEngineNumData = async (value: number) => {
-    if (value === 0 || value === 1 || value === 99) {
-      console.warn("Engine number is invalid:", value);
-      return;
-    }
-  
+    if (value === 0 || value === 1 || value === 99) return;
     try {
       const res = await getAutofillEngine(value);
       const part = await getPartByEngineNum(value);
@@ -120,10 +144,14 @@ export default function OfficeAddonRow({ addOn, partNumList, engineNumList }: Pr
         alert("Engine not in inventory, please notify Matt!");
         return;
       }
+      if (!part) {
+        alert("Part not in inventory, please notify Matt!");
+        return;
+      }
   
       const newAddOn = {
         ...addOn,
-        stockNum: part?.stockNum ?? '',
+        stockNum: part.stockNum ?? '',
         engineNum: Number(res.stockNum),
         hp: res.horsePower ?? '',
         serialNum: res.serialNum ?? '',
@@ -132,12 +160,11 @@ export default function OfficeAddonRow({ addOn, partNumList, engineNumList }: Pr
       const isDuplicate = addOns.some((a) => a.stockNum === newAddOn.stockNum);
       if (isDuplicate) {
         alert("Duplicate StockNumber, already added to add-on sheet or in inventory");
-        return;
       }
   
       const updatedAddOns = addOns.map((a: AddOn) => (a.id === addOn.id ? newAddOn : a));
       setAddons(updatedAddOns);
-      setAutofillEngineNum('');
+      setEngineNum('');
     } catch (error) {
       console.error("Error updating autofill engine number:", error);
     }
@@ -145,13 +172,18 @@ export default function OfficeAddonRow({ addOn, partNumList, engineNumList }: Pr
 
   const handleAddToInventory = async () => {
     const updatedAddOn = await getAddOnById(addOn.id);
-    const partsInfo = await getPartsInfoByPartNum(updatedAddOn.partNum);
-    const altParts = [...updatedAddOn.altParts, ...partsInfo.length > 0 ? partsInfo[0].altParts.split(', ') : []];
+    if (!updatedAddOn) {
+      alert('Failed to add part to inventory');
+      return;
+    }
+    const partsInfo = await getPartsInfoByPartNum(updatedAddOn.partNum ?? '');
+    const currentAlts = partsInfo.length > 0 ? partsInfo[0].altParts.split(', ') : [updatedAddOn.partNum];
+    const altParts = [...currentAlts, ...updatedAddOn.altParts];
     if (!await ask(`Are you sure you want to add this item?\n\nAlt Parts:\n${altParts.join(', ')}`)) return;
     setLoading(true);
     const newPart = {
       ...updatedAddOn,
-      altParts,
+      altParts
     } as any;
     await addPart(newPart, partsInfo.length > 0, updateLoading);
     await deleteAddOn(updatedAddOn.id);
@@ -163,9 +195,19 @@ export default function OfficeAddonRow({ addOn, partNumList, engineNumList }: Pr
     setLoadingProgress(`${i}/${total}`);
   };
 
-  const handlePoLink = async (poNum: string | null) => {
-    const po: PO | null = await getPurchaseOrderByPoNum(poNum);
-    if (po) setPoLink(`${po.poNum}`);
+  const handleOpenPO = async (e: any) => {
+    if (!e.target.value) return;
+    const po = await getPurchaseOrderByPoNum(e.target.value);
+    if (!po || po.poItems.length === 0) return;
+    setPoLink(`${po.poNum}`);
+    setSelectedPoData({ selectedPoAddOn: po, addOn, receivedItemsDialogOpen: true });
+  };
+
+  const handlePartNumSelectClick = (num: string) => {
+    handleEditAddOn({ ...addOn, partNum: num });
+    autofillFromPartNum(num.toUpperCase());
+    updateAutofillPartNumData(num);
+    setShowPartNumSelect(false);
   };
 
   const handlePartNumBlur = async (partNum: string) => {
@@ -186,6 +228,7 @@ export default function OfficeAddonRow({ addOn, partNumList, engineNumList }: Pr
               <th>Qty</th>
               <th>Part Number</th>
               <th>Description</th>
+              <th>Cost Remaining</th>
               <th>Engine #</th>
               <th>Stock Number</th>
               <th>Location</th>
@@ -202,19 +245,41 @@ export default function OfficeAddonRow({ addOn, partNumList, engineNumList }: Pr
                 />
               </td>
               <td>
-                <Input
-                  style={isNewPart ? { backgroundColor: 'var(--red-1)', color: 'white' } : {}}
-                  variant={['small', 'thin', 'autofill-input']}
-                  value={addOn.partNum !== null ? addOn.partNum : ''}
-                  autofill={autofillPartNum}
-                  onAutofill={(value) => updateAutofillPartNumData(value)}
-                  onChange={(e: any) => {
-                    handleEditAddOn({ ...addOn, partNum: e.target.value.toUpperCase() });
-                    autofillFromPartNum(e.target.value.toUpperCase());
-                  }}
-                  onBlur={(e: any) => handlePartNumBlur(e.target.value.toUpperCase())}
-                  onClick={() => isNewPart && setSelectedAddOnData({ addOn, dialogOpen: true })}
-                />
+                <div ref={partNumRef} style={{ position: 'relative' }}>
+                  <Input
+                    style={isNewPart ? { backgroundColor: 'var(--red-1)', color: 'white' } : {}}
+                    variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold', 'search', 'autofill-input']}
+                    value={addOn.partNum ?? ''}
+                    autofill={partNum}
+                    onAutofill={(value) => updateAutofillPartNumData(value)}
+                    onChange={(e: any) => {
+                      handleEditAddOn({ ...addOn, partNum: e.target.value.toUpperCase() });
+                      autofillFromPartNum(e.target.value.toUpperCase());
+                    }}
+                    onBlur={(e: any) => handlePartNumBlur(e.target.value.toUpperCase())}
+                    onClick={() => isNewPart && setSelectedAddOnData(addOn)}
+                  >
+                    <Button variant={['x-small']} type="button" onClick={() => setShowPartNumSelect(!showPartNumSelect)} tabIndex={-1}>
+                      <img src={`/images/icons/arrow-${showPartNumSelect ? 'up' : 'down'}.svg`} alt="Part number dropdown" width="10rem" />
+                    </Button>
+                  </Input>
+
+                  {showPartNumSelect &&
+                    <ul className="add-ons__list-select" tabIndex={-1}>
+                      {partNumList.map((num, i) => {
+                        return (
+                          <li
+                            key={i}
+                            ref={(el) => partNumListRefs.current[i] = el}
+                            onClick={() => handlePartNumSelectClick(num)}
+                          >
+                            { num }
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  }
+                </div>
               </td>
               <td>
                 <Input
@@ -223,17 +288,17 @@ export default function OfficeAddonRow({ addOn, partNumList, engineNumList }: Pr
                   onChange={(e: any) => handleEditAddOn({ ...addOn, desc: e.target.value })}
                 />
               </td>
+              <td style={engineCostRemaining > 0 ? { backgroundColor: 'var(--red-1)', padding: '0 0.3rem' } : { padding: '0 0.3rem' }}>
+                { formatCurrency(engineCostRemaining) }
+              </td>
               <td>
                 <Input
-                  variant={['small', 'thin', 'autofill-input']}
+                  variant={['small', 'thin']}
                   type="number"
-                  autofill={autofillEngineNum}
-                  onAutofill={(value) => updateAutofillEngineNumData(Number(value))}
+                  autofill={engineNum}
+                  onBlur={(e) => updateAutofillEngineNumData(Number(e.target.value))}
                   value={addOn.engineNum !== null ? addOn.engineNum : ''}
-                  onChange={(e: any) => {
-                    handleEditAddOn({ ...addOn, engineNum: e.target.value ? e.target.value : '' as any });
-                    autofillFromEngineNum(Number(e.target.value));
-                  }}
+                  onChange={(e: any) => handleEditAddOn({ ...addOn, engineNum: e.target.value })}
                 />
               </td>
               <td>
@@ -330,7 +395,7 @@ export default function OfficeAddonRow({ addOn, partNumList, engineNumList }: Pr
                   type="number"
                   value={addOn.po !== null ? addOn.po : ''}
                   onChange={(e: any) => handleEditAddOn({ ...addOn, po: e.target.value })}
-                  onBlur={(e: any) => handlePoLink(e.target.value)}
+                  onBlur={(e: any) => handleOpenPO(e)}
                 />
               </td>
             </tr>

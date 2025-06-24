@@ -9,7 +9,7 @@ import { addPurchaseOrderItem, deletePurchaseOrderItem, editPurchaseOrder, editP
 import VendorDropdown from "./Library/Dropdown/VendorDropdown";
 import { PreventNavigation } from "./PreventNavigation";
 import Checkbox from "./Library/Checkbox";
-import { ask } from "@tauri-apps/api/dialog";
+import { ask } from "@/scripts/config/tauri";
 
 interface Props {
   poData: PO

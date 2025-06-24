@@ -107,13 +107,14 @@ export const getEngineCostOut = async (stockNum: number) => {
   }
 };
 
-export const getEngineCostRemaining = async (stockNum: number) => {
+export const getEngineCostRemaining = async (stockNum: number): Promise<number> => {
   try {
     const auth = { withCredentials: true };
     const res = await api.get(`/api/engines/cost-remaining/${stockNum}`, auth);
     return res.data[0].costRemaining || 0;
   } catch (err) {
     console.error(err);
+    return 0;
   }
 };
 

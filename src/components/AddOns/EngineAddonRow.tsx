@@ -11,7 +11,7 @@ import { engineAddOnsAtom } from "@/scripts/atoms/state";
 import { formatDate } from "@/scripts/tools/stringUtils";
 import VendorSelect from "../Library/Select/VendorSelect";
 import { getEngineImages } from "@/scripts/services/imagesService";
-import { ask } from "@tauri-apps/api/dialog";
+import { ask } from "@/scripts/config/tauri";
 import { usePrintQue } from "@/hooks/usePrintQue";
 
 interface Props {

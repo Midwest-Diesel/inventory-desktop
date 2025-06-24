@@ -8,7 +8,7 @@ import { Layout } from "@/components/Layout";
 import { addPart, getPartsInfoByPartNum } from "@/scripts/services/partsService";
 import Input from "@/components/Library/Input";
 import { useNavState } from "@/hooks/useNavState";
-import { ask } from "@tauri-apps/api/dialog";
+import { ask } from "@/scripts/config/tauri";
 
 
 export default function NewPart() {

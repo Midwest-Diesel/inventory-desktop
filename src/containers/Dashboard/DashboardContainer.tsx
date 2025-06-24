@@ -11,7 +11,7 @@ import { listen } from '@tauri-apps/api/event';
 import { addQuote, getSomeQuotes, toggleQuoteSold } from "@/scripts/services/quotesService";
 import { useNavState } from "@/hooks/useNavState";
 import { getPartById, getPartCostIn } from "@/scripts/services/partsService";
-import { ask } from "@tauri-apps/api/dialog";
+import { ask } from "@/scripts/config/tauri";
 import CustomerSection from "./CustomerSection";
 import QuotesSection from "./QuotesSection";
 import PartSearchSection from "./PartSearchSection";

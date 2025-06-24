@@ -22,7 +22,7 @@ import { useParams } from "react-router-dom";
 import { FormEvent, useEffect, useRef, useState } from "react";
 import { useNavState } from "@/hooks/useNavState";
 import CreditCardBlock from "@/components/CreditCardBlock";
-import { ask } from "@tauri-apps/api/dialog";
+import { ask } from "@/scripts/config/tauri";
 import { usePrintQue } from "@/hooks/usePrintQue";
 import { getAltShipByCustomerId } from "@/scripts/services/altShipService";
 

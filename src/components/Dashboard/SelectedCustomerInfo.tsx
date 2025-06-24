@@ -130,7 +130,7 @@ export default function SelectedCustomerInfo({ customerData, setCustomerData, ex
             </GridItem>
 
             <GridItem variant={['no-style']} colStart={1} colEnd={5} rowStart={2}>
-              { customer.contacts.length > 0 && <CustomerContactsBlock customer={customer} setCustomer={setCustomerData} /> }
+              <CustomerContactsBlock customer={customer} setCustomer={setCustomerData} />
             </GridItem>
 
             <GridItem colStart={5} colEnd={10} variant={['low-opacity-bg']}>

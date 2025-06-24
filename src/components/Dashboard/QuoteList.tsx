@@ -7,9 +7,8 @@ import Pagination from "@/components/Library/Pagination";
 import { formatCurrency, formatDate, formatPhone } from "@/scripts/tools/stringUtils";
 import Checkbox from "@/components/Library/Checkbox";
 import Link from "../Library/Link";
-import { ask } from "@tauri-apps/api/dialog";
+import { ask } from "@/scripts/config/tauri";
 import { deleteQuote, toggleAddToEmail, toggleQuoteSold } from "@/scripts/services/quotesService";
-import { confirm } from "@/scripts/config/tauri";
 import { useAtom } from "jotai";
 import { quotesAtom } from "@/scripts/atoms/state";
 import { useTooltip } from "@/hooks/useTooltip";
@@ -56,7 +55,7 @@ export default function QuoteList({ quotes, setQuotes, onInvoiceQuote, onChangeP
   };
 
   const handleQuoteSale = async (e: any, quote: Quote) => {
-    if (!await confirm(`Mark quote as ${e.target.checked ? 'Sold' : 'Unsold'}`)) return;
+    if (!await ask(`Mark quote as ${e.target.checked ? 'Sold' : 'Unsold'}`)) return;
     await toggleQuoteSold({ ...quote, sale: !e.target.checked });
     setQuotes(quotes.map((q) => q.id === quote.id ? { ...q, sale: !e.target.checked } : q));
     setQuotesData(quotesData.map((q) => q.id === quote.id ? { ...q, sale: !e.target.checked } : q));

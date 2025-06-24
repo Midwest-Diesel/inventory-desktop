@@ -10,7 +10,7 @@ import Checkbox from "./Library/Checkbox";
 import CustomerDropdown from "./Library/Select/CustomerDropdown";
 import { getCustomerByName } from "@/scripts/services/customerService";
 import { PreventNavigation } from "./PreventNavigation";
-import { ask } from "@tauri-apps/api/dialog";
+import { ask } from "@/scripts/config/tauri";
 
 interface Props {
   warrantyData: Warranty

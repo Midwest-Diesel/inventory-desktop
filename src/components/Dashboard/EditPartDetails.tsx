@@ -11,7 +11,7 @@ import { userAtom } from "@/scripts/atoms/state";
 import { useAtom } from "jotai";
 import { PreventNavigation } from "../PreventNavigation";
 import Loading from "../Library/Loading";
-import { ask } from "@tauri-apps/api/dialog";
+import { ask } from "@/scripts/config/tauri";
 
 interface Props {
   part: Part
@@ -220,7 +220,7 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
     altsToAdd = Array.from(altsToAdd);
   
     const uniqueAlts = [...altsToAdd].filter((a) => a !== part.partNum && !part.altParts.includes(a));
-    if (!await ask(`Are you sure you want to ADD: ${uniqueAlts.join(', ')}?`)) return;
+    if (!await ask(`Are you sure you want to add: ${input}?\n\nNew Alt Parts:\n${[...part.altParts, ...uniqueAlts].join(', ')}`)) return;
     if (uniqueAlts.length === 0) return;
     isLoadingAlts(true);
     await editAltParts(part.partNum, [...altParts, ...uniqueAlts]);
@@ -235,7 +235,7 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
     const input = prompt('Enter part numbers seperated by comma');
     const removedParts = input?.toUpperCase().trim().replace(/\s*,\s*/g, ',').split(',') ?? [];
     const updatedAltString = altParts.filter((a) => !removedParts.includes(a));
-    if (!input || !await ask(`Are you sure you want to REMOVE: ${removedParts.join(', ')}?\n\n New Alt Parts:\n${updatedAltString.join(', ')}`)) return;
+    if (!input || !await ask(`Are you sure you want to remove: ${removedParts.join(', ')}?\n\nNew Alt Parts:\n${updatedAltString.join(', ')}`)) return;
 
     const partsInfo = await getPartsInfoByAltParts(removedParts[0]);
     for (let i = 0; i < partsInfo.length; i++) {

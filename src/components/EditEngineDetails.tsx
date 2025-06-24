@@ -12,7 +12,7 @@ import EditEnginePartsTable from "./EditEnginePartsTable";
 import { enginePartsTableAtom } from "@/scripts/atoms/state";
 import { useAtom } from "jotai";
 import { PreventNavigation } from "./PreventNavigation";
-import { ask } from "@tauri-apps/api/dialog";
+import { ask } from "@/scripts/config/tauri";
 
 interface Props {
   engine: Engine

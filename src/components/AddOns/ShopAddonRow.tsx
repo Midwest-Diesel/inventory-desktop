@@ -4,7 +4,7 @@ import Button from "../Library/Button";
 import Checkbox from "../Library/Checkbox";
 import Table from "../Library/Table";
 import Select from "../Library/Select/Select";
-import { deleteAddOn } from "@/scripts/services/addOnsService";
+import { deleteAddOn, editAddOnPrintStatus } from "@/scripts/services/addOnsService";
 import { getPartByEngineNum, getPartsInfoByPartNum } from "@/scripts/services/partsService";
 import { useEffect, useRef, useState } from "react";
 import Input from "../Library/Input";
@@ -15,25 +15,21 @@ import VendorSelect from "../Library/Select/VendorSelect";
 import { getPurchaseOrderByPoNum } from "@/scripts/services/purchaseOrderService";
 import { getRatingFromRemarks } from "@/scripts/tools/utils";
 import { getImagesFromPart } from "@/scripts/services/imagesService";
-import { ask } from "@tauri-apps/api/dialog";
+import { ask } from "@/scripts/config/tauri";
 import { usePrintQue } from "@/hooks/usePrintQue";
 import { selectedPoAddOnAtom } from "@/scripts/atoms/components";
 import { useClickOutside } from "@/hooks/useClickOutside";
+import { commonPrefixLength } from "@/scripts/logic/addOns";
 
 interface Props {
   addOn: AddOn
   handleDuplicateAddOn: (addOn: AddOn) => void
   partNumList: string[]
-}
-
-function commonPrefixLength(a: string, b: string) {
-  let i = 0;
-  while (i < a.length && i < b.length && a[i] === b[i]) i++;
-  return i;
+  onSave: () => Promise<void>
 }
 
 
-export default function ShopAddonRow({ addOn, handleDuplicateAddOn, partNumList }: Props) {
+export default function ShopAddonRow({ addOn, handleDuplicateAddOn, partNumList, onSave }: Props) {
   const [, setSelectedPoData] = useAtom<{ selectedPoAddOn: PO | null, addOn: AddOn | null, receivedItemsDialogOpen: boolean }>(selectedPoAddOnAtom);
   const { addToQue, printQue } = usePrintQue();
   const [addOns, setAddons] = useAtom<AddOn[]>(shopAddOnsAtom);
@@ -158,8 +154,10 @@ export default function ShopAddonRow({ addOn, handleDuplicateAddOn, partNumList 
   };
 
   const handlePrint = async () => {
+    await onSave();
     const engine = await getEngineByStockNum(addOn.engineNum);
     const pictures = await getImagesFromPart(addOn.partNum);
+    await editAddOnPrintStatus(addOn.id, true);
 
     for (let i = 0; i < printQty; i++) {
       const args = {

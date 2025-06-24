@@ -7,7 +7,7 @@ import { useState } from "react";
 
 export default function RecentQuotes() {
   const [recentQuoteSearches] = useAtom<RecentQuoteSearch[]>(recentQuotesAtom);
-  const [recentSearchesOpen, setRecentSearchesOpen] = useState(localStorage.getItem('recentQuotesOpen') === 'true' || localStorage.getItem('recentQuotesOpen') === null ? true : false);
+  const [recentSearchesOpen, setRecentSearchesOpen] = useState(localStorage.getItem('recentQuotesOpen') === 'true');
 
   const toggleRecentSearches = () => {
     localStorage.setItem('recentQuotesOpen', `${!recentSearchesOpen}`);

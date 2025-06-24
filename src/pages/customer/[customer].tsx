@@ -249,7 +249,7 @@ export default function Customer() {
               </GridItem>
 
               <GridItem variant={['no-style']} colStart={5} colEnd={9} rowStart={2}>
-                { customer.contacts && customer.contacts.length > 0 ? <CustomerContactsBlock customer={customer} setCustomer={setCustomer} /> : <p>No Contacts</p> }
+                <CustomerContactsBlock customer={customer} setCustomer={setCustomer} />
 
                 <Checkbox
                   variant={['label-bold', 'label-align-center']}

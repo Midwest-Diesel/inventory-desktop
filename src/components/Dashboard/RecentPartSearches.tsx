@@ -2,7 +2,6 @@ import { useAtom } from "jotai";
 import Table from "../Library/Table";
 import { recentPartSearchesAtom, userAtom } from "@/scripts/atoms/state";
 import { formatDate, formatTime, parseResDate } from "@/scripts/tools/stringUtils";
-
 import { useEffect, useState } from "react";
 import Tabs from "../Library/Tabs";
 import { supabase } from "@/scripts/config/supabase";
@@ -13,7 +12,7 @@ import { getRecentPartSearches } from "@/scripts/services/recentSearchesService"
 export default function RecentPartSearches() {
   const [user] = useAtom(userAtom);
   const [recentPartSearches, setRecentPartSearches] = useAtom<RecentPartSearch[]>(recentPartSearchesAtom);
-  const [recentSearchesOpen, setRecentSearchesOpen] = useState(localStorage.getItem('recentPartSearchOpen') === 'true' || localStorage.getItem('recentPartSearchOpen') === null ? true : false);
+  const [recentSearchesOpen, setRecentSearchesOpen] = useState(localStorage.getItem('recentPartSearchOpen') === 'true');
   
   const toggleRecentSearchOpen = () => {
     localStorage.setItem('recentPartSearchOpen', `${!recentSearchesOpen}`);

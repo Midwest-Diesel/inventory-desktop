@@ -8,7 +8,7 @@ import { addReturn, addReturnItem } from "@/scripts/services/returnsService";
 import { useAtom } from "jotai";
 import { userAtom } from "@/scripts/atoms/state";
 import { useNavState } from "@/hooks/useNavState";
-import { ask } from "@tauri-apps/api/dialog";
+import { ask } from "@/scripts/config/tauri";
 
 interface Props {
   open: boolean

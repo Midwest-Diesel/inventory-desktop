@@ -10,7 +10,7 @@ import { FormEvent, useState } from "react";
 import Checkbox from "@/components/Library/Checkbox";
 import Input from "@/components/Library/Input";
 import { useNavState } from "@/hooks/useNavState";
-import { ask } from "@tauri-apps/api/dialog";
+import { ask } from "@/scripts/config/tauri";
 
 interface Props {
   open: boolean

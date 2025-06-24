@@ -4,7 +4,7 @@ import Input from "@/components/Library/Input";
 import Select from "@/components/Library/Select/Select";
 import { editMapLocation, getGeoLocation } from "@/scripts/services/mapService";
 import { FormEvent, useState } from "react";
-import { ask } from "@tauri-apps/api/dialog";
+import { ask } from "@/scripts/config/tauri";
 
 interface Props {
   open: boolean

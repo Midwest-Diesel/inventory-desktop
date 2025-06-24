@@ -16,7 +16,7 @@ import Link from "@/components/Library/Link";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useNavState } from "@/hooks/useNavState";
-import { ask } from "@tauri-apps/api/dialog";
+import { ask } from "@/scripts/config/tauri";
 import { usePrintQue } from "@/hooks/usePrintQue";
 
 

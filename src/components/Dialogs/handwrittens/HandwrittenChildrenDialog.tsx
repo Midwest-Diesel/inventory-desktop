@@ -4,7 +4,7 @@ import Input from "@/components/Library/Input";
 import { FormEvent, useEffect, useState } from "react";
 import Button from "@/components/Library/Button";
 import { deleteHandwrittenItemChild, editHandwrittenItemChild, getHandwrittenById } from "@/scripts/services/handwrittensService";
-import { ask } from "@tauri-apps/api/dialog";
+import { ask } from "@/scripts/config/tauri";
 
 import PartSelectDialog from "../dashboard/PartSelectDialog";
 

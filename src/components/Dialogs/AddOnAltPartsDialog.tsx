@@ -1,4 +1,4 @@
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useState } from "react";
 import Dialog from "../Library/Dialog";
 import { getPartsInfoByPartNum } from "@/scripts/services/partsService";
 import Input from "../Library/Input";
@@ -16,13 +16,7 @@ interface Props {
 export default function AddOnAltPartsDialog({ open, setOpen, addOn, partNumList }: Props) {
   const [autofillPartNum, setAutofillPartNum] = useState('');
   const [partNum, setPartNum] = useState('');
-  const [alts, setAlts] = useState<string[]>([]);
-  const [savedBtnText, setSavedBtnText] = useState('Save');
-
-  useEffect(() => {
-    if (!open) return;
-    setAlts(addOn?.altParts ?? []);
-  }, [open]);
+  const [alts, setAlts] = useState<string[]>(addOn?.altParts ?? []);
 
   const autofillFromPartNum = (partNum: string) => {
     if (!partNum) {
@@ -34,22 +28,23 @@ export default function AddOnAltPartsDialog({ open, setOpen, addOn, partNumList 
 
   const handleNewAlt = async (e: FormEvent) => {
     e.preventDefault();
+    if (!addOn || !partNum.trim()) return;
     const res = (await getPartsInfoByPartNum(partNum))[0];
-    if (!res || alts.some((alt: string) => res.altParts.split(', ').includes(alt))) return;
-    setAlts([...alts, ...res.altParts.split(', ')]);
+    if (!res || alts.some((alt: string) => res.altParts.split(', ').includes(alt))) {
+      alert('Part number does not exist');
+      return;
+    }
+    const updatedAlts = [...alts, ...res.altParts.split(', ')];
+    await editAddOnAltParts(addOn.id, updatedAlts.join(', '));
+    setAlts(updatedAlts);
     setPartNum('');
   };
 
-  const handleRemoveAlt = (alt: string) => {
-    const altParts = alts.filter((a) => alt !== a);
-    setAlts(altParts);
-  };
-
-  const handleSave = async () => {
-    if (!addOn?.id) return;
-    setSavedBtnText('Saved!');
-    await editAddOnAltParts(addOn.id, alts.join(', '));
-    setTimeout(() => setSavedBtnText('Save'), 1000);
+  const handleRemoveAlt = async (alt: string) => {
+    if (!addOn) return;
+    const updatedAlts = alts.filter((a) => alt !== a);
+    await editAddOnAltParts(addOn.id, updatedAlts.join(', '));
+    setAlts(updatedAlts);
   };
 
 
@@ -93,10 +88,6 @@ export default function AddOnAltPartsDialog({ open, setOpen, addOn, partNumList 
 
         <Button style={{ marginTop: '0.5rem' }} variant={['fit']} type="submit">Add</Button>
       </form>
-
-      <div className="form__footer">
-        <Button onClick={handleSave}>{ savedBtnText }</Button>
-      </div>
     </Dialog>
   );
 }

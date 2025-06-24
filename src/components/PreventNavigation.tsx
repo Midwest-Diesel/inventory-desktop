@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useNavState } from '../hooks/useNavState';
-import { ask } from '@tauri-apps/api/dialog';
+import { ask } from '@/scripts/config/tauri';
 
 interface Props {
   shouldPrevent?: boolean

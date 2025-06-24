@@ -2,6 +2,12 @@
 
 This application is currently only compatible with windows.
 
+## Installation
+- Download the zip file from https://github.com/Midwest-Diesel/inventory-desktop/releases
+- On the computer, create a folder called *MWD* in the C: drive and drag the installer into there
+- Launch the installer
+- Set the install location *C:\MWD* when prompted
+
 ## Getting Started
 
 - Run `npm i`

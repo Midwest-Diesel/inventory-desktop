@@ -12,7 +12,7 @@ import SourceSelect from "../Library/Select/SourceSelect";
 import CustomerContactsBlock from "../CustomerContactsBlock";
 import Select from "../Library/Select/Select";
 import Checkbox from "../Library/Checkbox";
-import { ask } from "@tauri-apps/api/dialog";
+import { ask } from "@/scripts/config/tauri";
 
 interface Props {
   customer: Customer

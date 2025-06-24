@@ -6,7 +6,7 @@ import { deleteEmailStuffItem, getAllEmailStuff } from "@/scripts/services/email
 import { invoke } from "@/scripts/config/tauri";
 
 import { useEffect, useState } from "react";
-import { ask } from "@tauri-apps/api/dialog";
+import { ask } from "@/scripts/config/tauri";
 
 
 export default function EmailStuff() {

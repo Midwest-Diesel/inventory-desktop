@@ -136,81 +136,83 @@ export default function QuotesSection({ quotes, setQuotes, setHandwrittenQuote, 
         <img src={`/images/icons/arrow-${quotesOpen ? 'up' : 'down'}.svg`} alt="arrow" width={25} height={25} />
       </div>
 
-      {quoteEmailed &&
-        <EmailQuotesDialog
-          open={emailDialogOpen}
-          setOpen={setEmailDialogOpen}
-          quote={quoteEmailed}
-        />
-      }
-
-      {searchDialogOpen &&
-        <QuoteSearchDialog
-          open={searchDialogOpen}
-          setOpen={setSearchDialogOpen}
-          setQuotes={setQuotes}
-          setCount={setPageCount}
-          filterByCustomer={filterByCustomer}
-          searchData={searchData}
-          setSearchData={setSearchData}
-          backupFunction={onChangePage}
-          limit={LIMIT}
-          page={page}
-        />
-      }
-      <SalesEndOfDayDialog open={endOfDayOpen} setOpen={setEndOfDayOpen} />
-      { quoteEdited && <EditQuoteDialog setQuoteEdited={setQuoteEdited} quote={quoteEdited} setQuote={(q: Quote) => handleEdit(q)} /> }
-      {piggybackQuote &&
-        <PiggybackQuoteDialog
-          open={piggybackQuoteOpen}
-          setOpen={setPiggybackQuoteOpen}
-          quote={piggybackQuote}
-          handleChangeQuotesPage={onChangePage}
-          quotesPage={page}
-        />
-      }
-
-      <div className="quote-list-top-bar">
-        <Button onClick={() => setSearchDialogOpen(true)}>Search</Button>
-        <Button
-          onClick={() => {
-            handleNewQuote();
-            onChangePage(null, 1);
-          }}
-        >
-          New
-        </Button>
-        <Button onClick={() => setQuoteListType(quoteListType === 'part' ? 'engine' : 'part')} data-testid="engine-quotes-btn">
-          { quoteListType === 'part' ? 'Engine Quotes' : 'Part Quotes' }
-        </Button>
-        <Button
-          onClick={() => setFilterByCustomer(!filterByCustomer)}
-          disabled={!localStorage.getItem('customerId') && true}
-        >
-          {filterByCustomer ? 'No Customer Filter' : 'Filter by Customer'}
-        </Button>
-        <Button
-          onClick={() => setFilterByPart(!filterByPart)}
-          disabled={partNum?.trim().replace('*', '') === ''}
-        >
-          {filterByPart ? 'No Part Filter' : 'Filter by Part'}
-        </Button>
-        <Button onClick={() => setEndOfDayOpen(true)}>Sales End of Day</Button>
-      </div>
-
       {quotesOpen &&
-        <QuoteList
-          quotes={quotes}
-          setQuotes={setQuotes}
-          onInvoiceQuote={onInvoiceQuote}
-          onChangePage={onChangePage}
-          onQuotePiggyback={onQuotePiggyback}
-          handleEmail={handleEmail}
-          setQuoteEdited={setQuoteEdited}
-          page={page}
-          limit={LIMIT}
-          count={pageCount}
-        />
+        <>
+          {quoteEmailed &&
+            <EmailQuotesDialog
+              open={emailDialogOpen}
+              setOpen={setEmailDialogOpen}
+              quote={quoteEmailed}
+            />
+          }
+
+          {searchDialogOpen &&
+            <QuoteSearchDialog
+              open={searchDialogOpen}
+              setOpen={setSearchDialogOpen}
+              setQuotes={setQuotes}
+              setCount={setPageCount}
+              filterByCustomer={filterByCustomer}
+              searchData={searchData}
+              setSearchData={setSearchData}
+              backupFunction={onChangePage}
+              limit={LIMIT}
+              page={page}
+            />
+          }
+          <SalesEndOfDayDialog open={endOfDayOpen} setOpen={setEndOfDayOpen} />
+          { quoteEdited && <EditQuoteDialog setQuoteEdited={setQuoteEdited} quote={quoteEdited} setQuote={(q: Quote) => handleEdit(q)} /> }
+          {piggybackQuote &&
+            <PiggybackQuoteDialog
+              open={piggybackQuoteOpen}
+              setOpen={setPiggybackQuoteOpen}
+              quote={piggybackQuote}
+              handleChangeQuotesPage={onChangePage}
+              quotesPage={page}
+            />
+          }
+
+          <div className="quote-list-top-bar">
+            <Button onClick={() => setSearchDialogOpen(true)}>Search</Button>
+            <Button
+              onClick={() => {
+                handleNewQuote();
+                onChangePage(null, 1);
+              }}
+            >
+              New
+            </Button>
+            <Button onClick={() => setQuoteListType(quoteListType === 'part' ? 'engine' : 'part')} data-testid="engine-quotes-btn">
+              { quoteListType === 'part' ? 'Engine Quotes' : 'Part Quotes' }
+            </Button>
+            <Button
+              onClick={() => setFilterByCustomer(!filterByCustomer)}
+              disabled={!localStorage.getItem('customerId') && true}
+            >
+              {filterByCustomer ? 'No Customer Filter' : 'Filter by Customer'}
+            </Button>
+            <Button
+              onClick={() => setFilterByPart(!filterByPart)}
+              disabled={partNum?.trim().replace('*', '') === ''}
+            >
+              {filterByPart ? 'No Part Filter' : 'Filter by Part'}
+            </Button>
+            <Button onClick={() => setEndOfDayOpen(true)}>Sales End of Day</Button>
+          </div>
+
+          <QuoteList
+            quotes={quotes}
+            setQuotes={setQuotes}
+            onInvoiceQuote={onInvoiceQuote}
+            onChangePage={onChangePage}
+            onQuotePiggyback={onQuotePiggyback}
+            handleEmail={handleEmail}
+            setQuoteEdited={setQuoteEdited}
+            page={page}
+            limit={LIMIT}
+            count={pageCount}
+          />
+        </>
       }
     </div>
   );

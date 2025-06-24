@@ -1,6 +1,5 @@
 import { Layout } from "@/components/Layout";
 import { useParams } from "react-router-dom";
-
 import { formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
 import { useEffect, useState } from "react";
 import { getImagesFromPart, getImagesFromStockNum } from "@/scripts/services/imagesService";

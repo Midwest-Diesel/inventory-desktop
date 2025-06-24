@@ -5,7 +5,7 @@ import { addHandwrittenItem, getHandwrittenById } from "@/scripts/services/handw
 import { addCore } from "@/scripts/services/coresService";
 import HandwrittenChildrenDialog from "../Dialogs/handwrittens/HandwrittenChildrenDialog";
 import { useEffect, useState } from "react";
-import { ask } from "@tauri-apps/api/dialog";
+import { ask } from "@/scripts/config/tauri";
 import { useAtom } from "jotai";
 import { quickPickItemIdAtom } from "@/scripts/atoms/state";
 

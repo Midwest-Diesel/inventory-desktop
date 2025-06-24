@@ -7,7 +7,7 @@ import { selectedAlertsAtom } from "@/scripts/atoms/components";
 import { alertsAtom } from "@/scripts/atoms/state";
 import { deleteAlert } from "@/scripts/services/alertsService";
 import { formatDate } from "@/scripts/tools/stringUtils";
-import { ask } from "@tauri-apps/api/dialog";
+import { ask } from "@/scripts/config/tauri";
 import { useAtom } from "jotai";
 import { useState } from "react";
 
