@@ -28,7 +28,7 @@ export default function PartPicturesDialog({ open, setOpen, pictures, partNum }:
     setLoading(true);
     loadedCount.current = 0;
     setSelectedImages([]);
-  }, [open]);
+  }, [open, partNum]);
 
   const handleImageLoad = () => {
     loadedCount.current += 1;
