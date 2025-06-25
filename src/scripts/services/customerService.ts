@@ -66,7 +66,7 @@ export const getCustomerNames = async () => {
   }
 };
 
-export const getCustomerById = async (id: number): Promise<Customer | null> => {
+export const getCustomerById = async (id: number) => {
   try {
     const auth = { withCredentials: true };
     const res = await api.get(`/api/customers/${id}`, auth);
@@ -74,7 +74,6 @@ export const getCustomerById = async (id: number): Promise<Customer | null> => {
     return res.data[0];
   } catch (err) {
     console.error(err);
-    return null;
   }
 };
 

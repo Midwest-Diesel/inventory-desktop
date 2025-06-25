@@ -15,10 +15,11 @@ interface Props {
   setSelectedCustomer: (customer: Customer) => void
   expandedDetailsOpen: boolean
   setExpandedDetailsOpen: (value: boolean) => void
+  onExpandDetails: (isExpanded: boolean) => void
 }
 
 
-export default function CustomerSearch({ selectedCustomer, setSelectedCustomer, expandedDetailsOpen, setExpandedDetailsOpen }: Props) {
+export default function CustomerSearch({ selectedCustomer, setSelectedCustomer, expandedDetailsOpen, setExpandedDetailsOpen, onExpandDetails }: Props) {
   const { push, newTab } = useNavState();
   const toast = useToast();
   const [user] = useAtom<User>(userAtom);
@@ -101,7 +102,10 @@ export default function CustomerSearch({ selectedCustomer, setSelectedCustomer, 
             <Button variant={['x-small']} onClick={deselectCustomer} data-testid="unselect">Unselect</Button>
             <Button
               variant={['x-small']}
-              onClick={() => setExpandedDetailsOpen(!expandedDetailsOpen)}
+              onClick={() => {
+                setExpandedDetailsOpen(!expandedDetailsOpen);
+                onExpandDetails(!expandedDetailsOpen);
+              }}
               data-testid="expand"
             >
               { expandedDetailsOpen ? 'Collapse' : 'Expand' }

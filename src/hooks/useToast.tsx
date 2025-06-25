@@ -6,7 +6,7 @@ let idCounter = 0;
 export function useToast() {
   const [, setToasts] = useAtom<Toast[]>(toastAtom);
 
-  const sendToast = (msg: string, type: 'error' | 'success' | 'warning' | 'info' | 'none', duration = 6000) => {
+  const sendToast = (msg: string, type: 'error' | 'success' | 'warning' | 'none', duration = 6000) => {
     const id = idCounter++;
     const newToast = { msg, type, duration, id };
 

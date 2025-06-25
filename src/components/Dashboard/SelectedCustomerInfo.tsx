@@ -39,7 +39,7 @@ export default function SelectedCustomerInfo({ customerData, setCustomerData, ex
         :
         <div data-testid="customer-details">
           <p><strong>Selected Customer:</strong> <Link href={`customer/${customer.id}`} style={{ fontSize: 'var(--font-md)' }}>{ customer.company }</Link></p>
-          <Grid rows={1} cols={12} gap={1}>
+          <Grid rows={1} cols={11} gap={1}>
             <GridItem colStart={1} colEnd={4} variant={['low-opacity-bg']}>
               <Table variant={['plain', 'row-details']}>
                 <tbody>

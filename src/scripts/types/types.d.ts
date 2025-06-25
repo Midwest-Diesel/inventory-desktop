@@ -817,7 +817,7 @@ type Alert = {
 type Toast = {
   id?: number
   msg: string
-  type: 'error' | 'success' | 'warning' | 'info' | 'none'
+  type: 'error' | 'success' | 'warning' | 'none'
   duration?: number
 };
 

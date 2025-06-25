@@ -34,6 +34,7 @@ export default function DashboardContainer() {
   const [filterByCustomer, setFilterByCustomer] = useState(false);
   const [filterByPart, setFilterByPart] = useState(false);
   const [quoteListType, setQuoteListType] = useState<'part' | 'engine'>('part');
+  const [detailsExpanded, setDetailsExpanded] = useState(false);
   
   useEffect(() => {
     const fetchData = async () => {
@@ -144,6 +145,10 @@ export default function DashboardContainer() {
     setQuoteEdited(res.rows[0]);
   };
 
+  const onExpandDetails = (isExpanded: boolean) => {
+    setDetailsExpanded(isExpanded);
+  };
+
 
   return (
     <main>
@@ -156,10 +161,19 @@ export default function DashboardContainer() {
         />
       }
 
-      <CustomerSection />
       <div className="dashboard__row">
-        { recentPartSearches && <RecentPartSearches /> }
-        { recentQuoteSearches && <RecentQuotes /> }
+        <CustomerSection onExpandDetails={onExpandDetails} />
+        {detailsExpanded ?
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            { recentPartSearches && <RecentPartSearches /> }
+            { recentQuoteSearches && <RecentQuotes /> }
+          </div>
+          :
+          <>
+            { recentPartSearches && <RecentPartSearches /> }
+            { recentQuoteSearches && <RecentQuotes /> }
+          </>
+        }
       </div>
 
       <QuotesSection

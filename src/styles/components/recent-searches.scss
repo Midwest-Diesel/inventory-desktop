@@ -9,7 +9,13 @@
 
   &__table-container {
     overflow-y: auto;
-    max-height: 17.5rem;
+    max-height: 9rem;
+    min-height: 7.3rem;
     width: fit-content;
+
+    th, td {
+      padding: 0.25rem;
+      font-size: var(--font-xsm);
+    }
   }
 }

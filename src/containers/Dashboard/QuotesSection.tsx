@@ -130,7 +130,7 @@ export default function QuotesSection({ quotes, setQuotes, setHandwrittenQuote, 
 
 
   return (
-    <div>
+    <div className="quotes-section">
       <div className="quote-list__header no-select" onClick={toggleQuotesOpen}>
         <h2>Quotes</h2>
         <img src={`/images/icons/arrow-${quotesOpen ? 'up' : 'down'}.svg`} alt="arrow" width={25} height={25} />

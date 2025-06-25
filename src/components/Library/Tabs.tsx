@@ -5,7 +5,7 @@ import Button from "./Button";
 interface Props {
   children: any
   className?: string
-  variant?: ('default')[]
+  variant?: ('no-top-margin')[]
 }
 
 

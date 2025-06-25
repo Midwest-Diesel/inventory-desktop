@@ -6,8 +6,12 @@ import { getCustomerById } from "@/scripts/services/customerService";
 import SelectedCustomerInfo from "@/components/Dashboard/SelectedCustomerInfo";
 import CustomerSearch from "@/components/Dashboard/CustomerSearch";
 
+interface Props {
+  onExpandDetails: (isExpanded: boolean) => void
+}
 
-export default function CustomerSection() {
+
+export default function CustomerSection({ onExpandDetails }: Props) {
   const [selectedCustomer, setSelectedCustomer] = useAtom<Customer>(selectedCustomerAtom);
   const [expandedDetailsOpen, setExpandedDetailsOpen] = useState(false);
 
@@ -15,6 +19,7 @@ export default function CustomerSection() {
     const fetchData = async () => {
       const prevCustomer = Number(localStorage.getItem('customerId'));
       const res = await getCustomerById(prevCustomer);
+      if (!res) return;
       setSelectedCustomer(prevCustomer ? res : selectedCustomer);
     };
     fetchData();
@@ -29,6 +34,7 @@ export default function CustomerSection() {
           setSelectedCustomer={setSelectedCustomer}
           expandedDetailsOpen={expandedDetailsOpen}
           setExpandedDetailsOpen={setExpandedDetailsOpen}
+          onExpandDetails={onExpandDetails}
         />
 
         {!isObjectNull(selectedCustomer) &&
