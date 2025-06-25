@@ -2,6 +2,7 @@ import api from "../config/axios";
 import { parseResDate } from "../tools/stringUtils";
 import { filterNullObjValuesArr } from "../tools/utils";
 import { getCoresByCustomer, getCoreReturnsByCustomer } from "./coresService";
+import { getCustomerById } from "./customerService";
 
 interface HandwrittenSearchData {
   id?: number
@@ -235,10 +236,20 @@ export const getHandwrittenEmails = async (customerId: number) => {
 
 // === POST routes === //
 
+const checkForCustomerAlert = (customer: Customer | null) => {
+  if (!customer) return;
+  if (customer.comments?.split(' ').some((c: string) => c.trim().toLowerCase().includes('residential'))) {
+    alert('Customer has residential address');
+  } else if (customer.comments?.split(' ').some((c: string) => c.trim().toLowerCase().includes('remote'))) {
+    alert('Customer has remote address');
+  }
+};
+
 export const addHandwritten = async (handwritten: Handwritten) => {
   try {
     const auth = { withCredentials: true };
     const res = await api.post('/api/handwrittens', handwritten, auth);
+    checkForCustomerAlert(handwritten.customer);
     return (res as any).data.id;
   } catch (err) {
     console.error(err);
@@ -259,6 +270,8 @@ export const addBlankHandwritten = async (data: { date: Date, userId: number, cu
   try {
     const auth = { withCredentials: true };
     const res = await api.post('/api/handwrittens/blank', data, auth);
+    const customer = await getCustomerById(data.customerId);
+    checkForCustomerAlert(customer);
     return (res as any).data.id;
   } catch (err) {
     console.error(err);

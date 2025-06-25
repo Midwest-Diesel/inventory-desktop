@@ -2,7 +2,7 @@ import parser from "html-react-parser";
 
 interface Props {
   msg: string
-  type: 'error' | 'success' | 'warning' | 'info' | 'none'
+  type: 'error' | 'success' | 'warning' | 'none'
 }
 
 

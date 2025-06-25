@@ -33,11 +33,15 @@ export default function Customer() {
   useEffect(() => {
     const fetchData = async () => {
       if (!params) return;
+      // Fetch customer data
       const id = Number(params.customer);
       const customerRes = await getCustomerById(id);
+      if (!customerRes) return;
       setCustomer(customerRes);
+      // Fetch sales history
       setSalesHistory(await getCustomerSalesHistory(id));
-      setTitle(customerRes.company);
+      setTitle(customerRes.company ?? '');
+      // Detect if customer has map location
       if (!await getMapLocationFromCustomer(id)) setIsOnMap(false);
     };
     fetchData();
@@ -243,6 +247,17 @@ export default function Customer() {
                     <tr>
                       <th>Service Manager Email</th>
                       <td>{ customer.serviceManagerEmail }</td>
+                    </tr>
+                  </tbody>
+                </Table>
+              </GridItem>
+
+              <GridItem colStart={1} colEnd={5} variant={['low-opacity-bg']}>
+                <Table variant={['plain', 'row-details']}>
+                  <tbody>
+                    <tr>
+                      <th>Comments</th>
+                      <td>{ customer.comments }</td>
                     </tr>
                   </tbody>
                 </Table>

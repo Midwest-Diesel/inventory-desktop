@@ -1,17 +1,9 @@
 import { useAtom } from "jotai";
 import { shopAddOnsAtom } from "@/scripts/atoms/state";
-import Button from "../Library/Button";
-import Checkbox from "../Library/Checkbox";
-import Table from "../Library/Table";
-import Select from "../Library/Select/Select";
 import { deleteAddOn, editAddOnAltParts, getAddOnById } from "@/scripts/services/addOnsService";
 import { addPart, checkForNewPartNum, getPartByEngineNum, getPartsInfoByPartNum } from "@/scripts/services/partsService";
 import { useEffect, useRef, useState } from "react";
-import Input from "../Library/Input";
 import { getAutofillEngine, getEngineCostRemaining } from "@/scripts/services/enginesService";
-import Loading from "../Library/Loading";
-import VendorSelect from "../Library/Select/VendorSelect";
-import Link from "../Library/Link";
 import { getPurchaseOrderByPoNum } from "@/scripts/services/purchaseOrderService";
 import { getRatingFromRemarks } from "@/scripts/tools/utils";
 import { selectedPoAddOnAtom } from "@/scripts/atoms/components";
@@ -19,6 +11,14 @@ import { useClickOutside } from "@/hooks/useClickOutside";
 import { commonPrefixLength } from "@/scripts/logic/addOns";
 import { ask } from "@/scripts/config/tauri";
 import { formatCurrency } from "@/scripts/tools/stringUtils";
+import Button from "../Library/Button";
+import Checkbox from "../Library/Checkbox";
+import Table from "../Library/Table";
+import Select from "../Library/Select/Select";
+import Input from "../Library/Input";
+import Loading from "../Library/Loading";
+import VendorSelect from "../Library/Select/VendorSelect";
+import Link from "../Library/Link";
 
 interface Props {
   addOn: AddOn

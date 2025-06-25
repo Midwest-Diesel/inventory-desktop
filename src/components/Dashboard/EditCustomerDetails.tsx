@@ -45,6 +45,7 @@ export default function CustomerDetails({ customer, setCustomer, setIsEditing }:
   const [paymentType, setPaymentType] = useState<string>(customer.paymentType ?? '');
   const [source, setSource] = useState<string>(customer.source ?? '');
   const [isTaxable, setIsTaxable] = useState<boolean>(customer.isTaxable);
+  const [comments, setComments] = useState<string>(customer.comments ?? '');
   const [editLocDialogOpen, setEditLocDialogOpen] = useState(false);
   const [loc, setLoc] = useState<MapLocation | null>(null);
   const [changesSaved, setChangesSaved] = useState<boolean>(true);
@@ -88,7 +89,8 @@ export default function CustomerDetails({ customer, setCustomer, setIsEditing }:
       serviceManager,
       serviceManagerEmail,
       paymentType,
-      isTaxable
+      isTaxable,
+      comments
     } as Customer;
     await editCustomer(newCustomer);
     setCustomer(newCustomer);
@@ -385,6 +387,25 @@ export default function CustomerDetails({ customer, setCustomer, setIsEditing }:
                           value={serviceManagerEmail}
                           type="email"
                           onChange={(e: any) => setServiceManagerEmail(e.target.value)}
+                        />
+                      </td>
+                    </tr>
+                  </tbody>
+                </Table>
+              </GridItem>
+
+              <GridItem colStart={1} colEnd={5} variant={['low-opacity-bg']}>
+                <Table variant={['plain', 'row-details', 'edit-row-details']}>
+                  <tbody>
+                    <tr>
+                      <th>Comments</th>
+                      <td>
+                        <Input
+                          variant={['label-stack', 'label-bold', 'text-area']}
+                          rows={5}
+                          cols={100}
+                          value={comments}
+                          onChange={(e: any) => setComments(e.target.value)}
                         />
                       </td>
                     </tr>
