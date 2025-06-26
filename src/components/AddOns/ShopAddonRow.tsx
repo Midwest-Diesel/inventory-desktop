@@ -4,7 +4,7 @@ import Button from "../Library/Button";
 import Checkbox from "../Library/Checkbox";
 import Table from "../Library/Table";
 import Select from "../Library/Select/Select";
-import { deleteAddOn, editAddOnPrintStatus } from "@/scripts/services/addOnsService";
+import { deleteAddOn, editAddOnIsPoOpened, editAddOnPrintStatus } from "@/scripts/services/addOnsService";
 import { getPartByEngineNum, getPartsInfoByPartNum } from "@/scripts/services/partsService";
 import { useEffect, useRef, useState } from "react";
 import Input from "../Library/Input";
@@ -178,9 +178,15 @@ export default function ShopAddonRow({ addOn, handleDuplicateAddOn, partNumList,
   };
 
   const handleOpenPO = async (e: any) => {
-    if (!e.target.value) return;
+    if (!e.target.value || addOn.isPoOpened) return;
     const po = await getPurchaseOrderByPoNum(e.target.value);
     if (!po || po.poItems.length === 0) return;
+    onSave();
+    await editAddOnIsPoOpened(addOn.id, true);
+    setAddons(addOns.map((a) => {
+      if (a.id === addOn.id) return { ...a, isPoOpened: true };
+      return a;
+    }));
     setPoLink(`${po.poNum}`);
     setSelectedPoData({ selectedPoAddOn: po, addOn, receivedItemsDialogOpen: true });
   };
@@ -363,7 +369,10 @@ export default function ShopAddonRow({ addOn, handleDuplicateAddOn, partNumList,
                     variant={['small', 'thin', 'text-area']}
                     type="number"
                     value={addOn.po !== null ? addOn.po : ''}
-                    onChange={(e: any) => handleEditAddOn({ ...addOn, po: e.target.value })}
+                    onChange={(e: any) => {
+                      handleEditAddOn({ ...addOn, po: e.target.value });
+                      setPoLink(e.target.value);
+                    }}
                     onBlur={(e: any) => handleOpenPO(e)}
                   />
                 </td>

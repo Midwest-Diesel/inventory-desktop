@@ -93,7 +93,7 @@ export default function PurchaseOrders() {
                     <th>Date</th>
                     <th>Purchased From</th>
                     <th>Purchased For</th>
-                    <th>Items Received</th>
+                    <th>Closed</th>
                     <th>Ordered By</th>
                     <th>Shipping</th>
                     <th>Special Instructions</th>

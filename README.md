@@ -1,5 +1,4 @@
 # Inventory
-
 This application is currently only compatible with windows.
 
 ## Installation
@@ -9,8 +8,7 @@ This application is currently only compatible with windows.
 - Set the install location *C:\MWD* when prompted
 
 ## Getting Started
-
-- Run `npm i`
+- `npm install`
 - Create *.env.production* and *.env.development* files
 - Create a *publish.sh* file
 - Run the following commands:
@@ -18,6 +16,11 @@ This application is currently only compatible with windows.
   - `npm run db:init`
   - `npm run db:start`
   - `npm run tauri dev`
+
+## Publish Changes
+- Change version inside of *src-tauri/tauri.conf.json*
+- `npm run publish`
+- Commit and push
 
 ## Testing
 Make sure you run `npm run dev:test` to host the test client.

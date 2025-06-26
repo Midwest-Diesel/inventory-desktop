@@ -307,6 +307,7 @@ type AddOn = {
   serialNum: string | null
   altParts: string[]
   isPrinted: boolean
+  isPoOpened: boolean
 };
 
 type EngineAddOn = {

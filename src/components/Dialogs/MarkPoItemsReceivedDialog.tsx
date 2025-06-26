@@ -69,7 +69,7 @@ export default function MarkPoItemsReceivedDialog({ open, setOpen, purchaseOrder
                 <td>{ formatCurrency(item.unitPrice) }</td>
                 <td>{ formatCurrency(item.totalPrice) }</td>
                 <td className="cbx-td">
-                  <Button onClick={() => handleReceivedItem(item)} disabled={item.isReceived}>Received</Button>
+                  <Button onClick={() => handleReceivedItem(item)} disabled={item.isReceived}>{ item.isReceived ? 'Received' : 'Receive' }</Button>
                 </td>
               </tr>
             );

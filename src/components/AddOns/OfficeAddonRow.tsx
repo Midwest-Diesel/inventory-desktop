@@ -4,9 +4,7 @@ import { deleteAddOn, editAddOnAltParts, getAddOnById } from "@/scripts/services
 import { addPart, checkForNewPartNum, getPartByEngineNum, getPartsInfoByPartNum } from "@/scripts/services/partsService";
 import { useEffect, useRef, useState } from "react";
 import { getAutofillEngine, getEngineCostRemaining } from "@/scripts/services/enginesService";
-import { getPurchaseOrderByPoNum } from "@/scripts/services/purchaseOrderService";
 import { getRatingFromRemarks } from "@/scripts/tools/utils";
-import { selectedPoAddOnAtom } from "@/scripts/atoms/components";
 import { useClickOutside } from "@/hooks/useClickOutside";
 import { commonPrefixLength } from "@/scripts/logic/addOns";
 import { ask } from "@/scripts/config/tauri";
@@ -28,9 +26,7 @@ interface Props {
 
 
 export default function OfficeAddonRow({ addOn, partNumList, setSelectedAddOnData }: Props) {
-  const [, setSelectedPoData] = useAtom<{ selectedPoAddOn: PO | null, addOn: AddOn | null, receivedItemsDialogOpen: boolean }>(selectedPoAddOnAtom);
   const [addOns, setAddons] = useAtom<AddOn[]>(shopAddOnsAtom);
-  const [poLink, setPoLink] = useState<string>(addOn.po ? `${addOn.po}` : '');
   const [partNum, setPartNum] = useState<string>(addOn.partNum ?? '');
   const [engineNum, setEngineNum] = useState<string>(addOn.engineNum?.toString() ?? '');
   const [engineCostRemaining, setEngineCostRemaining] = useState(0);
@@ -193,14 +189,6 @@ export default function OfficeAddonRow({ addOn, partNumList, setSelectedAddOnDat
 
   const updateLoading = (i: number, total: number) => {
     setLoadingProgress(`${i}/${total}`);
-  };
-
-  const handleOpenPO = async (e: any) => {
-    if (!e.target.value) return;
-    const po = await getPurchaseOrderByPoNum(e.target.value);
-    if (!po || po.poItems.length === 0) return;
-    setPoLink(`${po.poNum}`);
-    setSelectedPoData({ selectedPoAddOn: po, addOn, receivedItemsDialogOpen: true });
   };
 
   const handlePartNumSelectClick = (num: string) => {
@@ -395,7 +383,6 @@ export default function OfficeAddonRow({ addOn, partNumList, setSelectedAddOnDat
                   type="number"
                   value={addOn.po !== null ? addOn.po : ''}
                   onChange={(e: any) => handleEditAddOn({ ...addOn, po: e.target.value })}
-                  onBlur={(e: any) => handleOpenPO(e)}
                 />
               </td>
             </tr>
@@ -493,7 +480,7 @@ export default function OfficeAddonRow({ addOn, partNumList, setSelectedAddOnDat
           </>
           :
           <>
-            { poLink && <Link href={`/purchase-orders/${poLink}`}>View PO</Link> }
+            { addOn.po && <Link href={`/purchase-orders/${addOn.po}`}>View PO</Link> }
             <Button type="button" onClick={handleAddToInventory}>Add to Inventory</Button>
           </>
         }

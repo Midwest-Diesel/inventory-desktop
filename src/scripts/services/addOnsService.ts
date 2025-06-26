@@ -74,6 +74,15 @@ export const editAddOnPrintStatus = async (id: number, isPrinted: boolean) => {
   }
 };
 
+export const editAddOnIsPoOpened = async (id: number, isPoOpened: boolean) => {
+  try {
+    const auth = { withCredentials: true };
+    await api.patch('/api/add-ons/po-opened', { id, isPoOpened }, auth);
+  } catch (err) {
+    console.error(err);
+  }
+};
+
 // === PUT routes === //
 
 export const editAddOn = async (addOn: AddOn) => {
