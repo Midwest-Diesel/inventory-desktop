@@ -1,29 +1,16 @@
 import { formatCurrency } from "@/scripts/tools/stringUtils";
-import Table from "./Library/Table";
-import Checkbox from "./Library/Checkbox";
-import { togglePurchaseOrderItemReceived } from "@/scripts/services/purchaseOrderService";
-import { confirm } from "@/scripts/config/tauri";
+import Table from "../Library/Table";
+import Checkbox from "../Library/Checkbox";
 
 interface Props {
   className?: string
   poItems: POItem[]
   poReceivedItems: POReceivedItem[]
-  po: PO
-  setPoItems: (data: PO) => void
+  handleToggleIsItemReceived: (id: number, isReceived: boolean) => Promise<void>
 }
 
 
-export default function PurchaseOrderItemsTable({ className, poItems, poReceivedItems, po, setPoItems }: Props) {
-  const handleToggleIsItemReceived = async (id: number, isReceived: boolean) => {
-    if (!await confirm(`Mark item as ${isReceived ? 'received' : 'not received'}?`)) return;
-    await togglePurchaseOrderItemReceived(id, isReceived);
-    setPoItems({ ...po, poItems: poItems.map((item) => {
-      if (item.id === id) return { ...item, isReceived };
-      return item;
-    })});
-  };
-
-
+export default function PurchaseOrderItemsTable({ className, poItems, poReceivedItems, handleToggleIsItemReceived }: Props) {
   return (
     <div className={`purchase-order-items-table ${className && className}`}>
       {poItems &&
@@ -68,7 +55,6 @@ export default function PurchaseOrderItemsTable({ className, poItems, poReceived
                 <th>Part Number</th>
                 <th>Stock Number</th>
                 <th>Description</th>
-                <th>Qty</th>
                 <th>Cost</th>
               </tr>
             </thead>
@@ -79,7 +65,6 @@ export default function PurchaseOrderItemsTable({ className, poItems, poReceived
                     <td>{ item.partNum }</td>
                     <td>{ item.stockNum }</td>
                     <td>{ item.desc }</td>
-                    <td>{ item.qty }</td>
                     <td>{ formatCurrency(item.cost) }</td>
                   </tr>
                 );

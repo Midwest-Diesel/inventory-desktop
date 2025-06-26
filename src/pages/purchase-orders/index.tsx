@@ -5,7 +5,7 @@ import Checkbox from "@/components/Library/Checkbox";
 import Loading from "@/components/Library/Loading";
 import Pagination from "@/components/Library/Pagination";
 import Table from "@/components/Library/Table";
-import PurchaseOrderItemsTable from "@/components/PurchaseOrderItemsTable";
+import PurchaseOrderItemsTable from "@/components/PurchaseOrders/PurchaseOrderItemsTable";
 import { POSearchAtom } from "@/scripts/atoms/state";
 import { addBlankPurchaseOrder, getSomePurchaseOrders, searchPurchaseOrders } from "@/scripts/services/purchaseOrderService";
 import { formatDate } from "@/scripts/tools/stringUtils";

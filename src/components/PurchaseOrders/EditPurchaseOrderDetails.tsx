@@ -1,24 +1,28 @@
 import { FormEvent, useState } from "react";
-import Button from "./Library/Button";
-import Grid from "./Library/Grid/Grid";
-import GridItem from "./Library/Grid/GridItem";
-import Input from "./Library/Input";
-import Table from "./Library/Table";
+import Button from "../Library/Button";
+import Grid from "../Library/Grid/Grid";
+import GridItem from "../Library/Grid/GridItem";
+import Input from "../Library/Input";
+import Table from "../Library/Table";
 import { parseDateInputValue } from "@/scripts/tools/stringUtils";
-import { addPurchaseOrderItem, deletePurchaseOrderItem, editPurchaseOrder, editPurchaseOrderItem, getPurchaseOrderById } from "@/scripts/services/purchaseOrderService";
-import VendorDropdown from "./Library/Dropdown/VendorDropdown";
-import { PreventNavigation } from "./PreventNavigation";
-import Checkbox from "./Library/Checkbox";
+import { addPurchaseOrderItem, deletePurchaseOrderItem, deletePurchaseOrderReceivedItem, editPurchaseOrder, editPurchaseOrderItem, editPurchaseOrderReceivedItem, getPurchaseOrderById } from "@/scripts/services/purchaseOrderService";
+import VendorDropdown from "../Library/Dropdown/VendorDropdown";
+import { PreventNavigation } from "../PreventNavigation";
+import Checkbox from "../Library/Checkbox";
 import { ask } from "@/scripts/config/tauri";
 
 interface Props {
   poData: PO
   setPo: (poData: PO) => void
   setIsEditing: (value: boolean) => void
+  poItems: POItem[]
+  poItemsReceived: POReceivedItem[]
+  setPoItems: (items: POItem[]) => void
+  setPoItemsReceived: (items: POReceivedItem[]) => void
 }
 
 
-export default function EditPoDetails({ poData, setPo, setIsEditing }: Props) {
+export default function EditPoDetails({ poData, setPo, setIsEditing, poItems, poItemsReceived, setPoItems, setPoItemsReceived }: Props) {
   const [date, setDate] = useState<Date | null>(poData.date);
   const [purchasedFrom, setPurchasedFrom] = useState<string>(poData.purchasedFrom ?? '');
   const [vendorAddress, setVendorAddress] = useState<string>(poData.vendorAddress ?? '');
@@ -41,7 +45,6 @@ export default function EditPoDetails({ poData, setPo, setIsEditing }: Props) {
   const [orderedBy, setOrderedBy] = useState<string>(poData.orderedBy ?? '');
   const [vendorContact, setVendorContact] = useState<string>(poData.vendorContact ?? '');
   const [shippingMethod, setShippingMethod] = useState<string>(poData.shippingMethod ?? '');
-  const [poItems, setPoItems] = useState<POItem[]>(poData.poItems);
   const [changesSaved, setChangesSaved] = useState(true);
 
   const saveChanges = async (e: FormEvent) => {
@@ -74,6 +77,7 @@ export default function EditPoDetails({ poData, setPo, setIsEditing }: Props) {
       shippingMethod,
     } as PO;
     await editPurchaseOrder(newPo);
+    // Edit PO items
     if (JSON.stringify(poItems) !== JSON.stringify(poData.poItems)) {
       for (let i = 0; i < poItems.length; i++) {
         const item: any = poItems[i];
@@ -84,6 +88,18 @@ export default function EditPoDetails({ poData, setPo, setIsEditing }: Props) {
         await editPurchaseOrderItem(newItem);
       }
     }
+    // Edit PO received items
+    if (JSON.stringify(poItemsReceived) !== JSON.stringify(poData.poReceivedItems)) {
+      for (let i = 0; i < poItemsReceived.length; i++) {
+        const item: any = poItemsReceived[i];
+        const newItem = {
+          id: item.id,
+          ...item
+        } as POReceivedItem;
+        await editPurchaseOrderReceivedItem(newItem);
+      }
+    }
+
     setPo(await getPurchaseOrderById(poData.id));
     setIsEditing(false);
   };
@@ -102,11 +118,24 @@ export default function EditPoDetails({ poData, setPo, setIsEditing }: Props) {
     setPoItems(newItems);
   };
 
+  const handleEditReceivedItem = async (item: POReceivedItem, i: number) => {
+    const newItems = [...poItemsReceived];
+    newItems[i] = item;
+    setPoItemsReceived(newItems);
+  };
+
   const handleDeleteItem = async (id: number) => {
     if (!await ask('Are you sure you want to delete this item?')) return;
     const newItems = poItems.filter((i: POItem) => i.id !== id);
     await deletePurchaseOrderItem(id);
     setPoItems(newItems);
+  };
+
+  const handleDeleteReceivedItem = async (id: number) => {
+    if (!await ask('Are you sure you want to delete this item?')) return;
+    const newItems = poItemsReceived.filter((i: POReceivedItem) => i.id !== id);
+    await deletePurchaseOrderReceivedItem(id);
+    setPoItemsReceived(newItems);
   };
 
   const handleNewItem = async () => {
@@ -484,6 +513,66 @@ export default function EditPoDetails({ poData, setPo, setIsEditing }: Props) {
               </Table>
 
               <Button type="button" onClick={handleNewItem}>Add</Button>
+            </GridItem>
+
+            <GridItem colStart={1} colEnd={12} variant={['no-style']} style={{ marginTop: '1rem' }}>
+              <h3>PO Items Received</h3>
+              <Table>
+                <thead>
+                  <tr>
+                    <th>Part Number</th>
+                    <th>Stock Number</th>
+                    <th>Description</th>
+                    <th>Cost</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {poItemsReceived.map((item: POReceivedItem, i: number) => { 
+                    return (
+                      <tr key={i}>
+                        <td>
+                          <Input
+                            value={item.partNum ?? ''}
+                            onChange={(e: any) => handleEditReceivedItem({ ...item, partNum: e.target.value }, i)}
+                            required
+                          />
+                        </td>
+                        <td>
+                          <Input
+                            value={item.stockNum ?? ''}
+                            onChange={(e: any) => handleEditReceivedItem({ ...item, stockNum: e.target.value }, i)}
+                            required
+                          />
+                        </td>
+                        <td>
+                          <Input
+                            value={item.desc ?? ''}
+                            onChange={(e: any) => handleEditReceivedItem({ ...item, desc: e.target.value }, i)}
+                          />
+                        </td>
+                        <td>
+                          <Input
+                            value={item.cost ?? ''}
+                            onChange={(e: any) => handleEditReceivedItem({ ...item, cost: e.target.value }, i)}
+                            type="number"
+                            step="any"
+                          />
+                        </td>
+                        <td style={{ textAlign: 'center' }}>
+                          <Button
+                            variant={['danger', 'center']}
+                            onClick={() => handleDeleteReceivedItem(item.id)}
+                            type="button"
+                          >
+                            Delete
+                          </Button>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </Table>
             </GridItem>
           </Grid>
         </form>

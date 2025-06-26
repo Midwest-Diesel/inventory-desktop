@@ -750,7 +750,6 @@ type POReceivedItem = {
   desc: string | null
   stockNum: string | null
   cost: number | null
-  qty: number | null
   POItemId: number | null
 };
 

@@ -111,10 +111,19 @@ export const editPurchaseOrder = async (po: PO) => {
   }
 };
 
-export const editPurchaseOrderItem = async (po: POItem) => {
+export const editPurchaseOrderItem = async (item: POItem) => {
   try {
     const auth = { withCredentials: true };
-    await api.put('/api/po/item', po, auth);
+    await api.put('/api/po/item', item, auth);
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+export const editPurchaseOrderReceivedItem = async (item: POReceivedItem) => {
+  try {
+    const auth = { withCredentials: true };
+    await api.put('/api/po/received-item', item, auth);
   } catch (err) {
     console.error(err);
   }
@@ -155,6 +164,15 @@ export const deletePurchaseOrderItem = async (id: number) => {
   try {
     const auth = { withCredentials: true };
     await api.delete(`/api/po/item/${id}`, auth);
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+export const deletePurchaseOrderReceivedItem = async (id: number) => {
+  try {
+    const auth = { withCredentials: true };
+    await api.delete(`/api/po/received-item/${id}`, auth);
   } catch (err) {
     console.error(err);
   }
