@@ -1,4 +1,7 @@
 .recent-part-searches, .recent-quotes {
+  position: relative;
+  z-index: 1;
+
   &__header {
     display: flex;
     align-items: center;
