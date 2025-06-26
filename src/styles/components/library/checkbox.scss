@@ -88,6 +88,10 @@
   user-select: none;
 }
 
+.checkbox-wrapper-4 .cbx--disabled span:first-child {
+  border-color: #747474;
+}
+
 @media screen and (max-width: 640px) {
   .checkbox-wrapper-4 .cbx {
     width: 100%;
