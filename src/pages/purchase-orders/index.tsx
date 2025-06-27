@@ -137,8 +137,7 @@ export default function PurchaseOrders() {
           <PurchaseOrderItemsTable
             poItems={focusedPurchaseOrder.poItems}
             poReceivedItems={focusedPurchaseOrder.poReceivedItems}
-            setPoItems={() => location.reload()}
-            po={focusedPurchaseOrder}
+            handleToggleIsItemReceived={async (id: number, isReceived: boolean) => {}}
           />
         }
       </div>

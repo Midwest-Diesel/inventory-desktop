@@ -1,33 +1,34 @@
-import OfficeAddonRow from "@/components/AddOns/OfficeAddonRow";
-import AddOnAltPartsDialog from "@/components/Dialogs/AddOnAltPartsDialog";
-import { Layout } from "@/components/Layout";
+import ShopPartAddonRow from "@/components/AddOns/ShopPartAddonRow";
+import MarkPoItemsReceivedDialog from "@/components/Dialogs/MarkPoItemsReceivedDialog";
 import Button from "@/components/Library/Button";
 import { PreventNavigation } from "@/components/PreventNavigation";
+import { selectedPoAddOnAtom } from "@/scripts/atoms/components";
 import { shopAddOnsAtom } from "@/scripts/atoms/state";
 import { supabase } from "@/scripts/config/supabase";
-import { editAddOn, getOfficeAddOns } from "@/scripts/services/addOnsService";
+import { addAddOn, editAddOn, getAllAddOns } from "@/scripts/services/addOnsService";
 import { getAllPartNums } from "@/scripts/services/partsService";
 import { RealtimePostgresDeletePayload, RealtimePostgresInsertPayload, RealtimePostgresUpdatePayload } from "@supabase/supabase-js";
 import { useAtom } from "jotai";
-import { FormEvent, Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 
 
-export default function AddOnsOffice() {
+export default function ShopPartAddOnsContainer() {
+  const [selectedPoData, setSelectedPoData] = useAtom<{ selectedPoAddOn: PO | null, addOn: AddOn | null, receivedItemsDialogOpen: boolean }>(selectedPoAddOnAtom);
   const [partNumList, setPartNumList] = useState<string[]>([]);
   const [prevAddons, setPrevAddons] = useState<AddOn[]>([]);
   const [addOns, setAddons] = useAtom<AddOn[]>(shopAddOnsAtom);
-  const [selectedAddOnData, setSelectedAddOnData] = useState<AddOn | null>(null);
   const [savedBtnText, setSavedBtnText] = useState('Save');
   const [shouldPreventLeave, setShouldPreventLeave] = useState(false);
+  const { selectedPoAddOn, addOn, receivedItemsDialogOpen } = selectedPoData;
 
   useEffect(() => {
     const fetchData = async () => {
-      const res = await getOfficeAddOns();
+      const res = await getAllAddOns();
       setAddons(res);
       setPrevAddons(res);
 
-      const partNums = await getAllPartNums();
-      setPartNumList(partNums.map((p: Part) => p.partNum));
+      const parts = await getAllPartNums();
+      setPartNumList(parts.map((p: Part) => p.partNum));
     };
     fetchData();
 
@@ -64,8 +65,23 @@ export default function AddOnsOffice() {
     setPrevAddons((prev) => prev.filter((row) => row.id !== e.old.id));
   };
 
-  const handleEditAddOns = async (e: FormEvent) => {
-    e.preventDefault();
+  const handleNewAddOn = async () => {
+    await handleEditAddOns();
+    await addAddOn();
+    const res = await getAllAddOns();
+    setAddons(res);
+    setPrevAddons(res);
+  };
+
+  const handleDuplicateAddOn = async (duplicateAddOn: AddOn) => {
+    await handleEditAddOns();
+    await addAddOn(duplicateAddOn);
+    const res = await getAllAddOns();
+    setAddons(res);
+    setPrevAddons(res);
+  };
+
+  const handleEditAddOns = async () => {
     setSavedBtnText('Saved!');
     setShouldPreventLeave(false);
     for (let i = 0; i < addOns.length; i++) {
@@ -78,42 +94,45 @@ export default function AddOnsOffice() {
 
 
   return (
-    <Layout title="Add Ons">
+    <>
       <PreventNavigation shouldPrevent={shouldPreventLeave} text="Do you want to leave without saving?" />
-      
-      {selectedAddOnData &&
-        <AddOnAltPartsDialog
-          open={selectedAddOnData !== null}
-          setOpen={() => setSelectedAddOnData(null)}
-          addOn={selectedAddOnData}
-          partNumList={partNumList}
-        />
-      }
+
+      { selectedPoAddOn ?
+        <MarkPoItemsReceivedDialog
+          open={receivedItemsDialogOpen}
+          setOpen={(value: boolean) => setSelectedPoData({ ...selectedPoData, receivedItemsDialogOpen: value })}
+          purchaseOrder={selectedPoAddOn}
+          addOn={addOn}
+        /> : '' }
 
       <div className="add-ons">
-        <h1>Office Add Ons</h1>
+        <h1>Shop Add Ons</h1>
+        <Button
+          variant={['fit']}
+          onClick={handleNewAddOn}
+        >
+          New Part
+        </Button>
 
-        <form onSubmit={handleEditAddOns}>
-          <div className="header__btn-container">
-            <Button
-              variant={['save']}
-              type="submit"
-            >
-              { savedBtnText }
-            </Button>
-          </div>
+        <div className="header__btn-container">
+          <Button
+            variant={['save']}
+            onClick={handleEditAddOns}
+          >
+            { savedBtnText }
+          </Button>
+        </div>
 
-          <form className="add-ons__list" onChange={() => setShouldPreventLeave(true)}>
-            {addOns.map((addOn) => {
-              return (
-                <Fragment key={addOn.id}>
-                  <OfficeAddonRow addOn={addOn} partNumList={partNumList} setSelectedAddOnData={setSelectedAddOnData} />
-                </Fragment>
-              );
-            })}
-          </form>
+        <form className="add-ons__list" onChange={() => setShouldPreventLeave(true)}>
+          {addOns.map((addOn) => {
+            return (
+              <Fragment key={addOn.id}>
+                <ShopPartAddonRow addOn={addOn} handleDuplicateAddOn={handleDuplicateAddOn} partNumList={partNumList} onSave={handleEditAddOns} />
+              </Fragment>
+            );
+          })}
         </form>
       </div>
-    </Layout>
+    </>
   );
 }

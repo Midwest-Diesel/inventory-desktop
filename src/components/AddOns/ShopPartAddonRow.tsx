@@ -5,7 +5,7 @@ import Checkbox from "../Library/Checkbox";
 import Table from "../Library/Table";
 import Select from "../Library/Select/Select";
 import { deleteAddOn, editAddOnIsPoOpened, editAddOnPrintStatus } from "@/scripts/services/addOnsService";
-import { getPartByEngineNum, getPartsInfoByPartNum } from "@/scripts/services/partsService";
+import { getPartByEngineNum, getPartsByStockNum, getPartsInfoByPartNum } from "@/scripts/services/partsService";
 import { useEffect, useRef, useState } from "react";
 import Input from "../Library/Input";
 import Link from "../Library/Link";
@@ -29,7 +29,7 @@ interface Props {
 }
 
 
-export default function ShopAddonRow({ addOn, handleDuplicateAddOn, partNumList, onSave }: Props) {
+export default function ShopPartAddonRow({ addOn, handleDuplicateAddOn, partNumList, onSave }: Props) {
   const [, setSelectedPoData] = useAtom<{ selectedPoAddOn: PO | null, addOn: AddOn | null, receivedItemsDialogOpen: boolean }>(selectedPoAddOnAtom);
   const { addToQue, printQue } = usePrintQue();
   const [addOns, setAddons] = useAtom<AddOn[]>(shopAddOnsAtom);
@@ -38,6 +38,7 @@ export default function ShopAddonRow({ addOn, handleDuplicateAddOn, partNumList,
   const [engineNum, setEngineNum] = useState<string>(addOn.engineNum?.toString() ?? '');
   const [showPartNumSelect, setShowPartNumSelect] = useState(false);
   const [showVendorSelect, setShowVendorSelect] = useState(false);
+  const [isDuplicateStockNum, setIsDuplicateStockNum] = useState(false);
   const [printQty, setPrintQty] = useState(1);
   const ref = useRef<HTMLDivElement>(null);
   const partNumListRefs = useRef<(HTMLLIElement | null)[]>([]);
@@ -75,6 +76,18 @@ export default function ShopAddonRow({ addOn, handleDuplicateAddOn, partNumList,
       }
     }
   }, [showPartNumSelect, addOn.partNum, partNumList]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (!addOn.stockNum) {
+        setIsDuplicateStockNum(false);
+      } else {
+        const res = await getPartsByStockNum(addOn.stockNum);
+        setIsDuplicateStockNum(res.length > 0);
+      }
+    };
+    fetchData();
+  }, [addOn.stockNum]);
 
   const handleEditAddOn = async (newAddOn: AddOn) => {
     const updatedAddOns = addOns.map((a: AddOn) => {
@@ -139,11 +152,6 @@ export default function ShopAddonRow({ addOn, handleDuplicateAddOn, partNumList,
         hp: res.horsePower ?? '',
         serialNum: res.serialNum ?? '',
       } as AddOn;
-
-      const isDuplicate = addOns.some((a) => a.stockNum === newAddOn.stockNum);
-      if (isDuplicate) {
-        alert("Duplicate StockNumber, already added to add-on sheet or in inventory");
-      }
   
       const updatedAddOns = addOns.map((a: AddOn) => (a.id === addOn.id ? newAddOn : a));
       setAddons(updatedAddOns);
@@ -209,6 +217,7 @@ export default function ShopAddonRow({ addOn, handleDuplicateAddOn, partNumList,
                 <th>Qty</th>
                 <th>Part Number</th>
                 <th>Description</th>
+                <th>Type</th>
                 <th>Engine #</th>
                 <th>Stock Number</th>
                 <th>Location</th>
@@ -267,6 +276,16 @@ export default function ShopAddonRow({ addOn, handleDuplicateAddOn, partNumList,
                   />
                 </td>
                 <td>
+                  <Select
+                    style={{ width: '100%' }}
+                    value={addOn.type ?? ''}
+                    onChange={(e: any) => handleEditAddOn({ ...addOn, type: e.target.value })}
+                  >
+                    <option>Truck</option>
+                    <option>Industrial</option>
+                  </Select>
+                </td>
+                <td>
                   <Input
                     variant={['small', 'thin']}
                     type="number"
@@ -278,6 +297,7 @@ export default function ShopAddonRow({ addOn, handleDuplicateAddOn, partNumList,
                 </td>
                 <td>
                   <Input
+                    style={isDuplicateStockNum ? { backgroundColor: 'var(--red-1)' } : {}}
                     variant={['small', 'thin']}
                     value={addOn.stockNum !== null ? addOn.stockNum : ''}
                     onChange={(e: any) => handleEditAddOn({ ...addOn, stockNum: e.target.value })}

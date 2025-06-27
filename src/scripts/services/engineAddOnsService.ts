@@ -10,13 +10,25 @@ const parseAddOnDataRes = (data: any) => {
 
 // === GET routes === //
 
-export const getAllEngineAddOns = async () => {
+export const getAllEngineAddOns = async (): Promise<EngineAddOn[]> => {
   try {
     const auth = { withCredentials: true };
     const res = await api.get('/api/engine-add-ons', auth);
     return parseAddOnDataRes(res.data);
   } catch (err) {
     console.error(err);
+    return [];
+  }
+};
+
+export const getOfficeEngineAddOns = async (): Promise<EngineAddOn[]> => {
+  try {
+    const auth = { withCredentials: true };
+    const res = await api.get('/api/engine-add-ons/office', auth);
+    return parseAddOnDataRes(res.data);
+  } catch (err) {
+    console.error(err);
+    return [];
   }
 };
 
@@ -37,6 +49,17 @@ export const editEngineAddOn = async (addOn: EngineAddOn) => {
   try {
     const auth = { withCredentials: true };
     await api.put('/api/engine-add-ons', addOn, auth);
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+// === PATCH routes === //
+
+export const editEngineAddOnPrintStatus = async (id: number, isPrinted: boolean) => {
+  try {
+    const auth = { withCredentials: true };
+    await api.patch('/api/engine-add-ons/is-printed', { id, isPrinted }, auth);
   } catch (err) {
     console.error(err);
   }

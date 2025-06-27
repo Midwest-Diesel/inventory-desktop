@@ -5,7 +5,7 @@ import Select from "../Library/Select/Select";
 import { useEffect, useRef, useState } from "react";
 import Input from "../Library/Input";
 import { addEngine, getAutofillEngine } from "@/scripts/services/enginesService";
-import { deleteEngineAddOn } from "@/scripts/services/engineAddOnsService";
+import { deleteEngineAddOn, editEngineAddOnPrintStatus } from "@/scripts/services/engineAddOnsService";
 import { useAtom } from "jotai";
 import { engineAddOnsAtom } from "@/scripts/atoms/state";
 import { formatDate } from "@/scripts/tools/stringUtils";
@@ -17,10 +17,11 @@ import { usePrintQue } from "@/hooks/usePrintQue";
 interface Props {
   addOn: EngineAddOn
   handleDuplicateAddOn: (addOn: EngineAddOn) => void
+  onSave: () => Promise<void>
 }
 
 
-export default function EngineAddOnRow({ addOn, handleDuplicateAddOn }: Props) {
+export default function ShopEngineAddOnRow({ addOn, handleDuplicateAddOn, onSave }: Props) {
   const { addToQue, printQue } = usePrintQue();
   const [addOns, setAddons] = useAtom<EngineAddOn[]>(engineAddOnsAtom);
   const [autofillEngineNum, setAutofillEngineNum] = useState('');
@@ -85,14 +86,9 @@ export default function EngineAddOnRow({ addOn, handleDuplicateAddOn }: Props) {
     setAutofillEngineNum('');
   };
 
-  const handleAddToInventory = async () => {
-    if (!await ask('Are you sure you want to add this engine?')) return;
-    await addEngine(addOn);
-    await deleteEngineAddOn(addOn.id);
-    setAddons(addOns.filter((a) => a.id !== addOn.id));
-  };
-
   const handlePrint = async () => {
+    await onSave();
+    await editEngineAddOnPrintStatus(addOn.id, true);
     const pictures = await getEngineImages(addOn.engineNum);
     for (let i = 0; i < printQty; i++) {
       const args = {
@@ -268,7 +264,6 @@ export default function EngineAddOnRow({ addOn, handleDuplicateAddOn }: Props) {
         </div>
 
         <div className="add-ons__list-row-buttons">
-          <Button type="button" onClick={handleAddToInventory}>Add to Inventory</Button>
           <Button type="button" onClick={() => handleDuplicateAddOn(addOn)}>Duplicate</Button>
           <Input
             style={{ width: '3rem' }}

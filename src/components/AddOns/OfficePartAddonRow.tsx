@@ -1,7 +1,7 @@
 import { useAtom } from "jotai";
 import { shopAddOnsAtom } from "@/scripts/atoms/state";
 import { deleteAddOn, editAddOnAltParts, getAddOnById } from "@/scripts/services/addOnsService";
-import { addPart, checkForNewPartNum, getPartByEngineNum, getPartsInfoByPartNum } from "@/scripts/services/partsService";
+import { addPart, addPartCostIn, checkForNewPartNum, getPartByEngineNum, getPartsByStockNum, getPartsInfoByPartNum } from "@/scripts/services/partsService";
 import { useEffect, useRef, useState } from "react";
 import { getAutofillEngine, getEngineCostRemaining } from "@/scripts/services/enginesService";
 import { getRatingFromRemarks } from "@/scripts/tools/utils";
@@ -22,10 +22,11 @@ interface Props {
   addOn: AddOn
   partNumList: string[]
   setSelectedAddOnData: (addOn: AddOn | null) => void
+  onSave: () => Promise<void>
 }
 
 
-export default function OfficeAddonRow({ addOn, partNumList, setSelectedAddOnData }: Props) {
+export default function OfficePartAddonRow({ addOn, partNumList, setSelectedAddOnData, onSave }: Props) {
   const [addOns, setAddons] = useAtom<AddOn[]>(shopAddOnsAtom);
   const [partNum, setPartNum] = useState<string>(addOn.partNum ?? '');
   const [engineNum, setEngineNum] = useState<string>(addOn.engineNum?.toString() ?? '');
@@ -35,6 +36,8 @@ export default function OfficeAddonRow({ addOn, partNumList, setSelectedAddOnDat
   const [showPartNumSelect, setShowPartNumSelect] = useState(false);
   const [showVendorSelect, setShowVendorSelect] = useState(false);
   const [isNewPart, setIsNewPart] = useState(false);
+  const [isDuplicateStockNum, setIsDuplicateStockNum] = useState(false);
+  const [highlightPurchasePrice, setHighlightPurchasePrice] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const partNumListRefs = useRef<(HTMLLIElement | null)[]>([]);
   const partNumRef = useRef<HTMLDivElement>(null);
@@ -55,6 +58,18 @@ export default function OfficeAddonRow({ addOn, partNumList, setSelectedAddOnDat
     };
     fetchData();
   }, [engineNum]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (!addOn.stockNum) {
+        setIsDuplicateStockNum(false);
+      } else {
+        const res = await getPartsByStockNum(addOn.stockNum);
+        setIsDuplicateStockNum(res.length > 0);
+      }
+    };
+    fetchData();
+  }, [addOn.stockNum]);
 
   useEffect(() => {
     if (!showVendorSelect) return;
@@ -87,6 +102,10 @@ export default function OfficeAddonRow({ addOn, partNumList, setSelectedAddOnDat
       }
     }
   }, [showPartNumSelect, addOn.partNum, partNumList]);
+
+  useEffect(() => {
+    setHighlightPurchasePrice(Boolean(engineCostRemaining > 0 || addOn.purchasedFrom));
+  }, [addOn.purchasedFrom, engineCostRemaining]);
 
   const handleEditAddOn = async (newAddOn: AddOn) => {
     if (addOn.partNum !== newAddOn.partNum) await editAddOnAltParts(addOn.id, '');
@@ -152,11 +171,6 @@ export default function OfficeAddonRow({ addOn, partNumList, setSelectedAddOnDat
         hp: res.horsePower ?? '',
         serialNum: res.serialNum ?? '',
       } as AddOn;
-
-      const isDuplicate = addOns.some((a) => a.stockNum === newAddOn.stockNum);
-      if (isDuplicate) {
-        alert("Duplicate StockNumber, already added to add-on sheet or in inventory");
-      }
   
       const updatedAddOns = addOns.map((a: AddOn) => (a.id === addOn.id ? newAddOn : a));
       setAddons(updatedAddOns);
@@ -167,6 +181,7 @@ export default function OfficeAddonRow({ addOn, partNumList, setSelectedAddOnDat
   };
 
   const handleAddToInventory = async () => {
+    await onSave();
     const updatedAddOn = await getAddOnById(addOn.id);
     if (!updatedAddOn) {
       alert('Failed to add part to inventory');
@@ -177,11 +192,18 @@ export default function OfficeAddonRow({ addOn, partNumList, setSelectedAddOnDat
     const altParts = [...currentAlts, ...updatedAddOn.altParts];
     if (!await ask(`Are you sure you want to add this item?\n\nAlt Parts:\n${altParts.join(', ')}`)) return;
     setLoading(true);
+
+    // Create part
     const newPart = {
       ...updatedAddOn,
       altParts
     } as any;
     await addPart(newPart, partsInfo.length > 0, updateLoading);
+
+    // Add purchase price
+    await addPartCostIn(newPart.stockNum, newPart.purchasePrice, null, newPart.purchasedFrom, 'PurchasePrice', '');
+
+    // Clean up
     await deleteAddOn(updatedAddOn.id);
     setAddons(addOns.filter((a) => a.id !== updatedAddOn.id));
     setLoading(false);
@@ -217,6 +239,7 @@ export default function OfficeAddonRow({ addOn, partNumList, setSelectedAddOnDat
               <th>Part Number</th>
               <th>Description</th>
               <th>Cost Remaining</th>
+              <th>Type</th>
               <th>Engine #</th>
               <th>Stock Number</th>
               <th>Location</th>
@@ -280,6 +303,16 @@ export default function OfficeAddonRow({ addOn, partNumList, setSelectedAddOnDat
                 { formatCurrency(engineCostRemaining) }
               </td>
               <td>
+                <Select
+                  style={{ width: '100%' }}
+                  value={addOn.type ?? ''}
+                  onChange={(e: any) => handleEditAddOn({ ...addOn, type: e.target.value })}
+                >
+                  <option>Truck</option>
+                  <option>Industrial</option>
+                </Select>
+              </td>
+              <td>
                 <Input
                   variant={['small', 'thin']}
                   type="number"
@@ -291,6 +324,7 @@ export default function OfficeAddonRow({ addOn, partNumList, setSelectedAddOnDat
               </td>
               <td>
                 <Input
+                  style={isDuplicateStockNum ? { backgroundColor: 'var(--red-1)' } : {}}
                   variant={['small', 'thin']}
                   value={addOn.stockNum !== null ? addOn.stockNum : ''}
                   onChange={(e: any) => handleEditAddOn({ ...addOn, stockNum: e.target.value })}
@@ -396,6 +430,7 @@ export default function OfficeAddonRow({ addOn, partNumList, setSelectedAddOnDat
               <th>Reman List Price</th>
               <th>Dealer Price</th>
               <th>Price Status</th>
+              <th>Purchase Price</th>
               <th>Purchased From</th>
             </tr>
           </thead>
@@ -437,6 +472,16 @@ export default function OfficeAddonRow({ addOn, partNumList, setSelectedAddOnDat
                   <option>We have pricing</option>
                   <option>No pricing</option>
                 </Select>
+              </td>
+              <td>
+                <Input
+                  style={highlightPurchasePrice ? { backgroundColor: 'var(--red-1)' } : {}}
+                  variant={['small', 'thin']}
+                  type="number"
+                  step="any"
+                  value={addOn.purchasePrice ?? ''}
+                  onChange={(e: any) => handleEditAddOn({ ...addOn, purchasePrice: e.target.value })}
+                />
               </td>
               <td>
                 <div style={{ width: '21rem' }}>

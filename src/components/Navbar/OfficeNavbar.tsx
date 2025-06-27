@@ -1,9 +1,12 @@
-
 import NavDropdown from "../Library/Dropdown/NavDropdown";
 import Link from "../Library/Link";
 
+interface Props {
+  user: User
+}
 
-export default function OfficeNavbar() {
+
+export default function OfficeNavbar({ user }: Props) {
   return (
     <>
       <Link className="navbar__title" href="/">
@@ -23,9 +26,14 @@ export default function OfficeNavbar() {
       <Link href="/surplus" className="navbar__link">Surplus Purchases</Link>
       <Link href="/purchase-orders" className="navbar__link">Purchase Orders</Link>
       <NavDropdown label="Add Ons">
-        <Link href="/add-ons/shop">Shop</Link>
-        <Link href="/add-ons/office">Office</Link>
-        <Link href="/add-ons/engine">Engine</Link>
+        <Link href="/add-ons/office/part">Office Part</Link>
+        <Link href="/add-ons/office/engine">Office Engine</Link>
+        {user.accessLevel >= 3 &&
+          <>
+            <Link href="/add-ons/shop/part">Shop Part</Link>
+            <Link href="/add-ons/shop/engine">Shop Engine</Link>
+          </>
+        }
       </NavDropdown>
       <Link href="/karmak" className="navbar__link">Accounting</Link>
       <Link href="/email-stuff" className="navbar__link">Email Stuff</Link>

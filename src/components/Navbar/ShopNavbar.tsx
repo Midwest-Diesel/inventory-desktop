@@ -23,9 +23,8 @@ export default function ShopNavbar() {
       <Link href="/surplus" className="navbar__link">Surplus Purchases</Link>
       <Link href="/purchase-orders" className="navbar__link">Purchase Orders</Link>
       <NavDropdown label="Add Ons">
-        <Link href="/add-ons/shop">Shop</Link>
-        <Link href="/add-ons/office">Office</Link>
-        <Link href="/add-ons/engine">Engine</Link>
+        <Link href="/add-ons/shop/part">Shop Part</Link>
+        <Link href="/add-ons/shop/engine">Shop Engine</Link>
       </NavDropdown>
       <Link href="/image-upload" className="navbar__link">Image Upload</Link>
       <Link href="/about" className="navbar__link">About</Link>
