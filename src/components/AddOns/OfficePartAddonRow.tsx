@@ -201,7 +201,7 @@ export default function OfficePartAddonRow({ addOn, partNumList, setSelectedAddO
     await addPart(newPart, partsInfo.length > 0, updateLoading);
 
     // Add purchase price
-    await addPartCostIn(newPart.stockNum, newPart.purchasePrice, null, newPart.purchasedFrom, 'PurchasePrice', '');
+    if (newPart.purchasePrice > 0) await addPartCostIn(newPart.stockNum, newPart.purchasePrice, null, newPart.purchasedFrom, 'PurchasePrice', '');
 
     // Clean up
     await deleteAddOn(updatedAddOn.id);
