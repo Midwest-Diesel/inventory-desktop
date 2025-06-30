@@ -54,8 +54,8 @@ export default function OfficePartAddOnsContainer() {
   };
 
   const refreshAddOnsUpdate = (e: RealtimePostgresUpdatePayload<AddOn>) => {
-    setAddons((prev) => prev.map((row) => row.id === e.new.id ? { ...e.new, altParts: (e.new.altParts as any).split(', ').filter((a: any) => a) } : row));
-    setPrevAddons((prev) => prev.map((row) => row.id === e.new.id ? { ...e.new, altParts: (e.new.altParts as any).split(', ').filter((a: any) => a) } : row));
+    setAddons((prev) => prev.map((row) => row.id === e.new.id ? { ...e.new, altParts: ((e.new.altParts as any) ?? '').split(', ').filter((a: any) => a) } : row));
+    setPrevAddons((prev) => prev.map((row) => row.id === e.new.id ? { ...e.new, altParts: ((e.new.altParts as any) ?? '').split(', ').filter((a: any) => a) } : row));
   };
 
   const refreshAddOnsDelete = (e: RealtimePostgresDeletePayload<AddOn>) => {
