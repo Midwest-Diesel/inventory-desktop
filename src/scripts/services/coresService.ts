@@ -22,17 +22,6 @@ export const getAllCores = async (): Promise<Core[]> => {
   }
 };
 
-export const getCoresByHandwritten = async (id: number): Promise<Core[]> => {
-  try {
-    const auth = { withCredentials: true };
-    const res = await api.get(`/api/cores/handwritten/${id}`, auth);
-    return parseCoreDataRes(res.data);
-  } catch (err) {
-    console.error(err);
-    return [];
-  }
-};
-
 export const getCoresByCustomer = async (customerId: number, handwrittenId: number): Promise<Core[]> => {
   try {
     const auth = { withCredentials: true };

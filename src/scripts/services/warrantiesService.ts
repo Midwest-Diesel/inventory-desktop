@@ -31,16 +31,6 @@ const parseWarrantyRes = (data: any) => {
 
 // === GET routes === //
 
-export const getAllWarranties = async () => {
-  try {
-    const auth = { withCredentials: true };
-    const res = await api.get('/api/warranties', auth);
-    return parseWarrantyRes(res.data);
-  } catch (err) {
-    console.error(err);
-  }
-};
-
 export const getWarrantyById = async (id: number) => {
   try {
     const auth = { withCredentials: true };

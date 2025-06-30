@@ -35,16 +35,6 @@ export const getSomeCustomers = async (page: number, limit: number): Promise<{ p
   }
 };
 
-export const getCustomersCount = async () => {
-  try {
-    const auth = { withCredentials: true };
-    const res = await api.get('/api/customers/count', auth);
-    return res.data;
-  } catch (err) {
-    console.error(err);
-  }
-};
-
 export const searchCustomers = async (data: { name: string, phone: string, state: string, zip: string, country: string, customerType: string }): Promise<Customer[]> => {
   try {
     const auth = { withCredentials: true };

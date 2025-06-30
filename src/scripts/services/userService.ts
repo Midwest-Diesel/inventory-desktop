@@ -15,14 +15,6 @@ export const getUser = async (): Promise<User | null> => {
       withCredentials: true
     };
     const res = await api.get('/api/account', config);
-    // Disable deprecated warning message
-    if (import.meta.env.DEV) {
-      // const originalError = console.error;
-      // console.error = (...args: any) => {
-      //   if (location.pathname !== '/' && args[0].includes('findDOMNode is deprecated')) return;
-      //   originalError(...args);
-      // };
-    }
     return res.data.user;
   } catch (err) {
     console.error(`Unrelated Error: ${err}`);

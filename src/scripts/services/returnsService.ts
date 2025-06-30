@@ -20,16 +20,6 @@ const parseReturnRes = (data: any) => {
 
 // === GET routes === //
 
-export const getAllReturns = async () => {
-  try {
-    const auth = { withCredentials: true };
-    const res = await api.get('/api/returns', auth);
-    return parseReturnRes(res.data);
-  } catch (err) {
-    console.error(err);
-  }
-};
-
 export const getReturnById = async (id: number) => {
   try {
     const auth = { withCredentials: true };
@@ -59,16 +49,6 @@ export const getSomeCompletedReturns = async (page: number, limit: number): Prom
   } catch (err) {
     console.error(err);
     return { pageCount: 0, rows: [] };
-  }
-};
-
-export const searchReturns = async (returnData: ReturnSearchData) => {
-  try {
-    const auth = { withCredentials: true };
-    const res = await api.get(`/api/returns/search/${JSON.stringify(returnData)}`, auth);
-    return { pageCount: res.data.pageCount, rows: parseReturnRes(res.data.rows) };
-  } catch (err) {
-    console.error(err);
   }
 };
 

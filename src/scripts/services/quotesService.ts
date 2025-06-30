@@ -57,16 +57,6 @@ export const getSomeQuotes = async (page: number, limit: number, partNum: string
   }
 };
 
-export const getSomeQuotesByPartNum = async (page: number, limit: number, partNum: string, engineQuote = false) => {
-  try {
-    const auth = { withCredentials: true };
-    const res = await api.get(`/api/quotes/limit/part-num/${JSON.stringify({ page: (page - 1) * limit, limit, partNum, engineQuote })}`, auth);
-    return parseQuotesRes(res.data);
-  } catch (err) {
-    console.error(err);
-  }
-};
-
 export const getQuotesByCustomer = async (id: number | null): Promise<any> => {
   try {
     if (!id) return { rows: [], pageCount: [] };
@@ -94,36 +84,6 @@ export const getSomeUnsoldQuotesByPartNum = async (page: number, limit: number, 
   } catch (err) {
     console.error(err);
     return { pageCount: 0, rows: [] };
-  }
-};
-
-export const getQuotesCount = async (partNum: string, customerId: number, isEngineQuote = false) => {
-  try {
-    const auth = { withCredentials: true };
-    const res = await api.get(`/api/quotes/count/${JSON.stringify({ isEngineQuote, partNum, customerId })}`, auth);
-    return res.data;
-  } catch (err) {
-    console.error(err);
-  }
-};
-
-export const getAllQuotesCount = async () => {
-  try {
-    const auth = { withCredentials: true };
-    const res = await api.get(`/api/quotes/count-all`, auth);
-    return res.data;
-  } catch (err) {
-    console.error(err);
-  }
-};
-
-export const getQuotesCountByPartNum = async (isEngineQuote = false, partNum: string) => {
-  try {
-    const auth = { withCredentials: true };
-    const res = await api.get(`/api/quotes/count/part-num/${JSON.stringify({ isEngineQuote, partNum })}`, auth);
-    return parseQuotesRes(res.data);
-  } catch (err) {
-    console.error(err);
   }
 };
 

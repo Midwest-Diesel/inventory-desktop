@@ -61,17 +61,6 @@ export const parseHandwrittenRes = (data: any) => {
 
 // === GET routes === //
 
-export const getAllHandwrittens = async (): Promise<Handwritten[]> => {
-  try {
-    const auth = { withCredentials: true };
-    const res = await api.get('/api/handwrittens', auth);
-    return parseHandwrittenRes(res.data);
-  } catch (err) {
-    console.error(err);
-    return [];
-  }
-};
-
 export const getHandwrittenById = async (id: number): Promise<Handwritten | null> => {
   try {
     const auth = { withCredentials: true };
@@ -132,26 +121,6 @@ export const searchSelectHandwrittensDialogData = async (handwritten: Handwritte
   }
 };
 
-export const getHandwrittensByDate = async (date: Date) => {
-  try {
-    const auth = { withCredentials: true };
-    const res = await api.get(`/api/handwrittens/date/${JSON.stringify(date)}`, auth);
-    return parseHandwrittenRes(res.data);
-  } catch (err) {
-    console.error(err);
-  }
-};
-
-export const getFreightCarrierFromShipVia = async (name: string) => {
-  try {
-    const auth = { withCredentials: true };
-    const res = await api.get(`/api/handwrittens/freight-carrier/${name}`, auth);
-    return res.data.type;
-  } catch (err) {
-    console.error(err);
-  }
-};
-
 export const getSomeHandwrittensByStatus = async (page: number, limit: number, status: string): Promise<{ pageCount: number, rows: Handwritten[] }> => {
   try {
     const auth = { withCredentials: true };
@@ -187,16 +156,6 @@ export const getEndOfDayHandwrittens = async () => {
     const auth = { withCredentials: true };
     const res = await api.get(`/api/handwrittens/end-of-day`, auth);
     return parseHandwrittenRes(res.data);
-  } catch (err) {
-    console.error(err);
-  }
-};
-
-export const getMostRecentHandwrittenDate = async () => {
-  try {
-    const auth = { withCredentials: true };
-    const res = await api.get(`/api/handwrittens/most-recent-date`, auth);
-    return parseResDate(res.data.date);
   } catch (err) {
     console.error(err);
   }
@@ -266,18 +225,6 @@ export const addHandwrittenItem = async (item: NewHandwrittenItem) => {
   }
 };
 
-export const addBlankHandwritten = async (data: { date: Date, userId: number, customerId: number }) => {
-  try {
-    const auth = { withCredentials: true };
-    const res = await api.post('/api/handwrittens/blank', data, auth);
-    const customer = await getCustomerById(data.customerId);
-    checkForCustomerAlert(customer);
-    return (res as any).data.id;
-  } catch (err) {
-    console.error(err);
-  }
-};
-
 export const addHandwrittenItemChild = async (parentId: number, item: NewHandwrittenItemChild) => {
   try {
     const auth = { withCredentials: true };
@@ -288,15 +235,6 @@ export const addHandwrittenItemChild = async (parentId: number, item: NewHandwri
 };
 
 // === PATCH routes === //
-
-export const editHandwrittenShipTo = async (handwritten: Handwritten) => {
-  try {
-    const auth = { withCredentials: true };
-    await api.patch('/api/handwrittens/ship-to', handwritten, auth);
-  } catch (err) {
-    console.error(err);
-  }
-};
 
 export const editHandwrittenPaymentType = async (id: number, payment: string) => {
   try {
@@ -311,15 +249,6 @@ export const editHandwrittenTakeoffState = async (id: number, isTakeoffDone: boo
   try {
     const auth = { withCredentials: true };
     await api.patch('/api/handwrittens/takeoff', { id, isTakeoffDone }, auth);
-  } catch (err) {
-    console.error(err);
-  }
-};
-
-export const editHandwrittenItemQty = async (id: number, qty: number) => {
-  try {
-    const auth = { withCredentials: true };
-    await api.patch('/api/handwrittens/item-qty', { id, qty }, auth);
   } catch (err) {
     console.error(err);
   }

@@ -53,16 +53,6 @@ export const getPartsInfoByAltParts = async (partNum: string) => {
   }
 };
 
-export const getPartByPartNum = async (partNum: string) => {
-  try {
-    const auth = { withCredentials: true };
-    const res = await api.get(`/api/parts/part-num/${partNum}`, auth);
-    return (await parsePartsData(res.data))[0];
-  } catch (err) {
-    console.error(err);
-  }
-};
-
 export const getPartByEngineNum = async (engineNum: number): Promise<Part | null> => {
   try {
     const auth = { withCredentials: true };
@@ -113,16 +103,6 @@ export const getPartEngineCostOut = async (stockNum: string) => {
     const encodedParam = encodeURIComponent(stockNum);
     const res = await api.get(`/api/parts/engine-cost-out/${encodedParam}`, auth);
     return res.data;
-  } catch (err) {
-    console.error(err);
-  }
-};
-
-export const getPartsByYear = async (year: number) => {
-  try {
-    const auth = { withCredentials: true };
-    const res = await api.get(`/api/parts/year/${year}`, auth);
-    return await parsePartsData(res.data);
   } catch (err) {
     console.error(err);
   }
@@ -291,15 +271,6 @@ export const handlePartTakeoff = async (partId: number, qty: number) => {
   try {
     const auth = { withCredentials: true };
     await api.patch('/api/parts/takeoff', { partId, qty }, auth);
-  } catch (err) {
-    console.error(err);
-  }
-};
-
-export const editPartQty = async (partId: number, qty: number) => {
-  try {
-    const auth = { withCredentials: true };
-    await api.patch('/api/parts/qty', { partId, qty }, auth);
   } catch (err) {
     console.error(err);
   }

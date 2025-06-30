@@ -32,16 +32,6 @@ export const getAllEngines = async () => {
   }
 };
 
-export const getAllEngineNums = async () => {
-  try {
-    const auth = { withCredentials: true };
-    const res = await api.get('/api/engines/all-engine-nums', auth);
-    return res.data;
-  } catch (err) {
-    console.error(err);
-  }
-};
-
 export const getAutofillEngine = async (engineNum: number) => {
   try {
     const auth = { withCredentials: true };
@@ -81,26 +71,6 @@ export const getEnginesByEngineData = async (data: CustomerEngineData) => {
     const auth = { withCredentials: true };
     const res = await api.get(`/api/engines/data/${JSON.stringify(data)}`, auth);
     res.data = parseEngineRes(res.data);
-    return res.data;
-  } catch (err) {
-    console.error(err);
-  }
-};
-
-export const getEngineCostIn = async (stockNum: number) => {
-  try {
-    const auth = { withCredentials: true };
-    const res = await api.get(`/api/engines/costIn/${stockNum}`, auth);
-    return res.data;
-  } catch (err) {
-    console.error(err);
-  }
-};
-
-export const getEngineCostOut = async (stockNum: number) => {
-  try {
-    const auth = { withCredentials: true };
-    const res = await api.get(`/api/engines/costOut/${stockNum}`, auth);
     return res.data;
   } catch (err) {
     console.error(err);

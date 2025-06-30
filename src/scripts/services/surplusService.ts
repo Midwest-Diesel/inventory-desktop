@@ -83,43 +83,12 @@ export const addSurplus = async (surplus: Surplus) => {
   }
 };
 
-// === PATCH routes === //
-
-export const editSurplusPrice = async (id: number, price: number) => {
-  try {
-    const auth = { withCredentials: true };
-    await api.patch('/api/surplus/price', { id, price }, auth);
-  } catch (err) {
-    console.error(err);
-  }
-};
-
 // === PUT routes === //
-
-export const editSurplus = async (surplus: Surplus) => {
-  try {
-    const auth = { withCredentials: true };
-    await api.put('/api/surplus', surplus, auth);
-  } catch (err) {
-    console.error(err);
-  }
-};
 
 export const zeroAllSurplusItems = async (vendor: string) => {
   try {
     const auth = { withCredentials: true };
     await api.put('/api/surplus/zero-all', { vendor }, auth);
-  } catch (err) {
-    console.error(err);
-  }
-};
-
-// === DELETE routes === //
-
-export const deleteSurplus = async (id: number) => {
-  try {
-    const auth = { withCredentials: true };
-    await api.delete(`/api/surplus/${id}`, auth);
   } catch (err) {
     console.error(err);
   }

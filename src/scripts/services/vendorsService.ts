@@ -14,16 +14,6 @@ interface NewVendor {
 
 // === GET routes === //
 
-export const getVendorNames = async () => {
-  try {
-    const auth = { withCredentials: true };
-    const res = await api.get('/api/vendors/names', auth);
-    return res.data;
-  } catch (err) {
-    console.error(err);
-  }
-};
-
 export const getVendors = async () => {
   try {
     const auth = { withCredentials: true };
