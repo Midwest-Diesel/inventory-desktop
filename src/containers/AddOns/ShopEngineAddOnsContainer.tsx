@@ -38,11 +38,11 @@ export default function ShopEngineAddOnsContainer() {
   const refreshAddOnsInsert = (e: RealtimePostgresInsertPayload<EngineAddOn>) => {
     setAddons((prev) => {
       if (prev.some(a => a.id === e.new.id)) return prev;
-      return [...prev, e.new];
+      return [e.new, ...prev];
     });
     setPrevAddons((prev) => {
       if (prev.some(a => a.id === e.new.id)) return prev;
-      return [...prev, e.new];
+      return [e.new, ...prev];
     });
   };
 
@@ -59,17 +59,11 @@ export default function ShopEngineAddOnsContainer() {
   const handleDuplicateAddOn = async (duplicateAddOn: EngineAddOn) => {
     await handleSave();
     await addEngineAddOn(duplicateAddOn);
-    const res = await getAllEngineAddOns();
-    setAddons(res);
-    setPrevAddons(res);
   };
 
   const handleNewAddOn = async () => {
     await handleSave();
     await addEngineAddOn();
-    const res = await getAllEngineAddOns();
-    setAddons(res);
-    setPrevAddons(res);
   };
 
   const handleEditAddOns = async (e: FormEvent) => {

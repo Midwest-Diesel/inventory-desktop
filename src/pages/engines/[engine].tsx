@@ -21,7 +21,7 @@ import { useParams } from "react-router-dom";
 
 
 export default function EngineDetailsPage() {
-  const { closeBtn, push } = useNavState();
+  const { closeBtn, backward } = useNavState();
   const params = useParams();
   const [user] = useAtom<User>(userAtom);
   const [engine, setEngine] = useState<Engine | null>(null);
@@ -59,7 +59,7 @@ export default function EngineDetailsPage() {
   const handleDelete = async () => {
     if (!engine?.id || user.accessLevel <= 1 || prompt('Type "confirm" to delete this engine') !== 'confirm') return;
     await deleteEngine(engine.id);
-    await push('Engines', '/engines');
+    await backward();
   };
 
 

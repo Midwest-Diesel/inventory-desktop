@@ -3,7 +3,7 @@ import Button from "@/components/Library/Button";
 import { PreventNavigation } from "@/components/PreventNavigation";
 import { engineAddOnsAtom } from "@/scripts/atoms/state";
 import { supabase } from "@/scripts/config/supabase";
-import { addEngineAddOn, editEngineAddOn, getOfficeEngineAddOns } from "@/scripts/services/engineAddOnsService";
+import { editEngineAddOn, getOfficeEngineAddOns } from "@/scripts/services/engineAddOnsService";
 import { RealtimePostgresDeletePayload, RealtimePostgresInsertPayload, RealtimePostgresUpdatePayload } from "@supabase/supabase-js";
 import { useAtom } from "jotai";
 import { FormEvent, Fragment, useEffect, useState } from "react";
@@ -38,11 +38,11 @@ export default function OfficeEngineAddOnsContainer() {
   const refreshAddOnsInsert = (e: RealtimePostgresInsertPayload<EngineAddOn>) => {
     setAddons((prev) => {
       if (prev.some(a => a.id === e.new.id)) return prev;
-      return [...prev, e.new];
+      return [e.new, ...prev];
     });
     setPrevAddons((prev) => {
       if (prev.some(a => a.id === e.new.id)) return prev;
-      return [...prev, e.new];
+      return [e.new, ...prev];
     });
   };
 
@@ -54,22 +54,6 @@ export default function OfficeEngineAddOnsContainer() {
   const refreshAddOnsDelete = (e: RealtimePostgresDeletePayload<EngineAddOn>) => {
     setAddons((prev) => prev.filter((row) => row.id !== e.old.id));
     setPrevAddons((prev) => prev.filter((row) => row.id !== e.old.id));
-  };
-
-  const handleDuplicateAddOn = async (duplicateAddOn: EngineAddOn) => {
-    await handleSave();
-    await addEngineAddOn(duplicateAddOn);
-    const res = await getOfficeEngineAddOns();
-    setAddons(res);
-    setPrevAddons(res);
-  };
-
-  const handleNewAddOn = async () => {
-    await handleSave();
-    await addEngineAddOn();
-    const res = await getOfficeEngineAddOns();
-    setAddons(res);
-    setPrevAddons(res);
   };
 
   const handleEditAddOns = async (e: FormEvent) => {
@@ -95,12 +79,6 @@ export default function OfficeEngineAddOnsContainer() {
 
       <div className="add-ons">
         <h1>Engine Add Ons</h1>
-        <Button
-          variant={['fit']}
-          onClick={handleNewAddOn}
-        >
-          New Engine
-        </Button>
 
         <form onSubmit={handleEditAddOns} onChange={() => setShouldPreventLeave(true)}>
           <div className="header__btn-container">
@@ -116,7 +94,7 @@ export default function OfficeEngineAddOnsContainer() {
             {addOns.map((addOn) => {
               return (
                 <Fragment key={addOn.id}>
-                  <OfficeEngineAddOnRow addOn={addOn} handleDuplicateAddOn={handleDuplicateAddOn} onSave={handleSave} />
+                  <OfficeEngineAddOnRow addOn={addOn} onSave={handleSave} />
                 </Fragment>
               );
             })}

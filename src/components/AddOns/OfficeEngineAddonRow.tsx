@@ -13,12 +13,11 @@ import { ask } from "@/scripts/config/tauri";
 
 interface Props {
   addOn: EngineAddOn
-  handleDuplicateAddOn: (addOn: EngineAddOn) => void
   onSave: () => Promise<void>
 }
 
 
-export default function OfficeEngineAddOnRow({ addOn, handleDuplicateAddOn, onSave }: Props) {
+export default function OfficeEngineAddOnRow({ addOn, onSave }: Props) {
   const [addOns, setAddons] = useAtom<EngineAddOn[]>(engineAddOnsAtom);
   const [autofillEngineNum, setAutofillEngineNum] = useState('');
   const [showVendorSelect, setShowVendorSelect] = useState(false);
@@ -173,7 +172,7 @@ export default function OfficeEngineAddOnRow({ addOn, handleDuplicateAddOn, onSa
                 <td>
                   <Select
                     style={{ width: '100%' }}
-                    value={addOn.currentStatus ? addOn.currentStatus.trim() : ''}
+                    value={addOn.currentStatus.trim()}
                     onChange={(e: any) => handleEditAddOn({ ...addOn, currentStatus: e.target.value })}
                   >
                     <option>ToreDown</option>
@@ -221,6 +220,7 @@ export default function OfficeEngineAddOnRow({ addOn, handleDuplicateAddOn, onSa
                     value={addOn.oilPan}
                     onChange={(e: any) => handleEditAddOn({ ...addOn, oilPan: e.target.value })}
                   >
+                    <option value="">-- OIL PAN --</option>
                     <option>FS</option>
                     <option>RS</option>
                     <option>CS</option>
@@ -246,7 +246,6 @@ export default function OfficeEngineAddOnRow({ addOn, handleDuplicateAddOn, onSa
 
         <div className="add-ons__list-row-buttons">
           <Button type="button" onClick={handleAddToInventory}>Add to Inventory</Button>
-          <Button type="button" onClick={() => handleDuplicateAddOn(addOn)}>Duplicate</Button>
           <Button variant={['danger']} type="button" onClick={handleDeleteAddOn}>Delete</Button>
         </div>
       </div>

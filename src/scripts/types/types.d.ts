@@ -324,7 +324,7 @@ type EngineAddOn = {
   notes: string | null
   ecm: boolean
   jakeBrake: boolean
-  oilPan: 'FS' | 'RS' | 'CS'
+  oilPan: '' | 'FS' | 'RS' | 'CS'
   cost: number | null
 };
 

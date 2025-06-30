@@ -4,7 +4,7 @@ import { parseResDate } from "../tools/stringUtils";
 
 const parseAddOnDataRes = (data: any) => {
   return data.map((d: EngineAddOn) => {
-    return { ...d, entryDate: parseResDate(`${d.entryDate}`) };
+    return { ...d, entryDate: parseResDate(`${d.entryDate}`), currentStatus: data.currentStatus ?? 'ToreDown' };
   });
 };
 

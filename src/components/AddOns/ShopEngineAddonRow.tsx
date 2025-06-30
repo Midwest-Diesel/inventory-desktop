@@ -240,6 +240,7 @@ export default function ShopEngineAddOnRow({ addOn, handleDuplicateAddOn, onSave
                     value={addOn.oilPan}
                     onChange={(e: any) => handleEditAddOn({ ...addOn, oilPan: e.target.value })}
                   >
+                    <option value="">-- OIL PAN --</option>
                     <option>FS</option>
                     <option>RS</option>
                     <option>CS</option>
