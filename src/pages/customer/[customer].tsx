@@ -17,6 +17,8 @@ import { setTitle } from "@/scripts/tools/utils";
 import { useAtom } from "jotai";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { ask } from "@/scripts/config/tauri";
+import { addVendor, getVendorByName } from "@/scripts/services/vendorsService";
 
 
 export default function Customer() {
@@ -29,6 +31,7 @@ export default function Customer() {
   const [isEditing, setIsEditing] = useState(false);
   const [isOnMap, setIsOnMap] = useState(true);
   const [addLocDialogOpen, setAddLocDialogOpen] = useState(false);
+  const [isVendor, setIsVendor] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -43,6 +46,9 @@ export default function Customer() {
       setTitle(customerRes.company ?? '');
       // Detect if customer has map location
       if (!await getMapLocationFromCustomer(id)) setIsOnMap(false);
+      // Check if vendor
+      const vendor = await getVendorByName(customerRes.company);
+      if (vendor) setIsVendor(true);
     };
     fetchData();
   }, [params]);
@@ -54,6 +60,22 @@ export default function Customer() {
     await deleteCustomer(customer.id);
     await deleteMapLocationByCustomer(customer.id);
     await push('Home', '/');
+  };
+
+  const markAsVendor = async () => {
+    if (!await ask('Turn this customer into a vendor?')) return;
+    const newVendor = {
+      name: customer?.company ?? null,
+      vendorAddress: customer?.billToAddress ?? null,
+      vendorState: customer?.billToState ?? null,
+      vendorZip: customer?.billToZip ?? null,
+      vendorPhone: customer?.billToPhone ?? customer?.phone ?? null,
+      vendorFax: customer?.fax ?? null,
+      vendorTerms: customer?.terms ?? null,
+      vendorContact: customer?.contact ?? null
+    };
+    await addVendor(newVendor);
+    setIsVendor(true);
   };
 
 
@@ -107,6 +129,10 @@ export default function Customer() {
                   </Button>
                 }
               </div>
+            </div>
+
+            <div className="customer-details__top-bar">
+              { !isVendor && <Button onClick={markAsVendor}>Mark as Vendor</Button> }
             </div>
           
             <Grid rows={1} cols={12} gap={1}>
