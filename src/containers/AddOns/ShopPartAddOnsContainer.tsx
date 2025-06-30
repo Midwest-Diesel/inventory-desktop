@@ -47,11 +47,11 @@ export default function ShopPartAddOnsContainer() {
   const refreshAddOnsInsert = (e: RealtimePostgresInsertPayload<AddOn>) => {
     setAddons((prev) => {
       if (prev.some(a => a.id === e.new.id)) return prev;
-      return [...prev, e.new];
+      return [e.new, ...prev];
     });
     setPrevAddons((prev) => {
       if (prev.some(a => a.id === e.new.id)) return prev;
-      return [...prev, e.new];
+      return [e.new, ...prev];
     });
   };
 
@@ -68,17 +68,11 @@ export default function ShopPartAddOnsContainer() {
   const handleNewAddOn = async () => {
     await handleEditAddOns();
     await addAddOn();
-    const res = await getAllAddOns();
-    setAddons(res);
-    setPrevAddons(res);
   };
 
   const handleDuplicateAddOn = async (duplicateAddOn: AddOn) => {
     await handleEditAddOns();
     await addAddOn(duplicateAddOn);
-    const res = await getAllAddOns();
-    setAddons(res);
-    setPrevAddons(res);
   };
 
   const handleEditAddOns = async () => {

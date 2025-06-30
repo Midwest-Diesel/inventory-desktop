@@ -26,12 +26,12 @@ export default function OfficeNavbar({ user }: Props) {
       <Link href="/surplus" className="navbar__link">Surplus Purchases</Link>
       <Link href="/purchase-orders" className="navbar__link">Purchase Orders</Link>
       <NavDropdown label="Add Ons">
-        <Link href="/add-ons/office/part">Office Part</Link>
-        <Link href="/add-ons/office/engine">Office Engine</Link>
+        <Link href="/add-ons/office/part">Office Parts</Link>
+        <Link href="/add-ons/office/engine">Office Engines</Link>
         {user.accessLevel >= 3 &&
           <>
-            <Link href="/add-ons/shop/part">Shop Part</Link>
-            <Link href="/add-ons/shop/engine">Shop Engine</Link>
+            <Link href="/add-ons/shop/part">Shop Parts</Link>
+            <Link href="/add-ons/shop/engine">Shop Engines</Link>
           </>
         }
       </NavDropdown>

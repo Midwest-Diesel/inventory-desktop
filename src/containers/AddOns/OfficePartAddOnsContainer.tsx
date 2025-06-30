@@ -45,11 +45,11 @@ export default function OfficePartAddOnsContainer() {
   const refreshAddOnsInsert = (e: RealtimePostgresInsertPayload<AddOn>) => {
     setAddons((prev) => {
       if (prev.some(a => a.id === e.new.id)) return prev;
-      return [...prev, e.new];
+      return [e.new, ...prev];
     });
     setPrevAddons((prev) => {
       if (prev.some(a => a.id === e.new.id)) return prev;
-      return [...prev, e.new];
+      return [e.new, ...prev];
     });
   };
 
