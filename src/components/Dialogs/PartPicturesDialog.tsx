@@ -1,6 +1,5 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import Dialog from "../Library/Dialog";
-import Loading from "../Library/Loading";
 import Checkbox from "../Library/Checkbox";
 import Button from "../Library/Button";
 import { invoke } from "@/scripts/config/tauri";
@@ -19,26 +18,12 @@ interface Props {
 
 
 export default function PartPicturesDialog({ open, setOpen, pictures, partNum }: Props) {
-  const [loading, setLoading] = useState(true);
   const [selectedImages, setSelectedImages] = useState<string[]>([]);
-  const loadedCount = useRef(0);
 
   useEffect(() => {
     if (!open) return;
-    setLoading(true);
-    loadedCount.current = 0;
-    setSelectedImages([]);
+    setSelectedImages(pictures.map((pic) => pic.name));
   }, [open, partNum]);
-
-  const handleImageLoad = () => {
-    loadedCount.current += 1;
-    if (loadedCount.current === pictures.length) {
-      setTimeout(() => {
-        setSelectedImages(pictures.map((pic) => pic.name));
-        setLoading(false);
-      }, 0);
-    }
-  };
 
   const editSelectedImages = (checked: boolean, name: string) => {
     if (checked) { 
@@ -84,7 +69,6 @@ export default function PartPicturesDialog({ open, setOpen, pictures, partNum }:
               alt={pic.name}
               width={240}
               height={240}
-              onLoad={handleImageLoad}
             />
 
             <Checkbox
@@ -95,7 +79,6 @@ export default function PartPicturesDialog({ open, setOpen, pictures, partNum }:
           </div>
         );
       })}
-      { loading && <Loading /> }
     </Dialog>
   );
 }
