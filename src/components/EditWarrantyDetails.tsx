@@ -40,7 +40,7 @@ export default function EditWarrantyDetails({ warrantyData, setWarranty, setIsEd
       customer: newCustomer,
       date,
       vendor,
-      vendorWarrantyNum: vendorWarrantyNum || null,
+      vendorWarrantyNum: vendorWarrantyNum ?? null,
       warrantyItems,
       handwrittenId
     } as Warranty;
