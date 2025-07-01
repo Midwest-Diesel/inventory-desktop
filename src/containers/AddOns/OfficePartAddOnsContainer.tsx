@@ -94,7 +94,7 @@ export default function OfficePartAddOnsContainer() {
       }
 
       <div className="add-ons">
-        <h1>Office Add Ons</h1>
+        <h1>Office Part Add Ons</h1>
 
         <form onSubmit={handleEditAddOns}>
           <div className="header__btn-container">

@@ -105,9 +105,9 @@ export default function HandwrittenDetails({
 
   useEffect(() => {
     const channel = supabase
-      .channel('pendingInvoicesItems')
-      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'pendingInvoicesItems' }, refreshHandwrittenItems)
-      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'pendingInvoices' }, refreshHandwrittenOrderNotes);
+      .channel('handwrittenItems')
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'handwrittenItems' }, refreshHandwrittenItems)
+      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'handwrittens' }, refreshHandwrittenOrderNotes);
     channel.subscribe();
 
     return () => {

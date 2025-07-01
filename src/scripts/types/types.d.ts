@@ -163,7 +163,7 @@ type Core = {
   unitPrice: number
   customerId: number
   partInvoiceId: number
-  pendingInvoiceId: number
+  handwrittenId: number
   handwrittenItemId: number
   billToCompany: string
   shipToCompany: string

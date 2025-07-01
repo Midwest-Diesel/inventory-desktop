@@ -130,7 +130,6 @@ export default function SelectHandwrittenDialog({ open, setOpen, part, onSubmit 
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    setShowButtons(false);
     if (!selectedHandwrittenId) return;
     const handwritten = await getHandwrittenById(selectedHandwrittenId);
     if (!handwritten) return;
@@ -138,6 +137,7 @@ export default function SelectHandwrittenDialog({ open, setOpen, part, onSubmit 
       toast.sendToast('Can\'t add items to handwritten when status is SENT TO ACCOUNTING', 'error');
       return;
     }
+    setShowButtons(false);
 
     if (await ask('Add warranty?')) {
       setShowWarranty(true);

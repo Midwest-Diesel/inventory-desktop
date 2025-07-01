@@ -75,7 +75,7 @@ export default function HandwrittenItemsTable({ className, handwritten, setHandw
       unitPrice: item.unitPrice,
       customerId: handwritten.customer.id,
       partInvoiceId: item.handwrittenId,
-      pendingInvoiceId: handwritten.id,
+      handwrittenId: handwritten.id,
       billToCompany: handwritten.billToCompany,
       shipToCompany: handwritten.shipToCompany,
       charge: item.unitPrice,

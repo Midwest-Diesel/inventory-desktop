@@ -54,7 +54,7 @@ export default function Cores() {
                 const part = core.part;
                 return (
                   <tr key={core.id}>
-                    <td><Link href={`/handwrittens/${core.pendingInvoiceId}`}>{ core.pendingInvoiceId }</Link></td>
+                    <td><Link href={`/handwrittens/${core.handwrittenId}`}>{ core.handwrittenId }</Link></td>
                     <td>{ formatDate(core.date) }</td>
                     <td>{ core.billToCompany }</td>
                     <td>{ core.shipToCompany }</td>

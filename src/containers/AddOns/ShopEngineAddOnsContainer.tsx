@@ -88,7 +88,7 @@ export default function ShopEngineAddOnsContainer() {
       <PreventNavigation shouldPrevent={shouldPreventLeave} text="Do you want to leave without saving?" />
 
       <div className="add-ons">
-        <h1>Engine Add Ons</h1>
+        <h1>Shop Engine Add Ons</h1>
         <Button
           variant={['fit']}
           onClick={handleNewAddOn}

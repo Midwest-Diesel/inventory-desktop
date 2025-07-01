@@ -78,7 +78,7 @@ export default function OfficeEngineAddOnsContainer() {
       <PreventNavigation shouldPrevent={shouldPreventLeave} text="Do you want to leave without saving?" />
 
       <div className="add-ons">
-        <h1>Engine Add Ons</h1>
+        <h1>Office Engine Add Ons</h1>
 
         <form onSubmit={handleEditAddOns} onChange={() => setShouldPreventLeave(true)}>
           <div className="header__btn-container">

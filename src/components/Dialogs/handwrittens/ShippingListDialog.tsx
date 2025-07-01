@@ -19,11 +19,14 @@ interface Props {
   onPrintHandwritten: () => void
 }
 
+const CURRENT_WEEK_FILENAME = 'shipping_list_current_week.xlsx';
+const NEXT_WEEK_FILENAME = 'shipping_list_next_week.xlsx';
+
 
 export default function ShippingListDialog({ open, setOpen, handwrittenItems, newShippingListRow, setIsEditing, onPrintCCLabel, onPrintHandwritten }: Props) {
   const [handwritten, setHandwritten] = useState<Handwritten | null>(null);
   const [date, setDate] = useState<Date>(new Date());
-  const [isCondensed, setIsCondensed] = useState(handwrittenItems.length > 2);
+  const [isCondensed, setIsCondensed] = useState(handwrittenItems.filter((i) => ['FREIGHT', 'TAX', 'CORE DEPOSIT'].includes(i.partNum ?? '')).length > 2);
   const [desc, setDesc] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -40,9 +43,9 @@ export default function ShippingListDialog({ open, setOpen, handwrittenItems, ne
     e.preventDefault();
     setLoading(true);
     const path = (isDateInCurrentOrNextWeek(date) === 'current' ?
-      '\\\\MWD1-SERVER/Server/shipping_list_current_week.xlsx'
+      `\\\\MWD1-SERVER/Server/${CURRENT_WEEK_FILENAME}`
       :
-      '\\\\MWD1-SERVER/Server/shipping_list_next_week.xlsx'
+      `\\\\MWD1-SERVER/Server/${NEXT_WEEK_FILENAME}`
     );
     if (isCondensed) {
       const weight = handwrittenItems.reduce((arr, item) => arr + item.weight, 0);
@@ -74,6 +77,7 @@ export default function ShippingListDialog({ open, setOpen, handwrittenItems, ne
       await invoke('add_to_shipping_list', { newShippingListRow: new_shipping_list_row });
     } else {
       for (let i = 0; i < handwrittenItems.length; i++) {
+        if (['FREIGHT', 'TAX', 'CORE DEPOSIT'].includes(handwrittenItems[i].partNum ?? '')) continue;
         const { length, width, height } = handwrittenItems[i];
         const new_shipping_list_row = {
           handwritten_id: Number(handwritten?.id),

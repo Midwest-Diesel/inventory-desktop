@@ -100,7 +100,7 @@ export default function ShopPartAddOnsContainer() {
         /> : '' }
 
       <div className="add-ons">
-        <h1>Shop Add Ons</h1>
+        <h1>Shop Part Add Ons</h1>
         <Button
           variant={['fit']}
           onClick={handleNewAddOn}
