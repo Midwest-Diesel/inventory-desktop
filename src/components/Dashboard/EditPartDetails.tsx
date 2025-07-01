@@ -12,6 +12,7 @@ import { useAtom } from "jotai";
 import { PreventNavigation } from "../PreventNavigation";
 import Loading from "../Library/Loading";
 import { ask } from "@/scripts/config/tauri";
+import Select from "../Library/Select/Select";
 
 interface Props {
   part: Part
@@ -580,11 +581,16 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
                         />
                       </td>
                       <td>
-                        <Input
-                          variant={['x-small', 'thin', 'label-bold']}
+                        <Select
+                          variant={['label-bold']}
                           value={item.costType ?? ''}
                           onChange={(e: any) => handleChangePartCostIn({ ...item, costType: e.target.value }, i)}
-                        />
+                        >
+                          <option value="">-- COST TYPE --</option>
+                          <option>PurchasePrice</option>
+                          <option>ReconPrice</option>
+                          <option>Other</option>
+                        </Select>
                       </td>
                       <td>
                         <Input
@@ -633,11 +639,16 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
                     />
                   </td>
                   <td>
-                    <Input
-                      variant={['x-small', 'thin', 'label-bold']}
+                    <Select
+                      variant={['label-bold']}
                       value={newPartCostInRow.costType}
                       onChange={(e: any) => handleNewPartCostInRowChange('costType', e.target.value)}
-                    />
+                    >
+                      <option value="">-- COST TYPE --</option>
+                      <option>PurchasePrice</option>
+                      <option>ReconPrice</option>
+                      <option>Other</option>
+                    </Select>
                   </td>
                   <td>
                     <Input
@@ -716,11 +727,16 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
                         />
                       </td>
                       <td>
-                        <Input
-                          variant={['x-small', 'thin', 'label-bold']}
+                        <Select
+                          variant={['label-bold']}
                           value={item.costType ?? ''}
                           onChange={(e: any) => handleChangeEngineCostOut({ ...item, costType: e.target.value }, i)}
-                        />
+                        >
+                          <option value="">-- COST TYPE --</option>
+                          <option>Parts</option>
+                          <option>Sale</option>
+                          <option>Other</option>
+                        </Select>
                       </td>
                       <td>
                         <Input
@@ -768,11 +784,16 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
                     />
                   </td>
                   <td>
-                    <Input
-                      variant={['x-small', 'thin', 'label-bold']}
+                    <Select
+                      variant={['label-bold']}
                       value={newEngineCostOutRow.costType}
                       onChange={(e: any) => handleNewEngineCostOutRowChange('costType', e.target.value)}
-                    />
+                    >
+                      <option value="">-- COST TYPE --</option>
+                      <option>Parts</option>
+                      <option>Sale</option>
+                      <option>Other</option>
+                    </Select>
                   </td>
                   <td>
                     <Input

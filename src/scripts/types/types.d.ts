@@ -444,7 +444,7 @@ type PartCostIn = {
   invoiceNum: number | null
   cost: number | null
   vendor: string | null
-  costType: string | null
+  costType: CostType | null
   note: string | null
 };
 
@@ -453,7 +453,7 @@ type EngineCostOut = {
   stockNum: string | null
   cost: number | null
   engineStockNum: number | null
-  costType: CostType | null
+  costType: EngineCostType | null
   note: string | null
 };
 
@@ -476,6 +476,7 @@ type EngineProfit = {
 };
 
 type CostType = 'PurchasePrice' | 'ReconPrice' | 'Other';
+type EngineCostType = 'Parts' | 'Sale' | 'Other';
 
 type Surplus = {
   id: number
