@@ -77,7 +77,7 @@ export default function PartsSearchDialog({ open, setOpen, handleSearch }: Props
       window.location.reload();
     } else {
       await handleSearch(partNum, stockNum, desc, location, qty, remarks, rating, purchasedFrom, serialNum, hp, 1, false);
-      if (partNum) await addRecentSearch({ partNum: partNum.replace('*', ''), salespersonId: user.id });
+      if (partNum && user.subtype === 'sales') await addRecentSearch({ partNum: partNum.replace('*', ''), salespersonId: user.id });
     }
     setLastSearch(partNum.replace('*', ''));
   };

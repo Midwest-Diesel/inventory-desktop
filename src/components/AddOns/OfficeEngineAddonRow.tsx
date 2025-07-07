@@ -4,7 +4,7 @@ import Table from "../Library/Table";
 import Select from "../Library/Select/Select";
 import { useEffect, useRef, useState } from "react";
 import Input from "../Library/Input";
-import { addEngine, getAutofillEngine } from "@/scripts/services/enginesService";
+import { addEngine, addEngineCostIn, getAutofillEngine } from "@/scripts/services/enginesService";
 import { deleteEngineAddOn } from "@/scripts/services/engineAddOnsService";
 import { useAtom } from "jotai";
 import { engineAddOnsAtom } from "@/scripts/atoms/state";
@@ -20,8 +20,18 @@ interface Props {
 export default function OfficeEngineAddOnRow({ addOn, onSave }: Props) {
   const [addOns, setAddons] = useAtom<EngineAddOn[]>(engineAddOnsAtom);
   const [autofillEngineNum, setAutofillEngineNum] = useState('');
+  const [showPurchFromSelect, setShowPurchFromSelect] = useState(false);
   const [showVendorSelect, setShowVendorSelect] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!showPurchFromSelect) return;
+    setTimeout(() => {
+      if (!ref.current) return;
+      const select = ref.current.querySelectorAll('select');
+      if (select.length > 0) select[select.length - 2].focus();
+    }, 30);
+  }, [showPurchFromSelect]);
 
   useEffect(() => {
     if (!showVendorSelect) return;
@@ -84,6 +94,13 @@ export default function OfficeEngineAddOnRow({ addOn, onSave }: Props) {
     await onSave();
     if (!await ask('Are you sure you want to add this engine?')) return;
     await addEngine(addOn);
+
+    // Add engineCostIn
+    if (Number(addOn.cost) > 0) {
+      const { engineStockNum, cost, invoiceNum, vendor, costType, note } = addOn;
+      await addEngineCostIn(Number(engineStockNum), Number(cost), invoiceNum ?? '', vendor ?? '', costType ?? 'PurchasePrice', note ?? '');
+    }
+
     await deleteEngineAddOn(addOn.id);
     setAddons(addOns.filter((a) => a.id !== addOn.id));
   };
@@ -187,19 +204,19 @@ export default function OfficeEngineAddOnRow({ addOn, onSave }: Props) {
                 </td>
                 <td>
                   <div style={{ width: '21rem' }}>
-                    {showVendorSelect ?
+                    {showPurchFromSelect ?
                       <VendorSelect
                         variant={['label-full-width']}
                         value={addOn.purchasedFrom ?? ''}
                         onChange={(e: any) => handleEditAddOn({ ...addOn, purchasedFrom: e.target.value })}
-                        onBlur={() => setShowVendorSelect(false)}
+                        onBlur={() => setShowPurchFromSelect(false)}
                       />
                       :
                       <Button
                         type="button"
                         style={{ marginLeft: '0.3rem', width: '100%', textAlign: 'start' }}
                         variant={['no-style', 'x-small']}
-                        onFocus={() => setShowVendorSelect(true)}
+                        onFocus={() => setShowPurchFromSelect(true)}
                       >
                         { addOn.purchasedFrom || 'Select Vendor' }
                       </Button>
@@ -242,6 +259,84 @@ export default function OfficeEngineAddOnRow({ addOn, onSave }: Props) {
             checked={addOn.jakeBrake}
             onChange={(e: any) => handleEditAddOn({ ...addOn, jakeBrake: e.target.checked })}
           />
+
+          <Table variant={['plain', 'edit-row-details']} style={{ width: 'fit-content' }}>
+            <thead>
+              <tr>
+                <th>Cost</th>
+                <th>Vendor</th>
+                <th>Invoice Number</th>
+                <th>Cost Type</th>
+                <th>Engine Stock Number</th>
+                <th>Note</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <Input
+                    variant={['small', 'thin']}
+                    value={addOn.cost !== null ? addOn.cost : ''}
+                    onChange={(e: any) => handleEditAddOn({ ...addOn, cost: e.target.value })}
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <div style={{ width: '21rem' }}>
+                    {showVendorSelect ?
+                      <VendorSelect
+                        variant={['label-full-width']}
+                        value={addOn.vendor ?? ''}
+                        onChange={(e: any) => handleEditAddOn({ ...addOn, vendor: e.target.value })}
+                        onBlur={() => setShowVendorSelect(false)}
+                      />
+                      :
+                      <Button
+                        type="button"
+                        style={{ marginLeft: '0.3rem', width: '100%', textAlign: 'start' }}
+                        variant={['no-style', 'x-small']}
+                        onFocus={() => setShowVendorSelect(true)}
+                      >
+                        { addOn.vendor || 'Select Vendor' }
+                      </Button>
+                    }
+                  </div>
+                </td>
+                <td>
+                  <Input
+                    variant={['small', 'thin']}
+                    value={addOn.invoiceNum !== null ? addOn.invoiceNum : ''}
+                    onChange={(e: any) => handleEditAddOn({ ...addOn, invoiceNum: e.target.value })}
+                  />
+                </td>
+                <td>
+                  <Select
+                    value={addOn.costType !== null ? addOn.costType : ''}
+                    onChange={(e: any) => handleEditAddOn({ ...addOn, costType: e.target.value })}
+                  >
+                    <option>PurchasePrice</option>
+                    <option>ReconPrice</option>
+                    <option>Other</option>
+                  </Select>
+                </td>
+                <td>
+                  <Input
+                    variant={['small', 'thin']}
+                    value={addOn.engineStockNum !== null ? addOn.engineStockNum : addOn.engineNum ?? ''}
+                    onChange={(e: any) => handleEditAddOn({ ...addOn, engineStockNum: e.target.value })}
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <Input
+                    variant={['small', 'thin']}
+                    value={addOn.note !== null ? addOn.note : ''}
+                    onChange={(e: any) => handleEditAddOn({ ...addOn, note: e.target.value })}
+                  />
+                </td>
+              </tr>
+            </tbody>
+          </Table>
         </div>
 
         <div className="add-ons__list-row-buttons">

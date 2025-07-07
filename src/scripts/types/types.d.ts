@@ -325,7 +325,12 @@ type EngineAddOn = {
   ecm: boolean
   jakeBrake: boolean
   oilPan: '' | 'FS' | 'RS' | 'CS'
+  engineStockNum: number | null
   cost: number | null
+  invoiceNum: string | null
+  costType: CostType | null
+  vendor: string | null
+  note: string | null
 };
 
 type Warranty = {
@@ -441,7 +446,7 @@ type RecentQuoteSearch = {
 type PartCostIn = {
   id: number
   stockNum: string | null
-  invoiceNum: number | null
+  invoiceNum: string | null
   cost: number | null
   vendor: string | null
   costType: CostType | null
@@ -461,7 +466,7 @@ type EngineCostIn = {
   id: number
   engineStockNum: number | null
   cost: number | null
-  invoiceNum: number | null
+  invoiceNum: string | null
   costType: CostType | null
   vendor: string | null
   note: string | null

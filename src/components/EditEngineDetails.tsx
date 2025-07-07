@@ -209,7 +209,7 @@ export default function EditEngineDetails({ engine, setEngine, setIsEditing, eng
       for (let i = 0; i < engineCostIn.length; i++) {
         const item = engineCostIn[i];
         if (item.id === 0) {
-          await addEngineCostIn(Number(item.engineStockNum), Number(item.cost), Number(item.invoiceNum), item.vendor ?? '', item.costType ?? '', item.note ?? '');
+          await addEngineCostIn(Number(item.engineStockNum), Number(item.cost), item.invoiceNum ?? '', item.vendor ?? '', item.costType ?? '', item.note ?? '');
         }
       }
     }

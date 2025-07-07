@@ -78,7 +78,7 @@ export default function AltPartsSearchDialog({ open, setOpen, handleSearch }: Pr
       window.location.reload();
     } else {
       await handleSearch(partNum, stockNum, desc, location, qty, remarks, rating, purchasedFrom, serialNum, hp, 1, true);
-      if (partNum && partNum !== '*') await addRecentSearch({ partNum: partNum.replace('*', ''), salespersonId: user.id });
+      if (partNum && partNum !== '*' && user.subtype === 'sales') await addRecentSearch({ partNum: partNum.replace('*', ''), salespersonId: user.id });
     }
     setLastSearch(partNum.replace('*', ''));
   };

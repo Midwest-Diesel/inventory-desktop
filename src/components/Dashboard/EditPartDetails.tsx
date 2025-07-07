@@ -96,7 +96,7 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
         const newItem = {
           ...item,
           id: item.id,
-          invoiceNum: Number(item.invoiceNum),
+          invoiceNum: item.invoiceNum,
           cost: Number(item.cost),
           costType: item.costType,
           vendor: item.vendor,

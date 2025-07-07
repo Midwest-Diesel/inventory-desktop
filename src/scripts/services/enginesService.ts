@@ -109,7 +109,7 @@ export const addEngine = async (engine: EngineAddOn) => {
   }
 };
 
-export const addEngineCostIn = async (engineStockNum: number, cost: number, invoiceNum: number, vendor: string, costType: string, note: string) => {
+export const addEngineCostIn = async (engineStockNum: number, cost: number, invoiceNum: string, vendor: string, costType: string, note: string) => {
   try {
     const auth = { withCredentials: true };
     await api.post('/api/engines/cost-in', { engineStockNum, cost, invoiceNum, vendor, costType, note }, auth);
