@@ -15,8 +15,7 @@ export const getCompareDataByCustomer = async (id: number) => {
   try {
     const auth = { withCredentials: true };
     const res = await api.get(`/api/compare-consist/customer/${id}`, auth);
-    res.data = parseCompareDataRes(res.data);
-    return res.data;
+    return parseCompareDataRes(res.data);
   } catch (err) {
     console.error(err);
   }
@@ -26,8 +25,7 @@ export const searchCompareData = async (customerId: number, serialNum: string, a
   try {
     const auth = { withCredentials: true };
     const res = await api.get(`/api/compare-consist/search/${JSON.stringify({ customerId, serialNum, arrNum })}`, auth);
-    res.data = parseCompareDataRes(res.data);
-    return res.data;
+    return parseCompareDataRes(res.data);
   } catch (err) {
     console.error(err);
   }

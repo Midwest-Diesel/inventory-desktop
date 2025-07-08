@@ -169,63 +169,67 @@ export default function CompareConsist() {
     push('Compare Consist', `/compare-consist?c=${id}`);
   };
 
-  const loadCompareData = (data: CompareConsist) => {
-    setNewHead(data.headNew || '');
-    setNewBlock(data.blockNew || '');
-    setNewCrank(data.crankNew || '');
-    setNewPistons(data.pistonNew || '');
-    setNewCam(data.camNew || '');
-    setNewInjectors(data.injNew || '');
-    setNewSingleTurbo(data.turboNew || '');
-    setNewFWH(data.fwhNew || '');
-    setNewFrontHsng(data.frontHsngNew || '');
-    setNewOilPan(data.oilPanNew || '');
-    setNewHPTurbo(data.turboHpNew || '');
-    setNewLPTurbo(data.turboLpNew || '');
-    setNewHEUIPump(data.heuiPumpNew || '');
-    setNewExhMnfld(data.exhMnfldNew || '');
-    setNewOilPump(data.oilPumpNew || '');
-    setNewWtrPump(data.waterPumpNew || '');
+  const loadCompareData = (data: CompareConsist | null) => {
+    setNewHead(data?.headNew || '');
+    setNewBlock(data?.blockNew || '');
+    setNewCrank(data?.crankNew || '');
+    setNewPistons(data?.pistonNew || '');
+    setNewCam(data?.camNew || '');
+    setNewInjectors(data?.injNew || '');
+    setNewSingleTurbo(data?.turboNew || '');
+    setNewFWH(data?.fwhNew || '');
+    setNewFrontHsng(data?.frontHsngNew || '');
+    setNewOilPan(data?.oilPanNew || '');
+    setNewHPTurbo(data?.turboHpNew || '');
+    setNewLPTurbo(data?.turboLpNew || '');
+    setNewHEUIPump(data?.heuiPumpNew || '');
+    setNewExhMnfld(data?.exhMnfldNew || '');
+    setNewOilPump(data?.oilPumpNew || '');
+    setNewWtrPump(data?.waterPumpNew || '');
 
-    setRemanHead(data.headReman || '');
-    setRemanBlock(data.blockReman || '');
-    setRemanCrank(data.crankReman || '');
-    setRemanPistons(data.pistonReman || '');
-    setRemanCam(data.camReman || '');
-    setRemanInjectors(data.injReman || '');
-    setRemanSingleTurbo(data.turboReman || '');
-    setRemanFWH(data.fwhReman || '');
-    setRemanFrontHsng(data.frontHsngReman || '');
-    setRemanOilPan(data.oilPanReman || '');
-    setRemanHPTurbo(data.turboHpReman || '');
-    setRemanLPTurbo(data.turboLpReman || '');
-    setRemanHEUIPump(data.heuiPumpReman || '');
-    setRemanExhMnfld(data.exhMnfldReman || '');
-    setRemanOilPump(data.oilPumpReman || '');
-    setRemanWtrPump(data.waterPumpNew || '');
+    setRemanHead(data?.headReman || '');
+    setRemanBlock(data?.blockReman || '');
+    setRemanCrank(data?.crankReman || '');
+    setRemanPistons(data?.pistonReman || '');
+    setRemanCam(data?.camReman || '');
+    setRemanInjectors(data?.injReman || '');
+    setRemanSingleTurbo(data?.turboReman || '');
+    setRemanFWH(data?.fwhReman || '');
+    setRemanFrontHsng(data?.frontHsngReman || '');
+    setRemanOilPan(data?.oilPanReman || '');
+    setRemanHPTurbo(data?.turboHpReman || '');
+    setRemanLPTurbo(data?.turboLpReman || '');
+    setRemanHEUIPump(data?.heuiPumpReman || '');
+    setRemanExhMnfld(data?.exhMnfldReman || '');
+    setRemanOilPump(data?.oilPumpReman || '');
+    setRemanWtrPump(data?.waterPumpNew || '');
 
-    setHeadCheck(data.headCheck || false);
-    setBlockCheck(data.blockCheck || false);
-    setCrankCheck(data.crankCheck || false);
-    setPistonsCheck(data.pistonCheck || false);
-    setCamCheck(data.camCheck || false);
-    setInjectorsCheck(data.injCheck || false);
-    setSingleTurboCheck(data.turboCheck || false);
-    setFwhCheck(data.fwhCheck || false);
-    setFrontHousingCheck(data.frontHsngCheck || false);
-    setOilPanCheck(data.oilPanCheck || false);
-    setHpTurboCheck(data.turboHpCheck || false);
-    setLpTurboCheck(data.turboLpCheck || false);
-    setHeuiPumpCheck(data.heuiPumpCheck || false);
-    setExhManCheck(data.exhMnfldCheck || false);
-    setOilPumpCheck(data.oilPumpCheck || false);
-    setWaterPumpCheck(data.waterPumpCheck || false);
+    setHeadCheck(data?.headCheck || false);
+    setBlockCheck(data?.blockCheck || false);
+    setCrankCheck(data?.crankCheck || false);
+    setPistonsCheck(data?.pistonCheck || false);
+    setCamCheck(data?.camCheck || false);
+    setInjectorsCheck(data?.injCheck || false);
+    setSingleTurboCheck(data?.turboCheck || false);
+    setFwhCheck(data?.fwhCheck || false);
+    setFrontHousingCheck(data?.frontHsngCheck || false);
+    setOilPanCheck(data?.oilPanCheck || false);
+    setHpTurboCheck(data?.turboHpCheck || false);
+    setLpTurboCheck(data?.turboLpCheck || false);
+    setHeuiPumpCheck(data?.heuiPumpCheck || false);
+    setExhManCheck(data?.exhMnfldCheck || false);
+    setOilPumpCheck(data?.oilPumpCheck || false);
+    setWaterPumpCheck(data?.waterPumpCheck || false);
   };
 
   const handleSearch = async () => {
     const res = await searchCompareData(customer?.id ?? 0, serialNum, arrNum);
     setSearchData(res);
-    if (res[0]) loadCompareData(res[0]);
+    if (res[0]) {
+      loadCompareData(res[0]);
+    } else {
+      loadCompareData(null);
+    }
   };
 
 

@@ -97,12 +97,12 @@ export default function PricingChangesTable({ setTableOpen, data, setReportsOpen
                   
                   {row.oldSalesModel && row.oldSalesModel !== row.salesModel ?
                     <td style={{ backgroundColor: 'var(--grey-light-5)', fontWeight: 'bold' }}>
-                      <span style={{ color: !isDeletingRow ? 'var(--green-light-1)' : 'var(--red-2)' }}>{ `${row.salesModel}`.split('*').join(', ') } </span>
-                      { !isAddingRow && !isDeletingRow && <span style={{ color: 'var(--red-2)', textDecoration: 'line-through' }}>{ `${row.oldSalesModel}`.split('*').join(', ') }</span> }
+                      <span style={{ color: !isDeletingRow ? 'var(--green-light-1)' : 'var(--red-2)' }}>{ `${row.salesModel}`.split(';').join(', ') } </span>
+                      { !isAddingRow && !isDeletingRow && <span style={{ color: 'var(--red-2)', textDecoration: 'line-through' }}>{ `${row.oldSalesModel}`.split(';').join(', ') }</span> }
                     </td>
                     :
                     <td>
-                      { `${row.salesModel}`.split('*').join(', ') }
+                      { `${row.salesModel}`.split(';').join(', ') }
                     </td>
                   }
                   

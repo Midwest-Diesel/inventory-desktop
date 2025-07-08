@@ -21,7 +21,6 @@ export default function NewEnginesList() {
   const [engine, setEngine] = useState<Engine | null>(null);
   const [newQuoteDialogOpen, setNewQuoteDialogOpen] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [showButtons, setShowButtons] = useState(true);
 
   useEffect(() => {
     fetchData();
@@ -29,7 +28,6 @@ export default function NewEnginesList() {
 
   useEffect(() => {
     setEngines(filterEngines(enginesData, filter));
-    setShowButtons(true);
   }, [enginesData, engineModel]);
 
   const fetchData = async () => {
@@ -89,11 +87,6 @@ export default function NewEnginesList() {
     await fetchData();
   };
 
-  const handleFilterModel = (model: string) => {
-    setShowButtons(false);
-    setEngineModel(model);
-  };
-
   
   return (
     <Layout title="New Engines List">
@@ -108,9 +101,9 @@ export default function NewEnginesList() {
 
       <div className="new-engines-list">
         <div className="new-engines-list__top-bar">
-          {showButtons && getEngineModels().map((model: string) => {
+          {getEngineModels().map((model: string) => {
             return (
-              <Button key={model} onClick={() => handleFilterModel(model)}>{ model }</Button>
+              <Button key={model} onClick={() => setEngineModel(model)}>{ model }</Button>
             );
           })}
         </div>

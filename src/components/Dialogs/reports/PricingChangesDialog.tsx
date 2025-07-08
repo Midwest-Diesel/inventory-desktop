@@ -46,18 +46,46 @@ export default function PricingChangesDialog({ open, setOpen, setTableOpen, setT
     const addedRows = list.filter((row) => !oldList.some((r) => r.partNum === row.partNum));
     let newList = list.map((row) => {
       const oldRow = oldList.find((r) => r.partNum === row.partNum);
-      if (!oldRow || JSON.stringify(row) === JSON.stringify(oldRow)) return row;
+      const normalizeSalesModel = (val?: string) => (
+        (val ?? '')
+          .split(';')
+          .map((s) => s.trim())
+          .filter(Boolean)
+          .sort()
+          .join(';')
+      );
+
+      const currentSalesModel = normalizeSalesModel(row.salesModel);
+      const previousSalesModel = normalizeSalesModel(oldRow?.salesModel);
+      const isSame = (
+        !!oldRow &&
+        row.desc === oldRow.desc &&
+        Number(row.qty) === Number(oldRow.qty) &&
+        currentSalesModel === previousSalesModel &&
+        row.classCode === oldRow.classCode &&
+        Number(row.price) === Number(oldRow.price) &&
+        Number(row.percent) === Number(oldRow.percent)
+      );
+
+      if (!oldRow || isSame) {
+        return {
+          ...row,
+          salesModel: currentSalesModel
+        };
+      }
+
       return {
         ...row,
+        salesModel: currentSalesModel,
         oldPartNum: oldRow.partNum,
         oldDesc: oldRow.desc,
         oldQty: Number(oldRow.qty),
-        oldSalesModel: oldRow.salesModel,
+        oldSalesModel: previousSalesModel,
         oldClassCode: oldRow.classCode,
         oldPrice: Number(oldRow.price),
         oldPercent: Number(oldRow.percent)
       };
-    });
+    }).filter((r) => r.partNum && r.partNum !== 'undefined');
 
     // Filter out ADDED rows from existing list
     newList = newList.filter((row) => (
@@ -106,13 +134,13 @@ export default function PricingChangesDialog({ open, setOpen, setTableOpen, setT
           const worksheet = workbook.Sheets[sheetName];
           const jsonData = XLSX.utils.sheet_to_json(worksheet).map((row: any) => {
             return {
-              partNum: `${row['Part Number']}`.trim(),
-              desc: row['Part Name'],
-              qty: Number(row['Avl Quantity']),
-              salesModel: row['Sales Model'],
-              classCode: row['MAJOR_CLASS'],
-              price: Number(row['Disc. Price']),
-              percent: Number(row['% Disc. from D/N'])
+              partNum: `${row.PART_NUMBER}`.trim(),
+              desc: row.PART_DESCRIPTION,
+              qty: Number(row.AVAILABLE_QTY),
+              salesModel: row.SALES_MODEL?.toString().replaceAll('*', ';') ?? '',
+              classCode: row.MAJOR_CLASS_CODE,
+              price: Number(row.DISC_PRICE),
+              percent: Number(row.DISC_PERCENT)
             };
           }).filter((row) => row.partNum);
           resolve(jsonData);
@@ -138,16 +166,26 @@ export default function PricingChangesDialog({ open, setOpen, setTableOpen, setT
   };
 
   const formatFile = (jsonData: string[][]): PricingChangesReport[] => {
+    // Parse object structure
+    const partNumIdx = jsonData[0].indexOf('PART_NUMBER');
+    const descIdx = jsonData[0].indexOf('PART_DESCRIPTION');
+    const qtyIdx = jsonData[0].indexOf('AVAILABLE_QTY');
+    const salesModelIdx = jsonData[0].indexOf('SALES_MODEL');
+    const classCodeIdx = jsonData[0].indexOf('MAJOR_CLASS_CODE');
+    const priceIdx = jsonData[0].indexOf('DISC_PRICE');
+    const percentIdx = jsonData[0].indexOf('DISC_PERCENT');
+
+    // Return formatted data
     const formattedData: PricingChangesReport[] = [];
     for (const row of jsonData.slice(1)) {
       const formattedRow = {
-        partNum: `${row[0]}`.trim(),
-        desc: row[1],
-        qty: Number(row[2]),
-        salesModel: row[3],
-        classCode: row[4],
-        price: Number(row[5]),
-        percent: Number(row[6])
+        partNum: `${row[partNumIdx]}`.trim(),
+        desc: row[descIdx],
+        qty: Number(row[qtyIdx]),
+        salesModel: row[salesModelIdx]?.toString().replaceAll('*', ';') ?? '',
+        classCode: row[classCodeIdx],
+        price: Number(row[priceIdx]),
+        percent: Number(row[percentIdx])
       };
       formattedData.push(formattedRow);
     }
