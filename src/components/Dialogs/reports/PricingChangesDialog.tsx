@@ -1,3 +1,4 @@
+import Error from "@/components/Errors/Error";
 import Button from "@/components/Library/Button";
 import Dialog from "@/components/Library/Dialog";
 import Input from "@/components/Library/Input";
@@ -17,6 +18,7 @@ interface Props {
 export default function PricingChangesDialog({ open, setOpen, setTableOpen, setTableData, setReportsOpen }: Props) {
   const [file, setFile] = useState<File | null>(null);
   const [list, setList] = useState<PricingChangesReport[]>([]);
+  const [error, setError] = useState('');
 
   const showPreviousResults = async () => {
     setTableOpen(true);
@@ -142,7 +144,7 @@ export default function PricingChangesDialog({ open, setOpen, setTableOpen, setT
               price: Number(row.DISC_PRICE),
               percent: Number(row.DISC_PERCENT)
             };
-          }).filter((row) => row.partNum);
+          }).filter((row) => row.partNum && row.partNum !== 'undefined');
           resolve(jsonData);
         } catch (error) {
           reject(error);
@@ -174,6 +176,16 @@ export default function PricingChangesDialog({ open, setOpen, setTableOpen, setT
     const classCodeIdx = jsonData[0].indexOf('MAJOR_CLASS_CODE');
     const priceIdx = jsonData[0].indexOf('DISC_PRICE');
     const percentIdx = jsonData[0].indexOf('DISC_PERCENT');
+    const err: string[] = [];
+    setError('');
+    if (partNumIdx < 0) err.push('PART_NUMBER');
+    if (descIdx < 0) err.push('PART_DESCRIPTION');
+    if (qtyIdx < 0) err.push('AVAILABLE_QTY');
+    if (salesModelIdx < 0) err.push('SALES_MODEL');
+    if (classCodeIdx < 0) err.push('MAJOR_CLASS_CODE');
+    if (priceIdx < 0) err.push('DISC_PRICE');
+    if (percentIdx < 0) err.push('DISC_PERCENT');
+    if (err.length > 0) setError(`Missing or mispelled columns: ${err.join(', ')}`);
 
     // Return formatted data
     const formattedData: PricingChangesReport[] = [];
@@ -187,7 +199,7 @@ export default function PricingChangesDialog({ open, setOpen, setTableOpen, setT
         price: Number(row[priceIdx]),
         percent: Number(row[percentIdx])
       };
-      formattedData.push(formattedRow);
+      if (row[partNumIdx]) formattedData.push(formattedRow);
     }
     return formattedData;
   };
@@ -219,6 +231,7 @@ export default function PricingChangesDialog({ open, setOpen, setTableOpen, setT
       className="reports-dialog"
     >
       <form onSubmit={handleResults}>
+        <Error msg={error} darkBg={true} />
         <Input
           label="Upload Spreadsheet"
           variant={['label-bold']}
