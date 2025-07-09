@@ -1,7 +1,7 @@
 import { useAtom } from "jotai";
 import { shopAddOnsAtom } from "@/scripts/atoms/state";
 import { deleteAddOn, editAddOnAltParts, getAddOnById } from "@/scripts/services/addOnsService";
-import { addPart, addPartCostIn, checkForNewPartNum, getLatestUPStockNum, getPartByEngineNum, getPartsByStockNum, getPartsInfoByPartNum } from "@/scripts/services/partsService";
+import { addPart, addPartCostIn, checkForNewPartNum, getNextUPStockNum, getPartByEngineNum, getPartsByStockNum, getPartsInfoByPartNum } from "@/scripts/services/partsService";
 import { useEffect, useRef, useState } from "react";
 import { getEngineByStockNum, getEngineCostRemaining } from "@/scripts/services/enginesService";
 import { getRatingFromRemarks } from "@/scripts/tools/utils";
@@ -154,15 +154,12 @@ export default function OfficePartAddonRow({ addOn, partNumList, setSelectedAddO
     if (value === 1 || value === 99) return;
     // Engine number 0 autofills to the next available UP stockNum
     if (value === 0) {
-      const latestUP = await getLatestUPStockNum();
-      if (!latestUP) return;
-
-      const newStockNum = `${latestUP.slice(0, latestUP.length - 1)}${Number(latestUP.charAt(latestUP.length - 1)) + 1}`;
-      if (!newStockNum) {
+      const latestUP = await getNextUPStockNum();
+      if (!latestUP) {
         alert('UP stock number failed to auto-increment');
         return;
       }
-      const updatedAddOns = addOns.map((a: AddOn) => (a.id === addOn.id ? { ...addOn, stockNum: newStockNum } : a));
+      const updatedAddOns = addOns.map((a: AddOn) => (a.id === addOn.id ? { ...addOn, stockNum: latestUP } : a));
       setAddons(updatedAddOns);
       setEngineNum('');
       return;

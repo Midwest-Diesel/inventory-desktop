@@ -9,7 +9,7 @@ import Grid from "@/components/Library/Grid/Grid";
 import GridItem from "@/components/Library/Grid/GridItem";
 import { useAtom } from "jotai";
 import { userAtom } from "@/scripts/atoms/state";
-import { deletePart, editPart, getPartById, getPartCostIn, getPartEngineCostOut } from "@/scripts/services/partsService";
+import { deletePart, editPart, getNextUPStockNum, getPartById, getPartCostIn, getPartEngineCostOut } from "@/scripts/services/partsService";
 import PartPicturesDialog from "@/components/Dialogs/PartPicturesDialog";
 import EditPartDetails from "@/components/Dashboard/EditPartDetails";
 import EngineCostOutTable from "@/components/EngineCostOut";
@@ -23,6 +23,7 @@ import Modal from "@/components/Library/Modal";
 import { getSurplusCostRemaining } from "@/scripts/services/surplusService";
 import { useNavState } from "@/hooks/useNavState";
 import { usePrintQue } from "@/hooks/usePrintQue";
+import { ask } from "@/scripts/config/tauri";
 
 
 export default function PartDetails() {
@@ -129,6 +130,14 @@ export default function PartDetails() {
     printQue();
   };
 
+  const handleSetNextUP = async () => {
+    const latestUP = await getNextUPStockNum();
+    if (!latestUP || !part || !await ask(`Change the current stock number to ${latestUP}?`)) return;
+    const newPart = { ...part, stockNum: latestUP };
+    await editPart(newPart);
+    setPart(newPart);
+  };
+
 
   return (
     <Layout title="Part">
@@ -214,6 +223,7 @@ export default function PartDetails() {
           <div className="part-details__top-bar">
             <Button onClick={handleAddToUP} data-testid="add-to-up-btn">Add to UP</Button>
             <Button onClick={() => handlePrint()}>Print Tag</Button>
+            <Button onClick={() => handleSetNextUP()}>Set Next UP #</Button>
           </div>
 
 

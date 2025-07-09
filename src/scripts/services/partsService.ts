@@ -226,11 +226,13 @@ export const getPartsByCoreFamily = async (coreFamily: string): Promise<Part[] |
   }
 };
 
-export const getLatestUPStockNum = async (): Promise<string | null> => {
+export const getNextUPStockNum = async (): Promise<string | null> => {
   try {
     const auth = { withCredentials: true };
     const res = await api.get(`/api/parts/latest-up-stock-num`, auth);
-    return res.data.stockNum;
+    const stockNum = res.data.stockNum;
+    if (!stockNum) return null;
+    return `${stockNum.slice(0, stockNum.length - 1)}${Number(stockNum.charAt(stockNum.length - 1)) + 1}`;
   } catch (err) {
     console.error(err);
     return null;

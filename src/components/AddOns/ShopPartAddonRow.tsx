@@ -5,7 +5,7 @@ import Checkbox from "../Library/Checkbox";
 import Table from "../Library/Table";
 import Select from "../Library/Select/Select";
 import { deleteAddOn, editAddOnIsPoOpened, editAddOnPrintStatus } from "@/scripts/services/addOnsService";
-import { getLatestUPStockNum, getPartByEngineNum, getPartsByStockNum, getPartsInfoByPartNum } from "@/scripts/services/partsService";
+import { getNextUPStockNum, getPartByEngineNum, getPartsByStockNum, getPartsInfoByPartNum } from "@/scripts/services/partsService";
 import { useEffect, useRef, useState } from "react";
 import Input from "../Library/Input";
 import Link from "../Library/Link";
@@ -135,15 +135,12 @@ export default function ShopPartAddonRow({ addOn, handleDuplicateAddOn, partNumL
     if (value === 1 || value === 99) return;
     // Engine number 0 autofills to the next available UP stockNum
     if (value === 0) {
-      const latestUP = await getLatestUPStockNum();
-      if (!latestUP) return;
-
-      const newStockNum = `${latestUP.slice(0, latestUP.length - 1)}${Number(latestUP.charAt(latestUP.length - 1)) + 1}`;
-      if (!newStockNum) {
+      const latestUP = await getNextUPStockNum();
+      if (!latestUP) {
         alert('UP stock number failed to auto-increment');
         return;
       }
-      const updatedAddOns = addOns.map((a: AddOn) => (a.id === addOn.id ? { ...addOn, stockNum: newStockNum } : a));
+      const updatedAddOns = addOns.map((a: AddOn) => (a.id === addOn.id ? { ...addOn, stockNum: latestUP } : a));
       setAddons(updatedAddOns);
       setEngineNum('');
       return;
