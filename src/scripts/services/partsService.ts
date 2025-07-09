@@ -226,6 +226,17 @@ export const getPartsByCoreFamily = async (coreFamily: string): Promise<Part[] |
   }
 };
 
+export const getLatestUPStockNum = async (): Promise<string | null> => {
+  try {
+    const auth = { withCredentials: true };
+    const res = await api.get(`/api/parts/latest-up-stock-num`, auth);
+    return res.data.stockNum;
+  } catch (err) {
+    console.error(err);
+    return null;
+  }
+};
+
 // === POST routes === //
 
 export const addPart = async (part: Part, partInfoExists: boolean, updateLoading?: (i: number, total: number) => void) => {

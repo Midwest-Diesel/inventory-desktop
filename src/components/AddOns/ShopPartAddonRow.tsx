@@ -5,7 +5,7 @@ import Checkbox from "../Library/Checkbox";
 import Table from "../Library/Table";
 import Select from "../Library/Select/Select";
 import { deleteAddOn, editAddOnIsPoOpened, editAddOnPrintStatus } from "@/scripts/services/addOnsService";
-import { getPartByEngineNum, getPartsByStockNum, getPartsInfoByPartNum } from "@/scripts/services/partsService";
+import { getLatestUPStockNum, getPartByEngineNum, getPartsByStockNum, getPartsInfoByPartNum } from "@/scripts/services/partsService";
 import { useEffect, useRef, useState } from "react";
 import Input from "../Library/Input";
 import Link from "../Library/Link";
@@ -132,7 +132,24 @@ export default function ShopPartAddonRow({ addOn, handleDuplicateAddOn, partNumL
   };
 
   const updateAutofillEngineNumData = async (value: number) => {
-    if (value === 0 || value === 1 || value === 99) return;
+    if (value === 1 || value === 99) return;
+    // Engine number 0 autofills to the next available UP stockNum
+    if (value === 0) {
+      const latestUP = await getLatestUPStockNum();
+      if (!latestUP) return;
+
+      const newStockNum = `${latestUP.slice(0, latestUP.length - 1)}${Number(latestUP.charAt(latestUP.length - 1)) + 1}`;
+      if (!newStockNum) {
+        alert('UP stock number failed to auto-increment');
+        return;
+      }
+      const updatedAddOns = addOns.map((a: AddOn) => (a.id === addOn.id ? { ...addOn, stockNum: newStockNum } : a));
+      setAddons(updatedAddOns);
+      setEngineNum('');
+      return;
+    }
+
+    // Otherwise, autofill with associated engine data
     try {
       const res = await getEngineByStockNum(value);
       const part = await getPartByEngineNum(value);
