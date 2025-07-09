@@ -98,7 +98,7 @@ export default function OfficeEngineAddOnRow({ addOn, onSave }: Props) {
     // Add engineCostIn
     if (Number(addOn.cost) > 0) {
       const { engineStockNum, cost, invoiceNum, vendor, costType, note } = addOn;
-      await addEngineCostIn(Number(engineStockNum), Number(cost), invoiceNum ?? '', vendor ?? '', costType ?? 'PurchasePrice', note ?? '');
+      await addEngineCostIn(Number(engineStockNum ?? addOn.engineNum), Number(cost), invoiceNum ?? '', vendor ?? '', costType ?? 'PurchasePrice', note ?? '');
     }
 
     await deleteEngineAddOn(addOn.id);
