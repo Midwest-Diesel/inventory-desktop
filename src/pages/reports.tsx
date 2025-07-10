@@ -26,7 +26,7 @@ import NoLocationPartsTable from "@/components/Reports/NoLocationPartsTable";
 import OutstandingCoresTable from "@/components/Reports/OutstandingCoresTable";
 import PartDescTable from "@/components/Reports/PartDescTable";
 import PBBTable from "@/components/Reports/PBBTable";
-import PricingChangesTable from "@/components/Reports/PricingChangesTable";
+import PricingChanges from "@/components/Reports/PricingChangesTable/PricingChanges";
 import RecentSearchesTable from "@/components/Reports/RecentSearchesTable";
 import SingleCompanyEnginesTable from "@/components/Reports/SingleCompanyEnginesTable";
 import SingleCompanyPartsTable from "@/components/Reports/SingleCompanyPartsTable";
@@ -317,7 +317,7 @@ export default function Reports() {
           { recentSearchesTableOpen && <RecentSearchesTable setTableOpen={setRecentSearchesTableOpen} data={recentSearchesData} setReportsOpen={setReportsPageOpen} /> }
           {/* { emailAddressesTableOpen && <EmailsTable setTableOpen={setEmailAddressesTableOpen} data={emailAddressesData} setReportsOpen={setReportsPageOpen} /> } */}
           { outstandingHighCoresTableOpen && <OutstandingCoresTable setTableOpen={setOutstandingHighCoresTableOpen} data={outstandingHighCoresData} setReportsOpen={setReportsPageOpen} /> }
-          { pricingChangesTableOpen && <PricingChangesTable setTableOpen={setPricingChangesTableOpen} data={pricingChangesData} setReportsOpen={setReportsPageOpen} /> }
+          { pricingChangesTableOpen && <PricingChanges setTableOpen={setPricingChangesTableOpen} data={pricingChangesData} setReportsOpen={setReportsPageOpen} /> }
           { inventoryValueTableOpen && <InventoryValueTable setTableOpen={setInventoryValueTableOpen} setReportsOpen={setReportsPageOpen} /> }
         </>
       }

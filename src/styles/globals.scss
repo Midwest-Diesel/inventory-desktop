@@ -16,6 +16,14 @@
 @use "components/library/toast";
 @use "components/library/context-menu";
 @use "components/library/tooltip";
+@use "components/printable-components/part-tag";
+@use "components/printable-components/handwritten";
+@use "components/printable-components/shipping-label";
+@use "components/printable-components/credit-card-label";
+@use "components/printable-components/warranty";
+@use "components/printable-components/return";
+@use "components/printable-components/packing-slip";
+@use "components/printable-components/purchase-order";
 @use "components/engines/engine-details";
 @use "components/engines/engines";
 @use "components/engines/new-engines-list";
@@ -60,14 +68,7 @@
 @use "components/karmak";
 @use "components/sales-end-of-day-dialog";
 @use "components/addon-alt-parts-dialog";
-@use "components/printable-components/part-tag";
-@use "components/printable-components/handwritten";
-@use "components/printable-components/shipping-label";
-@use "components/printable-components/credit-card-label";
-@use "components/printable-components/warranty";
-@use "components/printable-components/return";
-@use "components/printable-components/packing-slip";
-@use "components/printable-components/purchase-order";
+@use "components/pricing-changes";
 
 * {
   box-sizing: border-box;

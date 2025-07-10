@@ -1,51 +1,37 @@
 import { formatCurrency } from "@/scripts/tools/stringUtils";
-import Button from "../Library/Button";
-import Loading from "../Library/Loading";
-import Table from "../Library/Table";
-import { getSupabaseFile } from "@/scripts/config/supabase";
-import { useState } from "react";
-import Pagination from "../Library/Pagination";
+import Button from "../../Library/Button";
+import Loading from "../../Library/Loading";
+import Table from "../../Library/Table";
+import Pagination from "../../Library/Pagination";
 
 interface Props {
-  setTableOpen: (open: boolean) => void
   data: PricingChangesReport[]
-  setReportsOpen: (open: boolean) => void
+  list: PricingChangesReport[]
+  setList: (value: PricingChangesReport[]) => void
+  watchedPartNums: string[]
+  toggleWatchRow: (row: PricingChangesReport, isWatched: boolean) => Promise<void>
+  limit: number
+  maxHeight?: string
 }
 
 
-export default function PricingChangesTable({ setTableOpen, data, setReportsOpen }: Props) {
-  const [list, setList] = useState<PricingChangesReport[]>([]);
-  const LIMIT = 200;
-
-  const handleGoBack = () => {
-    setTableOpen(false);
-    setReportsOpen(true);
-  };
-
-  const handleDownload = async () => {
-    const url = await getSupabaseFile('files', 'pricing_changes.xlsx');
-    window.open(url);
-  };
-
+export default function PricingChangesTable({ data, list, setList, watchedPartNums, toggleWatchRow, limit, maxHeight = 'auto' }: Props) {
   const handleChangePage = async (_: any, page: number) => {
-    const startIndex = (page - 1) * LIMIT;
-    const paginatedData = data.slice(startIndex, startIndex + LIMIT);
+    const startIndex = (page - 1) * limit;
+    const paginatedData = data.slice(startIndex, startIndex + limit);
     setList(paginatedData);
   };
 
 
   return (
     <>
-      <div className="reports-table">
-        <div className="reports-table__top-bar">
-          <Button onClick={handleGoBack}>Back</Button>
-          <Button onClick={handleDownload}>Download Spreadsheet</Button>
-        </div>
-        <h3>Rows: {data.length}</h3>
+      <h3>Rows: { data.length }</h3>
 
+      <div style={{ maxHeight, overflowY: 'auto' }}>
         <Table>
           <thead>
             <tr>
+              <th></th>
               <th>Part Number</th>
               <th>Description</th>
               <th>Qty</th>
@@ -59,9 +45,15 @@ export default function PricingChangesTable({ setTableOpen, data, setReportsOpen
             {list && list.map((row, i) => {
               const isAddingRow = row.oldPartNum === 'ADD' as any;
               const isDeletingRow = row.oldPartNum === 'DELETE' as any;
+              const isWatched = watchedPartNums.includes(row.partNum);
 
               return (
-                <tr key={i}>
+                <tr key={i} style={isWatched ? { color: 'var(--yellow-2)', fontWeight: 'bold' } : {}}>
+                  <td>
+                    <Button variant={['no-style']} className="pricing-changes__watch-btn" onClick={() => toggleWatchRow(row, isWatched)}>
+                      <img src={`/images/icons/eye-${isWatched ? 'slash' : 'open'}.svg`} alt="Eye opened" />
+                    </Button>
+                  </td>
                   {row.oldPartNum && row.oldPartNum !== row.partNum ?
                     <td style={{ backgroundColor: 'var(--grey-light-5)', fontWeight: 'bold' }}>
                       <span style={{ color: !isDeletingRow ? 'var(--green-light-1)' : 'var(--red-2)' }}>{ row.partNum } </span>
@@ -144,14 +136,14 @@ export default function PricingChangesTable({ setTableOpen, data, setReportsOpen
           </tbody>
         </Table>
         { data.length == 0 && <Loading /> }
-      </div>
 
-      <Pagination
-        data={data}
-        setData={handleChangePage}
-        pageCount={data.length}
-        pageSize={LIMIT}
-      />
+        <Pagination
+          data={data}
+          setData={handleChangePage}
+          pageCount={data.length}
+          pageSize={limit}
+        />
+      </div>
     </>
   );
 }
