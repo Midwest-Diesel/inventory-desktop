@@ -4,7 +4,7 @@ import Grid from "../Library/Grid/Grid";
 import GridItem from "../Library/Grid/GridItem";
 import { FormEvent, useState } from "react";
 import Input from "@/components/Library/Input";
-import { addAltParts, addPartCostIn, deletePartCostIn, editAltParts, editPart, editPartCostIn, getPartsInfoByAltParts, getPartsInfoByPartNum } from "@/scripts/services/partsService";
+import { addAltParts, addPartCostIn, deletePartCostIn, editAltParts, editPart, editPartCostIn, getPartsInfoByAltParts, getPartsInfoByPartNum, setPartLastUpdated } from "@/scripts/services/partsService";
 import Table from "../Library/Table";
 import { addEngineCostOut, deleteEngineCostOut, editEngineCostOut } from "@/scripts/services/enginesService";
 import { userAtom } from "@/scripts/atoms/state";
@@ -87,7 +87,18 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
       specialNotes,
       coreFam
     } as Part;
-    await editPart(newPart);
+
+    const isPricingUnchanged = (
+      part.listPrice === newPart.listPrice &&
+      part.fleetPrice === newPart.fleetPrice &&
+      part.remanListPrice === newPart.remanListPrice &&
+      part.remanFleetPrice === newPart.remanFleetPrice &&
+      part.corePrice === newPart.corePrice &&
+      part.purchasePrice === newPart.purchasePrice
+    );
+    if (!isPricingUnchanged) setPartLastUpdated(part.id);
+    
+    await editPart({ ...newPart, priceLastUpdated: !isPricingUnchanged ? new Date() : null });
 
     // Edit rows
     if (JSON.stringify(partCostIn) !== JSON.stringify(partCostInData)) {

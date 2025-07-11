@@ -9,7 +9,7 @@ import Grid from "@/components/Library/Grid/Grid";
 import GridItem from "@/components/Library/Grid/GridItem";
 import { useAtom } from "jotai";
 import { userAtom } from "@/scripts/atoms/state";
-import { deletePart, editPart, getNextUPStockNum, getPartById, getPartCostIn, getPartEngineCostOut } from "@/scripts/services/partsService";
+import { addToPartQtyHistory, deletePart, editPart, getNextUPStockNum, getPartById, getPartCostIn, getPartEngineCostOut, getPartsQtyHistory } from "@/scripts/services/partsService";
 import PartPicturesDialog from "@/components/Dialogs/PartPicturesDialog";
 import EditPartDetails from "@/components/Dashboard/EditPartDetails";
 import EngineCostOutTable from "@/components/EngineCostOut";
@@ -24,6 +24,7 @@ import { getSurplusCostRemaining } from "@/scripts/services/surplusService";
 import { useNavState } from "@/hooks/useNavState";
 import { usePrintQue } from "@/hooks/usePrintQue";
 import { ask } from "@/scripts/config/tauri";
+import PartQtyHistoryDialog from "@/components/Dialogs/PartQtyHistoryDialog";
 
 
 export default function PartDetails() {
@@ -33,6 +34,7 @@ export default function PartDetails() {
   const [user] = useAtom<User>(userAtom);
   const [part, setPart] = useState<Part | null>(null);
   const [engine, setEngine] = useState<Engine | null>(null);
+  const [history, setHistory] = useState<PartQtyHistory[]>([]);
   const [picturesOpen, setPicturesOpen] = useState(false);
   const [snPicturesOpen, setSnPicturesOpen] = useState(false);
   const [pictures, setPictures] = useState<Picture[]>([]);
@@ -44,6 +46,7 @@ export default function PartDetails() {
   const [costAlertAmount, setCostAlertAmount] = useState('');
   const [costAlertPurchasedFrom, setCostAlertPurchasedFrom] = useState('');
   const [costAlertOpen, setCostAlertOpen] = useState(false);
+  const [partQtyHistoryOpen, setPartQtyHistoryOpen] = useState(false);
 
   useEffect(() => {
     fetchData();
@@ -56,6 +59,9 @@ export default function PartDetails() {
       setCostRemaining(costRes);
       setPartCostIn(await getPartCostIn(part?.stockNum ?? ''));
       setEngineCostOut(await getPartEngineCostOut(part?.stockNum ?? ''));
+
+      const history = await getPartsQtyHistory(part.id);
+      setHistory(history);
     };
     fetchTables();
   }, [isEditingPart]);
@@ -103,6 +109,7 @@ export default function PartDetails() {
     const qty = Number(prompt('Enter qty to add'));
     if (!qty || !part) return;
     await editPart({ ...part, qty: qty + (part?.qty ?? 0) });
+    await addToPartQtyHistory(part.id, qty);
     await fetchData();
     await handlePrint();
   };
@@ -159,6 +166,15 @@ export default function PartDetails() {
           <h2>Cost Remaining:</h2>
           <h1>{ costAlertAmount }</h1>
         </Modal>
+      }
+
+      {part &&
+        <PartQtyHistoryDialog
+          open={partQtyHistoryOpen}
+          setOpen={setPartQtyHistoryOpen}
+          part={part}
+          history={history}
+        />
       }
 
       {part ? isEditingPart ?
@@ -224,6 +240,7 @@ export default function PartDetails() {
             <Button onClick={handleAddToUP} data-testid="add-to-up-btn">Add to UP</Button>
             <Button onClick={() => handlePrint()}>Print Tag</Button>
             <Button onClick={() => handleSetNextUP()}>Set Next UP #</Button>
+            { history.length > 0 && <Button onClick={() => setPartQtyHistoryOpen(true)}>Qty History</Button> }
           </div>
 
 
@@ -285,12 +302,16 @@ export default function PartDetails() {
                     <td>{ part.rating }</td>
                   </tr>
                   <tr>
+                    <th>Core Family</th>
+                    <td>{ part.coreFam }</td>
+                  </tr>
+                  <tr>
                     <th>Entry Date</th>
                     <td>{ formatDate(part.entryDate) }</td>
                   </tr>
-                  <tr>
-                    <th>Core Family</th>
-                    <td>{ part.coreFam }</td>
+                 <tr>
+                    <th>Price Last Updated</th>
+                    <td>{ formatDate(part.priceLastUpdated) }</td>
                   </tr>
                 </tbody>
               </Table>

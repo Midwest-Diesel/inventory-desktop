@@ -372,6 +372,7 @@ type Part = {
   location: string | null
   remarks: string | null
   entryDate: Date | null
+  priceLastUpdated: Date | null
   enteredBy: string | null
   qty: number
   stockNum: string | null
@@ -409,6 +410,13 @@ type PartMin = {
   desc: string | null
   location: string | null
   remarks: string | null
+};
+
+type PartQtyHistory = {
+  id: number
+  partId: number
+  qtyChanged: number
+  dateChanged: Date
 };
 
 interface PartSearchData {

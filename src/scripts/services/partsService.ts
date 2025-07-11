@@ -9,6 +9,7 @@ const parsePartsData = async (parts: any) => {
     return {
       ...part,
       entryDate: new Date(part.entryDate),
+      priceLastUpdated: part.priceLastUpdated && new Date(part.priceLastUpdated),
       soldToDate: new Date(part.soldToDate),
       altParts: part.altParts ? part.altParts.split(',').map((p: any) => p.trim()) : [],
       partsCostIn: part.partsCostIn ? part.partsCostIn.filter((part: any) => !isObjectNull(part)) : [],
@@ -239,6 +240,18 @@ export const getNextUPStockNum = async (): Promise<string | null> => {
   }
 };
 
+export const getPartsQtyHistory = async (partId: number): Promise<PartQtyHistory[] | []> => {
+  try {
+    const auth = { withCredentials: true };
+    const res = await api.get(`/api/parts/qty-history?partId=${partId}`, auth);
+    return res.data.map((r: any) => ({ ...r, dateChanged: new Date(r.dateChanged) }));
+  } catch (err) {
+    console.error(err);
+    return [];
+  }
+};
+
+
 // === POST routes === //
 
 export const addPart = async (part: Part, partInfoExists: boolean, updateLoading?: (i: number, total: number) => void) => {
@@ -278,12 +291,30 @@ export const addPartCostIn = async (stockNum: string, cost: number, invoiceNum: 
   }
 };
 
+export const addToPartQtyHistory = async (partId: number, qty: number) => {
+  try {
+    const auth = { withCredentials: true };
+    await api.post('/api/parts/qty-history', { partId, qty, date: new Date() }, auth);
+  } catch (err) {
+    console.error(err);
+  }
+};
+
 // === PATCH routes === //
 
 export const handlePartTakeoff = async (partId: number, qty: number) => {
   try {
     const auth = { withCredentials: true };
     await api.patch('/api/parts/takeoff', { partId, qty }, auth);
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+export const setPartLastUpdated = async (partId: number) => {
+  try {
+    const auth = { withCredentials: true };
+    await api.patch('/api/parts/last-updated', { partId, date: new Date() }, auth);
   } catch (err) {
     console.error(err);
   }
