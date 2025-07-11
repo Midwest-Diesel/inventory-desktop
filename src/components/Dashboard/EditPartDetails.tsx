@@ -4,7 +4,7 @@ import Grid from "../Library/Grid/Grid";
 import GridItem from "../Library/Grid/GridItem";
 import { FormEvent, useState } from "react";
 import Input from "@/components/Library/Input";
-import { addAltParts, addPartCostIn, deletePartCostIn, editAltParts, editPart, editPartCostIn, getPartsInfoByAltParts, getPartsInfoByPartNum, setPartLastUpdated } from "@/scripts/services/partsService";
+import { addAltParts, addPartCostIn, addToPartQtyHistory, deletePartCostIn, editAltParts, editPart, editPartCostIn, getPartsInfoByAltParts, getPartsInfoByPartNum, setPartLastUpdated } from "@/scripts/services/partsService";
 import Table from "../Library/Table";
 import { addEngineCostOut, deleteEngineCostOut, editEngineCostOut } from "@/scripts/services/enginesService";
 import { userAtom } from "@/scripts/atoms/state";
@@ -99,6 +99,9 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
     if (!isPricingUnchanged) setPartLastUpdated(part.id);
     
     await editPart({ ...newPart, priceLastUpdated: !isPricingUnchanged ? new Date() : null });
+
+    // Handle qty change history
+    if (part.qty !== newPart.qty) await addToPartQtyHistory(part.id, newPart.qty - part.qty);
 
     // Edit rows
     if (JSON.stringify(partCostIn) !== JSON.stringify(partCostInData)) {

@@ -30,6 +30,7 @@ export default function PartQtyHistoryDialog({ open, setOpen, part, history }: P
       title="Part Qty History"
       width={500}
       y={-150}
+      maxHeight="20rem"
     >
       <Table>
         <thead>

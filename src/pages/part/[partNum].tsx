@@ -59,12 +59,18 @@ export default function PartDetails() {
       setCostRemaining(costRes);
       setPartCostIn(await getPartCostIn(part?.stockNum ?? ''));
       setEngineCostOut(await getPartEngineCostOut(part?.stockNum ?? ''));
-
-      const history = await getPartsQtyHistory(part.id);
-      setHistory(history);
     };
     fetchTables();
   }, [isEditingPart]);
+
+  useEffect(() => {
+    if (!part) return;
+    const fetchData = async () => {
+      const history = await getPartsQtyHistory(part.id);
+      setHistory(history);
+    };
+    fetchData();
+  }, [partQtyHistoryOpen, part]);
 
   useEffect(() => {}, [pictures, snPictures, part]);
 
@@ -240,7 +246,7 @@ export default function PartDetails() {
             <Button onClick={handleAddToUP} data-testid="add-to-up-btn">Add to UP</Button>
             <Button onClick={() => handlePrint()}>Print Tag</Button>
             <Button onClick={() => handleSetNextUP()}>Set Next UP #</Button>
-            { history.length > 0 && <Button onClick={() => setPartQtyHistoryOpen(true)}>Qty History</Button> }
+            <Button onClick={() => setPartQtyHistoryOpen(true)} disabled={history.length === 0}>Qty History</Button>
           </div>
 
 

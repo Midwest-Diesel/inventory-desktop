@@ -2,7 +2,7 @@ import Button from "@/components/Library/Button";
 import Dialog from "@/components/Library/Dialog";
 import Input from "@/components/Library/Input";
 import { editHandwrittenTakeoffState, getHandwrittenById } from "@/scripts/services/handwrittensService";
-import { addPart, addPartCostIn, editPartCostIn, getPartById, getPartCostIn, handlePartTakeoff } from "@/scripts/services/partsService";
+import { addPart, addPartCostIn, addToPartQtyHistory, editPartCostIn, getPartById, getPartCostIn, handlePartTakeoff } from "@/scripts/services/partsService";
 import { getSurplusByCode, zeroAllSurplusItems } from "@/scripts/services/surplusService";
 import { formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
 import { useParams } from "react-router-dom";
@@ -45,9 +45,14 @@ export default function TakeoffsDialog({ open, setOpen, item, setHandwritten, on
     }
     await handlePartTakeoff(part.id, Number(qty));
     await editHandwrittenTakeoffState(item.id, true);
+    await addToPartQtyHistory(part.id, -Number(qty));
     
     const surplus: Surplus | null = await getSurplusByCode(part.purchasedFrom ?? '');
     if (surplus && surplus.price - Number(item.cost) <= 0) await zeroAllSurplusItems(surplus.code);
+    
+    // When the qty remaining after takeoffs is not 0
+    // then it will create a new part with a date code, with the qtySold value
+    // instead of changing the qtySold for the original part
     if (part.qty - Number(qty) <= 0) {
       const res = await getPartCostIn(part.stockNum ?? '');
       const partCostIn: PartCostIn | null = res.find((p: PartCostIn) => p.vendor === part.purchasedFrom) ?? null;
