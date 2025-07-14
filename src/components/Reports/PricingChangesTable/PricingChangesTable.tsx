@@ -3,7 +3,8 @@ import Button from "../../Library/Button";
 import Loading from "../../Library/Loading";
 import Table from "../../Library/Table";
 import Pagination from "../../Library/Pagination";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import Select from "@/components/Library/Select/Select";
 
 interface Props {
   data: PricingChangesReport[]
@@ -14,21 +15,29 @@ interface Props {
   limit: number
   maxHeight?: string
 }
+type Filter = { price?: 'desc' | 'asc' | null, percent?: 'desc' | 'asc' | null, code?: string };
 
 
 export default function PricingChangesTable({ data, list, setList, watchedPartNums, toggleWatchRow, limit, maxHeight = 'auto' }: Props) {
-  type Filter = null | { price?: 'desc' | 'asc', percent?: 'desc' | 'asc', code?: string };
-  const [filter, setFilter] = useState<Filter>(null);
+  const [filter, setFilter] = useState<Filter | null>(null);
+  const [filteredData, setFilteredData] = useState<PricingChangesReport[]>(data);
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
-    const filteredData = getFilteredData(filter);
-    setList(filteredData.slice(0, limit));
+    const newFiltered = getFilteredData(filter);
+    setFilteredData(newFiltered);
+    const startIndex = (currentPage - 1) * limit;
+    setList(newFiltered.slice(startIndex, startIndex + limit));
+  }, [data, filter, currentPage, limit]);
+
+  const uniqueClassCodes = useMemo(() => {
+    const codes = new Set<string>();
+    data.forEach((d) => d.classCode && codes.add(d.classCode));
+    return Array.from(codes).sort();
   }, [data]);
 
   const handleChangePage = (_: any, page: number) => {
-    const startIndex = (page - 1) * limit;
-    const filteredData = getFilteredData(filter);
-    setList(filteredData.slice(startIndex, startIndex + limit));
+    setCurrentPage(page);
   };
 
   const getFilterImg = () => {
@@ -38,6 +47,9 @@ export default function PricingChangesTable({ data, list, setList, watchedPartNu
 
   const getFilteredData = (filter: Filter | null): PricingChangesReport[] => {
     let filtered = [...data];
+    if (filter?.code) {
+      filtered = filtered.filter(d => d.classCode === filter.code);
+    }
 
     if (filter?.price) {
       filtered.sort((a, b) =>
@@ -47,25 +59,41 @@ export default function PricingChangesTable({ data, list, setList, watchedPartNu
       filtered.sort((a, b) =>
         filter.percent === 'asc' ? a.percent - b.percent : b.percent - a.percent
       );
-    } else if (filter?.code) {
-      filtered = filtered.filter(d => d.classCode === filter.code);
     }
-
     return filtered;
   };
 
   const handleChangeFilter = (newFilter: Filter | null) => {
-    let updatedFilter: Filter = null;
-
-    if (newFilter?.price) {
+    let updatedFilter: Filter | null = { ...filter };
+    if (newFilter?.price !== undefined) {
       const current = filter?.price;
-      updatedFilter = { price: current === 'asc' ? 'desc' : 'asc' };
-    } else if (newFilter?.percent) {
+      if (current === 'asc') {
+        updatedFilter = { ...updatedFilter, price: 'desc' };
+      } else if (current === 'desc') {
+        delete updatedFilter.price;
+      } else {
+        updatedFilter = { ...updatedFilter, price: 'asc' };
+      }
+      delete updatedFilter.percent;
+    } else if (newFilter?.percent !== undefined) {
       const current = filter?.percent;
-      updatedFilter = { percent: current === 'asc' ? 'desc' : 'asc' };
-    } else if (newFilter?.code) {
-      updatedFilter = { code: newFilter.code };
+      if (current === 'asc') {
+        updatedFilter = { ...updatedFilter, percent: 'desc' };
+      } else if (current === 'desc') {
+        delete updatedFilter.percent;
+      } else {
+        updatedFilter = { ...updatedFilter, percent: 'asc' };
+      }
+      delete updatedFilter.price;
+    } else if (newFilter?.code !== undefined) {
+      if (newFilter.code) {
+        updatedFilter.code = newFilter.code;
+      } else {
+        delete updatedFilter.code;
+      }
     }
+
+    if (Object.keys(updatedFilter).length === 0) updatedFilter = null;
 
     setFilter(updatedFilter);
     const filteredData = getFilteredData(updatedFilter);
@@ -75,7 +103,7 @@ export default function PricingChangesTable({ data, list, setList, watchedPartNu
 
   return (
     <>
-      <h3>Rows: { data.length }</h3>
+      <h3>Rows: { filteredData.length }</h3>
 
       <div style={{ maxHeight, overflowY: 'auto' }}>
         <Table>
@@ -88,16 +116,26 @@ export default function PricingChangesTable({ data, list, setList, watchedPartNu
               <th>Sales Model</th>
               <th>
                 Major Class Code
-                <Button className="pricing-changes__filter-btn" variant={['no-style']}>
-                  <img src="/images/icons/filter.svg" alt="Filter" width="14px" />
-                </Button>
+                <Select
+                  value={filter?.code || ''}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    handleChangeFilter({ code: val });
+                  }}
+                  style={{ marginLeft: '0.5rem' }}
+                >
+                  <option value="">All</option>
+                  {uniqueClassCodes.map((code) => (
+                    <option key={code} value={code}>{code}</option>
+                  ))}
+                </Select>
               </th>
               <th>
                 Price
                 <Button
                   className="pricing-changes__filter-btn"
                   variant={['no-style']}
-                  onClick={() => handleChangeFilter({ price: filter?.price === 'asc' ? 'desc' : 'asc' })}
+                  onClick={() => handleChangeFilter({ price: null })}
                 >
                   <img src={`/images/icons/${filter?.price ? getFilterImg() : 'sort'}.svg`} alt="Filter" width={filter?.price ? '15px' : '10px'} />
                 </Button>
@@ -107,7 +145,7 @@ export default function PricingChangesTable({ data, list, setList, watchedPartNu
                 <Button
                   className="pricing-changes__filter-btn"
                   variant={['no-style']}
-                  onClick={() => handleChangeFilter({ percent: filter?.percent === 'asc' ? 'desc' : 'asc' })}
+                  onClick={() => handleChangeFilter({ percent: null })}
                 >
                   <img src={`/images/icons/${filter?.percent ? getFilterImg() : 'sort'}.svg`} alt="Filter" width={filter?.percent ? '15px' : '10px'} />
                 </Button>
@@ -213,7 +251,7 @@ export default function PricingChangesTable({ data, list, setList, watchedPartNu
         <Pagination
           data={data}
           setData={handleChangePage}
-          pageCount={data.length}
+          pageCount={filteredData.length}
           pageSize={limit}
         />
       </div>
