@@ -3,6 +3,7 @@ import Button from "../../Library/Button";
 import Loading from "../../Library/Loading";
 import Table from "../../Library/Table";
 import Pagination from "../../Library/Pagination";
+import { useEffect, useState } from "react";
 
 interface Props {
   data: PricingChangesReport[]
@@ -16,10 +17,59 @@ interface Props {
 
 
 export default function PricingChangesTable({ data, list, setList, watchedPartNums, toggleWatchRow, limit, maxHeight = 'auto' }: Props) {
-  const handleChangePage = async (_: any, page: number) => {
+  type Filter = null | { price?: 'desc' | 'asc', percent?: 'desc' | 'asc', code?: string };
+  const [filter, setFilter] = useState<Filter>(null);
+
+  useEffect(() => {
+    const filteredData = getFilteredData(filter);
+    setList(filteredData.slice(0, limit));
+  }, [data]);
+
+  const handleChangePage = (_: any, page: number) => {
     const startIndex = (page - 1) * limit;
-    const paginatedData = data.slice(startIndex, startIndex + limit);
-    setList(paginatedData);
+    const filteredData = getFilteredData(filter);
+    setList(filteredData.slice(startIndex, startIndex + limit));
+  };
+
+  const getFilterImg = () => {
+    if (filter?.price) return filter?.price === 'desc' ? 'arrow-down-filter' : 'arrow-up-filter';
+    if (filter?.percent) return filter?.percent === 'desc' ? 'arrow-down-filter' : 'arrow-up-filter';
+  };
+
+  const getFilteredData = (filter: Filter | null): PricingChangesReport[] => {
+    let filtered = [...data];
+
+    if (filter?.price) {
+      filtered.sort((a, b) =>
+        filter.price === 'asc' ? a.price - b.price : b.price - a.price
+      );
+    } else if (filter?.percent) {
+      filtered.sort((a, b) =>
+        filter.percent === 'asc' ? a.percent - b.percent : b.percent - a.percent
+      );
+    } else if (filter?.code) {
+      filtered = filtered.filter(d => d.classCode === filter.code);
+    }
+
+    return filtered;
+  };
+
+  const handleChangeFilter = (newFilter: Filter | null) => {
+    let updatedFilter: Filter = null;
+
+    if (newFilter?.price) {
+      const current = filter?.price;
+      updatedFilter = { price: current === 'asc' ? 'desc' : 'asc' };
+    } else if (newFilter?.percent) {
+      const current = filter?.percent;
+      updatedFilter = { percent: current === 'asc' ? 'desc' : 'asc' };
+    } else if (newFilter?.code) {
+      updatedFilter = { code: newFilter.code };
+    }
+
+    setFilter(updatedFilter);
+    const filteredData = getFilteredData(updatedFilter);
+    setList(filteredData.slice(0, limit));
   };
 
 
@@ -36,9 +86,32 @@ export default function PricingChangesTable({ data, list, setList, watchedPartNu
               <th>Description</th>
               <th>Qty</th>
               <th>Sales Model</th>
-              <th>Major Class Code</th>
-              <th>Price</th>
-              <th>Percent</th>
+              <th>
+                Major Class Code
+                <Button className="pricing-changes__filter-btn" variant={['no-style']}>
+                  <img src="/images/icons/filter.svg" alt="Filter" width="14px" />
+                </Button>
+              </th>
+              <th>
+                Price
+                <Button
+                  className="pricing-changes__filter-btn"
+                  variant={['no-style']}
+                  onClick={() => handleChangeFilter({ price: filter?.price === 'asc' ? 'desc' : 'asc' })}
+                >
+                  <img src={`/images/icons/${filter?.price ? getFilterImg() : 'sort'}.svg`} alt="Filter" width={filter?.price ? '15px' : '10px'} />
+                </Button>
+              </th>
+              <th>
+                Percent
+                <Button
+                  className="pricing-changes__filter-btn"
+                  variant={['no-style']}
+                  onClick={() => handleChangeFilter({ percent: filter?.percent === 'asc' ? 'desc' : 'asc' })}
+                >
+                  <img src={`/images/icons/${filter?.percent ? getFilterImg() : 'sort'}.svg`} alt="Filter" width={filter?.percent ? '15px' : '10px'} />
+                </Button>
+              </th>
             </tr>
           </thead>
           <tbody>
