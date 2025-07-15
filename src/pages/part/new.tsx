@@ -124,6 +124,7 @@ export default function NewPart() {
                       variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                       value={location}
                       onChange={(e: any) => setLocation(e.target.value)}
+                      data-testid="location"
                     />
                   </td>
                 </tr>

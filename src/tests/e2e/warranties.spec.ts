@@ -12,7 +12,7 @@ test.beforeAll(async ({ browser }) => {
   await page.waitForSelector('.navbar');
 });
 
-test.describe('Basic Functionality', () => {
+test.describe('Warranties', () => {
   test('Display warranties', async () => {
     const tableLength = (await page.$$('table tr')).length;
     expect(tableLength).toBeGreaterThan(0);

@@ -156,7 +156,7 @@ export const searchParts = async (part: PartSearchData, page: number, limit: num
   try {
     if (isObjectNull(part)) return { pageCount: 0, totalQty: 0, rows: [] };
     const auth = { withCredentials: true };
-    const res = await api.get(`/api/parts/search/${JSON.stringify(part)}?offset=${(page - 1) * limit}&limit=${limit}`, auth);
+    const res = await api.get(`/api/parts/search/${encodeURIComponent(JSON.stringify(part))}?offset=${(page - 1) * limit}&limit=${limit}`, auth);
     return { pageCount: res.data.pageCount, totalQty: res.data.totalQty, rows: await parsePartsData(res.data.rows) };
   } catch (err) {
     console.error(err);
