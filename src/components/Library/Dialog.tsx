@@ -103,7 +103,7 @@ export default function Dialog({ children, className = '', variant = [], title, 
             <h3 className="dialog__title">{title}</h3>
             { hasCloseBtn && <Button type="button" variant={["X"]} onClick={closeDialog}>X</Button> }
             <div className="dialog__content" style={{ maxHeight: maxHeight }}>
-              {children}
+              { children }
             </div>
           </div>
         </dialog>

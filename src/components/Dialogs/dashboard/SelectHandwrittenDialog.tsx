@@ -9,9 +9,10 @@ import Button from "@/components/Library/Button";
 import Checkbox from "@/components/Library/Checkbox";
 import { useAtom } from "jotai";
 import { selectedCustomerAtom, selectedHandwrittenIdAtom } from "@/scripts/atoms/state";
-import { ask, message } from "@tauri-apps/api/dialog";
+import { message } from "@tauri-apps/api/dialog";
 import { useToast } from "@/hooks/useToast";
 import Loading from "@/components/Library/Loading";
+import { ask } from "@/scripts/config/tauri";
 
 interface Props {
   open: boolean

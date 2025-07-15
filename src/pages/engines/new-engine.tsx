@@ -103,7 +103,7 @@ export default function NewEnginesList() {
         <div className="new-engines-list__top-bar">
           {getEngineModels().map((model: string) => {
             return (
-              <Button key={model} onClick={() => setEngineModel(model)}>{ model }</Button>
+              <Button key={model} onClick={() => setEngineModel(model)} data-testid="model-btn">{ model }</Button>
             );
           })}
         </div>
@@ -128,7 +128,6 @@ export default function NewEnginesList() {
           <Table>
             <thead>
               <tr>
-                {/* <th></th> */}
                 <th></th>
                 <th>Stock Number</th>
                 <th>Res</th>
@@ -151,9 +150,6 @@ export default function NewEnginesList() {
               {engines.map((engine: Engine) => {
                 return (
                   <tr key={engine.id}>
-                    {/* <td>
-                      <Button>Hdw</Button>
-                    </td> */}
                     <td>
                       <Button
                         onClick={() => {

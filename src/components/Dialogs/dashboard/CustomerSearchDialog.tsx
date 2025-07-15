@@ -16,6 +16,7 @@ interface Props {
   searchTerm: string
 }
 
+
 export default function CustomerSearchDialog({ open, setOpen, searchTerm }: Props) {
   const [customersData, setCustomersData] = useAtom<Customer[]>(customersAtom);
   const [searchedCustomers, setSearchedCustomers] = useState<Customer[]>([]);
@@ -153,7 +154,7 @@ export default function CustomerSearchDialog({ open, setOpen, searchTerm }: Prop
         <tbody>
           {displayedCustomers && displayedCustomers.map((customer: Customer) => {
             return (
-              <tr key={customer.id} onClick={() => selectCustomer(customer)} className={`${customer.id === selectedCustomer.id ? 'customer-search__selected-customer' : ''}`}>
+              <tr key={customer.id} onClick={() => selectCustomer(customer)} className={`${customer.id === selectedCustomer.id ? 'customer-search__selected-customer' : ''}`} data-testid="customer-row">
                 <td><Link href={`customer/${customer.id}`}>Details</Link></td>
                 <td>{ customer.company }</td>
                 <td>{ customer.billToCity }</td>

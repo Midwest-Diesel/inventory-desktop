@@ -6,6 +6,7 @@ import Input from "../Library/Input";
 import SourceSelect from "../Library/Select/SourceSelect";
 import Button from "../Library/Button";
 import CustomerSelect from "../Library/Select/CustomerSelect";
+import { useToast } from "@/hooks/useToast";
 
 interface Props {
   open: boolean
@@ -16,6 +17,7 @@ interface Props {
 
 
 export default function NewEngineQuoteDialog({ open, setOpen, engine, onNewQuote }: Props) {
+  const toast = useToast();
   const [source, setSource] = useState('');
   const [company, setCompany] = useState('');
   const [stockNum, setStockNum] = useState<number>(engine.stockNum ?? '');
@@ -42,6 +44,7 @@ export default function NewEngineQuoteDialog({ open, setOpen, engine, onNewQuote
     await addQuote(newQuote);
     resetInputs();
     onNewQuote();
+    toast.sendToast('Created quote', 'success');
   };
 
   const resetInputs = () => {
@@ -81,7 +84,6 @@ export default function NewEngineQuoteDialog({ open, setOpen, engine, onNewQuote
             value={company}
             onChange={(e) => setCompany(e.target.value)}
             required
-            data-testid="customer-select"
           />
           
           <br />

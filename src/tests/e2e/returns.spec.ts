@@ -22,28 +22,25 @@ test.describe('Basic Functionality', () => {
 
   test('Create new return from handwritten', async () => {
     await page.goto('http://localhost:3001/handwrittens/9');
-    await page.waitForLoadState('networkidle');
     await page.getByTestId('new-return-btn').click();
     await (await page.$$('[data-testid="new-return-dialog"] .checkbox-wrapper-4'))[0].click();
     await page.getByTestId('submit-btn').click();
     await expect(page.getByTestId('handwritten-link').first()).toHaveText('9');
   });
 
-  // test("Can edit return", async () => {
-  //   await $('return-link').click();
-  //   await $('edit-btn').click();
-  //   await $('input').setValue('123');
-  //   await $('save-btn').click();
-  //   const poNum = await $('po-num').getText();
-  //   expect(poNum).toBe('123');
-  // });
+  test("Can edit return", async () => {
+    await page.getByTestId('return-link').first().click();
+    await page.getByTestId('edit-btn').click();
+    await page.getByTestId('po-input').fill('123');
+    await page.getByTestId('save-btn').click();
+    expect(await page.getByTestId('po').textContent()).toEqual('123');
+  });
 });
 
 test.describe('Handle Returns', () => {
   test('Issue credit', async () => {
     await page.goto('http://localhost:3001/returns');
     await page.getByTestId('return-link').first().click();
-    await page.waitForLoadState('networkidle');
     await page.getByTestId('credit-issued-btn').click();
     await expect(page.getByTestId('credit-issued')).toHaveText(formatDate(new Date()));
   });
@@ -54,9 +51,7 @@ test.describe('Clean Up', () => {
     await page.goto('http://localhost:3001/returns');
     await page.getByTestId('return-link').first().click();
     await page.getByTestId('delete-btn').click();
-    await page.waitForTimeout(100);
     await page.goto('http://localhost:3001/returns');
-    await page.waitForTimeout(100);
     await expect(page.getByTestId('handwritten-link').first()).not.toHaveText('9');
   });
 });

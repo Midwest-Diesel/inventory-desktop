@@ -144,7 +144,7 @@ export default function Return() {
                     </tr>
                     <tr>
                       <th>PO Number</th>
-                      <td data-testid="po-num">{ returnData.poNum }</td>
+                      <td data-testid="po">{ returnData.poNum }</td>
                     </tr>
                     <tr>
                       <th>Payment</th>

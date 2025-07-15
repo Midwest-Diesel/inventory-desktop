@@ -100,7 +100,7 @@ export default function PartsTable({ parts, partsData, pageCount, partsQty, quot
                     <Button
                       variant={['x-small', 'fit']}
                       onClick={() => onQuickPick(part)}
-                      data-testid="add-item-btn"
+                      data-testid="quick-pick-btn"
                       onMouseEnter={() => tooltip.set('Quick Pick')}
                       onMouseLeave={() => tooltip.set('')}
                     >

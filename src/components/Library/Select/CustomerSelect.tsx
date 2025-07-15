@@ -34,6 +34,7 @@ export default function CustomerSelect({ variant, label, ...props }: Props) {
         <Select
           label={label}
           variant={variant}
+          data-testid="customer-select"
           {...props}
         >
           <option value="">-- SELECT A CUSTOMER --</option>

@@ -142,6 +142,7 @@ export default function EditReturnDetails({ returnData, setReturn, setIsEditing 
                         variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                         value={poNum}
                         onChange={(e: any) => setPoNum(e.target.value)}
+                        data-testid="po-input"
                       />
                     </td>
                   </tr>

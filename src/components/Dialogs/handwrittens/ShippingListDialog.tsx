@@ -160,7 +160,7 @@ export default function ShippingListDialog({ open, setOpen, handwrittenItems, ne
           {loading ?
             <Loading />
             :
-            <Button type="submit">Submit</Button>
+            <Button type="submit" data-testid="shipping-list-submit-btn">Submit</Button>
           }
         </div>
       </form>

@@ -24,15 +24,41 @@ test.describe('Basic Functionality', () => {
     expect(tableLength).toBeGreaterThan(0);
   });
 
+  test('Create handwritten from customer', async () => {
+    await page.goto('http://localhost:3001');
+    await page.getByTestId('customer-input').fill('ALT');
+    await page.getByTestId('customer-search-btn').click();
+    await page.getByTestId('customer-row').first().click();
+    await page.getByTestId('new-handwritten-btn').click();
+    await page.waitForLoadState('networkidle');
+    await expect(page.getByTestId('bill-to-company')).toHaveValue('ALTORFER INDUSTRIES INC.');
+    
+    await page.getByTestId('tab').first().click();
+    await page.getByTestId('add-item-btn').first().click();
+    await page.getByTestId('select-handwritten-dialog').isVisible();
+    await page.getByTestId('select-handwritten-row').first().click();
+    await page.getByTestId('select-handwritten-qty').fill('2');
+    await page.getByTestId('select-handwritten-price').fill('80');
+    await page.getByTestId('select-handwritten-submit-btn').click();
+    await page.waitForTimeout(100);
+    await (await page.$$('[data-testid="select-handwritten-dialog"] .checkbox-wrapper-4'))[1].click();
+    await page.getByTestId('warranty-submit-btn').click();
+    await page.waitForLoadState('networkidle');
+
+    await page.getByTestId('save-btn').click();
+    await page.waitForLoadState('networkidle');
+    await expect(page.getByTestId('item-qty').first()).toHaveText('2');
+  });
+
   test('Create blank handwritten', async () => {
+    await page.goto('http://localhost:3001/handwrittens');
     const prevId = await page.getByTestId('link').first().textContent() ?? '';
     await page.getByTestId('new-btn').click();
     await page.$('li').then((el) => el?.click());
-    await (page.getByTestId('select-customer-dialog')).getByText(' J Lee Trucking').click();
+    await (page.getByTestId('select-customer-dialog')).getByText('ALTORFER INDUSTRIES INC.').click();
     await page.getByTestId('customer-submit-btn').click();
-    await page.waitForTimeout(500);
+    await page.waitForLoadState('networkidle');
     await page.reload();
-
     await expect(page.getByTestId('link').nth(1)).toBeVisible();
     await expect(page.getByTestId('link').nth(1)).toHaveText(prevId);
   });
@@ -60,10 +86,9 @@ test.describe('Basic Functionality', () => {
     await page.getByTestId('contact-phone').fill('(488) 371-9460');
     await page.getByTestId('shipping-notes').fill('Test');
     await page.getByTestId('save-btn').click();
-    await page.waitForTimeout(100);
     await page.getByTestId('no-changes-btn').click();
     await page.waitForSelector('[data-testid="edit-btn"]');
-    await page.waitForTimeout(500);
+    await page.waitForLoadState('networkidle');
 
     expect(await page.getByTestId('po-num').textContent()).toEqual('T104B6');
     expect(await page.getByTestId('source').textContent()).toEqual('Netcom');
@@ -108,11 +133,9 @@ test.describe('Handwritten items', () => {
     await page.getByTestId('warranty-submit-btn').click();
     await page.waitForLoadState('networkidle');
     await page.getByTestId('tab').first().click();
-    await page.waitForLoadState('networkidle');
 
     await page.getByTestId('add-item-btn').nth(1).click();
     await page.getByTestId('select-handwritten-dialog').isVisible();
-    await page.getByTestId('select-handwritten-row').first().click();
     await page.getByTestId('select-handwritten-desc').fill('DELETE THIS');
     await page.getByTestId('select-handwritten-qty').fill('2');
     await page.getByTestId('select-handwritten-price').fill('80');
@@ -125,6 +148,7 @@ test.describe('Handwritten items', () => {
     await page.getByTestId('item-qty').first().fill('4');
     await page.getByTestId('save-btn').click();
     await page.getByTestId('no-changes-btn').click();
+    await page.waitForLoadState('networkidle');
 
     await expect(page.getByTestId('item-qty').first()).toHaveText('4');
     await page.getByTestId('edit-btn').click();
@@ -140,23 +164,20 @@ test.describe('Cores', () => {
   test('Core charge', async () => {
     await page.goto('http://localhost:3001/handwrittens');
     await page.getByTestId('link').first().click();
-    await page.waitForLoadState('networkidle');
     await page.getByTestId('save-btn').click();
     await page.getByTestId('no-changes-btn').click();
-    await page.getByTestId('core-charge-btn').click();
-    await page.waitForTimeout(1000);
+    await page.getByTestId('core-charge-btn').first().click();
+    await page.waitForLoadState('networkidle');
     await expect(page.getByTestId('item-part-num').first()).toHaveText('CORE DEPOSIT');
     await expect(page.getByTestId('item-stock-num').first()).toHaveText(stockNum);
   
     await page.goto('http://localhost:3001/cores');
-    await page.waitForLoadState('networkidle');
     await expect(page.getByTestId('part-num').first()).toHaveText(partNum);
   });
 
   test('Core deposit', async () => {
     await page.goto('http://localhost:3001/handwrittens');
     await page.getByTestId('link').first().click();
-    await page.waitForLoadState('networkidle');
     await page.getByTestId('save-btn').click();
     await page.getByTestId('no-changes-btn').click();
     await page.getByTestId('core-credit-btn').click();
@@ -165,9 +186,7 @@ test.describe('Cores', () => {
     await page.keyboard.press('Enter');
     await page.getByTestId('core-credit-submit-btn').click();
 
-    await page.waitForLoadState('networkidle');
     await page.getByTestId('link').first().click();
-    await page.waitForLoadState('networkidle');
     await page.getByTestId('save-btn').click();
     await page.getByTestId('no-changes-btn').click();
     await expect(page.getByTestId('item-stock-num').first()).toHaveText(stockNum);
@@ -176,23 +195,19 @@ test.describe('Cores', () => {
 });
 
 test.describe('Takeoffs', () => {
-  test('Takeoff qty UP stock number', async () => {
+  test('Create date code stockNum after takeoff', async () => {
     await page.goto('http://localhost:3001/handwrittens');
     await page.getByTestId('link').nth(1).click();
-    await page.waitForLoadState('networkidle');
     await page.getByTestId('save-btn').click();
     await page.getByTestId('no-changes-btn').click();
     await page.getByTestId('takeoff-input').fill(stockNum);
     await page.getByTestId('takeoff-input').focus();
     await page.keyboard.press('Enter');
-    const dialog = page.getByTestId('takeoffs-dialog');
-    await dialog.getByTestId('change-cost').fill('10');
-    await dialog.getByTestId('submit-btn').click();
+    await expect(page.getByTestId('takeoff-qty-input')).toHaveValue('6');
+    await page.getByTestId('takeoff-submit-btn').click();
     await page.waitForTimeout(100);
-    await page.reload();
 
     await page.goto('http://localhost:3001');
-    await page.waitForLoadState('networkidle');
     await altSearch(page, { stockNum });
     await expect(page.getByTestId('qty').first()).toHaveText(`${qty - 6}`);
     await altSearch(page, { stockNum: `${stockNum} (${formatDate(new Date())})` });
@@ -200,12 +215,9 @@ test.describe('Takeoffs', () => {
     await expect(page.getByTestId('stock-num').first()).toHaveText(`${stockNum} (${formatDate(new Date())})`);
 
     await page.getByTestId('part-num-link').click();
-    await page.waitForLoadState('networkidle');
     await page.getByTestId('delete-btn').click();
-    await page.waitForLoadState('networkidle');
     await partSearch(page, { stockNum });
     await page.getByTestId('part-num-link').first().click();
-    await page.waitForLoadState('networkidle');
     await page.getByTestId('edit-btn').click();
     await page.getByTestId('qty').fill(`${qty}`);
     await page.getByTestId('save-btn').click();
@@ -216,7 +228,6 @@ test.describe('SENT TO ACCOUNTING', () => {
   test('Prompt for promotional materials', async () => {
     await page.goto('http://localhost:3001/handwrittens');
     await page.getByTestId('link').nth(1).click();
-    await page.waitForLoadState('networkidle');
     await page.getByTestId('item-cost').nth(1).fill('60');
     await page.getByTestId('sales-status').selectOption('SENT TO ACCOUNTING');
     await page.getByTestId('save-btn').click();
@@ -228,6 +239,8 @@ test.describe('SENT TO ACCOUNTING', () => {
     await page.getByTestId('br-input').fill('3');
     await page.getByTestId('fl-input').fill('4');
     await page.getByTestId('submit-btn').click();
+    await page.getByTestId('shipping-list-submit-btn').click();
+    await page.waitForLoadState('networkidle');
 
     await expect(page.getByTestId('mp')).toHaveText('1');
     await expect(page.getByTestId('cap')).toHaveText('2');

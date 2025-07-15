@@ -110,7 +110,7 @@ export default function CustomerSearch({ selectedCustomer, setSelectedCustomer, 
             >
               { expandedDetailsOpen ? 'Collapse' : 'Expand' }
             </Button>
-            <Button variant={['x-small']} onClick={handleNewHandwritten}>New Handwritten</Button>
+            <Button variant={['x-small']} onClick={handleNewHandwritten} data-testid="new-handwritten-btn">New Handwritten</Button>
           </>
         }
       </div>
@@ -123,7 +123,7 @@ export default function CustomerSearch({ selectedCustomer, setSelectedCustomer, 
           value={searchTerm}
           data-testid="customer-input"
         >
-          <Button variant={['search']} style={{ height: '2.1rem' }} data-testid="customer-search">Search</Button>
+          <Button variant={['search']} style={{ height: '2.1rem' }} data-testid="customer-search-btn">Search</Button>
         </Input>
       </form>
 

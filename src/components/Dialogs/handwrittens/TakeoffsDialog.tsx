@@ -94,11 +94,11 @@ export default function TakeoffsDialog({ open, setOpen, item, setHandwritten, on
             value={qty ?? ''}
             onChange={(e: any) => setQty(Math.max(Math.min(e.target.value, (item.qty ?? 0)), 1))}
             type="number"
-            data-testid="qty"
+            data-testid="takeoff-qty-input"
           />
 
           <div className="form__footer">
-            <Button type="submit" data-testid="submit-btn">Submit</Button>
+            <Button type="submit" data-testid="takeoff-submit-btn">Submit</Button>
           </div>
         </form>
       }
