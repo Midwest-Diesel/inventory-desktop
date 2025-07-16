@@ -30,7 +30,7 @@ export default function TakeoffsDialog({ open, setOpen, item, setHandwritten, on
       setPart(res);
     };
     fetchData();
-  });
+  }, []);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();

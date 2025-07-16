@@ -6,6 +6,7 @@ test.describe.configure({ mode: 'serial' });
 let page: Page;
 let partNum = '';
 let stockNum = '';
+let stockNum2 = 'UP9014';
 let qty = 0;
 
 
@@ -37,7 +38,7 @@ test.describe('Basic Functionality', () => {
     await page.getByTestId('add-item-btn').first().click();
     await page.getByTestId('select-handwritten-dialog').isVisible();
     await page.getByTestId('select-handwritten-row').first().click();
-    await page.getByTestId('select-handwritten-qty').fill('2');
+    await page.getByTestId('select-handwritten-qty').fill('38');
     await page.getByTestId('select-handwritten-price').fill('80');
     await page.getByTestId('select-handwritten-submit-btn').click();
     await page.waitForTimeout(100);
@@ -47,7 +48,7 @@ test.describe('Basic Functionality', () => {
 
     await page.getByTestId('save-btn').click();
     await page.waitForLoadState('networkidle');
-    await expect(page.getByTestId('item-qty').first()).toHaveText('2');
+    await expect(page.getByTestId('item-qty').first()).toHaveText('38');
   });
 
   test('Create blank handwritten', async () => {
@@ -221,6 +222,28 @@ test.describe('Takeoffs', () => {
     await page.getByTestId('edit-btn').click();
     await page.getByTestId('qty').fill(`${qty}`);
     await page.getByTestId('save-btn').click();
+  });
+
+  test('Complete normal takeoff', async () => {
+    await page.goto('http://localhost:3001/handwrittens');
+    await page.getByTestId('link').nth(2).click();
+    await page.getByTestId('save-btn').click();
+    await page.waitForTimeout(100);
+    await expect(page.getByTestId('bill-to-company')).toHaveText('ALTORFER INDUSTRIES INC.');
+    await page.getByTestId('takeoff-input').fill(stockNum2);
+    await page.getByTestId('takeoff-input').focus();
+    await page.keyboard.press('Enter');
+    await expect(page.getByTestId('takeoff-qty-input')).toHaveValue('38');
+    await page.getByTestId('takeoff-submit-btn').click();
+    await page.waitForTimeout(100);
+
+    await page.goto('http://localhost:3001');
+    await altSearch(page, { stockNum: stockNum2 });
+    await expect(page.getByTestId('qty').first()).toHaveText('0');
+    await expect(page.getByTestId('stock-num').first()).toHaveText(stockNum2);
+
+    await page.getByTestId('part-num-link').first().click();
+    await expect(page.getByTestId('qty-sold')).toHaveText('38');
   });
 });
 
