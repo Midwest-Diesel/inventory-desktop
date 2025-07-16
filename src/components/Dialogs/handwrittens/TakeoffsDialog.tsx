@@ -35,7 +35,7 @@ export default function TakeoffsDialog({ open, setOpen, item, setHandwritten, on
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (!part) return;
-    if (part.qty - qty < 0) {
+    if (part.qty - Number(qty) < 0) {
       alert('Part qty cannot go below 0');
       return;
     }
@@ -53,7 +53,7 @@ export default function TakeoffsDialog({ open, setOpen, item, setHandwritten, on
     // When the qty remaining after takeoffs is not 0
     // then it will create a new part with a date code, with the qtySold value
     // instead of changing the qtySold for the original part
-    if (part.qty - Number(qty) <= 0) {
+    if (part.qty - Number(qty) === 0) {
       const res = await getPartCostIn(part.stockNum ?? '');
       const partCostIn: PartCostIn | null = res.find((p: PartCostIn) => p.vendor === part.purchasedFrom) ?? null;
       if (partCostIn) await editPartCostIn({ ...partCostIn, cost: item.cost });

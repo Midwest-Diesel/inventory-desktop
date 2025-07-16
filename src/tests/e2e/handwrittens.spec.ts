@@ -6,7 +6,7 @@ test.describe.configure({ mode: 'serial' });
 let page: Page;
 let partNum = '';
 let stockNum = '';
-let stockNum2 = 'UP9014';
+const stockNum2 = 'UP9014';
 let qty = 0;
 
 
@@ -118,10 +118,10 @@ test.describe('Basic Functionality', () => {
 test.describe('Handwritten items', () => {
   test('Add handwritten items', async () => {
     await page.goto('http://localhost:3001');
-    partNum = await page.getByTestId('part-num-link').first().textContent() ?? '';
-    stockNum = await page.getByTestId('stock-num').first().textContent() ?? '';
-    qty = Number(await page.getByTestId('qty').first().textContent());
-    await page.getByTestId('add-item-btn').first().click();
+    partNum = await page.getByTestId('part-num-link').nth(1).textContent() ?? '';
+    stockNum = await page.getByTestId('stock-num').nth(1).textContent() ?? '';
+    qty = Number(await page.getByTestId('qty').nth(1).textContent());
+    await page.getByTestId('add-item-btn').nth(1).click();
     await page.getByTestId('select-handwritten-dialog').isVisible();
     await page.getByTestId('select-handwritten-row').first().click();
     await page.getByTestId('select-handwritten-desc').fill('TEST ITEM');
@@ -135,7 +135,7 @@ test.describe('Handwritten items', () => {
     await page.waitForLoadState('networkidle');
     await page.getByTestId('tab').first().click();
 
-    await page.getByTestId('add-item-btn').nth(1).click();
+    await page.getByTestId('add-item-btn').nth(3).click();
     await page.getByTestId('select-handwritten-dialog').isVisible();
     await page.getByTestId('select-handwritten-desc').fill('DELETE THIS');
     await page.getByTestId('select-handwritten-qty').fill('2');
@@ -201,6 +201,7 @@ test.describe('Takeoffs', () => {
     await page.getByTestId('link').nth(1).click();
     await page.getByTestId('save-btn').click();
     await page.getByTestId('no-changes-btn').click();
+    await expect(page.getByTestId('bill-to-company')).toHaveText('Rubber Duck Inc');
     await page.getByTestId('takeoff-input').fill(stockNum);
     await page.getByTestId('takeoff-input').focus();
     await page.keyboard.press('Enter');
@@ -214,14 +215,6 @@ test.describe('Takeoffs', () => {
     await altSearch(page, { stockNum: `${stockNum} (${formatDate(new Date())})` });
     await expect(page.getByTestId('qty').first()).toHaveText(`${0}`);
     await expect(page.getByTestId('stock-num').first()).toHaveText(`${stockNum} (${formatDate(new Date())})`);
-
-    await page.getByTestId('part-num-link').click();
-    await page.getByTestId('delete-btn').click();
-    await partSearch(page, { stockNum });
-    await page.getByTestId('part-num-link').first().click();
-    await page.getByTestId('edit-btn').click();
-    await page.getByTestId('qty').fill(`${qty}`);
-    await page.getByTestId('save-btn').click();
   });
 
   test('Complete normal takeoff', async () => {

@@ -38,12 +38,12 @@ test.describe('Parts', () => {
   });
 
   test('Part search', async () => {
-    await partSearch(page, { partNum: '7E0333', desc: 'VALVE COVER 3406', stockNum: 'UP9432', location: 'C5G4A', qty: 34, rating: 0.0, serialNum: '79419143', hp: '500', purchFrom: 'CB1', remarks: 'T/O, NTBB\'D' });
+    await partSearch(page, { partNum: '7E0333', desc: 'VALVE COVER 3406', stockNum: 'UP9432', location: 'C5G4A', rating: 0.0, serialNum: '79419143', hp: '500', purchFrom: 'CB1', remarks: 'T/O, NTBB\'D' });
     await expect(page.getByTestId('part-num-link').first()).toHaveText('7E0333');
   });
 
   test('Alt Part search', async () => {
-    await altSearch(page, { partNum: '*7E0331', desc: 'VALVE COVER 3406', stockNum: 'UP9432', location: 'C5G4A', qty: 34, rating: 0.0, serialNum: '79419143', hp: '500', purchFrom: 'CB1', remarks: 'T/O, NTBB\'D' });
+    await altSearch(page, { partNum: '*7E0331', desc: 'VALVE COVER 3406', stockNum: 'UP9432', location: 'C5G4A', rating: 0.0, serialNum: '79419143', hp: '500', purchFrom: 'CB1', remarks: 'T/O, NTBB\'D' });
     await expect(page.getByTestId('part-num-link').first()).toHaveText('7E0333');
   });
 
@@ -70,6 +70,7 @@ test.describe('Parts', () => {
     page.on('dialog', onRemoveAltPartsDialog);
     await page.goto('http://localhost:3001');
     await page.waitForLoadState('networkidle');
+    await altSearch(page, { partNum: '9N3240' });
     await page.getByTestId('part-num-link').first().click();
     await page.waitForLoadState('networkidle');
     await page.getByTestId('edit-btn').click();
