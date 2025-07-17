@@ -1,4 +1,3 @@
-
 import Table from "../Library/Table";
 import Button from "../Library/Button";
 import { extractStatusColors, formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
@@ -9,6 +8,7 @@ import { useState } from "react";
 import PartPicturesDialog from "../Dialogs/PartPicturesDialog";
 import StockNumPicturesDialog from "../Dialogs/StockNumPicturesDialog";
 import { useTooltip } from "@/hooks/useTooltip";
+import { getEngineCostRemaining } from "@/scripts/services/enginesService";
 
 interface Props {
   parts: Part[]
@@ -45,7 +45,8 @@ export default function PartsTable({ parts, partsData, pageCount, partsQty, quot
   };
 
   const partCostStyles = (part: Part) => {
-    return part.purchasePrice > 0.01 ? { color: 'var(--orange-1)', fontWeight: 'bold' } : {};
+    if (!part.costRemaining) return;
+    return part.costRemaining >= 0.04 ? { color: 'var(--orange-1)', fontWeight: 'bold' } : {};
   };
 
 
@@ -148,8 +149,8 @@ export default function PartsTable({ parts, partsData, pageCount, partsQty, quot
                     <strong>Fleet:</strong> { formatCurrency(part.fleetPrice) }
                   </td>
                   <td>{ formatCurrency(part.remanListPrice) }</td>
-                  <td>{ (part as any).serialNum }</td>
-                  <td>{ (part as any).horsePower }</td>
+                  <td>{ part.serialNum }</td>
+                  <td>{ part.horsePower }</td>
                 </tr>
               );
             })}

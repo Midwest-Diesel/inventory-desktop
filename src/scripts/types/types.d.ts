@@ -400,6 +400,9 @@ type Part = {
   weightDims: string | null
   specialNotes: string | null
   coreFam: string | null
+  serialNum?: string
+  horsePower?: string
+  costRemaining?: number
 };
 
 type PartMin = {
