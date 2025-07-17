@@ -137,7 +137,7 @@ export default function PurchaseOrders() {
           <PurchaseOrderItemsTable
             poItems={focusedPurchaseOrder.poItems}
             poReceivedItems={focusedPurchaseOrder.poReceivedItems}
-            handleToggleIsItemReceived={async (id: number, isReceived: boolean) => {}}
+            handleToggleIsItemReceived={async () => {}}
           />
         }
       </div>

@@ -4,7 +4,7 @@ import Checkbox from "@/components/Library/Checkbox";
 import Loading from "@/components/Library/Loading";
 import Pagination from "@/components/Library/Pagination";
 import Table from "@/components/Library/Table";
-import WarrantyItemsTable from "@/components/WarrantyItemsTable";
+import WarrantyItemsTable from "@/components/Warranties/WarrantyItemsTable";
 import { userAtom, warrantySearchAtom } from "@/scripts/atoms/state";
 import { addWarranty, editWarranty, getSomeWarranties, searchWarranties } from "@/scripts/services/warrantiesService";
 import { formatDate } from "@/scripts/tools/stringUtils";

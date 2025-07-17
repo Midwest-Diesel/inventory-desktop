@@ -2,7 +2,6 @@ import api from "../config/axios";
 import { parseResDate } from "../tools/stringUtils";
 import { filterNullObjValuesArr } from "../tools/utils";
 import { getCoresByCustomer, getCoreReturnsByCustomer } from "./coresService";
-import { getCustomerById } from "./customerService";
 
 interface HandwrittenSearchData {
   id?: number

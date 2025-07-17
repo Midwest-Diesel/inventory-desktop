@@ -1,6 +1,6 @@
 import { formatDate } from '@/scripts/tools/stringUtils';
 import { test, expect, Page } from '@playwright/test';
-import { altSearch, partSearch } from '../utils';
+import { altSearch } from '../utils';
 
 test.describe.configure({ mode: 'serial' });
 let page: Page;

@@ -1,11 +1,11 @@
 import { formatCurrency } from "@/scripts/tools/stringUtils";
-import Table from "./Library/Table";
-import Checkbox from "./Library/Checkbox";
+import Table from "../Library/Table";
+import Checkbox from "../Library/Checkbox";
 import { editReturnItem } from "@/scripts/services/returnsService";
-import Button from "./Library/Button";
+import Button from "../Library/Button";
 import { confirm } from "@/scripts/config/tauri";
 import { editPart } from "@/scripts/services/partsService";
-import { useNavState } from "../hooks/useNavState";
+import { useNavState } from "../../hooks/useNavState";
 
 interface Props {
   className?: string

@@ -1,4 +1,3 @@
-// import { addTab, changeSelectedTab, editTabHistory, getTabsByUser } from "@/scripts/controllers/tabsController";
 import { useAtom } from "jotai";
 import { tabsAtom } from "@/scripts/atoms/state";
 import { useNavigate } from "react-router-dom";

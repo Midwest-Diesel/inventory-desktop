@@ -21,7 +21,7 @@ import { addTrackingNumber, deleteTrackingNumber, editTrackingNumber } from "@/s
 import FreightCarrierSelect from "../Library/Select/FreightCarrierSelect";
 import { getFreightCarrierById } from "@/scripts/services/freightCarriersService";
 import { getAllUsers } from "@/scripts/services/userService";
-import CreditCardBlock from "../CreditCardBlock";
+import CreditCardBlock from "./CreditCardBlock";
 import Dropdown from "../Library/Dropdown/Dropdown";
 import DropdownOption from "../Library/Dropdown/DropdownOption";
 import { arrayOfObjectsMatch } from "@/scripts/tools/utils";

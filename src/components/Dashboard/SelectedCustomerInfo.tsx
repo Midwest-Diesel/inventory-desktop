@@ -5,7 +5,7 @@ import Grid from "../Library/Grid/Grid";
 import { formatCurrency, formatPhone } from "@/scripts/tools/stringUtils";
 import Table from "../Library/Table";
 import { getCustomerSalesHistory } from "@/scripts/services/customerService";
-import CustomerContactsBlock from "../CustomerContactsBlock";
+import CustomerContactsBlock from "../Customer/CustomerContactsBlock";
 
 interface Props {
   customerData: Customer

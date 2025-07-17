@@ -1,4 +1,4 @@
-import Error from "@/components/Errors/Error";
+import Error from "@/components/Error";
 import Button from "@/components/Library/Button";
 import Dialog from "@/components/Library/Dialog";
 import Input from "@/components/Library/Input";

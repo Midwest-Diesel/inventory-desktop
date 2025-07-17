@@ -76,6 +76,7 @@ test.describe('Parts', () => {
     await page.getByTestId('edit-btn').click();
     await page.getByTestId('remove-alts').click();
     await page.getByTestId('save-btn').click();
+    await page.waitForLoadState('networkidle');
     await expect(page.getByTestId('alt-parts')).toHaveText('9N3240');
 
     await page.goto('http://localhost:3001');

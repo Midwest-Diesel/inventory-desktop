@@ -1,18 +1,18 @@
-import Button from "../Library/Button";
+import Button from "./Library/Button";
 import { parseDateInputValue } from "@/scripts/tools/stringUtils";
-import Grid from "../Library/Grid/Grid";
-import GridItem from "../Library/Grid/GridItem";
+import Grid from "./Library/Grid/Grid";
+import GridItem from "./Library/Grid/GridItem";
 import { FormEvent, useState } from "react";
 import Input from "@/components/Library/Input";
 import { addAltParts, addPartCostIn, addToPartQtyHistory, deletePartCostIn, editAltParts, editPart, editPartCostIn, getPartsInfoByAltParts, getPartsInfoByPartNum, setPartLastUpdated } from "@/scripts/services/partsService";
-import Table from "../Library/Table";
+import Table from "./Library/Table";
 import { addEngineCostOut, deleteEngineCostOut, editEngineCostOut } from "@/scripts/services/enginesService";
 import { userAtom } from "@/scripts/atoms/state";
 import { useAtom } from "jotai";
-import { PreventNavigation } from "../PreventNavigation";
-import Loading from "../Library/Loading";
+import { PreventNavigation } from "./PreventNavigation";
+import Loading from "./Library/Loading";
 import { ask } from "@/scripts/config/tauri";
-import Select from "../Library/Select/Select";
+import Select from "./Library/Select/Select";
 
 interface Props {
   part: Part

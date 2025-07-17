@@ -5,7 +5,7 @@ import { userAtom } from "@/scripts/atoms/state";
 import { Layout } from "./Layout";
 import { FormEvent, useState } from "react";
 import Input from "./Library/Input";
-import Error from "./Errors/Error";
+import Error from "./Error";
 
 
 export default function Login() {

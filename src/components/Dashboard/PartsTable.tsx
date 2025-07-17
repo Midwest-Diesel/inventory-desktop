@@ -8,7 +8,6 @@ import { useState } from "react";
 import PartPicturesDialog from "../Dialogs/PartPicturesDialog";
 import StockNumPicturesDialog from "../Dialogs/StockNumPicturesDialog";
 import { useTooltip } from "@/hooks/useTooltip";
-import { getEngineCostRemaining } from "@/scripts/services/enginesService";
 
 interface Props {
   parts: Part[]

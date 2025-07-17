@@ -9,7 +9,7 @@ import { getMapLocationFromCustomer } from "@/scripts/services/mapService";
 import EditMapLocDialog from "../Dialogs/customers/EditMapLocDialog";
 import { PreventNavigation } from "../PreventNavigation";
 import SourceSelect from "../Library/Select/SourceSelect";
-import CustomerContactsBlock from "../CustomerContactsBlock";
+import CustomerContactsBlock from "./CustomerContactsBlock";
 import Select from "../Library/Select/Select";
 import Checkbox from "../Library/Checkbox";
 import { ask } from "@/scripts/config/tauri";

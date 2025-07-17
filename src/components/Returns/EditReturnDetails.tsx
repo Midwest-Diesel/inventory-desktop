@@ -1,15 +1,15 @@
 import { editReturn, getReturnById } from "@/scripts/services/returnsService";
 import { FormEvent, useState } from "react";
-import Input from "./Library/Input";
-import Button from "./Library/Button";
-import GridItem from "./Library/Grid/GridItem";
+import Input from "../Library/Input";
+import Button from "../Library/Button";
+import GridItem from "../Library/Grid/GridItem";
 import { parseDateInputValue } from "@/scripts/tools/stringUtils";
-import Grid from "./Library/Grid/Grid";
-import SourceSelect from "./Library/Select/SourceSelect";
-import Table from "./Library/Table";
-import { PreventNavigation } from "./PreventNavigation";
-import UserSelect from "./Library/Select/UserSelect";
-import CustomerSelect from "./Library/Select/CustomerSelect";
+import Grid from "../Library/Grid/Grid";
+import SourceSelect from "../Library/Select/SourceSelect";
+import Table from "../Library/Table";
+import { PreventNavigation } from "../PreventNavigation";
+import UserSelect from "../Library/Select/UserSelect";
+import CustomerSelect from "../Library/Select/CustomerSelect";
 import { getCustomerByName } from "@/scripts/services/customerService";
 import { ask } from "@/scripts/config/tauri";
 

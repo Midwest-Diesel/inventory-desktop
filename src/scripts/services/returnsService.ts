@@ -1,10 +1,6 @@
 import api from "../config/axios";
 import { parseResDate } from "../tools/stringUtils";
 
-interface ReturnSearchData {
-  id: number
-}
-
 
 const parseReturnRes = (data: any) => {  
   return data.map((returnData: any) => {

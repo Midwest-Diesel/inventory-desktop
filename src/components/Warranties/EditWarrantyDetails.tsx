@@ -1,15 +1,15 @@
 import { FormEvent, useEffect, useState } from "react";
-import Button from "./Library/Button";
-import Grid from "./Library/Grid/Grid";
-import GridItem from "./Library/Grid/GridItem";
-import Input from "./Library/Input";
-import Table from "./Library/Table";
+import Button from "../Library/Button";
+import Grid from "../Library/Grid/Grid";
+import GridItem from "../Library/Grid/GridItem";
+import Input from "../Library/Input";
+import Table from "../Library/Table";
 import { parseDateInputValue } from "@/scripts/tools/stringUtils";
 import { addWarrantyItem, deleteWarrantyItem, editWarranty, editWarrantyItem, getWarrantyById } from "@/scripts/services/warrantiesService";
-import Checkbox from "./Library/Checkbox";
-import CustomerDropdown from "./Library/Select/CustomerDropdown";
+import Checkbox from "../Library/Checkbox";
+import CustomerDropdown from "../Library/Select/CustomerDropdown";
 import { getCustomerByName } from "@/scripts/services/customerService";
-import { PreventNavigation } from "./PreventNavigation";
+import { PreventNavigation } from "../PreventNavigation";
 import { ask } from "@/scripts/config/tauri";
 
 interface Props {
