@@ -2,13 +2,14 @@ import { formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
 import Dialog from "../../Library/Dialog";
 import Table from "../../Library/Table";
 import Checkbox from "@/components/Library/Checkbox";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Button from "@/components/Library/Button";
 import { addReturn, addReturnItem } from "@/scripts/services/returnsService";
 import { useAtom } from "jotai";
 import { userAtom } from "@/scripts/atoms/state";
 import { useNavState } from "@/hooks/useNavState";
 import { ask } from "@/scripts/config/tauri";
+import Input from "@/components/Library/Input";
 
 interface Props {
   open: boolean
@@ -20,20 +21,25 @@ interface Props {
 export default function NewReturnDialog({ open, setOpen, handwritten }: Props) {
   const { push } = useNavState();
   const [user] = useAtom<User>(userAtom);
-  const [handwrittenItems, setHandwrittenItems] = useState<HandwrittenItem[]>(handwritten.handwrittenItems);
+  const [lineItems, setLineItems] = useState<{ qtyList: number[], handwrittenItems: HandwrittenItem[] }>({ qtyList: [], handwrittenItems: [] });
+
+  useEffect(() => {
+    if (!open) return;
+    setLineItems({ qtyList: handwritten.handwrittenItems.map((h) => h.qty ?? 0), handwrittenItems: handwritten.handwrittenItems });
+  }, [open]);
 
   const toggleIsReturn = (index: number) => {
-    const newHandwrittenItems = handwrittenItems.map((item, i) => {
+    const newHandwrittenItems = lineItems.handwrittenItems.map((item, i) => {
       if (i === index) {
         item.return = !item.return;
       }
       return item;
     });
-    setHandwrittenItems(newHandwrittenItems);
+    setLineItems({ qtyList: lineItems.qtyList, handwrittenItems: newHandwrittenItems });
   };
 
   const submitNewReturn = async () => {
-    if (!handwrittenItems.some((i) => i.return) || !await ask('Are you sure you want to create a new return?')) return;
+    if (!lineItems.handwrittenItems.some((i) => i.return) || !await ask('Are you sure you want to create a new return?')) return;
     const newReturn = {
       customer: handwritten.customer,
       handwrittenId: handwritten.id,
@@ -68,12 +74,12 @@ export default function NewReturnDialog({ open, setOpen, handwritten }: Props) {
     } as any;
     const id = await addReturn(newReturn);
 
-    const newReturnItems = handwrittenItems.map((item) => {
+    const newReturnItems = lineItems.handwrittenItems.map((item, i) => {
       if (item.return) {
         return {
           returnId: id,
           partId: item.partId,
-          qty: item.qty,
+          qty: lineItems.qtyList[i],
           partNum: item.partNum,
           desc: item.desc,
           cost: item.cost,
@@ -91,6 +97,15 @@ export default function NewReturnDialog({ open, setOpen, handwritten }: Props) {
     }
 
     await push('Returns', '/returns');
+  };
+
+  const editItemQty = (qty: string, index: number) => {
+    if (!qty) return;
+    const newQtyList = lineItems.qtyList.map((item, i) => {
+      if (i === index) return Number(qty);
+      return item;
+    });
+    setLineItems({ qtyList: newQtyList, handwrittenItems: lineItems.handwrittenItems });
   };
 
 
@@ -117,13 +132,21 @@ export default function NewReturnDialog({ open, setOpen, handwritten }: Props) {
           </tr>
         </thead>
         <tbody>
-          {handwrittenItems.map((item: HandwrittenItem, i) => {
+          {lineItems.handwrittenItems.map((item: HandwrittenItem, i) => {
             return (
               <tr key={i}>
                 <td>{ item.stockNum }</td>
                 <td>{ item.location }</td>
                 <td>{ formatCurrency(item.cost) }</td>
-                <td>{ item.qty }</td>
+                <td>
+                  <Input
+                    variant={['no-style', 'no-arrows']}
+                    style={{ color: 'white' }}
+                    value={lineItems.qtyList[i]}
+                    onChange={(e) => editItemQty(e.target.value, i)}
+                    type="number"
+                  />
+                </td>
                 <td>{ item.partNum }</td>
                 <td>{ item.desc }</td>
                 <td>{ formatCurrency(item.unitPrice) }</td>
@@ -141,7 +164,7 @@ export default function NewReturnDialog({ open, setOpen, handwritten }: Props) {
       </Table>
 
       <div className="form__footer">
-        <Button onClick={submitNewReturn} data-testid="submit-btn" disabled={!handwrittenItems.some((i) => i.return)}>Submit</Button>
+        <Button onClick={submitNewReturn} data-testid="submit-btn" disabled={!lineItems.handwrittenItems.some((i) => i.return)}>Submit</Button>
       </div>
     </Dialog>
   );
