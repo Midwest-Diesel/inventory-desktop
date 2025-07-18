@@ -712,6 +712,14 @@ type ReturnItem = {
   isReturnPutAway: boolean
   notes: string | null
   part: Part | null
+  returnItemChildren: ReturnItemChild[]
+};
+
+type ReturnItemChild = {
+  id: number
+  returnItemId: number
+  stockNum: string | null
+  qty: number
 };
 
 type ReturnPart = {

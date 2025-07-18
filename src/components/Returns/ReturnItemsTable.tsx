@@ -6,6 +6,8 @@ import Button from "../Library/Button";
 import { confirm } from "@/scripts/config/tauri";
 import { editPart } from "@/scripts/services/partsService";
 import { useNavState } from "../../hooks/useNavState";
+import ReturnItemChildrenDialog from "../Dialogs/ReturnItemChildrenDialog";
+import { useState } from "react";
 
 interface Props {
   className?: string
@@ -17,6 +19,8 @@ interface Props {
 
 export default function ReturnItemsTable({ className, returnItems, returnData, setReturnData }: Props) {
   const { push } = useNavState();
+  const [stockNumDialogOpen, setStockNumDialogOpen] = useState(false);
+  const [returnItemChildren, setReturnItemChildren] = useState<ReturnItemChild[]>([]);
 
   const getTotalPrice = (): number => {
     return (returnItems as any).reduce((acc: number, item: ReturnItem) => item.cost !== 0.04 && item.cost !== 0.01 && acc + ((item?.unitPrice ?? 0) * (item?.qty ?? 0)), 0);
@@ -53,65 +57,84 @@ export default function ReturnItemsTable({ className, returnItems, returnData, s
     await push('Part', `/part/${item.part?.id}`);
   };
 
+  const handleOpenStockNumbers = (item: ReturnItem) => {
+    setStockNumDialogOpen(true);
+    setReturnItemChildren(item.returnItemChildren);
+  };
+
 
   return (
-    <div className={`return-items-table ${className && className}`}>
-      {returnItems.sort((a, b) => b.id - a.id) &&
-        <>
-          <p><strong>Return Total: </strong>{ formatCurrency(getTotalPrice()) }</p>
-          <Table>
-            <thead>
-              <tr>
-                <th>Stock Number</th>
-                <th>Cost</th>
-                <th>Qty</th>
-                <th>Part Number</th>
-                <th>Desc</th>
-                <th>Unit Price</th>
-                <th>Received</th>
-                <th>As Described</th>
-                <th>Put Away</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              {returnItems.map((ret: ReturnItem) => {
-                return (
-                  <tr key={ret.id}>
-                    <td>{ ret.stockNum }</td>
-                    <td>{ formatCurrency(ret.cost) }</td>
-                    <td>{ ret.qty }</td>
-                    <td>{ ret.partNum }</td>
-                    <td>{ ret.desc }</td>
-                    <td>{ formatCurrency(ret.unitPrice) }</td>
-                    <td className="cbx-td">
-                      <Checkbox
-                        checked={ret.isReturnReceived}
-                        onChange={(e: any) => handleToggleIsReceived(ret, e.target.checked)}
-                      />
-                    </td>
-                    <td className="cbx-td">
-                      <Checkbox
-                        checked={ret.isReturnAsDescribed}
-                        onChange={(e: any) => handleToggleAsDescribed(ret, e.target.checked)}
-                      />
-                    </td>
-                    <td className="cbx-td">
-                      <Checkbox
-                        checked={ret.isReturnPutAway}
-                        onChange={(e: any) => handleTogglePutAway(ret, e.target.checked)}
-                      />
-                    </td>
-                    <td>
-                      { ret.part?.id && <Button onClick={() => handleOpenPart(ret)}>Open Part</Button> }
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </Table>
-        </>
-      }
-    </div>
+    <>
+      <ReturnItemChildrenDialog
+        open={stockNumDialogOpen}
+        setOpen={setStockNumDialogOpen}
+        returnItemChildren={returnItemChildren}
+      />
+
+      <div className={`return-items-table ${className && className}`}>
+        {returnItems.sort((a, b) => b.id - a.id) &&
+          <>
+            <p><strong>Return Total: </strong>{ formatCurrency(getTotalPrice()) }</p>
+            <Table>
+              <thead>
+                <tr>
+                  <th>Stock Number</th>
+                  <th>Cost</th>
+                  <th>Qty</th>
+                  <th>Part Number</th>
+                  <th>Desc</th>
+                  <th>Unit Price</th>
+                  <th>Received</th>
+                  <th>As Described</th>
+                  <th>Put Away</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                {returnItems.map((ret: ReturnItem) => {
+                  return (
+                    <tr key={ret.id}>
+                      <td>
+                        {ret.stockNum ?
+                          ret.stockNum
+                          :
+                          <Button onClick={() => handleOpenStockNumbers(ret)}>Stock Numbers</Button>
+                        }
+                      </td>
+                      <td>{ formatCurrency(ret.cost) }</td>
+                      <td>{ ret.qty }</td>
+                      <td>{ ret.partNum }</td>
+                      <td>{ ret.desc }</td>
+                      <td>{ formatCurrency(ret.unitPrice) }</td>
+                      <td className="cbx-td">
+                        <Checkbox
+                          checked={ret.isReturnReceived}
+                          onChange={(e: any) => handleToggleIsReceived(ret, e.target.checked)}
+                        />
+                      </td>
+                      <td className="cbx-td">
+                        <Checkbox
+                          checked={ret.isReturnAsDescribed}
+                          onChange={(e: any) => handleToggleAsDescribed(ret, e.target.checked)}
+                        />
+                      </td>
+                      <td className="cbx-td">
+                        <Checkbox
+                          checked={ret.isReturnPutAway}
+                          onChange={(e: any) => handleTogglePutAway(ret, e.target.checked)}
+                        />
+                      </td>
+                      <td>
+                        { ret.part?.id && <Button onClick={() => handleOpenPart(ret)}>Open Part</Button> }
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </Table>
+          </>
+        }
+      </div>
+    </>
   );
 }
