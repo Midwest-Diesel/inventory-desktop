@@ -69,6 +69,7 @@ export default function ReturnItemsTable({ className, returnItems, returnData, s
         open={stockNumDialogOpen}
         setOpen={setStockNumDialogOpen}
         returnItemChildren={returnItemChildren}
+        setReturnItemChildren={setReturnItemChildren}
       />
 
       <div className={`return-items-table ${className && className}`}>
@@ -102,7 +103,7 @@ export default function ReturnItemsTable({ className, returnItems, returnData, s
                         }
                       </td>
                       <td>{ formatCurrency(ret.cost) }</td>
-                      <td>{ ret.qty }</td>
+                      <td>{ ret.returnItemChildren.length > 0 ? ret.returnItemChildren.reduce((acc, cur) => acc + cur.qty, 0) : ret.qty }</td>
                       <td>{ ret.partNum }</td>
                       <td>{ ret.desc }</td>
                       <td>{ formatCurrency(ret.unitPrice) }</td>

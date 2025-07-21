@@ -69,6 +69,17 @@ export const addReturnItem = async (returnItem: ReturnItem) => {
   }
 };
 
+export const addReturnItemChild = async (returnItemId: number): Promise<number | null> => {
+  try {
+    const auth = { withCredentials: true };
+    const res = await api.post('/api/returns/item-child', { returnItemId }, auth);
+    return res.data.id;
+  } catch (err) {
+    console.error(err);
+    return null;
+  }
+};
+
 // === PUT routes === //
 
 export const editReturn = async (returnData: Return) => {
@@ -84,6 +95,15 @@ export const editReturnItem = async (item: ReturnItem) => {
   try {
     const auth = { withCredentials: true };
     await api.put('/api/returns/item', item, auth);
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+export const editReturnItemChild = async (child: ReturnItemChild) => {
+  try {
+    const auth = { withCredentials: true };
+    await api.put('/api/returns/item-child', child, auth);
   } catch (err) {
     console.error(err);
   }
@@ -106,6 +126,15 @@ export const deleteReturn = async (id: number) => {
   try {
     const auth = { withCredentials: true };
     await api.delete(`/api/returns/${id}`, auth);
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+export const deleteReturnItemChild = async (id: number) => {
+  try {
+    const auth = { withCredentials: true };
+    await api.delete(`/api/returns/item-child/${id}`, auth);
   } catch (err) {
     console.error(err);
   }

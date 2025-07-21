@@ -38,8 +38,6 @@
 }
 
 
-/* EDIT RETURN DETAILS COMPONENT */
-
 .edit-return-details {
   display: flex;
   justify-content: center;
@@ -64,5 +62,18 @@
     display: flex;
     justify-content: space-between;
     margin: auto 1rem;
+  }
+}
+
+
+.return-item-children-dialog {
+  button[type="submit"] {
+    background-color: var(--green-dark-2);
+
+    &:hover {
+      background-color: transparent;
+      color: var(--green-dark-2);
+      box-shadow: none;
+    }
   }
 }
