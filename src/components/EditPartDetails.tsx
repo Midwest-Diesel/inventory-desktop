@@ -13,6 +13,7 @@ import { PreventNavigation } from "./PreventNavigation";
 import Loading from "./Library/Loading";
 import { ask } from "@/scripts/config/tauri";
 import Select from "./Library/Select/Select";
+import CustomerSelect from "./Library/Select/CustomerSelect";
 
 interface Props {
   part: Part
@@ -48,6 +49,10 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
   const [weightDims, setWeightDims] = useState<string>(part.weightDims ?? '');
   const [specialNotes, setSpecialNotes] = useState<string>(part.specialNotes ?? '');
   const [coreFam, setCoreFamily] = useState<string>(part.coreFam ?? '');
+  const [soldToDate, setSoldToDate] = useState<Date | null>(part.soldToDate);
+  const [qtySold, setQtySold] = useState<number | null>(part.qtySold);
+  const [sellingPrice, setSellingPrice] = useState<number | null>(part.sellingPrice);
+  const [soldTo, setSoldTo] = useState<string>(part.soldTo ?? '');
   const [partCostIn, setPartCostIn] = useState<PartCostIn[]>(partCostInData);
   const [engineCostOut, setEngineCostOut] = useState<EngineCostOut[]>(engineCostOutData);
   const [changesSaved, setChangesSaved] = useState(true);
@@ -62,6 +67,7 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
     e.preventDefault();
     if (!changesSaved && !await ask('Are you sure you want to save these changes?')) return;
     setChangesSaved(false);
+    const profitMargin = Number(sellingPrice) - Number(purchasePrice);
     const newPart = {
       id: part.id,
       partNum: part.partNum,
@@ -85,7 +91,13 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
       altParts,
       weightDims,
       specialNotes,
-      coreFam
+      coreFam,
+      soldToDate,
+      qtySold: Number(qtySold),
+      sellingPrice: Number(sellingPrice),
+      soldTo,
+      profitMargin,
+      profitPercent: profitMargin / Number(sellingPrice)
     } as Part;
 
     const isPricingUnchanged = (
@@ -478,50 +490,104 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
             </Table>
           </GridItem>
 
-          <GridItem colStart={7} colEnd={12} rowStart={1} variant={['low-opacity-bg']}>
-            <Table variant={['plain', 'edit-row-details']}>
-              <tbody>
-                <tr>
-                  <th>Alt Parts</th>
-                  <td>
-                    {!loadingAlts ?
-                      user.accessLevel >= 2 ?
-                        <>
-                          <p style={{ margin: '0.8rem' }}>{ altParts.join(', ') }</p>
-                          <div className="edit-part-details__alt-parts-btn-container">
-                            <Button type="button" onClick={handleAddAltPart} data-testid="add-alts">Add</Button>
-                            <Button variant={['danger']} type="button" onClick={handleRemoveAltPart} data-testid="remove-alts">Remove</Button>
-                          </div>
-                        </>
+          <GridItem rowStart={1} colStart={7} colEnd={13} variant={['no-style']}>
+            <GridItem variant={['low-opacity-bg']}>
+              <Table variant={['plain', 'edit-row-details']}>
+                <tbody>
+                  <tr>
+                    <th>Alt Parts</th>
+                    <td>
+                      {!loadingAlts ?
+                        user.accessLevel >= 2 ?
+                          <>
+                            <p style={{ margin: '0.8rem' }}>{ altParts.join(', ') }</p>
+                            <div className="edit-part-details__alt-parts-btn-container">
+                              <Button type="button" onClick={handleAddAltPart} data-testid="add-alts">Add</Button>
+                              <Button variant={['danger']} type="button" onClick={handleRemoveAltPart} data-testid="remove-alts">Remove</Button>
+                            </div>
+                          </>
+                          :
+                          <p style={{ marginLeft: '0.8rem' }}>{ altParts.join(', ') }</p>
                         :
-                        <p style={{ marginLeft: '0.8rem' }}>{ altParts.join(', ') }</p>
-                      :
-                      <center>
-                        <p>Modifying Alts</p>
-                        <p>DO NOT exit</p>
-                        <p>{ loadingProgress }</p>
-                        <Loading />
-                      </center>
-                    }
-                  </td>
-                </tr>
-                <tr>
-                  <th>Remarks</th>
-                  <td>
-                    <Input
-                      variant={['label-stack', 'label-bold', 'text-area']}
-                      rows={5}
-                      cols={100}
-                      value={remarks}
-                      onChange={(e: any) => setRemarks(e.target.value)}
-                    />
-                  </td>
-                </tr>
-              </tbody>
-            </Table>
+                        <center>
+                          <p>Modifying Alts</p>
+                          <p>DO NOT exit</p>
+                          <p>{ loadingProgress }</p>
+                          <Loading />
+                        </center>
+                      }
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>Remarks</th>
+                    <td>
+                      <Input
+                        variant={['label-stack', 'label-bold', 'text-area']}
+                        rows={5}
+                        cols={100}
+                        value={remarks}
+                        onChange={(e: any) => setRemarks(e.target.value)}
+                      />
+                    </td>
+                  </tr>
+                </tbody>
+              </Table>
+            </GridItem>
+            <br />
+            
+            <GridItem variant={['low-opacity-bg']}>
+              <Table variant={['plain', 'edit-row-details']}>
+                <tbody>
+                  <tr>
+                    <th>Sold Date</th>
+                    <td>
+                      <Input
+                        variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+                        type="date"
+                        value={parseDateInputValue(soldToDate)}
+                        onChange={(e: any) => setSoldToDate(new Date(e.target.value))}
+                      />
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>Qty Sold</th>
+                    <td>
+                      <Input
+                        variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+                        value={qtySold ?? ''}
+                        onChange={(e: any) => setQtySold(e.target.value)}
+                        type="number"
+                      />  
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>Sell Price</th>
+                    <td>
+                      <Input
+                        variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+                        value={sellingPrice ?? ''}
+                        onChange={(e: any) => setSellingPrice(e.target.value)}
+                        type="number"
+                        step="any"
+                      />  
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>Sold To</th>
+                    <td>
+                      <CustomerSelect
+                        variant={['label-space-between', 'label-full-width', 'label-bold']}
+                        value={soldTo}
+                        onChange={(e: any) => setSoldTo(e.target.value)}
+                      />  
+                    </td>
+                  </tr>
+                </tbody>
+              </Table>
+            </GridItem>
           </GridItem>
 
-          <GridItem colStart={7} colEnd={12} rowStart={2} variant={['low-opacity-bg']}>
+          <GridItem colStart={7} colEnd={13} rowStart={2} variant={['low-opacity-bg']}>
             <Table variant={['plain', 'edit-row-details']}>
               <tbody>
                 <tr>

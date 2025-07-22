@@ -1,8 +1,8 @@
 import EngineProfitDialog from "@/components/Dialogs/EngineProfitDialog";
-import EditEngineDetails from "@/components/EditEngineDetails";
+import EditEngineDetails from "@/components/Engine/EditEngineDetails";
+import EnginePartsTable from "@/components/Engine/EnginePartsTable";
 import EngineCostInTable from "@/components/EngineCostIn";
 import EngineCostOut from "@/components/EngineCostOut";
-import EnginePartsTable from "@/components/EnginePartsTable";
 import { Layout } from "@/components/Layout";
 import Button from "@/components/Library/Button";
 import Checkbox from "@/components/Library/Checkbox";

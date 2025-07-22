@@ -82,6 +82,7 @@ export default function HandwrittenDetails({
   const [altShipData, setAltShipData] = useState<AltShip[]>([]);
   const [printInvoiceOpen, setPrintInvoiceOpen] = useState(false);
   const [takeoff, setTakeoff] = useState('');
+  const [unitPrice, setUnitPrice] = useState(0);
   const [takeoffItem, setTakeoffItem] = useState<HandwrittenItem | HandwrittenItemChild | null>(null);
   const [takeoffsOpen, setTakeoffsOpen] = useState(false);
   const [taxTotal, setTaxTotal] = useState(0);
@@ -315,11 +316,13 @@ export default function HandwrittenDetails({
     handwritten?.handwrittenItems.forEach((item) => {
       if (item.invoiceItemChildren.length > 0) children.push(...item.invoiceItemChildren);
     });
-    const itemChild: HandwrittenItemChild = children.find((item) => item.stockNum === stockNum) ?? {} as HandwrittenItemChild;
+    const itemChild: HandwrittenItemChild | null = children.find((item) => item.stockNum === stockNum) ?? null;
+    const parentItem = itemChild ? handwritten.handwrittenItems.find((i) => i.id === itemChild.parentId) : null;
 
     if (!item && !itemChild) return;
     setTakeoffsOpen(true);
     setTakeoffItem(item || itemChild);
+    setUnitPrice(Number(item?.unitPrice || parentItem?.unitPrice));
   };
 
   const onSubmitTakeoff = () => {
@@ -336,6 +339,7 @@ export default function HandwrittenDetails({
           open={takeoffsOpen}
           setOpen={setTakeoffsOpen}
           item={takeoffItem}
+          unitPrice={unitPrice}
           setHandwritten={setHandwritten}
           onSubmit={onSubmitTakeoff}
           takeoffInputRef={takeoffInputRef}

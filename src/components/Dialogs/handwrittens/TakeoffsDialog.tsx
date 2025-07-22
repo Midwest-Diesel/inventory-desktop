@@ -12,13 +12,14 @@ interface Props {
   open: boolean
   setOpen: (open: boolean) => void
   item: HandwrittenItem | HandwrittenItemChild
+  unitPrice: number
   setHandwritten: (handwritten: Handwritten | null) => void
   onSubmit: () => void
   takeoffInputRef: RefObject<HTMLInputElement>
 }
 
 
-export default function TakeoffsDialog({ open, setOpen, item, setHandwritten, onSubmit, takeoffInputRef }: Props) {
+export default function TakeoffsDialog({ open, setOpen, item, unitPrice, setHandwritten, onSubmit, takeoffInputRef }: Props) {
   const params = useParams();
   const [qty, setQty] = useState<number>(item.qty ?? 0);
   const [part, setPart] = useState<Part | null>(null);
@@ -40,10 +41,13 @@ export default function TakeoffsDialog({ open, setOpen, item, setHandwritten, on
       return;
     }
     if (part.purchasePrice !== item.cost) {
-      alert(`Part cost of ${formatCurrency(part.purchasePrice)} Doesn't equal line item cost of ${formatCurrency(item.cost)}`);
+      alert(`Part cost of ${formatCurrency(part.purchasePrice)} doesn't equal line item cost of ${formatCurrency(item.cost)}`);
       return;
     }
-    await handlePartTakeoff(part.id, Number(qty));
+    const handwritten = await getHandwrittenById(Number(params.handwritten));
+    if (!handwritten) return;
+
+    await handlePartTakeoff(part.id, Number(qty), handwritten?.billToCompany ?? '', unitPrice, handwritten.id);
     await editHandwrittenTakeoffState(item.id, true);
     await addToPartQtyHistory(part.id, -Number(qty));
     
@@ -60,7 +64,7 @@ export default function TakeoffsDialog({ open, setOpen, item, setHandwritten, on
     } else {
       const isPartUP = part.stockNum?.split('').slice(0, 2).join('').toUpperCase() === 'UP';
       const newStockNum = isPartUP ? `${part.stockNum} (${formatDate(new Date())})` : part.stockNum;
-      await addPart({ ...part, qty: 0, qtySold: Number(qty), stockNum: newStockNum }, true);
+      await addPart({ ...part, qty: 0, qtySold: Number(qty), stockNum: newStockNum, soldTo: handwritten?.billToCompany ?? '', sellingPrice: unitPrice, invoiceNum: handwritten.id }, true);
       await addPartCostIn(newStockNum ?? '', Number(item.cost), null, part.purchasedFrom ?? '', 'PurchasePrice', '');
     }
 

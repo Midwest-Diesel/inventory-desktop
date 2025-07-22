@@ -39,6 +39,18 @@ export const formatCurrency = (amount: any): string => {
   return `$${newIntPart}.${decimalPart}`;
 };
 
+export const formatPercent = (amount: number | null): string => {
+  if (amount == null || isNaN(amount)) return '';
+  const percent = Math.ceil(amount * 100 * 100) / 100;
+  const hasDecimal = percent % 1 !== 0;
+  const formatted = hasDecimal ? percent.toFixed(2) : percent.toFixed(0);
+  const [integerPart, decimalPart] = formatted.split('.');
+  const newIntPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  return hasDecimal
+    ? `${newIntPart}.${decimalPart.replace(/0+$/, '')}%`
+    : `${newIntPart}%`;
+};
+
 export const formatPhone = (value: string | null | undefined, noParens?: boolean) => {
   if (!value || value === '') return '';
   if (value === '+') return value;

@@ -10,7 +10,7 @@ const parsePartsData = async (parts: any) => {
       ...part,
       entryDate: new Date(part.entryDate),
       priceLastUpdated: part.priceLastUpdated && new Date(part.priceLastUpdated),
-      soldToDate: new Date(part.soldToDate),
+      soldToDate: part.soldToDate && new Date(part.soldToDate),
       altParts: part.altParts ? part.altParts.split(',').map((p: any) => p.trim()) : [],
       partsCostIn: part.partsCostIn ? part.partsCostIn.filter((part: any) => !isObjectNull(part)) : [],
       engineCostOut: part.engineCostOut ? part.engineCostOut.filter((part: any) => !isObjectNull(part)) : [],
@@ -302,10 +302,10 @@ export const addToPartQtyHistory = async (partId: number, qty: number) => {
 
 // === PATCH routes === //
 
-export const handlePartTakeoff = async (partId: number, qty: number) => {
+export const handlePartTakeoff = async (partId: number, qty: number, soldTo: string, sellingPrice: number, handwrittenId: number) => {
   try {
     const auth = { withCredentials: true };
-    await api.patch('/api/parts/takeoff', { partId, qty }, auth);
+    await api.patch('/api/parts/takeoff', { partId, qty, soldTo, sellingPrice, handwrittenId }, auth);
   } catch (err) {
     console.error(err);
   }

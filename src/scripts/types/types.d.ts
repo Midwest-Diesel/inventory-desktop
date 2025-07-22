@@ -265,7 +265,7 @@ type HandwrittenItem = {
 
 type HandwrittenItemChild = {
   id: number
-  parentId: number | null
+  parentId: number
   partId: number | null
   part: Part | null
   qty: number | null
@@ -403,6 +403,8 @@ type Part = {
   serialNum?: string
   horsePower?: string
   costRemaining?: number
+  profitMargin: number | null
+  profitPercent: number | null
 };
 
 type PartMin = {

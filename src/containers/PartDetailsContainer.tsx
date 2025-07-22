@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
+import { formatCurrency, formatDate, formatPercent } from "@/scripts/tools/stringUtils";
 import { useEffect, useState } from "react";
 import { getImagesFromPart, getImagesFromStockNum } from "@/scripts/services/imagesService";
 import Table from "@/components/Library/Table";
@@ -261,10 +261,6 @@ export default function PartDetailsContainer() {
                     <td data-testid="qty">{ part.qty }</td>
                   </tr>
                   <tr>
-                    <th>Qty Sold</th>
-                    <td data-testid="qty-sold">{ part.qtySold }</td>
-                  </tr>
-                  <tr>
                     <th>Stock Number</th>
                     <td>
                       <div className="part-details__stock-pics">
@@ -353,22 +349,60 @@ export default function PartDetailsContainer() {
               </Table>
             </GridItem>
 
-            <GridItem rowStart={1} colStart={7} colEnd={12} variant={['low-opacity-bg']}>
-              <Table variant={['plain', 'row-details']}>
-                <tbody>
-                  <tr style={{ height: '4rem' }}>
-                    <th>Alt Parts</th>
-                    <td data-testid="alt-parts">{ part.altParts.join(', ') }</td>
-                  </tr>
-                  <tr style={{ height: '4rem' }}>
-                    <th>Remarks</th>
-                    <td>{ part.remarks }</td>
-                  </tr>
-                </tbody>
-              </Table>
+            <GridItem rowStart={1} colStart={7} colEnd={13} variant={['no-style']}>
+              <GridItem variant={['low-opacity-bg']}>
+                <Table variant={['plain', 'row-details']}>
+                  <tbody>
+                    <tr style={{ height: '4rem' }}>
+                      <th>Alt Parts</th>
+                      <td data-testid="alt-parts">{ part.altParts.join(', ') }</td>
+                    </tr>
+                    <tr style={{ height: '4rem' }}>
+                      <th>Remarks</th>
+                      <td>{ part.remarks }</td>
+                    </tr>
+                  </tbody>
+                </Table>
+              </GridItem>
+              <br />
+
+              <GridItem variant={['low-opacity-bg']}>
+                <Table variant={['plain', 'row-details']}>
+                  <tbody>
+                    <tr>
+                      <th>Sold Date</th>
+                      <td>{ formatDate(part.soldToDate) }</td>
+                    </tr>
+                    <tr>
+                      <th>Qty Sold</th>
+                      <td data-testid="qty-sold">{ part.qtySold }</td>
+                    </tr>
+                    <tr>
+                      <th>Sell Price</th>
+                      <td>{ formatCurrency(part.sellingPrice) }</td>
+                    </tr>
+                    <tr>
+                      <th>Sold To</th>
+                      <td>{ part.soldTo }</td>
+                    </tr>
+                    <tr>
+                      <th>Profit Margin</th>
+                      <td>{ formatCurrency(part.profitMargin) }</td>
+                    </tr>
+                    <tr>
+                      <th>Profit %</th>
+                      <td>{ Number(part.profitPercent) > 0 && formatPercent(part.profitPercent) }</td>
+                    </tr>
+                    {/* <tr>
+                      <th>Handwritten</th>
+                      <td>{ part.invoiceNum ? <Link href={`/handwrittens/${part.invoiceNum}`}>{ part.invoiceNum }</Link> : null }</td>
+                    </tr> */}
+                  </tbody>
+                </Table>
+              </GridItem>
             </GridItem>
 
-            <GridItem colStart={7} colEnd={12} rowStart={2} variant={['low-opacity-bg']}>
+            <GridItem colStart={7} colEnd={13} rowStart={2} variant={['low-opacity-bg']}>
               <Table variant={['plain', 'row-details']}>
                 <tbody>
                   <tr>
