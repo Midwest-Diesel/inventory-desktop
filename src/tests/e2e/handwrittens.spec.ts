@@ -215,6 +215,13 @@ test.describe('Takeoffs', () => {
     await altSearch(page, { stockNum: `${stockNum} (${formatDate(new Date())})` });
     await expect(page.getByTestId('qty').first()).toHaveText(`${0}`);
     await expect(page.getByTestId('stock-num').first()).toHaveText(`${stockNum} (${formatDate(new Date())})`);
+    await page.getByTestId('part-num-link').click();
+    await page.waitForLoadState('networkidle');
+    await expect(page.getByTestId('sold-date')).toHaveText(formatDate(new Date()));
+    await expect(page.getByTestId('selling-price')).toHaveText('$100.00');
+    await expect(page.getByTestId('sold-to')).toHaveText('Rubber Duck Inc');
+    await expect(page.getByTestId('profit-margin')).toHaveText('$99.99');
+    await expect(page.getByTestId('profit-percent')).toHaveText('99.99%');
   });
 
   test('Complete normal takeoff', async () => {
@@ -237,6 +244,11 @@ test.describe('Takeoffs', () => {
 
     await page.getByTestId('part-num-link').first().click();
     await expect(page.getByTestId('qty-sold')).toHaveText('38');
+    await expect(page.getByTestId('sold-date')).toHaveText(formatDate(new Date()));
+    await expect(page.getByTestId('selling-price')).toHaveText('$80.00');
+    await expect(page.getByTestId('sold-to')).toHaveText('ALTORFER INDUSTRIES INC.');
+    await expect(page.getByTestId('profit-margin')).toHaveText('$80.00');
+    await expect(page.getByTestId('profit-percent')).toHaveText('100%');
   });
 });
 
