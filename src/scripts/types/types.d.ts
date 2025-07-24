@@ -397,7 +397,7 @@ type Part = {
   soldToDate: Date | null
   condition: string | null
   rating: number | null
-  invoiceNum: number | null
+  handwrittenId: number | null
   engineNum: number | null
   altParts: string[]
   partsCostIn: PartsCostIn[]

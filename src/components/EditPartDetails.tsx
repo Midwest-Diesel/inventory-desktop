@@ -4,7 +4,7 @@ import Grid from "./Library/Grid/Grid";
 import GridItem from "./Library/Grid/GridItem";
 import { FormEvent, useState } from "react";
 import Input from "@/components/Library/Input";
-import { addAltParts, addPartCostIn, addToPartQtyHistory, deletePartCostIn, editAltParts, editPart, editPartCostIn, getPartsInfoByAltParts, getPartInfoByPartNum, setPartLastUpdated } from "@/scripts/services/partsService";
+import { addAltParts, addPartCostIn, addToPartQtyHistory, deletePartCostIn, editAltParts, editPart, editPartCostIn, getPartsInfoByAltParts, getPartInfoByPartNum, setPartLastUpdated, getPartById } from "@/scripts/services/partsService";
 import Table from "./Library/Table";
 import { addEngineCostOut, deleteEngineCostOut, editEngineCostOut } from "@/scripts/services/enginesService";
 import { userAtom } from "@/scripts/atoms/state";
@@ -53,13 +53,13 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
   const [qtySold, setQtySold] = useState<number | null>(part.qtySold);
   const [sellingPrice, setSellingPrice] = useState<number | null>(part.sellingPrice);
   const [soldTo, setSoldTo] = useState<string>(part.soldTo ?? '');
-  const [invoiceNum, setInvoiceNum] = useState<number | null>(part.invoiceNum);
+  const [handwrittenId, setInvoiceNum] = useState<number | null>(part.handwrittenId);
   const [partCostIn, setPartCostIn] = useState<PartCostIn[]>(partCostInData);
   const [engineCostOut, setEngineCostOut] = useState<EngineCostOut[]>(engineCostOutData);
   const [changesSaved, setChangesSaved] = useState(true);
   const [loadingAlts, isLoadingAlts] = useState(false);
   const [loadingProgress, setLoadingProgress] = useState('');
-  const blankPartCostIn = { id: 0, stockNum: part.stockNum, invoiceNum: '', cost: '', vendor: '', costType: '', note: '' };
+  const blankPartCostIn = { id: 0, stockNum: part.stockNum, handwrittenId: '', cost: '', vendor: '', costType: '', note: '' };
   const blankEngineCostOut = { id: 0, stockNum: part.stockNum, engineStockNum: Number(part.engineNum), cost: '', costType: '', note: '' };
   const [newPartCostInRow, setNewPartCostInRow] = useState<any>(blankPartCostIn);
   const [newEngineCostOutRow, setNewEngineCostOutRow] = useState<any>(blankEngineCostOut);
@@ -97,7 +97,7 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
       qtySold: Number(qtySold),
       sellingPrice: Number(sellingPrice),
       soldTo,
-      invoiceNum,
+      handwrittenId,
       profitMargin,
       profitPercent: profitMargin / Number(sellingPrice)
     } as Part;
@@ -117,7 +117,7 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
     // Handle qty change history
     if (part.qty !== newPart.qty) await addToPartQtyHistory(part.id, newPart.qty - part.qty);
 
-    // Edit rows
+    // Edit partCostIn rows
     if (JSON.stringify(partCostIn) !== JSON.stringify(partCostInData)) {
       for (let i = 0; i < partCostIn.length; i++) {
         const item = partCostIn[i];
@@ -150,7 +150,7 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
       }
     }
 
-    // Add new rows
+    // Add new partCostIn rows
     if (partCostInData.length !== partCostIn.length) {
       for (let i = 0; i < partCostIn.length; i++) {
         const item = partCostIn[i];
@@ -168,7 +168,12 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
       }
     }
 
-    setPart(newPart);
+    const res = await getPartById(part.id);
+    if (!res) {
+      alert('Invalid part');
+      return;
+    }
+    setPart(res);
     setIsEditingPart(false);
   };
 
@@ -589,7 +594,7 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
                     <td>
                       <Input
                         variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
-                        value={invoiceNum ?? ''}
+                        value={handwrittenId ?? ''}
                         onChange={(e: any) => setInvoiceNum(e.target.value)}
                         type="number"
                       />

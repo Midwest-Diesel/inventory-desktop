@@ -104,7 +104,7 @@ export default function SalesInfo({ open, setOpen }: Props) {
                       <td>{ part.qtySold }</td>
                       <td>{ formatCurrency(part.sellingPrice) }</td>
                       <td>{ part.condition }</td>
-                      <td><Link href={`/handwrittens/${part.invoiceNum}`}>{ part.invoiceNum }</Link></td>
+                      <td><Link href={`/handwrittens/${part.handwrittenId}`}>{ part.handwrittenId }</Link></td>
                     </tr>
                   );
                 })}

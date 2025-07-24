@@ -395,7 +395,7 @@ export default function PartDetailsContainer() {
                     </tr>
                     <tr>
                       <th>Handwritten</th>
-                      <td>{ part.invoiceNum ? <Link href={`/handwrittens/${part.invoiceNum}`}>{ part.invoiceNum }</Link> : null }</td>
+                      <td>{ part.handwrittenId ? <Link href={`/handwrittens/${part.handwrittenId}`}>{ part.handwrittenId }</Link> : null }</td>
                     </tr>
                   </tbody>
                 </Table>

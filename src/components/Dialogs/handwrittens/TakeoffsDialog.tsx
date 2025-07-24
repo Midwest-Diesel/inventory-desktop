@@ -64,7 +64,7 @@ export default function TakeoffsDialog({ open, setOpen, item, unitPrice, setHand
     } else {
       const isPartUP = part.stockNum?.split('').slice(0, 2).join('').toUpperCase() === 'UP';
       const newStockNum = isPartUP ? `${part.stockNum} (${formatDate(new Date())})` : part.stockNum;
-      await addPart({ ...part, qty: 0, qtySold: Number(qty), stockNum: newStockNum, soldTo: handwritten?.billToCompany ?? '', sellingPrice: unitPrice, invoiceNum: handwritten.id }, true);
+      await addPart({ ...part, qty: 0, qtySold: Number(qty), stockNum: newStockNum, soldTo: handwritten?.billToCompany ?? '', sellingPrice: unitPrice, handwrittenId: handwritten.id }, true);
       await addPartCostIn(newStockNum ?? '', Number(item.cost), null, part.purchasedFrom ?? '', 'PurchasePrice', '');
     }
 
