@@ -82,10 +82,6 @@ export default function PartDetailsContainer() {
     setPart(part);
     setEngine(engine);
 
-    const pictures = await getImagesFromPart(part.partNum) ?? [];
-    setPictures(pictures);
-    setSnPictures(await getImagesFromStockNum(part.stockNum ?? '') ?? []);
-
     const costRes = await getEngineCostRemaining(part.engineNum ?? 0);
     setCostRemaining(costRes);
     if (Number(costRes) > 0) {
@@ -96,7 +92,12 @@ export default function PartDetailsContainer() {
     setPartCostIn(await getPartCostIn(part.stockNum ?? ''));
     setEngineCostOut(await getPartEngineCostOut(part.stockNum ?? ''));
 
-    const costRemaining = await getSurplusCostRemaining(part.purchasedFrom ?? '');
+    const pictures = await getImagesFromPart(part.partNum) ?? [];
+    setPictures(pictures);
+    setSnPictures(await getImagesFromStockNum(part.stockNum ?? '') ?? []);
+
+    if (!part.purchasedFrom) return;
+    const costRemaining = await getSurplusCostRemaining(part.purchasedFrom);
     if (Number(costRemaining) > 0) {
       setCostAlertAmount(formatCurrency(costRemaining));
       setCostAlertPurchasedFrom(part.purchasedFrom ?? '');
@@ -249,8 +250,8 @@ export default function PartDetailsContainer() {
           </div>
 
 
-          { part.imageExists && <PartPicturesDialog open={picturesOpen} setOpen={setPicturesOpen} pictures={pictures} partNum={part.partNum} /> }        
-          { part.snImageExists && <StockNumPicturesDialog open={snPicturesOpen} setOpen={setSnPicturesOpen} pictures={snPictures} stockNum={part.stockNum} /> }
+          { part.imageExists && picturesOpen && <PartPicturesDialog open={picturesOpen} setOpen={setPicturesOpen} pictures={pictures} partNum={part.partNum} /> }        
+          { part.snImageExists && snPicturesOpen && <StockNumPicturesDialog open={snPicturesOpen} setOpen={setSnPicturesOpen} pictures={snPictures} stockNum={part.stockNum} /> }
 
           <Grid rows={1} cols={12} gap={1}>
             <GridItem colStart={1} colEnd={7} rowStart={1} variant={['low-opacity-bg']}>
