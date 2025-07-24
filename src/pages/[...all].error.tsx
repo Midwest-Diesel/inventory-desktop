@@ -20,7 +20,7 @@ export default function ErrorPage() {
       width: 'fit-content',
       height: 'fit-content'
     }}>
-      <h2 style={{ color: '#f53535' }}>Error</h2>
+      <h2 style={{ color: '#f53535' }}>Error: Everything is on fire!!!</h2>
       <p>{ errorMessage }</p>
       { error instanceof Error && <pre>{ error.stack }</pre> }
 

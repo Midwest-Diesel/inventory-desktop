@@ -1,7 +1,7 @@
 import { useAtom } from "jotai";
 import { shopAddOnsAtom } from "@/scripts/atoms/state";
 import { deleteAddOn, editAddOnAltParts, getAddOnById } from "@/scripts/services/addOnsService";
-import { addPart, addPartCostIn, checkForNewPartNum, getNextUPStockNum, getPartByEngineNum, getPartsByStockNum, getPartsInfoByPartNum } from "@/scripts/services/partsService";
+import { addPart, addPartCostIn, checkForNewPartNum, getNextUPStockNum, getPartByEngineNum, getPartsByStockNum, getPartInfoByPartNum } from "@/scripts/services/partsService";
 import { useEffect, useRef, useState } from "react";
 import { getEngineByStockNum, getEngineCostRemaining } from "@/scripts/services/enginesService";
 import { getRatingFromRemarks } from "@/scripts/tools/utils";
@@ -133,12 +133,13 @@ export default function OfficePartAddonRow({ addOn, partNumList, setSelectedAddO
   };
 
   const updateAutofillPartNumData = async (value: string) => {
-    const res = (await getPartsInfoByPartNum(value))[0];
+    const res = await getPartInfoByPartNum(value);
+    if (res.length === 0) return;
+    const partInfo = res[0];
     const newAddOn = {
       ...addOn,
-      partNum: res.partNum,
-      desc: res.desc,
-      manufacturer: res.manufacturer
+      partNum: partInfo.partNum,
+      desc: partInfo.desc
     } as AddOn;
     const updatedAddOns = addOns.map((a: AddOn) => {
       if (a.id === addOn.id) {
@@ -201,7 +202,7 @@ export default function OfficePartAddonRow({ addOn, partNumList, setSelectedAddO
       alert('Failed to add part to inventory');
       return;
     }
-    const partsInfo = await getPartsInfoByPartNum(updatedAddOn.partNum ?? '');
+    const partsInfo = await getPartInfoByPartNum(updatedAddOn.partNum ?? '');
     const currentAlts = partsInfo.length > 0 ? partsInfo[0].altParts.split(', ') : [updatedAddOn.partNum];
     const altParts = [...currentAlts, ...updatedAddOn.altParts];
     if (!await ask(`Are you sure you want to add this item?\n\nAlt Parts:\n${altParts.join(', ')}`)) return;

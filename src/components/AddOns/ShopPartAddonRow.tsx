@@ -5,7 +5,7 @@ import Checkbox from "../Library/Checkbox";
 import Table from "../Library/Table";
 import Select from "../Library/Select/Select";
 import { deleteAddOn, editAddOnIsPoOpened, editAddOnPrintStatus } from "@/scripts/services/addOnsService";
-import { getNextUPStockNum, getPartByEngineNum, getPartsByStockNum, getPartsInfoByPartNum } from "@/scripts/services/partsService";
+import { getNextUPStockNum, getPartByEngineNum, getPartsByStockNum, getPartInfoByPartNum } from "@/scripts/services/partsService";
 import { useEffect, useRef, useState } from "react";
 import Input from "../Library/Input";
 import Link from "../Library/Link";
@@ -114,12 +114,13 @@ export default function ShopPartAddonRow({ addOn, handleDuplicateAddOn, partNumL
   };
 
   const updateAutofillPartNumData = async (value: string) => {
-    const res = (await getPartsInfoByPartNum(value))[0];
+    const res = await getPartInfoByPartNum(value);
+    if (res.length === 0) return;
+    const partInfo = res[0];
     const newAddOn = {
       ...addOn,
-      partNum: res.partNum,
-      desc: res.desc,
-      manufacturer: res.manufacturer
+      partNum: partInfo.partNum,
+      desc: partInfo.desc
     } as AddOn;
     const updatedAddOns = addOns.map((a: AddOn) => {
       if (a.id === addOn.id) {

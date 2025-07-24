@@ -5,7 +5,7 @@ import Grid from "@/components/Library/Grid/Grid";
 import GridItem from "@/components/Library/Grid/GridItem";
 import Table from "@/components/Library/Table";
 import { Layout } from "@/components/Layout";
-import { addPart, getPartsInfoByPartNum } from "@/scripts/services/partsService";
+import { addPart, getPartInfoByPartNum } from "@/scripts/services/partsService";
 import Input from "@/components/Library/Input";
 import { useNavState } from "@/hooks/useNavState";
 import { ask } from "@/scripts/config/tauri";
@@ -52,7 +52,7 @@ export default function NewPart() {
       engineNum: engineStockNum,
     } as Part;
 
-    const testSearch = await getPartsInfoByPartNum(partNum);
+    const testSearch = await getPartInfoByPartNum(partNum);
     await addPart(newPart, testSearch.length > 0);
     await push('Home', '/');
   };

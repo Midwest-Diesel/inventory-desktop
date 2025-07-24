@@ -364,6 +364,14 @@ type WarrantyItem = {
   isCustomerCredited: boolean
 };
 
+type PartInfo = {
+  id: number
+  partNum: string
+  desc: string
+  altParts: string
+  weightDims: string | null
+};
+
 type Part = {
   id: number
   partNum: string

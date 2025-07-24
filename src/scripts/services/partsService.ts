@@ -34,23 +34,25 @@ export const getPartById = async (id: number): Promise<Part | null> => {
   }
 };
 
-export const getPartsInfoByPartNum = async (partNum: string) => {
+export const getPartInfoByPartNum = async (partNum: string): Promise<PartInfo[]> => {
   try {
     const auth = { withCredentials: true };
     const res = await api.get(`/api/parts/parts-info/part-num/${partNum}`, auth);
     return res.data;
   } catch (err) {
     console.error(err);
+    return [];
   }
 };
 
-export const getPartsInfoByAltParts = async (partNum: string) => {
+export const getPartsInfoByAltParts = async (partNum: string): Promise<PartInfo[]> => {
   try {
     const auth = { withCredentials: true };
     const res = await api.get(`/api/parts/parts-info/alt-parts/${partNum}`, auth);
     return res.data;
   } catch (err) {
     console.error(err);
+    return [];
   }
 };
 

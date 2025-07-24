@@ -4,7 +4,7 @@ import Grid from "./Library/Grid/Grid";
 import GridItem from "./Library/Grid/GridItem";
 import { FormEvent, useState } from "react";
 import Input from "@/components/Library/Input";
-import { addAltParts, addPartCostIn, addToPartQtyHistory, deletePartCostIn, editAltParts, editPart, editPartCostIn, getPartsInfoByAltParts, getPartsInfoByPartNum, setPartLastUpdated } from "@/scripts/services/partsService";
+import { addAltParts, addPartCostIn, addToPartQtyHistory, deletePartCostIn, editAltParts, editPart, editPartCostIn, getPartsInfoByAltParts, getPartInfoByPartNum, setPartLastUpdated } from "@/scripts/services/partsService";
 import Table from "./Library/Table";
 import { addEngineCostOut, deleteEngineCostOut, editEngineCostOut } from "@/scripts/services/enginesService";
 import { userAtom } from "@/scripts/atoms/state";
@@ -53,6 +53,7 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
   const [qtySold, setQtySold] = useState<number | null>(part.qtySold);
   const [sellingPrice, setSellingPrice] = useState<number | null>(part.sellingPrice);
   const [soldTo, setSoldTo] = useState<string>(part.soldTo ?? '');
+  const [invoiceNum, setInvoiceNum] = useState<number | null>(part.invoiceNum);
   const [partCostIn, setPartCostIn] = useState<PartCostIn[]>(partCostInData);
   const [engineCostOut, setEngineCostOut] = useState<EngineCostOut[]>(engineCostOutData);
   const [changesSaved, setChangesSaved] = useState(true);
@@ -96,6 +97,7 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
       qtySold: Number(qtySold),
       sellingPrice: Number(sellingPrice),
       soldTo,
+      invoiceNum,
       profitMargin,
       profitPercent: profitMargin / Number(sellingPrice)
     } as Part;
@@ -239,7 +241,7 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
   
     let altsToAdd: any = new Set();
     for (const value of values) {
-      const partInfo = await getPartsInfoByPartNum(value);
+      const partInfo = await getPartInfoByPartNum(value);
       if (partInfo.length > 0) {
         partInfo[0].altParts.split(', ').forEach((alt: string) => altsToAdd.add(alt));
       }
@@ -274,7 +276,7 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
       }
     }
 
-    const newAltParts = (await getPartsInfoByPartNum(part.partNum))[0].altParts.split(', ');
+    const newAltParts = (await getPartInfoByPartNum(part.partNum))[0].altParts.split(', ');
     setAltParts(newAltParts);
     setPart({ ...part, altParts: newAltParts });
   };
@@ -557,7 +559,7 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
                         value={qtySold ?? ''}
                         onChange={(e: any) => setQtySold(e.target.value)}
                         type="number"
-                      />  
+                      />
                     </td>
                   </tr>
                   <tr>
@@ -569,7 +571,7 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
                         onChange={(e: any) => setSellingPrice(e.target.value)}
                         type="number"
                         step="any"
-                      />  
+                      />
                     </td>
                   </tr>
                   <tr>
@@ -580,6 +582,17 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
                         value={soldTo}
                         onChange={(e: any) => setSoldTo(e.target.value)}
                       />  
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>Handwritten</th>
+                    <td>
+                      <Input
+                        variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+                        value={invoiceNum ?? ''}
+                        onChange={(e: any) => setInvoiceNum(e.target.value)}
+                        type="number"
+                      />
                     </td>
                   </tr>
                 </tbody>

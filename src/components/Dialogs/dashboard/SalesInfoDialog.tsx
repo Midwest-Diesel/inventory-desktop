@@ -4,7 +4,7 @@ import Table from "../../Library/Table";
 import Link from "../../Library/Link";
 import { getSalesByYear } from "@/scripts/tools/search";
 import { useEffect, useState } from "react";
-import { getSalesInfo, searchParts } from "@/scripts/services/partsService";
+import { getPartInfoByPartNum, getSalesInfo, searchAltParts, searchParts } from "@/scripts/services/partsService";
 
 interface Props {
   open: boolean
@@ -16,18 +16,35 @@ export default function SalesInfo({ open, setOpen }: Props) {
   const [sales, setSales] = useState<Part[]>([]);
   const [quotes, setQuotes] = useState<Quote[]>([]);
   const [counters, setCounters] = useState({ new: 0, recon: 0, used: 0, core: 0 });
-  const prevSearches = JSON.parse(localStorage.getItem('altPartSearches')!) ?? JSON.parse(localStorage.getItem('partSearches')!);
 
   useEffect(() => {
     const fetchData = async () => {
       if (!open) return;
-      const search = await searchParts(prevSearches, 1, 99999999);
-      if (search.rows.length === 0) return;
-      const res = await getSalesInfo(search.rows[0].altParts.join('|'));
-      if (!res) return;
-      setSales(res.sales);
-      setQuotes(res.quotes);
-      setCounters(res.counters);
+      const rawPartSearch = JSON.parse(localStorage.getItem('partSearches')!);
+      const filteredPartSearch = rawPartSearch && Object.fromEntries(
+        Object.entries(rawPartSearch).filter(([_, value]) => (value as any).toString().replace('*', ''))
+      );
+      const rawAltPartSearch = JSON.parse(localStorage.getItem('altPartSearches')!);
+      const filteredAltPartSearch = rawAltPartSearch && Object.fromEntries(
+        Object.entries(rawAltPartSearch).filter(([_, value]) => (value as any).toString().replace('*', ''))
+      );
+      const partSearch = filteredPartSearch && await searchParts({ ...filteredPartSearch, showSoldParts: true }, 1, 1);
+      const altPartSearch = filteredAltPartSearch && await searchAltParts({ ...filteredAltPartSearch, showSoldParts: true }, 1, 1);
+      const prevSearch = partSearch ?? altPartSearch;
+      if (prevSearch.rows.length === 0) {
+        alert('Failed to search for part records');
+        return;
+      }
+
+      const res = await getPartInfoByPartNum(prevSearch.rows[0].partNum);
+      if (res.length === 0) {
+        alert('Could not find partNum in partsInfo table.');
+        return;
+      }
+      const salesInfo = await getSalesInfo(res[0].altParts);
+      setSales(salesInfo.sales);
+      setQuotes(salesInfo.quotes);
+      setCounters(salesInfo.counters);
     };
     fetchData();
   }, [open]);

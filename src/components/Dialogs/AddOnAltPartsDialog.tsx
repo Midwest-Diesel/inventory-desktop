@@ -1,6 +1,6 @@
 import { FormEvent, useState } from "react";
 import Dialog from "../Library/Dialog";
-import { getPartsInfoByPartNum } from "@/scripts/services/partsService";
+import { getPartInfoByPartNum } from "@/scripts/services/partsService";
 import Input from "../Library/Input";
 import Button from "../Library/Button";
 import { editAddOnAltParts } from "@/scripts/services/addOnsService";
@@ -29,7 +29,7 @@ export default function AddOnAltPartsDialog({ open, setOpen, addOn, partNumList 
   const handleNewAlt = async (e: FormEvent) => {
     e.preventDefault();
     if (!addOn || !partNum.trim()) return;
-    const res = (await getPartsInfoByPartNum(partNum))[0];
+    const res = (await getPartInfoByPartNum(partNum))[0];
     if (!res || alts.some((alt: string) => res.altParts.split(', ').includes(alt))) {
       alert('Part number does not exist');
       return;

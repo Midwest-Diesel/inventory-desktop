@@ -371,7 +371,7 @@ export default function PartDetailsContainer() {
                   <tbody>
                     <tr>
                       <th>Sold Date</th>
-                      <td>{ formatDate(part.soldToDate) }</td>
+                      <td data-testid="sold-date">{ formatDate(part.soldToDate) }</td>
                     </tr>
                     <tr>
                       <th>Qty Sold</th>
@@ -379,24 +379,24 @@ export default function PartDetailsContainer() {
                     </tr>
                     <tr>
                       <th>Sell Price</th>
-                      <td>{ formatCurrency(part.sellingPrice) }</td>
+                      <td data-testid="selling-price">{ formatCurrency(part.sellingPrice) }</td>
                     </tr>
                     <tr>
                       <th>Sold To</th>
-                      <td>{ part.soldTo }</td>
+                      <td data-testid="sold-to">{ part.soldTo }</td>
                     </tr>
                     <tr>
                       <th>Profit Margin</th>
-                      <td>{ formatCurrency(part.profitMargin) }</td>
+                      <td data-testid="profit-margin">{ formatCurrency(part.profitMargin) }</td>
                     </tr>
                     <tr>
                       <th>Profit %</th>
-                      <td>{ Number(part.profitPercent) > 0 && formatPercent(part.profitPercent) }</td>
+                      <td data-testid="profit-percent">{ Number(part.profitPercent) > 0 && formatPercent(part.profitPercent) }</td>
                     </tr>
-                    {/* <tr>
+                    <tr>
                       <th>Handwritten</th>
                       <td>{ part.invoiceNum ? <Link href={`/handwrittens/${part.invoiceNum}`}>{ part.invoiceNum }</Link> : null }</td>
-                    </tr> */}
+                    </tr>
                   </tbody>
                 </Table>
               </GridItem>
