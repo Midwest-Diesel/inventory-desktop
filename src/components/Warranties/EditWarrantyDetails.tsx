@@ -120,7 +120,7 @@ export default function EditWarrantyDetails({ warrantyData, setWarranty, setIsEd
                 type="button"
                 onClick={stopEditing}
               >
-                Stop Editing
+                Cancel Editing
               </Button>
             </div>
           </div>

@@ -210,7 +210,7 @@ export default function PartDetailsContainer() {
                 className="part-details__close-btn"
                 onClick={async () => await closeBtn()}
               >
-                Close
+                Back
               </Button>
               {user.accessLevel > 1 &&
                 <Button

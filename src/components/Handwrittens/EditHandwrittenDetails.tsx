@@ -701,7 +701,7 @@ export default function EditHandwrittenDetails({
                   onClick={stopEditing}
                   data-testid="stop-edit-btn"
                 >
-                  Stop Editing
+                  Cancel Editing
                 </Button>
               </div>
             </div>

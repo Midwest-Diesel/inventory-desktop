@@ -153,7 +153,7 @@ export default function CustomerDetails({ customer, setCustomer, setIsEditing }:
                   type="button"
                   onClick={stopEditing}
                 >
-                  Stop Editing
+                  Cancel Editing
                 </Button>
               </div>
             </div>

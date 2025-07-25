@@ -179,7 +179,7 @@ export default function EditPoDetails({ poData, setPo, setIsEditing, poItems, po
                 type="button"
                 onClick={stopEditing}
               >
-                Stop Editing
+                Cancel Editing
               </Button>
             </div>
           </div>

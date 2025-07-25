@@ -117,7 +117,7 @@ export default function CustomerDetailsContainer() {
                   className="customer-details__close-btn"
                   onClick={async () => await closeBtn()}
                 >
-                  Close
+                  Back
                 </Button>
                 {user.accessLevel > 1 &&
                   <Button

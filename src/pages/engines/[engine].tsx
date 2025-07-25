@@ -98,7 +98,7 @@ export default function EngineDetailsPage() {
                   className="engine-details__close-btn"
                   onClick={async () => await closeBtn()}
                 >
-                  Close
+                  Back
                 </Button>
                 {user.accessLevel > 1 &&
                   <Button

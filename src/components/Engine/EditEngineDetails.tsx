@@ -329,7 +329,7 @@ export default function EditEngineDetails({ engine, setEngine, setIsEditing, eng
                 type="button"
                 onClick={stopEditing}
               >
-                Stop Editing
+                Cancel Editing
               </Button>
             </div>
           </div>

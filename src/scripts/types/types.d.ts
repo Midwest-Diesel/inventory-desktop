@@ -38,6 +38,11 @@ type Contact = {
   notes: string | null
 };
 
+type CustomerMin = {
+  id: number
+  company: string
+};
+
 type Customer = {
   id: number
   company: string | null

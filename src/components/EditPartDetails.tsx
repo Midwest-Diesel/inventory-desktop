@@ -312,7 +312,7 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
               onClick={stopEditing}
               data-testid="stop-editing"
             >
-              Stop Editing
+              Cancel Editing
             </Button>
           </div>
 

@@ -117,7 +117,7 @@ export default function EditReturnDetails({ returnData, setReturn, setIsEditing 
                 type="button"
                 onClick={stopEditing}
               >
-                Stop Editing
+                Cancel Editing
               </Button>
             </div>
           </div>

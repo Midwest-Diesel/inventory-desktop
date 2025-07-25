@@ -41,3 +41,4 @@ export const quickPickItemIdAtom = atom<number>(0);
 export const toastAtom = atom<Toast[]>([]);
 export const tooltipAtom = atom<string>('');
 export const accountingPageFilterAtom = atom<'' | 'all' | 'IN PROCESS' | 'COMPLETE'>('all');
+export const customersMinAtom = atom<CustomerMin[]>([]);

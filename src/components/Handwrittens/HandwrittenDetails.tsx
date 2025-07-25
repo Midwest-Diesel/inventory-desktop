@@ -363,7 +363,7 @@ export default function HandwrittenDetails({
               className="handwritten-details__close-btn"
               onClick={async () => await closeBtn()}
             >
-              Close
+              Back
             </Button>
             {user.accessLevel > 1 &&
               <Button

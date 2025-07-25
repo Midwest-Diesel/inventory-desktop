@@ -110,7 +110,7 @@ export default function ReturnDetailsContainer() {
                 className="return-details__close-btn"
                 onClick={async () => await closeBtn()}
               >
-                Close
+                Back
               </Button>
               <Button
                 variant={['danger']}

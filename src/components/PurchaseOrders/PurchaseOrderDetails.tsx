@@ -84,7 +84,7 @@ export default function PurchaseOrderDetails({ poData, handleReceiveItem, setIsE
             className="purchase-order-details__close-btn"
             onClick={async () => await closeBtn()}
           >
-            Close
+            Back
           </Button>
           <Button
             variant={['danger']}

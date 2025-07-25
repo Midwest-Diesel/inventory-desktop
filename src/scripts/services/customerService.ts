@@ -46,15 +46,28 @@ export const searchCustomers = async (data: { name: string, phone: string, state
   }
 };
 
-export const getCustomerNames = async () => {
+export const getCustomerNames = async (): Promise<string[]> => {
   try {
     const auth = { withCredentials: true };
     const res = await api.get('/api/customers/names', auth);
     return res.data.map((c: Customer) => c.company);
   } catch (err) {
     console.error(err);
+    return [];
   }
 };
+
+export const getCustomersMin = async (): Promise<CustomerMin[]> => {
+  try {
+    const auth = { withCredentials: true };
+    const res = await api.get('/api/customers/min', auth);
+    return res.data;
+  } catch (err) {
+    console.error(err);
+    return [];
+  }
+};
+
 
 export const getCustomerById = async (id: number) => {
   try {
@@ -136,6 +149,15 @@ export const editContact = async (contact: Contact) => {
   try {
     const auth = { withCredentials: true };
     await api.put('/api/customers/contact', contact, auth);
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+export const customerMerge = async (badId: number, goodId: number) => {
+  try {
+    const auth = { withCredentials: true };
+    await api.put('/api/customers/merge', { badId, goodId }, auth);
   } catch (err) {
     console.error(err);
   }

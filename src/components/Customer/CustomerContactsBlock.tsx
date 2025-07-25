@@ -45,7 +45,7 @@ export default function CustomerContactsBlock({ customer, setCustomer }: Props) 
   };
 
   const handleDeleteContact = async () => {
-    if (!contact?.id || !await ask('Are you sure you want to delete this?')) return;
+    if (!contact?.id || !await ask('Are you sure you want to delete this contact?')) return;
     await deleteContact(contact.id);
     await editCustomer({ ...customer, contact: null });
     const filteredContacts = customer.contacts.filter((c) => c.id !== contact.id);

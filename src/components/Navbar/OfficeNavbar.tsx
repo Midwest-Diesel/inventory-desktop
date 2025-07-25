@@ -39,8 +39,9 @@ export default function OfficeNavbar({ user }: Props) {
       <Link href="/email-stuff" className="navbar__link">Email Stuff</Link>
       <NavDropdown label="Tools">
         <Link href="/reports">Reports</Link>
-        <Link href="/performance" className="navbar__link">Performance</Link>
         <Link href="/image-upload" className="navbar__link">Image Upload</Link>
+        <Link href="/customer-merge" className="navbar__link">Customer Merge</Link>
+        <Link href="/performance" className="navbar__link">Performance</Link>
       </NavDropdown>
       <Link href="/alerts" className="navbar__link">Alerts</Link>
       <Link href="/map" className="navbar__link">Map</Link>

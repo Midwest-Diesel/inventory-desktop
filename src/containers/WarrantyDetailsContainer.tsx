@@ -111,7 +111,7 @@ export default function WarrantyDetailsContainer() {
                 className="warranty-details__close-btn"
                 onClick={async () => await closeBtn()}
               >
-                Close
+                Back
               </Button>
               <Button
                 variant={['danger']}
