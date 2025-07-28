@@ -45,7 +45,7 @@ export default function PartQtyHistoryDialog({ open, setOpen, part, history }: P
             return (
               <tr key={row.id}>
                 <td>{ formatDate(row.dateChanged) }</td>
-                <td>{ row.qtyChanged }</td>
+                <td>{ row.qtyChanged >= 0 && '+' }{ row.qtyChanged }</td>
                 <td>{ getPastQtyFromValue(row) }</td>
               </tr>
             );

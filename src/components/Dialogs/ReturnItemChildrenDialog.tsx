@@ -11,10 +11,11 @@ interface Props {
   setOpen: (open: boolean) => void
   returnItemChildren: ReturnItemChild[]
   setReturnItemChildren: (returnItemChildren: ReturnItemChild[]) => void
+  returnItemId: number
 }
 
 
-export default function ReturnItemChildrenDialog({ open, setOpen, returnItemChildren, setReturnItemChildren }: Props) {
+export default function ReturnItemChildrenDialog({ open, setOpen, returnItemChildren, setReturnItemChildren, returnItemId }: Props) {
   const handleEditRow = (row: ReturnItemChild) => {
     setReturnItemChildren(returnItemChildren.map((child) => {
       if (row.id === child.id) return row;
@@ -30,7 +31,6 @@ export default function ReturnItemChildrenDialog({ open, setOpen, returnItemChil
   };
   
   const handleNewRow = async () => {
-    const returnItemId = returnItemChildren[0].returnItemId;
     if (!returnItemId) return;
     const id = await addReturnItemChild(returnItemId);
     if (!id) return;
@@ -65,7 +65,7 @@ export default function ReturnItemChildrenDialog({ open, setOpen, returnItemChil
           <tbody>
             {returnItemChildren.map((row: ReturnItemChild) => {
               return (
-                <tr>
+                <tr key={row.id}>
                   <td>
                     <Input
                       style={{ color: 'white' }}

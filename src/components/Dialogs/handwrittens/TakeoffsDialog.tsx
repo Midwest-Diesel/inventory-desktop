@@ -6,7 +6,7 @@ import { addPart, addPartCostIn, addToPartQtyHistory, editPartCostIn, getPartByI
 import { getSurplusByCode, zeroAllSurplusItems } from "@/scripts/services/surplusService";
 import { formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
 import { useParams } from "react-router-dom";
-import { FormEvent, RefObject, useEffect, useState } from "react";
+import { FormEvent, RefObject, useEffect, useRef, useState } from "react";
 import Loading from "@/components/Library/Loading";
 
 interface Props {
@@ -25,6 +25,12 @@ export default function TakeoffsDialog({ open, setOpen, item, unitPrice, setHand
   const [qty, setQty] = useState<number>(item.qty ?? 0);
   const [part, setPart] = useState<Part | null>(null);
   const [loading, setLoading] = useState(false);
+  const ref = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    setTimeout(() => ref.current?.querySelector('button')?.focus(), 100);
+  }, [open]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -105,7 +111,7 @@ export default function TakeoffsDialog({ open, setOpen, item, unitPrice, setHand
             data-testid="takeoff-qty-input"
           />
 
-          <div className="form__footer">
+          <div className="form__footer" ref={ref}>
             {loading ?
               <Loading />
               :

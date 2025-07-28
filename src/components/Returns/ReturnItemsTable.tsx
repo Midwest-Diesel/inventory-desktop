@@ -21,6 +21,7 @@ export default function ReturnItemsTable({ className, returnItems, returnData, s
   const { push } = useNavState();
   const [stockNumDialogOpen, setStockNumDialogOpen] = useState(false);
   const [returnItemChildren, setReturnItemChildren] = useState<ReturnItemChild[]>([]);
+  const [returnItemId, setReturnItemId] = useState<number>(0);
 
   const getTotalPrice = (): number => {
     return (returnItems as any).reduce((acc: number, item: ReturnItem) => item.cost !== 0.04 && item.cost !== 0.01 && acc + ((item?.unitPrice ?? 0) * (item?.qty ?? 0)), 0);
@@ -59,6 +60,7 @@ export default function ReturnItemsTable({ className, returnItems, returnData, s
 
   const handleOpenStockNumbers = (item: ReturnItem) => {
     setStockNumDialogOpen(true);
+    setReturnItemId(item.id);
     setReturnItemChildren(item.returnItemChildren);
   };
 
@@ -70,6 +72,7 @@ export default function ReturnItemsTable({ className, returnItems, returnData, s
         setOpen={setStockNumDialogOpen}
         returnItemChildren={returnItemChildren}
         setReturnItemChildren={setReturnItemChildren}
+        returnItemId={returnItemId}
       />
 
       <div className={`return-items-table ${className && className}`}>
