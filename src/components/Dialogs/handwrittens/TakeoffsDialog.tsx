@@ -7,6 +7,7 @@ import { getSurplusByCode, zeroAllSurplusItems } from "@/scripts/services/surplu
 import { formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
 import { useParams } from "react-router-dom";
 import { FormEvent, RefObject, useEffect, useState } from "react";
+import Loading from "@/components/Library/Loading";
 
 interface Props {
   open: boolean
@@ -23,6 +24,7 @@ export default function TakeoffsDialog({ open, setOpen, item, unitPrice, setHand
   const params = useParams();
   const [qty, setQty] = useState<number>(item.qty ?? 0);
   const [part, setPart] = useState<Part | null>(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -36,6 +38,7 @@ export default function TakeoffsDialog({ open, setOpen, item, unitPrice, setHand
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (!part) return;
+    setLoading(true);
     if (part.qty - Number(qty) < 0) {
       alert('Part qty cannot go below 0');
       return;
@@ -70,6 +73,7 @@ export default function TakeoffsDialog({ open, setOpen, item, unitPrice, setHand
 
     const res = await getHandwrittenById(Number(params.handwritten));
     onSubmit();
+    setLoading(false);
     setHandwritten(res);
     takeoffInputRef.current?.focus();
     setOpen(false);
@@ -102,7 +106,11 @@ export default function TakeoffsDialog({ open, setOpen, item, unitPrice, setHand
           />
 
           <div className="form__footer">
-            <Button type="submit" data-testid="takeoff-submit-btn">Submit</Button>
+            {loading ?
+              <Loading />
+              :
+              <Button type="submit" data-testid="takeoff-submit-btn">Submit</Button>
+            }
           </div>
         </form>
       }
