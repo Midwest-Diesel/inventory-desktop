@@ -22,6 +22,7 @@ export default function GlobalData({ children }: Props) {
   const [user, setUser] = useState<User>();
   const [loaded, setLoaded] = useState(false);
   const [updateDialogOpen, setUpdateDialogOpen] = useState(false);
+  const [updateNotes, setUpdateNotes] = useState('');
 
   useEffect(() => {
     checkForUpdates();
@@ -71,13 +72,14 @@ export default function GlobalData({ children }: Props) {
     const update = await checkUpdate();
     if (update.shouldUpdate) {
       setUpdateDialogOpen(true);
+      setUpdateNotes(update.manifest?.body ?? '');
     }
   };
 
 
   return (
     <>
-      <UpdateModal open={updateDialogOpen} setOpen={setUpdateDialogOpen} />
+      <UpdateModal open={updateDialogOpen} setOpen={setUpdateDialogOpen} notes={updateNotes} />
       <ToastContainer />
       { tooltip && <Tooltip msg={tooltip} /> }
       { user ? children : loaded && <Login /> }

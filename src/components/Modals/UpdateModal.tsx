@@ -5,10 +5,11 @@ import { invoke } from "@/scripts/config/tauri";
 interface Props {
   open: boolean
   setOpen: (open: boolean) => void
+  notes: string
 }
 
 
-export default function UpdateModal({ open, setOpen }: Props) {
+export default function UpdateModal({ open, setOpen, notes }: Props) {
   const handleUpdate = () => {
     invoke('install_update');
   };
@@ -25,6 +26,7 @@ export default function UpdateModal({ open, setOpen }: Props) {
         <Modal
           open
           title="Update Available"
+          style={{ maxWidth: '18rem' }}
           closeOnOutsideClick={false}
           exitWithEsc={false}
           onClose={handleClose}
@@ -32,6 +34,13 @@ export default function UpdateModal({ open, setOpen }: Props) {
           <div className="form__footer">
             <Button onClick={handleUpdate}>Install and restart</Button>
           </div>
+
+          {notes &&
+            <div style={{ marginTop: '1rem', textAlign: 'start' }}>
+              <h6>Notable Changes</h6>
+              <p>{ notes }</p>
+            </div>
+          }
         </Modal>
       }
     </>
