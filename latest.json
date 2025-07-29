@@ -1,7 +1,7 @@
 {
   "version": "v0.27.3",
   "pub_date": "2025-07-28T20:19:31Z",
-  "notes": "",
+  "notes": "Fixed depleted uranium missing bug",
   "platforms": {
     "windows-x86_64": {
       "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVSYXQxaWtWaFNYeHdubGZENmdzQmZCYkhEUU5NN1Q4c0dQcXVWbUVQKy85alFuK0krZ0Z6OXR6ZGdybE1LMXRxc1ZmZ0pVc0xTdU9JVUJyZWhtc3FReldlNFRWYjJWckE4PQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzUzNzMzOTcwCWZpbGU6SW52ZW50b3J5XzAuMjcuM194NjQtc2V0dXAubnNpcy56aXAKNEZpMldqaG9mNFhMYmdQVTVRSXhpNmxPVDNPeHg0U1RwQXlLV3JDME9uMGtocjR6VDl0ckxDdEhSYWlCSnUrZk12MElQTS9PZUw1RklJS0l4aFJ4QUE9PQo=",
