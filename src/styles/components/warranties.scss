@@ -27,6 +27,9 @@
   }
 
   &__table-container {
+    max-height: 44rem;
+    overflow-y: auto;
+
     table {
       width: 100%;
     }

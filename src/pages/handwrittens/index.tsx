@@ -12,6 +12,7 @@ import { formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
 import { useAtom } from "jotai";
 import Link from "@/components/Library/Link";
 import { useEffect, useState } from "react";
+import { useArrowSelector } from "@/hooks/useArrowSelector";
 
 
 export default function Handwrittens() {
@@ -29,6 +30,7 @@ export default function Handwrittens() {
   const [taxTotal, setTaxTotal] = useState(0);
   const [totalSales, setTotalSales] = useState(0);
   const [totalCOGS, setTotalCOGS] = useState(0);
+  useArrowSelector(handwrittens, focusedHandwritten, setFocusedHandwritten);
   const TAX_RATE = 0.08375;
   const LIMIT = 40;
 

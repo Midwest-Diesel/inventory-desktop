@@ -13,6 +13,7 @@ import Link from "@/components/Library/Link";
 import { useEffect, useState } from "react";
 import { confirm } from "@/scripts/config/tauri";
 import WarrantySearchDialog from "@/components/Dialogs/WarrantySearchDialog";
+import { useArrowSelector } from "@/hooks/useArrowSelector";
 
 
 export default function Warranties() {
@@ -21,9 +22,10 @@ export default function Warranties() {
   const [warrantiesData, setWarrantiesData] = useState<Warranty[]>([]);
   const [warranties, setWarranties] = useState<Warranty[]>([]);
   const [pageCount, setPageCount] = useState(0);
-  const [focusedWarranty, setFocusedHandwritten] = useState<Warranty | null>(null);
+  const [focusedWarranty, setFocusedWarranty] = useState<Warranty | null>(null);
   const [warrantySearchOpen, setWarrantySearchOpen] = useState(false);
   const [loading, setLoading] = useState(true);
+  useArrowSelector(warranties, focusedWarranty, setFocusedWarranty);
   const LIMIT = 26;
   
   useEffect(() => {
@@ -116,7 +118,7 @@ export default function Warranties() {
                 <tbody>
                   {warranties.map((war) => {
                     return (
-                      <tr key={war.id} onClick={() => setFocusedHandwritten(war)} style={ focusedWarranty && war.id === focusedWarranty.id ? { border: 'solid 3px var(--yellow-2)' } : {} }>
+                      <tr key={war.id} onClick={() => setFocusedWarranty(war)} style={ focusedWarranty && war.id === focusedWarranty.id ? { border: 'solid 3px var(--yellow-2)' } : {} }>
                         <td><Link href={`/warranties/${war.id}`} data-testid="warranty-link">{ war.id }</Link></td>
                         <td>{ formatDate(war.date) }</td>
                         <td>{ war.customer && war.customer.company }</td>

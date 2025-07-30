@@ -12,6 +12,7 @@ import { formatDate } from "@/scripts/tools/stringUtils";
 import { useAtom } from "jotai";
 import Link from "@/components/Library/Link";
 import { useEffect, useState } from "react";
+import { useArrowSelector } from "@/hooks/useArrowSelector";
 
 
 export default function PurchaseOrders() {
@@ -24,6 +25,7 @@ export default function PurchaseOrders() {
   const [showSearchDialog, setShowSearchDialog] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
+  useArrowSelector(purchaseOrders, focusedPurchaseOrder, setFocusedPurchaseOrder);
   const LIMIT = 26;
 
   useEffect(() => {
