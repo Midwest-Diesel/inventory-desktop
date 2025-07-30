@@ -5,14 +5,12 @@ import Table from "../Library/Table";
 interface Props {
   closeTable: () => void
   data: TheMachinesReport[]
-  setReportsOpen: (open: boolean) => void
 }
 
 
-export default function TheMachinesTable({ closeTable, data, setReportsOpen }: Props) {
+export default function TheMachinesTable({ closeTable, data }: Props) {
   const handleGoBack = () => {
     closeTable();
-    setReportsOpen(true);
   };
 
 

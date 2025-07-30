@@ -5,14 +5,12 @@ import Table from "../Library/Table";
 interface Props {
   closeTable: () => void
   data: NoLocationPartsReport[]
-  setReportsOpen: (open: boolean) => void
 }
 
 
-export default function NoLocationPartsTable({ closeTable, data, setReportsOpen }: Props) {
+export default function NoLocationPartsTable({ closeTable, data }: Props) {
   const handleGoBack = () => {
     closeTable();
-    setReportsOpen(true);
   };
 
 

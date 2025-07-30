@@ -9,16 +9,14 @@ interface Props {
   setOpen: (open: boolean) => void
   openTable: () => void
   setTableData: (data: RecentPartSearch[]) => void
-  setReportsOpen: (open: boolean) => void
 }
 
 
-export default function RecentSearchesDialog({ open, setOpen, openTable, setTableData, setReportsOpen }: Props) {
+export default function RecentSearchesDialog({ open, setOpen, openTable, setTableData }: Props) {
   const [partNum, setPartNum] = useState('');
 
   const handleSearch = async () => {
     openTable();
-    setReportsOpen(false);
     setOpen(false);
     const res = await reportRecentSearches(partNum);
     setTableData(res);

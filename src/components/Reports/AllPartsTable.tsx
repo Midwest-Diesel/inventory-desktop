@@ -7,11 +7,10 @@ import { useEffect, useState } from "react";
 interface Props {
   closeTable: () => void
   data: AllPartsReport[]
-  setReportsOpen: (open: boolean) => void
 }
 
 
-export default function AllPartsTable({ closeTable, data, setReportsOpen }: Props) {
+export default function AllPartsTable({ closeTable, data }: Props) {
   const [total, setTotal] = useState(0);
 
   useEffect(() => {
@@ -20,7 +19,6 @@ export default function AllPartsTable({ closeTable, data, setReportsOpen }: Prop
   
   const handleGoBack = () => {
     closeTable();
-    setReportsOpen(true);
   };
 
 

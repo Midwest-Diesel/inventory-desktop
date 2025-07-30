@@ -6,14 +6,12 @@ import Loading from "../Library/Loading";
 interface Props {
   closeTable: () => void
   data: AllCompaniesReport[]
-  setReportsOpen: (open: boolean) => void
 }
 
 
-export default function AllCompaniesTable({ closeTable, data, setReportsOpen }: Props) {
+export default function AllCompaniesTable({ closeTable, data }: Props) {
   const handleGoBack = () => {
     closeTable();
-    setReportsOpen(true);
   };
 
 

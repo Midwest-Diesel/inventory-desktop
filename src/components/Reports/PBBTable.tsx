@@ -5,14 +5,12 @@ import Table from "../Library/Table";
 interface Props {
   closeTable: () => void
   data: PBBReport[]
-  setReportsOpen: (open: boolean) => void
 }
 
 
-export default function PBBTable({ closeTable, data, setReportsOpen }: Props) {
+export default function PBBTable({ closeTable, data }: Props) {
   const handleGoBack = () => {
     closeTable();
-    setReportsOpen(true);
   };
 
 

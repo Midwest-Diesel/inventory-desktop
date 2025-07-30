@@ -10,11 +10,10 @@ interface Props {
   setOpen: (open: boolean) => void
   openTable: () => void
   setTableData: (data: PartDescReport[]) => void
-  setReportsOpen: (open: boolean) => void
 }
 
 
-export default function PartDescDialog({ open, setOpen, openTable, setTableData, setReportsOpen }: Props) {
+export default function PartDescDialog({ open, setOpen, openTable, setTableData }: Props) {
   const [keyword, setKeyword] = useState('');
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
@@ -22,7 +21,6 @@ export default function PartDescDialog({ open, setOpen, openTable, setTableData,
   const handleSearch = async (e: FormEvent) => {
     e.preventDefault();
     openTable();
-    setReportsOpen(false);
     setOpen(false);
     const res = await reportPartDesc(keyword, startDate, endDate);
     setTableData(res);

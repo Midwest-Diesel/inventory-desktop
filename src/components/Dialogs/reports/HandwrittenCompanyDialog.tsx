@@ -10,17 +10,15 @@ interface Props {
   setOpen: (open: boolean) => void
   openTable: () => void
   setTableData: (data: HandwrittensCompanyReport[]) => void
-  setReportsOpen: (open: boolean) => void
 }
 
 
-export default function HandwrittenCompanyDialog({ open, setOpen, openTable, setTableData, setReportsOpen }: Props) {
+export default function HandwrittenCompanyDialog({ open, setOpen, openTable, setTableData }: Props) {
   const [customer, setCustomer] = useState('');
   const [year, setYear] = useState('');
 
   const handleSearch = async () => {
     openTable();
-    setReportsOpen(false);
     setOpen(false);
     const res = await reportHandwrittenCompany(customer, Number(year));
     setTableData(res);

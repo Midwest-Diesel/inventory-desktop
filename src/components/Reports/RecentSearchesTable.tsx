@@ -6,14 +6,12 @@ import Table from "../Library/Table";
 interface Props {
   closeTable: () => void
   data: RecentPartSearch[]
-  setReportsOpen: (open: boolean) => void
 }
 
 
-export default function RecentSearchesTable({ closeTable, data, setReportsOpen }: Props) {
+export default function RecentSearchesTable({ closeTable, data }: Props) {
   const handleGoBack = () => {
     closeTable();
-    setReportsOpen(true);
   };
 
 

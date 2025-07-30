@@ -11,18 +11,16 @@ interface Props {
   setOpen: (open: boolean) => void
   openTable: () => void
   setTableData: (data: SingleCompanyEngines[]) => void
-  setReportsOpen: (open: boolean) => void
 }
 
 
-export default function SingleCompanyEnginesDialog({ open, setOpen, openTable, setTableData, setReportsOpen }: Props) {
+export default function SingleCompanyEnginesDialog({ open, setOpen, openTable, setTableData }: Props) {
   const [customer, setCustomer] = useState('');
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
 
   const handleSearch = async () => {
     openTable();
-    setReportsOpen(false);
     setOpen(false);
     const res = await reportSingleCompanyEngines(customer, startDate, endDate);
     setTableData(res);

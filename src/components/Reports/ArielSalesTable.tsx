@@ -6,14 +6,12 @@ import Loading from "../Library/Loading";
 interface Props {
   closeTable: () => void
   data: ArielSalesReport[]
-  setReportsOpen: (open: boolean) => void
 }
 
 
-export default function ArielSalesTable({ closeTable, data, setReportsOpen }: Props) {
+export default function ArielSalesTable({ closeTable, data }: Props) {
   const handleGoBack = () => {
     closeTable();
-    setReportsOpen(true);
   };
 
 

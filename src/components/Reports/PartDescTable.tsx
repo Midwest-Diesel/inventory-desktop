@@ -6,14 +6,12 @@ import Loading from "../Library/Loading";
 interface Props {
   closeTable: () => void
   data: PartDescReport[]
-  setReportsOpen: (open: boolean) => void
 }
 
 
-export default function PartDescTable({ closeTable, data, setReportsOpen }: Props) {
+export default function PartDescTable({ closeTable, data }: Props) {
   const handleGoBack = () => {
     closeTable();
-    setReportsOpen(true);
   };
 
 

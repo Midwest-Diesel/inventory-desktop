@@ -32,31 +32,36 @@ import SingleCompanyEnginesTable from "@/components/Reports/SingleCompanyEngines
 import SingleCompanyPartsTable from "@/components/Reports/SingleCompanyPartsTable";
 import SingleCompanyTable from "@/components/Reports/SingleCompanyTable";
 import TheMachinesTable from "@/components/Reports/TheMachinesTable";
+import { useNavState } from "@/hooks/useNavState";
+import { allCompaniesReportAtom, allEnginesReportAtom, allPartsReportAtom, allSalesmenReportAtom, allSourcesReportAtom, arielSalesReportAtom, enginesCompanyReportAtom, handwrittensCompanyReportAtom, noLocationPartsReportAtom, outstandingHighCoresReportAtom, partDescReportAtom, partsCompanyReportAtom, PBBListReportAtom, pricingChangesReportAtom, recentSearchesReportAtom, singleCompanyReportAtom, theMachinesReportAtom } from "@/scripts/atoms/reports";
 import { reportNoLocationParts, reportOutstandingCores, reportPBB } from "@/scripts/services/reportsService";
+import { useAtom } from "jotai";
 import { useState } from "react";
+import { useSearchParams } from "react-router-dom";
 
 
 export default function Reports() {
+  const { push } = useNavState();
+  const [searchParams] = useSearchParams();
   const [openedReport, setOpenedReport] = useState('');
-  const [openedTable, setOpenedTable] = useState('');
-  const [singleCompanyData, setSingleCompanyData] = useState<SingleCompany[]>([]);
-  const [allCompaniesData, setAllCompaniesData] = useState<AllCompaniesReport[]>([]);
-  const [allPartsData, setAllPartsData] = useState<AllPartsReport[]>([]);
-  const [partDescData, setPartDescData] = useState<PartDescReport[]>([]);
-  const [allEnginesData, setAllEnginesData] = useState<AllEnginesReport[]>([]);
-  const [allSourcesData, setAllSourcesData] = useState<AllSourcesReport[]>([]);
-  const [allSalesmenData, setAllSalesmenData] = useState<AllSalesmenReport[]>([]);
-  const [theMachinesData, setTheMachinesData] = useState<TheMachinesReport[]>([]);
-  const [arielSalesData, setArielSalesData] = useState<ArielSalesReport[]>([]);
-  const [partsCompanyData, setPartsCompanyData] = useState<SingleCompanyParts[]>([]);
-  const [enginesCompanyData, setEnginesCompanyData] = useState<SingleCompanyEngines[]>([]);
-  const [handwrittensCompanyData, setHandwrittensCompanyData] = useState<HandwrittensCompanyReport[]>([]);
-  const [PBBListData, setPBBListData] = useState<PBBReport[]>([]);
-  const [noLocationPartsData, setNoLocationPartsData] = useState<NoLocationPartsReport[]>([]);
-  const [recentSearchesData, setRecentSearchesData] = useState<RecentPartSearch[]>([]);
-  const [outstandingHighCoresData, setOutstandingHighCoresData] = useState<OutstandingCoresReport[]>([]);
-  const [pricingChangesData, setPricingChangesData] = useState<PricingChangesReport[]>([]);
-  const [reportsPageOpen, setReportsPageOpen] = useState(true);
+  const [singleCompanyData, setSingleCompanyData] = useAtom<SingleCompany[]>(singleCompanyReportAtom);
+  const [allCompaniesData, setAllCompaniesData] = useAtom<AllCompaniesReport[]>(allCompaniesReportAtom);
+  const [allPartsData, setAllPartsData] = useAtom<AllPartsReport[]>(allPartsReportAtom);
+  const [partDescData, setPartDescData] = useAtom<PartDescReport[]>(partDescReportAtom);
+  const [allEnginesData, setAllEnginesData] = useAtom<AllEnginesReport[]>(allEnginesReportAtom);
+  const [allSourcesData, setAllSourcesData] = useAtom<AllSourcesReport[]>(allSourcesReportAtom);
+  const [allSalesmenData, setAllSalesmenData] = useAtom<AllSalesmenReport[]>(allSalesmenReportAtom);
+  const [theMachinesData, setTheMachinesData] = useAtom<TheMachinesReport[]>(theMachinesReportAtom);
+  const [arielSalesData, setArielSalesData] = useAtom<ArielSalesReport[]>(arielSalesReportAtom);
+  const [partsCompanyData, setPartsCompanyData] = useAtom<SingleCompanyParts[]>(partsCompanyReportAtom);
+  const [enginesCompanyData, setEnginesCompanyData] = useAtom<SingleCompanyEngines[]>(enginesCompanyReportAtom);
+  const [handwrittensCompanyData, setHandwrittensCompanyData] = useAtom<HandwrittensCompanyReport[]>(handwrittensCompanyReportAtom);
+  const [PBBListData, setPBBListData] = useAtom<PBBReport[]>(PBBListReportAtom);
+  const [noLocationPartsData, setNoLocationPartsData] = useAtom<NoLocationPartsReport[]>(noLocationPartsReportAtom);
+  const [recentSearchesData, setRecentSearchesData] = useAtom<RecentPartSearch[]>(recentSearchesReportAtom);
+  const [outstandingHighCoresData, setOutstandingHighCoresData] = useAtom<OutstandingCoresReport[]>(outstandingHighCoresReportAtom);
+  const [pricingChangesData, setPricingChangesData] = useAtom<PricingChangesReport[]>(pricingChangesReportAtom);
+  const openedTable = searchParams.get('r') ?? '';
 
   const toggleOpenedReport = (name: string) => {
     setOpenedReport(openedReport === name ? '' : name);
@@ -65,36 +70,36 @@ export default function Reports() {
   const isReportOpened = (name: string) => {
     return openedReport === name;
   };
-
   const isTableOpened = (name: string) => {
     return openedTable === name;
   };
 
+  const openTable = async (table: string) => {
+    await push('Report', table ? `/reports?r=${table}` : '/reports');
+  };
+
   const handleSearchPBB = async () => {
-    setOpenedTable('PBB');
-    setReportsPageOpen(false);
     const res = await reportPBB();
     setPBBListData(res);
+    await openTable('pbb');
   };
 
   const handleSearchNoLocationParts = async () => {
-    setOpenedTable('no-location-parts');
-    setReportsPageOpen(false);
     const res = await reportNoLocationParts();
     setNoLocationPartsData(res);
+    await openTable('no-location-parts');
   };
   
   const handleSearchOutstandingCores = async () => {
-    setOpenedTable('outstanding-high-cores');
-    setReportsPageOpen(false);
     const res = await reportOutstandingCores();
     setOutstandingHighCoresData(res);
+    await openTable('outstanding-high-cores');
   };
 
 
   return (
     <Layout title="Reports">
-      {reportsPageOpen ?
+      {!openedTable ?
         <div className="reports-page">
           <h1>Reports</h1>
 
@@ -131,14 +136,7 @@ export default function Reports() {
                 <Button onClick={() => toggleOpenedReport('recent-searches')}>Recent Searches</Button>
                 <Button onClick={handleSearchOutstandingCores}>Outstanding High Cores</Button>
                 <Button onClick={() => toggleOpenedReport('pricing-changes')}>Pricing Changes</Button>
-                <Button
-                  onClick={() => {
-                    setOpenedTable('inventory-value');
-                    setReportsPageOpen(false);
-                  }}
-                >
-                  Inventory Accounting
-                </Button>
+                <Button onClick={() => openTable('inventory-value')}>Inventory Accounting</Button>
               </div>
             </div>
           </div>
@@ -147,149 +145,135 @@ export default function Reports() {
             <SingleCompanyDialog
               open={isReportOpened('single-company')}
               setOpen={() => toggleOpenedReport('')}
-              openTable={() => setOpenedTable('single-company')}
+              openTable={() => openTable('single-company')}
               setTableData={setSingleCompanyData}
-              setReportsOpen={setReportsPageOpen}
             />
           }
           {isReportOpened('all-companies') &&
             <AllCompaniesDialog
               open={isReportOpened('all-companies')}
               setOpen={() => toggleOpenedReport('')}
-              openTable={() => setOpenedTable('all-companies')}
+              openTable={() => openTable('all-companies')}
               setTableData={setAllCompaniesData}
-              setReportsOpen={setReportsPageOpen}
             />
           }
           {isReportOpened('all-parts') &&
             <AllPartsDialog
               open={isReportOpened('all-parts')}
               setOpen={() => toggleOpenedReport('')}
-              openTable={() => setOpenedTable('all-parts')}
+              openTable={() => openTable('all-parts')}
               setTableData={setAllPartsData}
-              setReportsOpen={setReportsPageOpen}
             />
           }
           {isReportOpened('part-desc') &&
             <PartDescDialog
               open={isReportOpened('part-desc')}
               setOpen={() => toggleOpenedReport('')}
-              openTable={() => setOpenedTable('part-desc')}
+              openTable={() => openTable('part-desc')}
               setTableData={setPartDescData}
-              setReportsOpen={setReportsPageOpen}
             />
           }
           {isReportOpened('all-engines') &&
             <AllEnginesDialog
               open={isReportOpened('all-engines')}
               setOpen={() => toggleOpenedReport('')}
-              openTable={() => setOpenedTable('all-engines')}
+              openTable={() => openTable('all-engines')}
               setTableData={setAllEnginesData}
-              setReportsOpen={setReportsPageOpen}
             />
           }
           {isReportOpened('all-sources') &&
             <AllSourcesDialog
               open={isReportOpened('all-sources')}
               setOpen={() => toggleOpenedReport('')}
-              openTable={() => setOpenedTable('all-sources')}
+              openTable={() => openTable('all-sources')}
               setTableData={setAllSourcesData}
-              setReportsOpen={setReportsPageOpen}
             />
           }
           {isReportOpened('all-salesmen') &&
             <AllSalesmenDialog
               open={isReportOpened('all-salesmen')}
               setOpen={() => toggleOpenedReport('')}
-              openTable={() => setOpenedTable('all-salesmen')}
+              openTable={() => openTable('all-salesmen')}
               setTableData={setAllSalesmenData}
-              setReportsOpen={setReportsPageOpen}
             />
           }
           {isReportOpened('the-machines') &&
             <TheMachinesDialog
               open={isReportOpened('the-machines')}
               setOpen={() => toggleOpenedReport('')}
-              openTable={() => setOpenedTable('the-machines')}
+              openTable={() => openTable('the-machines')}
               setTableData={setTheMachinesData}
-              setReportsOpen={setReportsPageOpen}
             />
           }
           {isReportOpened('ariel-sales') &&
             <ArielSalesDialog
               open={isReportOpened('ariel-sales')}
               setOpen={() => toggleOpenedReport('')}
-              openTable={() => setOpenedTable('ariel-sales')}
+              openTable={() => openTable('ariel-sales')}
               setTableData={setArielSalesData}
-              setReportsOpen={setReportsPageOpen}
             />
           }
           {isReportOpened('parts-company') &&
             <SingleCompanyPartsDialog
               open={isReportOpened('parts-company')}
               setOpen={() => toggleOpenedReport('')}
-              openTable={() => setOpenedTable('parts-company')}
+              openTable={() => openTable('parts-company')}
               setTableData={setPartsCompanyData}
-              setReportsOpen={setReportsPageOpen}
             />
           }
           {isReportOpened('engines-company') &&
             <SingleCompanyEnginesDialog
               open={isReportOpened('engines-company')}
               setOpen={() => toggleOpenedReport('')}
-              openTable={() => setOpenedTable('engines-company')}
+              openTable={() => openTable('engines-company')}
               setTableData={setEnginesCompanyData}
-              setReportsOpen={setReportsPageOpen}
             />
           }
           {isReportOpened('handwrittens-company') &&
             <HandwrittenCompanyDialog
               open={isReportOpened('handwrittens-company')}
               setOpen={() => toggleOpenedReport('')}
-              openTable={() => setOpenedTable('handwrittens-company')}
+              openTable={() => openTable('handwrittens-company')}
               setTableData={setHandwrittensCompanyData}
-              setReportsOpen={setReportsPageOpen}
             />
           }
           {isReportOpened('recent-searches') &&
             <RecentSearchesDialog
               open={isReportOpened('recent-searches')}
               setOpen={() => toggleOpenedReport('')}
-              openTable={() => setOpenedTable('recent-searches')}
+              openTable={() => openTable('recent-searches')}
               setTableData={setRecentSearchesData}
-              setReportsOpen={setReportsPageOpen}
             />
           }
           {isReportOpened('pricing-changes') &&
             <PricingChangesDialog
               open={isReportOpened('pricing-changes')}
               setOpen={() => toggleOpenedReport('')}
-              openTable={() => setOpenedTable('pricing-changes')}
+              openTable={() => openTable('pricing-changes')}
               setTableData={setPricingChangesData}
-              setReportsOpen={setReportsPageOpen}
             />
           }
         </div>
         :
         <>
-          { isTableOpened('single-company') && <SingleCompanyTable closeTable={() => setOpenedTable('')} data={singleCompanyData} setReportsOpen={setReportsPageOpen} /> }
-          { isTableOpened('all-companies') && <AllCompaniesTable closeTable={() => setOpenedTable('')} data={allCompaniesData} setReportsOpen={setReportsPageOpen} /> }
-          { isTableOpened('all-parts') && <AllPartsTable closeTable={() => setOpenedTable('')} data={allPartsData} setReportsOpen={setReportsPageOpen} /> }
-          { isTableOpened('part-desc') && <PartDescTable closeTable={() => setOpenedTable('')} data={partDescData} setReportsOpen={setReportsPageOpen} /> }
-          { isTableOpened('all-engines') && <AllEnginesTable closeTable={() => setOpenedTable('')} data={allEnginesData} setReportsOpen={setReportsPageOpen} /> }
-          { isTableOpened('all-sources') && <AllSourcesTable closeTable={() => setOpenedTable('')} data={allSourcesData} setReportsOpen={setReportsPageOpen} /> }
-          { isTableOpened('all-salesmen') && <AllSalesmenTable closeTable={() => setOpenedTable('')} data={allSalesmenData} setReportsOpen={setReportsPageOpen} /> }
-          { isTableOpened('the-machines') && <TheMachinesTable closeTable={() => setOpenedTable('')} data={theMachinesData} setReportsOpen={setReportsPageOpen} /> }
-          { isTableOpened('ariel-sales') && <ArielSalesTable closeTable={() => setOpenedTable('')} data={arielSalesData} setReportsOpen={setReportsPageOpen} /> }
-          { isTableOpened('parts-company') && <SingleCompanyPartsTable closeTable={() => setOpenedTable('')} data={partsCompanyData} setReportsOpen={setReportsPageOpen} /> }
-          { isTableOpened('engines-company') && <SingleCompanyEnginesTable closeTable={() => setOpenedTable('')} data={enginesCompanyData} setReportsOpen={setReportsPageOpen} /> }
-          { isTableOpened('handwrittens-company') && <HandwrittenCompanyTable closeTable={() => setOpenedTable('')} data={handwrittensCompanyData} setReportsOpen={setReportsPageOpen} /> }
-          { isTableOpened('PBB') && <PBBTable closeTable={() => setOpenedTable('')} data={PBBListData} setReportsOpen={setReportsPageOpen} /> }
-          { isTableOpened('no-location-parts') && <NoLocationPartsTable closeTable={() => setOpenedTable('')} data={noLocationPartsData} setReportsOpen={setReportsPageOpen} /> }
-          { isTableOpened('recent-searches') && <RecentSearchesTable closeTable={() => setOpenedTable('')} data={recentSearchesData} setReportsOpen={setReportsPageOpen} /> }
-          { isTableOpened('outstanding-high-cores') && <OutstandingCoresTable closeTable={() => setOpenedTable('')} data={outstandingHighCoresData} setReportsOpen={setReportsPageOpen} /> }
-          { isTableOpened('pricing-changes') && <PricingChanges closeTable={() => setOpenedTable('')} data={pricingChangesData} setReportsOpen={setReportsPageOpen} /> }
-          { isTableOpened('inventory-value') && <InventoryValueTable closeTable={() => setOpenedTable('')} setReportsOpen={setReportsPageOpen} /> }
+          { isTableOpened('single-company') && <SingleCompanyTable closeTable={() => openTable('')} data={singleCompanyData} /> }
+          { isTableOpened('all-companies') && <AllCompaniesTable closeTable={() => openTable('')} data={allCompaniesData} /> }
+          { isTableOpened('all-parts') && <AllPartsTable closeTable={() => openTable('')} data={allPartsData} /> }
+          { isTableOpened('part-desc') && <PartDescTable closeTable={() => openTable('')} data={partDescData} /> }
+          { isTableOpened('all-engines') && <AllEnginesTable closeTable={() => openTable('')} data={allEnginesData} /> }
+          { isTableOpened('all-sources') && <AllSourcesTable closeTable={() => openTable('')} data={allSourcesData} /> }
+          { isTableOpened('all-salesmen') && <AllSalesmenTable closeTable={() => openTable('')} data={allSalesmenData} /> }
+          { isTableOpened('the-machines') && <TheMachinesTable closeTable={() => openTable('')} data={theMachinesData} /> }
+          { isTableOpened('ariel-sales') && <ArielSalesTable closeTable={() => openTable('')} data={arielSalesData} /> }
+          { isTableOpened('parts-company') && <SingleCompanyPartsTable closeTable={() => openTable('')} data={partsCompanyData} /> }
+          { isTableOpened('engines-company') && <SingleCompanyEnginesTable closeTable={() => openTable('')} data={enginesCompanyData} /> }
+          { isTableOpened('handwrittens-company') && <HandwrittenCompanyTable closeTable={() => openTable('')} data={handwrittensCompanyData} /> }
+          { isTableOpened('pbb') && <PBBTable closeTable={() => openTable('')} data={PBBListData} /> }
+          { isTableOpened('no-location-parts') && <NoLocationPartsTable closeTable={() => openTable('')} data={noLocationPartsData} /> }
+          { isTableOpened('recent-searches') && <RecentSearchesTable closeTable={() => openTable('')} data={recentSearchesData} /> }
+          { isTableOpened('outstanding-high-cores') && <OutstandingCoresTable closeTable={() => openTable('')} data={outstandingHighCoresData} /> }
+          { isTableOpened('pricing-changes') && <PricingChanges closeTable={() => openTable('')} data={pricingChangesData} /> }
+          { isTableOpened('inventory-value') && <InventoryValueTable closeTable={() => openTable('')} /> }
         </>
       }
     </Layout>

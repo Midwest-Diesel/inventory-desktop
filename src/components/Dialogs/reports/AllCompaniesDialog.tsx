@@ -10,18 +10,16 @@ interface Props {
   setOpen: (open: boolean) => void
   openTable: () => void
   setTableData: (data: AllCompaniesReport[]) => void
-  setReportsOpen: (open: boolean) => void
 }
 
 
-export default function AllCompaniesDialog({ open, setOpen, openTable, setTableData, setReportsOpen }: Props) {
+export default function AllCompaniesDialog({ open, setOpen, openTable, setTableData }: Props) {
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
 
   const handleSearch = async (e: FormEvent) => {
     e.preventDefault();
     openTable();
-    setReportsOpen(false);
     setOpen(false);
     const res = await reportAllCompanies(startDate, endDate);
     setTableData(res);

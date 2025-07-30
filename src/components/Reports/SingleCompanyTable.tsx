@@ -8,11 +8,10 @@ import Link from "../Library/Link";
 interface Props {
   closeTable: () => void
   data: SingleCompany[]
-  setReportsOpen: (open: boolean) => void
 }
 
 
-export default function SingleCompanyTable({ closeTable, data, setReportsOpen }: Props) {
+export default function SingleCompanyTable({ closeTable, data }: Props) {
   const [total, setTotal] = useState(0);
 
   useEffect(() => {
@@ -21,7 +20,6 @@ export default function SingleCompanyTable({ closeTable, data, setReportsOpen }:
 
   const handleGoBack = () => {
     closeTable();
-    setReportsOpen(true);
   };
 
 

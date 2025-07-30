@@ -7,11 +7,10 @@ import { addWatchedPricingRow, deleteWatchedPricingRow, getWatchedPricingRows } 
 interface Props {
   closeTable: () => void
   data: PricingChangesReport[]
-  setReportsOpen: (open: boolean) => void
 }
 
 
-export default function PricingChanges({ closeTable, data, setReportsOpen }: Props) {
+export default function PricingChanges({ closeTable, data }: Props) {
   const [list, setList] = useState<PricingChangesReport[]>([]);
   const [watchedPartNums, setWatchedPartNums] = useState<string[]>([]);
 
@@ -26,7 +25,6 @@ export default function PricingChanges({ closeTable, data, setReportsOpen }: Pro
 
   const handleGoBack = () => {
     closeTable();
-    setReportsOpen(true);
   };
 
   const handleDownload = async () => {

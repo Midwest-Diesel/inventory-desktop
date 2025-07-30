@@ -11,18 +11,16 @@ interface Props {
   setOpen: (open: boolean) => void
   openTable: () => void
   setTableData: (data: TheMachinesReport[]) => void
-  setReportsOpen: (open: boolean) => void
 }
 
 
-export default function TheMachinesDialog({ open, setOpen, openTable, setTableData, setReportsOpen }: Props) {
+export default function TheMachinesDialog({ open, setOpen, openTable, setTableData }: Props) {
   const [partList, setPartList] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
 
   const handleSearch = async (e: FormEvent) => {
     e.preventDefault();
     openTable();
-    setReportsOpen(false);
     setOpen(false);
     const res = await reportTheMachines();
     setTableData(res);

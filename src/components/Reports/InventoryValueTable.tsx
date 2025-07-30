@@ -7,11 +7,10 @@ import { formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
 
 interface Props {
   closeTable: () => void
-  setReportsOpen: (open: boolean) => void
 }
 
 
-export default function PricingChangesTable({ closeTable, setReportsOpen }: Props) {
+export default function PricingChangesTable({ closeTable }: Props) {
   const [table, setTable] = useState<'parts' | 'coreEngines' | 'toreDownEngines' | 'runningEngines' | 'shortBlocks' | 'surplus' | ''>('');
   const [parts, setParts] = useState<InventoryValueReportPartsData[]>([]);
   const [coreEngines, setCoreEngines] = useState<InventoryValueReportCoreEnginesData[]>([]);
@@ -24,7 +23,6 @@ export default function PricingChangesTable({ closeTable, setReportsOpen }: Prop
 
   const handleGoBack = () => {
     closeTable();
-    setReportsOpen(true);
   };
 
   const loadPartsData = async () => {

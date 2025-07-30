@@ -11,18 +11,16 @@ interface Props {
   setOpen: (open: boolean) => void
   openTable: () => void
   setTableData: (data: PricingChangesReport[]) => void
-  setReportsOpen: (open: boolean) => void
 }
 
 
-export default function PricingChangesDialog({ open, setOpen, openTable, setTableData, setReportsOpen }: Props) {
+export default function PricingChangesDialog({ open, setOpen, openTable, setTableData }: Props) {
   const [file, setFile] = useState<File | null>(null);
   const [list, setList] = useState<PricingChangesReport[]>([]);
   const [error, setError] = useState('');
 
   const showPreviousResults = async () => {
     openTable();
-    setReportsOpen(false);
     setOpen(false);
     const url = await getSupabaseFile('files', 'prev_pricing_changes.json');
     const prevResults = await readJson(url);
@@ -32,7 +30,6 @@ export default function PricingChangesDialog({ open, setOpen, openTable, setTabl
   const handleResults = async (e: FormEvent) => {
     e.preventDefault();
     openTable();
-    setReportsOpen(false);
     setOpen(false);
 
     const url = await getSupabaseFile('files', 'pricing_changes.xlsx');
