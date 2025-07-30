@@ -21,7 +21,7 @@
     },
     "types": ["webdriverio", "jest", "@wdio/globals"]
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/pages/_error.tsx", "src/tests/_e2e/specs/alerts.e2e.ts", "src/tests/testSpec.mjs"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/pages/_error.tsx", "src/tests/_e2e/specs/alerts.e2e.ts", "src/tests/testSpec.mjs", "src/scripts/tools/generate-bundle-scss.cjs"],
   "exclude": [
     "node_modules",
     "src-tauri"
