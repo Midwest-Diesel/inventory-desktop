@@ -5,13 +5,13 @@ import PricingChangesTable from "./PricingChangesTable";
 import { addWatchedPricingRow, deleteWatchedPricingRow, getWatchedPricingRows } from "@/scripts/services/pricingChangesService";
 
 interface Props {
-  setTableOpen: (open: boolean) => void
+  closeTable: () => void
   data: PricingChangesReport[]
   setReportsOpen: (open: boolean) => void
 }
 
 
-export default function PricingChanges({ setTableOpen, data, setReportsOpen }: Props) {
+export default function PricingChanges({ closeTable, data, setReportsOpen }: Props) {
   const [list, setList] = useState<PricingChangesReport[]>([]);
   const [watchedPartNums, setWatchedPartNums] = useState<string[]>([]);
 
@@ -25,7 +25,7 @@ export default function PricingChanges({ setTableOpen, data, setReportsOpen }: P
   }, [data]);
 
   const handleGoBack = () => {
-    setTableOpen(false);
+    closeTable();
     setReportsOpen(true);
   };
 

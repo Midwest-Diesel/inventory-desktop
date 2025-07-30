@@ -4,15 +4,15 @@ import Table from "../Library/Table";
 import Loading from "../Library/Loading";
 
 interface Props {
-  setTableOpen: (open: boolean) => void
+  closeTable: () => void
   data: AllEnginesReport[]
   setReportsOpen: (open: boolean) => void
 }
 
 
-export default function AllEnginesTable({ setTableOpen, data, setReportsOpen }: Props) {
+export default function AllEnginesTable({ closeTable, data, setReportsOpen }: Props) {
   const handleGoBack = () => {
-    setTableOpen(false);
+    closeTable();
     setReportsOpen(true);
   };
 

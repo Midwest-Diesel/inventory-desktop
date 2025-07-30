@@ -8,18 +8,18 @@ import { useState } from "react";
 interface Props {
   open: boolean
   setOpen: (open: boolean) => void
-  setTableOpen: (open: boolean) => void
+  openTable: () => void
   setTableData: (data: HandwrittensCompanyReport[]) => void
   setReportsOpen: (open: boolean) => void
 }
 
 
-export default function HandwrittenCompanyDialog({ open, setOpen, setTableOpen, setTableData, setReportsOpen }: Props) {
+export default function HandwrittenCompanyDialog({ open, setOpen, openTable, setTableData, setReportsOpen }: Props) {
   const [customer, setCustomer] = useState('');
   const [year, setYear] = useState('');
 
   const handleSearch = async () => {
-    setTableOpen(true);
+    openTable();
     setReportsOpen(false);
     setOpen(false);
     const res = await reportHandwrittenCompany(customer, Number(year));
@@ -32,7 +32,6 @@ export default function HandwrittenCompanyDialog({ open, setOpen, setTableOpen, 
       open={open}
       setOpen={setOpen}
       title="Single Company/Handwritten"
-      width={400}
       height={255}
       y={-100}
       className="reports-dialog"

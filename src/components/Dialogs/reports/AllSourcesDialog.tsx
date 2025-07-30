@@ -8,19 +8,19 @@ import { FormEvent, useState } from "react";
 interface Props {
   open: boolean
   setOpen: (open: boolean) => void
-  setTableOpen: (open: boolean) => void
+  openTable: () => void
   setTableData: (data: AllSourcesReport[]) => void
   setReportsOpen: (open: boolean) => void
 }
 
 
-export default function AllSourcesDialog({ open, setOpen, setTableOpen, setTableData, setReportsOpen }: Props) {
+export default function AllSourcesDialog({ open, setOpen, openTable, setTableData, setReportsOpen }: Props) {
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
 
   const handleSearch = async (e: FormEvent) => {
     e.preventDefault();
-    setTableOpen(true);
+    openTable();
     setReportsOpen(false);
     setOpen(false);
     const res = await reportAllSources(startDate, endDate);

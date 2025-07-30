@@ -8,19 +8,19 @@ import { FormEvent, useState } from "react";
 interface Props {
   open: boolean
   setOpen: (open: boolean) => void
-  setTableOpen: (open: boolean) => void
+  openTable: () => void
   setTableData: (data: EmailReport[]) => void
   setReportsOpen: (open: boolean) => void
 }
 
 
-export default function EmailsDialog({ open, setOpen, setTableOpen, setTableData, setReportsOpen }: Props) {
+export default function EmailsDialog({ open, setOpen, closeTable, setTableData, setReportsOpen }: Props) {
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
 
   const handleSearch = async (e: FormEvent) => {
     e.preventDefault();
-    setTableOpen(true);
+    closeTable();
     setReportsOpen(false);
     setOpen(false);
     const res = await reportEmails(startDate, endDate);

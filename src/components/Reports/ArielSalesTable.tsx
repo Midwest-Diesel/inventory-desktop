@@ -4,15 +4,15 @@ import Table from "../Library/Table";
 import Loading from "../Library/Loading";
 
 interface Props {
-  setTableOpen: (open: boolean) => void
+  closeTable: () => void
   data: ArielSalesReport[]
   setReportsOpen: (open: boolean) => void
 }
 
 
-export default function ArielSalesTable({ setTableOpen, data, setReportsOpen }: Props) {
+export default function ArielSalesTable({ closeTable, data, setReportsOpen }: Props) {
   const handleGoBack = () => {
-    setTableOpen(false);
+    closeTable();
     setReportsOpen(true);
   };
 

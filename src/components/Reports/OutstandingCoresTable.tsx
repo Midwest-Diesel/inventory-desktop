@@ -4,15 +4,15 @@ import Loading from "../Library/Loading";
 import Table from "../Library/Table";
 
 interface Props {
-  setTableOpen: (open: boolean) => void
+  closeTable: () => void
   data: OutstandingCoresReport[]
   setReportsOpen: (open: boolean) => void
 }
 
 
-export default function OutstandingCoresTable({ setTableOpen, data, setReportsOpen }: Props) {
+export default function OutstandingCoresTable({ closeTable, data, setReportsOpen }: Props) {
   const handleGoBack = () => {
-    setTableOpen(false);
+    closeTable();
     setReportsOpen(true);
   };
 

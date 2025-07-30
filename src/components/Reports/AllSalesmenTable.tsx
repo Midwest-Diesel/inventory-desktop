@@ -4,15 +4,15 @@ import Table from "../Library/Table";
 import Loading from "../Library/Loading";
 
 interface Props {
-  setTableOpen: (open: boolean) => void
+  closeTable: () => void
   data: AllSalesmenReport[]
   setReportsOpen: (open: boolean) => void
 }
 
 
-export default function AllSalesmenTable({ setTableOpen, data, setReportsOpen }: Props) {
+export default function AllSalesmenTable({ closeTable, data, setReportsOpen }: Props) {
   const handleGoBack = () => {
-    setTableOpen(false);
+    closeTable();
     setReportsOpen(true);
   };
 

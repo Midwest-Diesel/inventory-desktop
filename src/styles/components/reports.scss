@@ -33,4 +33,9 @@
     display: flex;
     gap: 0.3rem;
   }
+
+  &__top-row {
+    display: flex;
+    justify-content: space-between;
+  }
 }

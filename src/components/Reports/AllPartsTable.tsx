@@ -2,24 +2,35 @@ import { formatCurrency } from "@/scripts/tools/stringUtils";
 import Button from "../Library/Button";
 import Table from "../Library/Table";
 import Loading from "../Library/Loading";
+import { useEffect, useState } from "react";
 
 interface Props {
-  setTableOpen: (open: boolean) => void
+  closeTable: () => void
   data: AllPartsReport[]
   setReportsOpen: (open: boolean) => void
 }
 
 
-export default function AllPartsTable({ setTableOpen, data, setReportsOpen }: Props) {
+export default function AllPartsTable({ closeTable, data, setReportsOpen }: Props) {
+  const [total, setTotal] = useState(0);
+
+  useEffect(() => {
+    setTotal(data.reduce((acc, cur) => acc + cur.sales, 0));
+  }, [data]);
+  
   const handleGoBack = () => {
-    setTableOpen(false);
+    closeTable();
     setReportsOpen(true);
   };
 
 
   return (
     <div className="reports-table">
-      <Button onClick={handleGoBack}>Back</Button>
+      <div className="reports-table__top-row">
+        <Button onClick={handleGoBack}>Back</Button>
+        <h3>Total: { formatCurrency(total) }</h3>
+      </div>
+
       <Table>
         <thead>
           <tr>

@@ -6,12 +6,12 @@ import { reportInventoryValueCoreEngines, reportInventoryValueParts, reportInven
 import { formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
 
 interface Props {
-  setTableOpen: (open: boolean) => void
+  closeTable: () => void
   setReportsOpen: (open: boolean) => void
 }
 
 
-export default function PricingChangesTable({ setTableOpen, setReportsOpen }: Props) {
+export default function PricingChangesTable({ closeTable, setReportsOpen }: Props) {
   const [table, setTable] = useState<'parts' | 'coreEngines' | 'toreDownEngines' | 'runningEngines' | 'shortBlocks' | 'surplus' | ''>('');
   const [parts, setParts] = useState<InventoryValueReportPartsData[]>([]);
   const [coreEngines, setCoreEngines] = useState<InventoryValueReportCoreEnginesData[]>([]);
@@ -23,7 +23,7 @@ export default function PricingChangesTable({ setTableOpen, setReportsOpen }: Pr
   const [loading, setLoading] = useState(false);
 
   const handleGoBack = () => {
-    setTableOpen(false);
+    closeTable();
     setReportsOpen(true);
   };
 

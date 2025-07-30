@@ -9,19 +9,19 @@ import * as XLSX from "xlsx";
 interface Props {
   open: boolean
   setOpen: (open: boolean) => void
-  setTableOpen: (open: boolean) => void
+  openTable: () => void
   setTableData: (data: TheMachinesReport[]) => void
   setReportsOpen: (open: boolean) => void
 }
 
 
-export default function TheMachinesDialog({ open, setOpen, setTableOpen, setTableData, setReportsOpen }: Props) {
+export default function TheMachinesDialog({ open, setOpen, openTable, setTableData, setReportsOpen }: Props) {
   const [partList, setPartList] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
 
   const handleSearch = async (e: FormEvent) => {
     e.preventDefault();
-    setTableOpen(true);
+    openTable();
     setReportsOpen(false);
     setOpen(false);
     const res = await reportTheMachines();

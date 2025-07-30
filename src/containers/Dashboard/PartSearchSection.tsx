@@ -51,7 +51,7 @@ export default function PartSearchSection({ selectHandwrittenOpen, setSelectHand
   const [currentPage, setCurrentPage] = useState(1);
   const [pageLoaded, setPageLoaded] = useState(false);
   const [isValidSearch, setIsValidSearch] = useState(false);
-  const LIMIT = 26;
+  const LIMIT = 52;
 
   useEffect(() => {
     const fetchData = async () => {
