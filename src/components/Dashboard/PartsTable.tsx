@@ -14,6 +14,7 @@ interface Props {
   partsData: Part[]
   pageCount: number
   partsQty: number
+  rowsHidden: number | null
   quotePart: (part: Part) => void
   onChangePage: (data: any, page: number) => void
   onOpenSelectHandwrittenDialog: (part: Part) => void
@@ -22,7 +23,7 @@ interface Props {
 }
 
 
-export default function PartsTable({ parts, partsData, pageCount, partsQty, quotePart, onChangePage, onOpenSelectHandwrittenDialog, onQuickPick, limit }: Props) {
+export default function PartsTable({ parts, partsData, pageCount, partsQty, rowsHidden, quotePart, onChangePage, onOpenSelectHandwrittenDialog, onQuickPick, limit }: Props) {
   const tooltip = useTooltip();
   const [partImages, setPartImages] = useState<Picture[]>([]);
   const [picturesPartNum, setPicturesPartNum] = useState<string>('');
@@ -55,6 +56,7 @@ export default function PartsTable({ parts, partsData, pageCount, partsQty, quot
       <StockNumPicturesDialog open={snImagesOpen} setOpen={setSnImagesOpen} pictures={snImages} stockNum={picturesStockNum} />
 
       <div style={{ width:'fit-content', overflow: 'auto', maxHeight: '68vh' }}>
+        { rowsHidden && <p>Hidden rows: { rowsHidden }</p> }
         <Table data-testid="part-search-table">
           <thead>
             <tr>

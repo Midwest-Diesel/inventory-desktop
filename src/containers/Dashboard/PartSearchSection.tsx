@@ -40,6 +40,7 @@ export default function PartSearchSection({ selectHandwrittenOpen, setSelectHand
   const [parts, setParts] = useState<Part[]>([]);
   const [pageCount, setPageCount] = useState(0);
   const [partsQty, setPartsQty] = useState(0);
+  const [rowsHidden, setRowsHidden] = useState<number | null>(null);
   const [partsOpen, setPartsOpen] = useState(localStorage.getItem('partsOpen') === 'true' || localStorage.getItem('partsOpen') === null ? true : false);
   const [partsSearchOpen, setPartsSearchOpen] = useState(false);
   const [altPartsSearchOpen, setAltPartsSearchOpen] = useState(false);
@@ -62,6 +63,7 @@ export default function PartSearchSection({ selectHandwrittenOpen, setSelectHand
       setParts(res.rows);
       setPageCount(res.pageCount);
       setPartsQty(res.totalQty);  
+      setRowsHidden(res.rowsHidden);
       setLoading(false);
     };
     fetchData();
@@ -77,6 +79,7 @@ export default function PartSearchSection({ selectHandwrittenOpen, setSelectHand
       setParts(res.rows);
       setPageCount(res.pageCount);
       setPartsQty(res.totalQty);
+      setRowsHidden(res.rowsHidden);
       setLoading(false);
     };
     fetchData();
@@ -142,6 +145,7 @@ export default function PartSearchSection({ selectHandwrittenOpen, setSelectHand
     setParts(results.rows);
     setPageCount(results.pageCount);
     setPartsQty(results.totalQty);
+    setRowsHidden(results.rowsHidden);
     setLoading(false);
   };
 
@@ -159,6 +163,7 @@ export default function PartSearchSection({ selectHandwrittenOpen, setSelectHand
       setParts(res.rows);
       setPageCount(res.pageCount);
       setPartsQty(res.totalQty);
+      setRowsHidden(res.rowsHidden);
     }
     setCurrentPage(page);
     setLoading(false);
@@ -256,6 +261,7 @@ export default function PartSearchSection({ selectHandwrittenOpen, setSelectHand
             partsData={partsData}
             pageCount={pageCount}
             partsQty={partsQty}
+            rowsHidden={rowsHidden}
             quotePart={quotePart}
             onChangePage={onChangePage}
             onOpenSelectHandwrittenDialog={onOpenSelectHandwrittenDialog}

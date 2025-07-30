@@ -14,13 +14,13 @@ interface Props {
 }
 
 
-export default function EmailsDialog({ open, setOpen, closeTable, setTableData, setReportsOpen }: Props) {
+export default function EmailsDialog({ open, setOpen, openTable, setTableData, setReportsOpen }: Props) {
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
 
   const handleSearch = async (e: FormEvent) => {
     e.preventDefault();
-    closeTable();
+    openTable();
     setReportsOpen(false);
     setOpen(false);
     const res = await reportEmails(startDate, endDate);

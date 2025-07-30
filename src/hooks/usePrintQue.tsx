@@ -16,6 +16,7 @@ export function usePrintQue() {
   };
 
   const printQue = () => {
+    if (!window?.__TAURI_IPC__) return;
     router.push('Printing', '/print');
   };
 

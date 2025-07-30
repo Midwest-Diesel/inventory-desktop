@@ -111,25 +111,25 @@ export const getPartEngineCostOut = async (stockNum: string) => {
   }
 };
 
-export const getSomeParts = async (page: number, limit: number, showSoldParts: boolean): Promise<{ pageCount: number, totalQty: number, rows: Part[] }> => {
+export const getSomeParts = async (page: number, limit: number, showSoldParts: boolean): Promise<{ pageCount: number, totalQty: number, rows: Part[], rowsHidden: number | null }> => {
   try {
     const auth = { withCredentials: true };
     const res = await api.get(`/api/parts/limit/${JSON.stringify({ page: (page - 1) * limit, limit, showSoldParts })}`, auth);
-    return { pageCount: res.data.pageCount, totalQty: res.data.totalQty, rows: await parsePartsData(res.data.rows) };
+    return { pageCount: res.data.pageCount, totalQty: res.data.totalQty, rows: await parsePartsData(res.data.rows), rowsHidden: res.data.rowsHidden };
   } catch (err) {
     console.error(err);
-    return { pageCount: 0, totalQty: 0, rows: [] };
+    return { pageCount: 0, totalQty: 0, rows: [], rowsHidden: null };
   }
 };
 
-export const getSomePartsMin = async (page: number, limit: number, showSoldParts: boolean): Promise<{ pageCount: number, totalQty: number, rows: PartMin[] }> => {
+export const getSomePartsMin = async (page: number, limit: number, showSoldParts: boolean): Promise<{ pageCount: number, totalQty: number, rows: PartMin[], rowsHidden: number | null }> => {
   try {
     const auth = { withCredentials: true };
     const res = await api.get(`/api/parts/limit-min/${JSON.stringify({ page: (page - 1) * limit, limit, showSoldParts })}`, auth);
-    return { pageCount: res.data.pageCount, totalQty: res.data.totalQty, rows: await parsePartsData(res.data.rows) };
+    return { pageCount: res.data.pageCount, totalQty: res.data.totalQty, rows: await parsePartsData(res.data.rows), rowsHidden: res.data.rowsHidden };
   } catch (err) {
     console.error(err);
-    return { pageCount: 0, totalQty: 0, rows: [] };
+    return { pageCount: 0, totalQty: 0, rows: [], rowsHidden: null };
   }
 };
 
@@ -154,21 +154,21 @@ export const getAltsByPartNum = async (partNum: string) => {
   }
 };
 
-export const searchParts = async (part: PartSearchData, page: number, limit: number): Promise<{ pageCount: number, totalQty: number, rows: Part[] }> => {
+export const searchParts = async (part: PartSearchData, page: number, limit: number): Promise<{ pageCount: number, totalQty: number, rows: Part[], rowsHidden: number | null }> => {
   try {
-    if (isObjectNull(part)) return { pageCount: 0, totalQty: 0, rows: [] };
+    if (isObjectNull(part)) return { pageCount: 0, totalQty: 0, rows: [], rowsHidden: null };
     const auth = { withCredentials: true };
     const res = await api.get(`/api/parts/search/${encodeURIComponent(JSON.stringify(part))}?offset=${(page - 1) * limit}&limit=${limit}`, auth);
-    return { pageCount: res.data.pageCount, totalQty: res.data.totalQty, rows: await parsePartsData(res.data.rows) };
+    return { pageCount: res.data.pageCount, totalQty: res.data.totalQty, rows: await parsePartsData(res.data.rows), rowsHidden: res.data.rowsHidden };
   } catch (err) {
     console.error(err);
-    return { pageCount: 0, totalQty: 0, rows: [] };
+    return { pageCount: 0, totalQty: 0, rows: [], rowsHidden: null };
   }
 };
 
-export const searchAltParts = async (part: PartSearchData, page: number, limit: number): Promise<{ pageCount: number, totalQty: number, rows: Part[] }> => {
+export const searchAltParts = async (part: PartSearchData, page: number, limit: number): Promise<{ pageCount: number, totalQty: number, rows: Part[], rowsHidden: number | null }> => {
   try {
-    if (isObjectNull(part)) return { pageCount: 0, totalQty: 0, rows: [] };
+    if (isObjectNull(part)) return { pageCount: 0, totalQty: 0, rows: [], rowsHidden: null };
     const filteredPart = Object.fromEntries(
       Object.entries(part).filter(
         ([, value]) => value !== '' && value !== null && value !== '*'
@@ -176,10 +176,10 @@ export const searchAltParts = async (part: PartSearchData, page: number, limit: 
     );
     const auth = { withCredentials: true };
     const res = await api.get(`/api/parts/searchAlt/${encodeURIComponent(JSON.stringify(filteredPart))}?offset=${(page - 1) * limit}&limit=${limit}`, auth);
-    return { pageCount: res.data.pageCount, totalQty: res.data.totalQty, rows: await parsePartsData(res.data.rows) };
+    return { pageCount: res.data.pageCount, totalQty: res.data.totalQty, rows: await parsePartsData(res.data.rows), rowsHidden: res.data.rowsHidden };
   } catch (err) {
     console.error(err);
-    return { pageCount: 0, totalQty: 0, rows: [] };
+    return { pageCount: 0, totalQty: 0, rows: [], rowsHidden: null };
   }
 };
 
