@@ -9,7 +9,7 @@ import Select from "../Library/Select/Select";
 import { formatCurrency, formatDate, parseDateInputValue } from "@/scripts/tools/stringUtils";
 import Button from "../Library/Button";
 import Table from "../Library/Table";
-import CustomerDropdown from "../Library/Select/CustomerDropdown";
+import CustomerDropdown from "../Library/Dropdown/CustomerDropdown";
 import { getCustomerByName } from "@/scripts/services/customerService";
 import { getAllSources } from "@/scripts/services/sourcesService";
 import { deleteCoreByItemId, editCoreCustomer } from "@/scripts/services/coresService";

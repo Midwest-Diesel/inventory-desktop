@@ -1,9 +1,7 @@
 import { generateClasses, generateRandId, parseClasses } from "../../../scripts/tools/utils";
 import React, { Children, useState, useEffect, useRef } from "react";
 import DropdownOption from "./DropdownOption";
-
 import Input from "../Input";
-
 
 interface Props {
   children: any
@@ -15,6 +13,7 @@ interface Props {
   onBlur?: (value: string) => void
   maxHeight?: string
 }
+
 
 export default function Dropdown({ children, className = '', variant = [], label = '', value = '', onChange, onBlur, maxHeight = "none" }: Props) {
   const classes = generateClasses(className, variant.filter((v) => !["label-stack", "label-space-between", "label-bold"].includes(v)), "dropdown");
@@ -63,7 +62,7 @@ export default function Dropdown({ children, className = '', variant = [], label
 
   const selectOption = (value: string, data?: any) => {
     setSelectedOption(value);
-    setSearch("");
+    setSearch('');
     setIsOpen(false);
     if (onChange && previouslySelectedOption !== value) {
       onChange(value, data);
@@ -72,7 +71,7 @@ export default function Dropdown({ children, className = '', variant = [], label
   };
 
   const filteredOptions = dropdownOptions.filter((child: any) =>
-    child.props.value.toLowerCase().includes(search.toLowerCase())
+    child.props.children.toLowerCase().includes(search.toLowerCase())
   );
 
   let labelClass = "";

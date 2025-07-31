@@ -1,5 +1,6 @@
 import Button from "@/components/Library/Button";
 import Dialog from "@/components/Library/Dialog";
+import CustomerDropdown from "@/components/Library/Dropdown/CustomerDropdown";
 import Input from "@/components/Library/Input";
 import CustomerSelect from "@/components/Library/Select/CustomerSelect";
 import { reportHandwrittenCompany } from "@/scripts/services/reportsService";
@@ -35,11 +36,12 @@ export default function HandwrittenCompanyDialog({ open, setOpen, openTable, set
       className="reports-dialog"
     >
       <form onSubmit={handleSearch}>
-        <CustomerSelect
+        <CustomerDropdown
           label="Company"
-          variant={['label-stack']}
+          variant={['label-full-width', 'label-bold', 'no-margin', 'label-inline', 'label-stack']}
+          maxHeight="25rem"
           value={customer}
-          onChange={(e: any) => setCustomer(e.target.value)}
+          onChange={(c) => setCustomer(c)}
         />
         <Input
           label="Year"

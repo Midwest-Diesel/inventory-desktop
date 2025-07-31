@@ -1,4 +1,5 @@
 import Button from "@/components/Library/Button";
+import CustomerDropdownId from "@/components/Library/Dropdown/CustomerDropdownId";
 import CustomerSelectId from "@/components/Library/Select/CustomerSelectId";
 import { useToast } from "@/hooks/useToast";
 import { customerMerge } from "@/scripts/services/customerService";
@@ -7,12 +8,12 @@ import { FormEvent, useState } from "react";
 
 export default function CustomerMergeContainer() {
   const toast = useToast();
-  const [badId, setBadId] = useState<number | null>(null);
-  const [goodId, setGoodId] = useState<number | null>(null);
+  const [badId, setBadId] = useState(0);
+  const [goodId, setGoodId] = useState(0);
 
   const handleMerge = async (e: FormEvent) => {
     e.preventDefault();
-    if (!badId || !goodId) {
+    if (badId === 0 || goodId === 0) {
       alert('Select customer');
       return;
     }
@@ -26,17 +27,17 @@ export default function CustomerMergeContainer() {
       <h1>Customer Merge</h1>
       
       <form className="customer-merge-form" onSubmit={handleMerge}>
-        <CustomerSelectId
+        <CustomerDropdownId
           variant={['label-bold', 'label-stack']}
           label="Customer to Destroy"
           value={badId?.toString()}
-          onChange={(e: any) => setBadId(e.target.value)}
+          onChange={(id: number) => setBadId(id)}
         />
-        <CustomerSelectId
+        <CustomerDropdownId
           variant={['label-bold', 'label-stack']}
           label="Customer to Keep"
           value={goodId?.toString()}
-          onChange={(e: any) => setGoodId(e.target.value)}
+          onChange={(id: number) => setGoodId(id)}
         />
         <Button variant={['fit']} type="submit">Merge</Button>
       </form>

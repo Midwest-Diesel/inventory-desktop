@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Button from "../Library/Button";
 import Dialog from "../Library/Dialog";
-import CustomerDropdown from "../Library/Select/CustomerDropdown";
+import CustomerDropdown from "../Library/Dropdown/CustomerDropdown";
 import { getCustomerByName } from "@/scripts/services/customerService";
 
 interface Props {

@@ -13,7 +13,7 @@ import { PreventNavigation } from "./PreventNavigation";
 import Loading from "./Library/Loading";
 import { ask } from "@/scripts/config/tauri";
 import Select from "./Library/Select/Select";
-import CustomerSelect from "./Library/Select/CustomerSelect";
+import CustomerDropdown from "./Library/Dropdown/CustomerDropdown";
 
 interface Props {
   part: Part
@@ -582,10 +582,11 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
                   <tr>
                     <th>Sold To</th>
                     <td>
-                      <CustomerSelect
-                        variant={['label-space-between', 'label-full-width', 'label-bold']}
+                      <CustomerDropdown
+                        variant={['label-full-width', 'label-bold', 'no-margin', 'label-inline']}
+                        maxHeight="25rem"
                         value={soldTo}
-                        onChange={(e: any) => setSoldTo(e.target.value)}
+                        onChange={(c: string) => setSoldTo(c)}
                       />  
                     </td>
                   </tr>

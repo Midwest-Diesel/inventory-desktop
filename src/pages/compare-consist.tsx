@@ -1,6 +1,6 @@
 import CompareEngineTable from "@/components/CompareConsist/CompareEngineTable";
 import SideBySideTable from "@/components/CompareConsist/SideBySideTable";
-import CustomerDropdown from "@/components/Library/Select/CustomerDropdown";
+import CustomerDropdown from "@/components/Library/Dropdown/CustomerDropdown";
 import { Layout } from "@/components/Layout";
 import Checkbox from "@/components/Library/Checkbox";
 import Input from "@/components/Library/Input";

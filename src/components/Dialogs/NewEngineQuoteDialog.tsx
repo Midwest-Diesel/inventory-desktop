@@ -7,6 +7,7 @@ import SourceSelect from "../Library/Select/SourceSelect";
 import Button from "../Library/Button";
 import CustomerSelect from "../Library/Select/CustomerSelect";
 import { useToast } from "@/hooks/useToast";
+import CustomerDropdown from "../Library/Dropdown/CustomerDropdown";
 
 interface Props {
   open: boolean
@@ -78,12 +79,12 @@ export default function NewEngineQuoteDialog({ open, setOpen, engine, onNewQuote
             onChange={(e: any) => setSource(e.target.value)}
           />
           
-          <CustomerSelect
+          <CustomerDropdown
             label="Customer"
-            variant={['label-full-width', 'label-bold', 'label-stack']}
+            variant={['label-full-width', 'label-bold', 'no-margin', 'label-inline', 'label-stack']}
+            maxHeight="25rem"
             value={company}
-            onChange={(e) => setCompany(e.target.value)}
-            required
+            onChange={(c: string) => setCompany(c)}
           />
           
           <br />

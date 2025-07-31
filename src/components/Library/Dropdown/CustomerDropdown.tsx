@@ -7,7 +7,7 @@ import { customerNamesAtom } from "@/scripts/atoms/state";
 import { getCustomerNames } from "@/scripts/services/customerService";
 
 interface Props {
-  variant?: ('label-inline' | 'label-space-between' | 'label-full-width' | 'label-stack' | 'large' | 'no-margin' | 'label-full-height' | 'fill' | 'gap' | 'label-bold')[]
+  variant?: ('small' | 'input' | 'label-space-between' | 'label-stack' | 'label-inline' | 'label-full-width' | 'large' | 'no-margin' | 'label-full-height' | 'fill' | 'gap' | 'label-bold')[]
   label?: string
   value: string
   onChange: (customer: string) => void

@@ -1,6 +1,6 @@
 interface Props {
   children: any
-  value: string
+  value: string | number
   className?: string
   onClick?: () => void
   disabled?: boolean

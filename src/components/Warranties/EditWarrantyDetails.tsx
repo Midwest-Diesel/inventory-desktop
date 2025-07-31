@@ -7,7 +7,7 @@ import Table from "../Library/Table";
 import { parseDateInputValue } from "@/scripts/tools/stringUtils";
 import { addWarrantyItem, deleteWarrantyItem, editWarranty, editWarrantyItem, getWarrantyById } from "@/scripts/services/warrantiesService";
 import Checkbox from "../Library/Checkbox";
-import CustomerDropdown from "../Library/Select/CustomerDropdown";
+import CustomerDropdown from "../Library/Dropdown/CustomerDropdown";
 import { getCustomerByName } from "@/scripts/services/customerService";
 import { PreventNavigation } from "../PreventNavigation";
 import { ask } from "@/scripts/config/tauri";

@@ -4,7 +4,7 @@ import Input from "../../Library/Input";
 import Button from "../../Library/Button";
 import { editQuote } from "@/scripts/services/quotesService";
 import SourceSelect from "../../Library/Select/SourceSelect";
-import CustomerDropdown from "../../Library/Select/CustomerDropdown";
+import CustomerDropdown from "../../Library/Dropdown/CustomerDropdown";
 import { parseDateInputValue } from "@/scripts/tools/stringUtils";
 import { getCustomerByName, getCustomerNames } from "@/scripts/services/customerService";
 import { useAtom } from "jotai";

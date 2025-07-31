@@ -12,6 +12,7 @@ import UserSelect from "../Library/Select/UserSelect";
 import CustomerSelect from "../Library/Select/CustomerSelect";
 import { getCustomerByName } from "@/scripts/services/customerService";
 import { ask } from "@/scripts/config/tauri";
+import CustomerDropdown from "../Library/Dropdown/CustomerDropdown";
 
 interface Props {
   returnData: Return
@@ -129,7 +130,9 @@ export default function EditReturnDetails({ returnData, setReturn, setIsEditing 
                   <tr>
                     <th>Customer</th>
                     <td>
-                      <CustomerSelect
+                      <CustomerDropdown
+                        variant={['label-full-width', 'label-bold', 'no-margin', 'label-inline']}
+                        maxHeight="25rem"
                         value={company}
                         onChange={(e: any) => setCompany(e.target.value)}
                       />

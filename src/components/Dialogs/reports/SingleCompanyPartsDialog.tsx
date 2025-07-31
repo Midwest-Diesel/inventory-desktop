@@ -1,5 +1,6 @@
 import Button from "@/components/Library/Button";
 import Dialog from "@/components/Library/Dialog";
+import CustomerDropdown from "@/components/Library/Dropdown/CustomerDropdown";
 import Input from "@/components/Library/Input";
 import CustomerSelect from "@/components/Library/Select/CustomerSelect";
 import { reportSingleCompanyParts } from "@/scripts/services/reportsService";
@@ -38,11 +39,12 @@ export default function SingleCompanyPartsDialog({ open, setOpen, openTable, set
       className="reports-dialog"
     >
       <form onSubmit={handleSearch}>
-        <CustomerSelect
+        <CustomerDropdown
           label="Company"
-          variant={['label-stack']}
+          variant={['label-full-width', 'no-margin', 'label-inline', 'label-stack']}
+          maxHeight="10rem"
           value={customer}
-          onChange={(e: any) => setCustomer(e.target.value)}
+          onChange={(c: string) => setCustomer(c)}
         />
         <Input
           label="Start Date"
