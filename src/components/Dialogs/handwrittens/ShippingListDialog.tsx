@@ -8,6 +8,7 @@ import { isDateInCurrentOrNextWeek } from "@/scripts/tools/utils";
 import Button from "@/components/Library/Button";
 import Loading from "@/components/Library/Loading";
 import { getHandwrittenById } from "@/scripts/services/handwrittensService";
+import { getImagesFromStockNum } from "@/scripts/services/imagesService";
 
 interface Props {
   open: boolean
@@ -49,7 +50,8 @@ export default function ShippingListDialog({ open, setOpen, handwrittenItems, ne
     );
     if (isCondensed) {
       const weight = handwrittenItems.reduce((arr, item) => arr + item.weight, 0);
-      const { length, width, height } = handwrittenItems[0];
+      const { length, width, height, stockNum } = handwrittenItems[0];
+      const pics = await getImagesFromStockNum(stockNum ?? '');
       const new_shipping_list_row = {
         handwritten_id: Number(handwritten?.id),
         initials: handwritten?.createdBy ?? '',
@@ -61,10 +63,10 @@ export default function ShippingListDialog({ open, setOpen, handwrittenItems, ne
         desc: desc,
         stock_num: 'See Yellow',
         location: 'See Yellow',
-        mp: handwritten?.mp,
-        br: handwritten?.br,
-        cap: handwritten?.cap,
-        fl: handwritten?.fl,
+        mp: handwritten?.isBlindShipment ? 0 : handwritten?.mp,
+        br: handwritten?.isBlindShipment ? 0 : handwritten?.br,
+        cap: handwritten?.isBlindShipment ? 0 : handwritten?.cap,
+        fl: handwritten?.isBlindShipment ? 0 : handwritten?.fl,
         pulled: false,
         packaged: false,
         gone: false,
@@ -72,13 +74,16 @@ export default function ShippingListDialog({ open, setOpen, handwrittenItems, ne
         weight: weight || 0,
         dims: `${length || 0}x${width || 0}x${height || 0}`,
         day: date.getDay(),
-        list_path: path
+        list_path: path,
+        has_pics: pics.length > 0,
+        is_blind: handwritten?.isBlindShipment ? true : false
       };
       await invoke('add_to_shipping_list', { newShippingListRow: new_shipping_list_row });
     } else {
       for (let i = 0; i < handwrittenItems.length; i++) {
         if (['FREIGHT', 'TAX', 'CORE DEPOSIT'].includes(handwrittenItems[i].partNum ?? '')) continue;
-        const { length, width, height } = handwrittenItems[i];
+        const { length, width, height, stockNum } = handwrittenItems[i];
+        const pics = await getImagesFromStockNum(stockNum ?? '');
         const new_shipping_list_row = {
           handwritten_id: Number(handwritten?.id),
           initials: handwritten?.createdBy ?? '',
@@ -90,10 +95,10 @@ export default function ShippingListDialog({ open, setOpen, handwrittenItems, ne
           desc: handwrittenItems[i].desc,
           stock_num: handwrittenItems[i].stockNum,
           location: handwrittenItems[i].location,
-          mp: handwritten?.mp,
-          br: handwritten?.br,
-          cap: handwritten?.cap,
-          fl: handwritten?.fl,
+          mp: handwritten?.isBlindShipment ? 0 : handwritten?.mp,
+          br: handwritten?.isBlindShipment ? 0 : handwritten?.br,
+          cap: handwritten?.isBlindShipment ? 0 : handwritten?.cap,
+          fl: handwritten?.isBlindShipment ? 0 : handwritten?.fl,
           pulled: false,
           packaged: false,
           gone: false,
@@ -101,7 +106,9 @@ export default function ShippingListDialog({ open, setOpen, handwrittenItems, ne
           weight: handwrittenItems[i].weight || 0,
           dims: `${length || 0}x${width || 0}x${height || 0}`,
           day: date.getDay(),
-          list_path: path
+          list_path: path,
+          has_pics: pics.length > 0,
+          is_blind: handwritten?.isBlindShipment ? true : false
         };
         await invoke('add_to_shipping_list', { newShippingListRow: new_shipping_list_row });
       }

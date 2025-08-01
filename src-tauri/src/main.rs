@@ -103,7 +103,9 @@ struct ShippingListRow {
   weight: i16,
   dims: String,
   day: i8,
-  list_path: String
+  list_path: String,
+  has_pics: bool,
+  is_blind: bool
 }
 
 #[derive(Deserialize, Serialize)]
@@ -795,6 +797,7 @@ fn add_to_shipping_list(new_shipping_list_row: ShippingListRow) {
     LastRow = ExcelSheet.Cells.Find("{}").Offset(-1, 0).End(-4121).Row + 1
 
     ExcelSheet.Range("A" & LastRow).Insert
+    ExcelSheet.Range("A" & LastRow & ":U" & LastRow).Font.Color = RGB(0, 0, 0)
     ExcelSheet.Range("A" & LastRow).Value = "{}"
     ExcelSheet.Range("B" & LastRow).Value = "{}"
     ExcelSheet.Range("C" & LastRow).Value = "{}"
@@ -818,6 +821,16 @@ fn add_to_shipping_list(new_shipping_list_row: ShippingListRow) {
     ExcelSheet.Range("A" & LastRow & ":U" & LastRow).Font.Bold = False
     ExcelSheet.Range("A" & LastRow & ":U" & LastRow).HorizontalAlignment = -4131
     ExcelSheet.Range("A" & LastRow & ":U" & LastRow).Interior.ColorIndex = -4142
+
+    If {} Then
+      ExcelSheet.Range("A" & LastRow & ":U" & LastRow).Interior.Color = RGB(255, 213, 171)
+      ExcelSheet.Range("A" & LastRow & ":U" & LastRow).Font.Color = RGB(192, 0, 0)
+    End If
+    If {} Then
+      ExcelSheet.Range("A" & LastRow & ":U" & LastRow).Interior.Color = RGB(200, 255, 200)
+      ExcelSheet.Range("A" & LastRow & ":U" & LastRow).Font.Color = RGB(0, 100, 0)
+    End If
+
     If ExcelSheet.Range("B" & LastRow).Text = "UPS Red" Then
       ExcelSheet.Range("B" & LastRow).Font.Color = RGB(255, 0, 0)
     End If
@@ -854,7 +867,9 @@ fn add_to_shipping_list(new_shipping_list_row: ShippingListRow) {
     if new_shipping_list_row.ready {"x"} else {""},
     if new_shipping_list_row.weight > 0 {new_shipping_list_row.weight.to_string()} else {"".to_string()},
     if new_shipping_list_row.dims == "0x0x0" {"".to_string()} else {new_shipping_list_row.dims},
-    new_shipping_list_row.handwritten_id
+    new_shipping_list_row.handwritten_id,
+    if new_shipping_list_row.is_blind {"True"} else {"False"},
+    if new_shipping_list_row.has_pics {"False"} else {"True"},
   );
 
   let temp_vbs_path = "C:/mwd/scripts/UpdateShippingList.vbs";
