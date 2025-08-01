@@ -42,9 +42,6 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# scss
-bundle.scss
-
 # Playwright
 node_modules/
 /test-results/

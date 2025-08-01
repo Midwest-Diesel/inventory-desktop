@@ -4,6 +4,7 @@ const { exec } = require('child_process');
 const watcher = chokidar.watch(['src/styles'], {
   persistent: true,
   ignoreInitial: true,
+  ignored: /bundle\.scss$/
 });
 
 const runBundleScript = () => {
