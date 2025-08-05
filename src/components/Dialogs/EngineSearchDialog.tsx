@@ -10,10 +10,11 @@ interface Props {
   setOpen: (open: boolean) => void
   engines: Engine[]
   setEngines: (engines: Engine[]) => void
+  onSearch: (status: EngineStatus | null, results: Engine[]) => void
 }
 
 
-export default function EngineSearchDialog({ open, setOpen, engines, setEngines }: Props) {
+export default function EngineSearchDialog({ open, setOpen, engines, setEngines, onSearch }: Props) {
   const [stockNum, setStockNum] = useState<number>('' as any);
   const [model, setModel] = useState('');
   const [serialNum, setSerialNum] = useState('');
@@ -26,6 +27,7 @@ export default function EngineSearchDialog({ open, setOpen, engines, setEngines 
   const [testRun, setTestRun] = useState<'' | 'TRUE' | 'FALSE'>('');
   const [mileage, setMileage] = useState('');
   const [currentStatus, setCurrentStatus] = useState<EngineStatus | null>(null);
+  const statusList: EngineStatus[] = ['RunnerReady', 'RunnerNotReady', 'HoldSoldRunner', 'ToreDown', 'CoreEngine', 'Sold', 'ShortBlock', 'LongBlock'];
 
   const clearInputs = () => {
     setStockNum('' as any);
@@ -42,9 +44,10 @@ export default function EngineSearchDialog({ open, setOpen, engines, setEngines 
     setCurrentStatus(null);
   };
 
-  const handleSubmit = async (e: FormEvent) => {
+  const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     const results = searchEngines();
+    onSearch(currentStatus, results);
     setEngines(results);
   };
 
@@ -174,17 +177,16 @@ export default function EngineSearchDialog({ open, setOpen, engines, setEngines 
           <option value="FALSE">False</option>
         </Select>
 
-        {/* <Select
+        <Select
           variant={['label-space-between', 'label-inline']}
           label="Current Status"
-          value={currentStatus}
+          value={currentStatus ?? 'RunnerReady'}
           onChange={(e: any) => setCurrentStatus(e.target.value)}
         >
-          <option value="">-- SELECT STATUS --</option>
-          {statusList.map((status, i) => {
+          {statusList.map((status: EngineStatus, i: number) => {
             return <option key={i}>{ status }</option>;
           })}
-        </Select> */}
+        </Select>
 
         <div className="form__footer">
           <Button type="button" variant={['small']} onClick={clearInputs}>Clear</Button>

@@ -559,12 +559,7 @@ type Engine = {
   turboLpReman: string | null
   turboLpActual: string | null
   fwhNumber: string | null
-  costProposed1: number | null
   arrNum: string | null
-  costIn1: number | null
-  costIn2: number | null
-  costIn3: number | null
-  costIn4: number | null
   blockNew: string | null
   blockReman: string | null
   blockActual: string | null

@@ -43,7 +43,7 @@ export const getAutofillEngine = async (engineNum: number) => {
   }
 };
 
-export const getEnginesByStatus = async (status: string) => {
+export const getEnginesByStatus = async (status: EngineStatus) => {
   try {
     const auth = { withCredentials: true };
     const res = await api.get(`/api/engines/status/${status}`, auth);

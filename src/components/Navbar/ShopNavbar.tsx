@@ -11,10 +11,7 @@ export default function ShopNavbar() {
       </Link>
       <Link href="/handwrittens" className="navbar__link">Handwrittens</Link>
       <NavDropdown label="Engines">
-        <Link href="/engines/running">Running</Link>
-        <Link href="/engines/torn-down">Torn Down</Link>
-        <Link href="/engines/core">Core Engines</Link>
-        <Link href="/engines/sold">Sold Engines</Link>
+        <Link href="/engines/engine-list">Engine List</Link>
         <Link href="/engines/new-engine">New Engines</Link>
       </NavDropdown>
       <Link href="/returns" className="navbar__link">Returns</Link>

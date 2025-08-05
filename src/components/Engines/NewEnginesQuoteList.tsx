@@ -1,8 +1,8 @@
 import { getQuotesByEngineModel } from "@/scripts/services/quotesService";
 import { useEffect, useState } from "react";
-import Table from "./Library/Table";
+import Table from "../Library/Table";
 import { formatCurrency, formatDate, formatPhone } from "@/scripts/tools/stringUtils";
-import Checkbox from "./Library/Checkbox";
+import Checkbox from "../Library/Checkbox";
 import Link from "@/components/Library/Link";
 
 interface Props {

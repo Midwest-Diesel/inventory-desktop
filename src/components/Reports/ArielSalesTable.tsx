@@ -2,6 +2,7 @@ import { formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
 import Button from "../Library/Button";
 import Table from "../Library/Table";
 import Loading from "../Library/Loading";
+import { useEffect, useState } from "react";
 
 interface Props {
   closeTable: () => void
@@ -10,6 +11,12 @@ interface Props {
 
 
 export default function ArielSalesTable({ closeTable, data }: Props) {
+  const [total, setTotal] = useState(0);
+
+  useEffect(() => {
+    setTotal(data.reduce((acc, cur) => acc + cur.total, 0));
+  }, [data]);
+
   const handleGoBack = () => {
     closeTable();
   };
@@ -17,7 +24,11 @@ export default function ArielSalesTable({ closeTable, data }: Props) {
 
   return (
     <div className="reports-table">
-      <Button onClick={handleGoBack}>Back</Button>
+      <div className="reports-table__top-row">
+        <Button onClick={handleGoBack}>Back</Button>
+        <h3>Total: { formatCurrency(total) }</h3>
+      </div>
+      
       <Table>
         <thead>
           <tr>
