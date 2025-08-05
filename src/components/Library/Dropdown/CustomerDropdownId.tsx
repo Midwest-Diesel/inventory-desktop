@@ -35,7 +35,7 @@ export default function CustomerDropdownId({ variant, label, value, onChange, ma
         onChange={(id: number) => onChange(id)}
         maxHeight={maxHeight}
       >
-        <DropdownOption value={0}>-- SELECT A CUSTOMER --</DropdownOption>
+        <DropdownOption value="0">-- SELECT A CUSTOMER --</DropdownOption>
         {customers.length > 0 && customers.sort().map((customer: CustomerMin, i) => {
           return (
             <DropdownOption key={i} value={customer.id}>{ customer.company }</DropdownOption>

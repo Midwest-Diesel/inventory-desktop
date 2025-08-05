@@ -22,11 +22,21 @@ export default function SingleCompanyTable({ closeTable, data }: Props) {
     closeTable();
   };
 
+  const copyToClipboard = () => {
+    const rowsText = data.map((row) =>
+      [row.id, row.date, row.billToAddress, row.billToCity, row.billToCompany, row.billToState, row.billToZip, row.desc, row.partNum, row.qty, row.unitPrice, row.total].join('\t')
+    ).join('\n');
+    navigator.clipboard.writeText(rowsText);
+  };
+
 
   return (
     <div className="reports-table">
       <div className="reports-table__top-row">
-        <Button onClick={handleGoBack}>Back</Button>
+        <div className="reports-table__top-bar">
+          <Button onClick={handleGoBack}>Back</Button>
+          <Button onClick={copyToClipboard}>Copy</Button>
+        </div>
         <h3>Total: { formatCurrency(total) }</h3>
       </div>
 
