@@ -375,6 +375,7 @@ type PartInfo = {
   desc: string
   altParts: string
   weightDims: string | null
+  prefix: string | null
 };
 
 type Part = {

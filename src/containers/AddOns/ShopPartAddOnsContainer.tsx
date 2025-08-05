@@ -21,29 +21,6 @@ export default function ShopPartAddOnsContainer() {
   const [shouldPreventLeave, setShouldPreventLeave] = useState(false);
   const { selectedPoAddOn, addOn, receivedItemsDialogOpen } = selectedPoData;
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const res = await getAllAddOns();
-      setAddons(res);
-      setPrevAddons(res);
-
-      const parts = await getAllPartNums();
-      setPartNumList(parts.map((p: Part) => p.partNum));
-    };
-    fetchData();
-
-    const channel = supabase
-      .channel('addOns')
-      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'addOns' }, refreshAddOnsInsert)
-      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'addOns' }, refreshAddOnsUpdate)
-      .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'addOns' }, refreshAddOnsDelete);
-    channel.subscribe();
-
-    return () => {
-      channel.unsubscribe();
-    };
-  }, []);
-
   const refreshAddOnsInsert = (e: RealtimePostgresInsertPayload<AddOn>) => {
     setAddons((prev) => {
       if (prev.some(a => a.id === e.new.id)) return prev;
@@ -64,6 +41,29 @@ export default function ShopPartAddOnsContainer() {
     setAddons((prev) => prev.filter((row) => row.id !== e.old.id));
     setPrevAddons((prev) => prev.filter((row) => row.id !== e.old.id));
   };
+
+  useEffect(() => {
+    const channel = supabase
+      .channel('addOns')
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'addOns' }, refreshAddOnsInsert)
+      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'addOns' }, refreshAddOnsUpdate)
+      .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'addOns' }, refreshAddOnsDelete);
+    channel.subscribe();
+
+    const fetchData = async () => {
+      const res = await getAllAddOns();
+      setAddons(res);
+      setPrevAddons(res);
+
+      const parts = await getAllPartNums();
+      setPartNumList(parts.map((p: Part) => p.partNum));
+    };
+    fetchData();
+
+    return () => {
+      channel.unsubscribe();
+    };
+  }, []);
 
   const handleNewAddOn = async () => {
     await handleEditAddOns();
