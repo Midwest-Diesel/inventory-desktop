@@ -55,7 +55,7 @@ export default function PartsTable({ parts, partsData, pageCount, partsQty, rows
       <PartPicturesDialog open={partImagesOpen} setOpen={setPartImagesOpen} pictures={partImages} partNum={picturesPartNum} />
       <StockNumPicturesDialog open={snImagesOpen} setOpen={setSnImagesOpen} pictures={snImages} stockNum={picturesStockNum} />
 
-      <div style={{ width:'fit-content', overflow: 'auto', maxHeight: '68vh' }}>
+      <div style={{ overflow: 'auto', maxHeight: '68vh' }}>
         { rowsHidden && <p>Hidden rows: { rowsHidden }</p> }
         <Table data-testid="part-search-table">
           <thead>
