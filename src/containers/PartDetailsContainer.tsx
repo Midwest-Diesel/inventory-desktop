@@ -138,7 +138,11 @@ export default function PartDetailsContainer() {
         rating: part?.rating,
         hasPictures: pictures.length > 0
       };
-      addToQue('partTag', 'print_part_tag', args, '1500px', '1000px');
+      if (args.stockNum.toString().toUpperCase().includes('UP')) {
+        addToQue('partTagUP', 'print_part_tag', args, '1500px', '1000px');
+      } else {
+        addToQue('partTag', 'print_part_tag', args, '1500px', '1000px');
+      }
     }
     printQue();
   };

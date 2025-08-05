@@ -1,4 +1,3 @@
-
 import Barcode from "../Library/Barcode";
 
 interface Props {
@@ -19,6 +18,7 @@ interface Props {
 
 export default function PartTag({ data }: Props) {
   const { stockNum, model, serialNum, hp, location, remarks, date, partNum, rating, hasPictures } = data;
+  
   return (
     <div className="part-tag">
       <div className="part-tag__header">

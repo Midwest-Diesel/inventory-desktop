@@ -13,6 +13,7 @@ import WarrantyTemplate from "@/components/PrintableComponents/WarrantyTemplate"
 import { invoke } from "@/scripts/config/tauri";
 import { toPng } from "html-to-image";
 import { useEffect, useRef, useState } from "react";
+import PartTagUP from "@/components/PrintableComponents/PartTagUP";
 
 
 export default function Print() {
@@ -53,6 +54,7 @@ export default function Print() {
   return (
     <div ref={printRef} style={{ height: '100vh', backgroundColor: 'white', color: 'black', maxWidth, maxHeight }}>
       { activeSheet === 'partTag' && <PartTag data={data} /> }
+      { activeSheet === 'partTagUP' && <PartTagUP data={data} /> }
       { activeSheet === 'handwrittenAcct' && <HandwrittenAccountingTemplate data={data} /> }
       { activeSheet === 'handwrittenShip' && <HandwrittenShippingTemplate data={data} /> }
       { activeSheet === 'handwrittenCore' && <HandwrittenCoreTemplate data={data} /> }

@@ -133,9 +133,10 @@ export default function ShopPartAddonRow({ addOn, handleDuplicateAddOn, partNumL
   };
 
   const updateAutofillEngineNumData = async (value: number) => {
-    if (value === 1 || value === 99) return;
-    // Engine number 0 autofills to the next available UP stockNum
+    if (value === 99) return;
+    
     if (value === 0) {
+      // Engine number 0 autofills to the next available UP stockNum
       const latestUP = await getNextUPStockNum();
       if (!latestUP) {
         alert('UP stock number failed to auto-increment');
@@ -144,6 +145,9 @@ export default function ShopPartAddonRow({ addOn, handleDuplicateAddOn, partNumL
       const updatedAddOns = addOns.map((a: AddOn) => (a.id === addOn.id ? { ...addOn, stockNum: latestUP } : a));
       setAddons(updatedAddOns);
       setEngineNum('');
+      return;
+    } else if (value === 1) {
+      // Engine number 1 autofills a date code for the stockNum
       return;
     }
 
@@ -195,7 +199,11 @@ export default function ShopPartAddonRow({ addOn, handleDuplicateAddOn, partNumL
         rating: addOn.rating,
         hasPictures: pictures.length > 0
       };
-      addToQue('partTag', 'print_part_tag', args, '1500px', '1000px');
+      if (addOn.stockNum?.toString().toUpperCase().includes('UP')) {
+        addToQue('partTagUP', 'print_part_tag', args, '1500px', '1000px');
+      } else {
+        addToQue('partTag', 'print_part_tag', args, '1500px', '1000px');
+      }
     }
     printQue();
   };
