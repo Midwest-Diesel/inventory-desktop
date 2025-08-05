@@ -13,7 +13,7 @@ interface Props {
   watchedPartNums: string[]
   toggleWatchRow: (row: PricingChangesReport, isWatched: boolean) => Promise<void>
   limit: number
-  maxHeight?: string
+  maxHeight: string
 }
 type Filter = { price?: 'desc' | 'asc' | null, percent?: 'desc' | 'asc' | null, code?: string };
 
@@ -247,14 +247,13 @@ export default function PricingChangesTable({ data, list, setList, watchedPartNu
           </tbody>
         </Table>
         { data.length == 0 && <Loading /> }
-
-        <Pagination
-          data={data}
-          setData={handleChangePage}
-          pageCount={filteredData.length}
-          pageSize={limit}
-        />
       </div>
+      <Pagination
+        data={data}
+        setData={handleChangePage}
+        pageCount={filteredData.length}
+        pageSize={limit}
+      />
     </>
   );
 }

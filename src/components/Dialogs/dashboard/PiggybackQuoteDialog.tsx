@@ -168,13 +168,13 @@ export default function PiggybackQuoteDialog({ open, setOpen, quote, handleChang
                   })}
                 </tbody>
               </Table>
-              <Pagination
-                data={partsData}
-                setData={handleChangePage}
-                pageCount={partCount}
-                pageSize={LIMIT}
-              />
             </div>
+            <Pagination
+              data={partsData}
+              setData={handleChangePage}
+              pageCount={partCount}
+              pageSize={LIMIT}
+            />
             <Button onClick={handlePiggybackQuote} className="piggyback-quote-dialog__submit-btn">Submit</Button>
           </>
         }

@@ -314,14 +314,13 @@ export default function SelectHandwrittenDialog({ open, setOpen, part, onSubmit 
                       })}
                     </tbody>
                   </Table>
-
-                  <Pagination
-                    data={handwrittensData}
-                    setData={handleChangePage}
-                    pageCount={handwrittenCount}
-                    pageSize={LIMIT}
-                  />
                 </div>
+                <Pagination
+                  data={handwrittensData}
+                  setData={handleChangePage}
+                  pageCount={handwrittenCount}
+                  pageSize={LIMIT}
+                />
               </>
             }
           </>

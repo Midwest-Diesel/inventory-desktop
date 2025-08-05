@@ -84,17 +84,12 @@
 .select-handwritten-dialog {
   max-height: 25rem;
   overflow-y: auto;
-  width: fit-content;
   transition: all ease-in-out 0.2s;
 
   &--selected {
     color: var(--yellow-2);
   }
-
-  table {
-    width: 100%;
-  }
-
+  
   tbody tr {
     cursor: pointer;
 

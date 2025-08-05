@@ -157,14 +157,13 @@ export default function PartsTable({ parts, partsData, pageCount, partsQty, rows
             })}
           </tbody>
         </Table>
-
-        <Pagination
-          data={partsData}
-          setData={onChangePage}
-          pageCount={pageCount}
-          pageSize={limit}
-        />
       </div>
+      <Pagination
+        data={partsData}
+        setData={onChangePage}
+        pageCount={pageCount}
+        pageSize={limit}
+      />
       { parts.length === 0 && <p>No parts data found...</p> }
     </>
   );

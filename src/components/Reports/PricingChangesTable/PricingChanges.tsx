@@ -57,6 +57,7 @@ export default function PricingChanges({ closeTable, data }: Props) {
         watchedPartNums={watchedPartNums}
         toggleWatchRow={toggleWatchRow}
         limit={200}
+        maxHeight="77vh"
       />
     </div>
   );
