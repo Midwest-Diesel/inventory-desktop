@@ -336,6 +336,7 @@ type EngineAddOn = {
   costType: CostType | null
   vendor: string | null
   note: string | null
+  isPrinted: boolean
 };
 
 type Warranty = {

@@ -111,7 +111,7 @@ export default function ShopEngineAddOnRow({ addOn, handleDuplicateAddOn, onSave
 
   return (
     <>
-      <div className="add-ons__list-row" ref={ref}>
+      <div className={`add-ons__list-row ${addOn.isPrinted ? 'add-ons__list-row--completed' : ''}`} ref={ref}>
         <div className="add-ons__list-row-content">
           <Table variant={['plain', 'edit-row-details']} style={{ width: 'fit-content' }}>
             <thead>
