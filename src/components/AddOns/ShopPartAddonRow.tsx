@@ -5,7 +5,7 @@ import Checkbox from "../Library/Checkbox";
 import Table from "../Library/Table";
 import Select from "../Library/Select/Select";
 import { deleteAddOn, editAddOnIsPoOpened, editAddOnPrintStatus } from "@/scripts/services/addOnsService";
-import { getNextUPStockNum, getPartByEngineNum, getPartsByStockNum, getPartInfoByPartNum } from "@/scripts/services/partsService";
+import { getNextUPStockNum, getPartsByStockNum, getPartInfoByPartNum } from "@/scripts/services/partsService";
 import { useEffect, useRef, useState } from "react";
 import Input from "../Library/Input";
 import Link from "../Library/Link";
@@ -19,7 +19,7 @@ import { ask } from "@/scripts/config/tauri";
 import { usePrintQue } from "@/hooks/usePrintQue";
 import { selectedPoAddOnAtom } from "@/scripts/atoms/components";
 import { useClickOutside } from "@/hooks/useClickOutside";
-import { commonPrefixLength } from "@/scripts/logic/addOns";
+import { commonPrefixLength, getAddOnDateCode, getNextStockNumberSuffix } from "@/scripts/logic/addOns";
 
 interface Props {
   addOn: AddOn
@@ -38,11 +38,11 @@ export default function ShopPartAddonRow({ addOn, handleDuplicateAddOn, partNumL
   const [engineNum, setEngineNum] = useState<string>(addOn.engineNum?.toString() ?? '');
   const [showPartNumSelect, setShowPartNumSelect] = useState(false);
   const [showVendorSelect, setShowVendorSelect] = useState(false);
-  const [isDuplicateStockNum, setIsDuplicateStockNum] = useState(false);
   const [printQty, setPrintQty] = useState(1);
   const ref = useRef<HTMLDivElement>(null);
   const partNumListRefs = useRef<(HTMLLIElement | null)[]>([]);
   const partNumRef = useRef<HTMLDivElement>(null);
+  const prevEngineNum = useRef<string | null>(null);
   useClickOutside(partNumRef, () => setShowPartNumSelect(false));
 
   useEffect(() => {
@@ -78,15 +78,7 @@ export default function ShopPartAddonRow({ addOn, handleDuplicateAddOn, partNumL
   }, [showPartNumSelect, addOn.partNum, partNumList]);
 
   useEffect(() => {
-    const fetchData = async () => {
-      if (!addOn.stockNum) {
-        setIsDuplicateStockNum(false);
-      } else {
-        const res = await getPartsByStockNum(addOn.stockNum);
-        setIsDuplicateStockNum(res.length > 0);
-      }
-    };
-    fetchData();
+    checkDuplicateStockNum(addOn.stockNum ?? '', false);
   }, [addOn.stockNum]);
 
   const handleEditAddOn = async (newAddOn: AddOn) => {
@@ -114,9 +106,8 @@ export default function ShopPartAddonRow({ addOn, handleDuplicateAddOn, partNumL
   };
 
   const updateAutofillPartNumData = async (value: string) => {
-    const res = await getPartInfoByPartNum(value);
-    if (res.length === 0) return;
-    const partInfo = res[0];
+    const partInfo = await getPartInfoByPartNum(value);
+    if (!partInfo) return;
     const newAddOn = {
       ...addOn,
       partNum: partInfo.partNum,
@@ -133,51 +124,87 @@ export default function ShopPartAddonRow({ addOn, handleDuplicateAddOn, partNumL
   };
 
   const updateAutofillEngineNumData = async (value: number) => {
-    if (value === 99) return;
-    
+    if (addOn.engineNum?.toString() === engineNum || value === 99) return;
     if (value === 0) {
-      // Engine number 0 autofills to the next available UP stockNum
-      const latestUP = await getNextUPStockNum();
-      if (!latestUP) {
-        alert('UP stock number failed to auto-increment');
-        return;
-      }
-      const updatedAddOns = addOns.map((a: AddOn) => (a.id === addOn.id ? { ...addOn, stockNum: latestUP } : a));
-      setAddons(updatedAddOns);
-      setEngineNum('');
-      return;
+      await autofillNextAvailableUP();
     } else if (value === 1) {
-      // Engine number 1 autofills a date code for the stockNum
+      await autofillDateCodeStockNum();
+    } else {
+      await autofillUsingEngineNum(value);
+    }
+  };
+
+  const autofillNextAvailableUP = async () => {
+    const latestUP = await getNextUPStockNum();
+    if (!latestUP) {
+      alert('Failed to fetch latest UP stock number');
+      clearStockNumber();
       return;
     }
+    const latestNum = parseInt(latestUP.slice(2), 10);
+    const queueUPNumbers = addOns
+      .map((a) => addOn.id !== a.id && a.stockNum)
+      .filter((stockNum): stockNum is string => typeof stockNum === 'string' && /^UP\d+$/.test(stockNum))
+      .map((stockNum) => parseInt(stockNum.slice(2), 10));
 
-    // Otherwise, autofill with associated engine data
-    try {
-      const res = await getEngineByStockNum(value);
-      const part = await getPartByEngineNum(value);
-      if (!res) {
-        alert("Engine not in inventory, please notify Matt!");
-        return;
-      }
-      if (!part) {
-        alert("Part not in inventory, please notify Matt!");
-        return;
-      }
-  
-      const newAddOn = {
-        ...addOn,
-        stockNum: part.stockNum ?? '',
-        engineNum: Number(res.stockNum),
-        hp: res.horsePower ?? '',
-        serialNum: res.serialNum ?? '',
-      } as AddOn;
-  
-      const updatedAddOns = addOns.map((a: AddOn) => (a.id === addOn.id ? newAddOn : a));
-      setAddons(updatedAddOns);
-      setEngineNum('');
-    } catch (error) {
-      console.error("Error updating autofill engine number:", error);
+    const maxNum = Math.max(latestNum, ...queueUPNumbers);
+    const nextUP = `UP${maxNum + 1}`;
+
+    if (await checkDuplicateStockNum(nextUP)) return;
+    const updatedAddOns = addOns.map((a: AddOn) => (a.id === addOn.id ? { ...addOn, stockNum: nextUP } : a));
+    setAddons(updatedAddOns);
+    setEngineNum('');
+  };
+
+  const autofillDateCodeStockNum = async () => {
+    const partsInfo = await getPartInfoByPartNum(addOn.partNum ?? '');
+    const date = getAddOnDateCode();
+    const dateStockNum = `${partsInfo?.prefix ?? ''}${date}`;
+    const newStockNum = `${dateStockNum}${await getNextStockNumberSuffix(dateStockNum, addOns)}`;
+
+    if (await checkDuplicateStockNum(newStockNum)) return;
+    const updatedAddOns = addOns.map((a: AddOn) => (a.id === addOn.id ? { ...addOn, stockNum: newStockNum } : a));
+    setAddons(updatedAddOns);
+    setEngineNum('');
+    return;
+  };
+
+  const autofillUsingEngineNum = async (value: number) => {
+    const res = await getEngineByStockNum(value);
+    const partsInfo = await getPartInfoByPartNum(addOn.partNum ?? '');
+    const newStockNum = `${partsInfo?.prefix ?? ''}${addOn.engineNum}`;
+    if (await checkDuplicateStockNum(newStockNum)) return;
+
+    const newAddOn = {
+      ...addOn,
+      stockNum: newStockNum,
+      hp: res?.horsePower ?? '',
+      serialNum: res?.serialNum ?? '',
+    } as AddOn;
+
+    const updatedAddOns = addOns.map((a: AddOn) => (a.id === addOn.id ? newAddOn : a));
+    setAddons(updatedAddOns);
+    setEngineNum('');
+  };
+
+  const checkDuplicateStockNum = async (stockNum: string, clearField = true): Promise<boolean> => {
+    const parts = await getPartsByStockNum(stockNum);
+    const addOnStockNums = addOns
+      .filter((a) => a.id !== addOn.id && a.stockNum)
+      .map((a) => a.stockNum);
+    
+    const isDuplicated = parts.length > 0 || addOnStockNums.some((s) => s === stockNum);
+    if (isDuplicated) {
+      alert(`[ERROR: Duplicate stock number ${stockNum}] located in ${addOnStockNums.some((s) => s === stockNum) ? 'add on list' : ''}${parts.length > 0 ? 'inventory' : ''}`);
+      if (clearField) clearStockNumber();
+      return true;
     }
+    return false;
+  };
+
+  const clearStockNumber = () => {
+    const updatedAddOns = addOns.map((a: AddOn) => (a.id === addOn.id ? { ...a, stockNum: '' } : a));
+    setAddons(updatedAddOns);
   };
 
   const handlePrint = async () => {
@@ -313,14 +340,19 @@ export default function ShopPartAddonRow({ addOn, handleDuplicateAddOn, partNumL
                     variant={['small', 'thin']}
                     type="number"
                     autofill={engineNum}
-                    onBlur={(e) => updateAutofillEngineNumData(Number(e.target.value))}
                     value={addOn.engineNum !== null ? addOn.engineNum : ''}
                     onChange={(e: any) => handleEditAddOn({ ...addOn, engineNum: e.target.value })}
+                    onBlur={(e) => {
+                      const currentVal = e.target.value;
+                      if (prevEngineNum.current !== currentVal) {
+                        updateAutofillEngineNumData(Number(currentVal));
+                        prevEngineNum.current = currentVal;
+                      }
+                    }}
                   />
                 </td>
                 <td>
                   <Input
-                    style={isDuplicateStockNum ? { backgroundColor: 'var(--red-1)' } : {}}
                     variant={['small', 'thin']}
                     value={addOn.stockNum !== null ? addOn.stockNum : ''}
                     onChange={(e: any) => handleEditAddOn({ ...addOn, stockNum: e.target.value })}
@@ -507,7 +539,7 @@ export default function ShopPartAddonRow({ addOn, handleDuplicateAddOn, partNumL
 
         <div className="add-ons__list-row-buttons">
           { poLink && <Link href={`/purchase-orders/${poLink}`}>View PO</Link> }
-          <Button type="button" onClick={() => handleDuplicateAddOn(addOn)}>Duplicate</Button>
+          <Button type="button" onClick={() => handleDuplicateAddOn({ ...addOn, stockNum: null, engineNum: null })}>Duplicate</Button>
           <Input
             style={{ width: '3rem' }}
             variant={['x-small', 'search']}
