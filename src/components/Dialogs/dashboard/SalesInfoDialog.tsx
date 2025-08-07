@@ -37,11 +37,11 @@ export default function SalesInfo({ open, setOpen }: Props) {
       }
 
       const res = await getPartInfoByPartNum(prevSearch.rows[0].partNum);
-      if (res.length === 0) {
+      if (!res) {
         alert('Could not find partNum in partsInfo table.');
         return;
       }
-      const salesInfo = await getSalesInfo(res[0].altParts);
+      const salesInfo = await getSalesInfo(res.altParts);
       setSales(salesInfo.sales);
       setQuotes(salesInfo.quotes);
       setCounters(salesInfo.counters);

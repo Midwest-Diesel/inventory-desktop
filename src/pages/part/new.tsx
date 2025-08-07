@@ -53,7 +53,7 @@ export default function NewPart() {
     } as Part;
 
     const testSearch = await getPartInfoByPartNum(partNum);
-    await addPart(newPart, testSearch.length > 0);
+    await addPart(newPart, testSearch !== null);
     await push('Home', '/');
   };
 

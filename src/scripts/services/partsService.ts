@@ -34,18 +34,18 @@ export const getPartById = async (id: number): Promise<Part | null> => {
   }
 };
 
-export const getPartInfoByPartNum = async (partNum: string): Promise<PartInfo[]> => {
+export const getPartInfoByPartNum = async (partNum: string): Promise<PartInfo | null> => {
   try {
     const auth = { withCredentials: true };
     const res = await api.get(`/api/parts/parts-info/part-num/${partNum}`, auth);
     return res.data;
   } catch (err) {
     console.error(err);
-    return [];
+    return null;
   }
 };
 
-export const getPartsInfoByAltParts = async (partNum: string): Promise<PartInfo[]> => {
+export const getPartInfoByAltParts = async (partNum: string): Promise<PartInfo[]> => {
   try {
     const auth = { withCredentials: true };
     const res = await api.get(`/api/parts/parts-info/alt-parts/${partNum}`, auth);
@@ -233,9 +233,7 @@ export const getNextUPStockNum = async (): Promise<string | null> => {
   try {
     const auth = { withCredentials: true };
     const res = await api.get(`/api/parts/latest-up-stock-num`, auth);
-    const stockNum = res.data.stockNum;
-    if (!stockNum) return null;
-    return `${stockNum.slice(0, stockNum.length - 1)}${Number(stockNum.charAt(stockNum.length - 1)) + 1}`;
+    return res.data.stockNum;
   } catch (err) {
     console.error(err);
     return null;

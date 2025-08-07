@@ -4,7 +4,7 @@ import Grid from "./Library/Grid/Grid";
 import GridItem from "./Library/Grid/GridItem";
 import { FormEvent, useState } from "react";
 import Input from "@/components/Library/Input";
-import { addAltParts, addPartCostIn, addToPartQtyHistory, deletePartCostIn, editAltParts, editPart, editPartCostIn, getPartsInfoByAltParts, getPartInfoByPartNum, setPartLastUpdated, getPartById } from "@/scripts/services/partsService";
+import { addAltParts, addPartCostIn, addToPartQtyHistory, deletePartCostIn, editAltParts, editPart, editPartCostIn, getPartInfoByAltParts, getPartInfoByPartNum, setPartLastUpdated, getPartById } from "@/scripts/services/partsService";
 import Table from "./Library/Table";
 import { addEngineCostOut, deleteEngineCostOut, editEngineCostOut } from "@/scripts/services/enginesService";
 import { userAtom } from "@/scripts/atoms/state";
@@ -247,8 +247,8 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
     let altsToAdd: any = new Set();
     for (const value of values) {
       const partInfo = await getPartInfoByPartNum(value);
-      if (partInfo.length > 0) {
-        partInfo[0].altParts.split(', ').forEach((alt: string) => altsToAdd.add(alt));
+      if (partInfo) {
+        partInfo.altParts.split(', ').forEach((alt: string) => altsToAdd.add(alt));
       }
     }
     altsToAdd = Array.from(altsToAdd);
@@ -271,7 +271,7 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
     const updatedAltString = altParts.filter((a) => !removedParts.includes(a));
     if (!input || !await ask(`Are you sure you want to remove: ${removedParts.join(', ')}?\n\nNew Alt Parts:\n${updatedAltString.join(', ')}`)) return;
 
-    const partsInfo = await getPartsInfoByAltParts(removedParts[0]);
+    const partsInfo = await getPartInfoByAltParts(removedParts[0]);
     for (let i = 0; i < partsInfo.length; i++) {
       if (removedParts.includes(partsInfo[i].partNum)) {
         await editAltParts(partsInfo[i].partNum, [partsInfo[i].partNum]);
@@ -281,7 +281,7 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
       }
     }
 
-    const newAltParts = (await getPartInfoByPartNum(part.partNum))[0].altParts.split(', ');
+    const newAltParts = (await getPartInfoByPartNum(part.partNum))?.altParts.split(', ') ?? [];
     setAltParts(newAltParts);
     setPart({ ...part, altParts: newAltParts });
   };

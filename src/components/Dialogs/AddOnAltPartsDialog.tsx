@@ -29,7 +29,7 @@ export default function AddOnAltPartsDialog({ open, setOpen, addOn, partNumList 
   const handleNewAlt = async (e: FormEvent) => {
     e.preventDefault();
     if (!addOn || !partNum.trim()) return;
-    const res = (await getPartInfoByPartNum(partNum))[0];
+    const res = await getPartInfoByPartNum(partNum);
     if (!res || alts.some((alt: string) => res.altParts.split(', ').includes(alt))) {
       alert('Part number does not exist');
       return;
