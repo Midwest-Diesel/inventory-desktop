@@ -307,7 +307,7 @@ type AddOn = {
   remanPrice: number | null
   dealerPrice: number | null
   type: 'Truck' | 'Industrial'
-  priceStatus: 'We have pricing' | 'No pricing'
+  priceStatus: 'We have pricing' | 'No pricing' | null
   hp: string | null
   serialNum: string | null
   altParts: string[]

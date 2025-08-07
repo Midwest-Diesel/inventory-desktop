@@ -110,7 +110,7 @@ export default function OfficePartAddOnsContainer() {
             {addOns.map((addOn) => {
               return (
                 <Fragment key={addOn.id}>
-                  <OfficePartAddonRow addOn={addOn} partNumList={partNumList} setSelectedAddOnData={setSelectedAddOnData} onSave={handleSave} />
+                  <OfficePartAddonRow addOn={addOn} onSave={handleSave} />
                 </Fragment>
               );
             })}

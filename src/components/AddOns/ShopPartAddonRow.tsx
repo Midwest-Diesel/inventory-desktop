@@ -259,7 +259,7 @@ export default function ShopPartAddonRow({ addOn, handleDuplicateAddOn, partNumL
 
   return (
     <>
-      <div className="add-ons__list-row" ref={ref}>
+      <div className={`add-ons__list-row ${addOn.isPrinted ? 'add-ons__list-row--completed' : ''}`} ref={ref}>
         <div className="add-ons__list-row-content">
           <Table variant={['plain', 'edit-row-details']} style={{ width: 'fit-content' }}>
             <thead>
@@ -331,6 +331,7 @@ export default function ShopPartAddonRow({ addOn, handleDuplicateAddOn, partNumL
                     value={addOn.type ?? ''}
                     onChange={(e: any) => handleEditAddOn({ ...addOn, type: e.target.value })}
                   >
+                    <option value="">-- SELECT --</option>
                     <option>Truck</option>
                     <option>Industrial</option>
                   </Select>
@@ -397,6 +398,7 @@ export default function ShopPartAddonRow({ addOn, handleDuplicateAddOn, partNumL
                     value={addOn.manufacturer ?? ''}
                     onChange={(e: any) => handleEditAddOn({ ...addOn, manufacturer: e.target.value })}
                   >
+                    <option value="">-- SELECT --</option>
                     <option value="CAT">CAT</option>
                     <option value="Cummins">Cummins</option>
                     <option value="Detroit Diesel">Detroit Diesel</option>
@@ -411,6 +413,7 @@ export default function ShopPartAddonRow({ addOn, handleDuplicateAddOn, partNumL
                     value={addOn.condition ?? ''}
                     onChange={(e: any) => handleEditAddOn({ ...addOn, condition: e.target.value })}
                   >
+                    <option value="">-- SELECT --</option>
                     <option value="Core">Core</option>
                     <option value="Good Used">Good Used</option>
                     <option value="New">New</option>
@@ -497,9 +500,10 @@ export default function ShopPartAddonRow({ addOn, handleDuplicateAddOn, partNumL
                 <td>
                   <Select
                     style={{ width: '100%' }}
-                    value={addOn.priceStatus}
+                    value={addOn.priceStatus ?? ''}
                     onChange={(e: any) => handleEditAddOn({ ...addOn, priceStatus: e.target.value })}
                   >
+                    <option value="">-- SELECT --</option>
                     <option>We have pricing</option>
                     <option>No pricing</option>
                   </Select>
