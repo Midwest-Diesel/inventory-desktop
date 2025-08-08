@@ -411,6 +411,21 @@ fn create_directories() {
   write("C:/mwd/scripts/launch_test.vbs", "test").unwrap();
 }
 
+fn get_available_printers() -> Vec<String> {
+  let output = Command::new("wmic")
+    .args(["printer", "get", "name"])
+    .output()
+    .unwrap();
+
+  let stdout = String::from_utf8_lossy(&output.stdout);
+  stdout
+    .lines()
+    .skip(1)
+    .map(|line| line.trim().to_string())
+    .filter(|line| !line.is_empty())
+    .collect()
+}
+
 #[tauri::command]
 async fn open_window(app: tauri::AppHandle, window_args: WindowArgs) {
   let title = window_args.title.clone();
@@ -1495,7 +1510,12 @@ fn print_part_tag(imageData: String) -> Result<(), String> {
   }
   let data = decode(imageData.split(',').nth(1).unwrap()).map_err(|e| e.to_string())?;
   let file_path = "C:/mwd/scripts/screenshots/part_tag.png";
-  let printer = Some("D550 Printer").unwrap_or("\\\\DESKTOP-NR6SQFE\\D550 Printer");
+  let printers = get_available_printers();
+  let printer = if printers.contains(&"D550 Printer".to_string()) {
+    "D550 Printer"
+  } else {
+    "\\\\DESKTOP-NR6SQFE\\D550 Printer"
+  };
 
   let img = ImageReader::new(Cursor::new(&data))
     .with_guessed_format()
