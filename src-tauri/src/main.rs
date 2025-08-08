@@ -412,15 +412,19 @@ fn create_directories() {
 }
 
 fn get_available_printers() -> Vec<String> {
-  let output = Command::new("wmic")
-    .args(["printer", "get", "name"])
+  let output = match std::process::Command::new("powershell")
+    .args([
+        "-Command",
+        "Get-Printer | Select-Object -ExpandProperty Name"
+    ])
     .output()
-    .unwrap();
+  {
+    Ok(out) => out,
+    Err(_) => return vec![],
+  };
 
-  let stdout = String::from_utf8_lossy(&output.stdout);
-  stdout
+  String::from_utf8_lossy(&output.stdout)
     .lines()
-    .skip(1)
     .map(|line| line.trim().to_string())
     .filter(|line| !line.is_empty())
     .collect()
