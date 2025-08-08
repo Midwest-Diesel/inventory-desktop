@@ -460,14 +460,14 @@ export default function ImportantCustomersMap() {
                     </Fragment>
                   );
                 })}
+                <Pagination
+                  data={filteredLocations}
+                  setData={handlePageChange}
+                  pageCount={locationsCount}
+                  pageSize={LIMIT}
+                  buttonsDisplayed={3}
+                />
               </div>
-              <Pagination
-                data={filteredLocations}
-                setData={handlePageChange}
-                pageCount={locationsCount}
-                pageSize={LIMIT}
-                buttonsDisplayed={3}
-              />
             </div>
           </div>
         </div>

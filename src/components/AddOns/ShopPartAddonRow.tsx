@@ -150,7 +150,6 @@ export default function ShopPartAddonRow({ addOn, handleDuplicateAddOn, partNumL
     const maxNum = Math.max(latestNum, ...queueUPNumbers);
     const nextUP = `UP${maxNum + 1}`;
 
-    if (await checkDuplicateStockNum(nextUP)) return;
     const updatedAddOns = addOns.map((a: AddOn) => (a.id === addOn.id ? { ...addOn, stockNum: nextUP } : a));
     setAddons(updatedAddOns);
     setEngineNum('');
@@ -162,7 +161,6 @@ export default function ShopPartAddonRow({ addOn, handleDuplicateAddOn, partNumL
     const dateStockNum = `${partsInfo?.prefix ?? ''}${date}`;
     const newStockNum = `${dateStockNum}${await getNextStockNumberSuffix(dateStockNum, addOns)}`;
 
-    if (await checkDuplicateStockNum(newStockNum)) return;
     const updatedAddOns = addOns.map((a: AddOn) => (a.id === addOn.id ? { ...addOn, stockNum: newStockNum } : a));
     setAddons(updatedAddOns);
     setEngineNum('');
@@ -173,7 +171,6 @@ export default function ShopPartAddonRow({ addOn, handleDuplicateAddOn, partNumL
     const res = await getEngineByStockNum(value);
     const partsInfo = await getPartInfoByPartNum(addOn.partNum ?? '');
     const newStockNum = `${partsInfo?.prefix ?? ''}${addOn.engineNum}`;
-    if (await checkDuplicateStockNum(newStockNum)) return;
 
     const newAddOn = {
       ...addOn,
@@ -208,6 +205,7 @@ export default function ShopPartAddonRow({ addOn, handleDuplicateAddOn, partNumL
   };
 
   const handlePrint = async () => {
+    if (await checkDuplicateStockNum(addOn.stockNum ?? '')) return;
     await onSave();
     const engine = await getEngineByStockNum(addOn.engineNum);
     const pictures = await getImagesFromPart(addOn.partNum);
