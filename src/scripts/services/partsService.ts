@@ -38,7 +38,7 @@ export const getPartInfoByPartNum = async (partNum: string): Promise<PartInfo | 
   try {
     const auth = { withCredentials: true };
     const res = await api.get(`/api/parts/parts-info/part-num/${partNum}`, auth);
-    return res.data;
+    return res.data ? res.data : null;
   } catch (err) {
     console.error(err);
     return null;

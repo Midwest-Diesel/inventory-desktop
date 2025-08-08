@@ -54,7 +54,8 @@ export default function AddOnAltPartsDialog({ open, setOpen, addOn, partNumList 
       setOpen={setOpen}
       title="Add Alt Parts"
       width={500}
-      x={800}
+      x={750}
+      y={-150}
       maxHeight="29rem"
       className="addon-alt-parts-dialog"
     >

@@ -1495,7 +1495,7 @@ fn print_part_tag(imageData: String) -> Result<(), String> {
   }
   let data = decode(imageData.split(',').nth(1).unwrap()).map_err(|e| e.to_string())?;
   let file_path = "C:/mwd/scripts/screenshots/part_tag.png";
-  let printer = "D550 Printer";
+  let printer = Some("D550 Printer").unwrap_or("\\\\DESKTOP-NR6SQFE\\D550 Printer");
 
   let img = ImageReader::new(Cursor::new(&data))
     .with_guessed_format()

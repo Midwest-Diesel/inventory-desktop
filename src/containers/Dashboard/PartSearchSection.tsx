@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import Button from "@/components/Library/Button";
 import { useAtom } from "jotai";
-import { quickPickItemIdAtom, recentQuotesAtom, selectedCustomerAtom, showSoldPartsAtom, userAtom } from "@/scripts/atoms/state";
+import { quickPickItemIdAtom, recentQuotesAtom, selectedCustomerAtom, showSoldPartsAtom } from "@/scripts/atoms/state";
 import PartsSearchDialog from "@/components/Dialogs/dashboard/PartsSearchDialog";
 import AltPartsSearchDialog from "@/components/Dialogs/dashboard/AltPartsSearchDialog";
 import { getAltsByPartNum, getSomeParts, searchAltParts, searchParts } from "@/scripts/services/partsService";
@@ -30,7 +30,6 @@ interface Props {
 
 export default function PartSearchSection({ selectHandwrittenOpen, setSelectHandwrittenOpen, setSelectedHandwrittenPart, handleNewQuote }: Props) {
   const toast = useToast();
-  const [user] = useAtom<User>(userAtom);
   const [selectedCustomer] = useAtom<Customer>(selectedCustomerAtom);
   const [selectedAlerts, setSelectedAlerts] = useAtom<Alert[]>(selectedAlertsAtom);
   const [showSoldParts, setShowSoldParts] = useAtom<boolean>(showSoldPartsAtom);
@@ -245,15 +244,6 @@ export default function PartSearchSection({ selectHandwrittenOpen, setSelectHand
             >
               Compare / Consist
             </Link>
-            {user.accessLevel >= 2 &&
-              <Link
-                className="parts-search-top-bar__link"
-                href="/part/new"
-                data-testid="new-part-btn"
-              >
-                New Part
-              </Link>
-            }
           </div>
 
           <PartsTable

@@ -313,6 +313,7 @@ type AddOn = {
   altParts: string[]
   isPrinted: boolean
   isPoOpened: boolean
+  prefix: string | null
 };
 
 type EngineAddOn = {

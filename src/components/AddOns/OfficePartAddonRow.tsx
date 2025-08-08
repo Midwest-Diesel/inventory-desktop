@@ -19,10 +19,11 @@ import Link from "../Library/Link";
 interface Props {
   addOn: AddOn
   onSave: () => Promise<void>
+  onModifyAddOnData: (addOn: AddOn | null) => void
 }
 
 
-export default function OfficePartAddonRow({ addOn, onSave }: Props) {
+export default function OfficePartAddonRow({ addOn, onSave, onModifyAddOnData }: Props) {
   const [addOns, setAddons] = useAtom<AddOn[]>(shopAddOnsAtom);
   const [engineCostRemaining, setEngineCostRemaining] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -30,6 +31,7 @@ export default function OfficePartAddonRow({ addOn, onSave }: Props) {
   const [showVendorSelect, setShowVendorSelect] = useState(false);
   const [isDuplicateStockNum, setIsDuplicateStockNum] = useState(false);
   const [highlightPurchasePrice, setHighlightPurchasePrice] = useState(false);
+  const [isNewPart, setIsNewPart] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -46,12 +48,24 @@ export default function OfficePartAddonRow({ addOn, onSave }: Props) {
       if (!addOn.stockNum) {
         setIsDuplicateStockNum(false);
       } else {
-        const res = await getPartsByStockNum(addOn.stockNum);
-        setIsDuplicateStockNum(res.length > 0);
+        const parts = await getPartsByStockNum(addOn.stockNum);
+        const addOnStockNums = addOns
+          .filter((a) => a.id !== addOn.id && a.stockNum)
+          .map((a) => a.stockNum);
+        const isDuplicated = parts.length > 0 || addOnStockNums.some((s) => s === addOn.stockNum);
+        setIsDuplicateStockNum(isDuplicated);
       }
     };
     fetchData();
   }, [addOn.stockNum]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const partsInfo = await getPartInfoByPartNum(addOn.partNum ?? '');
+      setIsNewPart(partsInfo === null);
+    };
+    fetchData();
+  }, [addOn.partNum]);
 
   useEffect(() => {
     if (!showVendorSelect) return;
@@ -63,8 +77,8 @@ export default function OfficePartAddonRow({ addOn, onSave }: Props) {
   }, [showVendorSelect]);
 
   useEffect(() => {
-    setHighlightPurchasePrice(Boolean(engineCostRemaining > 0 || addOn.purchasedFrom));
-  }, [addOn.purchasedFrom, engineCostRemaining]);
+    setHighlightPurchasePrice(Boolean(engineCostRemaining > 0 || addOn.purchasedFrom) && !addOn.purchasePrice);
+  }, [addOn.purchasedFrom, addOn.purchasePrice, engineCostRemaining]);
 
   const handleEditAddOn = async (newAddOn: AddOn) => {
     const updatedAddOns = addOns.map((a: AddOn) => {
@@ -87,6 +101,19 @@ export default function OfficePartAddonRow({ addOn, onSave }: Props) {
       alert('Failed to add part to inventory');
       return;
     }
+    if (highlightPurchasePrice) {
+      alert('Fill in purchase price');
+      return;
+    }
+    if (isDuplicateStockNum) {
+      alert(`Duplicate stock number ${addOn.stockNum}`);
+      return;
+    }
+    if (!addOn.stockNum) {
+      alert('Empty stock number');
+      return;
+    }
+
     const partsInfo = await getPartInfoByPartNum(updatedAddOn.partNum ?? '');
     const currentAlts = partsInfo ? partsInfo.altParts.split(', ') : [updatedAddOn.partNum];
     const altParts = [...currentAlts, ...updatedAddOn.altParts];
@@ -113,6 +140,12 @@ export default function OfficePartAddonRow({ addOn, onSave }: Props) {
     setLoadingProgress(`${i}/${total}`);
   };
 
+  const loadAddOnAltParts = async () => {
+    if (!isNewPart) return;
+    const res = await getAddOnById(addOn.id);
+    onModifyAddOnData(res);
+  };
+
 
   return (
     <div className="add-ons__list-row" ref={ref}>
@@ -123,6 +156,7 @@ export default function OfficePartAddonRow({ addOn, onSave }: Props) {
               <th>Qty</th>
               <th>Part Number</th>
               <th>Description</th>
+              {isNewPart && <th>Prefix</th> }
               <th>Cost Remaining</th>
               <th>Type</th>
               <th>Engine #</th>
@@ -142,8 +176,10 @@ export default function OfficePartAddonRow({ addOn, onSave }: Props) {
               </td>
               <td>
                 <Input
+                  style={isNewPart ? { backgroundColor: 'var(--red-1)' } : {}}
                   variant={['small', 'thin']}
                   value={addOn.partNum ?? ''}
+                  onClick={loadAddOnAltParts}
                   onChange={(e: any) => handleEditAddOn({ ...addOn, partNum: e.target.value.toUpperCase() })}
                   onBlur={async (e: any) => {
                     const newPartNum = e.target.value.toUpperCase();
@@ -160,6 +196,15 @@ export default function OfficePartAddonRow({ addOn, onSave }: Props) {
                   onChange={(e: any) => handleEditAddOn({ ...addOn, desc: e.target.value })}
                 />
               </td>
+              {isNewPart &&
+                <td>
+                  <Input
+                    variant={['small', 'thin']}
+                    value={addOn.prefix ?? ''}
+                    onChange={(e: any) => handleEditAddOn({ ...addOn, prefix: e.target.value })}
+                  />
+                </td>
+              }
               <td style={engineCostRemaining > 0 ? { backgroundColor: 'var(--red-1)', padding: '0 0.3rem' } : { padding: '0 0.3rem' }}>
                 { formatCurrency(engineCostRemaining) }
               </td>
