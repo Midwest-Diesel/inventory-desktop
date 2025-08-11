@@ -61,7 +61,7 @@ export function useNavState() {
     setTabs((prevTabs) =>
       prevTabs.map((tab) => {
         if (tab.selected) {
-          const prevPage = tab.history[tab.history.length - 2];
+          const prevPage = tab.history[tab.history.length - 2].url !== location.pathname ? tab.history[tab.history.length - 2] : tab.history[tab.history.length - 3];
           if (!prevPage) return tab;
           const newHistory = [...tab.history.slice(0, tab.urlIndex + 1), { name: prevPage.name, url: prevPage.url }];
           selectedTab = { ...tab, history: newHistory, urlIndex: newHistory.length - 1 };

@@ -212,7 +212,7 @@ export default function PartDetailsContainer() {
               </Button>
               <Button
                 className="part-details__close-btn"
-                onClick={async () => await closeBtn()}
+                onClick={async () => closeBtn()}
               >
                 Back
               </Button>
