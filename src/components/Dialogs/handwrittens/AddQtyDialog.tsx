@@ -22,6 +22,7 @@ export default function AddQtyDialog({ open, setOpen, handwritten, setHandwritte
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    if (handwritten.invoiceStatus === 'SENT TO ACCOUNTING') return;
     if (!part) {
       alert('Select a part');
       return;

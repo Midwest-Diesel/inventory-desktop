@@ -381,7 +381,7 @@ export default function HandwrittenDetails({
           <Button onClick={() => setCoreCreditsOpen(!coreCreditsOpen)} disabled={handwritten.cores.length === 0} data-testid="core-credit-btn">Core Credit</Button>
           <Button onClick={() => setAltShipOpen(!altShipOpen)} disabled={altShipData.length === 0}>Alt Ship</Button>
           <Button onClick={() => setReturnsOpen(!returnsOpen)} data-testid="new-return-btn">New Return</Button>
-          <Button onClick={() => setAddQtyDialogOpen(true)} data-testid="add-qty-io-btn">Add Qty | I/O</Button>
+          <Button onClick={() => setAddQtyDialogOpen(true)} disabled={handwritten.invoiceStatus === 'SENT TO ACCOUNTING'} data-testid="add-qty-io-btn">Add Qty | I/O</Button>
         </div>
 
         <CoreCreditsDialog open={coreCreditsOpen} setOpen={setCoreCreditsOpen} cores={handwritten.cores} handwritten={handwritten} />

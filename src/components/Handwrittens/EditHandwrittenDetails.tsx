@@ -708,7 +708,7 @@ export default function EditHandwrittenDetails({
 
             <div className="edit-handwritten-details__top-bar">
               <Button type="button" onClick={() => setAltShipOpen(!altShipOpen)} disabled={altShipData.length === 0}>Alt Ship</Button>
-              <Button type="button" onClick={() => setAddQtyDialogOpen(true)} data-testid="add-qty-io-btn">Add Qty | I/O</Button>
+              <Button type="button" onClick={() => setAddQtyDialogOpen(true)} disabled={handwritten.invoiceStatus === 'SENT TO ACCOUNTING'} data-testid="add-qty-io-btn">Add Qty | I/O</Button>
             </div>
 
             <Grid rows={1} cols={11} gap={1}>
