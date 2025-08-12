@@ -17,22 +17,22 @@ export default function AlertModal({ alerts, setAlerts }: Props) {
 
   const getAlertType = (type: string) => {
     switch (type) {
-    case 'ALERT!!!':
-      return 'alert';
-    case 'HUDDLE UP!!!':
-      return 'huddle-up';
-    case 'CAT IS OUT!!!':
-      return 'cat-is-out';
-    case 'SYSTEMS CHECK!!!':
-      return 'systems-check';
-    case 'SEE JACK!!!':
-      return 'see-jack';
-    case 'SEE TERRY!!!':
-      return 'see-terry';
-    case 'HUDDLE OR JAIL!!!':
-      return 'huddle-or-jail';
-    default:
-      return '';
+      case 'ALERT!!!':
+        return 'alert';
+      case 'HUDDLE UP!!!':
+        return 'huddle-up';
+      case 'CAT IS OUT!!!':
+        return 'cat-is-out';
+      case 'SYSTEMS CHECK!!!':
+        return 'systems-check';
+      case 'SEE JACK!!!':
+        return 'see-jack';
+      case 'SEE TERRY!!!':
+        return 'see-terry';
+      case 'HUDDLE OR JAIL!!!':
+        return 'huddle-or-jail';
+      default:
+        return '';
     }
   };
 

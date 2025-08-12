@@ -9,7 +9,6 @@ import SourceSelect from "../Library/Select/SourceSelect";
 import Table from "../Library/Table";
 import { PreventNavigation } from "../PreventNavigation";
 import UserSelect from "../Library/Select/UserSelect";
-import CustomerSelect from "../Library/Select/CustomerSelect";
 import { getCustomerByName } from "@/scripts/services/customerService";
 import { ask } from "@/scripts/config/tauri";
 import CustomerDropdown from "../Library/Dropdown/CustomerDropdown";

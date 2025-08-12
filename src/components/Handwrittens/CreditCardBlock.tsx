@@ -57,20 +57,20 @@ export default function CreditCardBlock({
   const handleDetectPaymentType = async (num: string) => {
     if (!num) return;
     switch (Number(num)) {
-    case 3:
-      await handleChangePayment(handwritten.id, 'AMEX');
-      break;
-    case 4:
-      await handleChangePayment(handwritten.id, 'Visa');
-      break;
-    case 5:
-      await handleChangePayment(handwritten.id, 'Mastercard');
-      break;
-    case 6:
-      await handleChangePayment(handwritten.id, 'Discover');
-      break;
-    default:
-      break;
+      case 3:
+        await handleChangePayment(handwritten.id, 'AMEX');
+        break;
+      case 4:
+        await handleChangePayment(handwritten.id, 'Visa');
+        break;
+      case 5:
+        await handleChangePayment(handwritten.id, 'Mastercard');
+        break;
+      case 6:
+        await handleChangePayment(handwritten.id, 'Discover');
+        break;
+      default:
+        break;
     }
   };
 

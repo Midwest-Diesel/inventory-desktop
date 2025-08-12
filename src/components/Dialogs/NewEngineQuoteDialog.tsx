@@ -5,7 +5,6 @@ import Dialog from "../Library/Dialog";
 import Input from "../Library/Input";
 import SourceSelect from "../Library/Select/SourceSelect";
 import Button from "../Library/Button";
-import CustomerSelect from "../Library/Select/CustomerSelect";
 import { useToast } from "@/hooks/useToast";
 import CustomerDropdown from "../Library/Dropdown/CustomerDropdown";
 

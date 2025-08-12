@@ -194,36 +194,36 @@ export default function ImportantCustomersMap() {
   
   const getPinStyles = (str: string) => {
     switch (str) {
-    case 'BS':
-      return { bg: '#3C89D5', border: '#3C74D5' };
-    case 'MR':
-      return { bg: '#D3640A', border: '#CB5E05' };
-    case 'JS':
-      return { bg: '#6B4E43', border: '#60453C' };
-    case 'TT':
-      return { bg: '#741CDA', border: '#6B18CA' };
-    case 'JF':
-      return { bg: '#0A9618', border: '#088615' };
-    case 'JMF':
-      return { bg: '#01A987', border: '#019578' };
-    case 'vendor':
-      return { bg: '#555555', border: '#494949' };
-    default:
-      return { bg: '', border: '' };
+      case 'BS':
+        return { bg: '#3C89D5', border: '#3C74D5' };
+      case 'MR':
+        return { bg: '#D3640A', border: '#CB5E05' };
+      case 'JS':
+        return { bg: '#6B4E43', border: '#60453C' };
+      case 'TT':
+        return { bg: '#741CDA', border: '#6B18CA' };
+      case 'JF':
+        return { bg: '#0A9618', border: '#088615' };
+      case 'JMF':
+        return { bg: '#01A987', border: '#019578' };
+      case 'vendor':
+        return { bg: '#555555', border: '#494949' };
+      default:
+        return { bg: '', border: '' };
     }
   };
 
   const getPinIcon = (loc: MapLocation) => {
     switch (loc.type) {
-    case 'customer':
-      return loc.salesman;
-    case 'vendor': {
-      const img = document.createElement('img');
-      img.src = '/images/shop.svg';
-      return img;
-    }
-    default:
-      return '';
+      case 'customer':
+        return loc.salesman;
+      case 'vendor': {
+        const img = document.createElement('img');
+        img.src = '/images/shop.svg';
+        return img;
+      }
+      default:
+        return '';
     }
   };
 

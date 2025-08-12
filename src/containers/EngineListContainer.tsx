@@ -60,32 +60,38 @@ export default function EngineListContainer() {
       setLoading(true);
       let results: Engine[] = [];
       switch (listOpen) {
-        case 'running':
+        case 'running': {
           const r1 = await getEnginesByStatus('RunnerReady');
           const r2 = await getEnginesByStatus('RunnerNotReady');
           const r3 = await getEnginesByStatus('HoldSoldRunner');
           results = [...r1, ...r2, ...r3];
           break;
-        case 'toreDown':
+        }
+        case 'toreDown': {
           const toreDown = await getEnginesByStatus('ToreDown');
           results = toreDown;
           break;
-        case 'core':
+        }
+        case 'core': {
           const core = await getEnginesByStatus('CoreEngine');
           results = core;
           break;
-        case 'sold':
+        }
+        case 'sold': {
           const sold = await getEnginesByStatus('Sold');
           results = sold;
           break;
-        case 'shortBlock':
+        }
+        case 'shortBlock': {
           const shortBlock = await getEnginesByStatus('ShortBlock');
           results = shortBlock;
           break;
-        case 'longBlock':
+        }
+        case 'longBlock': {
           const longBlock = await getEnginesByStatus('LongBlock');
           results = longBlock;
           break;
+        }
       }
       results = results.sort((a: any, b: any) => b.loginDate - a.loginDate);
       setEnginesData(results);
