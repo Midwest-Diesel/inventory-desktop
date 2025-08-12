@@ -1,8 +1,7 @@
 import Button from "@/components/Library/Button";
 import Dialog from "@/components/Library/Dialog";
-import CustomerDropdown from "@/components/Library/Dropdown/CustomerDropdown";
+import CustomerDropdownId from "@/components/Library/Dropdown/CustomerDropdownId";
 import Input from "@/components/Library/Input";
-import CustomerSelect from "@/components/Library/Select/CustomerSelect";
 import { reportHandwrittenCompany } from "@/scripts/services/reportsService";
 import { useState } from "react";
 
@@ -15,13 +14,13 @@ interface Props {
 
 
 export default function HandwrittenCompanyDialog({ open, setOpen, openTable, setTableData }: Props) {
-  const [customer, setCustomer] = useState('');
+  const [customerId, setCustomerId] = useState(0);
   const [year, setYear] = useState('');
 
   const handleSearch = async () => {
     openTable();
     setOpen(false);
-    const res = await reportHandwrittenCompany(customer, Number(year));
+    const res = await reportHandwrittenCompany(customerId, Number(year));
     setTableData(res);
   };
 
@@ -31,17 +30,16 @@ export default function HandwrittenCompanyDialog({ open, setOpen, openTable, set
       open={open}
       setOpen={setOpen}
       title="Single Company/Handwritten"
-      height={255}
       y={-100}
       className="reports-dialog"
     >
       <form onSubmit={handleSearch}>
-        <CustomerDropdown
+        <CustomerDropdownId
           label="Company"
-          variant={['label-full-width', 'label-bold', 'no-margin', 'label-inline', 'label-stack']}
+          variant={['label-full-width', 'no-margin', 'label-inline', 'label-stack']}
           maxHeight="25rem"
-          value={customer}
-          onChange={(c) => setCustomer(c)}
+          value={customerId}
+          onChange={(id: number) => setCustomerId(id)}
         />
         <Input
           label="Year"

@@ -1,11 +1,10 @@
 import Button from "@/components/Library/Button";
 import Dialog from "@/components/Library/Dialog";
-import CustomerDropdown from "@/components/Library/Dropdown/CustomerDropdown";
+import CustomerDropdownId from "@/components/Library/Dropdown/CustomerDropdownId";
 import Input from "@/components/Library/Input";
-import CustomerSelect from "@/components/Library/Select/CustomerSelect";
 import { reportSingleCompany } from "@/scripts/services/reportsService";
 import { parseDateInputValue } from "@/scripts/tools/stringUtils";
-import { useState } from "react";
+import { FormEvent, useState } from "react";
 
 interface Props {
   open: boolean
@@ -16,14 +15,15 @@ interface Props {
 
 
 export default function SingleCompanyDialog({ open, setOpen, openTable, setTableData }: Props) {
-  const [customer, setCustomer] = useState('');
+  const [customerId, setCustomerId] = useState(0);
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
 
-  const handleSearch = async () => {
+  const handleSearch = async (e: FormEvent) => {
+    e.preventDefault();
     openTable();
     setOpen(false);
-    const res = await reportSingleCompany(customer, startDate, endDate);
+    const res = await reportSingleCompany(customerId, startDate, endDate);
     setTableData(res);
   };
 
@@ -39,12 +39,12 @@ export default function SingleCompanyDialog({ open, setOpen, openTable, setTable
       className="reports-dialog"
     >
       <form onSubmit={handleSearch}>
-        <CustomerDropdown
+        <CustomerDropdownId
           label="Company"
           variant={['label-full-width', 'no-margin', 'label-inline', 'label-stack']}
           maxHeight="10rem"
-          value={customer}
-          onChange={(c: string) => setCustomer(c)}
+          value={customerId}
+          onChange={(id: number) => setCustomerId(id)}
         />
         <Input
           label="Start Date"

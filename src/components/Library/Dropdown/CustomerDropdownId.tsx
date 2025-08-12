@@ -9,7 +9,7 @@ import { getCustomersMin } from "@/scripts/services/customerService";
 interface Props {
   variant?: ('small' | 'input' | 'label-space-between' | 'label-stack' | 'label-inline' | 'label-full-width' | 'large' | 'no-margin' | 'label-full-height' | 'fill' | 'gap' | 'label-bold')[]
   label?: string
-  value: string
+  value: string | number
   onChange: (id: number) => void
   maxHeight?: string
 }
@@ -31,7 +31,7 @@ export default function CustomerDropdownId({ variant, label, value, onChange, ma
       <Dropdown
         label={label}
         variant={variant}
-        value={value}
+        value={value.toString()}
         onChange={(id: number) => onChange(id)}
         maxHeight={maxHeight}
       >
