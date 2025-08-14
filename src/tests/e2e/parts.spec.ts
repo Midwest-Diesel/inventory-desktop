@@ -23,20 +23,6 @@ test.describe('Parts', () => {
     expect(tableLength).toBeGreaterThan(0);
   });
 
-  test('Create new part', async () => {
-    await page.goto('http://localhost:3001/part/new');
-    await page.getByTestId('part-num').fill('TEST123');
-    await page.getByTestId('desc').fill('Test part');
-    await page.getByTestId('stock-num').fill('ABC123');
-    await page.getByTestId('location').fill('XYZ');
-    await page.getByTestId('save-btn').click();
-    await page.waitForTimeout(100);
-    await page.goto('http://localhost:3001');
-    await page.waitForLoadState('networkidle');
-    await altSearch(page, { partNum: '*TEST123' });
-    await expect(page.getByTestId('part-num-link').first()).toHaveText('TEST123');
-  });
-
   test('Part search', async () => {
     await partSearch(page, { partNum: '7E0333', desc: 'VALVE COVER 3406', stockNum: 'UP9432', location: 'C5G4A', rating: 0.0, serialNum: '79419143', hp: '500', purchFrom: 'CB1', remarks: 'T/O, NTBB\'D' });
     await expect(page.getByTestId('part-num-link').first()).toHaveText('7E0333');

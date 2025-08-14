@@ -18,7 +18,8 @@ test.describe('Quotes', () => {
     await page.getByTestId('quote-btn').first().click();
     const stockNum = await page.getByTestId('stock-num-link').first().textContent();
     expect(stockNum).not.toBeNull();
-    await page.getByTestId('customer-select').selectOption('ALTORFER INDUSTRIES INC.');
+    await (await page.$('.dropdown'))?.click();
+    await page.getByTestId('dropdown-option-ALTORFER INDUSTRIES INC.').click();
     await page.getByTestId('desc').fill('Test Engine');
     await page.getByTestId('price').fill('100');
     await page.getByTestId('save-btn').click();
