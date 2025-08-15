@@ -17,7 +17,7 @@ interface Props {
   quotes: Quote[]
   setQuotes: (quotes: Quote[]) => void
   onInvoiceQuote: (quote: Quote) => void
-  onChangePage: (data: any, page: number) => Promise<void>
+  onChangePage: (data: any, page: number) => void
   onQuotePiggyback: (quote: Quote) => void
   handleEmail: (quote: Quote) => void
   setQuoteEdited: (quote: Quote | null) => void

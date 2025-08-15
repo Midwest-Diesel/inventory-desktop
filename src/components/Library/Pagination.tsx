@@ -18,9 +18,9 @@ export default function Pagination({ className = '', variant = [], data, setData
   const classes = generateClasses(className, variant, 'pagination');
   const [currentPage, setCurrentPage] = useState(page);
 
-  useEffect(() => {
-    handleChangePage(page);
-  }, [data]);
+  // useEffect(() => {
+  //   handleChangePage(page);
+  // }, [data]);
 
   const paginateData = (data: any[], page: number, limit: number) => {
     const start = (page - 1) * limit;

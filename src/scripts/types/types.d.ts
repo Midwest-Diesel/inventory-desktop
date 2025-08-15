@@ -38,6 +38,11 @@ type Contact = {
   notes: string | null
 };
 
+type SalesHistory = {
+  year: number
+  totalSales: number
+};
+
 type CustomerMin = {
   id: number
   company: string

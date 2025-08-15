@@ -15,7 +15,7 @@ interface Props {
   open: boolean
   setOpen: (open: boolean) => void
   quote: Quote
-  handleChangeQuotesPage: (_: any, page: number) => Promise<void>
+  handleChangeQuotesPage: (_: any, page: number) => void
   quotesPage: number
 }
 

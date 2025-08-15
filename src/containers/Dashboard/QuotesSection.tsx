@@ -5,11 +5,13 @@ import PiggybackQuoteDialog from "@/components/Dialogs/dashboard/PiggybackQuoteD
 import QuoteSearchDialog from "@/components/Dialogs/dashboard/QuoteSearchDialog";
 import SalesEndOfDayDialog from "@/components/Dialogs/dashboard/SalesEndOfDayDialog";
 import Button from "@/components/Library/Button";
+import Loading from "@/components/Library/Loading";
 import { lastPartSearchAtom, quotesAtom, selectedCustomerAtom } from "@/scripts/atoms/state";
 import { getCustomerById } from "@/scripts/services/customerService";
 import { getPartById } from "@/scripts/services/partsService";
 import { getSomeQuotes, searchQuotes } from "@/scripts/services/quotesService";
 import { isObjectNull } from "@/scripts/tools/utils";
+import { useQuery } from "@tanstack/react-query";
 import { useAtom } from "jotai";
 import { useEffect, useState } from "react";
 
@@ -31,6 +33,8 @@ interface Props {
   handleNewQuote: () => Promise<void>
 }
 
+const LIMIT = 26;
+
 
 export default function QuotesSection({ quotes, setQuotes, setHandwrittenQuote, setHandwrittenCustomer, setSelectHandwrittenOpen, setSelectedHandwrittenPart, setFilterByCustomer, setFilterByPart, setQuoteListType, setQuoteEdited, filterByCustomer, filterByPart, quoteListType, quoteEdited, handleNewQuote }: Props) {
   const [, setQuotesData] = useAtom<Quote[]>(quotesAtom);
@@ -40,46 +44,77 @@ export default function QuotesSection({ quotes, setQuotes, setHandwrittenQuote, 
   const [searchDialogOpen, setSearchDialogOpen] = useState(false);
   const [searchData, setSearchData] = useState<any>(null);
   const [selectedCustomer] = useAtom<Customer>(selectedCustomerAtom);
-  const [customer, setCustomer] = useState<Customer | null>(null);
   const [piggybackQuoteOpen, setPiggybackQuoteOpen] = useState(false);
   const [piggybackQuote, setPiggybackQuote] = useState<Quote | null>(null);
   const [endOfDayOpen, setEndOfDayOpen] = useState(false);
   const [emailDialogOpen, setEmailDialogOpen] = useState(false);
   const [quoteEmailed, setQuoteEmailed] = useState<Quote | null>(null);
   const [page, setPage] = useState(1);
-  const [loaded, setLoaded] = useState(false);
   const partNumSearch = localStorage.getItem('altPartSearches') || localStorage.getItem('partSearches') || null;
   const partNum = partNumSearch ? JSON.parse(partNumSearch).partNum : '';
-  const LIMIT = 26;
 
-  useEffect(() => {
-    setLoaded(true);
-    const fetchData = async () => {
+  const { data: customer } = useQuery<Customer | null>({
+    queryKey: ['customer', selectedCustomer],
+    queryFn: async () => {
       if (isObjectNull(selectedCustomer)) {
         const res = await getCustomerById(Number(localStorage.getItem('customerId')));
-        setCustomer(res ?? { id: 0 });
+        return res ?? { id: 0 };
       } else {
-        setCustomer(selectedCustomer);
         setFilterByCustomer(true);
+        return selectedCustomer;
       }
-    };
-    fetchData();
-  }, [selectedCustomer]);
+    },
+    enabled: true,
+    refetchOnWindowFocus: false,
+    keepPreviousData: true
+  });
+ 
+  const { data: quotesData, isFetching: isFetchingQuotes, refetch } = useQuery({
+    queryKey: [
+      'quotes',
+      page,
+      filterByCustomer ? customer?.id : 0,
+      filterByPart ? partNum : '',
+      quoteListType,
+      searchData
+    ],
+    queryFn: async () => {
+      if (!customer) return { rows: [], pageCount: 0 }
+      if (searchData) {
+        return await searchQuotes(
+          { ...searchData, page: (page - 1) * LIMIT, limit: LIMIT },
+          filterByCustomer ? customer.id : 0
+        )
+      }
+      return await getSomeQuotes(
+        page,
+        LIMIT,
+        filterByPart ? partNum : '',
+        filterByCustomer ? customer.id : 0,
+        quoteListType === 'engine'
+      )
+    },
+    enabled: !!customer,
+    keepPreviousData: true,
+    refetchOnWindowFocus: false
+  });
 
   useEffect(() => {
-    if (!loaded) return;
-    const fetchData = async () => {
-      if (partNum?.trim().replace('*', '') !== '') {
-        setFilterByPart(true);
-      }
-    };
-    fetchData();
-  }, [loaded, customer, lastSearch]);
+    if (partNum?.trim().replace('*', '') !== '') {
+      setFilterByPart(true);
+    }
+  }, [lastSearch, partNum]);
 
   useEffect(() => {
-    if (!loaded) return;
     setQuotesData([]);
-  }, [filterByCustomer, filterByPart, quoteListType, customer]);
+  }, [filterByCustomer, filterByPart, quoteListType]);
+
+  useEffect(() => {
+    if (quotesData) {
+      setQuotes(quotesData.rows)
+      setPageCount(quotesData.pageCount)
+    }
+  }, [quotesData, setQuotes]);
 
   const handleEdit = (quote: Quote) => {
     const index = quotes.findIndex((q) => q.id === quote.id);
@@ -93,19 +128,10 @@ export default function QuotesSection({ quotes, setQuotes, setHandwrittenQuote, 
     setQuotesOpen(!quotesOpen);
   };
 
-  const onChangePage = async (_: any, page: number, resetSearch = false) => {
-    if (!loaded || !customer) return;
-    if (searchData && !resetSearch) {
-      const res = await searchQuotes({ ...searchData, page: (page - 1) * LIMIT, limit: LIMIT }, filterByCustomer ? customer.id : 0);
-      setQuotes(res.rows);
-      setPageCount(res.pageCount);
-      return;
-    }
-
-    const res = await getSomeQuotes(page, LIMIT, filterByPart ? partNum : '', filterByCustomer ? customer.id : 0, quoteListType === 'engine');
-    setQuotes(res.rows);
-    setPageCount(res.pageCount);
-    setPage(page);
+  const onChangePage = (_: any, newPage: number, resetSearch = false) => {
+    setPage(newPage)
+    if (resetSearch) setSearchData(null)
+    refetch()
   };
 
   const onInvoiceQuote = async (quote: Quote) => {
@@ -134,6 +160,7 @@ export default function QuotesSection({ quotes, setQuotes, setHandwrittenQuote, 
       <div className="quote-list__header no-select" onClick={toggleQuotesOpen}>
         <h2>Quotes</h2>
         <img src={`/images/icons/arrow-${quotesOpen ? 'up' : 'down'}.svg`} alt="arrow" width={25} height={25} />
+        { isFetchingQuotes && <Loading size={28} /> }
       </div>
 
       {quotesOpen &&

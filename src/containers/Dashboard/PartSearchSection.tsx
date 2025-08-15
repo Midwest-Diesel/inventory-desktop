@@ -15,10 +15,11 @@ import { getSearchedPartNum } from "@/scripts/tools/search";
 import CoreFamilySearchDialog from "@/components/Dialogs/dashboard/SearchCoreFamilyDialog";
 import PartsTable from "@/components/Dashboard/PartsTable";
 import { selectedAlertsAtom } from "@/scripts/atoms/components";
-import { detectAlerts } from "@/scripts/services/alertsService";
-import { getQuotesByPartNum } from "@/scripts/services/recentSearchesService";
 import { addHandwrittenItemChild, deleteHandwrittenItemChild, editHandwrittenItemChild, getHandwrittenItemById } from "@/scripts/services/handwrittensService";
 import { useToast } from "@/hooks/useToast";
+import { QueryClient, useQuery } from "@tanstack/react-query";
+import { detectAlerts } from "@/scripts/services/alertsService";
+import { getQuotesByPartNum } from "@/scripts/services/recentSearchesService";
 
 interface Props {
   selectHandwrittenOpen: boolean
@@ -27,149 +28,116 @@ interface Props {
   handleNewQuote: (part?: Part) => Promise<void>
 }
 
+export interface PartSearchParams {
+  partNum: string
+  stockNum: string
+  desc: string
+  location: string
+  qty: number
+  remarks: string
+  rating: number
+  purchasedFrom: string
+  serialNum: string
+  hp: string
+  page: number
+  isAltSearch: boolean
+}
+
+const LIMIT = 52;
+const getStoredSearch = (key: string) => JSON.parse(localStorage.getItem(key) || 'null') || {};
+
+const hasSearchInput = () => {
+  const altSearch = getStoredSearch('altPartSearches');
+  const partSearch = getStoredSearch('partSearches');
+  return (
+    !isObjectNull(
+      altSearch?.partNum ? { ...altSearch, partNum: altSearch.partNum.replace('*', '') } : {}
+    ) || !isObjectNull(partSearch)
+  );
+};
+
 
 export default function PartSearchSection({ selectHandwrittenOpen, setSelectHandwrittenOpen, setSelectedHandwrittenPart, handleNewQuote }: Props) {
   const toast = useToast();
   const [selectedCustomer] = useAtom<Customer>(selectedCustomerAtom);
   const [selectedAlerts, setSelectedAlerts] = useAtom<Alert[]>(selectedAlertsAtom);
-  const [showSoldParts, setShowSoldParts] = useAtom<boolean>(showSoldPartsAtom);
   const [, setRecentQuoteSearches] = useAtom<RecentQuoteSearch[]>(recentQuotesAtom);
   const [quickPickItemId] = useAtom<number>(quickPickItemIdAtom);
-  const [partsData, setPartsData] = useState<Part[]>([]);
-  const [parts, setParts] = useState<Part[]>([]);
-  const [pageCount, setPageCount] = useState(0);
-  const [partsQty, setPartsQty] = useState(0);
-  const [rowsHidden, setRowsHidden] = useState<number | null>(null);
-  const [partsOpen, setPartsOpen] = useState(localStorage.getItem('partsOpen') === 'true' || localStorage.getItem('partsOpen') === null ? true : false);
+  const [showSoldParts, setShowSoldParts] = useAtom<boolean>(showSoldPartsAtom);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [partsOpen, setPartsOpen] = useState(localStorage.getItem('partsOpen') !== 'false');
   const [partsSearchOpen, setPartsSearchOpen] = useState(false);
   const [altPartsSearchOpen, setAltPartsSearchOpen] = useState(false);
   const [salesInfoOpen, setSalesInfoOpen] = useState(false);
-  const [loading, setLoading] = useState(true);
   const [coreFamilyOpen, setCoreFamilyOpen] = useState(false);
   const [partsOnEngsOpen, setPartsOnEngsOpen] = useState(false);
-  const [partsOnEngs, setPartsOnEngs] = useState<{ partNum: string, engines: Engine[] }[]>([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [pageLoaded, setPageLoaded] = useState(false);
+  const [partsOnEngs, setPartsOnEngs] = useState<{ partNum: string; engines: Engine[] }[]>([]);
   const [isValidSearch, setIsValidSearch] = useState(false);
-  const LIMIT = 52;
+  const [searchParams, setSearchParams] = useState<PartSearchParams | null>(null);
+  const queryClient = new QueryClient();
+
+  const { data: parts, isFetching } = useQuery<PartsRes>({
+    queryKey: ['parts', currentPage, showSoldParts],
+    queryFn: () => getSomeParts(currentPage, LIMIT, showSoldParts),
+    enabled: !hasSearchInput(),
+    refetchOnWindowFocus: false,
+    keepPreviousData: true
+  });
+
+  const { data: search, refetch: refetchSearch, isFetching: isSearchFetching } = useQuery<PartsRes>({
+    queryKey: ['searchParts', searchParams?.partNum, searchParams?.isAltSearch, searchParams?.page, showSoldParts],
+    queryFn: () => {
+      if (!searchParams) throw new Error('No search params');
+      return searchParams.isAltSearch
+        ? searchAltParts({ ...searchParams, showSoldParts }, searchParams.page, LIMIT)
+        : searchParts({ ...searchParams, showSoldParts }, searchParams.page, LIMIT);
+    },
+    enabled: !!searchParams,
+    refetchOnWindowFocus: false,
+    keepPreviousData: true
+  });
 
   useEffect(() => {
-    const fetchData = async () => {
-      if (searchInputExists() || pageLoaded) return;
-      setLoading(true);
-      const res = await getSomeParts(1, LIMIT, showSoldParts);
-      setPartsData(res.rows);
-      setParts(res.rows);
-      setPageCount(res.pageCount);
-      setPartsQty(res.totalQty);  
-      setRowsHidden(res.rowsHidden);
-      setLoading(false);
-    };
-    fetchData();
-    setPageLoaded(true);
-  }, []);
-
-  useEffect(() => {
-    if (searchInputExists() || !pageLoaded) return;
-    const fetchData = async () => {
-      setLoading(true);
-      const res = await getSomeParts(1, LIMIT, showSoldParts);
-      setPartsData(res.rows);
-      setParts(res.rows);
-      setPageCount(res.pageCount);
-      setPartsQty(res.totalQty);
-      setRowsHidden(res.rowsHidden);
-      setLoading(false);
-    };
-    fetchData();
-  }, [showSoldParts]);
-
-  useEffect(() => {
-    const prevSearches = JSON.parse(localStorage.getItem('altPartSearches')!) ?? JSON.parse(localStorage.getItem('partSearches')!);
-    if (!prevSearches) {
-      setIsValidSearch(false);
-      return;
-    }
-    setIsValidSearch(Object.values(prevSearches).map((value: any) => value.replace('*', '')).some((value) => value));
-  }, [parts]);
-
-  const searchInputExists = () => {
-    const altSearch = JSON.parse(localStorage.getItem('altPartSearches')!);
-    return (
-      !isObjectNull(altSearch ? { ...altSearch, partNum: altSearch.partNum.replace('*', '')} : {}) ||
-      !isObjectNull(JSON.parse(localStorage.getItem('partSearches')!) ?? {})
+    const prevSearches = getStoredSearch('altPartSearches') || getStoredSearch('partSearches');
+    setIsValidSearch(
+      !!prevSearches && Object.values(prevSearches)
+        .map((v: any) => v.replace?.('*', ''))
+        .some(Boolean)
     );
-  };
+  }, [parts]);
 
   const findPartsOnEngines = async () => {
     const partNum = getSearchedPartNum();
     const alts = await getAltsByPartNum(partNum);
-    const engines = [];
-    
-    for (let i = 0; i < alts.length; i++) {
-      const res = await getPartsOnEngines(alts[i]);
-      engines.push(res);
-    }
+    const engines = await Promise.all(alts.map(getPartsOnEngines));
     setPartsOnEngs(engines as any);
     setPartsOnEngsOpen(true);
   };
 
-  const togglePartsOpen = () => {
-    localStorage.setItem('partsOpen', `${!partsOpen}`);
-    setPartsOpen(!partsOpen);
-  };
-
-  const quotePart = async (part: Part) => {
-    await handleNewQuote(part);
-  };
-
-  const onOpenSelectHandwrittenDialog = (part: Part) => {
-    if (selectHandwrittenOpen) setSelectHandwrittenOpen(false);
-    setTimeout(() => setSelectHandwrittenOpen(true), 1);
-    setSelectedHandwrittenPart(part);
-  };
-
-  const handleSearch = async (partNum: string, stockNum: string, desc: string, location: string, qty: number, remarks: string, rating: number, purchasedFrom: string, serialNum: string, hp: string, page: number, isAltSearch: boolean, showAlerts = true) => {
-    setLoading(true);
-    setRecentQuoteSearches(await getQuotesByPartNum(partNum));
-    const results = (isAltSearch ?
-      await searchAltParts({ partNum, stockNum, desc, location, qty, remarks, rating, purchasedFrom, serialNum, hp, showSoldParts }, page, LIMIT)
-      :
-      await searchParts({ partNum, stockNum, desc, location, qty, remarks, rating, purchasedFrom, serialNum, hp, showSoldParts }, page, LIMIT)
-    );
+  const handleSearch = async (params: PartSearchParams | null, showAlerts = true) => {
+    if (!params) return;
+    setSearchParams(params);
+    const results = params.isAltSearch
+      ? await searchAltParts({ ...params, showSoldParts }, params.page, LIMIT)
+      : await searchParts({ ...params, showSoldParts }, params.page, LIMIT);
+      
+    setRecentQuoteSearches(await getQuotesByPartNum(params.partNum));
     if (showAlerts) {
-      const alerts = await detectAlerts(partNum);
+      const alerts = await detectAlerts(params.partNum);
       setSelectedAlerts([...selectedAlerts, ...alerts]);
     }
-    setParts(results.rows);
-    setPageCount(results.pageCount);
-    setPartsQty(results.totalQty);
-    setRowsHidden(results.rowsHidden);
-    setLoading(false);
+    queryClient.setQueryData<PartsRes>(['searchParts', params], results);
+    await refetchSearch();
   };
 
-  const onChangePage = async (_: any, page: number) => {
-    if (page === currentPage || !pageLoaded) return;
-    setLoading(true);
-    const altSearch = JSON.parse(localStorage.getItem('altPartSearches')!);
-    const partSearch = JSON.parse(localStorage.getItem('partSearches')!);
-
-    if (!isObjectNull(altSearch ? { ...altSearch, partNum: altSearch.partNum.replace('*', '')} : {}) || !isObjectNull(partSearch || {})) {
-      const { partNum, stockNum, desc, location, qty, remarks, rating, purchasedFrom, serialNum, hp } = (partSearch || altSearch);
-      await handleSearch(partNum, stockNum, desc, location, qty, remarks, rating, purchasedFrom, serialNum, hp, page, isObjectNull(partSearch || {}), false);
-    } else {
-      const res = await getSomeParts(page, LIMIT, showSoldParts);
-      setParts(res.rows);
-      setPageCount(res.pageCount);
-      setPartsQty(res.totalQty);
-      setRowsHidden(res.rowsHidden);
-    }
+  const onChangePage = (_: any, page: number) => {
+    if (page === currentPage) return;
     setCurrentPage(page);
-    setLoading(false);
+    if (searchParams) setSearchParams({ ...searchParams, page });
   };
 
   const onQuickPick = async (part: Part) => {
-    if (quickPickItemId === 0) {
+    if (!quickPickItemId) {
       alert('No line item selected for quick pick');
       return;
     }
@@ -185,7 +153,6 @@ export default function PartSearchSection({ selectHandwrittenOpen, setSelectHand
     }
   };
 
-
   return (
     <div className="part-search">
       { isValidSearch && <SalesInfoDialog open={salesInfoOpen} setOpen={setSalesInfoOpen} /> }
@@ -194,72 +161,51 @@ export default function PartSearchSection({ selectHandwrittenOpen, setSelectHand
       <PartsOnEnginesDialog open={partsOnEngsOpen} setOpen={setPartsOnEngsOpen} searchResults={partsOnEngs} />
       <CoreFamilySearchDialog open={coreFamilyOpen} setOpen={setCoreFamilyOpen} />
 
-      <div className="parts-search__header no-select" onClick={togglePartsOpen}>
+      <div
+        className="parts-search__header no-select"
+        onClick={() => {
+          localStorage.setItem("partsOpen", String(!partsOpen));
+          setPartsOpen(!partsOpen);
+        }}
+      >
         <h2>Parts Search</h2>
-        <img src={`/images/icons/arrow-${partsOpen ? 'up' : 'down'}.svg`} alt="arrow" width={25} height={25} />
+        <img src={`/images/icons/arrow-${partsOpen ? "up" : "down"}.svg`} alt="arrow" width={25} height={25} />
+        { (isFetching || isSearchFetching) && <Loading size={28} /> }
       </div>
 
-      {partsOpen &&
+      {partsOpen && (
         <>
-          { loading && <Loading /> }
-
           <div className="parts-search-top-bar">
-            <Button
-              onClick={findPartsOnEngines}
-              disabled={!getSearchedPartNum()}
-            >
-              On Engines
-            </Button>
-            <Button
-              onClick={() => setSalesInfoOpen(true)}
-              disabled={!isValidSearch}
-            >
-              Sales Info
-            </Button>
-            <Button
-              onClick={() => setPartsSearchOpen(true)}
-              data-testid="part-search-btn"
-            >
-              Parts Search
-            </Button>
-            <Button
-              onClick={() => setAltPartsSearchOpen(true)}
-              data-testid="alt-search-btn"
-            >
-              Alt Parts Search
-            </Button>
-            <Button
-              onClick={() => setShowSoldParts(!showSoldParts)}
-            >
-              {showSoldParts ? 'Hide' : 'Show'} Sold Parts
-            </Button>
-            <Button
-              onClick={() => setCoreFamilyOpen(true)}
-            >
-              Search Core Family
-            </Button>
-            <Link
-              className="parts-search-top-bar__link"
-              href={`/compare-consist${!isObjectNull(selectedCustomer) ? `?c=${selectedCustomer.id}` : ''}`}
-            >
+            <Button onClick={findPartsOnEngines} disabled={!getSearchedPartNum()}>On Engines</Button>
+            <Button onClick={() => setSalesInfoOpen(true)} disabled={!isValidSearch}>Sales Info</Button>
+            <Button onClick={() => setPartsSearchOpen(true)} data-testid="part-search-btn">Parts Search</Button>
+            <Button onClick={() => setAltPartsSearchOpen(true)} data-testid="alt-search-btn">Alt Parts Search</Button>
+            <Button onClick={() => setShowSoldParts(!showSoldParts)}>{showSoldParts ? "Hide" : "Show"} Sold Parts</Button>
+            <Button onClick={() => setCoreFamilyOpen(true)}>Search Core Family</Button>
+            <Link className="parts-search-top-bar__link"
+              href={`/compare-consist${!isObjectNull(selectedCustomer) ? `?c=${selectedCustomer.id}` : ""}`}>
               Compare / Consist
             </Link>
           </div>
 
           <PartsTable
-            parts={parts}
-            partsData={partsData}
-            pageCount={pageCount}
-            partsQty={partsQty}
-            rowsHidden={rowsHidden}
-            quotePart={quotePart}
+            parts={searchParams ? search?.rows ?? [] : parts?.rows ?? []}
+            partsData={searchParams ? search?.rows ?? [] : parts?.rows ?? []}
+            pageCount={searchParams ? search?.pageCount ?? 0 : parts?.pageCount ?? 0}
+            partsQty={searchParams ? search?.totalQty ?? 0 : parts?.totalQty ?? 0}
+            rowsHidden={searchParams ? search?.rowsHidden ?? null : parts?.rowsHidden ?? null}
+            quotePart={handleNewQuote}
             onChangePage={onChangePage}
-            onOpenSelectHandwrittenDialog={onOpenSelectHandwrittenDialog}
+            onOpenSelectHandwrittenDialog={(part) => {
+              if (selectHandwrittenOpen) setSelectHandwrittenOpen(false);
+              setTimeout(() => setSelectHandwrittenOpen(true), 1);
+              setSelectedHandwrittenPart(part);
+            }}
             onQuickPick={onQuickPick}
             limit={LIMIT}
           />
         </>
-      }
+      )}
     </div>
   );
 }

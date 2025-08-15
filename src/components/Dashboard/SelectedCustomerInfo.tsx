@@ -1,32 +1,28 @@
 import Link from "../Library/Link";
-import { useEffect, useState } from "react";
 import GridItem from "../Library/Grid/GridItem";
 import Grid from "../Library/Grid/Grid";
 import { formatCurrency, formatPhone } from "@/scripts/tools/stringUtils";
 import Table from "../Library/Table";
 import { getCustomerSalesHistory } from "@/scripts/services/customerService";
 import CustomerContactsBlock from "../Customer/CustomerContactsBlock";
+import { useQuery } from "@tanstack/react-query";
+import { useAtom } from "jotai";
+import { selectedCustomerAtom } from "@/scripts/atoms/state";
 
 interface Props {
-  customerData: Customer
-  setCustomerData: (customer: Customer) => void
   expandedDetailsOpen: boolean
 }
 
 
-export default function SelectedCustomerInfo({ customerData, setCustomerData, expandedDetailsOpen }: Props) {
-  const [customer, setCustomer] = useState<Customer>(customerData);
-  const [salesHistory, setSalesHistory] = useState([]);
+export default function SelectedCustomerInfo({ expandedDetailsOpen }: Props) {
+  const [customer, setCustomer] = useAtom<Customer>(selectedCustomerAtom);
   const customerInfo = [formatPhone(customer.phone, true), customer.email, customer.billToState, customer.billToCity].filter((v) => v).join(', ');
 
-  useEffect(() => {
-    setCustomer(customerData);
-    const fetchData = async () => {
-      const sales = await getCustomerSalesHistory(customerData.id);
-      setSalesHistory(sales);
-    };
-    fetchData();
-  }, [customerData]);
+  const { data: salesHistory = [] } = useQuery<SalesHistory[]>({
+    queryKey: ['salesHistory', customer?.id],
+    queryFn: async () => await getCustomerSalesHistory(customer.id),
+    enabled: !!customer?.id
+  });
 
 
   return (
@@ -130,7 +126,7 @@ export default function SelectedCustomerInfo({ customerData, setCustomerData, ex
             </GridItem>
 
             <GridItem variant={['no-style']} colStart={1} colEnd={5} rowStart={2}>
-              <CustomerContactsBlock customer={customer} setCustomer={setCustomerData} />
+              <CustomerContactsBlock customer={customer} setCustomer={setCustomer} />
             </GridItem>
 
             <GridItem colStart={5} colEnd={10} variant={['low-opacity-bg']}>
@@ -167,7 +163,7 @@ export default function SelectedCustomerInfo({ customerData, setCustomerData, ex
                     </tr>
                   </thead>
                   <tbody>
-                    {salesHistory.map((sale: any, i: number) => {
+                    {salesHistory.map((sale: SalesHistory, i: number) => {
                       return (
                         <tr key={i}>
                           <td>{ sale.year }</td>

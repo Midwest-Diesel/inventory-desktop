@@ -6,12 +6,13 @@ import { useAtom } from "jotai";
 import { lastPartSearchAtom, showSoldPartsAtom, userAtom } from "@/scripts/atoms/state";
 import { addRecentSearch } from "@/scripts/services/recentSearchesService";
 import { isObjectNull } from "@/scripts/tools/utils";
+import { PartSearchParams } from "@/containers/Dashboard/PartSearchSection";
 
 
 interface Props {
   open: boolean
   setOpen: (open: boolean) => void
-  handleSearch: (partNum: string, stockNum: string, desc: string, location: string, qty: number, remarks: string, rating: number, purchasedFrom: string, serialNum: string, hp: string, page: number, isAltSearch: boolean) => Promise<void>
+  handleSearch: (params: PartSearchParams | null, showAlerts?: boolean) => Promise<void>
 }
 
 export default function AltPartsSearchDialog({ open, setOpen, handleSearch }: Props) {
@@ -46,7 +47,7 @@ export default function AltPartsSearchDialog({ open, setOpen, handleSearch }: Pr
 
       const hasValidSearchCriteria = (partNum && partNum !== '*') || stockNum || desc || location || qty || remarks || rating || purchasedFrom || serialNum || hp;
       if (hasValidSearchCriteria) {
-        handleSearch(partNum, stockNum, desc, location, qty, remarks, rating, purchasedFrom, serialNum, hp, 1, true);
+        handleSearch({ partNum, stockNum, desc, location, qty, remarks, rating, purchasedFrom, serialNum, hp, page: 1, isAltSearch: true });
       }
     }
   }, [showSoldParts]);
@@ -77,7 +78,7 @@ export default function AltPartsSearchDialog({ open, setOpen, handleSearch }: Pr
     if (isObjectNull({ stockNum, desc, location, qty, remarks, rating, purchasedFrom, serialNum, hp }) && (partNum === '*' || partNum === '')) {
       window.location.reload();
     } else {
-      await handleSearch(partNum, stockNum, desc, location, qty, remarks, rating, purchasedFrom, serialNum, hp, 1, true);
+      await handleSearch({ partNum, stockNum, desc, location, qty, remarks, rating, purchasedFrom, serialNum, hp, page: 1, isAltSearch: true });
       if (partNum && partNum !== '*' && user.subtype === 'sales') await addRecentSearch({ partNum: partNum.replace('*', ''), salespersonId: user.id });
     }
     setLastSearch(partNum.replace('*', ''));

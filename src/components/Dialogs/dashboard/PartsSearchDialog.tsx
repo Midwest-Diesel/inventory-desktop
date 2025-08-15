@@ -6,12 +6,13 @@ import { addRecentSearch } from "@/scripts/services/recentSearchesService";
 import { useAtom } from "jotai";
 import { lastPartSearchAtom, showSoldPartsAtom, userAtom } from "@/scripts/atoms/state";
 import { isObjectNull } from "@/scripts/tools/utils";
+import { PartSearchParams } from "@/containers/Dashboard/PartSearchSection";
 
 
 interface Props {
   open: boolean
   setOpen: (open: boolean) => void
-  handleSearch: (partNum: string, stockNum: string, desc: string, location: string, qty: number, remarks: string, rating: number, purchasedFrom: string, serialNum: string, hp: string, page: number, isAltSearch: boolean) => Promise<void>
+  handleSearch: (params: PartSearchParams | null, showAlerts?: boolean) => Promise<void>
 }
 
 export default function PartsSearchDialog({ open, setOpen, handleSearch }: Props) {
@@ -46,7 +47,7 @@ export default function PartsSearchDialog({ open, setOpen, handleSearch }: Props
 
       const hasValidSearchCriteria = (partNum && partNum !== '*') || stockNum || desc || location || qty || remarks || rating || purchasedFrom || serialNum || hp;
       if (hasValidSearchCriteria) {
-        handleSearch(partNum, stockNum, desc, location, qty, remarks, rating, purchasedFrom, serialNum, hp, 1, false);
+        handleSearch({ partNum, stockNum, desc, location, qty, remarks, rating, purchasedFrom, serialNum, hp, page: 1, isAltSearch: false });
       }
     }
   }, [showSoldParts]);
@@ -76,7 +77,7 @@ export default function PartsSearchDialog({ open, setOpen, handleSearch }: Props
     if (isObjectNull({ partNum, stockNum, desc, location, qty, remarks, rating, purchasedFrom, serialNum, hp })) {
       window.location.reload();
     } else {
-      await handleSearch(partNum, stockNum, desc, location, qty, remarks, rating, purchasedFrom, serialNum, hp, 1, false);
+      await handleSearch({ partNum, stockNum, desc, location, qty, remarks, rating, purchasedFrom, serialNum, hp, page: 1, isAltSearch: false });
       if (partNum && user.subtype === 'sales') await addRecentSearch({ partNum: partNum.replace('*', ''), salespersonId: user.id });
     }
     setLastSearch(partNum.replace('*', ''));
