@@ -6,73 +6,79 @@ import Button from "@/components/Library/Button";
 import Loading from "@/components/Library/Loading";
 import Pagination from "@/components/Library/Pagination";
 import Table from "@/components/Library/Table";
-import { handwrittenSearchAtom, userAtom } from "@/scripts/atoms/state";
-import { addHandwritten, getSomeHandwrittens, getYeserdayCOGS, getYeserdaySales, searchHandwrittens } from "@/scripts/services/handwrittensService";
+import { userAtom } from "@/scripts/atoms/state";
+import { addHandwritten, getSomeHandwrittens, getYeserdayCOGS, getYeserdaySales, HandwrittenSearch, searchHandwrittens } from "@/scripts/services/handwrittensService";
 import { formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
 import { useAtom } from "jotai";
 import Link from "@/components/Library/Link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useArrowSelector } from "@/hooks/useArrowSelector";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+
+const TAX_RATE = 0.08375;
+const LIMIT = 40;
 
 
 export default function Handwrittens() {
   const [user] = useAtom<User>(userAtom);
-  const [handwrittenSearchData] = useAtom(handwrittenSearchAtom);
-  const [handwrittensData] = useState<Handwritten[]>([]);
-  const [handwrittens, setHandwrittens] = useState<Handwritten[]>([]);
   const [focusedHandwritten, setFocusedHandwritten] = useState<Handwritten | null>(null);
-  const [handwrittenCount, setHandwrittenCount] = useState(0);
   const [openSearch, setOpenSearch] = useState(false);
   const [customerSelectOpen, setCustomerSelectOpen] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const [currentPage, setCurrentPage] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
   const [searchData, setSearchData] = useState<any>({});
   const [taxTotal, setTaxTotal] = useState(0);
-  const [totalSales, setTotalSales] = useState(0);
-  const [totalCOGS, setTotalCOGS] = useState(0);
-  useArrowSelector(handwrittens, focusedHandwritten, setFocusedHandwritten);
-  const TAX_RATE = 0.08375;
-  const LIMIT = 40;
+  const queryClient = useQueryClient();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setTotalSales(await getYeserdaySales());
-      setTotalCOGS(await getYeserdayCOGS());
-      setLoading(false);
-    };
-    fetchData();
-  }, []);
+  const { data: totalSales = 0, isFetching: isSalesLoading } = useQuery<number>({
+    queryKey: ['yesterdaySales'],
+    queryFn: getYeserdaySales,
+    refetchOnWindowFocus: false,
+    keepPreviousData: true
+  });
 
-  useEffect(() => setSearchData(handwrittenSearchData), [handwrittenSearchData]);
+  const { data: totalCOGS = 0, isFetching: isCogsLoading } = useQuery<number>({
+    queryKey: ['yesterdayCOGS'],
+    queryFn: getYeserdayCOGS,
+    refetchOnWindowFocus: false,
+    keepPreviousData: true
+  });
 
-  const handleChangePage = async (_: any, page: number) => {
-    if (page === currentPage) return;
-    setLoading(true);
-    const hasValidSearchCriteria = (
-      searchData.id ||
-      searchData.date ||
-      (searchData.poNum && searchData.poNum !== '*') ||
-      (searchData.billToCompany && searchData.billToCompany !== '*') ||
-      (searchData.shipToCompany && searchData.shipToCompany !== '*') ||
-      searchData.source ||
-      searchData.payment
-    );
+  const { data: handwrittensRes, isFetching } = useQuery<HandwrittenRes>({
+    queryKey: ['handwrittens', currentPage, searchData],
+    queryFn: async () => {
+      const hasValidSearchCriteria =
+        searchData.id ||
+        searchData.date ||
+        (searchData.poNum && searchData.poNum !== '*') ||
+        (searchData.billToCompany && searchData.billToCompany !== '*') ||
+        (searchData.shipToCompany && searchData.shipToCompany !== '*') ||
+        searchData.source ||
+        searchData.payment;
 
-    if (hasValidSearchCriteria) {
-      const res = await searchHandwrittens({ ...searchData, offset: (page - 1) * LIMIT });
-      setHandwrittens(res.rows);
-      setHandwrittenCount(res.pageCount);
-    } else {
-      const res = await getSomeHandwrittens(page, LIMIT);
-      setHandwrittens(res.rows);
-      setHandwrittenCount(res.pageCount);
-    }
-    setCurrentPage(page);
-    setLoading(false);
+      if (hasValidSearchCriteria) {
+        return await searchHandwrittens({
+          ...searchData,
+          offset: (currentPage - 1) * LIMIT,
+        });
+      }
+      return await getSomeHandwrittens(currentPage, LIMIT);
+    },
+    refetchOnWindowFocus: false,
+    keepPreviousData: true
+  });
+
+  useArrowSelector(handwrittensRes?.rows ?? [], focusedHandwritten, setFocusedHandwritten);
+
+  const handleChangePage = (_: any, page: number) => {
+    if (page !== currentPage) setCurrentPage(page);
   };
 
-  const handleSearch = (results: Handwritten[]) => {
-    setHandwrittens(results);
+  const handleSearch = (results: Handwritten[], pageCount: number, search: HandwrittenSearch) => {
+    setSearchData(search);
+    queryClient.setQueryData(['handwrittens', currentPage, searchData], {
+      rows: results,
+      pageCount: pageCount
+    });
   };
 
   const handleNewHandwritten = async (customer: Customer) => {
@@ -112,26 +118,38 @@ export default function Handwrittens() {
       accountingStatus: null,
       shippingStatus: null,
       billToCompany: customer.company,
-      shipToCompany: null
+      shipToCompany: null,
     } as any;
+
     await addHandwritten(newHandwritten);
-    const res = await getSomeHandwrittens(1, LIMIT);
+    queryClient.invalidateQueries({ queryKey: ['handwrittens'] });
     setCurrentPage(1);
-    setHandwrittens(res.rows);
-    setHandwrittenCount(res.pageCount);
   };
 
   const handleFocusHandwritten = (handwritten: Handwritten) => {
     setFocusedHandwritten(handwritten);
-    const taxItemsAmount = handwritten && handwritten.handwrittenItems.map((item) => (item?.qty ?? 0) * (item?.unitPrice ?? 0)).reduce((acc, cur) => acc + cur, 0);
+    const taxItemsAmount = (
+      handwritten?.handwrittenItems
+        .map((item) => (item?.qty ?? 0) * (item?.unitPrice ?? 0))
+        .reduce((acc, cur) => acc + cur, 0) ?? 0
+    );
     setTaxTotal(Number((taxItemsAmount * TAX_RATE).toFixed(2)));
   };
 
 
   return (
     <Layout title="Handwrittens">
-      <HandwrittensSearchDialog open={openSearch} setOpen={setOpenSearch} setHandwrittens={handleSearch} setMinItems={setHandwrittenCount} limit={LIMIT} />
-      <CustomerDropdownDialog open={customerSelectOpen} setOpen={setCustomerSelectOpen} onSubmit={handleNewHandwritten} />
+      <HandwrittensSearchDialog
+        open={openSearch}
+        setOpen={setOpenSearch}
+        handleSearch={handleSearch}
+        limit={LIMIT}
+      />
+      <CustomerDropdownDialog
+        open={customerSelectOpen}
+        setOpen={setCustomerSelectOpen}
+        onSubmit={handleNewHandwritten}
+      />
 
       <div className="handwrittens__container">
         <div className="handwrittens">
@@ -143,53 +161,57 @@ export default function Handwrittens() {
           <div className="handwrittens__top-bar">
             <div className="handwrittens__top-bar--count-block">
               <h4>Yesterday&apos;s COGS</h4>
-              <p>{ formatCurrency(totalCOGS) }</p>
+              <p>{ isCogsLoading ? 'Loading...' : formatCurrency(totalCOGS) }</p>
             </div>
             <div className="handwrittens__top-bar--count-block">
               <h4>Yesterday&apos;s Sales</h4>
-              <p>{ formatCurrency(totalSales) }</p>
+              <p>{ isSalesLoading ? 'Loading...' : formatCurrency(totalSales) }</p>
             </div>
           </div>
-          { loading && <Loading /> }
-          {handwrittens &&
-            <div className="handwrittens__table-container">
-              <Table>
-                <thead>
-                  <tr>
-                    <th></th>
-                    <th>Date</th>
-                    <th>Bill To Company</th>
-                    <th>Ship To Company</th>
-                    <th>Source</th>
-                    <th>Payment</th>
-                    <th>Status</th>
-                    <th>Accounting</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {handwrittens.map((handwritten: Handwritten) => {
-                    return (
-                      <tr key={handwritten.id} onClick={() => handleFocusHandwritten(handwritten)} style={ focusedHandwritten && handwritten.id === focusedHandwritten.id ? { border: 'solid 3px var(--yellow-2)' } : {} }>
-                        <td><Link href={`/handwrittens/${handwritten.id}`} data-testid="link">{ handwritten.id }</Link></td>
-                        <td>{ formatDate(handwritten.date) }</td>
-                        <td>{ handwritten.billToCompany }</td>
-                        <td>{ handwritten.shipToCompany }</td>
-                        <td>{ handwritten.source }</td>
-                        <td>{ handwritten.payment }</td>
-                        <td>{ handwritten.invoiceStatus }</td>
-                        <td>{ handwritten.accountingStatus }</td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </Table>
+
+          { isFetching && <Loading /> }
+          
+          {handwrittensRes &&
+            <>
+              <div className="handwrittens__table-container">
+                <Table>
+                  <thead>
+                    <tr>
+                      <th></th>
+                      <th>Date</th>
+                      <th>Bill To Company</th>
+                      <th>Ship To Company</th>
+                      <th>Source</th>
+                      <th>Payment</th>
+                      <th>Status</th>
+                      <th>Accounting</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {handwrittensRes.rows.map((handwritten: Handwritten) => {
+                      return (
+                        <tr key={handwritten.id} onClick={() => handleFocusHandwritten(handwritten)} style={ focusedHandwritten && handwritten.id === focusedHandwritten.id ? { border: 'solid 3px var(--yellow-2)' } : {} }>
+                          <td><Link href={`/handwrittens/${handwritten.id}`} data-testid="link">{ handwritten.id }</Link></td>
+                          <td>{ formatDate(handwritten.date) }</td>
+                          <td>{ handwritten.billToCompany }</td>
+                          <td>{ handwritten.shipToCompany }</td>
+                          <td>{ handwritten.source }</td>
+                          <td>{ handwritten.payment }</td>
+                          <td>{ handwritten.invoiceStatus }</td>
+                          <td>{ handwritten.accountingStatus }</td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </Table>
+              </div>
               <Pagination
-                data={handwrittensData}
+                data={handwrittensRes.rows}
                 setData={handleChangePage}
-                pageCount={handwrittenCount}
+                pageCount={handwrittensRes.pageCount}
                 pageSize={LIMIT}
               />
-            </div>
+            </>
           }
         </div>
 

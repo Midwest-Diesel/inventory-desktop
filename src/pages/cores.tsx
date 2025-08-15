@@ -1,37 +1,48 @@
-import CoreSearchDialog from "@/components/Dialogs/CoreSearchDialog";
+import CoreSearchDialog, { CoreSearch } from "@/components/Dialogs/CoreSearchDialog";
 import { Layout } from "@/components/Layout";
 import Button from "@/components/Library/Button";
 import Link from "@/components/Library/Link";
+import Loading from "@/components/Library/Loading";
 import Table from "@/components/Library/Table";
-import { getAllCores } from "@/scripts/services/coresService";
+import { getAllCores, searchCores } from "@/scripts/services/coresService";
 import { formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
 
 
 export default function Cores() {
-  const [coresData, setCoresData] = useState<Core[]>([]);
-  const [cores, setCores] = useState<Core[]>([]);
   const [isCoreSearchOpen, setIsOpenCoreSearchOpen] = useState(false);
+  const [searchData, setSearchData] = useState<CoreSearch | null>(null);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const res = await getAllCores();
-      setCores(res);
-      setCoresData(res);
-    };
-    fetchData();
-  }, []);
+  const { data: cores = [], isFetching } = useQuery<Core[]>({
+    queryKey: ['cores', searchData],
+    queryFn: async () => {
+      if (searchData) {
+        return await searchCores(searchData);
+      } else {
+        return await getAllCores();
+      }
+    },
+    refetchOnWindowFocus: false,
+    keepPreviousData: true
+  });
+
+  const onSearch = (search: CoreSearch) => {
+    setSearchData(search);
+  };
 
 
   return (
     <Layout title="Cores">
-      <CoreSearchDialog open={isCoreSearchOpen} setOpen={setIsOpenCoreSearchOpen} cores={coresData} setCores={setCores} />
+      <CoreSearchDialog open={isCoreSearchOpen} setOpen={setIsOpenCoreSearchOpen} onSearch={onSearch} />
 
       <div className="cores-page">
         <h1>Cores</h1>
         <div className="cores-page__top-bar">
           <Button onClick={() => setIsOpenCoreSearchOpen(true)}>Search</Button>
         </div>
+
+        { isFetching && <Loading /> }
 
         <div className="cores-page__table-container">
           <Table>

@@ -2,17 +2,17 @@ import { FormEvent, useState } from "react";
 import Dialog from "../Library/Dialog";
 import Button from "../Library/Button";
 import Input from "../Library/Input";
-import { parseDateInputValue } from "@/scripts/tools/stringUtils";
-import { addSurplus, getAllSurplus } from "@/scripts/services/surplusService";
+import { parseDateInputValue, parseResDate } from "@/scripts/tools/stringUtils";
+import { addSurplus } from "@/scripts/services/surplusService";
 
 interface Props {
   open: boolean
   setOpen: (open: boolean) => void
-  setSurplus: (surplus: Surplus[]) => void
+  refetch: () => void
 }
 
 
-export default function NewSurplusPartDialog({ open, setOpen, setSurplus }: Props) {
+export default function NewSurplusPartDialog({ open, setOpen, refetch }: Props) {
   const [code, setCode] = useState('');
   const [name, setName] = useState('');
   const [price, setPrice] = useState('');
@@ -24,11 +24,11 @@ export default function NewSurplusPartDialog({ open, setOpen, setSurplus }: Prop
       code,
       name,
       price: Number(price),
-      date,
+      date: parseResDate(parseDateInputValue(date)),
       notes: null,
     } as Surplus;
     await addSurplus(newSurplus);
-    setSurplus(await getAllSurplus());
+    refetch();
   };
 
 
@@ -46,7 +46,7 @@ export default function NewSurplusPartDialog({ open, setOpen, setSurplus }: Prop
           label="Code"
           variant={['label-space-between', 'label-full-width', 'small', 'thin']}
           value={code}
-          onChange={(e: any) => setCode(e.target.value)}
+          onChange={(e) => setCode(e.target.value)}
           required
         />
 
@@ -54,7 +54,7 @@ export default function NewSurplusPartDialog({ open, setOpen, setSurplus }: Prop
           label="Name"
           variant={['label-space-between', 'label-full-width', 'small', 'thin']}
           value={name}
-          onChange={(e: any) => setName(e.target.value)}
+          onChange={(e) => setName(e.target.value)}
           required
         />
 
@@ -64,16 +64,16 @@ export default function NewSurplusPartDialog({ open, setOpen, setSurplus }: Prop
           type="number"
           step="any"
           value={price}
-          onChange={(e: any) => setPrice(e.target.value)}
+          onChange={(e) => setPrice(e.target.value)}
           required
         />
 
         <Input
           label="Purchase Date"
           variant={['label-space-between', 'label-full-width', 'small', 'thin']}
-          type="date"
           value={parseDateInputValue(date)}
           onChange={(e: any) => setDate(new Date(e.target.value))}
+          type="date"
           required
         />
 

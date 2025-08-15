@@ -4,23 +4,21 @@ import Button from "@/components/Library/Button";
 import Loading from "@/components/Library/Loading";
 import { deleteEmailStuffItem, getAllEmailStuff } from "@/scripts/services/emailStuffService";
 import { invoke } from "@/scripts/config/tauri";
-
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { ask } from "@/scripts/config/tauri";
+import { useQuery } from "@tanstack/react-query";
 
 
 export default function EmailStuff() {
-  const [emailStuff, setEmailStuff] = useState<EmailStuff[]>([]);
   const [imageErrors, setImageErrors] = useState<{ [key: string]: boolean }>({});
   const [newAttachmentOpen, setNewAttachmentOpen] = useState(false);
   
-  useEffect(() => {
-    const fetchData = async () => {
-      const res = await getAllEmailStuff();
-      setEmailStuff(res ?? []);
-    };
-    fetchData();
-  }, []);
+  const { data: emailStuff = [], isFetching, refetch } = useQuery<EmailStuff[]>({
+    queryKey: ['emailStuff'],
+    queryFn: getAllEmailStuff,
+    refetchOnWindowFocus: false,
+    keepPreviousData: true
+  });
 
   const handleNewEmailItem = () => {
     setNewAttachmentOpen(true);
@@ -48,21 +46,22 @@ export default function EmailStuff() {
   const handleDelete = async (id: number) => {
     if (!await ask('Are you sure you want to do this?')) return;
     await deleteEmailStuffItem(id);
-    setEmailStuff(emailStuff.filter((item) => item.id !== id));
+    await refetch();
   };
 
 
   return (
     <Layout title="Email Stuff">
       <div className="email-stuff-page">
-        { newAttachmentOpen && <NewEmailAttachmentDialog open={newAttachmentOpen} setOpen={setNewAttachmentOpen} setEmailStuff={setEmailStuff} /> }
+        { newAttachmentOpen && <NewEmailAttachmentDialog open={newAttachmentOpen} setOpen={setNewAttachmentOpen} refetch={refetch} /> }
 
         <h1>Email Stuff</h1>
         <Button onClick={handleNewEmailItem}>New Email Item</Button>
 
         <div className="email-stuff-page__list">
-          { emailStuff.length === 0 && <Loading /> }
-          {emailStuff.map((item) => {
+          { isFetching && <Loading /> }
+
+          {emailStuff?.map((item) => {
             const hasImageError = imageErrors[item.id];
 
             return (

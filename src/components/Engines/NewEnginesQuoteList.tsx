@@ -1,9 +1,9 @@
 import { getQuotesByEngineModel } from "@/scripts/services/quotesService";
-import { useEffect, useState } from "react";
 import Table from "../Library/Table";
 import { formatCurrency, formatDate, formatPhone } from "@/scripts/tools/stringUtils";
 import Checkbox from "../Library/Checkbox";
 import Link from "@/components/Library/Link";
+import { useQuery } from "@tanstack/react-query";
 
 interface Props {
   model: string
@@ -11,15 +11,12 @@ interface Props {
 
 
 export default function NewEnginesQuoteList({ model }: Props) {
-  const [quotes, setQuotes] = useState<EngineQuote[]>([]);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const res = await getQuotesByEngineModel(model);
-      setQuotes(res);
-    };
-    fetchData();
-  }, [model]);
+  const { data: quotes = [] } = useQuery<EngineQuote[]>({
+    queryKey: ['quotes', model],
+    queryFn: () => getQuotesByEngineModel(model),
+    refetchOnWindowFocus: false,
+    keepPreviousData: true
+  });
   
 
   return (

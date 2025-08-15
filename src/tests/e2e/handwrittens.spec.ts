@@ -21,6 +21,7 @@ test.beforeAll(async ({ browser }) => {
 
 test.describe('Basic Functionality', () => {
   test('Display handwrittens', async () => {
+    await page.waitForLoadState('networkidle');
     const tableLength = (await page.$$('table tr')).length;
     expect(tableLength).toBeGreaterThan(0);
   });
@@ -156,6 +157,7 @@ test.describe('Handwritten items', () => {
     await page.getByTestId('item-delete-btn').first().click();
     await page.getByTestId('save-btn').click();
     await page.getByTestId('no-changes-btn').click();
+    await page.waitForLoadState('networkidle');
     await expect(page.getByTestId('item-desc').first()).toHaveText('TEST ITEM');
     expect(await page.getByTestId('order-notes').first().textContent()).toEqual('TEST WARRANTY\nNo CAT Warranty\nInjector warranty');
   });
@@ -186,6 +188,7 @@ test.describe('Cores', () => {
     await page.getByTestId('core-qty-input').focus();
     await page.keyboard.press('Enter');
     await page.getByTestId('core-credit-submit-btn').click();
+    await page.waitForLoadState('networkidle');
 
     await page.getByTestId('link').first().click();
     await page.getByTestId('save-btn').click();
@@ -262,6 +265,7 @@ test.describe('SENT TO ACCOUNTING', () => {
 
     await page.waitForSelector('[data-testid="promotional-dialog"]');
     await page.getByTestId('no-changes-btn').click();
+    await page.waitForLoadState('networkidle');
     await page.getByTestId('mp-input').fill('1');
     await page.getByTestId('cap-input').fill('2');
     await page.getByTestId('br-input').fill('3');

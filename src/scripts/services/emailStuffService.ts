@@ -10,13 +10,14 @@ const parseEmailStuffRes = async (res: any) => {
 
 // === GET routes === //
 
-export const getAllEmailStuff = async () => {
+export const getAllEmailStuff = async (): Promise<EmailStuff[]> => {
   try {
     const auth = { withCredentials: true };
     const res = await api.get('/api/email-stuff', auth);
-    return await parseEmailStuffRes(res.data);
+    return await parseEmailStuffRes(res.data) ?? [];
   } catch (err) {
     console.error(err);
+    return [];
   }
 };
 

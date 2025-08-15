@@ -17,7 +17,7 @@ interface Props {
   quotes: Quote[]
   setQuotes: (quotes: Quote[]) => void
   onInvoiceQuote: (quote: Quote) => void
-  onChangePage: (data: any, page: number) => Promise<void>
+  onChangePage: (data: any, page: number) => void
   onQuotePiggyback: (quote: Quote) => void
   handleEmail: (quote: Quote) => void
   setQuoteEdited: (quote: Quote | null) => void
@@ -51,7 +51,7 @@ export default function QuoteList({ quotes, setQuotes, onInvoiceQuote, onChangeP
 
   const handleAddToEmail = async (id: number, value: boolean) => {
     await toggleAddToEmail(id, value);
-    await onChangePage(null, page);
+    onChangePage(null, page);
   };
 
   const handleQuoteSale = async (e: any, quote: Quote) => {

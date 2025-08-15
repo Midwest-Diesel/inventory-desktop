@@ -5,53 +5,40 @@ import Loading from "@/components/Library/Loading";
 import Select from "@/components/Library/Select/Select";
 import Table from "@/components/Library/Table";
 import NewEnginesQuoteList from "@/components/Engines/NewEnginesQuoteList";
-import { enginesAtom } from "@/scripts/atoms/state";
 import { getEnginesByStatus } from "@/scripts/services/enginesService";
-import { useAtom } from "jotai";
 import Link from "@/components/Library/Link";
-import { useEffect, useState } from "react";
+import { useMemo, useState } from "react";
 import NewEngineQuoteDialog from "@/components/Dialogs/NewEngineQuoteDialog";
+import { useQuery } from "@tanstack/react-query";
 
 
 export default function NewEnginesList() {
-  const [enginesData, setEnginesData] = useAtom<Engine[]>(enginesAtom);
-  const [engines, setEngines] = useState<Engine[]>([]);
-  const [engineModel, setEngineModel] = useState<string>('C-7');
-  const [filter, setFilter] = useState<string>('all-runner');
+  const [engineModel, setEngineModel] = useState<string>("C-7");
+  const [filter, setFilter] = useState<string>("all-runner");
   const [engine, setEngine] = useState<Engine | null>(null);
   const [newQuoteDialogOpen, setNewQuoteDialogOpen] = useState(false);
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  useEffect(() => {
-    setEngines(filterEngines(enginesData, filter));
-  }, [enginesData, engineModel]);
-
-  const fetchData = async () => {
-    const running = await getEnginesByStatus('RunnerReady');
-    const notRunning = await getEnginesByStatus('RunnerNotReady');
-    const holdRunning = await getEnginesByStatus('HoldSoldRunner');
-    setEnginesData([...running, ...notRunning, ...holdRunning].sort((a: any, b: any) => b.loginDate - a.loginDate));
-    setLoading(false);
-  };
+  const { data: engines = [], isFetching, refetch } = useQuery<Engine[]>({
+    queryKey: ['engines', 'runner-list'],
+    queryFn: async () => {
+      const running = await getEnginesByStatus('RunnerReady');
+      const notRunning = await getEnginesByStatus('RunnerNotReady');
+      const holdRunning = await getEnginesByStatus('HoldSoldRunner');
+      return [...running, ...notRunning, ...holdRunning].sort(
+        (a: any, b: any) => b.loginDate - a.loginDate
+      );
+    },
+    refetchOnWindowFocus: false,
+    keepPreviousData: true
+  });
 
   const isEngineResNotNull = (engine: Engine) => {
     const { turboReman, headNew, headReman, pistonNew, pistonReman, fwhNew, fwhReman, oilPanNew, oilPanReman, oilCoolerNew, oilCoolerReman, frontHsngNew, flywheelNew, ragNew, heuiPumpNew, heuiPumpReman } = engine;
     return ![turboReman, headNew, headReman, pistonNew, pistonReman, fwhNew, fwhReman, oilPanNew, oilPanReman, oilCoolerNew, oilCoolerReman, frontHsngNew, flywheelNew, ragNew, heuiPumpNew, heuiPumpReman].includes(null);
   };
 
-  const getEngineModels = () => {
-    const engineModels: any = enginesData.reduce((acc: string[], engine: Engine) => {
-      if (!acc.includes(engine.model ?? '')) {
-        acc.push(engine.model ?? '');
-      }
-      return acc;
-    }, []);
-
-    engineModels.sort((a: string, b: string) => {
+  const getEngineModels = useMemo(() => {
+    const models = Array.from(new Set(engines.map((e) => e.model ?? ''))).sort((a, b) => {
       const numA = parseFloat(a.match(/[\d]+/)?.[0] || 'Infinity');
       const numB = parseFloat(b.match(/[\d]+/)?.[0] || 'Infinity');
       const textA = a.match(/[a-zA-Z]+/)?.[0] || '';
@@ -65,27 +52,22 @@ export default function NewEnginesList() {
         if (numA > numB) return 1;
         return 0;
       }
-      if (startsWithNumberA) return 1;
-      if (startsWithNumberB) return -1;
+      return startsWithNumberA ? 1 : -1;
     });
-    return engineModels;
-  };
+    return models;
+  }, [engines]);
 
-  const filterEngines = (data: Engine[], filter: string) => {
-    return data.filter((engine: Engine) => {
-      if (![engine.model].includes(engineModel)) return false;
-      if (filter === 'all-runner' && engine.currentStatus !== 'RunnerNotReady' && engine.currentStatus !== 'RunnerReady' && engine.currentStatus !== 'HoldSoldRunner') return false;
-      if (filter === 'only-runner' && engine.currentStatus !== 'RunnerReady') return false;
-      if (filter === 'short-block' && engine.currentStatus !== 'ShortBlock') return false;
-      if (filter === 'long-block' && engine.currentStatus !== 'LongBlock') return false;
-      if (filter === 'sold' && engine.currentStatus !== 'Sold') return false;
+  const filteredEngines = useMemo(() => {
+    return engines.filter((e) => {
+      if (e.model !== engineModel) return false;
+      if (filter === "all-runner" && !["RunnerNotReady", "RunnerReady", "HoldSoldRunner"].includes(e.currentStatus ?? '')) return false;
+      if (filter === "only-runner" && e.currentStatus !== "RunnerReady") return false;
+      if (filter === "short-block" && e.currentStatus !== "ShortBlock") return false;
+      if (filter === "long-block" && e.currentStatus !== "LongBlock") return false;
+      if (filter === "sold" && e.currentStatus !== "Sold") return false;
       return true;
     });
-  };
-
-  const onNewQuote = async () => {
-    await fetchData();
-  };
+  }, [engines, engineModel, filter]);
 
   
   return (
@@ -95,13 +77,13 @@ export default function NewEnginesList() {
           open={newQuoteDialogOpen}
           setOpen={setNewQuoteDialogOpen}
           engine={engine}
-          onNewQuote={onNewQuote}
+          onNewQuote={refetch}
         />
       }
 
       <div className="new-engines-list">
         <div className="new-engines-list__top-bar">
-          {getEngineModels().map((model: string) => {
+          {getEngineModels.map((model: string) => {
             return (
               <Button key={model} onClick={() => setEngineModel(model)} data-testid="model-btn">{ model }</Button>
             );
@@ -110,10 +92,8 @@ export default function NewEnginesList() {
 
         <Select
           className="new-engines-list__filter"
-          onChange={(e: any) => {
-            setFilter(e.target.value);
-            setEngines(filterEngines(enginesData, e.target.value));
-          }}
+          value={filter}
+          onChange={(e) => setFilter(e.target.value)}
         >
           <option value="all-runner">All Runner Engines</option>
           <option value="only-runner">Only Runner Ready Engines</option>
@@ -122,7 +102,7 @@ export default function NewEnginesList() {
           <option value="sold">Sold</option>
         </Select>
 
-        { loading && <Loading /> }
+        { isFetching && <Loading /> }
   
         <div className="new-engines-list__table-container">
           <Table>
@@ -147,7 +127,7 @@ export default function NewEnginesList() {
               </tr>
             </thead>
             <tbody>
-              {engines.map((engine: Engine) => {
+              {filteredEngines.map((engine: Engine) => {
                 return (
                   <tr key={engine.id}>
                     <td>

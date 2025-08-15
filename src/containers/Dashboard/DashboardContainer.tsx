@@ -16,6 +16,7 @@ import CustomerSection from "./CustomerSection";
 import QuotesSection from "./QuotesSection";
 import PartSearchSection from "./PartSearchSection";
 import { useToast } from "@/hooks/useToast";
+import { useQuery } from "@tanstack/react-query";
 
 
 export default function DashboardContainer() {
@@ -36,15 +37,22 @@ export default function DashboardContainer() {
   const [quoteListType, setQuoteListType] = useState<'part' | 'engine'>('part');
   const [detailsExpanded, setDetailsExpanded] = useState(false);
   
-  useEffect(() => {
-    const fetchData = async () => {
-      if (!user || isObjectNull(user)) return;
+  const { data: recentSearches } = useQuery<RecentPartSearch[]>({
+    queryKey: ['recentPartSearches', user],
+    queryFn: async () => {
+      if (!user || isObjectNull(user)) return [];
       const prevSearch: any = localStorage.getItem('altPartSearches') || localStorage.getItem('partSearches');
       const partNum = JSON.parse(prevSearch)?.partNum.replace('*', '');
-      setRecentPartSearches(await getRecentPartSearches((partNum && partNum !== '') ? partNum : '*'));
-    };
-    fetchData();
-  }, [user]);
+      return await getRecentPartSearches(partNum && partNum !== '' ? partNum : '*');
+    },
+    enabled: !!user && !isObjectNull(user),
+    refetchOnWindowFocus: false,
+    keepPreviousData: true
+  });
+
+  useEffect(() => {
+    if (recentSearches) setRecentPartSearches(recentSearches);
+  }, [recentSearches, setRecentPartSearches]);
 
   useEffect(() => {
     if (!window?.__TAURI_IPC__) return;

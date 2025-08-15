@@ -5,20 +5,17 @@ import Button from "../Library/Button";
 import Select from "../Library/Select/Select";
 import { useAtom } from "jotai";
 import { POSearchAtom } from "@/scripts/atoms/state";
-import { searchPurchaseOrders } from "@/scripts/services/purchaseOrderService";
 import { parseDateInputValue } from "@/scripts/tools/stringUtils";
 
 interface Props {
   open: boolean
   setOpen: (open: boolean) => void
-  setPurchaseOrders: (purchaseOrders: PO[]) => void
-  setMinItems: (pageCount: number) => void
   limit: number
   page: number
 }
 
 
-export default function POSearchDialog({ open, setOpen, setPurchaseOrders, setMinItems, limit, page }: Props) {
+export default function POSearchDialog({ open, setOpen, limit, page }: Props) {
   const [, setSearchData] = useAtom(POSearchAtom);
   const [poNum, setPoNum] = useState<number>('' as any);
   const [date, setDate] = useState<Date | null>(null);
@@ -48,9 +45,6 @@ export default function POSearchDialog({ open, setOpen, setPurchaseOrders, setMi
       limit,
       offset: (page - 1) * limit
     };
-    const res = await searchPurchaseOrders(searchData);
-    setPurchaseOrders(res?.rows);
-    setMinItems(res?.pageCount);
     setSearchData(searchData);
   };
 

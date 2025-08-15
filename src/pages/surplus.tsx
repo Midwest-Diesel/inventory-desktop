@@ -3,30 +3,30 @@ import RemainingSurplusDialog from "@/components/Dialogs/RemainingSurplusDialog"
 import SoldSurplusPartsDialog from "@/components/Dialogs/SoldSurplusPartsDialog";
 import { Layout } from "@/components/Layout";
 import Button from "@/components/Library/Button";
+import Loading from "@/components/Library/Loading";
 import Table from "@/components/Library/Table";
 import { userAtom } from "@/scripts/atoms/state";
 import { getAllSurplus } from "@/scripts/services/surplusService";
 import { formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
+import { useQuery } from "@tanstack/react-query";
 import { useAtom } from "jotai";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 
 export default function Surplus() {
   const [user] = useAtom<User>(userAtom);
-  const [surplus, setSurplus] = useState<Surplus[]>([]);
   const [soldPartsOpen, setSoldPartsOpen] = useState(false);
   const [soldPartsCode, setSoldPartsCode] = useState('');
   const [remainingPartsOpen, setRemainingPartsOpen] = useState(false);
   const [newSurplusOpen, setNewSurplusOpen] = useState(false);
   const [remainingPartsCode, setRemainingPartsCode] = useState('');
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const res = await getAllSurplus();
-      setSurplus(res);
-    };
-    fetchData();
-  }, []);
+  const { data: surplus = [], isFetching, refetch } = useQuery<Surplus[]>({
+    queryKey: ['surplus'],
+    queryFn: getAllSurplus,
+    refetchOnWindowFocus: false,
+    keepPreviousData: true
+  });
 
   const getCostRemaining = (surplus: Surplus) => {
     return surplus.price - (surplus.costApplied ?? 0);
@@ -37,7 +37,7 @@ export default function Surplus() {
     <Layout title="Surplus Purchases">
       <SoldSurplusPartsDialog open={soldPartsOpen} setOpen={setSoldPartsOpen} code={soldPartsCode} />
       <RemainingSurplusDialog open={remainingPartsOpen} setOpen={setRemainingPartsOpen} code={remainingPartsCode} />
-      <NewSurplusPartDialog open={newSurplusOpen} setOpen={setNewSurplusOpen} setSurplus={setSurplus} />
+      <NewSurplusPartDialog open={newSurplusOpen} setOpen={setNewSurplusOpen} refetch={refetch} />
 
       <h1>Surplus Purchases</h1>
       {user.type === 'office' &&
@@ -45,6 +45,8 @@ export default function Surplus() {
           <Button onClick={() => setNewSurplusOpen(true)}>New Purchase</Button>
         </div>
       }
+
+      { isFetching && <Loading /> }
 
       <div className="surplus__table">
         <Table>

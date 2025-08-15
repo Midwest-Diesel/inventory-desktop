@@ -3,7 +3,7 @@ import { parseResDate } from "../tools/stringUtils";
 import { filterNullObjValuesArr } from "../tools/utils";
 import { getCoresByCustomer, getCoreReturnsByCustomer } from "./coresService";
 
-interface HandwrittenSearchData {
+export interface HandwrittenSearch {
   id?: number
   customerId?: number
   date?: string
@@ -97,7 +97,7 @@ export const getSomeHandwrittens = async (page: number, limit: number, onlyShowR
   }
 };
 
-export const searchHandwrittens = async (handwritten: HandwrittenSearchData): Promise<{ pageCount: number, rows: Handwritten[] }> => {
+export const searchHandwrittens = async (handwritten: HandwrittenSearch): Promise<{ pageCount: number, rows: Handwritten[] }> => {
   try {
     const auth = { withCredentials: true };
     const res = await api.get(`/api/handwrittens/search/${JSON.stringify(handwritten)}`, auth);
@@ -108,7 +108,7 @@ export const searchHandwrittens = async (handwritten: HandwrittenSearchData): Pr
   }
 };
 
-export const searchSelectHandwrittensDialogData = async (handwritten: HandwrittenSearchData): Promise<{ pageCount: number, rows: SelectHandwrittenDialogResult[] }> => {
+export const searchSelectHandwrittensDialogData = async (handwritten: HandwrittenSearch): Promise<{ pageCount: number, rows: SelectHandwrittenDialogResult[] }> => {
   try {
     const auth = { withCredentials: true };
     const res = await api.get(`/api/handwrittens/select-handwritten/${JSON.stringify(handwritten)}`, auth);

@@ -2,19 +2,16 @@ import { Layout } from "@/components/Layout";
 import Table from "@/components/Library/Table";
 import { getPerformance } from "@/scripts/services/reportsService";
 import { formatCurrency } from "@/scripts/tools/stringUtils";
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 
 
 export default function Performance() {
-  const [performance, setPerformance] = useState<Performance | null>(null);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const res = await getPerformance();
-      setPerformance(res);
-    };
-    fetchData();
-  }, []);
+  const { data: performance } = useQuery<Perf | null>({
+    queryKey: ['performance'],
+    queryFn: getPerformance,
+    refetchOnWindowFocus: false,
+    keepPreviousData: true
+  });
 
 
   return (

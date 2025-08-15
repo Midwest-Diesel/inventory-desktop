@@ -38,11 +38,7 @@ export default function CustomerSection({ onExpandDetails }: Props) {
         />
 
         {!isObjectNull(selectedCustomer) &&
-          <SelectedCustomerInfo
-            customerData={selectedCustomer}
-            setCustomerData={setSelectedCustomer}
-            expandedDetailsOpen={expandedDetailsOpen}
-          />
+          <SelectedCustomerInfo expandedDetailsOpen={expandedDetailsOpen} />
         }
       </div>
     </div>
