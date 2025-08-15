@@ -9,7 +9,6 @@ import { getCustomerTypes, getSomeCustomers, searchCustomers } from "@/scripts/s
 import Button from "@/components/Library/Button";
 import Input from "@/components/Library/Input";
 import Select from "@/components/Library/Select/Select";
-import { useQuery } from "@tanstack/react-query";
 
 interface Props {
   open: boolean
@@ -17,12 +16,14 @@ interface Props {
   searchTerm: string
 }
 
-const LIMIT = 25;
-
 
 export default function CustomerSearchDialog({ open, setOpen, searchTerm }: Props) {
   const [customersData, setCustomersData] = useAtom<Customer[]>(customersAtom);
+  const [searchedCustomers, setSearchedCustomers] = useState<Customer[]>([]);
   const [selectedCustomer, setSelectedCustomer] = useAtom<Customer>(selectedCustomerAtom);
+  const [pageCount, setPageCount] = useState(0);
+  const [customers, setCustomers] = useState<Customer[]>(customersData);
+  const [customerTypes, setCustomerTypes] = useState<string[]>([]);
   const [page, setPage] = useState<number>(1);
   const [isSearching, setIsSearching] = useState<boolean>(false);
   const [name, setName] = useState(searchTerm);
@@ -32,39 +33,57 @@ export default function CustomerSearchDialog({ open, setOpen, searchTerm }: Prop
   const [country, setCountry] = useState('');
   const [customerType, setCustomerType] = useState('');
 
-  const { data: customerTypes = [] } = useQuery<string[]>({
-    queryKey: ['customerTypes'],
-    queryFn: getCustomerTypes,
-    enabled: open
-  });
+  useEffect(() => {
+    const fetchData = async () => {
+      const res = await getSomeCustomers(1, 25);
+      setCustomersData(res.rows);
+      setPageCount(res.pageCount);
+      const types = await getCustomerTypes();
+      setCustomerTypes(types);
+    };
+    fetchData();
+  }, []);
 
-  const { data: customerRes, refetch: refetchCustomers } = useQuery<CustomerRes>({
-    queryKey: ['customers', page, name, phone, state, zip, country, customerType],
-    queryFn: async () => {
-      if (name || phone || state || zip || country || customerType) {
-        return { pageCount: customerRes?.pageCount ?? 0, rows: await searchCustomers({ name, phone, state, zip, country, customerType }) };
+  useEffect(() => {
+    const fetchData = async () => {
+      if (searchTerm && open) {
+        setIsSearching(true);
+        const results = await searchCustomers({ name: searchTerm, phone, state, zip, country, customerType });
+        setSearchedCustomers(results);
+        setPage(1);
       } else {
-        return await getSomeCustomers(page, LIMIT);
+        setIsSearching(false);
       }
-    },
-    enabled: open,
-    keepPreviousData: true
-  });
+    };
+    fetchData();
+  }, [searchTerm, customersData, open]);
 
   const selectCustomer = (customer: Customer) => {
     localStorage.setItem('customerId', customer.id.toString());
     setSelectedCustomer(customer);
   };
 
-  const handleCustomerSearch = async (e: FormEvent) => {
-    e.preventDefault();
-    setPage(1);
-    refetchCustomers();
+  const handleChangePage = async (_: any, page: number) => {
+    setPage(page);
+    if (isSearching) {
+      const startIndex = (page - 1) * 25;
+      const endIndex = startIndex + 25;
+      setCustomers(searchedCustomers.slice(startIndex, endIndex));
+    } else {
+      const res = await getSomeCustomers(page, 25);
+      setCustomers(res.rows);
+    }
   };
 
-  const handleChangePage = (_: any, newPage: number) => {
-    setPage(newPage);
+  const handleCustomerSearch = async (e: FormEvent) => {
+    e.preventDefault();
+    setIsSearching(true);
+    const res = await searchCustomers({ name, phone, state, zip, country, customerType });
+    setSearchedCustomers(res);
+    setPage(1);
   };
+
+  const displayedCustomers = isSearching ? searchedCustomers.slice((page - 1) * 25, page * 25) : customers;
 
   
   return (
@@ -77,20 +96,52 @@ export default function CustomerSearchDialog({ open, setOpen, searchTerm }: Prop
       className="customer-search-dialog"
       data-testid="customer-search-dialog"
     >
-      <form onSubmit={handleCustomerSearch} autoComplete="off">
-        <Input label="Name" variant={['label-bold', 'label-stack', 'thin', 'small', 'label-fit-content']} onChange={e => setName(e.target.value)} value={name} />
-        <Input label="Phone" variant={['label-bold', 'label-stack', 'thin', 'small', 'label-fit-content']} onChange={e => setPhone(e.target.value)} value={phone} />
-        <Input label="State" variant={['label-bold', 'label-stack', 'thin', 'x-small', 'label-fit-content']} onChange={e => setState(e.target.value)} value={state} />
-        <Input label="Zip" variant={['label-bold', 'label-stack', 'thin', 'x-small', 'label-fit-content']} onChange={e => setZip(e.target.value)} value={zip} />
-        <Input label="Country" variant={['label-bold', 'label-stack', 'thin', 'small', 'label-fit-content']} onChange={e => setCountry(e.target.value)} value={country} />
-        <Select label="Customer Type" variant={['label-bold', 'label-stack']} onChange={e => setCustomerType(e.target.value)} value={customerType}>
+      <form onSubmit={(e) => handleCustomerSearch(e)} autoComplete="off">
+        <Input
+          label="Name"
+          variant={['label-bold', 'label-stack', 'thin', 'small', 'label-fit-content']}
+          onChange={(e: any) => setName(e.target.value)}
+          value={name}
+        />
+        <Input
+          label="Phone"
+          variant={['label-bold', 'label-stack', 'thin', 'small', 'label-fit-content']}
+          onChange={(e: any) => setPhone(e.target.value)}
+          value={phone}
+        />
+        <Input
+          label="State"
+          variant={['label-bold', 'label-stack', 'thin', 'x-small', 'label-fit-content']}
+          onChange={(e: any) => setState(e.target.value)}
+          value={state}
+        />
+        <Input
+          label="Zip"
+          variant={['label-bold', 'label-stack', 'thin', 'x-small', 'label-fit-content']}
+          onChange={(e: any) => setZip(e.target.value)}
+          value={zip}
+        />
+        <Input
+          label="Country"
+          variant={['label-bold', 'label-stack', 'thin', 'small', 'label-fit-content']}
+          onChange={(e: any) => setCountry(e.target.value)}
+          value={country}
+        />
+        <Select
+          label="Customer Type"
+          variant={['label-bold', 'label-stack']}
+          onChange={(e: any) => setCustomerType(e.target.value)}
+          value={customerType}
+        >
           <option value=""></option>
-          {customerTypes.map((type, i) => <option key={i} value={type}>{type}</option>)}
+          {customerTypes.map((type, i) => {
+            return <option key={i} value={type}>{ type }</option>;
+          })}
         </Select>
         <Button variant={['fit']} type="submit">Search</Button>
       </form>
 
-      <h3>Selected Customer: {selectedCustomer?.company || 'none'}</h3>
+      <h3>Selected Customer: { selectedCustomer.company || 'none' }</h3>
       <Table width="500px">
         <thead>
           <tr>
@@ -101,25 +152,25 @@ export default function CustomerSearchDialog({ open, setOpen, searchTerm }: Prop
           </tr>
         </thead>
         <tbody>
-          {customerRes?.rows.map((customer: Customer) => (
-            <tr key={customer.id} onClick={() => selectCustomer(customer)} className={customer.id === selectedCustomer?.id ? 'customer-search__selected-customer' : ''} data-testid="customer-row">
-              <td><Link href={`customer/${customer.id}`}>Details</Link></td>
-              <td>{customer.company}</td>
-              <td>{customer.billToCity}</td>
-              <td>{customer.billToState}</td>
-            </tr>
-          ))}
+          {displayedCustomers && displayedCustomers.map((customer: Customer) => {
+            return (
+              <tr key={customer.id} onClick={() => selectCustomer(customer)} className={`${customer.id === selectedCustomer.id ? 'customer-search__selected-customer' : ''}`} data-testid="customer-row">
+                <td><Link href={`customer/${customer.id}`}>Details</Link></td>
+                <td>{ customer.company }</td>
+                <td>{ customer.billToCity }</td>
+                <td>{ customer.billToState }</td>
+              </tr>
+            );
+          })}
         </tbody>
       </Table>
-
       <Pagination
-        data={customerRes?.rows ?? []}
+        data={isSearching ? searchedCustomers : customersData}
         setData={handleChangePage}
-        pageCount={customerRes?.pageCount}
-        pageSize={LIMIT}
+        pageCount={pageCount}
+        pageSize={25}
       />
-
-      {customerRes?.rows.length === 0 && <p>No results</p>}
+      { displayedCustomers.length === 0 && <p>No results</p> }
     </Dialog>
   );
 }

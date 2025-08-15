@@ -17,7 +17,7 @@ import PartsTable from "@/components/Dashboard/PartsTable";
 import { selectedAlertsAtom } from "@/scripts/atoms/components";
 import { addHandwrittenItemChild, deleteHandwrittenItemChild, editHandwrittenItemChild, getHandwrittenItemById } from "@/scripts/services/handwrittensService";
 import { useToast } from "@/hooks/useToast";
-import { QueryClient, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { detectAlerts } from "@/scripts/services/alertsService";
 import { getQuotesByPartNum } from "@/scripts/services/recentSearchesService";
 
@@ -74,7 +74,6 @@ export default function PartSearchSection({ selectHandwrittenOpen, setSelectHand
   const [partsOnEngs, setPartsOnEngs] = useState<{ partNum: string; engines: Engine[] }[]>([]);
   const [isValidSearch, setIsValidSearch] = useState(false);
   const [searchParams, setSearchParams] = useState<PartSearchParams | null>(null);
-  const queryClient = new QueryClient();
 
   const { data: parts, isFetching } = useQuery<PartsRes>({
     queryKey: ['parts', currentPage, showSoldParts],
@@ -84,8 +83,8 @@ export default function PartSearchSection({ selectHandwrittenOpen, setSelectHand
     keepPreviousData: true
   });
 
-  const { data: search, refetch: refetchSearch, isFetching: isSearchFetching } = useQuery<PartsRes>({
-    queryKey: ['searchParts', searchParams?.partNum, searchParams?.isAltSearch, searchParams?.page, showSoldParts],
+  const { data: search, isFetching: isSearchFetching } = useQuery<PartsRes>({
+    queryKey: ['searchParts', searchParams, showSoldParts],
     queryFn: () => {
       if (!searchParams) throw new Error('No search params');
       return searchParams.isAltSearch
@@ -117,17 +116,12 @@ export default function PartSearchSection({ selectHandwrittenOpen, setSelectHand
   const handleSearch = async (params: PartSearchParams | null, showAlerts = true) => {
     if (!params) return;
     setSearchParams(params);
-    const results = params.isAltSearch
-      ? await searchAltParts({ ...params, showSoldParts }, params.page, LIMIT)
-      : await searchParts({ ...params, showSoldParts }, params.page, LIMIT);
-      
     setRecentQuoteSearches(await getQuotesByPartNum(params.partNum));
+    
     if (showAlerts) {
       const alerts = await detectAlerts(params.partNum);
       setSelectedAlerts([...selectedAlerts, ...alerts]);
     }
-    queryClient.setQueryData<PartsRes>(['searchParts', params], results);
-    await refetchSearch();
   };
 
   const onChangePage = (_: any, page: number) => {

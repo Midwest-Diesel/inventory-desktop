@@ -21,7 +21,9 @@ export default function SelectedCustomerInfo({ expandedDetailsOpen }: Props) {
   const { data: salesHistory = [] } = useQuery<SalesHistory[]>({
     queryKey: ['salesHistory', customer?.id],
     queryFn: async () => await getCustomerSalesHistory(customer.id),
-    enabled: !!customer?.id
+    enabled: !!customer?.id,
+    refetchOnWindowFocus: false,
+    keepPreviousData: true
   });
 
 

@@ -51,7 +51,7 @@ export default function QuoteList({ quotes, setQuotes, onInvoiceQuote, onChangeP
 
   const handleAddToEmail = async (id: number, value: boolean) => {
     await toggleAddToEmail(id, value);
-    await onChangePage(null, page);
+    onChangePage(null, page);
   };
 
   const handleQuoteSale = async (e: any, quote: Quote) => {
