@@ -8,11 +8,18 @@ interface Props {
   open: boolean
   setOpen: (open: boolean) => void
   cores: Core[]
-  setCores: (cores: Core[]) => void
+  onSearch: (search: CoreSearch) => void
+}
+
+export interface CoreSearch {
+  partNum: string
+  desc: string
+  priority: string
+  salesperson: string
 }
 
 
-export default function CoreSearchDialog({ open, setOpen, cores, setCores }: Props) {
+export default function CoreSearchDialog({ open, setOpen, cores, onSearch }: Props) {
   const [partNum, setPartNum] = useState('');
   const [desc, setDesc] = useState('');
   const [priority, setPriority] = useState<'' | 'HIGH' | 'LOW'>('');
@@ -27,20 +34,7 @@ export default function CoreSearchDialog({ open, setOpen, cores, setCores }: Pro
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    setCores(searchCores());
-  };
-
-  const searchCores  = () => {
-    return cores.filter((core) => {
-      if (
-        (!partNum || partNum.includes('*') ? core.partNum.toUpperCase().includes(partNum.replace('*', '').toUpperCase()) : core.partNum.toUpperCase() === partNum.toUpperCase()) &&
-        (!desc || desc.includes('*') ? core.desc.toUpperCase().includes(desc.replace('*', '').toUpperCase()) : core.desc.toUpperCase() === desc.toUpperCase()) &&
-        (!priority || core.priority.toUpperCase() === priority) &&
-        (!salesperson || salesperson.includes('*') ? core.initials.toUpperCase().includes(salesperson.replace('*', '').toUpperCase()) : core.initials.toUpperCase() === salesperson.toUpperCase())
-      ) {
-        return core;
-      }
-    });
+    onSearch({ partNum, desc, priority, salesperson });
   };
 
 

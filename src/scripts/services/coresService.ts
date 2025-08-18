@@ -1,3 +1,4 @@
+import { CoreSearch } from "@/components/Dialogs/CoreSearchDialog";
 import api from "../config/axios";
 import { parseResDate } from "../tools/stringUtils";
 import { deleteHandwrittenItem } from "./handwrittensService";
@@ -15,6 +16,17 @@ export const getAllCores = async (): Promise<Core[]> => {
   try {
     const auth = { withCredentials: true };
     const res = await api.get('/api/cores', auth);
+    return parseCoreDataRes(res.data);
+  } catch (err) {
+    console.error(err);
+    return [];
+  }
+};
+
+export const searchCores = async (search: CoreSearch): Promise<Core[]> => {
+  try {
+    const auth = { withCredentials: true };
+    const res = await api.get(`/api/cores/search?s=${encodeURI(JSON.stringify(search))}`, auth);
     return parseCoreDataRes(res.data);
   } catch (err) {
     console.error(err);
