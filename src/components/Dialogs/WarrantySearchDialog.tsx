@@ -11,13 +11,11 @@ import { warrantySearchAtom } from "@/scripts/atoms/state";
 interface Props {
   open: boolean
   setOpen: (open: boolean) => void
-  setWarranties: (warranties: Warranty[]) => void
-  setMinItems: (pageCount: number) => void
   limit: number
 }
 
 
-export default function WarrantySearchDialog({ open, setOpen, setWarranties, setMinItems, limit }: Props) {
+export default function WarrantySearchDialog({ open, setOpen, limit }: Props) {
   const [, setSearchData] = useAtom(warrantySearchAtom);
   const [id, setId] = useState<number>('' as any);
   const [partNum, setPartNum] = useState('');
@@ -41,9 +39,6 @@ export default function WarrantySearchDialog({ open, setOpen, setWarranties, set
       limit,
       offset: 0
     };
-    const res = await searchWarranties(searchData);
-    setWarranties(res?.rows);
-    setMinItems(res?.pageCount);
     setSearchData(searchData);
   };
 

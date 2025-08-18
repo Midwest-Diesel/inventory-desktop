@@ -24,3 +24,8 @@ interface ReturnRes {
   rows: Return[]
   pageCount: number
 }
+
+interface WarrantyRes {
+  rows: Warranty[]
+  pageCount: number
+}
