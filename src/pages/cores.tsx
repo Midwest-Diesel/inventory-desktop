@@ -34,7 +34,7 @@ export default function Cores() {
 
   return (
     <Layout title="Cores">
-      <CoreSearchDialog open={isCoreSearchOpen} setOpen={setIsOpenCoreSearchOpen} cores={cores} onSearch={onSearch} />
+      <CoreSearchDialog open={isCoreSearchOpen} setOpen={setIsOpenCoreSearchOpen} onSearch={onSearch} />
 
       <div className="cores-page">
         <h1>Cores</h1>

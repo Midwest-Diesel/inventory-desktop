@@ -4,7 +4,6 @@ import Input from "../Library/Input";
 import Button from "../Library/Button";
 import Select from "../Library/Select/Select";
 import VendorSelect from "../Library/Select/VendorSelect";
-import { searchWarranties } from "@/scripts/services/warrantiesService";
 import { useAtom } from "jotai";
 import { warrantySearchAtom } from "@/scripts/atoms/state";
 

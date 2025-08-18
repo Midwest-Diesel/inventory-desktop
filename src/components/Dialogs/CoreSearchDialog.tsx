@@ -7,7 +7,6 @@ import Select from "../Library/Select/Select";
 interface Props {
   open: boolean
   setOpen: (open: boolean) => void
-  cores: Core[]
   onSearch: (search: CoreSearch) => void
 }
 
@@ -19,7 +18,7 @@ export interface CoreSearch {
 }
 
 
-export default function CoreSearchDialog({ open, setOpen, cores, onSearch }: Props) {
+export default function CoreSearchDialog({ open, setOpen, onSearch }: Props) {
   const [partNum, setPartNum] = useState('');
   const [desc, setDesc] = useState('');
   const [priority, setPriority] = useState<'' | 'HIGH' | 'LOW'>('');
