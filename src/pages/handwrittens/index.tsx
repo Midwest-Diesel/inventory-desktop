@@ -1,5 +1,5 @@
 import CustomerDropdownDialog from "@/components/Dialogs/CustomerSelectDialog";
-import HandwrittensSearchDialog, { HandwrittenSearch } from "@/components/Dialogs/handwrittens/HandwrittensSearchDialog";
+import HandwrittensSearchDialog from "@/components/Dialogs/handwrittens/HandwrittensSearchDialog";
 import HandwrittenItemsTable from "@/components/Handwrittens/HandwrittenItemsTable";
 import { Layout } from "@/components/Layout";
 import Button from "@/components/Library/Button";
@@ -7,7 +7,7 @@ import Loading from "@/components/Library/Loading";
 import Pagination from "@/components/Library/Pagination";
 import Table from "@/components/Library/Table";
 import { userAtom } from "@/scripts/atoms/state";
-import { addHandwritten, getSomeHandwrittens, getYeserdayCOGS, getYeserdaySales, searchHandwrittens } from "@/scripts/services/handwrittensService";
+import { addHandwritten, getSomeHandwrittens, getYeserdayCOGS, getYeserdaySales, HandwrittenSearch, searchHandwrittens } from "@/scripts/services/handwrittensService";
 import { formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
 import { useAtom } from "jotai";
 import Link from "@/components/Library/Link";
@@ -74,7 +74,7 @@ export default function Handwrittens() {
   };
 
   const handleSearch = (results: Handwritten[], pageCount: number, search: HandwrittenSearch) => {
-    setSearchData(search)
+    setSearchData(search);
     queryClient.setQueryData(['handwrittens', currentPage, searchData], {
       rows: results,
       pageCount: pageCount

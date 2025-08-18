@@ -2,42 +2,35 @@ import { Layout } from "@/components/Layout";
 import Button from "@/components/Library/Button";
 import Pagination from "@/components/Library/Pagination";
 import Table from "@/components/Library/Table";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "@/components/Library/Link";
 import Loading from "@/components/Library/Loading";
 import { getSomeCompletedReturns, getSomeReturns } from "@/scripts/services/returnsService";
 import { cap, formatDate } from "@/scripts/tools/stringUtils";
+import { useQuery } from "@tanstack/react-query";
+
+const LIMIT = 26;
 
 
 export default function Returns() {
-  const [returnsData, setReturnsData] = useState<Return[]>([]);
-  const [returns, setReturns] = useState<Return[]>(returnsData);
-  const [pageCount, setPageCount] = useState(0);
   const [displayedPanel, setDisplayedPanel] = useState<string>('shop');
-  const [loading, setLoading] = useState(true);
-  const LIMIT = 26;
+  const [currentPage, setCurrentPage] = useState(1);
 
-  useEffect(() => {
-    if (returnsData.length === 0) fetchData();
-  }, []);
-
-  const fetchData = async () => {
-    const res = await getSomeReturns(1, LIMIT, true);
-    setReturnsData(res.rows);
-    setPageCount(res.pageCount);
-    setLoading(false);
-  };
+  const { data: returns, isFetching } = useQuery<ReturnRes>({
+    queryKey: ['returns', currentPage, displayedPanel],
+    queryFn: async () => {
+      if (displayedPanel === 'completed') {
+        return await getSomeCompletedReturns(currentPage, LIMIT);
+      } else {
+        return await getSomeReturns(currentPage, LIMIT, displayedPanel === 'shop' ? true : false);
+      }
+    },
+    refetchOnWindowFocus: false,
+    keepPreviousData: true
+  });
 
   const handleChangePage = async (_: any, page: number) => {
-    if (displayedPanel === 'completed') {
-      const res = await getSomeCompletedReturns(page, LIMIT);
-      setReturns(res.rows);
-      setPageCount(res.pageCount);
-    } else {
-      const res = await getSomeReturns(page, LIMIT, displayedPanel === 'shop' ? true : false);
-      setReturns(res.rows);
-      setPageCount(res.pageCount);
-    }
+    setCurrentPage(page);
   };
 
 
@@ -51,8 +44,10 @@ export default function Returns() {
           <Button onClick={() => setDisplayedPanel('completed')} data-testid="completed-btn">Completed Returns</Button>
         </div>
 
-        { loading && <Loading /> }
-        {returnsData && displayedPanel === 'shop' &&
+        { isFetching && <Loading /> }
+        { !returns && <p>No results...</p> }
+
+        {returns && displayedPanel === 'shop' &&
           <>
             <Table>
               <thead>
@@ -66,7 +61,7 @@ export default function Returns() {
                 </tr>
               </thead>
               <tbody>
-                {returns && returns.map((ret: Return) => {
+                {returns.rows.map((ret: Return) => {
                   return (
                     <tr key={ret.id}>
                       <td><Link href={`/returns/${ret.id}`} data-testid="return-link">{ ret.id }</Link></td>
@@ -81,15 +76,15 @@ export default function Returns() {
               </tbody>
             </Table>
             <Pagination
-              data={returnsData}
+              data={returns.rows}
               setData={handleChangePage}
-              pageCount={pageCount}
+              pageCount={returns.pageCount}
               pageSize={LIMIT}
             />
           </>
         }
 
-        {returnsData && displayedPanel === 'accounting' &&
+        {returns && displayedPanel === 'accounting' &&
           <>
             <Table>
               <thead>
@@ -104,7 +99,7 @@ export default function Returns() {
                 </tr>
               </thead>
               <tbody>
-                {returns && returns.map((ret: Return) => {
+                {returns.rows.map((ret: Return) => {
                   return (
                     <tr key={ret.id}>
                       <td><Link href={`/returns/${ret.id}`}>{ ret.id }</Link></td>
@@ -120,15 +115,15 @@ export default function Returns() {
               </tbody>
             </Table>
             <Pagination
-              data={returnsData}
+              data={returns.rows}
               setData={handleChangePage}
-              pageCount={pageCount}
+              pageCount={returns.pageCount}
               pageSize={LIMIT}
             />
           </>
         }
 
-        {returnsData && displayedPanel === 'completed' &&
+        {returns && displayedPanel === 'completed' &&
           <>
             <Table>
               <thead>
@@ -143,7 +138,7 @@ export default function Returns() {
                 </tr>
               </thead>
               <tbody>
-                {returns && returns.map((ret: Return) => {
+                {returns.rows.map((ret: Return) => {
                   return (
                     <tr key={ret.id}>
                       <td><Link href={`/returns/${ret.id}`}>{ ret.id }</Link></td>
@@ -159,9 +154,9 @@ export default function Returns() {
               </tbody>
             </Table>
             <Pagination
-              data={returnsData}
+              data={returns.rows}
               setData={handleChangePage}
-              pageCount={pageCount}
+              pageCount={returns.pageCount}
               pageSize={LIMIT}
             />
           </>

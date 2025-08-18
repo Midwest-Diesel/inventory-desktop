@@ -21,6 +21,7 @@ test.beforeAll(async ({ browser }) => {
 
 test.describe('Basic Functionality', () => {
   test('Display handwrittens', async () => {
+    await page.waitForLoadState('networkidle');
     const tableLength = (await page.$$('table tr')).length;
     expect(tableLength).toBeGreaterThan(0);
   });

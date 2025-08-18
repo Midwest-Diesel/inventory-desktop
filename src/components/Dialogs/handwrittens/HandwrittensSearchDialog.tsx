@@ -2,7 +2,7 @@ import { FormEvent, useState } from "react";
 import Dialog from "../../Library/Dialog";
 import Input from "../../Library/Input";
 import Button from "../../Library/Button";
-import { searchHandwrittens } from "@/scripts/services/handwrittensService";
+import { HandwrittenSearch, searchHandwrittens } from "@/scripts/services/handwrittensService";
 import Select from "@/components/Library/Select/Select";
 import { paymentTypes } from "@/scripts/logic/handwrittens";
 import { parseDateInputValue } from "@/scripts/tools/stringUtils";
@@ -13,18 +13,6 @@ interface Props {
   setOpen: (open: boolean) => void
   handleSearch: (rows: Handwritten[], pageCount: number, search: HandwrittenSearch) => void
   limit: number
-}
-
-export interface HandwrittenSearch {
-  id: number | null
-  date: string
-  poNum: string
-  billToCompany: string
-  shipToCompany: string
-  source: string
-  payment: string
-  limit: number
-  offset: number
 }
 
 
@@ -50,7 +38,7 @@ export default function HandwrittensSearchDialog({ open, setOpen, handleSearch, 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     const searchData = {
-      id: Number(id) ?? null,
+      id,
       date: parseDateInputValue(date),
       poNum,
       billToCompany,

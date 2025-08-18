@@ -1,21 +1,26 @@
 interface PartsRes {
-  rows: Part[];
-  pageCount: number;
-  totalQty: number;
-  rowsHidden?: number | null;
+  rows: Part[]
+  pageCount: number
+  totalQty: number
+  rowsHidden?: number | null
 }
 
 interface QuoteRes {
-  rows: Quote[];
-  pageCount: number;
+  rows: Quote[]
+  pageCount: number
 }
 
 interface CustomerRes {
-  rows: Customer[];
-  pageCount: number;
+  rows: Customer[]
+  pageCount: number
 }
 
 interface HandwrittenRes {
-  rows: Handwritten[];
-  pageCount: number;
+  rows: Handwritten[]
+  pageCount: number
+}
+
+interface ReturnRes {
+  rows: Return[]
+  pageCount: number
 }
