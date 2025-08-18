@@ -96,7 +96,7 @@ export const getCustomerSalesHistory = async (id: number): Promise<SalesHistory[
   try {
     const auth = { withCredentials: true };
     const res = await api.get(`/api/customers/sales/${id}`, auth);
-    return res.data;
+    return res.data ?? [];
   } catch (err) {
     console.error(err);
     return [];

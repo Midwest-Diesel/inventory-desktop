@@ -26,7 +26,7 @@ export default function CustomerDetailsContainer() {
   const [user] = useAtom<User>(userAtom);
   const [, setSelectedCustomer] = useAtom<Customer>(selectedCustomerAtom);
   const [customer, setCustomer] = useState<Customer | null>(null);
-  const [salesHistory, setSalesHistory] = useState([]);
+  const [salesHistory, setSalesHistory] = useState<SalesHistory[]>([]);
   const [isEditing, setIsEditing] = useState(false);
   const [isOnMap, setIsOnMap] = useState(true);
   const [addLocDialogOpen, setAddLocDialogOpen] = useState(false);
