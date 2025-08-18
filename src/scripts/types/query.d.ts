@@ -29,3 +29,8 @@ interface WarrantyRes {
   rows: Warranty[]
   pageCount: number
 }
+
+interface PORes {
+  rows: PO[]
+  pageCount: number
+}

@@ -1,7 +1,7 @@
 import api from "../config/axios";
 import { parseResDate } from "../tools/stringUtils";
 
-interface SearchData {
+interface POSearch {
   poNum: number
   purchasedFrom: string
   purchasedFor: string
@@ -9,6 +9,7 @@ interface SearchData {
   orderedBy: string
   limit: number
   offset: number
+  showIncomming: boolean
 }
 
 
@@ -59,7 +60,7 @@ export const getSomePurchaseOrders = async (page: number, limit: number, showInc
   }
 };
 
-export const searchPurchaseOrders = async (searchData: SearchData): Promise<{ pageCount: number, rows: PO[] }> => {
+export const searchPurchaseOrders = async (searchData: POSearch): Promise<{ pageCount: number, rows: PO[] }> => {
   try {
     const auth = { withCredentials: true };
     const res = await api.get(`/api/po/search/${JSON.stringify(searchData)}`, auth);
