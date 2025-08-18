@@ -3,16 +3,16 @@ import Dialog from "../Library/Dialog";
 import Input from "../Library/Input";
 import Button from "../Library/Button";
 import { invoke } from "@/scripts/config/tauri";
-import { addEmailStuffItem, getAllEmailStuff } from "@/scripts/services/emailStuffService";
+import { addEmailStuffItem } from "@/scripts/services/emailStuffService";
 
 interface Props {
   open: boolean
   setOpen: (open: boolean) => void
-  setEmailStuff: (data: EmailStuff[]) => void
+  refetch: () => void
 }
 
 
-export default function NewEmailAttachmentDialog({ open, setOpen, setEmailStuff }: Props) {
+export default function NewEmailAttachmentDialog({ open, setOpen, refetch }: Props) {
   const [name, setName] = useState('');
   const [files, setFiles] = useState<File[]>([]);
 
@@ -56,9 +56,7 @@ export default function NewEmailAttachmentDialog({ open, setOpen, setEmailStuff 
     await addEmailStuffItem({ name, images: fileString });
     clearInputs();
     setOpen(false);
-
-    const res = await getAllEmailStuff() ?? [];
-    setEmailStuff(res);
+    refetch();
   };
 
 
