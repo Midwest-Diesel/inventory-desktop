@@ -7,20 +7,28 @@ import Select from "@/components/Library/Select/Select";
 import { paymentTypes } from "@/scripts/logic/handwrittens";
 import { parseDateInputValue } from "@/scripts/tools/stringUtils";
 import SourceSelect from "@/components/Library/Select/SourceSelect";
-import { useAtom } from "jotai";
-import { handwrittenSearchAtom } from "@/scripts/atoms/state";
 
 interface Props {
   open: boolean
   setOpen: (open: boolean) => void
-  setHandwrittens: (invoices: Handwritten[]) => void
-  setMinItems: (pageCount: number) => void
+  handleSearch: (rows: Handwritten[], pageCount: number, search: HandwrittenSearch) => void
   limit: number
 }
 
+export interface HandwrittenSearch {
+  id: number | null
+  date: string
+  poNum: string
+  billToCompany: string
+  shipToCompany: string
+  source: string
+  payment: string
+  limit: number
+  offset: number
+}
 
-export default function HandwrittensSearchDialog({ open, setOpen, setHandwrittens, setMinItems, limit }: Props) {
-  const [, setHandwrittenSearchData] = useAtom(handwrittenSearchAtom);
+
+export default function HandwrittensSearchDialog({ open, setOpen, handleSearch, limit }: Props) {
   const [id, setId] = useState<number>('' as any);
   const [date, setDate] = useState<Date | null>(null);
   const [poNum, setPoNum] = useState('');
@@ -42,7 +50,7 @@ export default function HandwrittensSearchDialog({ open, setOpen, setHandwritten
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     const searchData = {
-      id: id ? Number(id) : id,
+      id: Number(id) ?? null,
       date: parseDateInputValue(date),
       poNum,
       billToCompany,
@@ -53,9 +61,7 @@ export default function HandwrittensSearchDialog({ open, setOpen, setHandwritten
       offset: 0
     };
     const res = await searchHandwrittens(searchData);
-    setHandwrittens(res.rows);
-    setMinItems(res.pageCount);
-    setHandwrittenSearchData(searchData);
+    handleSearch(res.rows, res.pageCount, searchData);
   };
 
 

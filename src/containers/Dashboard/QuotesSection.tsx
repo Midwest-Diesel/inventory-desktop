@@ -79,12 +79,12 @@ export default function QuotesSection({ quotes, setQuotes, setHandwrittenQuote, 
       searchData
     ],
     queryFn: async () => {
-      if (!customer) return { rows: [], pageCount: 0 }
+      if (!customer) return { rows: [], pageCount: 0 };
       if (searchData) {
         return await searchQuotes(
           { ...searchData, page: (page - 1) * LIMIT, limit: LIMIT },
           filterByCustomer ? customer.id : 0
-        )
+        );
       }
       return await getSomeQuotes(
         page,
@@ -92,7 +92,7 @@ export default function QuotesSection({ quotes, setQuotes, setHandwrittenQuote, 
         filterByPart ? partNum : '',
         filterByCustomer ? customer.id : 0,
         quoteListType === 'engine'
-      )
+      );
     },
     enabled: !!customer,
     keepPreviousData: true,
@@ -111,8 +111,8 @@ export default function QuotesSection({ quotes, setQuotes, setHandwrittenQuote, 
 
   useEffect(() => {
     if (quotesData) {
-      setQuotes(quotesData.rows)
-      setPageCount(quotesData.pageCount)
+      setQuotes(quotesData.rows);
+      setPageCount(quotesData.pageCount);
     }
   }, [quotesData, setQuotes]);
 
@@ -129,9 +129,9 @@ export default function QuotesSection({ quotes, setQuotes, setHandwrittenQuote, 
   };
 
   const onChangePage = (_: any, newPage: number, resetSearch = false) => {
-    setPage(newPage)
-    if (resetSearch) setSearchData(null)
-    refetch()
+    setPage(newPage);
+    if (resetSearch) setSearchData(null);
+    refetch();
   };
 
   const onInvoiceQuote = async (quote: Quote) => {

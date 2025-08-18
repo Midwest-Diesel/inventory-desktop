@@ -14,3 +14,8 @@ interface CustomerRes {
   rows: Customer[];
   pageCount: number;
 }
+
+interface HandwrittenRes {
+  rows: Handwritten[];
+  pageCount: number;
+}
