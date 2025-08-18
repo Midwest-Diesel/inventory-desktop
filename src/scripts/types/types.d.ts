@@ -898,7 +898,7 @@ type FreightCarrier = {
   isSkidRateApplied: boolean
 };
 
-interface Performance {
+interface Perf {
   sales: { initials: string, amount: number }[]
 }
 

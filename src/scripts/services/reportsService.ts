@@ -10,13 +10,14 @@ const parseReportData = (data: any) => {
 
 // === GET routes === //
 
-export const getPerformance = async () => {
+export const getPerformance = async (): Promise<Perf | null> => {
   try {
     const auth = { withCredentials: true };
     const res = await api.get(`/api/reports/performance`, auth);
     return { sales: res.data } as any;
   } catch (err) {
     console.error(err);
+    return null;
   }
 };
 
