@@ -2,9 +2,9 @@ import { formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
 import Dialog from "../../Library/Dialog";
 import Table from "../../Library/Table";
 import Link from "../../Library/Link";
-import { getSalesByYear } from "@/scripts/tools/search";
 import { useEffect, useState } from "react";
 import { getPartInfoByPartNum, getSalesInfo, searchAltParts, searchParts } from "@/scripts/services/partsService";
+import { getSalesByYear } from "@/scripts/logic/sales";
 
 interface Props {
   open: boolean

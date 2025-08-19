@@ -8,21 +8,25 @@ import Loading from "@/components/Library/Loading";
 import { getSomeCompletedReturns, getSomeReturns } from "@/scripts/services/returnsService";
 import { cap, formatDate } from "@/scripts/tools/stringUtils";
 import { useQuery } from "@tanstack/react-query";
+import { useSearchParams } from "react-router-dom";
+import { useNavState } from "@/hooks/useNavState";
 
 const LIMIT = 26;
 
 
 export default function Returns() {
-  const [displayedPanel, setDisplayedPanel] = useState<string>('shop');
+  const { push } = useNavState();
+  const [params] = useSearchParams();
+  const panel = params.get('panel') ?? 'shop';
   const [currentPage, setCurrentPage] = useState(1);
 
   const { data: returns, isFetching } = useQuery<ReturnRes>({
-    queryKey: ['returns', currentPage, displayedPanel],
+    queryKey: ['returns', currentPage, panel],
     queryFn: async () => {
-      if (displayedPanel === 'completed') {
+      if (panel === 'completed') {
         return await getSomeCompletedReturns(currentPage, LIMIT);
       } else {
-        return await getSomeReturns(currentPage, LIMIT, displayedPanel === 'shop' ? true : false);
+        return await getSomeReturns(currentPage, LIMIT, panel === 'shop' ? true : false);
       }
     },
     refetchOnWindowFocus: false,
@@ -33,21 +37,25 @@ export default function Returns() {
     setCurrentPage(page);
   };
 
+  const handleChangeDisplayPanel = async (panel: string) => {
+    await push('Returns', `${location.pathname}?panel=${panel}`);
+  };
+
 
   return (
     <Layout>
       <div className="returns">
-        <h1>{ `${cap(displayedPanel)} Returns` }</h1>
+        <h1>{ `${cap(panel)} Returns` }</h1>
         <div className="returns__top-bar">
-          <Button onClick={() => setDisplayedPanel('shop')} data-testid="shop-btn">Shop Returns</Button>
-          <Button onClick={() => setDisplayedPanel('accounting')} data-testid="accounting-btn">Accounting Returns</Button>
-          <Button onClick={() => setDisplayedPanel('completed')} data-testid="completed-btn">Completed Returns</Button>
+          <Button onClick={() => handleChangeDisplayPanel('shop')} data-testid="shop-btn">Shop Returns</Button>
+          <Button onClick={() => handleChangeDisplayPanel('accounting')} data-testid="accounting-btn">Accounting Returns</Button>
+          <Button onClick={() => handleChangeDisplayPanel('completed')} data-testid="completed-btn">Completed Returns</Button>
         </div>
 
         { isFetching && <Loading /> }
         { !returns && <p>No results...</p> }
 
-        {returns && displayedPanel === 'shop' &&
+        {returns && panel === 'shop' &&
           <>
             <Table>
               <thead>
@@ -84,7 +92,7 @@ export default function Returns() {
           </>
         }
 
-        {returns && displayedPanel === 'accounting' &&
+        {returns && panel === 'accounting' &&
           <>
             <Table>
               <thead>
@@ -123,7 +131,7 @@ export default function Returns() {
           </>
         }
 
-        {returns && displayedPanel === 'completed' &&
+        {returns && panel === 'completed' &&
           <>
             <Table>
               <thead>

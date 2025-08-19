@@ -13,8 +13,8 @@ import { useQuery } from "@tanstack/react-query";
 
 
 export default function NewEnginesList() {
-  const [engineModel, setEngineModel] = useState<string>("C-7");
-  const [filter, setFilter] = useState<string>("all-runner");
+  const [engineModel, setEngineModel] = useState<string>('C-7');
+  const [filter, setFilter] = useState<string>('all-runner');
   const [engine, setEngine] = useState<Engine | null>(null);
   const [newQuoteDialogOpen, setNewQuoteDialogOpen] = useState(false);
 

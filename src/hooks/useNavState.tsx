@@ -13,7 +13,7 @@ export function useNavState() {
     if (tab.urlIndex === tab.history.length - 1) return;
     const nextTab = tab.history[tab.urlIndex + 1];
     setTabs(tabs.map((t) => t.id === tab.id ? ({ ...t, urlIndex: t.urlIndex + 1 }) : t));
-    navigate(nextTab.url, { replace: true });
+    navigate(nextTab.url, { replace: false });
     // await editTabHistory(tab.id, tab.urlIndex + 1, tab.history);
   };
 
@@ -23,7 +23,7 @@ export function useNavState() {
     if (tab.urlIndex === 0) return;
     const prevTab = tab.history[tab.urlIndex - 1];
     setTabs(tabs.map((t) => t.id === tab.id ? ({ ...t, urlIndex: t.urlIndex - 1 }) : t));
-    navigate(prevTab.url, { replace: true });
+    navigate(prevTab.url, { replace: false });
     // await editTabHistory(tab.id, tab.urlIndex - 1, tab.history);
   };
 
@@ -31,7 +31,7 @@ export function useNavState() {
     setTabs(tabs.map((tab) => ({ ...tab, selected: tab.id === tabId })));
     // await changeSelectedTab(tabId);
     const tab = tabs.find((t) => t.id === tabId);
-    if (tab) navigate(tab.history[tab.urlIndex].url, { replace: true });
+    if (tab) navigate(tab.history[tab.urlIndex].url, { replace: false });
   };
 
   const push = async (name: string, url: string) => {
@@ -52,7 +52,7 @@ export function useNavState() {
     // }
   
     setTimeout(() => {
-      navigate(url, { replace: true });
+      navigate(url, { replace: false });
     }, 0);
   };
 
@@ -72,7 +72,7 @@ export function useNavState() {
     );
   
     setTimeout(() => {
-      if (selectedTab) navigate(selectedTab.history[selectedTab.history.length - 1].url, { replace: true });
+      if (selectedTab) navigate(selectedTab.history[selectedTab.history.length - 1].url, { replace: false });
     }, 0);
   };
 
@@ -94,7 +94,7 @@ export function useNavState() {
       setTabs(newTabs.map((tab) => ({ ...tab, selected: tab.id === id })));
       // await changeSelectedTab(tabId);
       const tab = newTabs.find((t) => t.id === id);
-      if (tab) navigate(tab.history[tab.urlIndex].url, { replace: true });
+      if (tab) navigate(tab.history[tab.urlIndex].url, { replace: false });
     }
   };
   
