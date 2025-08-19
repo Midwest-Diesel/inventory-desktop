@@ -104,6 +104,7 @@ export default function ShopPartAddOnsContainer() {
         <Button
           variant={['fit']}
           onClick={handleNewAddOn}
+          data-testid="new-part-btn"
         >
           New Part
         </Button>
@@ -112,6 +113,7 @@ export default function ShopPartAddOnsContainer() {
           <Button
             variant={['save']}
             onClick={handleEditAddOns}
+            data-testid="save-btn"
           >
             { savedBtnText }
           </Button>

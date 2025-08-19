@@ -279,6 +279,7 @@ export default function ShopPartAddonRow({ addOn, handleDuplicateAddOn, partNumL
                     type="number"
                     value={addOn.qty !== null ? addOn.qty : ''}
                     onChange={(e: any) => handleEditAddOn({ ...addOn, qty: e.target.value })}
+                    data-testid="qty"
                   />
                 </td>
                 <td>
@@ -292,6 +293,7 @@ export default function ShopPartAddonRow({ addOn, handleDuplicateAddOn, partNumL
                         handleEditAddOn({ ...addOn, partNum: e.target.value.toUpperCase() });
                         autofillFromPartNum(e.target.value.toUpperCase());
                       }}
+                      data-testid="part-num"
                     >
                       <Button variant={['x-small']} type="button" onClick={() => setShowPartNumSelect(!showPartNumSelect)} tabIndex={-1}>
                         <img src={`/images/icons/arrow-${showPartNumSelect ? 'up' : 'down'}.svg`} alt="Part number dropdown" width="10rem" />
@@ -321,6 +323,7 @@ export default function ShopPartAddonRow({ addOn, handleDuplicateAddOn, partNumL
                     value={addOn.desc !== null ? addOn.desc : ''}
                     onChange={(e: any) => handleEditAddOn({ ...addOn, desc: e.target.value })}
                     onFocus={() => setShowPartNumSelect(false)}
+                    data-testid="desc"
                   />
                 </td>
                 <td>
@@ -348,6 +351,7 @@ export default function ShopPartAddonRow({ addOn, handleDuplicateAddOn, partNumL
                         prevEngineNum.current = currentVal;
                       }
                     }}
+                    data-testid="engine-num"
                   />
                 </td>
                 <td>
@@ -355,6 +359,7 @@ export default function ShopPartAddonRow({ addOn, handleDuplicateAddOn, partNumL
                     variant={['small', 'thin']}
                     value={addOn.stockNum !== null ? addOn.stockNum : ''}
                     onChange={(e: any) => handleEditAddOn({ ...addOn, stockNum: e.target.value })}
+                    data-testid="stock-num"
                   />
                 </td>
                 <td>
@@ -388,6 +393,7 @@ export default function ShopPartAddonRow({ addOn, handleDuplicateAddOn, partNumL
                     value={addOn.remarks !== null ? addOn.remarks : ''}
                     onChange={(e: any) => handleEditAddOn({ ...addOn, remarks: e.target.value })}
                     onBlur={(e: any) => handleEditAddOn({ ...addOn, rating: getRatingFromRemarks(e.target.value) })}
+                    data-testid="remarks"
                   />
                 </td>
                 <td>
@@ -423,6 +429,7 @@ export default function ShopPartAddonRow({ addOn, handleDuplicateAddOn, partNumL
                     variant={['small', 'thin', 'text-area']}
                     value={addOn.hp !== null ? addOn.hp : ''}
                     onChange={(e: any) => handleEditAddOn({ ...addOn, hp: e.target.value })}
+                    data-testid="hp"
                   />
                 </td>
                 <td>
@@ -430,6 +437,7 @@ export default function ShopPartAddonRow({ addOn, handleDuplicateAddOn, partNumL
                     variant={['small', 'thin', 'text-area']}
                     value={addOn.serialNum !== null ? addOn.serialNum : ''}
                     onChange={(e: any) => handleEditAddOn({ ...addOn, serialNum: e.target.value })}
+                    data-testid="serial-num"
                   />
                 </td>
                 <td>
@@ -438,6 +446,7 @@ export default function ShopPartAddonRow({ addOn, handleDuplicateAddOn, partNumL
                     type="number"
                     value={addOn.rating !== null ? addOn.rating : ''}
                     onChange={(e: any) => handleEditAddOn({ ...addOn, rating: e.target.value })}
+                    data-testid="rating"
                   />
                 </td>
                 <td>
@@ -450,6 +459,7 @@ export default function ShopPartAddonRow({ addOn, handleDuplicateAddOn, partNumL
                       setPoLink(e.target.value);
                     }}
                     onBlur={(e: any) => handleOpenPO(e)}
+                    data-testid="po"
                   />
                 </td>
               </tr>
@@ -541,7 +551,7 @@ export default function ShopPartAddonRow({ addOn, handleDuplicateAddOn, partNumL
 
         <div className="add-ons__list-row-buttons">
           { poLink && <Link href={`/purchase-orders/${poLink}`}>View PO</Link> }
-          <Button type="button" onClick={() => handleDuplicateAddOn({ ...addOn, stockNum: null, engineNum: null })}>Duplicate</Button>
+          <Button type="button" onClick={() => handleDuplicateAddOn({ ...addOn, stockNum: null, engineNum: null })} data-testid="duplicate-btn">Duplicate</Button>
           <Input
             style={{ width: '3rem' }}
             variant={['x-small', 'search']}
@@ -549,7 +559,7 @@ export default function ShopPartAddonRow({ addOn, handleDuplicateAddOn, partNumL
             onChange={(e: any) => setPrintQty(e.target.value)}
             type="number"
           >
-            <Button type="button" variant={['search']} onClick={handlePrint}>Print</Button>
+            <Button type="button" variant={['search']} onClick={handlePrint} data-testid="print-btn">Print</Button>
           </Input>
           <Button type="button" variant={['danger']} onClick={handleDeleteAddOn}>Delete</Button>
         </div>

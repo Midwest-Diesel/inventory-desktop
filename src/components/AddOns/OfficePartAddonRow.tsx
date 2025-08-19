@@ -187,6 +187,7 @@ export default function OfficePartAddonRow({ addOn, onSave, onModifyAddOnData }:
                       await editAddOnAltParts(addOn.id, '');
                     }
                   }}
+                  data-testid="part-num"
                 />
               </td>
               <td>
@@ -233,6 +234,7 @@ export default function OfficePartAddonRow({ addOn, onSave, onModifyAddOnData }:
                   variant={['small', 'thin']}
                   value={addOn.stockNum !== null ? addOn.stockNum : ''}
                   onChange={(e: any) => handleEditAddOn({ ...addOn, stockNum: e.target.value })}
+                  data-testid="stock-num"
                 />
               </td>
               <td>
@@ -434,7 +436,7 @@ export default function OfficePartAddonRow({ addOn, onSave, onModifyAddOnData }:
           :
           <>
             { addOn.po && <Link href={`/purchase-orders/${addOn.po}`}>View PO</Link> }
-            <Button type="button" onClick={handleAddToInventory}>Add to Inventory</Button>
+            <Button type="button" onClick={handleAddToInventory} data-testid="add-to-inventory-btn">Add to Inventory</Button>
           </>
         }
         <Button type="button" variant={['danger']} onClick={handleDeleteAddOn}>Delete</Button>

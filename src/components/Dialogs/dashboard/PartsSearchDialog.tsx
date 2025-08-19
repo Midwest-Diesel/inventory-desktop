@@ -5,7 +5,6 @@ import Button from "../../Library/Button";
 import { addRecentSearch } from "@/scripts/services/recentSearchesService";
 import { useAtom } from "jotai";
 import { lastPartSearchAtom, showSoldPartsAtom, userAtom } from "@/scripts/atoms/state";
-import { isObjectNull } from "@/scripts/tools/utils";
 import { PartSearchParams } from "@/containers/Dashboard/PartSearchSection";
 
 
