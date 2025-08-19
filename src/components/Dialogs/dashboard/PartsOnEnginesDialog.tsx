@@ -1,8 +1,8 @@
 import Table from "@/components/Library/Table";
 import Dialog from "../../Library/Dialog";
 import Link from "../../Library/Link";
-import { getSearchedPartNum } from "@/scripts/tools/search";
 import { formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
+import { getSearchedPartNum } from "@/scripts/logic/partSearch";
 
 interface Props {
   open: boolean

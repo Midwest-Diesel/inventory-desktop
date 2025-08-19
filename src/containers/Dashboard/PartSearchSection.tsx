@@ -11,7 +11,6 @@ import Loading from "@/components/Library/Loading";
 import { isObjectNull } from "@/scripts/tools/utils";
 import { getPartsOnEngines } from "@/scripts/services/compareConsistService";
 import PartsOnEnginesDialog from "@/components/Dialogs/dashboard/PartsOnEnginesDialog";
-import { getSearchedPartNum } from "@/scripts/tools/search";
 import CoreFamilySearchDialog from "@/components/Dialogs/dashboard/SearchCoreFamilyDialog";
 import PartsTable from "@/components/Dashboard/PartsTable";
 import { selectedAlertsAtom } from "@/scripts/atoms/components";
@@ -20,6 +19,7 @@ import { useToast } from "@/hooks/useToast";
 import { useQuery } from "@tanstack/react-query";
 import { detectAlerts } from "@/scripts/services/alertsService";
 import { getQuotesByPartNum } from "@/scripts/services/recentSearchesService";
+import { getSearchedPartNum } from "@/scripts/logic/partSearch";
 
 interface Props {
   selectHandwrittenOpen: boolean
