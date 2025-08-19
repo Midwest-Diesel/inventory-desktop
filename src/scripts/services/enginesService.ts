@@ -1,6 +1,23 @@
 import api from "../config/axios";
 import { parseResDate } from "../tools/stringUtils";
 
+export interface EngineSearch {
+  stockNum?: number
+  model?: string
+  serialNum?: string
+  date?: string
+  location?: string
+  comments?: string
+  horsePower?: string
+  jakeBrake: '' | 'TRUE' | 'FALSE'
+  warranty: '' | 'TRUE' | 'FALSE'
+  testRun: '' | 'TRUE' | 'FALSE'
+  mileage?: string
+  status: EngineStatus
+  limit: number
+  page: number
+}
+
 
 const parseEngineRes = (data: any) => {
   return data.map((engine: any) => {
@@ -43,14 +60,25 @@ export const getAutofillEngine = async (engineNum: number) => {
   }
 };
 
-export const getEnginesByStatus = async (status: EngineStatus) => {
+export const getEnginesByStatus = async (status: EngineStatus, page: number, limit: number): Promise<{ pageCount: number, rows: Engine[] }> => {
   try {
     const auth = { withCredentials: true };
-    const res = await api.get(`/api/engines/status/${status}`, auth);
-    res.data = parseEngineRes(res.data);
-    return res.data;
+    const res = await api.get(`/api/engines/status/${encodeURI(JSON.stringify({ status, offset: (page - 1) * limit, limit }))}`, auth);
+    return { pageCount: res.data.pageCount, rows: parseEngineRes(res.data.rows) };
   } catch (err) {
     console.error(err);
+    return { pageCount: 0, rows: [] };
+  }
+};
+
+export const searchEngines = async (search: EngineSearch): Promise<{ pageCount: number, rows: Engine[] }> => {
+  try {
+    const auth = { withCredentials: true };
+    const res = await api.get(`/api/engines/search/${encodeURI(JSON.stringify({ ...search, offset: (search.page - 1) * search.limit }))}`, auth);
+    return { pageCount: res.data.pageCount, rows: parseEngineRes(res.data.rows) };
+  } catch (err) {
+    console.error(err);
+    return { pageCount: 0, rows: [] };
   }
 };
 
