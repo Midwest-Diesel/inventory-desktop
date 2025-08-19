@@ -7,7 +7,7 @@ import SoldEnginesTable from "@/components/Engines/SoldEnginesTable";
 import ToreDownEnginesTable from "@/components/Engines/ToreDownEnginesTable";
 import Button from "@/components/Library/Button";
 import Pagination from "@/components/Library/Pagination";
-import { getEnginesByStatus } from "@/scripts/services/enginesService";
+import { EngineSearch, getEnginesByStatus, searchEngines } from "@/scripts/services/enginesService";
 import { useQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 
@@ -27,17 +27,16 @@ const STATUS_MAP: Record<EngineListType, EngineStatus[]> = {
 export default function EngineListContainer() {
   const [openSearch, setOpenSearch] = useState(false);
   const [listOpen, setListOpen] = useState<EngineListType>('running');
-  const [displayEngines, setDisplayEngines] = useState<Engine[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [search, setSearch] = useState<EngineSearch | null>(null);
 
-  const { data: engines = [], isFetching } = useQuery<Engine[]>({
-    queryKey: ['engines', listOpen],
+  const { data: engines, isFetching } = useQuery<EngineRes>({
+    queryKey: ['engines', listOpen, search, currentPage],
     queryFn: async () => {
-      const statuses = STATUS_MAP[listOpen];
-      const all = await Promise.all(statuses.map(getEnginesByStatus));
-      return all.flat().sort((a, b) => b.loginDate - a.loginDate);
-    },
-    onSuccess: (data) => {
-      setDisplayEngines(data);
+      if (search) {
+        return await searchEngines({ ...search, page: currentPage, limit: LIMIT });
+      }
+      return await getEnginesByStatus(STATUS_MAP[listOpen][0], currentPage, LIMIT);
     },
     refetchOnWindowFocus: false,
     keepPreviousData: true
@@ -62,22 +61,26 @@ export default function EngineListContainer() {
     }
   }, [listOpen]);
 
-  const onSearch = (status: EngineStatus | null, results: Engine[]) => {
-    if (status) {
-      const foundKey = Object.entries(STATUS_MAP).find(([_, statuses]) =>
-        statuses.includes(status)
-      )?.[0] as EngineListType;
-      if (foundKey) setListOpen(foundKey);
-    }
-    setDisplayEngines(results);
+  const onSearch = (search: EngineSearch) => {
+    const foundKey = Object.entries(STATUS_MAP).find(([_, statuses]) => statuses.includes(search.status))?.[0] as EngineListType;
+    if (foundKey) setListOpen(foundKey);
+    setSearch(search);
+    setCurrentPage(1);
   };
 
-  const handlePageChange = (data: Engine[]) => {
-    setDisplayEngines(data);
+  const handlePageChange = (_: any, page: number) => {
+    setCurrentPage(page);
+  };
+
+  const handleOpenList = (key: EngineListType) => {
+    setCurrentPage(1);
+    setSearch(null);
+    setListOpen(key);
   };
 
   const renderTable = () => {
-    const props = { engines: displayEngines, loading: isFetching };
+    if (!engines) return null;
+    const props = { engines: engines.rows, loading: isFetching };
     switch (listOpen) {
       case 'running':
         return <RunningEnginesTable {...props} />;
@@ -91,8 +94,11 @@ export default function EngineListContainer() {
         return <ShortBlockTable {...props} />;
       case 'longBlock':
         return <LongBlockTable {...props} />;
+      default:
+        return null;
     }
   };
+
 
   return (
     <div className="engines">
@@ -100,7 +106,7 @@ export default function EngineListContainer() {
       <div className="engines__top-bar">
         {Object.keys(STATUS_MAP).map((key) => {
           return (
-            <Button key={key} onClick={() => setListOpen(key as EngineListType)}>
+            <Button key={key} onClick={() => handleOpenList(key as EngineListType)}>
               { key.charAt(0).toUpperCase() + key.slice(1) }
             </Button>
           );
@@ -111,13 +117,19 @@ export default function EngineListContainer() {
       <EngineSearchDialog
         open={openSearch}
         setOpen={setOpenSearch}
-        engines={engines}
-        setEngines={setDisplayEngines}
         onSearch={onSearch}
+        page={currentPage}
+        limit={LIMIT}
       />
 
       { renderTable() }
-      <Pagination data={engines} setData={handlePageChange} pageSize={LIMIT} />
+
+      <Pagination
+        data={engines?.rows ?? []}
+        setData={handlePageChange}
+        pageCount={engines?.pageCount}
+        pageSize={LIMIT}
+      />
     </div>
   );
 }

@@ -2,20 +2,21 @@ import { FormEvent, useState } from "react";
 import Dialog from "../Library/Dialog";
 import Input from "../Library/Input";
 import Button from "../Library/Button";
-import { formatDate, parseDateInputValue } from "@/scripts/tools/stringUtils";
+import { parseDateInputValue } from "@/scripts/tools/stringUtils";
 import Select from "../Library/Select/Select";
+import { EngineSearch } from "@/scripts/services/enginesService";
 
 interface Props {
   open: boolean
   setOpen: (open: boolean) => void
-  engines: Engine[]
-  setEngines: (engines: Engine[]) => void
-  onSearch: (status: EngineStatus | null, results: Engine[]) => void
+  onSearch: (search: EngineSearch) => void
+  page: number
+  limit: number
 }
 
 
-export default function EngineSearchDialog({ open, setOpen, engines, setEngines, onSearch }: Props) {
-  const [stockNum, setStockNum] = useState<number>('' as any);
+export default function EngineSearchDialog({ open, setOpen, onSearch, page, limit }: Props) {
+  const [stockNum, setStockNum] = useState('');
   const [model, setModel] = useState('');
   const [serialNum, setSerialNum] = useState('');
   const [date, setDate] = useState<Date | null>(null);
@@ -26,11 +27,11 @@ export default function EngineSearchDialog({ open, setOpen, engines, setEngines,
   const [warranty, setWarranty] = useState<'' | 'TRUE' | 'FALSE'>('');
   const [testRun, setTestRun] = useState<'' | 'TRUE' | 'FALSE'>('');
   const [mileage, setMileage] = useState('');
-  const [currentStatus, setCurrentStatus] = useState<EngineStatus | null>(null);
+  const [currentStatus, setCurrentStatus] = useState<EngineStatus>('RunnerReady');
   const statusList: EngineStatus[] = ['RunnerReady', 'RunnerNotReady', 'HoldSoldRunner', 'ToreDown', 'CoreEngine', 'Sold', 'ShortBlock', 'LongBlock'];
 
   const clearInputs = () => {
-    setStockNum('' as any);
+    setStockNum('');
     setModel('');
     setSerialNum('');
     setDate(null);
@@ -41,38 +42,28 @@ export default function EngineSearchDialog({ open, setOpen, engines, setEngines,
     setWarranty('');
     setTestRun('');
     setMileage('');
-    setCurrentStatus(null);
+    setCurrentStatus('RunnerReady');
   };
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    const results = searchEngines();
-    onSearch(currentStatus, results);
-    setEngines(results);
-  };
-
-  const searchEngines = () => {
-    const splitDate = parseDateInputValue(date).split('-');
-    const parsedDate = splitDate[0] !== '' as any ? `${splitDate[1]}/${splitDate[2]}/${splitDate[0]}` : '';
-
-    return engines.filter((engine) => {
-      if (
-        (!stockNum || engine.stockNum === Number(stockNum)) &&
-        (!model || model.includes('*') ? engine.model?.toUpperCase().includes(model.replace('*', '').toUpperCase()) : engine.model?.toUpperCase() === model.toUpperCase()) &&
-        (!serialNum || serialNum.includes('*') ? engine.serialNum?.toUpperCase().includes(serialNum.replace('*', '').toUpperCase()) : engine.serialNum?.toUpperCase() === serialNum.toUpperCase()) &&
-        (!parsedDate || formatDate(engine.loginDate) === parsedDate) &&
-        (!location || location.includes('*') ? engine.location?.toUpperCase().includes(location.replace('*', '').toUpperCase()) : engine.location?.toUpperCase() === location.toUpperCase()) &&
-        (!comments || comments.includes('*') ? engine.comments?.toUpperCase().includes(comments.replace('*', '').toUpperCase()) : engine.comments?.toUpperCase() === comments.toUpperCase()) &&
-        (!horsePower || horsePower.includes('*') ? engine.horsePower?.toUpperCase().includes(horsePower.replace('*', '').toUpperCase()) : engine.horsePower?.toUpperCase() === horsePower.toUpperCase()) &&
-        (!jakeBrake || (!engine.jakeBrake && jakeBrake === 'FALSE') || (engine.jakeBrake && jakeBrake === 'TRUE')) &&
-        (!warranty || (!engine.warranty && warranty === 'FALSE') || (engine.warranty && warranty === 'TRUE')) &&
-        (!testRun || (!engine.testRun && testRun === 'FALSE') || (engine.testRun && testRun === 'TRUE')) &&
-        (!mileage || mileage.includes('*') ? engine.mileage?.toUpperCase().includes(mileage.replace('*', '').toUpperCase()) : engine.mileage?.toUpperCase() === mileage.toUpperCase()) &&
-        (!currentStatus || engine.currentStatus === currentStatus)
-      ) {
-        return engine;
-      }
-    });
+    const search = {
+      stockNum: Number(stockNum),
+      model,
+      serialNum,
+      date: parseDateInputValue(date),
+      location,
+      comments,
+      horsePower,
+      jakeBrake,
+      warranty,
+      testRun,
+      mileage,
+      status: currentStatus,
+      page,
+      limit
+    };
+    onSearch(search);
   };
 
 

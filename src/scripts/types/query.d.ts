@@ -34,3 +34,8 @@ interface PORes {
   rows: PO[]
   pageCount: number
 }
+
+interface EngineRes {
+  rows: Engine[]
+  pageCount: number
+}

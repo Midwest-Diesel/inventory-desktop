@@ -21,10 +21,10 @@ export default function NewEnginesList() {
   const { data: engines = [], isFetching, refetch } = useQuery<Engine[]>({
     queryKey: ['engines', 'runner-list'],
     queryFn: async () => {
-      const running = await getEnginesByStatus('RunnerReady');
-      const notRunning = await getEnginesByStatus('RunnerNotReady');
-      const holdRunning = await getEnginesByStatus('HoldSoldRunner');
-      return [...running, ...notRunning, ...holdRunning].sort(
+      const running = await getEnginesByStatus('RunnerReady', 1, 999999);
+      const notRunning = await getEnginesByStatus('RunnerNotReady', 1, 999999);
+      const holdRunning = await getEnginesByStatus('HoldSoldRunner', 1, 999999);
+      return [...running.rows, ...notRunning.rows, ...holdRunning.rows].sort(
         (a: any, b: any) => b.loginDate - a.loginDate
       );
     },
