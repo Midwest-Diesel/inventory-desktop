@@ -1,5 +1,5 @@
 import { Layout } from "@/components/Layout";
-import ReturnDetailsContainer from "@/containers/ReturnDetailsContainer";
+import ReturnDetailsContainer from "@/containers/Returns/ReturnDetailsContainer";
 
 
 export default function Return() {

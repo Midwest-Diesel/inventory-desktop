@@ -1,5 +1,5 @@
 import { Layout } from "@/components/Layout";
-import PurchaseOrderDetailsContainer from "@/containers/PurchaseOrderDetailsContainer";
+import PurchaseOrderDetailsContainer from "@/containers/PurchaseOrders/PurchaseOrderDetailsContainer";
 
 
 export default function PurchaseOrder() {

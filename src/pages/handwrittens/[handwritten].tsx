@@ -1,5 +1,5 @@
 import { Layout } from "@/components/Layout";
-import HandwrittenDetailsContainer from "@/containers/HandwrittenDetailsContainer";
+import HandwrittenDetailsContainer from "@/containers/Handwrittens/HandwrittenDetailsContainer";
 
 
 export default function Handwritten() {

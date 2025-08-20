@@ -1,5 +1,5 @@
 import { Layout } from "@/components/Layout";
-import WarrantyDetailsContainer from "@/containers/WarrantyDetailsContainer";
+import WarrantyDetailsContainer from "@/containers/Warranties/WarrantyDetailsContainer";
 
 
 export default function Warranty() {
