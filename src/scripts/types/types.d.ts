@@ -514,7 +514,7 @@ type EngineProfit = {
   sellingPrice: number
 };
 
-type CostType = 'PurchasePrice' | 'ReconPrice' | 'Other';
+type CostType = 'PurchasePrice' | 'ReconCost' | 'Other';
 type EngineCostType = 'Parts' | 'Sale' | 'Other';
 
 type Surplus = {

@@ -1,4 +1,4 @@
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { addQuote } from "@/scripts/services/quotesService";
 import { getCustomerByName } from "@/scripts/services/customerService";
 import Dialog from "../Library/Dialog";
@@ -11,7 +11,7 @@ import CustomerDropdown from "../Library/Dropdown/CustomerDropdown";
 interface Props {
   open: boolean
   setOpen: (value: boolean) => void
-  engine: Engine
+  engine: Engine | null
   onNewQuote: () => void
 }
 
@@ -20,10 +20,14 @@ export default function NewEngineQuoteDialog({ open, setOpen, engine, onNewQuote
   const toast = useToast();
   const [source, setSource] = useState('');
   const [company, setCompany] = useState('');
-  const [stockNum, setStockNum] = useState<number>(engine.stockNum ?? '');
+  const [stockNum, setStockNum] = useState<string>(engine?.stockNum.toString() ?? '');
   const [desc, setDesc] = useState('');
   const [price, setPrice] = useState('');
   const [notes, setNotes] = useState('');
+
+  useEffect(() => {
+    setStockNum(engine?.stockNum.toString() ?? '');
+  }, [engine]);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -35,7 +39,7 @@ export default function NewEngineQuoteDialog({ open, setOpen, engine, onNewQuote
       date: new Date(),
       source,
       partNum: null,
-      stockNum,
+      stockNum: Number(stockNum),
       desc,
       price: Number(price),
       notes,
@@ -50,7 +54,7 @@ export default function NewEngineQuoteDialog({ open, setOpen, engine, onNewQuote
   const resetInputs = () => {
     setSource('');
     setCompany('');
-    setStockNum(engine.stockNum ?? '');
+    setStockNum(engine?.stockNum.toString() ?? '');
     setDesc('');
     setPrice('');
     setNotes('');

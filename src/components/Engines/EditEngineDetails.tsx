@@ -16,16 +16,12 @@ import { ask } from "@/scripts/config/tauri";
 
 interface Props {
   engine: Engine
-  setEngine: (engine: Engine) => void
   setIsEditing: (value: boolean) => void
-  engineCostInData: EngineCostIn[]
-  engineCostOutData: EngineCostOut[]
-  setEngineCostInData: (value: EngineCostIn[]) => void
-  setEngineCostOutData: (value: EngineCostOut[]) => void
+  refetch: () => void
 }
 
 
-export default function EditEngineDetails({ engine, setEngine, setIsEditing, engineCostInData, engineCostOutData, setEngineCostInData, setEngineCostOutData }: Props) {
+export default function EditEngineDetails({ engine, setIsEditing, refetch }: Props) {
   const [engineParts, setEngineParts] = useAtom<EnginePartsTable>(enginePartsTableAtom);
   const [currentStatus, setCurrentStatus] = useState<EngineStatus>(engine.currentStatus ?? 'ToreDown');
   const [loginDate, setLoginDate] = useState<Date | null>(engine.loginDate);
@@ -53,8 +49,8 @@ export default function EditEngineDetails({ engine, setEngine, setIsEditing, eng
   const [fwhNumber, setFwhNumber] = useState<string>(engine.fwhNumber ?? '');
   const [comments, setComments] = useState<string>(engine.comments ?? '');
   const [partsPulled, setPartsPulled] = useState<string>(engine.partsPulled ?? '');
-  const [engineCostIn, setEngineCostIn] = useState<EngineCostIn[]>(engineCostInData);
-  const [engineCostOut, setEngineCostOut] = useState<EngineCostOut[]>(engineCostOutData);
+  const [engineCostIn, setEngineCostIn] = useState<EngineCostIn[]>(engine.costIn);
+  const [engineCostOut, setEngineCostOut] = useState<EngineCostOut[]>(engine.costOut);
   const [changesSaved, setChangesSaved] = useState(true);
   const blankEngineCostIn = { id: 0, cost: '', engineStockNum: engine.stockNum, vendor: '', invoiceNum: '', costType: '', note: '' };
   const blankEngineCostOut = { id: 0, stockNum: '', engineStockNum: Number(engine.stockNum), cost: '', costType: '', note: '' };
@@ -160,7 +156,7 @@ export default function EditEngineDetails({ engine, setEngine, setIsEditing, eng
     await editEngine(newEngine);
 
     // Edit rows
-    if (JSON.stringify(engineCostIn) !== JSON.stringify(engineCostInData)) {
+    if (JSON.stringify(engineCostIn) !== JSON.stringify(engine.costIn)) {
       for (let i = 0; i < engineCostIn.length; i++) {
         const item = engineCostIn[i];
         if (typeof item.engineStockNum === 'string') {
@@ -185,10 +181,9 @@ export default function EditEngineDetails({ engine, setEngine, setIsEditing, eng
           } as EngineCostIn;
           await editEngineCostIn(newItem);
         }
-        setEngineCostInData(engineCostIn);
       }
     }
-    if (JSON.stringify(engineCostOut) !== JSON.stringify(engineCostOutData)) {
+    if (JSON.stringify(engineCostOut) !== JSON.stringify(engine.costOut)) {
       for (let i = 0; i < engineCostOut.length; i++) {
         const item = engineCostOut[i];
         const newItem = {
@@ -200,12 +195,11 @@ export default function EditEngineDetails({ engine, setEngine, setIsEditing, eng
           note: item.note,
         } as EngineCostOut;
         await editEngineCostOut(newItem);
-        setEngineCostOutData(engineCostOut);
       }
     }
 
     // Add new rows
-    if (engineCostInData.length !== engineCostIn.length) {
+    if (engine.costIn.length !== engineCostIn.length) {
       for (let i = 0; i < engineCostIn.length; i++) {
         const item = engineCostIn[i];
         if (item.id === 0) {
@@ -213,7 +207,7 @@ export default function EditEngineDetails({ engine, setEngine, setIsEditing, eng
         }
       }
     }
-    if (engineCostOutData.length !== engineCostOut.length) {
+    if (engine.costOut.length !== engineCostOut.length) {
       for (let i = 0; i < engineCostOut.length; i++) {
         const item = engineCostOut[i];
         if (item.id === 0) {
@@ -225,7 +219,7 @@ export default function EditEngineDetails({ engine, setEngine, setIsEditing, eng
     if (JSON.stringify(engineParts) !== JSON.stringify(enginePartsData)) {
       await editEnginePartsTable(engineParts, engine.id);
     }
-    setEngine({ ...newEngine, ...engineParts });
+    refetch();
     setIsEditing(false);
   };
 
@@ -668,11 +662,16 @@ export default function EditEngineDetails({ engine, setEngine, setIsEditing, eng
                           />
                         </td>
                         <td>
-                          <Input
-                            variant={['x-small', 'thin', 'label-bold']}
+                          <Select
+                            variant={['label-bold']}
                             value={item.costType ?? ''}
                             onChange={(e: any) => handleChangeEngineCostIn({ ...item, costType: e.target.value }, i)}
-                          />
+                          >
+                            <option value="">-- SELECT COST TYPE --</option>
+                            <option>PurchasePrice</option>
+                            <option>ReconCost</option>
+                            <option>Other</option>
+                          </Select>
                         </td>
                         <td>
                           <Input
@@ -729,11 +728,16 @@ export default function EditEngineDetails({ engine, setEngine, setIsEditing, eng
                       />
                     </td>
                     <td>
-                      <Input
-                        variant={['x-small', 'thin', 'label-bold']}
+                      <Select
+                        variant={['label-bold']}
                         value={newEngineCostInRow.costType}
                         onChange={(e: any) => handleNewEngineCostInRowChange('costType', e.target.value)}
-                      />
+                      >
+                        <option value="">-- SELECT COST TYPE --</option>
+                        <option>PurchasePrice</option>
+                        <option>ReconCost</option>
+                        <option>Other</option>
+                      </Select>
                     </td>
                     <td>
                       <Input
@@ -797,11 +801,16 @@ export default function EditEngineDetails({ engine, setEngine, setIsEditing, eng
                           />
                         </td>
                         <td>
-                          <Input
-                            variant={['x-small', 'thin', 'label-bold']}
+                          <Select
+                            variant={['label-bold']}
                             value={item.costType ?? ''}
                             onChange={(e: any) => handleChangeEngineCostOut({ ...item, costType: e.target.value }, i)}
-                          />
+                          >
+                            <option value="">-- SELECT COST TYPE --</option>
+                            <option>Parts</option>
+                            <option>Sale</option>
+                            <option>Other</option>
+                          </Select>
                         </td>
                         <td>
                           <Input
@@ -849,12 +858,16 @@ export default function EditEngineDetails({ engine, setEngine, setIsEditing, eng
                       />
                     </td>
                     <td>
-                      <Input
-                        variant={['x-small', 'thin', 'label-bold']}
+                      <Select
+                        variant={['label-bold']}
                         value={newEngineCostOutRow.costType}
                         onChange={(e: any) => handleNewEngineCostOutRowChange('costType', e.target.value)}
-                        type="number"
-                      />
+                      >
+                        <option value="">-- SELECT COST TYPE --</option>
+                        <option>Parts</option>
+                        <option>Sale</option>
+                        <option>Other</option>
+                      </Select>
                     </td>
                     <td>
                       <Input
