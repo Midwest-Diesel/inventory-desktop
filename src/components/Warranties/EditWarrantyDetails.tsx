@@ -23,8 +23,8 @@ export default function EditWarrantyDetails({ warrantyData, setWarranty, setIsEd
   const [company, setCompany] = useState(warrantyData.customer?.company ?? '');
   const [date, setDate] = useState<Date>(warrantyData.date);
   const [vendor, setVendor] = useState(warrantyData.vendor ?? '');
-  const [vendorWarrantyNum, setVendorWarrantyNum] = useState<number | null>(warrantyData.vendorWarrantyNum);
-  const [handwrittenId, setHandwrittenId] = useState<number | null>(warrantyData.handwrittenId);
+  const [vendorWarrantyNum, setVendorWarrantyNum] = useState<string>(warrantyData.vendorWarrantyNum?.toString() ?? '');
+  const [handwrittenId, setHandwrittenId] = useState<string>(warrantyData.handwrittenId?.toString() ?? '');
   const [warrantyItems, setWarrantyItems] = useState<WarrantyItem[]>(warrantyData.warrantyItems);
   const [changesSaved, setChangesSaved] = useState(true);
 
@@ -40,9 +40,9 @@ export default function EditWarrantyDetails({ warrantyData, setWarranty, setIsEd
       customer: newCustomer,
       date,
       vendor,
-      vendorWarrantyNum: vendorWarrantyNum ?? null,
+      vendorWarrantyNum: vendorWarrantyNum ? Number(vendorWarrantyNum) : null,
       warrantyItems,
-      handwrittenId
+      handwrittenId: handwrittenId ? Number(handwrittenId) : null
     } as Warranty;
     await editWarranty(newWarranty);
     if (JSON.stringify(warrantyItems) !== JSON.stringify(warrantyData.warrantyItems)) {
@@ -172,7 +172,7 @@ export default function EditWarrantyDetails({ warrantyData, setWarranty, setIsEd
                     <td>
                       <Input
                         type="number"
-                        value={vendorWarrantyNum ?? ''}
+                        value={vendorWarrantyNum}
                         onChange={(e: any) => setVendorWarrantyNum(e.target.value)}
                       />
                     </td>
@@ -182,7 +182,7 @@ export default function EditWarrantyDetails({ warrantyData, setWarranty, setIsEd
                     <td>
                       <Input
                         type="number"
-                        value={handwrittenId ?? ''}
+                        value={handwrittenId}
                         onChange={(e: any) => setHandwrittenId(e.target.value)}
                       />
                     </td>

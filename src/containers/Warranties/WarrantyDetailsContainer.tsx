@@ -44,7 +44,7 @@ export default function WarrantyDetailsContainer() {
 
   const handleCompleteWarranty = async () => {
     if (!warrantyData || !await confirm(`${warrantyData.completed ? 'Open' : 'Close'} warranty?`)) return;
-    await editWarrantyCompleted(warrantyData.id, !warrantyData.completed, warrantyData.completedDate ? null : new Date());
+    await editWarrantyCompleted(warrantyData.id, !warrantyData.completed, warrantyData.completed ? null : new Date());
     setWarrantyData(await getWarrantyById(warrantyData.id));
   };
 
