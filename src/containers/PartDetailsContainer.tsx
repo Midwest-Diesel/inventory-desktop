@@ -149,8 +149,13 @@ export default function PartDetailsContainer() {
 
   const handleSetNextUP = async () => {
     const latestUP = await getNextUPStockNum();
-    if (!latestUP || !part || !await ask(`Change the current stock number to ${latestUP}?`)) return;
-    const newPart = { ...part, stockNum: latestUP };
+    if (!latestUP) {
+      alert('Failed to fetch latest UP');
+      return;
+    }
+    const nextUP = `UP${parseInt(latestUP.slice(2), 10) + 1}`;
+    if (!nextUP || !part || !await ask(`Change the current stock number to ${nextUP}?`)) return;
+    const newPart = { ...part, stockNum: nextUP };
     await editPart(newPart);
     setPart(newPart);
   };
