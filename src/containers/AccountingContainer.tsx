@@ -51,13 +51,13 @@ export default function AccountingContainer() {
     for (let i = 0; i < res.length; i++) {
       const handwritten: Handwritten = res[i];
       const args = {
-        id: Number(handwritten.id),
+        id: Number(handwritten.legacyId ?? handwritten.id),
         email: handwritten.email ?? '',
         company: handwritten.customer.company,
         date: formatDate(handwritten.date),
         year: handwritten.date.getFullYear().toString(),
         month: (handwritten.date.getMonth() + 1).toString(),
-        day: handwritten.date.getDay().toString(),
+        day: handwritten.date.getDate().toString(),
         shipVia: handwritten.shipVia?.name ?? '',
         trackingNumbers: handwritten.trackingNumbers.map((num) => `<li style='margin: 0;'>${num.trackingNumber}</li>`)
       };

@@ -9,7 +9,7 @@ of them when replacing a printer.
 
 use image::{io::Reader as ImageReader, ImageOutputFormat, DynamicImage, imageops::{rotate90, FilterType}};
 use serde::{Deserialize, Serialize};
-use tauri::Manager;
+use tauri::{Manager, api::shell, AppHandle};
 use std::{fs::remove_file, process::Command, env};
 use std::fs::{write};
 use std::{fs::File, io::copy};
@@ -395,7 +395,8 @@ async fn main() {
       print_warranty,
       print_packing_slip,
       print_po,
-      email_end_of_day
+      email_end_of_day,
+      view_file
     ])
     .run(tauri::generate_context!());
 }
@@ -1547,4 +1548,10 @@ fn print_part_tag(imageData: String) -> Result<(), String> {
     .map_err(|e| e.to_string())?;
 
   Ok(())
+}
+
+#[tauri::command]
+fn view_file(app_handle: AppHandle, filepath: String) -> Result<(), String> {
+  shell::open(&app_handle.shell_scope(), filepath, None)
+    .map_err(|e| format!("Failed to open: {}", e))
 }

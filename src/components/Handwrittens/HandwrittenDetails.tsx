@@ -330,6 +330,29 @@ export default function HandwrittenDetails({
     takeoffInputRef.current?.focus();
   };
 
+  const handleViewKarmak = () => {
+    const year = (handwritten.date.getFullYear()).toString();
+    const month = (handwritten.date.getMonth() + 1).toString();
+    const day = (handwritten.date.getDate()).toString();
+    const filepath = `\\\\MWD1-SERVER\\Server\\InvoiceScans\\Archives\\${year}\\${month}\\${day}\\${handwritten.legacyId ?? handwritten.id}.pdf`;
+    invoke('view_file', { filepath });
+  };
+
+  const handleEmailKarmak = () => {
+    const args = {
+      id: Number(handwritten.legacyId ?? handwritten.id),
+      email: handwritten.email ?? '',
+      company: handwritten.customer.company,
+      date: formatDate(handwritten.date),
+      year: handwritten.date.getFullYear().toString(),
+      month: (handwritten.date.getMonth() + 1).toString(),
+      day: handwritten.date.getDate().toString(),
+      shipVia: handwritten.shipVia?.name ?? '',
+      trackingNumbers: handwritten.trackingNumbers.map((num) => `<li style='margin: 0;'>${num.trackingNumber}</li>`)
+    };
+    invoke('email_end_of_day', { args });
+  };
+
 
   return (
     <>
@@ -382,6 +405,8 @@ export default function HandwrittenDetails({
           <Button onClick={() => setAltShipOpen(!altShipOpen)} disabled={altShipData.length === 0}>Alt Ship</Button>
           <Button onClick={() => setReturnsOpen(!returnsOpen)} data-testid="new-return-btn">New Return</Button>
           <Button onClick={() => setAddQtyDialogOpen(true)} disabled={handwritten.invoiceStatus === 'SENT TO ACCOUNTING'} data-testid="add-qty-io-btn">Add Qty | I/O</Button>
+          <Button onClick={handleViewKarmak}>View Karmak</Button>
+          <Button onClick={handleEmailKarmak}>Email Karmak</Button>
         </div>
 
         <CoreCreditsDialog open={coreCreditsOpen} setOpen={setCoreCreditsOpen} cores={handwritten.cores} handwritten={handwritten} />
