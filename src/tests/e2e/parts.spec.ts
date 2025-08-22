@@ -17,6 +17,7 @@ test.beforeAll(async ({ browser }) => {
   await page.waitForSelector('.navbar');
 });
 
+
 test.describe('Parts', () => {
   test('Display parts', async () => {
     const tableLength = (await page.$$('[data-testid="part-search-table"] tr')).length;

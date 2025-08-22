@@ -4,7 +4,6 @@ import { test, expect, Page } from '@playwright/test';
 test.describe.configure({ mode: 'serial' });
 let page: Page;
 
-
 test.beforeAll(async ({ browser }) => {
   page = await browser.newPage();
   page.on('dialog', (dialog) => dialog.accept('confirm'));
@@ -13,6 +12,7 @@ test.beforeAll(async ({ browser }) => {
   await page.getByTestId('login-btn').click();
   await page.waitForSelector('.navbar');
 });
+
 
 test.describe('Basic Functionality', () => {
   test('Display returns', async () => {

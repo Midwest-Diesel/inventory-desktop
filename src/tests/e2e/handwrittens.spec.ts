@@ -9,7 +9,6 @@ let stockNum = '';
 const stockNum2 = 'UP9014';
 let qty = 0;
 
-
 test.beforeAll(async ({ browser }) => {
   page = await browser.newPage();
   page.on('dialog', (dialog) => dialog.accept('confirm'));
@@ -18,6 +17,7 @@ test.beforeAll(async ({ browser }) => {
   await page.getByTestId('login-btn').click();
   await page.waitForSelector('.navbar');
 });
+
 
 test.describe('Basic Functionality', () => {
   test('Display handwrittens', async () => {

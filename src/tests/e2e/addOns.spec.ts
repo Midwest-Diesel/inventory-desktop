@@ -4,7 +4,6 @@ import { altSearch } from '../utils';
 test.describe.configure({ mode: 'serial' });
 let page: Page;
 
-
 test.beforeAll(async ({ browser }) => {
   page = await browser.newPage();
   await page.goto('http://localhost:3001/add-ons/shop/part');
@@ -13,6 +12,7 @@ test.beforeAll(async ({ browser }) => {
   await page.waitForSelector('.navbar');
   page.on('dialog', (dialog) => dialog.accept());
 });
+
 
 test.describe('Create addon and add to inventory', () => {
   const date = new Date();
