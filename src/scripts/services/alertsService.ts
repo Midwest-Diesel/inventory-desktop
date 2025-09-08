@@ -1,6 +1,14 @@
 import api from "../config/axios";
 import { parseResDate } from "../tools/stringUtils";
 
+interface NewAlert {
+  date: Date
+  salesmanId: number
+  partNum: string
+  type: string
+  note: string | null
+}
+
 
 const parseAlertDataRes = (data: any) => {
   return data.map((d: Alert) => {
@@ -36,7 +44,7 @@ export const detectAlerts = async (partNum: string) => {
 
 // === POST routes === //
 
-export const addAlert = async (alert: Alert) => {
+export const addAlert = async (alert: NewAlert) => {
   try {
     const auth = { withCredentials: true };
     await api.post('/api/alerts', alert, auth);

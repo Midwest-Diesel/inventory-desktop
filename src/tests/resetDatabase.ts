@@ -3,16 +3,16 @@ import fs from 'fs';
 import path from 'path';
 
 
-export async function resetDb() {
-  const client = new pg.Client({
-    host: '127.0.0.1',
-    port: 54329,
-    user: 'postgres',
-    password: 'postgres',
-    database: 'inventory_testing',
-  });
-  await client.connect();
+export const client = new pg.Client({
+  host: '127.0.0.1',
+  port: 54329,
+  user: 'postgres',
+  password: 'postgres',
+  database: 'inventory_testing',
+});
+client.connect();
 
+export async function resetDb() {
   await client.query(`
     DO $$
     DECLARE
@@ -41,5 +41,4 @@ export async function resetDb() {
     const sql = fs.readFileSync(path.join(seedDir, file), 'utf-8');
     await client.query(sql);
   }
-  await client.end();
 }
