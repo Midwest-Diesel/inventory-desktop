@@ -1,16 +1,12 @@
-import { test, expect, Page, Dialog } from '@playwright/test';
+import { test, expect, Dialog, Page } from '@playwright/test';
 import { altSearch, partSearch } from '../utils';
+import { resetDb } from '../resetDatabase';
 
-test.describe.configure({ mode: 'serial' });
-let page: Page;
-
-const onConfirmDialog = (dialog: Dialog) => dialog.accept('confirm');
 const onAddAltPartsDialog = (dialog: Dialog) => dialog.accept('9N3242');
 const onRemoveAltPartsDialog = (dialog: Dialog) => dialog.accept('9N3242, 7L0406');
 
-test.beforeAll(async ({ browser }) => {
-  page = await browser.newPage();
-  page.on('dialog', onConfirmDialog);
+test.beforeEach(async ({ page }) => {
+  await resetDb();
   await page.goto('http://localhost:3001');
   await page.getByTestId('username').fill('bennett');
   await page.getByTestId('login-btn').click();
@@ -18,31 +14,35 @@ test.beforeAll(async ({ browser }) => {
 });
 
 
+async function addAltPart(page: Page) {
+  page.on('dialog', onAddAltPartsDialog);
+  await altSearch(page, { partNum: '9N3240', desc: null, stockNum: null, location: null, qty: null, rating: null, serialNum: null, hp: null, purchFrom: null, remarks: null });
+  await page.getByTestId('part-num-link').first().click();
+  await page.waitForLoadState('networkidle');
+  await page.getByTestId('edit-btn').click();
+  await page.getByTestId('add-alts').click();
+  await page.getByTestId('save-btn').click();
+}
+
+
 test.describe('Parts', () => {
-  test('Display parts', async () => {
+  test('Display parts', async ({ page }) => {
     const tableLength = (await page.$$('[data-testid="part-search-table"] tr')).length;
     expect(tableLength).toBeGreaterThan(0);
   });
 
-  test('Part search', async () => {
+  test('Part search', async ({ page }) => {
     await partSearch(page, { partNum: '7E0333', desc: 'VALVE COVER 3406', stockNum: 'UP9432', location: 'C5G4A', rating: 0.0, serialNum: '79419143', hp: '500', purchFrom: 'CB1', remarks: 'T/O, NTBB\'D' });
     await expect(page.getByTestId('part-num-link').first()).toHaveText('7E0333');
   });
 
-  test('Alt Part search', async () => {
+  test('Alt Part search', async ({ page }) => {
     await altSearch(page, { partNum: '*7E0331', desc: 'VALVE COVER 3406', stockNum: 'UP9432', location: 'C5G4A', rating: 0.0, serialNum: '79419143', hp: '500', purchFrom: 'CB1', remarks: 'T/O, NTBB\'D' });
     await expect(page.getByTestId('part-num-link').first()).toHaveText('7E0333');
   });
 
-  test('Add altPart', async () => {
-    page.off('dialog', onConfirmDialog);
-    page.on('dialog', onAddAltPartsDialog);
-    await altSearch(page, { partNum: '9N3240', desc: null, stockNum: null, location: null, qty: null, rating: null, serialNum: null, hp: null, purchFrom: null, remarks: null });
-    await page.getByTestId('part-num-link').first().click();
-    await page.waitForLoadState('networkidle');
-    await page.getByTestId('edit-btn').click();
-    await page.getByTestId('add-alts').click();
-    await page.getByTestId('save-btn').click();
+  test('Add altPart', async ({ page }) => {
+    await addAltPart(page);
     await expect(page.getByTestId('alt-parts')).toHaveText('9N3240, 9N3242, 7L0406');
 
     await page.goto('http://localhost:3001');
@@ -52,15 +52,18 @@ test.describe('Parts', () => {
     await expect(page.getByTestId('alt-parts')).toHaveText('7L0406, 9N3242, 9N3240');
   });
 
-  test('Remove altPart', async () => {
-    page.off('dialog', onAddAltPartsDialog);
-    page.on('dialog', onRemoveAltPartsDialog);
+  test('Remove altPart', async ({ page }) => {
+    await addAltPart(page);
     await page.goto('http://localhost:3001');
+
     await page.waitForLoadState('networkidle');
     await altSearch(page, { partNum: '9N3240' });
     await page.getByTestId('part-num-link').first().click();
     await page.waitForLoadState('networkidle');
     await page.getByTestId('edit-btn').click();
+
+    page.off('dialog', onAddAltPartsDialog);
+    page.on('dialog', onRemoveAltPartsDialog);
     await page.getByTestId('remove-alts').click();
     await page.getByTestId('save-btn').click();
     await page.waitForLoadState('networkidle');
