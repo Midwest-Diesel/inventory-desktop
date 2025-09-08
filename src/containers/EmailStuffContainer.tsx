@@ -47,7 +47,7 @@ export default function EmailStuffContainer() {
     await deleteEmailStuffItem(id);
     await refetch();
   };
-
+  
 
   return (
     <div className="email-stuff-page">
@@ -65,9 +65,18 @@ export default function EmailStuffContainer() {
           return (
             <div key={item.id} className="email-stuff-page__item">
               <h2>{ item.name }</h2>
-              {!hasImageError &&
+              {!hasImageError ?
                 <img
                   src={`data:image/png;base64,${item.images[0].data}`}
+                  alt={item.name}
+                  width={100}
+                  height={100}
+                  onError={() => handleImageError(item.id)}
+                />
+                :
+                <img
+                  style={{ width: '7rem' }}
+                  src={'/images/icons/pdf-icon.svg'}
                   alt={item.name}
                   width={100}
                   height={100}
