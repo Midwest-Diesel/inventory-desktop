@@ -5,7 +5,15 @@ import { useNavigate } from "react-router-dom";
 
 export function useNavState() {
   const navigate = useNavigate();
-  const [tabs, setTabs] = useAtom<Tab[]>(tabsAtom);
+  const [tabs, setTabsAtom] = useAtom<Tab[]>(tabsAtom);
+
+  const setTabs = (tabsInput: Tab[] | ((prevTabs: Tab[]) => Tab[])) => {
+    const newTabs = typeof tabsInput === 'function'
+      ? (tabsInput as (prev: Tab[]) => Tab[])(tabs)
+      : tabsInput;
+    setTabsAtom(newTabs);
+    localStorage.setItem('tabs', JSON.stringify(newTabs));
+  };
 
   const forward = async () => {
     const tab = tabs.find((t) => t.selected);
@@ -14,7 +22,6 @@ export function useNavState() {
     const nextTab = tab.history[tab.urlIndex + 1];
     setTabs(tabs.map((t) => t.id === tab.id ? ({ ...t, urlIndex: t.urlIndex + 1 }) : t));
     navigate(nextTab.url, { replace: false });
-    // await editTabHistory(tab.id, tab.urlIndex + 1, tab.history);
   };
 
   const backward = async () => {    
@@ -24,12 +31,10 @@ export function useNavState() {
     const prevTab = tab.history[tab.urlIndex - 1];
     setTabs(tabs.map((t) => t.id === tab.id ? ({ ...t, urlIndex: t.urlIndex - 1 }) : t));
     navigate(prevTab.url, { replace: false });
-    // await editTabHistory(tab.id, tab.urlIndex - 1, tab.history);
   };
 
   const handleChangeTab = async (tabId: number) => {
     setTabs(tabs.map((tab) => ({ ...tab, selected: tab.id === tabId })));
-    // await changeSelectedTab(tabId);
     const tab = tabs.find((t) => t.id === tabId);
     if (tab) navigate(tab.history[tab.urlIndex].url, { replace: false });
   };
@@ -46,10 +51,6 @@ export function useNavState() {
         return tab;
       })
     );
-  
-    // if (selectedTab) {
-    //   await editTabHistory(selectedTab.id, selectedTab.urlIndex, selectedTab.history);
-    // }
   
     setTimeout(() => {
       navigate(url, { replace: false });
@@ -77,9 +78,6 @@ export function useNavState() {
   };
 
   const newTab = async (history = [{ name: 'Home', url: '/' }], moveImmediately = true) => {
-    // await addTab([{ name: 'Home', url: '/' }]);
-    // const res = await getTabsByUser();
-    // setTabs(res);
     const id = tabs.length + 1;
     const newTabs = [...tabs, {
       id,
@@ -92,7 +90,6 @@ export function useNavState() {
 
     if (moveImmediately) {
       setTabs(newTabs.map((tab) => ({ ...tab, selected: tab.id === id })));
-      // await changeSelectedTab(tabId);
       const tab = newTabs.find((t) => t.id === id);
       if (tab) navigate(tab.history[tab.urlIndex].url, { replace: false });
     }

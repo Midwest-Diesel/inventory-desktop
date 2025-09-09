@@ -7,6 +7,7 @@ import { useNavState } from "../../hooks/useNavState";
 import ContextMenu from "../Library/ContextMenu";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import NavTab from "./NavTab";
 
 
 export default function Navbar() {
@@ -18,7 +19,6 @@ export default function Navbar() {
 
   const handleRenameTab = async () => {
     const name = prompt('Name');
-    // await renameTab(selectedTab.id, name);
     setTabs(tabs.map((tab) => {
       if (tab.id === selectedTab?.id) {
         return { ...tab, name };
@@ -27,13 +27,12 @@ export default function Navbar() {
     }));
   };
 
-  const handleDeleteTab = async () => {
+  const handleDeleteTab = async (id: number) => {
     if (tabs.length === 1) return;
-    const filteredTabs = tabs.filter((t) => t.id !== selectedTab?.id);
+    const filteredTabs = tabs.filter((t) => t.id !== id);
     let updatedTabs = filteredTabs;
-    if (selectedTab?.selected) {
+    if (tabs.find((t) => t.selected)?.id === id) {
       const newTab = filteredTabs[filteredTabs.length - 1];
-      // await changeSelectedTab(newTab.id);
       navigate(newTab.history[newTab.history.length - 1].url, { replace: true });
       updatedTabs = updatedTabs.map((tab) => {
         if (tab.id === newTab.id) {
@@ -42,7 +41,6 @@ export default function Navbar() {
         return tab;
       });
     }
-    // await deleteTab(selectedTab.id);
     setTabs(updatedTabs);
   };
 
@@ -53,11 +51,10 @@ export default function Navbar() {
         <ContextMenu
           open={menuOpen}
           setOpen={setMenuOpen}
-          targetClass="navbar-tab"
+          targetClass="navbar-tab__content"
           notTargetClass="navbar-tab--new-tab"
           list={[
-            { name: 'Rename', fn: handleRenameTab },
-            { name: 'Close', fn: handleDeleteTab }
+            { name: 'Rename', fn: handleRenameTab }
           ]}
         />
 
@@ -67,19 +64,16 @@ export default function Navbar() {
             <Button onClick={forward}>&gt;</Button>
           </div>
 
-          {tabs.map((tab) => {
+          {tabs.map((tab: Tab) => {
             return (
-              <Button
+              <NavTab
                 key={tab.id}
-                style={tab.selected ? { borderBottom: '2px solid var(--yellow-2)' } : {}}
-                variant={["no-style"]}
-                className="navbar-tab"
-                onClick={() => handleChangeTab(tab.id)}
-                onContextMenu={() => setSelectedTab(tab)}
-                data-testid="tab"
-              >
-                { tab.name || tab.history[tab.urlIndex].name }
-              </Button>
+                tab={tab}
+                handleChangeTab={handleChangeTab}
+                handleDeleteTab={handleDeleteTab}
+                setSelectedTab={setSelectedTab}
+                closeBtnActive={tabs.length > 1}
+              />
             );
           })}
 

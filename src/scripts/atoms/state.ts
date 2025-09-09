@@ -1,14 +1,21 @@
 import { atom } from "jotai";
 
-export const userAtom = atom<User>({
+const tabs = (): Tab[] => {
+  const stored = localStorage.getItem('tabs');
+  if (!stored) return [{ id: 0, name: null, urlIndex: 0, history: [{name: 'Home', url: '/'}], selected: true }];
+  return JSON.parse(stored);
+};
+
+const user = {
   id: null,
   username: null,
   password: null,
   initials: null,
   accessLevel: null,
   type: null
-} as any);
+} as any;
 
+export const userAtom = atom<User>(user);
 export const picturesAtom = atom<any[]>([]);
 export const snPicturesAtom = atom<any[]>([]);
 export const customersAtom = atom<Customer[]>([]);
@@ -34,7 +41,6 @@ export const warrantySearchAtom = atom<any>({});
 export const POSearchAtom = atom<any>({});
 export const ReturnSearchAtom = atom<any>({});
 export const FreightCarriersAtom = atom<FreightCarrier[]>([]);
-export const tabsAtom = atom<Tab[]>([]);
 export const errorAtom = atom<string>('');
 export const printQueAtom = atom<{ name: string, printCmd: string, data: any, maxWidth: string, maxHeight: string }[]>([]);
 export const quickPickItemIdAtom = atom<number>(0);
@@ -42,3 +48,4 @@ export const toastAtom = atom<Toast[]>([]);
 export const tooltipAtom = atom<string>('');
 export const accountingPageFilterAtom = atom<'' | 'all' | 'IN PROCESS' | 'COMPLETE'>('all');
 export const customersMinAtom = atom<CustomerMin[]>([]);
+export const tabsAtom = atom<Tab[]>(tabs());

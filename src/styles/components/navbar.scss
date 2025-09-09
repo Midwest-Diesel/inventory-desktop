@@ -50,17 +50,12 @@
 }
 
 .navbar-tab {
-  background-color: var(--grey-light-1);
-  padding: 0.2rem 1rem;
-  font-size: 12px;
-  border-bottom-right-radius: 0;
-  border-bottom-left-radius: 0;
+  position: relative;
   border-bottom: 2px solid var(--grey-dark-2);
-
+  
   &__container {
     display: flex;
-    width: 100%;
-    gap: 0.1rem;
+    gap: 0.13rem;
     overflow-x: auto;
 
     .nav-buttons {
@@ -80,5 +75,23 @@
     padding: 0 0.5rem;
     font-size: 14px;
     margin-left: 0.1rem;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+    background-color: var(--grey-light-1);
+  }
+
+  &__content {
+    font-size: 12px;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+    background-color: var(--grey-light-1);
+    padding: 0.344rem 1.2rem;
+  }
+
+  &__close-btn {
+    position: absolute;
+    top: -0.1rem;
+    right: 0.05rem;
+    font-size: 15px;
   }
 }
