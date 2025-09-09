@@ -8,6 +8,7 @@ import { checkUpdate } from '@tauri-apps/api/updater';
 import UpdateModal from "./Modals/UpdateModal";
 import ToastContainer from "@/containers/ToastContainer";
 import Tooltip from "./Library/Tooltip";
+import { useNavigate } from "react-router-dom";
 
 interface Props {
   children: any
@@ -15,6 +16,7 @@ interface Props {
 
 
 export default function GlobalData({ children }: Props) {
+  const navigate = useNavigate();
   const [, setUserData] = useAtom<User>(userAtom);
   const [, setTabs] = useAtom<Tab[]>(tabsAtom);
   const [, setAlertsData] = useAtom<Alert[]>(alertsAtom);
@@ -30,14 +32,14 @@ export default function GlobalData({ children }: Props) {
       await handleGetUser();
       setLoaded(true);
       setAlertsData(await getAlerts());
-      // const tabs = await getTabsByUser();
-      setTabs([{
-        id: 0,
-        name: null,
-        urlIndex: 0,
-        history: [{ name: 'Home', url: '/' }],
-        selected: true
-      }]);
+      const tabs = (): Tab[] => {
+        const stored = localStorage.getItem('tabs');
+        if (!stored) return [{ id: 0, name: null, urlIndex: 0, history: [{name: 'Home', url: '/'}], selected: true }];
+        return JSON.parse(stored);
+      };
+      setTabs(tabs());
+      const selectedTab = tabs().find((t) => t.selected);
+      if (selectedTab) navigate(selectedTab.history[selectedTab.urlIndex].url, { replace: false });
     };
     fetchData();
 

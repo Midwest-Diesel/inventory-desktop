@@ -38,6 +38,11 @@ export default function About() {
     localStorage.clear();
   };
 
+  const closeAllTabs = () => {
+    localStorage.removeItem('tabs');
+    location.reload();
+  }
+
 
   return (
     <Layout title="About">
@@ -46,7 +51,9 @@ export default function About() {
         <p className="about-page__username">Logged in as <span>{ cap(user.username) }</span></p>
         { !status && <Button variant={['fit']} onClick={checkForUpdates}>Check For Updates</Button> }
         { status && <p className="about-page__status-text">{ status }</p> }
-
+        <br />
+        
+        <Button variant={['fit']} onClick={closeAllTabs}>Close All Tabs</Button>
         <Button variant={['fit']} onClick={clearLocalStorage}>Clear Local Storage</Button>
         <Button variant={['fit']} onClick={logout}>Logout</Button>
       </div>
