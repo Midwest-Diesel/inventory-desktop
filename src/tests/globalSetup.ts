@@ -13,7 +13,7 @@ const isContainerRunning = (): boolean => {
 };
 
 export default async function globalSetup() {
-  console.log('🛠️  Ensuring test DB container is running...');
+  console.log('🛠️ Ensuring test DB container is running...');
 
   if (!isContainerRunning()) {
     execSync('docker-compose -p inventory-tests -f docker-compose.test.yml up -d', { stdio: 'inherit' });
@@ -46,7 +46,7 @@ export default async function globalSetup() {
     await client.query(schemaSql);
     console.log('✅ Schema loaded');
   } else {
-    console.log('🗂️  Schema already exists, skipping schema.sql');
+    console.log('🗂️ Schema already exists, skipping schema.sql');
   }
 
   console.log('🧼 Truncating all user-defined tables...');
