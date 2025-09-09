@@ -29,13 +29,13 @@ describe('Alerts Integration', () => {
       partNum: '1304701',
       salesmanId: 8,
       type: 'ALERT!!!',
-    }
+    };
     expect(res[0]).toEqual(alert);
   });
   
   it('Create alert', async () => {
     const newAlert = {
-      date: new Date(),
+      date: new Date('2025-09-08T05:00:00.000Z'),
       salesmanId: 1,
       partNum: '123123',
       type: 'HUDDLE UP!!!',
@@ -50,7 +50,7 @@ describe('Alerts Integration', () => {
       addedBy: 'BS',
       salesmanId: 1,
       note: null
-    }
+    };
     const res = await getAlerts();
     expect(res[0]).toEqual(expect.objectContaining(alert));
   });
