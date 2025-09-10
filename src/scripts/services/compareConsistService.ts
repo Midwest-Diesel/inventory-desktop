@@ -67,3 +67,14 @@ export const addCompareData = async (data: CompareConsist) => {
     console.error(err);
   }
 };
+
+// === DELETE routes === //
+
+export const deleteCompareData = async (id: number) => {
+  try {
+    const auth = { withCredentials: true };
+    await api.delete(`/api/compare-consist/${id}`, auth);
+  } catch (err) {
+    console.error(err);
+  }
+};
