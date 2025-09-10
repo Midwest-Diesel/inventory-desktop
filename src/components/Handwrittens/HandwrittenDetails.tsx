@@ -344,9 +344,9 @@ export default function HandwrittenDetails({
       email: handwritten.email ?? '',
       company: handwritten.customer.company,
       date: formatDate(handwritten.date),
-      year: handwritten.date.getFullYear().toString(),
-      month: (handwritten.date.getMonth() + 1).toString(),
-      day: handwritten.date.getDate().toString(),
+      year: handwritten.date.getUTCFullYear().toString(),
+      month: (handwritten.date.getUTCMonth() + 1).toString(),
+      day: handwritten.date.getUTCDate().toString(),
       shipVia: handwritten.shipVia?.name ?? '',
       trackingNumbers: handwritten.trackingNumbers.map((num) => `<li style='margin: 0;'>${num.trackingNumber}</li>`)
     };
