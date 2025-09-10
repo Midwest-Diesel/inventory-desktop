@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { extractStatusColors, formatCurrency, formatDate, formatPhone, formatTime, parsePhone, parseResDate } from "@/scripts/tools/stringUtils";
+import { extractStatusColors, formatCurrency, formatDate, formatPhone, formatTime, parsePhone, parseResDate, toAbsolutePath } from "@/scripts/tools/stringUtils";
 
 
 describe('Format date', () => {
@@ -231,5 +231,15 @@ describe('Parse phone', () => {
       const result = parsePhone(phone);
       expect(result).toEqual('16088463944');
     });
+  });
+});
+
+describe('To Abosolute Path', () => {
+  test('Should add / in front of path', () => {
+    expect(toAbsolutePath('handwrittens')).toEqual('/handwrittens');
+  });
+
+  test('Should leave path unchanged', () => {
+    expect(toAbsolutePath('/cores')).toEqual('/cores');
   });
 });

@@ -126,3 +126,5 @@ export const extractStatusColors = (text: string | null): string => {
     return '';
   }
 };
+
+export const toAbsolutePath = (url: string) => url.startsWith('/') ? url : `/${url}`;

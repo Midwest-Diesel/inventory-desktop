@@ -1,6 +1,7 @@
 import { useAtom } from "jotai";
 import { tabsAtom } from "@/scripts/atoms/state";
 import { useNavigate } from "react-router-dom";
+import { toAbsolutePath } from "@/scripts/tools/stringUtils";
 
 
 export function useNavState() {
@@ -21,7 +22,7 @@ export function useNavState() {
     if (tab.urlIndex === tab.history.length - 1) return;
     const nextTab = tab.history[tab.urlIndex + 1];
     setTabs(tabs.map((t) => t.id === tab.id ? ({ ...t, urlIndex: t.urlIndex + 1 }) : t));
-    navigate(nextTab.url, { replace: false });
+    navigate(toAbsolutePath(nextTab.url), { replace: false });
   };
 
   const backward = async () => {    
@@ -30,13 +31,13 @@ export function useNavState() {
     if (tab.urlIndex === 0) return;
     const prevTab = tab.history[tab.urlIndex - 1];
     setTabs(tabs.map((t) => t.id === tab.id ? ({ ...t, urlIndex: t.urlIndex - 1 }) : t));
-    navigate(prevTab.url, { replace: false });
+    navigate(toAbsolutePath(prevTab.url), { replace: false });
   };
 
   const handleChangeTab = async (tabId: number) => {
     setTabs(tabs.map((tab) => ({ ...tab, selected: tab.id === tabId })));
     const tab = tabs.find((t) => t.id === tabId);
-    if (tab) navigate(tab.history[tab.urlIndex].url, { replace: false });
+    if (tab) navigate(toAbsolutePath(tab.history[tab.urlIndex].url), { replace: false });
   };
 
   const push = async (name: string, url: string) => {
@@ -53,7 +54,7 @@ export function useNavState() {
     );
   
     setTimeout(() => {
-      navigate(url, { replace: false });
+      navigate(toAbsolutePath(url), { replace: false });
     }, 0);
   };
 
@@ -73,7 +74,7 @@ export function useNavState() {
     );
   
     setTimeout(() => {
-      if (selectedTab) navigate(selectedTab.history[selectedTab.history.length - 1].url, { replace: false });
+      if (selectedTab) navigate(toAbsolutePath(selectedTab.history[selectedTab.history.length - 1].url), { replace: false });
     }, 0);
   };
 
@@ -91,7 +92,7 @@ export function useNavState() {
     if (moveImmediately) {
       setTabs(newTabs.map((tab) => ({ ...tab, selected: tab.id === id })));
       const tab = newTabs.find((t) => t.id === id);
-      if (tab) navigate(tab.history[tab.urlIndex].url, { replace: false });
+      if (tab) navigate(toAbsolutePath(tab.history[tab.urlIndex].url), { replace: false });
     }
   };
   
