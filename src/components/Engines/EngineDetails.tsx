@@ -20,7 +20,7 @@ interface Props {
 
 
 export default function EngineDetails({ engine, setIsEditing, setEngineProfitOpen }: Props) {
-  const { closeBtn, backward } = useNavState();
+  const { backward } = useNavState();
   const [user] = useAtom<User>(userAtom);
   
   const getTotalCostIn = () => {
@@ -66,7 +66,7 @@ export default function EngineDetails({ engine, setIsEditing, setEngineProfitOpe
           </Button>
           <Button
             className="engine-details__close-btn"
-            onClick={async () => await closeBtn()}
+            onClick={async () => await backward()}
           >
             Back
           </Button>

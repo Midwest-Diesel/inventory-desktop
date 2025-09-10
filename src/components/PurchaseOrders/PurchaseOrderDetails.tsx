@@ -20,7 +20,7 @@ interface Props {
 
 
 export default function PurchaseOrderDetails({ poData, handleReceiveItem, setIsEditing, handleToggleIsItemReceived }: Props) {
-  const { closeBtn, push } = useNavState();
+  const { backward, push } = useNavState();
   const { addToQue, printQue } = usePrintQue();
   const [user] = useAtom<User>(userAtom);
 
@@ -82,7 +82,7 @@ export default function PurchaseOrderDetails({ poData, handleReceiveItem, setIsE
           </Button>
           <Button
             className="purchase-order-details__close-btn"
-            onClick={async () => await closeBtn()}
+            onClick={async () => await backward()}
           >
             Back
           </Button>

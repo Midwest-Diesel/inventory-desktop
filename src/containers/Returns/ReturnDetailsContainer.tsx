@@ -20,7 +20,7 @@ import { usePrintQue } from "@/hooks/usePrintQue";
 
 
 export default function ReturnDetailsContainer() {
-  const { closeBtn, backward, push } = useNavState();
+  const { backward, push } = useNavState();
   const { addToQue, printQue } = usePrintQue();
   const params = useParams();
   const [user] = useAtom<User>(userAtom);
@@ -108,7 +108,7 @@ export default function ReturnDetailsContainer() {
               </Button>
               <Button
                 className="return-details__close-btn"
-                onClick={async () => await closeBtn()}
+                onClick={async () => await backward()}
               >
                 Back
               </Button>

@@ -27,7 +27,7 @@ import PartQtyHistoryDialog from "@/components/Dialogs/PartQtyHistoryDialog";
 
 
 export default function PartDetailsContainer() {
-  const { closeBtn, push } = useNavState();
+  const { backward, push } = useNavState();
   const { addToQue, printQue } = usePrintQue();
   const params = useParams();
   const [user] = useAtom<User>(userAtom);
@@ -217,7 +217,7 @@ export default function PartDetailsContainer() {
               </Button>
               <Button
                 className="part-details__close-btn"
-                onClick={async () => closeBtn()}
+                onClick={async () => backward()}
               >
                 Back
               </Button>

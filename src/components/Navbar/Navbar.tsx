@@ -60,8 +60,8 @@ export default function Navbar() {
 
         <div className="navbar-tab__container">
           <div className="nav-buttons">
-            <Button onClick={backward}>&lt;</Button>
-            <Button onClick={forward}>&gt;</Button>
+            <Button id="nav-buttons__back" onClick={backward}>&lt;</Button>
+            <Button id="nav-buttons__foward" onClick={forward}>&gt;</Button>
           </div>
 
           {tabs.map((tab: Tab) => {
