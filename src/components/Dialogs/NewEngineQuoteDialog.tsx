@@ -35,7 +35,7 @@ export default function NewEngineQuoteDialog({ open, setOpen, engine, onNewQuote
     if (!customer) return;
     const newQuote = {
       customerId: Number(customer.id),
-      contact: null,
+      contact: customer.contact,
       date: new Date(),
       source,
       partNum: null,
@@ -73,7 +73,15 @@ export default function NewEngineQuoteDialog({ open, setOpen, engine, onNewQuote
         data-testid="new-engine-quote-dialog"
       >
         <form onSubmit={(e)=> handleSubmit(e)}>
-          <p><strong>Stock Number:</strong> <span date-testid="quote-stock-num">{ stockNum }</span></p>
+          <Input
+            label="Stock Number"
+            variant={['label-full-width', 'small', 'thin', 'label-bold', 'label-stack']}
+            value={stockNum}
+            onChange={(e) => setStockNum(e.target.value)}
+            type="number"
+            required
+            date-testid="quote-stock-num"
+          />
 
           <SourceSelect
             label="Source"

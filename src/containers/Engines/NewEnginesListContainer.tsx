@@ -4,7 +4,7 @@ import { useState } from "react";
 import NewEngineQuoteDialog from "@/components/Dialogs/NewEngineQuoteDialog";
 import NewEnginesList from "@/components/Engines/NewEnginesList";
 import { useQuery } from "@tanstack/react-query";
-import { getEnginesByStatus } from "@/scripts/services/enginesService";
+import { getAllEngines } from "@/scripts/services/enginesService";
 
 
 export default function NewEnginesListContainer() {
@@ -13,12 +13,10 @@ export default function NewEnginesListContainer() {
   const [newQuoteDialogOpen, setNewQuoteDialogOpen] = useState(false);
 
   const { data: engines = [], isFetching, refetch } = useQuery<Engine[]>({
-    queryKey: ['engines', 'runner-list'],
+    queryKey: ['engines'],
     queryFn: async () => {
-      const running = await getEnginesByStatus('RunnerReady', 1, 999999);
-      const notRunning = await getEnginesByStatus('RunnerNotReady', 1, 999999);
-      const holdRunning = await getEnginesByStatus('HoldSoldRunner', 1, 999999);
-      return [...running.rows, ...notRunning.rows, ...holdRunning.rows].sort(
+      const engines = await getAllEngines();
+      return [...engines].sort(
         (a: any, b: any) => b.loginDate - a.loginDate
       );
     },
@@ -44,7 +42,11 @@ export default function NewEnginesListContainer() {
         setEngineModel={setEngineModel}
         setNewQuoteDialogOpen={setNewQuoteDialogOpen}
       />
-      <NewEnginesQuoteList model={engineModel} />
+      <NewEnginesQuoteList
+        model={engineModel}
+        setEngine={setEngine}
+        setNewQuoteDialogOpen={setNewQuoteDialogOpen}
+      />
     </>
   );
 }

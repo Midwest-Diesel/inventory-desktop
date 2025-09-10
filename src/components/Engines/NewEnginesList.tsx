@@ -4,6 +4,8 @@ import Button from "../Library/Button";
 import Select from "../Library/Select/Select";
 import Link from "../Library/Link";
 import { useMemo, useState } from "react";
+import { formatCurrency } from "@/scripts/tools/stringUtils";
+import { useTooltip } from "@/hooks/useTooltip";
 
 interface Props {
   engines: Engine[]
@@ -15,6 +17,7 @@ interface Props {
 
 
 export default function NewEnginesList({ engines, setEngine, engineModel, setEngineModel, setNewQuoteDialogOpen }: Props) {
+  const tooltip = useTooltip();
   const [filter, setFilter] = useState('all-runner');
 
   const isEngineResNotNull = (engine: Engine) => {
@@ -59,6 +62,7 @@ export default function NewEnginesList({ engines, setEngine, engineModel, setEng
     <div className="new-engines-list">
       <div className="new-engines-list__top-bar">
         {getEngineModels.map((model: string) => {
+          if (!model) return null;
           return (
             <Button key={model} onClick={() => setEngineModel(model)} data-testid="model-btn">{ model }</Button>
           );
@@ -87,7 +91,9 @@ export default function NewEnginesList({ engines, setEngine, engineModel, setEng
               <th>ECM</th>
               <th>Warranty</th>
               <th>Model</th>
-              <th>Ser No</th>
+              <th>Serial Number</th>
+              <th>Arrangement Number</th>
+              <th>Location</th>
               <th>HP</th>
               <th>Torque</th>
               <th>Oil Pan</th>
@@ -95,8 +101,10 @@ export default function NewEnginesList({ engines, setEngine, engineModel, setEng
               <th>Turbo HP</th>
               <th>Turbo LP</th>
               <th>Application</th>
+              <th>Cost</th>
               <th>Purchased From</th>
               <th>Status</th>
+              <th>FWH Number</th>
             </tr>
           </thead>
           <tbody>
@@ -105,13 +113,16 @@ export default function NewEnginesList({ engines, setEngine, engineModel, setEng
                 <tr key={engine.id}>
                   <td>
                     <Button
+                      variant={['x-small', 'fit']}
                       onClick={() => {
                         setEngine(engine);
                         setNewQuoteDialogOpen(true);
                       }}
                       data-testid="quote-btn"
+                      onMouseEnter={() => tooltip.set('Quote Engine')}
+                      onMouseLeave={() => tooltip.set('')}
                     >
-                      Quote
+                      <img alt="Quote Engine" src="/images/icons/clipboard.svg" width={17} height={17} />
                     </Button>
                   </td>
                   <td><Link href={`/engines/${engine.stockNum}`} data-testid="stock-num-link">{ engine.stockNum }</Link></td>
@@ -120,6 +131,8 @@ export default function NewEnginesList({ engines, setEngine, engineModel, setEng
                   <td className="cbx-td"><Checkbox checked={Boolean(engine.warranty)} disabled /></td>
                   <td>{ engine.model }</td>
                   <td>{ engine.serialNum }</td>
+                  <td>{ engine.arrNum }</td>
+                  <td>{ engine.location }</td>
                   <td>{ engine.horsePower }</td>
                   <td>{ engine.torque }</td>
                   <td>{ engine.oilPanNew }</td>
@@ -127,8 +140,10 @@ export default function NewEnginesList({ engines, setEngine, engineModel, setEng
                   <td>{ engine.turboHpNew }</td>
                   <td>{ engine.turboLpNew }</td>
                   <td>{ engine.application }</td>
+                  <td>{ formatCurrency(engine.totalCostApplied) }</td>
                   <td>{ engine.purchasedFrom }</td>
                   <td>{ engine.currentStatus }</td>
+                  <td>{ engine.fwhNumber }</td>
                 </tr>
               );
             })}

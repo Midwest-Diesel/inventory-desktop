@@ -32,4 +32,10 @@
     max-height: 40rem;
     width: fit-content;
   }
+
+  &__top-bar {
+    display: flex;
+    gap: 0.3rem;
+    margin: 0.4rem 0;
+  }
 }

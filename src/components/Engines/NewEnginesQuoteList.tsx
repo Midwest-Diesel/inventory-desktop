@@ -4,13 +4,16 @@ import { formatCurrency, formatDate, formatPhone } from "@/scripts/tools/stringU
 import Checkbox from "../Library/Checkbox";
 import Link from "@/components/Library/Link";
 import { useQuery } from "@tanstack/react-query";
+import Button from "../Library/Button";
 
 interface Props {
   model: string
+  setEngine: (engine: Engine | null) => void
+  setNewQuoteDialogOpen: (value: boolean) => void
 }
 
 
-export default function NewEnginesQuoteList({ model }: Props) {
+export default function NewEnginesQuoteList({ model, setEngine, setNewQuoteDialogOpen }: Props) {
   const { data: quotes = [] } = useQuery<EngineQuote[]>({
     queryKey: ['quotes', model],
     queryFn: () => getQuotesByEngineModel(model),
@@ -22,6 +25,16 @@ export default function NewEnginesQuoteList({ model }: Props) {
   return (
     <div className="new-engines-quotes-list">
       <h2>Engine Quotes</h2>
+      <div className="new-engines-quotes-list__top-bar">
+        <Button
+          onClick={() => {
+            setEngine(null);
+            setNewQuoteDialogOpen(true);
+          }}
+        >
+          New Quote
+        </Button>
+      </div>
 
       <div className="new-engines-quotes-list__container">
         <Table>
@@ -33,7 +46,7 @@ export default function NewEnginesQuoteList({ model }: Props) {
               <th>Customer</th>
               <th>Contact</th>
               <th>Phone</th>
-              <th>St.</th>
+              <th>State</th>
               <th>Serial Number</th>
               <th>Description</th>
               <th>Stock Number</th>
