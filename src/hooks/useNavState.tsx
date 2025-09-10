@@ -58,41 +58,35 @@ export function useNavState() {
     }, 0);
   };
 
-  const closeBtn = async () => {
-    let selectedTab: Tab | undefined;
-    setTabs((prevTabs) =>
-      prevTabs.map((tab) => {
-        if (tab.selected) {
-          const prevPage = tab.history[tab.history.length - 2].url !== location.pathname ? tab.history[tab.history.length - 2] : tab.history[tab.history.length - 3];
-          if (!prevPage) return tab;
-          const newHistory = [...tab.history.slice(0, tab.urlIndex + 1), { name: prevPage.name, url: prevPage.url }];
-          selectedTab = { ...tab, history: newHistory, urlIndex: newHistory.length - 1 };
-          return selectedTab;
-        }
-        return tab;
-      })
-    );
-  
-    setTimeout(() => {
-      if (selectedTab) navigate(toAbsolutePath(selectedTab.history[selectedTab.history.length - 1].url), { replace: false });
-    }, 0);
+  const closeBtn = (tabId: number) => {
+    let newTabs = tabs.filter(t => t.id !== tabId);
+    const wasSelected = tabs.find(t => t.id === tabId)?.selected;
+    if (wasSelected && newTabs.length > 0) {
+      const oldIndex = tabs.findIndex(t => t.id === tabId);
+      const newSelectedIndex = oldIndex > 0 ? oldIndex - 1 : 0;
+      newTabs = newTabs.map((t, i) => ({ ...t, selected: i === newSelectedIndex }));
+      navigate(toAbsolutePath(newTabs[newSelectedIndex].history[newTabs[newSelectedIndex].urlIndex].url), { replace: false });
+    }
+    setTabs(newTabs);
   };
 
   const newTab = async (history = [{ name: 'Home', url: '/' }], moveImmediately = true) => {
-    const id = tabs.length + 1;
-    const newTabs = [...tabs, {
+    const id = tabs.length ? Math.max(...tabs.map(t => t.id)) + 1 : 1;
+    const newTabObj: Tab = {
       id,
       name: null,
       urlIndex: 0,
       history,
       selected: false
-    }];
-    setTabs(newTabs);
+    };
+    const newTabs = [...tabs.map(t => ({ ...t, selected: false })), newTabObj];
 
     if (moveImmediately) {
-      setTabs(newTabs.map((tab) => ({ ...tab, selected: tab.id === id })));
-      const tab = newTabs.find((t) => t.id === id);
-      if (tab) navigate(toAbsolutePath(tab.history[tab.urlIndex].url), { replace: false });
+      const tabsWithSelection = newTabs.map(t => ({ ...t, selected: t.id === id }));
+      setTabs(tabsWithSelection);
+      navigate(toAbsolutePath(history[0].url), { replace: false });
+    } else {
+      setTabs(newTabs);
     }
   };
   

@@ -17,6 +17,7 @@ export default function NavTab({ tab, handleChangeTab, handleDeleteTab, setSelec
         className="navbar-tab__content"
         onClick={() => handleChangeTab(tab.id)}
         onContextMenu={() => setSelectedTab(tab)}
+        data-tabid={tab.id}
         data-testid="tab"
       >
         { tab.name || tab.history[tab.urlIndex].name }
