@@ -331,9 +331,9 @@ export default function HandwrittenDetails({
   };
 
   const handleViewKarmak = () => {
-    const year = (handwritten.date.getFullYear()).toString();
-    const month = (handwritten.date.getMonth() + 1).toString();
-    const day = (handwritten.date.getDate()).toString();
+    const year = (handwritten.date.getUTCFullYear()).toString();
+    const month = (handwritten.date.getUTCMonth() + 1).toString();
+    const day = (handwritten.date.getUTCDate()).toString();
     const filepath = `\\\\MWD1-SERVER\\Server\\InvoiceScans\\Archives\\${year}\\${month}\\${day}\\${handwritten.legacyId ?? handwritten.id}.pdf`;
     invoke('view_file', { filepath });
   };
