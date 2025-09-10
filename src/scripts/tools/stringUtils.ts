@@ -1,6 +1,9 @@
 export const formatDate = (date: Date | null | undefined): string => {
-  if (!date || typeof date === 'string' || `${(date as any)}` === 'Invalid Date') return '';
-  return date.toLocaleDateString('en-US', { day: '2-digit', month: '2-digit', year: 'numeric' });
+  if (!date || isNaN(date.getTime())) return '';
+  const y = date.getUTCFullYear();
+  const m = String(date.getUTCMonth() + 1).padStart(2, '0');
+  const d = String(date.getUTCDate()).padStart(2, '0');
+  return `${m}/${d}/${y}`;
 };
 
 export const parseResDate = (date: string): Date | null => {

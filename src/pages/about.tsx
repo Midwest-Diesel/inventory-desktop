@@ -41,7 +41,7 @@ export default function About() {
   const closeAllTabs = () => {
     localStorage.removeItem('tabs');
     location.reload();
-  }
+  };
 
 
   return (
