@@ -10,7 +10,7 @@ import { addCompareData, getCompareDataById, searchCompareData } from "@/scripts
 import { getCustomerById, getCustomers } from "@/scripts/services/customerService";
 import { useNavState } from "@/hooks/useNavState";
 import { useAtom } from "jotai";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import CompareConsistHistoryDialog from "@/components/Dialogs/CompareConsistHistoryDialog";
 
 
@@ -73,20 +73,18 @@ export default function CompareConsistContainer() {
     setMwdEngine(engine);
   };
 
-  const getEngineData = () => {
+  const getEngineData = useCallback(() => {
     const data: any = {
       serialNum,
       arrNum,
     };
 
     ENGINE_PARTS.forEach((part) => {
-      data[`${part}New`] = engineNew[part] || null;
-      data[`${part}Reman`] = engineReman[part] || null;
-      data[`${part}Check`] = engineChecks[part];
-    });
-
+      data[`${part}New`] = engineChecks[part] ? engineNew[part] || null : null;
+      data[`${part}Reman`] = engineChecks[part] ? engineReman[part] || null : null;
+      data[`${part}Check`] = !!engineChecks[part]; });
     return data;
-  };
+  }, [serialNum, arrNum, engineNew, engineReman, engineChecks]);
 
   const handleChangeCustomer = (value: string) => {
     setCompany(value);
@@ -117,7 +115,7 @@ export default function CompareConsistContainer() {
   const handleSearch = async () => {
     const res = await searchCompareData(customer?.id ?? 0, serialNum, arrNum);
     setSearchData(res);
-    setShowSearchHistory(true);
+    if (res.length > 0) setShowSearchHistory(true);
   };
 
   const handleResetSearch = () => {
