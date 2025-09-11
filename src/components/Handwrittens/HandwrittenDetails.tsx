@@ -72,7 +72,7 @@ export default function HandwrittenDetails({
   setCardAddress,
   setAddQtyDialogOpen
 }: Props) {
-  const { backward, push } = useNavState();
+  const { closeDetailsBtn, push } = useNavState();
   const { addToQue, printQue } = usePrintQue();
   const params = useParams();
   const [user] = useAtom<User>(userAtom);
@@ -384,7 +384,7 @@ export default function HandwrittenDetails({
             </Button>
             <Button
               className="handwritten-details__close-btn"
-              onClick={async () => await backward()}
+              onClick={async () => await closeDetailsBtn()}
             >
               Back
             </Button>

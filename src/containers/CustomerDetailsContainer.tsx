@@ -21,7 +21,7 @@ import { addVendor, getVendorByName } from "@/scripts/services/vendorsService";
 
 
 export default function CustomerDetailsContainer() {
-  const { backward, push } = useNavState();
+  const { closeDetailsBtn, push } = useNavState();
   const params = useParams();
   const [user] = useAtom<User>(userAtom);
   const [, setSelectedCustomer] = useAtom<Customer>(selectedCustomerAtom);
@@ -115,7 +115,7 @@ export default function CustomerDetailsContainer() {
                 }
                 <Button
                   className="customer-details__close-btn"
-                  onClick={async () => await backward()}
+                  onClick={async () => await closeDetailsBtn()}
                 >
                   Back
                 </Button>

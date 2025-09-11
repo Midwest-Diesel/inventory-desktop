@@ -20,7 +20,7 @@ import { usePrintQue } from "@/hooks/usePrintQue";
 
 
 export default function ReturnDetailsContainer() {
-  const { backward, push } = useNavState();
+  const { closeDetailsBtn, push } = useNavState();
   const { addToQue, printQue } = usePrintQue();
   const params = useParams();
   const [user] = useAtom<User>(userAtom);
@@ -40,7 +40,7 @@ export default function ReturnDetailsContainer() {
   const handleDelete = async () => {
     if (!returnData?.id || prompt('Type "confirm" to delete this return') !== 'confirm') return;
     await deleteReturn(returnData.id);
-    await backward();
+    await closeDetailsBtn();
   };
 
   const handleCreditIssued = async () => {
@@ -108,7 +108,7 @@ export default function ReturnDetailsContainer() {
               </Button>
               <Button
                 className="return-details__close-btn"
-                onClick={async () => await backward()}
+                onClick={async () => await closeDetailsBtn()}
               >
                 Back
               </Button>

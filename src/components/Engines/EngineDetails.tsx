@@ -20,7 +20,7 @@ interface Props {
 
 
 export default function EngineDetails({ engine, setIsEditing, setEngineProfitOpen }: Props) {
-  const { backward } = useNavState();
+  const { closeDetailsBtn } = useNavState();
   const [user] = useAtom<User>(userAtom);
   
   const getTotalCostIn = () => {
@@ -44,7 +44,7 @@ export default function EngineDetails({ engine, setIsEditing, setEngineProfitOpe
   const handleDelete = async () => {
     if (!engine?.id || user.accessLevel <= 1 || prompt('Type "confirm" to delete this engine') !== 'confirm') return;
     await deleteEngine(engine.id);
-    await backward();
+    await closeDetailsBtn();
   };
 
 
@@ -66,7 +66,7 @@ export default function EngineDetails({ engine, setIsEditing, setEngineProfitOpe
           </Button>
           <Button
             className="engine-details__close-btn"
-            onClick={async () => await backward()}
+            onClick={async () => await closeDetailsBtn()}
           >
             Back
           </Button>

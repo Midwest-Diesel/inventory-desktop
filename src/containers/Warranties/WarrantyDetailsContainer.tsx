@@ -19,7 +19,7 @@ import { usePrintQue } from "@/hooks/usePrintQue";
 
 
 export default function WarrantyDetailsContainer() {
-  const { backward, push } = useNavState();
+  const { closeDetailsBtn, push } = useNavState();
   const { addToQue, printQue } = usePrintQue();
   const params = useParams();
   const [user] = useAtom<User>(userAtom);
@@ -109,7 +109,7 @@ export default function WarrantyDetailsContainer() {
               </Button>
               <Button
                 className="warranty-details__close-btn"
-                onClick={async () => await backward()}
+                onClick={async () => await closeDetailsBtn()}
               >
                 Back
               </Button>
