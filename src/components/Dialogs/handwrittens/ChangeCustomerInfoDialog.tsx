@@ -36,7 +36,7 @@ export default function ChangeCustomerInfoDialog({ open, setOpen, customer, hand
   };
 
   const handleClose = () => {
-    if (handwritten?.invoiceStatus !== 'SENT TO ACCOUNTING') setIsEditing(false);
+    setIsEditing(false);
     setOpen(false);
   };
 
