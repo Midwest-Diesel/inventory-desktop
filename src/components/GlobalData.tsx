@@ -44,6 +44,21 @@ export default function GlobalData({ children }: Props) {
       }
     };
     fetchData();
+
+    const handleMiddleClick = async (e: MouseEvent) => {
+      if (e.button === 1) {
+        const target = e.target as HTMLElement;
+        const link = target.closest('a');
+        if (!link) return;
+        e.preventDefault();
+        e.stopImmediatePropagation();
+      }
+    };
+    document.addEventListener('auxclick', handleMiddleClick);
+  
+    return () => {
+      document.removeEventListener('auxclick', handleMiddleClick);
+    };
   }, []);
 
   const handleGetUser = async () => {

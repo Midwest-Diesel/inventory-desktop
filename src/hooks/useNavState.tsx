@@ -99,7 +99,7 @@ export function useNavState() {
       history,
       selected: false
     };
-    const newTabs = [...tabs.map(t => ({ ...t, selected: false })), newTabObj];
+    const newTabs = [...tabs.map(t => ({ ...t, selected: moveImmediately ? false : t.selected })), newTabObj];
 
     if (moveImmediately) {
       const tabsWithSelection = newTabs.map((t) => ({ ...t, selected: t.id === id }));
