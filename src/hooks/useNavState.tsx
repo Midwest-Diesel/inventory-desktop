@@ -4,14 +4,14 @@ import { useNavigate } from "react-router-dom";
 import { toAbsolutePath } from "@/scripts/tools/stringUtils";
 
 
+const MAX_HISTORY = 20;
+
 export function useNavState() {
   const navigate = useNavigate();
   const [tabs, setTabsAtom] = useAtom<Tab[]>(tabsAtom);
 
   const setTabs = (tabsInput: Tab[] | ((prevTabs: Tab[]) => Tab[])) => {
-    const newTabs = typeof tabsInput === 'function'
-      ? (tabsInput as (prev: Tab[]) => Tab[])(tabs)
-      : tabsInput;
+    const newTabs = typeof tabsInput === 'function' ? (tabsInput as (prev: Tab[]) => Tab[])(tabs) : tabsInput;
     setTabsAtom(newTabs);
     localStorage.setItem('tabs', JSON.stringify(newTabs));
   };
@@ -46,6 +46,7 @@ export function useNavState() {
       prevTabs.map((tab) => {
         if (tab.selected) {
           const newHistory = [...tab.history.slice(0, tab.urlIndex + 1), { name, url }];
+          if (newHistory.length > MAX_HISTORY) newHistory.shift();
           selectedTab = { ...tab, history: newHistory, urlIndex: newHistory.length - 1 };
           return selectedTab;
         }
