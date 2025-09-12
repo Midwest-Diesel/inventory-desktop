@@ -137,6 +137,7 @@ export default function EditHandwrittenDetails({
   const [emails, setEmails] = useState<string[]>([]);
   const [altShipOpen, setAltShipOpen] = useState(false);
   const [altShipData, setAltShipData] = useState<AltShip[]>([]);
+  const [returnAfterDone, setReturnAfterDone] = useState(true);
   const [loading, setLoading] = useState(false);
   const TAX_RATE = 0.08375;
 
@@ -256,9 +257,11 @@ export default function EditHandwrittenDetails({
     if (isSentToAccounting) {
       if (await ask('Do you want to add marketing materials?')) {
         setPromotionalDialogOpen(true);
+        setReturnAfterDone(false);
       } else {
         if (await ask('Add this to shipping list?')) {
           setShippingListDialogOpen(true);
+          setReturnAfterDone(false);
         } else {
           const hasCore = handwrittenItems.some((item) => item.location === 'CORE DEPOSIT');
           await handlePrintCCLabel();
@@ -645,6 +648,7 @@ export default function EditHandwrittenDetails({
           customer={handwritten.customer}
           handwritten={changeCustomerDialogData}
           setIsEditing={setIsEditing}
+          returnAfterDone={returnAfterDone}
         />
       }
 

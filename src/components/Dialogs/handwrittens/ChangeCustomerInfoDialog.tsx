@@ -10,10 +10,11 @@ interface Props {
   customer: Customer
   handwritten: Handwritten | null
   setIsEditing: (value: boolean) => void
+  returnAfterDone: boolean
 }
 
 
-export default function ChangeCustomerInfoDialog({ open, setOpen, customer, handwritten, setIsEditing }: Props) {
+export default function ChangeCustomerInfoDialog({ open, setOpen, customer, handwritten, setIsEditing, returnAfterDone }: Props) {
   const [billToCompany, setBillToCompany] = useState<string>(handwritten?.billToCompany ?? '');
   const [billToAddress, setBillToAddress] = useState<string>(handwritten?.billToAddress ?? '');
   const [billToAddress2, setBillToAddress2] = useState<string>(handwritten?.billToAddress2 ?? '');
@@ -36,7 +37,7 @@ export default function ChangeCustomerInfoDialog({ open, setOpen, customer, hand
   };
 
   const handleClose = () => {
-    setIsEditing(false);
+    if (returnAfterDone) setIsEditing(false);
     setOpen(false);
   };
 

@@ -102,7 +102,7 @@ export function useNavState() {
     const newTabs = [...tabs.map(t => ({ ...t, selected: false })), newTabObj];
 
     if (moveImmediately) {
-      const tabsWithSelection = newTabs.map(t => ({ ...t, selected: t.id === id }));
+      const tabsWithSelection = newTabs.map((t) => ({ ...t, selected: t.id === id }));
       setTabs(tabsWithSelection);
       navigate(toAbsolutePath(history[0].url), { replace: false });
     } else {

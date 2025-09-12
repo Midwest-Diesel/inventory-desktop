@@ -10,7 +10,7 @@ interface Props {
 
 
 export default function Link({ children, href, style, className, ...props }: Props) {
-  const { push } = useNavState();
+  const { push, newTab } = useNavState();
   const ref = useRef<HTMLAnchorElement>(null);
 
   const handleChangePage = () => {
@@ -27,6 +27,13 @@ export default function Link({ children, href, style, className, ...props }: Pro
       onClick={(e) => {
         e.preventDefault();
         handleChangePage();
+      }}
+      onMouseDown={e => {
+        if (e.button === 1) {
+          e.preventDefault();
+          e.stopPropagation();
+          newTab([{ name: e.currentTarget.textContent ?? '', url: href }], false);
+        }
       }}
       style={style}
       className={className}
