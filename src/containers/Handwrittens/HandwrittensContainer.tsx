@@ -10,7 +10,7 @@ import { addHandwritten, getSomeHandwrittens, getYeserdayCOGS, getYeserdaySales,
 import { formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
 import { useAtom } from "jotai";
 import Link from "@/components/Library/Link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useArrowSelector } from "@/hooks/useArrowSelector";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 
@@ -65,6 +65,16 @@ export default function HandwrittensContainer() {
     refetchOnWindowFocus: false,
     keepPreviousData: true
   });
+
+  useEffect(() => {
+    if (!focusedHandwritten) return;
+    const taxItemsAmount = (
+      focusedHandwritten.handwrittenItems
+        .map((item) => (item.qty ?? 0) * (item.unitPrice ?? 0))
+        .reduce((acc, cur) => acc + cur, 0) ?? 0
+    );
+    setTaxTotal(Number((taxItemsAmount * TAX_RATE).toFixed(2)));
+  }, [focusedHandwritten]);
 
   useArrowSelector(handwrittensRes?.rows ?? [], focusedHandwritten, setFocusedHandwritten);
 
@@ -127,12 +137,6 @@ export default function HandwrittensContainer() {
 
   const handleFocusHandwritten = (handwritten: Handwritten) => {
     setFocusedHandwritten(handwritten);
-    const taxItemsAmount = (
-      handwritten?.handwrittenItems
-        .map((item) => (item?.qty ?? 0) * (item?.unitPrice ?? 0))
-        .reduce((acc, cur) => acc + cur, 0) ?? 0
-    );
-    setTaxTotal(Number((taxItemsAmount * TAX_RATE).toFixed(2)));
   };
 
 
