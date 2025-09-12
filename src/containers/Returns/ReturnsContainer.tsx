@@ -27,9 +27,7 @@ export default function ReturnsContainer() {
       } else {
         return await getSomeReturns(currentPage, LIMIT, panel === 'shop' ? true : false);
       }
-    },
-    refetchOnWindowFocus: false,
-    keepPreviousData: true
+    }
   });
 
   const handleChangePage = async (_: any, page: number) => {

@@ -78,9 +78,7 @@ export default function PartSearchSection({ selectHandwrittenOpen, setSelectHand
   const { data: parts, isFetching } = useQuery<PartsRes>({
     queryKey: ['parts', currentPage, showSoldParts],
     queryFn: () => getSomeParts(currentPage, LIMIT, showSoldParts),
-    enabled: !hasSearchInput(),
-    refetchOnWindowFocus: false,
-    keepPreviousData: true
+    enabled: !hasSearchInput()
   });
 
   const { data: search, isFetching: isSearchFetching } = useQuery<PartsRes>({
@@ -91,9 +89,7 @@ export default function PartSearchSection({ selectHandwrittenOpen, setSelectHand
         ? searchAltParts({ ...searchParams, showSoldParts }, searchParams.page, LIMIT)
         : searchParts({ ...searchParams, showSoldParts }, searchParams.page, LIMIT);
     },
-    enabled: !!searchParams,
-    refetchOnWindowFocus: false,
-    keepPreviousData: true
+    enabled: !!searchParams
   });
 
   useEffect(() => {

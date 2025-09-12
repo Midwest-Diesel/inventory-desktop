@@ -22,9 +22,7 @@ export default function SurplusContainer() {
 
   const { data: surplus = [], isFetching, refetch } = useQuery<Surplus[]>({
     queryKey: ['surplus'],
-    queryFn: getAllSurplus,
-    refetchOnWindowFocus: false,
-    keepPreviousData: true
+    queryFn: getAllSurplus
   });
 
   const getCostRemaining = (surplus: Surplus) => {

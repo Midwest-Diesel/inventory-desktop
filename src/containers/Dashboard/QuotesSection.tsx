@@ -64,9 +64,7 @@ export default function QuotesSection({ quotes, setQuotes, setHandwrittenQuote, 
         return selectedCustomer;
       }
     },
-    enabled: true,
-    refetchOnWindowFocus: false,
-    keepPreviousData: true
+    enabled: true
   });
  
   const { data: quotesData, isFetching: isFetchingQuotes, refetch } = useQuery({

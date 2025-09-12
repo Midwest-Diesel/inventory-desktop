@@ -14,9 +14,7 @@ export default function EmailStuffContainer() {
   
   const { data: emailStuff = [], isFetching, refetch } = useQuery<EmailStuff[]>({
     queryKey: ['emailStuff'],
-    queryFn: getAllEmailStuff,
-    refetchOnWindowFocus: false,
-    keepPreviousData: true
+    queryFn: getAllEmailStuff
   });
 
   const handleNewEmailItem = () => {

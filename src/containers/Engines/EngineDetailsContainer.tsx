@@ -21,9 +21,7 @@ export default function EngineDetailsContainer() {
       setTitle(`${res?.stockNum} Engine`);
       return res;
     },
-    enabled: !!params,
-    refetchOnWindowFocus: false,
-    keepPreviousData: true
+    enabled: !!params
   });
 
 

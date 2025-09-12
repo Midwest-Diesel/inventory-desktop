@@ -7,9 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 export default function PerformanceContainer() {
   const { data: performance } = useQuery<Perf | null>({
     queryKey: ['performance'],
-    queryFn: getPerformance,
-    refetchOnWindowFocus: false,
-    keepPreviousData: true
+    queryFn: getPerformance
   });
 
 

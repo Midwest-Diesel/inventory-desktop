@@ -30,16 +30,12 @@ export default function HandwrittensContainer() {
 
   const { data: totalSales = 0, isFetching: isSalesLoading } = useQuery<number>({
     queryKey: ['yesterdaySales'],
-    queryFn: getYeserdaySales,
-    refetchOnWindowFocus: false,
-    keepPreviousData: true
+    queryFn: getYeserdaySales
   });
 
   const { data: totalCOGS = 0, isFetching: isCogsLoading } = useQuery<number>({
     queryKey: ['yesterdayCOGS'],
-    queryFn: getYeserdayCOGS,
-    refetchOnWindowFocus: false,
-    keepPreviousData: true
+    queryFn: getYeserdayCOGS
   });
 
   const { data: handwrittensRes, isFetching } = useQuery<HandwrittenRes>({
@@ -61,9 +57,7 @@ export default function HandwrittensContainer() {
         });
       }
       return await getSomeHandwrittens(currentPage, LIMIT);
-    },
-    refetchOnWindowFocus: false,
-    keepPreviousData: true
+    }
   });
 
   useEffect(() => {

@@ -40,9 +40,7 @@ export default function WarrantiesContainer() {
       } else{
         return await getSomeWarranties(currentPage, LIMIT);
       }
-    },
-    refetchOnWindowFocus: false,
-    keepPreviousData: true
+    }
   });
 
   useArrowSelector(warranties?.rows ?? [], focusedWarranty, setFocusedWarranty);

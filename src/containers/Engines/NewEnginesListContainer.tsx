@@ -19,9 +19,7 @@ export default function NewEnginesListContainer() {
       return [...engines].sort(
         (a: any, b: any) => b.loginDate - a.loginDate
       );
-    },
-    refetchOnWindowFocus: false,
-    keepPreviousData: true
+    }
   });
 
   

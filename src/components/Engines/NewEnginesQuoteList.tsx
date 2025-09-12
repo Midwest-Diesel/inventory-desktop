@@ -16,9 +16,7 @@ interface Props {
 export default function NewEnginesQuoteList({ model, setEngine, setNewQuoteDialogOpen }: Props) {
   const { data: quotes = [] } = useQuery<EngineQuote[]>({
     queryKey: ['quotes', model],
-    queryFn: () => getQuotesByEngineModel(model),
-    refetchOnWindowFocus: false,
-    keepPreviousData: true
+    queryFn: () => getQuotesByEngineModel(model)
   });
   
 

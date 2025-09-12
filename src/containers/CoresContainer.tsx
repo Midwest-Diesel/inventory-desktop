@@ -21,9 +21,7 @@ export default function CoresContainer() {
       } else {
         return await getAllCores();
       }
-    },
-    refetchOnWindowFocus: false,
-    keepPreviousData: true
+    }
   });
 
   const onSearch = (search: CoreSearch) => {

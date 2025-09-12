@@ -27,9 +27,7 @@ export default function AccountingContainer() {
       } else {
         return await getSomeHandwrittensByStatus(currentPage, LIMIT, currentStatus);
       }
-    },
-    refetchOnWindowFocus: false,
-    keepPreviousData: true
+    }
   });
 
   const handleChangePage = async (_: any, page: number) => {

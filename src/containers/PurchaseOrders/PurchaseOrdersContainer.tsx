@@ -41,9 +41,7 @@ export default function PurchaseOrdersContainer() {
       } else {
         return await getSomePurchaseOrders(currentPage, LIMIT, showIncomming);
       }
-    },
-    refetchOnWindowFocus: false,
-    keepPreviousData: true
+    }
   });
 
   useArrowSelector(purchaseOrders?.rows ?? [], focusedPurchaseOrder, setFocusedPurchaseOrder);

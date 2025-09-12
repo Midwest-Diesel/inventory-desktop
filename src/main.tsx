@@ -10,6 +10,11 @@ import './styles/globals.scss';
 
 const app = createRoot(document.getElementById('root')!);
 const queryClient = new QueryClient();
+const queryOptions = {
+  refetchOnWindowFocus: false,
+  keepPreviousData: true
+};
+queryClient.setDefaultOptions({ queries: queryOptions });
 
 app.render(
   <BrowserRouter>

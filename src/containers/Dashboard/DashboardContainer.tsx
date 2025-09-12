@@ -45,9 +45,7 @@ export default function DashboardContainer() {
       const partNum = JSON.parse(prevSearch)?.partNum.replace('*', '');
       return await getRecentPartSearches(partNum && partNum !== '' ? partNum : '*');
     },
-    enabled: !!user && !isObjectNull(user),
-    refetchOnWindowFocus: false,
-    keepPreviousData: true
+    enabled: !!user && !isObjectNull(user)
   });
 
   useEffect(() => {

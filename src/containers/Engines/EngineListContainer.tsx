@@ -37,9 +37,7 @@ export default function EngineListContainer() {
         return await searchEngines({ ...search, page: currentPage, limit: LIMIT });
       }
       return await getEnginesByStatus(STATUS_MAP[listOpen][0], currentPage, LIMIT);
-    },
-    refetchOnWindowFocus: false,
-    keepPreviousData: true
+    }
   });
 
   const title = useMemo(() => {
