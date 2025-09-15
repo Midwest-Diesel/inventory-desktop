@@ -86,7 +86,7 @@ export default function PiggybackQuoteDialog({ open, setOpen, quote, handleChang
       desc: part?.desc,
       stockNum: part?.stockNum,
       price: 0,
-      notes: part?.desc,
+      notes: null,
       salesmanId: user.id,
       rating: part?.rating,
       email: customer?.email,

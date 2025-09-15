@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { toAbsolutePath } from "@/scripts/tools/stringUtils";
 
 
-const MAX_HISTORY = 20;
+const MAX_HISTORY = 40;
 
 export function useNavState() {
   const navigate = useNavigate();
@@ -60,10 +60,10 @@ export function useNavState() {
   };
 
   const closeBtn = (tabId: number) => {
-    let newTabs = tabs.filter(t => t.id !== tabId);
-    const wasSelected = tabs.find(t => t.id === tabId)?.selected;
+    let newTabs = tabs.filter((t) => t.id !== tabId);
+    const wasSelected = tabs.find((t) => t.id === tabId)?.selected;
     if (wasSelected && newTabs.length > 0) {
-      const oldIndex = tabs.findIndex(t => t.id === tabId);
+      const oldIndex = tabs.findIndex((t) => t.id === tabId);
       const newSelectedIndex = oldIndex > 0 ? oldIndex - 1 : 0;
       newTabs = newTabs.map((t, i) => ({ ...t, selected: i === newSelectedIndex }));
       navigate(toAbsolutePath(newTabs[newSelectedIndex].history[newTabs[newSelectedIndex].urlIndex].url), { replace: false });

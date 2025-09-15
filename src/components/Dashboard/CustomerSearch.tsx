@@ -20,7 +20,7 @@ interface Props {
 
 
 export default function CustomerSearch({ selectedCustomer, setSelectedCustomer, expandedDetailsOpen, setExpandedDetailsOpen, onExpandDetails }: Props) {
-  const { push, newTab } = useNavState();
+  const { newTab } = useNavState();
   const toast = useToast();
   const [user] = useAtom<User>(userAtom);
   const [searchDialogOpen, setSearchDialogOpen] = useState(false);
@@ -36,7 +36,11 @@ export default function CustomerSearch({ selectedCustomer, setSelectedCustomer, 
     if (!name) return;
     await addCustomer(name);
     const res = await getCustomerByName(name);
-    if (res) await push('customer', `/customer/${res.id}`);
+    if (!res) {
+      alert('Failed to create customer');
+      return;
+    }
+    await newTab([{ name, url: `/customer/${res.id}` }]);
   };
 
   const deselectCustomer = () => {
