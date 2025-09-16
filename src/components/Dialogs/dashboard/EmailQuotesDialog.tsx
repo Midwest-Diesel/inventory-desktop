@@ -16,9 +16,10 @@ interface Props {
 }
 
 
-export default function SalesInfo({ open, setOpen, quote }: Props) {
+export default function EmailQuotesDialog({ open, setOpen, quote }: Props) {
   const [recipients, setRecipients] = useState<string>(quote.customer?.email ?? '');
-  const [quotes, setQuotes] = useState<Quote[]>([quote]);
+  const [quotes, setQuotes] = useState<Quote[]>([]);
+  const [piggybackQuotes, setPiggybackQuotes] = useState<PiggybackQuote[]>([]);
   const [customerQuotes, setCustomerQuotes] = useState<Quote[]>([]);
   const [paginatedQuotes, setPaginatedQuotes] = useState<Quote[]>([]);
   const [pageCount, setPageCount] = useState(0);
@@ -41,7 +42,12 @@ export default function SalesInfo({ open, setOpen, quote }: Props) {
   const clearData = () => {
     setRecipients(quote.customer?.email ?? '');
     setQuotes([quote]);
+    setPiggybackQuotes(filterPiggybackQuotes(quote.piggybackQuotes));
     setLoading(true);
+  };
+
+  const filterPiggybackQuotes = (quotes: PiggybackQuote[]): PiggybackQuote[] => {
+    return quotes.filter((q) => q.addToEmail);
   };
 
   const handleEmail = async (e: FormEvent) => {
@@ -133,8 +139,10 @@ export default function SalesInfo({ open, setOpen, quote }: Props) {
   const toggleQuoteSelected = (quote: Quote, selected: boolean) => {
     if (selected) {
       setQuotes(quotes.filter((q) => q.id !== quote.id));
+      setPiggybackQuotes(filterPiggybackQuotes(piggybackQuotes.filter((q) => q.piggybackQuoteId !== quote.id)));
     } else {
       setQuotes([...quotes, quote]);
+      setPiggybackQuotes(filterPiggybackQuotes([...piggybackQuotes, ...quote.piggybackQuotes]));
     }
   };
 
@@ -174,6 +182,18 @@ export default function SalesInfo({ open, setOpen, quote }: Props) {
                     <td>{ quote.stockNum }</td>
                     <td>{ quote.desc }</td>
                     <td>{ formatCurrency(quote.part ? (quote.price ?? 0) * quote.part.qty : quote.price) }</td>
+                  </tr>
+                );
+              })}
+
+              {piggybackQuotes.map((piggybackQuote) => {
+                return (
+                  <tr key={piggybackQuote.id}>
+                    <td>{ formatDate(piggybackQuote.date) }</td>
+                    <td>{ piggybackQuote.partNum }</td>
+                    <td>{ piggybackQuote.stockNum }</td>
+                    <td>{ piggybackQuote.desc }</td>
+                    <td>{ formatCurrency(piggybackQuote.part ? (piggybackQuote.price ?? 0) * piggybackQuote.part.qty : piggybackQuote.price) }</td>
                   </tr>
                 );
               })}

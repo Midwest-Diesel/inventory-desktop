@@ -126,6 +126,7 @@ interface EngineQuote extends Quote {
 
 type PiggybackQuote = {
   id: number
+  piggybackQuoteId: number
   date: Date
   source: Source
   customer: Customer

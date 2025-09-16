@@ -177,9 +177,9 @@ export default function QuoteList({ quotes, setQuotes, onInvoiceQuote, onChangeP
                                 <li key={piggybackQuote.id}>
                                   <div className="piggyback-quotes__item">
                                     {piggybackQuote.part ?
-                                      <Link href={`/part/${piggybackQuote.part.id}`}>{ piggybackQuote.partNum }</Link>
+                                      <Link href={`/part/${piggybackQuote.part.id}`}>{ piggybackQuote.stockNum }</Link>
                                       :
-                                      <p>{ piggybackQuote.partNum }</p>
+                                      <p>{ piggybackQuote.stockNum }</p>
                                     }
                                     <p><strong>{ piggybackQuote.desc }</strong></p>
                                     <p><em>{ piggybackQuote.part && piggybackQuote.part.remarks }</em></p>

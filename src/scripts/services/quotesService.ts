@@ -39,7 +39,12 @@ interface NewQuote {
 
 const parseQuotesRes = (data: any) => {
   return data.map((quote: any) => {
-    return { ...quote, id: Number(quote.id), date: parseResDate(quote.date), piggybackQuotes: quote.piggybackQuotes ? quote.piggybackQuotes : [] };
+    return {
+      ...quote,
+      id: Number(quote.id),
+      date: parseResDate(quote.date),
+      piggybackQuotes: quote.piggybackQuotes ? quote.piggybackQuotes.map((q: any) => ({ ...q, date: parseResDate(q.date) })) : []
+    };
   });
 };
 
