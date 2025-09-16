@@ -6,14 +6,12 @@ import Button from "../Library/Button";
 import { useNavState } from "../../hooks/useNavState";
 import ContextMenu from "../Library/ContextMenu";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import NavTab from "./NavTab";
 
 
 export default function Navbar() {
-  const navigate = useNavigate();
   const [user] = useAtom(userAtom);
-  const { tabs, setTabs, forward, backward, handleChangeTab, newTab } = useNavState();
+  const { tabs, setTabs, forward, backward, handleChangeTab, newTab, deleteTab } = useNavState();
   const [menuOpen, setMenuOpen] = useState(false);
   const [selectedTab, setSelectedTab] = useState<Tab | null>(null);
 
@@ -25,23 +23,6 @@ export default function Navbar() {
       }
       return tab;
     }));
-  };
-
-  const handleDeleteTab = async (id: number) => {
-    if (tabs.length === 1) return;
-    const filteredTabs = tabs.filter((t) => t.id !== id);
-    let updatedTabs = filteredTabs;
-    if (tabs.find((t) => t.selected)?.id === id) {
-      const newTab = filteredTabs[filteredTabs.length - 1];
-      navigate(newTab.history[newTab.history.length - 1].url, { replace: true });
-      updatedTabs = updatedTabs.map((tab) => {
-        if (tab.id === newTab.id) {
-          return { ...tab, selected: true };
-        }
-        return tab;
-      });
-    }
-    setTabs(updatedTabs);
   };
 
 
@@ -70,7 +51,7 @@ export default function Navbar() {
                 key={tab.id}
                 tab={tab}
                 handleChangeTab={handleChangeTab}
-                handleDeleteTab={handleDeleteTab}
+                handleDeleteTab={deleteTab}
                 setSelectedTab={setSelectedTab}
                 closeBtnActive={tabs.length > 1}
               />

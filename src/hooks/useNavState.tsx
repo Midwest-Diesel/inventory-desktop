@@ -59,18 +59,6 @@ export function useNavState() {
     }, 0);
   };
 
-  const closeBtn = (tabId: number) => {
-    let newTabs = tabs.filter((t) => t.id !== tabId);
-    const wasSelected = tabs.find((t) => t.id === tabId)?.selected;
-    if (wasSelected && newTabs.length > 0) {
-      const oldIndex = tabs.findIndex((t) => t.id === tabId);
-      const newSelectedIndex = oldIndex > 0 ? oldIndex - 1 : 0;
-      newTabs = newTabs.map((t, i) => ({ ...t, selected: i === newSelectedIndex }));
-      navigate(toAbsolutePath(newTabs[newSelectedIndex].history[newTabs[newSelectedIndex].urlIndex].url), { replace: false });
-    }
-    setTabs(newTabs);
-  };
-
   const closeDetailsBtn = async () => {
     let selectedTab: Tab | undefined;
     setTabs((prevTabs) =>
@@ -110,6 +98,18 @@ export function useNavState() {
       setTabs(newTabs);
     }
   };
+
+  const deleteTab = async (id: number) => {
+    let newTabs = tabs.filter((t) => t.id !== id);
+    const wasSelected = tabs.find((t) => t.id === id)?.selected;
+    if (wasSelected && newTabs.length > 0) {
+      const oldIndex = tabs.findIndex((t) => t.id === id);
+      const newSelectedIndex = oldIndex > 0 ? oldIndex - 1 : 0;
+      newTabs = newTabs.map((t, i) => ({ ...t, selected: i === newSelectedIndex }));
+      navigate(toAbsolutePath(newTabs[newSelectedIndex].history[newTabs[newSelectedIndex].urlIndex].url), { replace: false });
+    }
+    setTabs(newTabs);
+  };
   
-  return { tabs, setTabs, forward, backward, handleChangeTab, push, closeBtn, newTab, closeDetailsBtn };
+  return { tabs, setTabs, forward, backward, handleChangeTab, push, newTab, closeDetailsBtn, deleteTab };
 }
