@@ -22,7 +22,6 @@ publish.sh
 # misc
 .DS_Store
 *.pem
-.vscode
 log.txt
 
 # debug

@@ -117,7 +117,7 @@ export default function DashboardContainer() {
     await toggleQuoteSold(updatedQuote as any);
     setQuotes(quotes.map((q) => (q.id === handwrittenQuote?.id) && (updatedQuote as any)));
 
-    const tab: Tab | null = tabs.find((tab: Tab) => tab.history.find((t) => t.url === `/handwrittens/${handwritten.id}`)) ?? null;
+    const tab: Tab | null = tabs.find((tab: Tab) => tab.history[tab.history.length - 1].url === `/handwrittens/${handwritten.id}`) ?? null;
     if (tab) {
       await handleChangeTab(tab.id);
     } else {

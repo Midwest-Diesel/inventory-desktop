@@ -18,7 +18,7 @@
     "lint": "run-s lint:ts lint:scss",
     "lint:ts": "eslint .",
     "lint:scss": "stylelint **/*.scss",
-    "test": "run-s test:e2e test:integration test:unit",
+    "test": "run-s test:unit test:integration test:e2e",
     "test:unit": "vitest run ./src/tests/unit",
     "test:integration": "vitest run ./src/tests/integration",
     "test:e2e": "playwright test --workers 1 && rm -rf playwright-report ./test-results",

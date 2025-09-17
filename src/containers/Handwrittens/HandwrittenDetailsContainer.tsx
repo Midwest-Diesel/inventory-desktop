@@ -9,11 +9,13 @@ import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { PreventNavigation } from "@/components/PreventNavigation";
 import Loading from "@/components/Library/Loading";
+import { useNavState } from "@/hooks/useNavState";
 
 
 export default function HandwrittenDetailsContainer() {
   const params = useParams();
   const toast = useToast();
+  const { tabs } = useNavState();
   const [handwritten, setHandwritten] = useState<Handwritten | null>(null);
   const [cardNum, setCardNum] = useState('');
   const [expDate, setExpDate] = useState('');
@@ -29,7 +31,8 @@ export default function HandwrittenDetailsContainer() {
 
   useEffect(() => {
     const fetchData = async () => {
-      if (!params) return;
+      const tab = tabs.find((t) => t.selected);
+      if (!params || tab?.history[tab.history.length - 1].url !== `/handwrittens/${params.handwritten}`) return;
       setLoading(true);
       const res = await getHandwrittenById(Number(params.handwritten));
       setTitle(`${res?.id} Handwritten`);
@@ -47,7 +50,7 @@ export default function HandwrittenDetailsContainer() {
       setLoading(false);
     };
     fetchData();
-  }, [params]);
+  }, [params, tabs]);
 
   useEffect(() => {
     const fetchData = async () => {
