@@ -182,7 +182,6 @@ export default function SelectHandwrittenDialog({ open, setOpen, part, onSubmit 
         }}
         title="Select Handwritten"
         width={600}
-        height={680}
         data-testid="select-handwritten-dialog"
       >
         {loading ?
