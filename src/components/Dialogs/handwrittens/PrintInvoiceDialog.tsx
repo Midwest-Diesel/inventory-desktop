@@ -57,7 +57,7 @@ export default function PrintInvoiceDialog({ open, setOpen, handwritten }: Props
         shipToZip: handwritten?.shipToZip ?? '',
         shipToContact: handwritten?.shipToContact ?? '',
         shipToCountry: '',
-        accountNum: '',
+        accountNum: handwritten?.thirdPartyAccount ?? '',
         paymentType: handwritten?.payment ?? '',
         createdBy: handwritten?.createdBy ?? '',
         soldBy: handwritten?.soldBy ?? '',

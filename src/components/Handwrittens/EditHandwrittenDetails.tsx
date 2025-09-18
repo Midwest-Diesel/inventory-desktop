@@ -146,7 +146,6 @@ export default function EditHandwrittenDetails({
       if (sourcesData.length === 0) setSourcesData(await getAllSources());
       const users = await getAllUsers();
       setUsers(users);
-      if (!soldBy) setSoldBy(users[0].id);
       const emails = await getHandwrittenEmails(handwritten.customer.id);
       setEmails(emails);
 
@@ -185,7 +184,7 @@ export default function EditHandwrittenDetails({
     const newInvoice = {
       id: handwritten.id,
       shipViaId,
-      handwrittenItems: handwrittenItems,
+      handwrittenItems,
       customer: newCustomer,
       date,
       poNum,
@@ -229,7 +228,8 @@ export default function EditHandwrittenDetails({
       isSetup,
       isEndOfDay,
       thirdPartyAccount,
-      soldBy
+      soldBy,
+      createdBy: handwritten.createdBy ?? ''
     } as any;
     setNewShippingListRow(newInvoice);
     await editHandwritten(newInvoice);
@@ -346,7 +346,7 @@ export default function EditHandwrittenDetails({
       shipToZip: handwritten.shipToZip ?? '',
       shipToContact: handwritten.shipToContact ?? '',
       shipToCountry: '',
-      accountNum: '',
+      accountNum: handwritten?.thirdPartyAccount ?? '',
       paymentType: handwritten.payment ?? '',
       createdBy: handwritten.createdBy ?? '',
       soldBy: users.find((user) => user.id === Number(handwritten.soldBy))?.initials ?? '',
@@ -399,6 +399,7 @@ export default function EditHandwrittenDetails({
     }).filter((item) => item).flat();
     const itemsWithChildren = [...args.items.filter((item: any) => item.itemChildren.length === 0), ...itemChildren ];
 
+    console.log({ ...args, items: args.items });
     addToQue('handwrittenAcct', 'print_accounting_handwritten', { ...args, items: args.items }, '1100px', '816px');
     addToQue('handwrittenShip', 'print_shipping_handwritten', { ...args, items: itemsWithChildren }, '1100px', '816px');
     if (hasCore) addToQue('handwrittenCore', 'print_core_handwritten', args, '1100px', '816px');
@@ -881,6 +882,7 @@ export default function EditHandwrittenDetails({
                           value={soldBy}
                           onChange={(e: any) => setSoldBy(Number(e.target.value))}
                         >
+                          <option value="">-- SOLD BY --</option>
                           {users.map((user: User) => {
                             if (user.subtype === 'sales') return <option key={user.id} value={user.id}>{ user.initials }</option>;
                           })}

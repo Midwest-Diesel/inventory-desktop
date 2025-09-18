@@ -102,7 +102,7 @@ export default function HandwrittenAccountingTemplate({ data }: Props) {
               <p><strong>Created By:</strong> { data.createdBy }</p>
               <p><strong>Sale Of:</strong> { data.soldBy }</p>
             </div>
-            <p>{ data.legacyId && <><strong>Legacy ID:</strong> {data.legacyId}</> }</p>
+            <p>{ data.legacyId && <><strong>Legacy ID:</strong> { data.legacyId }</> }</p>
             <p><strong>Handwritten ID:</strong> { data.handwrittenId }</p>
           </div>
           <table style={{ minWidth: '20rem' }}>

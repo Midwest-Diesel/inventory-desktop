@@ -110,6 +110,18 @@ export function useNavState() {
     }
     setTabs(newTabs);
   };
+
+  const removeLastFromHistory = async () => {
+    const tab = tabs.find((t) => t.selected);
+    if (!tab) return;
+    const newHistory = tab.history.slice(0, -1);
+    setTabs((prevTabs) => prevTabs.map((t) => {
+      if (t.id !== tab.id) return t;
+      const urlIndex = t.urlIndex > newHistory.length - 1 ? t.urlIndex - 1 : t.urlIndex;
+      return { ...t, history: newHistory, urlIndex };
+    }));
+    navigate(toAbsolutePath(newHistory[newHistory.length - 1].url), { replace: false });
+  };
   
-  return { tabs, setTabs, forward, backward, handleChangeTab, push, newTab, closeDetailsBtn, deleteTab };
+  return { tabs, setTabs, forward, backward, handleChangeTab, push, newTab, closeDetailsBtn, deleteTab, removeLastFromHistory };
 }

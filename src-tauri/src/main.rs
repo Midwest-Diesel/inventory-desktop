@@ -7,6 +7,13 @@ of them when replacing a printer.
 
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
+const OFFICE_PRINTER: &str = "Brother MFC-L3770CDW";
+const FRONT_DESK_PRINTER: &str = "Brother HL-L5200DW";
+const FRONT_DESK_CC_PRINTER: &str = "\\\\FRONT-DESK\\ZDesigner GC420d";
+const SHIPPING_LABEL_PRINTER: &str = "\\\\FRONT-DESK\\Zebra  ZP 450-200 dpi";
+const SHOP_PRINTER: &str = "\\\\JIM-PC\\HP LaserJet Pro M402-M403 n-dne PCL 6";
+const PART_TAG_PRINTER: &str = "D550 Printer";
+
 use image::{io::Reader as ImageReader, ImageOutputFormat, DynamicImage, imageops::{rotate90, FilterType}};
 use serde::{Deserialize, Serialize};
 use tauri::{Manager, api::shell, AppHandle};
@@ -913,86 +920,97 @@ fn upload_file(file_args: FileArgs) -> Result<(), String> {
 }
 
 #[tauri::command]
-fn print_shipping_label(imageData: String) -> Result<(), String> {
+async fn print_shipping_label(imageData: String) -> Result<(), String> {
   if let Ok(val) = env::var("DISABLE_PRINTING") {
     if val == "TRUE" { return Ok(()) }
   }
-  let data = decode(imageData.split(',').nth(1).unwrap()).map_err(|e| e.to_string())?;
-  let file_path = "C:/mwd/scripts/screenshots/shipping_label.png";
-  let printer = "\\\\FRONT-DESK\\Zebra  ZP 450-200 dpi";
 
-  let img = ImageReader::new(Cursor::new(&data))
-    .with_guessed_format()
-    .map_err(|e| e.to_string())?
-    .decode()
-    .map_err(|e| e.to_string())?;
+  let res = tauri::async_runtime::spawn_blocking(move || {
+    let data = decode(imageData.split(',').nth(1).unwrap()).map_err(|e| e.to_string())?;
+    let file_path = "C:/mwd/scripts/screenshots/shipping_label.png";
+    let printers = get_available_printers();
+    let printer = printers.iter().find(|&p| p.contains(&SHIPPING_LABEL_PRINTER.to_string())).cloned().unwrap_or_else(|| "".to_string());
 
-  let rotated_img: DynamicImage = image::DynamicImage::ImageRgba8(rotate90(&img));
-  let upscaled_img = image::imageops::resize(
-    &rotated_img,
-    rotated_img.width() * 2,
-    rotated_img.height() * 2,
-    FilterType::Lanczos3,
-  );
+    let img = ImageReader::new(Cursor::new(&data))
+      .with_guessed_format()
+      .map_err(|e| e.to_string())?
+      .decode()
+      .map_err(|e| e.to_string())?;
 
-  {
-    let mut file = File::create(file_path).map_err(|e| e.to_string())?;
-    upscaled_img.write_to(&mut file, ImageOutputFormat::Png).map_err(|e| e.to_string())?;
-  }
+    let rotated_img: DynamicImage = image::DynamicImage::ImageRgba8(rotate90(&img));
+    let upscaled_img = image::imageops::resize(
+      &rotated_img,
+      rotated_img.width() * 2,
+      rotated_img.height() * 2,
+      FilterType::Lanczos3,
+    );
 
-  Command::new("mspaint")
-    .current_dir("C:/mwd/scripts/screenshots")
-    .args([file_path, "/pt", printer])
-    .output()
-    .map_err(|e| e.to_string())?;
+    {
+      let mut file = File::create(file_path).map_err(|e| e.to_string())?;
+      upscaled_img.write_to(&mut file, ImageOutputFormat::Png).map_err(|e| e.to_string())?;
+    }
 
-  Ok(())
+    Command::new("mspaint")
+      .current_dir("C:/mwd/scripts/screenshots")
+      .args([file_path, "/pt", &printer])
+      .output()
+      .map_err(|e| e.to_string())?;
+
+    Ok(())
+  }).await;
+  res.unwrap()
 }
 
 #[tauri::command]
-fn print_cc_label(imageData: String) -> Result<(), String> {
+async fn print_cc_label(imageData: String) -> Result<(), String> {
   if let Ok(val) = env::var("DISABLE_PRINTING") {
     if val == "TRUE" { return Ok(()) }
   }
-  let data = decode(imageData.split(',').nth(1).unwrap()).map_err(|e| e.to_string())?;
-  let file_path = "C:/mwd/scripts/screenshots/cc_label.png";
-  /* 
-    PRINTER DIMENSION SETTNGS (windows printer settings > printer > printer preferences):
-    width: 3 in
-    height: 1 in
-  */
-  let printer = "\\\\FRONT-DESK\\ZDesigner GC420d";
 
-  let img = ImageReader::new(Cursor::new(&data))
-    .with_guessed_format()
-    .map_err(|e| e.to_string())?
-    .decode()
-    .map_err(|e| e.to_string())?;
+  let res = tauri::async_runtime::spawn_blocking(move || {
+    let data = decode(imageData.split(',').nth(1).unwrap()).map_err(|e| e.to_string())?;
+    let file_path = "C:/mwd/scripts/screenshots/cc_label.png";
+    /* 
+      PRINTER DIMENSION SETTNGS (windows printer settings > printer > printer preferences):
+      width: 3 in
+      height: 1 in
+    */
+    let printers = get_available_printers();
+    let printer = printers.iter().find(|&p| p.contains(&FRONT_DESK_CC_PRINTER.to_string())).cloned().unwrap_or_else(|| "".to_string());
 
-  let upscaled_img = image::imageops::resize(
-    &img,
-    img.width() * 2,
-    img.height() * 2,
-    FilterType::Lanczos3,
-  );
+    let img = ImageReader::new(Cursor::new(&data))
+      .with_guessed_format()
+      .map_err(|e| e.to_string())?
+      .decode()
+      .map_err(|e| e.to_string())?;
 
-  {
-    let mut file = File::create(file_path).map_err(|e| e.to_string())?;
-    upscaled_img.write_to(&mut file, ImageOutputFormat::Png).map_err(|e| e.to_string())?;
-  }
+    let upscaled_img = image::imageops::resize(
+      &img,
+      img.width() * 2,
+      img.height() * 2,
+      FilterType::Lanczos3,
+    );
 
-  Command::new("mspaint")
-    .current_dir("C:/mwd/scripts/screenshots")
-    .args([file_path, "/pt", printer])
-    .output()
-    .map_err(|e| e.to_string())?;
+    {
+      let mut file = File::create(file_path).map_err(|e| e.to_string())?;
+      upscaled_img.write_to(&mut file, ImageOutputFormat::Png).map_err(|e| e.to_string())?;
+    }
 
-  Ok(())
+    Command::new("mspaint")
+      .current_dir("C:/mwd/scripts/screenshots")
+      .args([file_path, "/pt", &printer])
+      .output()
+      .map_err(|e| e.to_string())?;
+
+    Ok(())
+  }).await;
+  res.unwrap()
 }
 
 #[tauri::command]
 fn print_bol(args: BOLArgs) -> Result<(), String> {
-  let printer = "Brother HL-L5200DW series";
+  let printers = get_available_printers();
+  let printer = printers.iter().find(|&p| p.contains(&FRONT_DESK_PRINTER.to_string())).cloned().unwrap_or_else(|| "".to_string());
   let vbs_script = format!(
     r#"
     Dim doc, sheet1
@@ -1117,119 +1135,135 @@ fn print_bol(args: BOLArgs) -> Result<(), String> {
 }
 
 #[tauri::command]
-fn print_accounting_handwritten(imageData: String) -> Result<(), String> {
+async fn print_accounting_handwritten(imageData: String) -> Result<(), String> {
   if let Ok(val) = env::var("DISABLE_PRINTING") {
     if val == "TRUE" { return Ok(()) }
   }
-  let data = decode(imageData.split(',').nth(1).unwrap()).map_err(|e| e.to_string())?;
-  let file_path = "C:/mwd/scripts/screenshots/accounting_handwritten.png";
-  let printer = "Brother HL-L5200DW series";
 
-  let img = ImageReader::new(Cursor::new(&data))
-    .with_guessed_format()
-    .map_err(|e| e.to_string())?
-    .decode()
-    .map_err(|e| e.to_string())?;
+  let res = tauri::async_runtime::spawn_blocking(move || {
+    let data = decode(imageData.split(',').nth(1).unwrap()).map_err(|e| e.to_string())?;
+    let file_path = "C:/mwd/scripts/screenshots/accounting_handwritten.png";
+    let printers = get_available_printers();
+    let printer = printers.iter().find(|&p| p.contains(&FRONT_DESK_PRINTER.to_string())).cloned().unwrap_or_else(|| "".to_string());
 
-  let rotated_img: DynamicImage = image::DynamicImage::ImageRgba8(rotate90(&img));
-  let upscaled_img = image::imageops::resize(
-    &rotated_img,
-    rotated_img.width() * 2,
-    rotated_img.height() * 2,
-    FilterType::Lanczos3,
-  );
+    let img = ImageReader::new(Cursor::new(&data))
+      .with_guessed_format()
+      .map_err(|e| e.to_string())?
+      .decode()
+      .map_err(|e| e.to_string())?;
 
-  {
-    let mut file = File::create(file_path).map_err(|e| e.to_string())?;
-    upscaled_img.write_to(&mut file, ImageOutputFormat::Png).map_err(|e| e.to_string())?;
-  }
+    let rotated_img: DynamicImage = image::DynamicImage::ImageRgba8(rotate90(&img));
+    let upscaled_img = image::imageops::resize(
+      &rotated_img,
+      rotated_img.width() * 2,
+      rotated_img.height() * 2,
+      FilterType::Lanczos3,
+    );
 
-  Command::new("mspaint")
-    .current_dir("C:/mwd/scripts/screenshots")
-    .args([file_path, "/pt", printer])
-    .output()
-    .map_err(|e| e.to_string())?;
+    {
+      let mut file = File::create(file_path).map_err(|e| e.to_string())?;
+      upscaled_img.write_to(&mut file, ImageOutputFormat::Png).map_err(|e| e.to_string())?;
+    }
 
-  Ok(())
+    Command::new("mspaint")
+      .current_dir("C:/mwd/scripts/screenshots")
+      .args([file_path, "/pt", &printer])
+      .output()
+      .map_err(|e| e.to_string())?;
+
+    Ok(())
+  }).await;
+  res.unwrap()
 }
 
 #[tauri::command]
-fn print_shipping_handwritten(imageData: String) -> Result<(), String> {
+async fn print_shipping_handwritten(imageData: String) -> Result<(), String> {
   if let Ok(val) = env::var("DISABLE_PRINTING") {
     if val == "TRUE" { return Ok(()) }
   }
-  let data = decode(imageData.split(',').nth(1).unwrap()).map_err(|e| e.to_string())?;
-  let file_path = "C:/mwd/scripts/screenshots/shipping_handwritten.png";
-  let printer = "\\\\JIM-PC\\HP LaserJet Pro M402-M403 n-dne PCL 6";
 
-  let img = ImageReader::new(Cursor::new(&data))
-    .with_guessed_format()
-    .map_err(|e| e.to_string())?
-    .decode()
-    .map_err(|e| e.to_string())?;
+  let res = tauri::async_runtime::spawn_blocking(move || {
+    let data = decode(imageData.split(',').nth(1).unwrap()).map_err(|e| e.to_string())?;
+    let file_path = "C:/mwd/scripts/screenshots/shipping_handwritten.png";
+    let printers = get_available_printers();
+    let printer = printers.iter().find(|&p| p.contains(&SHOP_PRINTER.to_string())).cloned().unwrap_or_else(|| "".to_string());
 
-  let rotated_img: DynamicImage = image::DynamicImage::ImageRgba8(rotate90(&img));
-  let upscaled_img = image::imageops::resize(
-    &rotated_img,
-    rotated_img.width() * 2,
-    rotated_img.height() * 2,
-    FilterType::Lanczos3,
-  );
+    let img = ImageReader::new(Cursor::new(&data))
+      .with_guessed_format()
+      .map_err(|e| e.to_string())?
+      .decode()
+      .map_err(|e| e.to_string())?;
 
-  {
-    let mut file = File::create(file_path).map_err(|e| e.to_string())?;
-    upscaled_img.write_to(&mut file, ImageOutputFormat::Png).map_err(|e| e.to_string())?;
-  }
+    let rotated_img: DynamicImage = image::DynamicImage::ImageRgba8(rotate90(&img));
+    let upscaled_img = image::imageops::resize(
+      &rotated_img,
+      rotated_img.width() * 2,
+      rotated_img.height() * 2,
+      FilterType::Lanczos3,
+    );
 
-  Command::new("mspaint")
-    .current_dir("C:/mwd/scripts/screenshots")
-    .args([file_path, "/pt", printer])
-    .output()
-    .map_err(|e| e.to_string())?;
+    {
+      let mut file = File::create(file_path).map_err(|e| e.to_string())?;
+      upscaled_img.write_to(&mut file, ImageOutputFormat::Png).map_err(|e| e.to_string())?;
+    }
 
-  Ok(())
+    Command::new("mspaint")
+      .current_dir("C:/mwd/scripts/screenshots")
+      .args([file_path, "/pt", &printer])
+      .output()
+      .map_err(|e| e.to_string())?;
+
+    Ok(())
+  }).await;
+  res.unwrap()
 }
 
 #[tauri::command]
-fn print_core_handwritten(imageData: String) -> Result<(), String> {
+async fn print_core_handwritten(imageData: String) -> Result<(), String> {
   if let Ok(val) = env::var("DISABLE_PRINTING") {
     if val == "TRUE" { return Ok(()) }
   }
-  let data = decode(imageData.split(',').nth(1).unwrap()).map_err(|e| e.to_string())?;
-  let file_path = "C:/mwd/scripts/screenshots/core_handwritten.png";
-  let printer = "Brother HL-L5200DW series";
 
-  let img = ImageReader::new(Cursor::new(&data))
-    .with_guessed_format()
-    .map_err(|e| e.to_string())?
-    .decode()
-    .map_err(|e| e.to_string())?;
+  let res = tauri::async_runtime::spawn_blocking(move || {
+    let data = decode(imageData.split(',').nth(1).unwrap()).map_err(|e| e.to_string())?;
+    let file_path = "C:/mwd/scripts/screenshots/core_handwritten.png";
+    let printers = get_available_printers();
+    let printer = printers.iter().find(|&p| p.contains(&FRONT_DESK_PRINTER.to_string())).cloned().unwrap_or_else(|| "".to_string());
 
-  let rotated_img: DynamicImage = image::DynamicImage::ImageRgba8(rotate90(&img));
-  let upscaled_img = image::imageops::resize(
-    &rotated_img,
-    rotated_img.width() * 2,
-    rotated_img.height() * 2,
-    FilterType::Lanczos3,
-  );
+    let img = ImageReader::new(Cursor::new(&data))
+      .with_guessed_format()
+      .map_err(|e| e.to_string())?
+      .decode()
+      .map_err(|e| e.to_string())?;
 
-  {
-    let mut file = File::create(file_path).map_err(|e| e.to_string())?;
-    upscaled_img.write_to(&mut file, ImageOutputFormat::Png).map_err(|e| e.to_string())?;
-  }
+    let rotated_img: DynamicImage = image::DynamicImage::ImageRgba8(rotate90(&img));
+    let upscaled_img = image::imageops::resize(
+      &rotated_img,
+      rotated_img.width() * 2,
+      rotated_img.height() * 2,
+      FilterType::Lanczos3,
+    );
 
-  Command::new("mspaint")
-    .current_dir("C:/mwd/scripts/screenshots")
-    .args([file_path, "/pt", printer])
-    .output()
-    .map_err(|e| e.to_string())?;
+    {
+      let mut file = File::create(file_path).map_err(|e| e.to_string())?;
+      upscaled_img.write_to(&mut file, ImageOutputFormat::Png).map_err(|e| e.to_string())?;
+    }
 
-  Ok(())
+    Command::new("mspaint")
+      .current_dir("C:/mwd/scripts/screenshots")
+      .args([file_path, "/pt", &printer])
+      .output()
+      .map_err(|e| e.to_string())?;
+
+    Ok(())
+  }).await;
+  res.unwrap()
 }
 
 #[tauri::command]
 fn print_ci(args: CIArgs) -> Result<(), String> {
-  let printer = "Brother MFC-L3770CDW series";
+  let printers = get_available_printers();
+  let printer = printers.iter().find(|&p| p.contains(&OFFICE_PRINTER.to_string())).cloned().unwrap_or_else(|| "".to_string());
   let vbs_script = format!(
     r#"
     Dim doc, sheet1
@@ -1276,7 +1310,8 @@ fn print_ci(args: CIArgs) -> Result<(), String> {
 
 #[tauri::command]
 fn print_coo() -> Result<(), String> {
-  let printer = "Brother MFC-L3770CDW series";
+  let printers = get_available_printers();
+  let printer = printers.iter().find(|&p| p.contains(&OFFICE_PRINTER.to_string())).cloned().unwrap_or_else(|| "".to_string());
   let vbs_script = format!(
     r#"
     Dim doc, sheet1
@@ -1298,147 +1333,167 @@ fn print_coo() -> Result<(), String> {
 }
 
 #[tauri::command]
-fn print_return(imageData: String) -> Result<(), String> {
+async fn print_return(imageData: String) -> Result<(), String> {
   if let Ok(val) = env::var("DISABLE_PRINTING") {
     if val == "TRUE" { return Ok(()) }
   }
-  let data = decode(imageData.split(',').nth(1).unwrap()).map_err(|e| e.to_string())?;
-  let file_path = "C:/mwd/scripts/screenshots/return.png";
-  let printer = "Brother MFC-L3770CDW series";
 
-  let img = ImageReader::new(Cursor::new(&data))
-    .with_guessed_format()
-    .map_err(|e| e.to_string())?
-    .decode()
-    .map_err(|e| e.to_string())?;
+  let res = tauri::async_runtime::spawn_blocking(move || {
+    let data = decode(imageData.split(',').nth(1).unwrap()).map_err(|e| e.to_string())?;
+    let file_path = "C:/mwd/scripts/screenshots/return.png";
+    let printers = get_available_printers();
+    let printer = printers.iter().find(|&p| p.contains(&OFFICE_PRINTER.to_string())).cloned().unwrap_or_else(|| "".to_string());
 
-  let upscaled_img = image::imageops::resize(
-    &img,
-    img.width() * 2,
-    img.height() * 2,
-    FilterType::Lanczos3,
-  );
+    let img = ImageReader::new(Cursor::new(&data))
+      .with_guessed_format()
+      .map_err(|e| e.to_string())?
+      .decode()
+      .map_err(|e| e.to_string())?;
 
-  {
-    let mut file = File::create(file_path).map_err(|e| e.to_string())?;
-    upscaled_img.write_to(&mut file, ImageOutputFormat::Png).map_err(|e| e.to_string())?;
-  }
+    let upscaled_img = image::imageops::resize(
+      &img,
+      img.width() * 2,
+      img.height() * 2,
+      FilterType::Lanczos3,
+    );
 
-  Command::new("mspaint")
-    .current_dir("C:/mwd/scripts/screenshots")
-    .args([file_path, "/pt", printer])
-    .output()
-    .map_err(|e| e.to_string())?;
+    {
+      let mut file = File::create(file_path).map_err(|e| e.to_string())?;
+      upscaled_img.write_to(&mut file, ImageOutputFormat::Png).map_err(|e| e.to_string())?;
+    }
 
-  Ok(())
+    Command::new("mspaint")
+      .current_dir("C:/mwd/scripts/screenshots")
+      .args([file_path, "/pt", &printer])
+      .output()
+      .map_err(|e| e.to_string())?;
+
+    Ok(())
+  }).await;
+  res.unwrap()
 }
 
 #[tauri::command]
-fn print_warranty(imageData: String) -> Result<(), String> {
+async fn print_warranty(imageData: String) -> Result<(), String> {
   if let Ok(val) = env::var("DISABLE_PRINTING") {
     if val == "TRUE" { return Ok(()) }
   }
-  let data = decode(imageData.split(',').nth(1).unwrap()).map_err(|e| e.to_string())?;
-  let file_path = "C:/mwd/scripts/screenshots/warranty.png";
-  let printer = "Brother MFC-L3770CDW series";
 
-  let img = ImageReader::new(Cursor::new(&data))
-    .with_guessed_format()
-    .map_err(|e| e.to_string())?
-    .decode()
-    .map_err(|e| e.to_string())?;
+  let res = tauri::async_runtime::spawn_blocking(move || {
+    let data = decode(imageData.split(',').nth(1).unwrap()).map_err(|e| e.to_string())?;
+    let file_path = "C:/mwd/scripts/screenshots/warranty.png";
+    let printers = get_available_printers();
+    let printer = printers.iter().find(|&p| p.contains(&OFFICE_PRINTER.to_string())).cloned().unwrap_or_else(|| "".to_string());
 
-  let upscaled_img = image::imageops::resize(
-    &img,
-    img.width() * 2,
-    img.height() * 2,
-    FilterType::Lanczos3,
-  );
+    let img = ImageReader::new(Cursor::new(&data))
+      .with_guessed_format()
+      .map_err(|e| e.to_string())?
+      .decode()
+      .map_err(|e| e.to_string())?;
 
-  {
-    let mut file = File::create(file_path).map_err(|e| e.to_string())?;
-    upscaled_img.write_to(&mut file, ImageOutputFormat::Png).map_err(|e| e.to_string())?;
-  }
+    let upscaled_img = image::imageops::resize(
+      &img,
+      img.width() * 2,
+      img.height() * 2,
+      FilterType::Lanczos3,
+    );
 
-  Command::new("mspaint")
-    .current_dir("C:/mwd/scripts/screenshots")
-    .args([file_path, "/pt", printer])
-    .output()
-    .map_err(|e| e.to_string())?;
+    {
+      let mut file = File::create(file_path).map_err(|e| e.to_string())?;
+      upscaled_img.write_to(&mut file, ImageOutputFormat::Png).map_err(|e| e.to_string())?;
+    }
 
-  Ok(())
+    Command::new("mspaint")
+      .current_dir("C:/mwd/scripts/screenshots")
+      .args([file_path, "/pt", &printer])
+      .output()
+      .map_err(|e| e.to_string())?;
+
+    Ok(())
+  }).await;
+  res.unwrap()
 }
 
 #[tauri::command]
-fn print_packing_slip(imageData: String) -> Result<(), String> {
+async fn print_packing_slip(imageData: String) -> Result<(), String> {
   if let Ok(val) = env::var("DISABLE_PRINTING") {
     if val == "TRUE" { return Ok(()) }
   }
-  let data = decode(imageData.split(',').nth(1).unwrap()).map_err(|e| e.to_string())?;
-  let file_path = "C:/mwd/scripts/screenshots/packing_slip.png";
-  let printer = "Brother MFC-L3770CDW series";
 
-  let img = ImageReader::new(Cursor::new(&data))
-    .with_guessed_format()
-    .map_err(|e| e.to_string())?
-    .decode()
-    .map_err(|e| e.to_string())?;
+  let res = tauri::async_runtime::spawn_blocking(move || {
+    let data = decode(imageData.split(',').nth(1).unwrap()).map_err(|e| e.to_string())?;
+    let file_path = "C:/mwd/scripts/screenshots/packing_slip.png";
+    let printers = get_available_printers();
+    let printer = printers.iter().find(|&p| p.contains(&OFFICE_PRINTER.to_string())).cloned().unwrap_or_else(|| "".to_string());
 
-  let upscaled_img = image::imageops::resize(
-    &img,
-    img.width() * 2,
-    img.height() * 2,
-    FilterType::Lanczos3,
-  );
+    let img = ImageReader::new(Cursor::new(&data))
+      .with_guessed_format()
+      .map_err(|e| e.to_string())?
+      .decode()
+      .map_err(|e| e.to_string())?;
 
-  {
-    let mut file = File::create(file_path).map_err(|e| e.to_string())?;
-    upscaled_img.write_to(&mut file, ImageOutputFormat::Png).map_err(|e| e.to_string())?;
-  }
+    let upscaled_img = image::imageops::resize(
+      &img,
+      img.width() * 2,
+      img.height() * 2,
+      FilterType::Lanczos3,
+    );
 
-  Command::new("mspaint")
-    .current_dir("C:/mwd/scripts/screenshots")
-    .args([file_path, "/pt", printer])
-    .output()
-    .map_err(|e| e.to_string())?;
+    {
+      let mut file = File::create(file_path).map_err(|e| e.to_string())?;
+      upscaled_img.write_to(&mut file, ImageOutputFormat::Png).map_err(|e| e.to_string())?;
+    }
 
-  Ok(())
+    Command::new("mspaint")
+      .current_dir("C:/mwd/scripts/screenshots")
+      .args([file_path, "/pt", &printer])
+      .output()
+      .map_err(|e| e.to_string())?;
+
+    Ok(())
+  }).await;
+  res.unwrap()
 }
 
 #[tauri::command]
-fn print_po(imageData: String) -> Result<(), String> {
+async fn print_po(imageData: String) -> Result<(), String> {
   if let Ok(val) = env::var("DISABLE_PRINTING") {
     if val == "TRUE" { return Ok(()) }
   }
-  let data = decode(imageData.split(',').nth(1).unwrap()).map_err(|e| e.to_string())?;
-  let file_path = "C:/mwd/scripts/screenshots/po.png";
-  let printer = "Brother MFC-L3770CDW series";
 
-  let img = ImageReader::new(Cursor::new(&data))
-    .with_guessed_format()
-    .map_err(|e| e.to_string())?
-    .decode()
-    .map_err(|e| e.to_string())?;
+  let res = tauri::async_runtime::spawn_blocking(move || {
+    let data = decode(imageData.split(',').nth(1).unwrap()).map_err(|e| e.to_string())?;
+    let file_path = "C:/mwd/scripts/screenshots/po.png";
+    let printers = get_available_printers();
+    let printer = printers.iter().find(|&p| p.contains(&OFFICE_PRINTER.to_string())).cloned().unwrap_or_else(|| "".to_string());
 
-  let upscaled_img = image::imageops::resize(
-    &img,
-    img.width() * 2,
-    img.height() * 2,
-    FilterType::Lanczos3,
-  );
+    let img = ImageReader::new(Cursor::new(&data))
+      .with_guessed_format()
+      .map_err(|e| e.to_string())?
+      .decode()
+      .map_err(|e| e.to_string())?;
 
-  {
-    let mut file = File::create(file_path).map_err(|e| e.to_string())?;
-    upscaled_img.write_to(&mut file, ImageOutputFormat::Png).map_err(|e| e.to_string())?;
-  }
+    let upscaled_img = image::imageops::resize(
+      &img,
+      img.width() * 2,
+      img.height() * 2,
+      FilterType::Lanczos3,
+    );
 
-  Command::new("mspaint")
-    .current_dir("C:/mwd/scripts/screenshots")
-    .args([file_path, "/pt", printer])
-    .output()
-    .map_err(|e| e.to_string())?;
+    {
+      let mut file = File::create(file_path).map_err(|e| e.to_string())?;
+      upscaled_img.write_to(&mut file, ImageOutputFormat::Png).map_err(|e| e.to_string())?;
+    }
 
-  Ok(())
+    Command::new("mspaint")
+      .current_dir("C:/mwd/scripts/screenshots")
+      .args([file_path, "/pt", &printer])
+      .output()
+      .map_err(|e| e.to_string())?;
+
+    Ok(())
+  }).await;
+  res.unwrap()
 }
 
 #[tauri::command]
@@ -1509,45 +1564,49 @@ fn email_end_of_day(args: EmailEndOfDayArgs) {
 }
 
 #[tauri::command]
-fn print_part_tag(imageData: String) -> Result<(), String> {
+async fn print_part_tag(imageData: String) -> Result<(), String> {
   if let Ok(val) = env::var("DISABLE_PRINTING") {
     if val == "TRUE" { return Ok(()) }
   }
-  let data = decode(imageData.split(',').nth(1).unwrap()).map_err(|e| e.to_string())?;
-  let file_path = "C:/mwd/scripts/screenshots/part_tag.png";
-  let printers = get_available_printers();
-  let printer = if printers.contains(&"D550 Printer".to_string()) {
-    "D550 Printer"
-  } else {
-    "\\\\DESKTOP-NR6SQFE\\D550 Printer"
-  };
 
-  let img = ImageReader::new(Cursor::new(&data))
-    .with_guessed_format()
-    .map_err(|e| e.to_string())?
-    .decode()
-    .map_err(|e| e.to_string())?;
+  let res = tauri::async_runtime::spawn_blocking(move || {
+    let data = decode(imageData.split(',').nth(1).unwrap()).map_err(|e| e.to_string())?;
+    let file_path = "C:/mwd/scripts/screenshots/part_tag.png";
+    let printers = get_available_printers();
+    let printer = if printers.contains(&PART_TAG_PRINTER.to_string()) {
+      PART_TAG_PRINTER.to_string()
+    } else {
+      format!("\\\\DESKTOP-NR6SQFE\\{}", PART_TAG_PRINTER)
+    };
 
-  let rotated_img: DynamicImage = image::DynamicImage::ImageRgba8(rotate90(&img));
-  let upscaled_img = image::imageops::resize(
-    &rotated_img,
-    rotated_img.width() * 2,
-    rotated_img.height() * 2,
-    FilterType::Lanczos3,
-  );
+    let img = ImageReader::new(Cursor::new(&data))
+      .with_guessed_format()
+      .map_err(|e| e.to_string())?
+      .decode()
+      .map_err(|e| e.to_string())?;
 
-  {
-    let mut file = File::create(file_path).map_err(|e| e.to_string())?;
-    upscaled_img.write_to(&mut file, ImageOutputFormat::Png).map_err(|e| e.to_string())?;
-  }
+    let rotated_img: DynamicImage = image::DynamicImage::ImageRgba8(rotate90(&img));
+    let upscaled_img = image::imageops::resize(
+      &rotated_img,
+      rotated_img.width() * 2,
+      rotated_img.height() * 2,
+      FilterType::Lanczos3,
+    );
 
-  Command::new("mspaint")
-    .current_dir("C:/mwd/scripts/screenshots")
-    .args([file_path, "/pt", printer])
-    .output()
-    .map_err(|e| e.to_string())?;
+    {
+      let mut file = File::create(file_path).map_err(|e| e.to_string())?;
+      upscaled_img.write_to(&mut file, ImageOutputFormat::Png).map_err(|e| e.to_string())?;
+    }
 
-  Ok(())
+    Command::new("mspaint")
+      .current_dir("C:/mwd/scripts/screenshots")
+      .args([file_path, "/pt", &printer])
+      .output()
+      .map_err(|e| e.to_string())?;
+
+    Ok(())
+  }).await;
+  res.unwrap()
 }
 
 #[tauri::command]
