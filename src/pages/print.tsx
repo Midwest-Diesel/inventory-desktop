@@ -40,7 +40,9 @@ export default function Print() {
       setMaxHeight(item.maxHeight);
       await waitForDomPaint();
       if (!printRef.current) continue;
+      console.log('toPng');
       const imageData = await toPng(printRef.current);
+      console.log('Created image');
       invoke(item.printCmd, { imageData });
     }
     
