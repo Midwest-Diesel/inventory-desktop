@@ -273,10 +273,10 @@ export const editHandwrittenPromotionals = async (id: number, mp: number, cap: n
 
 // === PUT routes === //
 
-export const editHandwritten = async (invoice: Handwritten) => {
+export const editHandwritten = async (handwritten: Handwritten) => {
   try {
     const auth = { withCredentials: true };
-    await api.put('/api/handwrittens', invoice, auth);
+    await api.put('/api/handwrittens', handwritten, auth);
   } catch (err) {
     console.error(err);
   }

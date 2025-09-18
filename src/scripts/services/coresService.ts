@@ -47,6 +47,7 @@ export const getCoresByCustomer = async (customerId: number, handwrittenId: numb
 
 export const getCoreReturnsByCustomer = async (id: number): Promise<Core[]> => {
   try {
+    if (!id) return [];
     const auth = { withCredentials: true };
     const res = await api.get(`/api/cores/return/customer/${id}`, auth);
     return parseCoreDataRes(res.data) ?? [];

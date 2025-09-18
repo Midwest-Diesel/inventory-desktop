@@ -187,6 +187,7 @@ type Core = {
 
 type Handwritten = {
   id: number
+  invoiceId: number
   legacyId: number | null
   customer: Customer
   handwrittenItems: HandwrittenItem[]
@@ -225,7 +226,6 @@ type Handwritten = {
   cardNum: number | null
   expDate: string | null
   cvv: number | null
-  cardAddress: string | null
   cardZip: string | null
   cardName: string | null
   orderNotes: string | null

@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, beforeAll, afterAll } from 'vitest';
 import { client, resetDb } from '../resetDatabase';
-import { addAlert, getAlerts } from '@/scripts/services/alertsService';
+import { addAlert, detectAlerts, getAlerts } from '@/scripts/services/alertsService';
 import { setApiBaseUrl } from '@/scripts/config/axios';
 import { loginUser } from '@/scripts/services/userService';
 
@@ -31,6 +31,19 @@ describe('Alerts Integration', () => {
       type: 'ALERT!!!',
     };
     expect(res[0]).toEqual(alert);
+  });
+
+  it('Detect alerts', async () => {
+    const res = await detectAlerts('1304701');
+    const alert = {
+      addedBy: 'TT',
+      date: new Date('2021-04-13T05:00:00.000Z'),
+      note: '3406E/C15 Gear - Lots of matches!  6I4578 Is for older 5ek, uses a 6I3621 stubshaft, 1304701 uses a 1302979 or 1515966 subshaft',
+      partNum: '1304701',
+      salesmanId: 8,
+      type: 'ALERT!!!',
+    };
+    expect(res[0]).toEqual(expect.objectContaining(alert));
   });
   
   it('Create alert', async () => {

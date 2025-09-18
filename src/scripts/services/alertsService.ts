@@ -30,7 +30,7 @@ export const getAlerts = async (): Promise<Alert[]> => {
   }
 };
 
-export const detectAlerts = async (partNum: string) => {
+export const detectAlerts = async (partNum: string): Promise<Alert[]> => {
   if (!partNum || partNum === '*') return [];
   try {
     const auth = { withCredentials: true };
@@ -39,6 +39,7 @@ export const detectAlerts = async (partNum: string) => {
     return res.data;
   } catch (err) {
     console.error(err);
+    return [];
   }
 };
 
