@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, beforeAll, afterAll } from 'vitest';
 import { client, resetDb } from '../resetDatabase';
 import { setApiBaseUrl } from '@/scripts/config/axios';
 import { loginUser } from '@/scripts/services/userService';
-import { addHandwritten, addHandwrittenItemChild, editHandwritten, editHandwrittenTakeoffState, getHandwrittenById, getHandwrittenItemById, getSomeHandwrittens, searchHandwrittens } from '@/scripts/services/handwrittensService';
+import { addHandwritten, addHandwrittenItemChild, editHandwritten, editHandwrittenTakeoffState, getHandwrittenById, getHandwrittenItemById, searchHandwrittens } from '@/scripts/services/handwrittensService';
 
 beforeAll(async () => {
   setApiBaseUrl('http://localhost:8001');
@@ -225,7 +225,7 @@ describe('Handwrittens Integration', () => {
       partNum: '2422411',
       qty: 1,
       stockNum: 'VC3814'
-    }
+    };
     await addHandwrittenItemChild(2, { cost: 100, partId: 1, qty: 1 });
     const res = await getHandwrittenById(2);
     expect(res?.handwrittenItems[0].invoiceItemChildren[0]).toEqual(expect.objectContaining(child));
