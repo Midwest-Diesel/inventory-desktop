@@ -9,12 +9,20 @@
       {
         "name": "client",
         "icon": "globe",
-        "color": "terminal.ansiGreen"
+        "color": "terminal.ansiGreen",
+        "commands": [
+          "npm run tauri dev"
+        ],
+        "autoExecuteCommands": true
       },
       {
         "name": "testing",
         "icon": "beaker",
-        "color": "terminal.ansiMagenta"
+        "color": "terminal.ansiMagenta",
+        "commands": [
+          "npm run dev:test"
+        ],
+        "autoExecuteCommands": true
       },
       {
         "name": "bash",

@@ -167,6 +167,7 @@ export default function EditHandwrittenDetails({
     setShipToState(handwritten.shipToState ?? '');
     setShipToZip(handwritten.shipToZip ?? '');
     setShipToCompany(handwritten.shipToCompany ?? '');
+    setOrderNotes(handwritten.orderNotes ?? '');
   }, [handwritten]);
 
   const saveChanges = async (e: FormEvent) => {

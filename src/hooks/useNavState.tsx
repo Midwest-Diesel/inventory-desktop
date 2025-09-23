@@ -113,7 +113,8 @@ export function useNavState() {
 
   const removeLastFromHistory = async () => {
     const tab = tabs.find((t) => t.selected);
-    if (!tab) return;
+    if (!tab || tab.history.length <= 1) return;
+    
     const newHistory = tab.history.slice(0, -1);
     setTabs((prevTabs) => prevTabs.map((t) => {
       if (t.id !== tab.id) return t;
