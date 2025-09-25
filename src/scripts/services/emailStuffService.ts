@@ -12,8 +12,7 @@ const parseEmailStuffRes = async (res: any) => {
 
 export const getAllEmailStuff = async (): Promise<EmailStuff[]> => {
   try {
-    const auth = { withCredentials: true };
-    const res = await api.get('/api/email-stuff', auth);
+    const res = await api.get('/api/email-stuff');
     return await parseEmailStuffRes(res.data) ?? [];
   } catch (err) {
     console.error(err);
@@ -25,8 +24,7 @@ export const getAllEmailStuff = async (): Promise<EmailStuff[]> => {
 
 export const addEmailStuffItem = async (payload: any) => {
   try {
-    const auth = { withCredentials: true };
-    await api.post('/api/email-stuff', payload, auth);
+    await api.post('/api/email-stuff', payload);
   } catch (err) {
     console.error(err);
   }
@@ -36,8 +34,7 @@ export const addEmailStuffItem = async (payload: any) => {
 
 export const deleteEmailStuffItem = async (id: number) => {
   try {
-    const auth = { withCredentials: true };
-    await api.delete(`/api/email-stuff/${id}`, auth);
+    await api.delete(`/api/email-stuff/${id}`);
   } catch (err) {
     console.error(err);
   }

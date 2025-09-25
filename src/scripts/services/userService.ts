@@ -6,13 +6,13 @@ interface UserLogin {
   password: string
 }
 
+
 // === GET routes === //
 
 export const getUser = async (): Promise<User | null> => {
   try {
     const config = {
-      headers: { 'Content-Type': 'application/json' },
-      withCredentials: true
+      headers: { 'Content-Type': 'application/json' }
     };
     const res = await api.get('/api/account', config);
     return res.data.user;
@@ -24,8 +24,7 @@ export const getUser = async (): Promise<User | null> => {
 
 export const getAllUsers = async () => {
   try {
-    const auth = { withCredentials: true };
-    const res = await api.get('/api/account/all', auth);
+    const res = await api.get('/api/account/all');
     return res.data;
   } catch (err) {
     console.error(`Unrelated Error: ${err}`);
@@ -34,8 +33,7 @@ export const getAllUsers = async () => {
 
 const checkSession = async () => {
   try {
-    const auth = { withCredentials: true };
-    await api.get('/api/account/session-check', auth);
+    await api.get('/api/account/session-check');
   } catch (err) {
     console.error(err);
     location.reload();
@@ -48,8 +46,7 @@ schedule.scheduleJob('0 6 * * *', () => checkSession());
 export const loginUser = async (user: UserLogin) => {
   try {
     const config = {
-      headers: { 'Content-Type': 'application/json' },
-      withCredentials: true
+      headers: { 'Content-Type': 'application/json' }
     };
     await api.post('/api/account/authenticate', user, config);
   } catch (err: any) {
@@ -60,8 +57,7 @@ export const loginUser = async (user: UserLogin) => {
 
 export const logout = async () => {
   try {
-    const auth = { withCredentials: true };
-    await api.delete('/api/account/logout', auth);
+    await api.delete('/api/account/logout');
     location.reload();
   } catch (err) {
     console.error(err);

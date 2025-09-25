@@ -17,7 +17,8 @@ const jar = new CookieJar();
 
 const api = wrapper(axios.create({
   baseURL,
-  jar
+  jar,
+  withCredentials: true
 }));
 
 export const setApiBaseUrl = (url: string) => {

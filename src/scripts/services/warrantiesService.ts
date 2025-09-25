@@ -33,8 +33,7 @@ const parseWarrantyRes = (data: any) => {
 
 export const getWarrantyById = async (id: number) => {
   try {
-    const auth = { withCredentials: true };
-    const res = await api.get(`/api/warranties/id/${id}`, auth);
+    const res = await api.get(`/api/warranties/id/${id}`);
     return parseWarrantyRes(res.data)[0];
   } catch (err) {
     console.error(err);
@@ -43,8 +42,7 @@ export const getWarrantyById = async (id: number) => {
 
 export const getSomeWarranties = async (page: number, limit: number): Promise<{ pageCount: number, rows: Warranty[] }> => {
   try {
-    const auth = { withCredentials: true };
-    const res = await api.get(`/api/warranties/limit/${JSON.stringify({ page: (page - 1) * limit, limit })}`, auth);
+    const res = await api.get(`/api/warranties/limit/${JSON.stringify({ page: (page - 1) * limit, limit })}`);
     return { pageCount: res.data.pageCount, rows: parseWarrantyRes(res.data.rows) };
   } catch (err) {
     console.error(err);
@@ -54,8 +52,7 @@ export const getSomeWarranties = async (page: number, limit: number): Promise<{ 
 
 export const searchWarranties = async (search: SearchData): Promise<{ pageCount: number, rows: Warranty[] }> => {
   try {
-    const auth = { withCredentials: true };
-    const res = await api.get(`/api/warranties/search/${JSON.stringify(search)}`, auth);
+    const res = await api.get(`/api/warranties/search/${JSON.stringify(search)}`);
     return { pageCount: res.data.pageCount, rows: parseWarrantyRes(res.data.rows) };
   } catch (err) {
     console.error(err);
@@ -67,8 +64,7 @@ export const searchWarranties = async (search: SearchData): Promise<{ pageCount:
 
 export const addWarranty = async (warrantyData: Warranty) => {
   try {
-    const auth = { withCredentials: true };
-    await api.post('/api/warranties', warrantyData, auth);
+    await api.post('/api/warranties', warrantyData);
   } catch (err) {
     console.error(err);
   }
@@ -76,8 +72,7 @@ export const addWarranty = async (warrantyData: Warranty) => {
 
 export const addWarrantyItem = async (warrantyItems: WarrantyItem) => {
   try {
-    const auth = { withCredentials: true };
-    await api.post('/api/warranties/item', warrantyItems, auth);
+    await api.post('/api/warranties/item', warrantyItems);
   } catch (err) {
     console.error(err);
   }
@@ -87,8 +82,7 @@ export const addWarrantyItem = async (warrantyItems: WarrantyItem) => {
 
 export const editWarranty = async (warrantyData: Warranty) => {
   try {
-    const auth = { withCredentials: true };
-    await api.put('/api/warranties', warrantyData, auth);
+    await api.put('/api/warranties', warrantyData);
   } catch (err) {
     console.error(err);
   }
@@ -96,8 +90,7 @@ export const editWarranty = async (warrantyData: Warranty) => {
 
 export const editWarrantyItem = async (item: WarrantyItem) => {
   try {
-    const auth = { withCredentials: true };
-    await api.put('/api/warranties/item', item, auth);
+    await api.put('/api/warranties/item', item);
   } catch (err) {
     console.error(err);
   }
@@ -107,8 +100,7 @@ export const editWarrantyItem = async (item: WarrantyItem) => {
 
 export const editWarrantyCompleted = async (id: number, completed: boolean, date: Date | null) => {
   try {
-    const auth = { withCredentials: true };
-    await api.patch('/api/warranties/completed', { id, completed, date }, auth);
+    await api.patch('/api/warranties/completed', { id, completed, date });
   } catch (err) {
     console.error(err);
   }
@@ -118,8 +110,7 @@ export const editWarrantyCompleted = async (id: number, completed: boolean, date
 
 export const deleteWarranty = async (id: number) => {
   try {
-    const auth = { withCredentials: true };
-    await api.delete(`/api/warranties/${id}`, auth);
+    await api.delete(`/api/warranties/${id}`);
   } catch (err) {
     console.error(err);
   }
@@ -127,8 +118,7 @@ export const deleteWarranty = async (id: number) => {
 
 export const deleteWarrantyItem = async (id: number) => {
   try {
-    const auth = { withCredentials: true };
-    await api.delete(`/api/warranties/item/${id}`, auth);
+    await api.delete(`/api/warranties/item/${id}`);
   } catch (err) {
     console.error(err);
   }

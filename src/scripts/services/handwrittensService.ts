@@ -62,8 +62,7 @@ export const parseHandwrittenRes = (data: any) => {
 
 export const getHandwrittenById = async (id: number): Promise<Handwritten | null> => {
   try {
-    const auth = { withCredentials: true };
-    const res = await api.get(`/api/handwrittens/id/${id}`, auth);
+    const res = await api.get(`/api/handwrittens/id/${id}`);
     const cores = await getCoresByCustomer(res.data[0].customer.id, id);
     res.data[0].cores = cores;
     const coreReturns = await getCoreReturnsByCustomer(res.data[0].customer.id);
@@ -77,8 +76,7 @@ export const getHandwrittenById = async (id: number): Promise<Handwritten | null
 
 export const getHandwrittenItemById = async (id: number): Promise<HandwrittenItem | null> => {
   try {
-    const auth = { withCredentials: true };
-    const res = await api.get(`/api/handwrittens/item/id/${id}`, auth);
+    const res = await api.get(`/api/handwrittens/item/id/${id}`);
     return { ...res.data, date: parseResDate(res.data.date) };
   } catch (err) {
     console.error(err);
@@ -88,8 +86,7 @@ export const getHandwrittenItemById = async (id: number): Promise<HandwrittenIte
 
 export const getSomeHandwrittens = async (page: number, limit: number, onlyShowRecent = false): Promise<{ pageCount: number, rows: Handwritten[] }> => {
   try {
-    const auth = { withCredentials: true };
-    const res = await api.get(`/api/handwrittens/limit/${JSON.stringify({ page: (page - 1) * limit, limit, onlyShowRecent })}`, auth);
+    const res = await api.get(`/api/handwrittens/limit/${JSON.stringify({ page: (page - 1) * limit, limit, onlyShowRecent })}`);
     return { pageCount: res.data.pageCount, rows: await parseHandwrittenRes(res.data.rows) };
   } catch (err) {
     console.error(err);
@@ -99,8 +96,7 @@ export const getSomeHandwrittens = async (page: number, limit: number, onlyShowR
 
 export const searchHandwrittens = async (handwritten: HandwrittenSearch): Promise<{ pageCount: number, rows: Handwritten[] }> => {
   try {
-    const auth = { withCredentials: true };
-    const res = await api.get(`/api/handwrittens/search/${JSON.stringify(handwritten)}`, auth);
+    const res = await api.get(`/api/handwrittens/search/${JSON.stringify(handwritten)}`);
     return { pageCount: res.data.pageCount, rows: await parseHandwrittenRes(res.data.rows) };
   } catch (err) {
     console.error(err);
@@ -110,8 +106,7 @@ export const searchHandwrittens = async (handwritten: HandwrittenSearch): Promis
 
 export const searchSelectHandwrittensDialogData = async (handwritten: HandwrittenSearch): Promise<{ pageCount: number, rows: SelectHandwrittenDialogResult[] }> => {
   try {
-    const auth = { withCredentials: true };
-    const res = await api.get(`/api/handwrittens/select-handwritten/${JSON.stringify(handwritten)}`, auth);
+    const res = await api.get(`/api/handwrittens/select-handwritten/${JSON.stringify(handwritten)}`);
     const rows = res.data.rows.map((row: SelectHandwrittenDialogResult) => ({ ...row, date: parseResDate(row.date as any) }));
     return { pageCount: res.data.pageCount, rows };
   } catch (err) {
@@ -122,8 +117,7 @@ export const searchSelectHandwrittensDialogData = async (handwritten: Handwritte
 
 export const getSomeHandwrittensByStatus = async (page: number, limit: number, status: string): Promise<{ pageCount: number, rows: Handwritten[] }> => {
   try {
-    const auth = { withCredentials: true };
-    const res = await api.get(`/api/handwrittens/status/${JSON.stringify({ page: (page - 1) * limit, limit, status })}`, auth);
+    const res = await api.get(`/api/handwrittens/status/${JSON.stringify({ page: (page - 1) * limit, limit, status })}`);
     const parsedData = res.data.rows.map((row: any) => {
       return { ...row, date: parseResDate(row.date) };
     });
@@ -136,8 +130,7 @@ export const getSomeHandwrittensByStatus = async (page: number, limit: number, s
 
 export const getSomeUnsoldItems = async (page: number, limit: number, salesmanId: number): Promise<{ pageCount: number, rows: SalesEndOfDayItem[] }> => {
   try {
-    const auth = { withCredentials: true };
-    const res = await api.get(`/api/handwrittens/unsold-items/${JSON.stringify({ page: (page - 1) * limit, limit, salesmanId })}`, auth);
+    const res = await api.get(`/api/handwrittens/unsold-items/${JSON.stringify({ page: (page - 1) * limit, limit, salesmanId })}`);
     return {
       pageCount: res.data.pageCount,
       rows: res.data.rows.map((item: any) => {
@@ -152,8 +145,7 @@ export const getSomeUnsoldItems = async (page: number, limit: number, salesmanId
 
 export const getEndOfDayHandwrittens = async () => {
   try {
-    const auth = { withCredentials: true };
-    const res = await api.get(`/api/handwrittens/end-of-day`, auth);
+    const res = await api.get(`/api/handwrittens/end-of-day`);
     return parseHandwrittenRes(res.data);
   } catch (err) {
     console.error(err);
@@ -162,8 +154,7 @@ export const getEndOfDayHandwrittens = async () => {
 
 export const getYeserdaySales = async (): Promise<number> => {
   try {
-    const auth = { withCredentials: true };
-    const res = await api.get(`/api/handwrittens/yesterday-sales`, auth);
+    const res = await api.get(`/api/handwrittens/yesterday-sales`);
     return Number(res.data.sum);
   } catch (err) {
     console.error(err);
@@ -173,8 +164,7 @@ export const getYeserdaySales = async (): Promise<number> => {
 
 export const getYeserdayCOGS = async (): Promise<number> => {
   try {
-    const auth = { withCredentials: true };
-    const res = await api.get(`/api/handwrittens/yesterday-cogs`, auth);
+    const res = await api.get(`/api/handwrittens/yesterday-cogs`);
     return Number(res.data.sum);
   } catch (err) {
     console.error(err);
@@ -184,8 +174,7 @@ export const getYeserdayCOGS = async (): Promise<number> => {
 
 export const getHandwrittenEmails = async (customerId: number) => {
   try {
-    const auth = { withCredentials: true };
-    const res = await api.get(`/api/handwrittens/emails/${customerId}`, auth);
+    const res = await api.get(`/api/handwrittens/emails/${customerId}`);
     return res.data;
   } catch (err) {
     console.error(err);
@@ -205,8 +194,7 @@ const checkForCustomerAlert = (customer: Customer | null) => {
 
 export const addHandwritten = async (handwritten: Handwritten) => {
   try {
-    const auth = { withCredentials: true };
-    const res = await api.post('/api/handwrittens', handwritten, auth);
+    const res = await api.post('/api/handwrittens', handwritten);
     checkForCustomerAlert(handwritten.customer);
     return (res as any).data.id;
   } catch (err) {
@@ -216,8 +204,7 @@ export const addHandwritten = async (handwritten: Handwritten) => {
 
 export const addHandwrittenItem = async (item: NewHandwrittenItem) => {
   try {
-    const auth = { withCredentials: true };
-    const res = await api.post('/api/handwrittens/item', item, auth);
+    const res = await api.post('/api/handwrittens/item', item);
     return (res as any).data.id;
   } catch (err) {
     console.error(err);
@@ -226,8 +213,7 @@ export const addHandwrittenItem = async (item: NewHandwrittenItem) => {
 
 export const addHandwrittenItemChild = async (parentId: number, item: NewHandwrittenItemChild) => {
   try {
-    const auth = { withCredentials: true };
-    await api.post('/api/handwrittens/child', { parentId, item }, auth);
+    await api.post('/api/handwrittens/child', { parentId, item });
   } catch (err) {
     console.error(err);
   }
@@ -237,8 +223,7 @@ export const addHandwrittenItemChild = async (parentId: number, item: NewHandwri
 
 export const editHandwrittenPaymentType = async (id: number, payment: string) => {
   try {
-    const auth = { withCredentials: true };
-    await api.patch('/api/handwrittens/payment', { id, payment }, auth);
+    await api.patch('/api/handwrittens/payment', { id, payment });
   } catch (err) {
     console.error(err);
   }
@@ -246,8 +231,7 @@ export const editHandwrittenPaymentType = async (id: number, payment: string) =>
 
 export const editHandwrittenTakeoffState = async (id: number, isTakeoffDone: boolean) => {
   try {
-    const auth = { withCredentials: true };
-    await api.patch('/api/handwrittens/takeoff', { id, isTakeoffDone }, auth);
+    await api.patch('/api/handwrittens/takeoff', { id, isTakeoffDone });
   } catch (err) {
     console.error(err);
   }
@@ -255,8 +239,7 @@ export const editHandwrittenTakeoffState = async (id: number, isTakeoffDone: boo
 
 export const editHandwrittenTaxable = async (id: number, value: boolean) => {
   try {
-    const auth = { withCredentials: true };
-    await api.patch('/api/handwrittens/taxable', { id, value }, auth);
+    await api.patch('/api/handwrittens/taxable', { id, value });
   } catch (err) {
     console.error(err);
   }
@@ -264,8 +247,7 @@ export const editHandwrittenTaxable = async (id: number, value: boolean) => {
 
 export const editHandwrittenPromotionals = async (id: number, mp: number, cap: number, br: number, fl: number) => {
   try {
-    const auth = { withCredentials: true };
-    await api.patch('/api/handwrittens/promotionals', { id, mp, cap, br, fl }, auth);
+    await api.patch('/api/handwrittens/promotionals', { id, mp, cap, br, fl });
   } catch (err) {
     console.error(err);
   }
@@ -275,8 +257,7 @@ export const editHandwrittenPromotionals = async (id: number, mp: number, cap: n
 
 export const editHandwritten = async (handwritten: Handwritten) => {
   try {
-    const auth = { withCredentials: true };
-    await api.put('/api/handwrittens', handwritten, auth);
+    await api.put('/api/handwrittens', handwritten);
   } catch (err) {
     console.error(err);
   }
@@ -284,8 +265,7 @@ export const editHandwritten = async (handwritten: Handwritten) => {
 
 export const editHandwrittenItem = async (item: HandwrittenItem) => {
   try {
-    const auth = { withCredentials: true };
-    await api.put('/api/handwrittens/items', item, auth);
+    await api.put('/api/handwrittens/items', item);
   } catch (err) {
     console.error(err);
   }
@@ -293,8 +273,7 @@ export const editHandwrittenItem = async (item: HandwrittenItem) => {
 
 export const editHandwrittenItemChild = async (item: HandwrittenItemChild) => {
   try {
-    const auth = { withCredentials: true };
-    await api.put('/api/handwrittens/items/child', item, auth);
+    await api.put('/api/handwrittens/items/child', item);
   } catch (err) {
     console.error(err);
   }
@@ -302,8 +281,7 @@ export const editHandwrittenItemChild = async (item: HandwrittenItemChild) => {
 
 export const editHandwrittenOrderNotes = async (id: number, orderNotes: string) => {
   try {
-    const auth = { withCredentials: true };
-    await api.put('/api/handwrittens/order-notes', { id, orderNotes }, auth);
+    await api.put('/api/handwrittens/order-notes', { id, orderNotes });
   } catch (err) {
     console.error(err);
   }
@@ -313,8 +291,7 @@ export const editHandwrittenOrderNotes = async (id: number, orderNotes: string) 
 
 export const deleteHandwritten = async (id: number) => {
   try {
-    const auth = { withCredentials: true };
-    await api.delete(`/api/handwrittens/${id}`, auth);
+    await api.delete(`/api/handwrittens/${id}`);
   } catch (err) {
     console.error(err);
   }
@@ -322,8 +299,7 @@ export const deleteHandwritten = async (id: number) => {
 
 export const deleteHandwrittenItem = async (id: number) => {
   try {
-    const auth = { withCredentials: true };
-    await api.delete(`/api/handwrittens/item/${id}`, auth);
+    await api.delete(`/api/handwrittens/item/${id}`);
   } catch (err) {
     console.error(err);
   }
@@ -331,8 +307,7 @@ export const deleteHandwrittenItem = async (id: number) => {
 
 export const deleteHandwrittenItemChild = async (id: number) => {
   try {
-    const auth = { withCredentials: true };
-    await api.delete(`/api/handwrittens/item-child/${id}`, auth);
+    await api.delete(`/api/handwrittens/item-child/${id}`);
   } catch (err) {
     console.error(err);
   }

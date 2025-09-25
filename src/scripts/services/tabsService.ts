@@ -5,9 +5,7 @@ import api from "../config/axios";
 
 export const getTabsByUser = async () => {
   try {
-    const auth = { withCredentials: true };
-    const res = await api.get('/api/tabs', auth);
-    return res.data;
+    return await api.get('/api/tabs');
   } catch (err) {
     console.error(err);
   }
@@ -17,8 +15,7 @@ export const getTabsByUser = async () => {
 
 export const addTab = async (history: { name: string, url: string }[]) => {
   try {
-    const auth = { withCredentials: true };
-    await api.post('/api/tabs', { history }, auth);
+    await api.post('/api/tabs', { history });
   } catch (err) {
     console.error(err);
   }
@@ -28,8 +25,7 @@ export const addTab = async (history: { name: string, url: string }[]) => {
 
 export const changeSelectedTab = async (id: number) => {
   try {
-    const auth = { withCredentials: true };
-    await api.patch('/api/tabs/selected', { id }, auth);
+    await api.patch('/api/tabs/selected', { id });
   } catch (err) {
     console.error(err);
   }
@@ -37,8 +33,7 @@ export const changeSelectedTab = async (id: number) => {
 
 export const editTabHistory = async (id: number, urlIndex: number, history: { name: string, url: string }[]) => {
   try {
-    const auth = { withCredentials: true };
-    await api.patch('/api/tabs/history', { id, urlIndex, history }, auth);
+    await api.patch('/api/tabs/history', { id, urlIndex, history });
   } catch (err) {
     console.error(err);
   }
@@ -46,8 +41,7 @@ export const editTabHistory = async (id: number, urlIndex: number, history: { na
 
 export const renameTab = async (id: number, name: string) => {
   try {
-    const auth = { withCredentials: true };
-    await api.patch('/api/tabs/name', { id, name }, auth);
+    await api.patch('/api/tabs/name', { id, name });
   } catch (err) {
     console.error(err);
   }
@@ -57,8 +51,7 @@ export const renameTab = async (id: number, name: string) => {
 
 export const deleteTab = async (id: number) => {
   try {
-    const auth = { withCredentials: true };
-    await api.delete(`/api/tabs/${id}`, auth);
+    await api.delete(`/api/tabs/${id}`);
   } catch (err) {
     console.error(err);
   }

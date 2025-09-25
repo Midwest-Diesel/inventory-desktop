@@ -5,8 +5,7 @@ import api from "../config/axios";
 
 export const getAllFreightCarriers = async () => {
   try {
-    const auth = { withCredentials: true };
-    const res = await api.get('/api/freight-carriers', auth);
+    const res = await api.get('/api/freight-carriers');
     return res.data;
   } catch (err) {
     console.error(err);
@@ -16,8 +15,7 @@ export const getAllFreightCarriers = async () => {
 export const getFreightCarrierById = async (id: number | null) => {
   try {
     if (!id) return null;
-    const auth = { withCredentials: true };
-    const res = await api.get(`/api/freight-carriers/${id}`, auth);
+    const res = await api.get(`/api/freight-carriers/${id}`);
     return res.data;
   } catch (err) {
     console.error(err);

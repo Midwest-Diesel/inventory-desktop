@@ -6,8 +6,7 @@ import api from "../config/axios";
 
 export const getAllSources = async () => {
   try {
-    const auth = { withCredentials: true };
-    const res = await api.get('/api/sources', auth);
+    const res = await api.get('/api/sources');
     return res.data.map((source: any) => source.source).sort();
   } catch (err) {
     console.error(err);

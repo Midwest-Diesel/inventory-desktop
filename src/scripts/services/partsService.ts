@@ -25,8 +25,7 @@ const parsePartsData = async (parts: any) => {
 
 export const getPartById = async (id: number): Promise<Part | null> => {
   try {
-    const auth = { withCredentials: true };
-    const res = await api.get(`/api/parts/part/${id}`, auth);
+    const res = await api.get(`/api/parts/part/${id}`);
     return (await parsePartsData(res.data))[0];
   } catch (err) {
     console.error(err);
@@ -36,8 +35,7 @@ export const getPartById = async (id: number): Promise<Part | null> => {
 
 export const getPartInfoByPartNum = async (partNum: string): Promise<PartInfo | null> => {
   try {
-    const auth = { withCredentials: true };
-    const res = await api.get(`/api/parts/parts-info/part-num/${partNum}`, auth);
+    const res = await api.get(`/api/parts/parts-info/part-num/${partNum}`);
     return res.data ? res.data : null;
   } catch (err) {
     console.error(err);
@@ -47,8 +45,7 @@ export const getPartInfoByPartNum = async (partNum: string): Promise<PartInfo | 
 
 export const getPartInfoByAltParts = async (partNum: string): Promise<PartInfo[]> => {
   try {
-    const auth = { withCredentials: true };
-    const res = await api.get(`/api/parts/parts-info/alt-parts/${partNum}`, auth);
+    const res = await api.get(`/api/parts/parts-info/alt-parts/${partNum}`);
     return res.data;
   } catch (err) {
     console.error(err);
@@ -58,8 +55,7 @@ export const getPartInfoByAltParts = async (partNum: string): Promise<PartInfo[]
 
 export const getPartByEngineNum = async (engineNum: number): Promise<Part | null> => {
   try {
-    const auth = { withCredentials: true };
-    const res = await api.get(`/api/parts/engine-num/${engineNum}`, auth);
+    const res = await api.get(`/api/parts/engine-num/${engineNum}`);
     return (await parsePartsData(res.data))[0];
   } catch (err) {
     console.error(err);
@@ -69,8 +65,7 @@ export const getPartByEngineNum = async (engineNum: number): Promise<Part | null
 
 export const getPartsByStockNum = async (stockNum: string): Promise<Part[]> => {
   try {
-    const auth = { withCredentials: true };
-    const res = await api.get(`/api/parts/stock-num/${stockNum}`, auth);
+    const res = await api.get(`/api/parts/stock-num/${stockNum}`);
     return await parsePartsData(res.data);
   } catch (err) {
     console.error(err);
@@ -80,8 +75,7 @@ export const getPartsByStockNum = async (stockNum: string): Promise<Part[]> => {
 
 export const getAllPartNums = async () => {
   try {
-    const auth = { withCredentials: true };
-    const res = await api.get(`/api/parts/all-part-num`, auth);
+    const res = await api.get(`/api/parts/all-part-num`);
     return res.data;
   } catch (err) {
     console.error(err);
@@ -90,9 +84,8 @@ export const getAllPartNums = async () => {
 
 export const getPartCostIn = async (stockNum: string): Promise<PartCostIn[]> => {
   try {
-    const auth = { withCredentials: true };
     const encodedParam = encodeURIComponent(stockNum);
-    const res = await api.get(`/api/parts/part-cost-in/${encodedParam}`, auth);  
+    const res = await api.get(`/api/parts/part-cost-in/${encodedParam}`);  
     return res.data;
   } catch (err) {
     console.error(err);
@@ -102,9 +95,8 @@ export const getPartCostIn = async (stockNum: string): Promise<PartCostIn[]> => 
 
 export const getPartEngineCostOut = async (stockNum: string) => {
   try {
-    const auth = { withCredentials: true };
     const encodedParam = encodeURIComponent(stockNum);
-    const res = await api.get(`/api/parts/engine-cost-out/${encodedParam}`, auth);
+    const res = await api.get(`/api/parts/engine-cost-out/${encodedParam}`);
     return res.data;
   } catch (err) {
     console.error(err);
@@ -113,8 +105,7 @@ export const getPartEngineCostOut = async (stockNum: string) => {
 
 export const getSomeParts = async (page: number, limit: number, showSoldParts: boolean): Promise<{ pageCount: number, totalQty: number, rows: Part[], rowsHidden: number | null }> => {
   try {
-    const auth = { withCredentials: true };
-    const res = await api.get(`/api/parts/limit/${JSON.stringify({ page: (page - 1) * limit, limit, showSoldParts })}`, auth);
+    const res = await api.get(`/api/parts/limit/${JSON.stringify({ page: (page - 1) * limit, limit, showSoldParts })}`);
     return { pageCount: res.data.pageCount, totalQty: res.data.totalQty, rows: await parsePartsData(res.data.rows), rowsHidden: res.data.rowsHidden };
   } catch (err) {
     console.error(err);
@@ -124,8 +115,7 @@ export const getSomeParts = async (page: number, limit: number, showSoldParts: b
 
 export const getSomePartsMin = async (page: number, limit: number, showSoldParts: boolean): Promise<{ pageCount: number, totalQty: number, rows: PartMin[], rowsHidden: number | null }> => {
   try {
-    const auth = { withCredentials: true };
-    const res = await api.get(`/api/parts/limit-min/${JSON.stringify({ page: (page - 1) * limit, limit, showSoldParts })}`, auth);
+    const res = await api.get(`/api/parts/limit-min/${JSON.stringify({ page: (page - 1) * limit, limit, showSoldParts })}`);
     return { pageCount: res.data.pageCount, totalQty: res.data.totalQty, rows: await parsePartsData(res.data.rows), rowsHidden: res.data.rowsHidden };
   } catch (err) {
     console.error(err);
@@ -135,8 +125,7 @@ export const getSomePartsMin = async (page: number, limit: number, showSoldParts
 
 export const getPartsQty = async (showSoldParts: boolean): Promise<number> => {
   try {
-    const auth = { withCredentials: true };
-    const res = await api.get(`/api/parts/qty/${showSoldParts}`, auth);
+    const res = await api.get(`/api/parts/qty/${showSoldParts}`);
     return res.data;
   } catch (err) {
     console.error(err);
@@ -146,8 +135,7 @@ export const getPartsQty = async (showSoldParts: boolean): Promise<number> => {
 
 export const getAltsByPartNum = async (partNum: string) => {
   try {
-    const auth = { withCredentials: true };
-    const res = await api.get(`/api/parts/alts/${partNum}`, auth);
+    const res = await api.get(`/api/parts/alts/${partNum}`);
     return res.data.length > 0 ? res.data[0] : res.data;
   } catch (err) {
     console.error(err);
@@ -157,8 +145,7 @@ export const getAltsByPartNum = async (partNum: string) => {
 export const searchParts = async (part: PartSearchData, page: number, limit: number): Promise<{ pageCount: number, totalQty: number, rows: Part[], rowsHidden: number | null }> => {
   try {
     if (isObjectNull(part)) return { pageCount: 0, totalQty: 0, rows: [], rowsHidden: null };
-    const auth = { withCredentials: true };
-    const res = await api.get(`/api/parts/search/${encodeURIComponent(JSON.stringify(part))}?offset=${(page - 1) * limit}&limit=${limit}`, auth);
+    const res = await api.get(`/api/parts/search/${encodeURIComponent(JSON.stringify(part))}?offset=${(page - 1) * limit}&limit=${limit}`);
     return { pageCount: res.data.pageCount, totalQty: res.data.totalQty, rows: await parsePartsData(res.data.rows), rowsHidden: res.data.rowsHidden };
   } catch (err) {
     console.error(err);
@@ -174,8 +161,7 @@ export const searchAltParts = async (part: PartSearchData, page: number, limit: 
         ([, value]) => value !== '' && value !== null && value !== '*'
       )
     );
-    const auth = { withCredentials: true };
-    const res = await api.get(`/api/parts/searchAlt/${encodeURIComponent(JSON.stringify(filteredPart))}?offset=${(page - 1) * limit}&limit=${limit}`, auth);
+    const res = await api.get(`/api/parts/searchAlt/${encodeURIComponent(JSON.stringify(filteredPart))}?offset=${(page - 1) * limit}&limit=${limit}`);
     return { pageCount: res.data.pageCount, totalQty: res.data.totalQty, rows: await parsePartsData(res.data.rows), rowsHidden: res.data.rowsHidden };
   } catch (err) {
     console.error(err);
@@ -186,8 +172,7 @@ export const searchAltParts = async (part: PartSearchData, page: number, limit: 
 export const getSalesInfo = async (altParts: string) => {
   try {
     if (!altParts) return;
-    const auth = { withCredentials: true };
-    const res = await api.get(`/api/parts/sales-info/${altParts}`, auth);
+    const res = await api.get(`/api/parts/sales-info/${altParts}`);
     return {
       ...res.data,
       sales: res.data.sales.map((part: any) => {
@@ -210,8 +195,7 @@ export const getSalesInfo = async (altParts: string) => {
 
 export const checkForNewPartNum = async (partNum: string) => {
   try {
-    const auth = { withCredentials: true };
-    const res = await api.get(`/api/parts/check-new/${partNum}`, auth);
+    const res = await api.get(`/api/parts/check-new/${partNum}`);
     return res.data;
   } catch (err) {
     console.error(err);
@@ -220,8 +204,7 @@ export const checkForNewPartNum = async (partNum: string) => {
 
 export const getPartsByCoreFamily = async (coreFamily: string): Promise<Part[] | []> => {
   try {
-    const auth = { withCredentials: true };
-    const res = await api.get(`/api/parts/core-family?coreFamily=${coreFamily}`, auth);
+    const res = await api.get(`/api/parts/core-family?coreFamily=${coreFamily}`);
     return res.data;
   } catch (err) {
     console.error(err);
@@ -231,8 +214,7 @@ export const getPartsByCoreFamily = async (coreFamily: string): Promise<Part[] |
 
 export const getNextUPStockNum = async (): Promise<string | null> => {
   try {
-    const auth = { withCredentials: true };
-    const res = await api.get(`/api/parts/latest-up-stock-num`, auth);
+    const res = await api.get(`/api/parts/latest-up-stock-num`);
     return res.data.stockNum;
   } catch (err) {
     console.error(err);
@@ -242,8 +224,7 @@ export const getNextUPStockNum = async (): Promise<string | null> => {
 
 export const getPartsQtyHistory = async (partId: number): Promise<PartQtyHistory[] | []> => {
   try {
-    const auth = { withCredentials: true };
-    const res = await api.get(`/api/parts/qty-history?partId=${partId}`, auth);
+    const res = await api.get(`/api/parts/qty-history?partId=${partId}`);
     return res.data.map((r: any) => ({ ...r, dateChanged: new Date(r.dateChanged) }));
   } catch (err) {
     console.error(err);
@@ -261,9 +242,8 @@ export const addPart = async (part: Part, partInfoExists: boolean, updateLoading
     const includedAlts = [partNum, ...filteredAlts];
 
     // Create new part record
-    const auth = { withCredentials: true };
     const data = { ...part, altParts: filteredAlts.reverse().join(','), partInfoExists };
-    await api.post('/api/parts', data, auth);
+    await api.post('/api/parts', data);
 
     // Adds this part to all connected part records
     if (filteredAlts.length > 0) {
@@ -284,8 +264,7 @@ export const addPart = async (part: Part, partInfoExists: boolean, updateLoading
 
 export const addPartCostIn = async (stockNum: string, cost: number, invoiceNum: number | null, vendor: string, costType: string, note: string) => {
   try {
-    const auth = { withCredentials: true };
-    await api.post('/api/parts/part-cost-in', { stockNum, cost, invoiceNum, vendor, costType, note }, auth);
+    await api.post('/api/parts/part-cost-in', { stockNum, cost, invoiceNum, vendor, costType, note });
   } catch (err) {
     console.error(err);
   }
@@ -293,8 +272,7 @@ export const addPartCostIn = async (stockNum: string, cost: number, invoiceNum: 
 
 export const addToPartQtyHistory = async (partId: number, qty: number) => {
   try {
-    const auth = { withCredentials: true };
-    await api.post('/api/parts/qty-history', { partId, qty, date: new Date() }, auth);
+    await api.post('/api/parts/qty-history', { partId, qty, date: new Date() });
   } catch (err) {
     console.error(err);
   }
@@ -304,8 +282,7 @@ export const addToPartQtyHistory = async (partId: number, qty: number) => {
 
 export const handlePartTakeoff = async (partId: number, qty: number, soldTo: string, sellingPrice: number, handwrittenId: number) => {
   try {
-    const auth = { withCredentials: true };
-    await api.patch('/api/parts/takeoff', { partId, qty, soldTo, sellingPrice, handwrittenId }, auth);
+    await api.patch('/api/parts/takeoff', { partId, qty, soldTo, sellingPrice, handwrittenId });
   } catch (err) {
     console.error(err);
   }
@@ -313,8 +290,7 @@ export const handlePartTakeoff = async (partId: number, qty: number, soldTo: str
 
 export const setPartLastUpdated = async (partId: number) => {
   try {
-    const auth = { withCredentials: true };
-    await api.patch('/api/parts/last-updated', { partId, date: new Date() }, auth);
+    await api.patch('/api/parts/last-updated', { partId, date: new Date() });
   } catch (err) {
     console.error(err);
   }
@@ -324,8 +300,7 @@ export const setPartLastUpdated = async (partId: number) => {
 
 export const editPart = async (part: Part) => {
   try {
-    const auth = { withCredentials: true };
-    await api.put('/api/parts', part, auth);
+    await api.put('/api/parts', part);
   } catch (err) {
     console.error(err);
   }
@@ -333,8 +308,7 @@ export const editPart = async (part: Part) => {
 
 export const editPartCostIn = async (part: PartCostIn) => {
   try {
-    const auth = { withCredentials: true };
-    await api.put('/api/parts/cost-in', part, auth);
+    await api.put('/api/parts/cost-in', part);
   } catch (err) {
     console.error(err);
   }
@@ -342,8 +316,7 @@ export const editPartCostIn = async (part: PartCostIn) => {
 
 export const editAltParts = async (partNum: string, altParts: string[]) => {
   try {
-    const auth = { withCredentials: true };
-    await api.put('/api/parts/parts-info', { partNum, altParts }, auth);
+    await api.put('/api/parts/parts-info', { partNum, altParts });
   } catch (err) {
     console.error(err);
   }
@@ -352,12 +325,11 @@ export const editAltParts = async (partNum: string, altParts: string[]) => {
 // Adds alt parts to all connected records but the one being edited
 export const addAltParts = async (partNum: string, altParts: string[], updateLoading?: (i: number, total: number) => void) => {
   try {
-    const auth = { withCredentials: true };
     const filteredAlts = altParts.filter((p) => p && p !== partNum);
     for (let i = 0; i < filteredAlts.length; i++) {
       if (updateLoading) updateLoading(i + 1, filteredAlts.length);
       for (let j = 0; j < altParts.length; j++) {
-        await api.put('/api/parts/parts-info/add', { partNum: filteredAlts[i], altParts: altParts[j] }, auth);
+        await api.put('/api/parts/parts-info/add', { partNum: filteredAlts[i], altParts: altParts[j] });
       }
     }
   } catch (err) {
@@ -367,11 +339,10 @@ export const addAltParts = async (partNum: string, altParts: string[], updateLoa
 
 export const removeAltParts = async (partNum: string, altParts: string[]) => {
   try {
-    const auth = { withCredentials: true };
     const filteredAlts = altParts.filter((p) => p && p !== partNum);
     for (let i = 0; i < filteredAlts.length; i++) {
       for (let j = 0; j < altParts.length; j++) {
-        await api.put('/api/parts/parts-info/remove', { partNum: filteredAlts[i], altParts: altParts[j] }, auth);
+        await api.put('/api/parts/parts-info/remove', { partNum: filteredAlts[i], altParts: altParts[j] });
       }
     }
   } catch (err) {
@@ -383,8 +354,7 @@ export const removeAltParts = async (partNum: string, altParts: string[]) => {
 
 export const deletePart = async (id: number) => {
   try {
-    const auth = { withCredentials: true };
-    await api.delete(`/api/parts/${id}`, auth);
+    await api.delete(`/api/parts/${id}`);
   } catch (err) {
     console.error(err);
   }
@@ -392,8 +362,7 @@ export const deletePart = async (id: number) => {
 
 export const deletePartCostIn = async (id: number) => {
   try {
-    const auth = { withCredentials: true };
-    await api.delete(`/api/parts/cost-in/${id}`, auth);
+    await api.delete(`/api/parts/cost-in/${id}`);
   } catch (err) {
     console.error(err);
   }

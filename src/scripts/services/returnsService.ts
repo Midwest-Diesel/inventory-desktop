@@ -18,8 +18,7 @@ const parseReturnRes = (data: any) => {
 
 export const getReturnById = async (id: number) => {
   try {
-    const auth = { withCredentials: true };
-    const res = await api.get(`/api/returns/id/${id}`, auth);
+    const res = await api.get(`/api/returns/id/${id}`);
     return parseReturnRes(res.data)[0];
   } catch (err) {
     console.error(err);
@@ -28,8 +27,7 @@ export const getReturnById = async (id: number) => {
 
 export const getSomeReturns = async (page: number, limit: number, isShopPanel: boolean): Promise<{ pageCount: number, rows: Return[] }> => {
   try {
-    const auth = { withCredentials: true };
-    const res = await api.get(`/api/returns/limit/${JSON.stringify({ page: (page - 1) * limit, limit, isShopPanel })}`, auth);
+    const res = await api.get(`/api/returns/limit/${JSON.stringify({ page: (page - 1) * limit, limit, isShopPanel })}`);
     return { pageCount: res.data.pageCount, rows: parseReturnRes(res.data.rows) };
   } catch (err) {
     console.error(err);
@@ -39,8 +37,7 @@ export const getSomeReturns = async (page: number, limit: number, isShopPanel: b
 
 export const getSomeCompletedReturns = async (page: number, limit: number): Promise<{ pageCount: number, rows: Return[] }> => {
   try {
-    const auth = { withCredentials: true };
-    const res = await api.get(`/api/returns/limit/completed/${JSON.stringify({ page: (page - 1) * limit, limit })}`, auth);
+    const res = await api.get(`/api/returns/limit/completed/${JSON.stringify({ page: (page - 1) * limit, limit })}`);
     return { pageCount: res.data.pageCount, rows: parseReturnRes(res.data.rows) };
   } catch (err) {
     console.error(err);
@@ -52,8 +49,7 @@ export const getSomeCompletedReturns = async (page: number, limit: number): Prom
 
 export const addReturn = async (returnData: Return) => {
   try {
-    const auth = { withCredentials: true };
-    const res: any = await api.post('/api/returns', returnData, auth);
+    const res: any = await api.post('/api/returns', returnData);
     return Number(res.data.id);
   } catch (err) {
     console.error(err);
@@ -62,8 +58,7 @@ export const addReturn = async (returnData: Return) => {
 
 export const addReturnItem = async (returnItem: ReturnItem) => {
   try {
-    const auth = { withCredentials: true };
-    await api.post('/api/returns/items', returnItem, auth);
+    await api.post('/api/returns/items', returnItem);
   } catch (err) {
     console.error(err);
   }
@@ -71,8 +66,7 @@ export const addReturnItem = async (returnItem: ReturnItem) => {
 
 export const addReturnItemChild = async (returnItemId: number): Promise<number | null> => {
   try {
-    const auth = { withCredentials: true };
-    const res = await api.post('/api/returns/item-child', { returnItemId }, auth);
+    const res = await api.post('/api/returns/item-child', { returnItemId });
     return res.data.id;
   } catch (err) {
     console.error(err);
@@ -84,8 +78,7 @@ export const addReturnItemChild = async (returnItemId: number): Promise<number |
 
 export const editReturn = async (returnData: Return) => {
   try {
-    const auth = { withCredentials: true };
-    await api.put('/api/returns', returnData, auth);
+    await api.put('/api/returns', returnData);
   } catch (err) {
     console.error(err);
   }
@@ -93,8 +86,7 @@ export const editReturn = async (returnData: Return) => {
 
 export const editReturnItem = async (item: ReturnItem) => {
   try {
-    const auth = { withCredentials: true };
-    await api.put('/api/returns/item', item, auth);
+    await api.put('/api/returns/item', item);
   } catch (err) {
     console.error(err);
   }
@@ -102,8 +94,7 @@ export const editReturnItem = async (item: ReturnItem) => {
 
 export const editReturnItemChild = async (child: ReturnItemChild) => {
   try {
-    const auth = { withCredentials: true };
-    await api.put('/api/returns/item-child', child, auth);
+    await api.put('/api/returns/item-child', child);
   } catch (err) {
     console.error(err);
   }
@@ -113,8 +104,7 @@ export const editReturnItemChild = async (child: ReturnItemChild) => {
 
 export const issueReturnCredit = async (id: number) => {
   try {
-    const auth = { withCredentials: true };
-    await api.patch('/api/returns/credit-issued', { id }, auth);
+    await api.patch('/api/returns/credit-issued', { id });
   } catch (err) {
     console.error(err);
   }
@@ -124,8 +114,7 @@ export const issueReturnCredit = async (id: number) => {
 
 export const deleteReturn = async (id: number) => {
   try {
-    const auth = { withCredentials: true };
-    await api.delete(`/api/returns/${id}`, auth);
+    await api.delete(`/api/returns/${id}`);
   } catch (err) {
     console.error(err);
   }
@@ -133,8 +122,7 @@ export const deleteReturn = async (id: number) => {
 
 export const deleteReturnItemChild = async (id: number) => {
   try {
-    const auth = { withCredentials: true };
-    await api.delete(`/api/returns/item-child/${id}`, auth);
+    await api.delete(`/api/returns/item-child/${id}`);
   } catch (err) {
     console.error(err);
   }

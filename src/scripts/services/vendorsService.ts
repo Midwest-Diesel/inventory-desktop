@@ -16,8 +16,7 @@ interface NewVendor {
 
 export const getVendors = async () => {
   try {
-    const auth = { withCredentials: true };
-    const res = await api.get('/api/vendors', auth);
+    const res = await api.get('/api/vendors');
     return res.data;
   } catch (err) {
     console.error(err);
@@ -26,8 +25,7 @@ export const getVendors = async () => {
 
 export const getVendorByName = async (name: string): Promise<Vendor | null> => {
   try {
-    const auth = { withCredentials: true };
-    const res = await api.get(`/api/vendors/name/${name.replace(/\s*\(.*?\)/, '')}`, auth);
+    const res = await api.get(`/api/vendors/name/${name.replace(/\s*\(.*?\)/, '')}`);
     return res.data;
   } catch (err) {
     console.error(err);
@@ -39,8 +37,7 @@ export const getVendorByName = async (name: string): Promise<Vendor | null> => {
 
 export const addVendor = async (vendor: NewVendor) => {
   try {
-    const auth = { withCredentials: true };
-    await api.post('/api/vendors', vendor, auth);
+    await api.post('/api/vendors', vendor);
   } catch (err) {
     console.error(err);
   }

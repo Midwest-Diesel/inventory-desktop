@@ -14,8 +14,7 @@ export const getAllSurplus = async () => {
   try {
     const auth = { withCredentials: true };
     const res = await api.get('/api/surplus', auth);
-    res.data = parseSurplusDataRes(res.data);
-    return res.data;
+    return parseSurplusDataRes(res.data);
   } catch (err) {
     console.error(err);
   }
@@ -25,8 +24,7 @@ export const getSurplusByCode = async (code: string): Promise<Surplus | null> =>
   try {
     const auth = { withCredentials: true };
     const res = await api.get(`/api/surplus/code/${code}`, auth);
-    res.data = parseSurplusDataRes(res.data);
-    return res.data[0];
+    return parseSurplusDataRes(res.data)[0];
   } catch (err) {
     console.error(err);
     return null;
@@ -37,10 +35,9 @@ export const getSurplusSoldParts = async (code: string): Promise<any[]> => {
   try {
     const auth = { withCredentials: true };
     const res = await api.get(`/api/surplus/sold/${code}`, auth);
-    res.data = res.data.map((d: any) => {
+    return res.data.map((d: any) => {
       return { ...d, soldToDate: parseResDate(d.soldToDate) };
     });
-    return res.data;
   } catch (err) {
     console.error(err);
     return [];
@@ -51,10 +48,9 @@ export const getSurplusRemainingParts = async (code: string): Promise<any[]> => 
   try {
     const auth = { withCredentials: true };
     const res = await api.get(`/api/surplus/remaining/${code}`, auth);
-    res.data = res.data.map((d: any) => {
+    return res.data.map((d: any) => {
       return { ...d, soldToDate: parseResDate(d.soldToDate) };
     });
-    return res.data;
   } catch (err) {
     console.error(err);
     return [];

@@ -12,8 +12,7 @@ const parseAddOnDataRes = (data: any) => {
 
 export const getAllEngineAddOns = async (): Promise<EngineAddOn[]> => {
   try {
-    const auth = { withCredentials: true };
-    const res = await api.get('/api/engine-add-ons', auth);
+    const res = await api.get('/api/engine-add-ons');
     return parseAddOnDataRes(res.data);
   } catch (err) {
     console.error(err);
@@ -23,8 +22,7 @@ export const getAllEngineAddOns = async (): Promise<EngineAddOn[]> => {
 
 export const getOfficeEngineAddOns = async (): Promise<EngineAddOn[]> => {
   try {
-    const auth = { withCredentials: true };
-    const res = await api.get('/api/engine-add-ons/office', auth);
+    const res = await api.get('/api/engine-add-ons/office');
     return parseAddOnDataRes(res.data);
   } catch (err) {
     console.error(err);
@@ -36,8 +34,7 @@ export const getOfficeEngineAddOns = async (): Promise<EngineAddOn[]> => {
 
 export const addEngineAddOn = async (addOn?: EngineAddOn) => {
   try {
-    const auth = { withCredentials: true };
-    await api.post('/api/engine-add-ons', addOn, auth);
+    await api.post('/api/engine-add-ons', addOn);
   } catch (err) {
     console.error(err);
   }
@@ -47,8 +44,7 @@ export const addEngineAddOn = async (addOn?: EngineAddOn) => {
 
 export const editEngineAddOn = async (addOn: EngineAddOn) => {
   try {
-    const auth = { withCredentials: true };
-    await api.put('/api/engine-add-ons', addOn, auth);
+    await api.put('/api/engine-add-ons', addOn);
   } catch (err) {
     console.error(err);
   }
@@ -58,8 +54,7 @@ export const editEngineAddOn = async (addOn: EngineAddOn) => {
 
 export const editEngineAddOnPrintStatus = async (id: number, isPrinted: boolean) => {
   try {
-    const auth = { withCredentials: true };
-    await api.patch('/api/engine-add-ons/is-printed', { id, isPrinted }, auth);
+    await api.patch('/api/engine-add-ons/is-printed', { id, isPrinted });
   } catch (err) {
     console.error(err);
   }
@@ -69,8 +64,7 @@ export const editEngineAddOnPrintStatus = async (id: number, isPrinted: boolean)
 
 export const deleteEngineAddOn = async (id: number) => {
   try {
-    const auth = { withCredentials: true };
-    await api.delete(`/api/engine-add-ons/${id}`, auth);
+    await api.delete(`/api/engine-add-ons/${id}`);
   } catch (err) {
     console.error(err);
   }

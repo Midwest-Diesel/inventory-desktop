@@ -14,8 +14,7 @@ const parseCoreDataRes = (data: any) => {
 
 export const getAllCores = async (): Promise<Core[]> => {
   try {
-    const auth = { withCredentials: true };
-    const res = await api.get('/api/cores', auth);
+    const res = await api.get('/api/cores');
     return parseCoreDataRes(res.data);
   } catch (err) {
     console.error(err);
@@ -25,8 +24,7 @@ export const getAllCores = async (): Promise<Core[]> => {
 
 export const searchCores = async (search: CoreSearch): Promise<Core[]> => {
   try {
-    const auth = { withCredentials: true };
-    const res = await api.get(`/api/cores/search?s=${encodeURI(JSON.stringify(search))}`, auth);
+    const res = await api.get(`/api/cores/search?s=${encodeURI(JSON.stringify(search))}`);
     return parseCoreDataRes(res.data);
   } catch (err) {
     console.error(err);
@@ -36,8 +34,7 @@ export const searchCores = async (search: CoreSearch): Promise<Core[]> => {
 
 export const getCoresByCustomer = async (customerId: number, handwrittenId: number): Promise<Core[]> => {
   try {
-    const auth = { withCredentials: true };
-    const res = await api.get(`/api/cores/customer/${JSON.stringify({customerId, handwrittenId})}`, auth);
+    const res = await api.get(`/api/cores/customer/${JSON.stringify({customerId, handwrittenId})}`);
     return parseCoreDataRes(res.data) ?? [];
   } catch (err) {
     console.error(err);
@@ -48,8 +45,7 @@ export const getCoresByCustomer = async (customerId: number, handwrittenId: numb
 export const getCoreReturnsByCustomer = async (id: number): Promise<Core[]> => {
   try {
     if (!id) return [];
-    const auth = { withCredentials: true };
-    const res = await api.get(`/api/cores/return/customer/${id}`, auth);
+    const res = await api.get(`/api/cores/return/customer/${id}`);
     return parseCoreDataRes(res.data) ?? [];
   } catch (err) {
     console.error(err);
@@ -61,8 +57,7 @@ export const getCoreReturnsByCustomer = async (id: number): Promise<Core[]> => {
 
 export const addCore = async (core: Core) => {
   try {
-    const auth = { withCredentials: true };
-    await api.post('/api/cores', core, auth);
+    await api.post('/api/cores', core);
   } catch (err) {
     console.error(err);
   }
@@ -72,8 +67,7 @@ export const addCore = async (core: Core) => {
 
 export const removeQtyFromCore = async (core: Core, qtyRemoved: number) => {
   try {
-    const auth = { withCredentials: true };
-    await api.patch('/api/cores/qty', { core, qty: core.qty - qtyRemoved }, auth);
+    await api.patch('/api/cores/qty', { core, qty: core.qty - qtyRemoved });
   } catch (err) {
     console.error(err);
   }
@@ -81,8 +75,7 @@ export const removeQtyFromCore = async (core: Core, qtyRemoved: number) => {
 
 export const editCoreCustomer = async (handwrittenId: number, customerId: number | null) => {
   try {
-    const auth = { withCredentials: true };
-    await api.patch('/api/cores/customer', { handwrittenId, customerId }, auth);
+    await api.patch('/api/cores/customer', { handwrittenId, customerId });
   } catch (err) {
     console.error(err);
   }
@@ -92,8 +85,7 @@ export const editCoreCustomer = async (handwrittenId: number, customerId: number
 
 export const deleteCore = async (id: number, handwrittenItemId?: number) => {
   try {
-    const auth = { withCredentials: true };
-    await api.delete(`/api/cores/${id}`, auth);
+    await api.delete(`/api/cores/${id}`);
     if (handwrittenItemId) await deleteHandwrittenItem(handwrittenItemId);
   } catch (err) {
     console.error(err);
@@ -102,8 +94,7 @@ export const deleteCore = async (id: number, handwrittenItemId?: number) => {
 
 export const deleteCoreByItemId = async (id: number) => {
   try {
-    const auth = { withCredentials: true };
-    await api.delete(`/api/cores/item/${id}`, auth);
+    await api.delete(`/api/cores/item/${id}`);
   } catch (err) {
     console.error(err);
   }

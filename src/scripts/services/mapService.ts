@@ -12,8 +12,7 @@ const parseMapData = (res: any) => {
 
 export const getMapLocations = async () => {
   try {
-    const auth = { withCredentials: true };
-    const res = await api.get('/api/map', auth);
+    const res = await api.get('/api/map');
     return parseMapData(res.data);
   } catch (err) {
     console.error(err);
@@ -22,8 +21,7 @@ export const getMapLocations = async () => {
 
 export const getMapLocationFromCustomer = async (id: number) => {
   try {
-    const auth = { withCredentials: true };
-    const res = await api.get(`/api/map/${id}`, auth);
+    const res = await api.get(`/api/map/${id}`);
     return res.data;
   } catch (err) {
     console.error(err);
@@ -32,8 +30,7 @@ export const getMapLocationFromCustomer = async (id: number) => {
 
 export const getMapTopCustomers = async (): Promise<number[]> => {
   try {
-    const auth = { withCredentials: true };
-    const res = await api.get('/api/map/top-customers', auth);
+    const res = await api.get('/api/map/top-customers');
     return res.data.slice(0, 100);
   } catch (err) {
     console.error(err);
@@ -43,8 +40,7 @@ export const getMapTopCustomers = async (): Promise<number[]> => {
 
 export const getMapNewLeads = async () => {
   try {
-    const auth = { withCredentials: true };
-    const res = await api.get('/api/map/new-leads', auth);
+    const res = await api.get('/api/map/new-leads');
     return res.data;
   } catch (err) {
     console.error(err);
@@ -53,8 +49,7 @@ export const getMapNewLeads = async () => {
 
 export const getBrokenLocations = async () => {
   try {
-    const auth = { withCredentials: true };
-    const res = await api.get('/api/map/broken', auth);
+    const res = await api.get('/api/map/broken');
     return parseMapData(res.data);
   } catch (err) {
     console.error(err);
@@ -74,8 +69,7 @@ export const getGeoLocation = async (address: string) => {
 
 export const addMapLocation = async (loc: any) => {
   try {
-    const auth = { withCredentials: true };
-    await api.post('/api/map', loc, auth);
+    await api.post('/api/map', loc);
   } catch (err) {
     console.error(err);
   }
@@ -85,8 +79,7 @@ export const addMapLocation = async (loc: any) => {
 
 export const fixMapLocation = async (loc: any) => {
   try {
-    const auth = { withCredentials: true };
-    await api.patch('/api/map/fix', loc, auth);
+    await api.patch('/api/map/fix', loc);
   } catch (err) {
     console.error(err);
   }
@@ -96,8 +89,7 @@ export const fixMapLocation = async (loc: any) => {
 
 export const editMapLocation = async (loc: any) => {
   try {
-    const auth = { withCredentials: true };
-    await api.put('/api/map', loc, auth);
+    await api.put('/api/map', loc);
   } catch (err) {
     console.error(err);
   }
@@ -107,8 +99,7 @@ export const editMapLocation = async (loc: any) => {
 
 export const deleteMapLocation = async (id: number) => {
   try {
-    const auth = { withCredentials: true };
-    await api.delete(`/api/map/${id}`, auth);
+    await api.delete(`/api/map/${id}`);
   } catch (err) {
     console.error(err);
   }
@@ -116,8 +107,7 @@ export const deleteMapLocation = async (id: number) => {
 
 export const deleteMapLocationByCustomer = async (id: number) => {
   try {
-    const auth = { withCredentials: true };
-    await api.delete(`/api/map/customer/${id}`, auth);
+    await api.delete(`/api/map/customer/${id}`);
   } catch (err) {
     console.error(err);
   }

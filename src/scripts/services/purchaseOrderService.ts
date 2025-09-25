@@ -30,8 +30,7 @@ const parsePoDataRes = (data: any) => {
 
 export const getPurchaseOrderById = async (id: number) => {
   try {
-    const auth = { withCredentials: true };
-    const res = await api.get(`/api/po/${id}`, auth);
+    const res = await api.get(`/api/po/${id}`);
     return parsePoDataRes(res.data)[0];
   } catch (err) {
     console.error(err);
@@ -40,8 +39,7 @@ export const getPurchaseOrderById = async (id: number) => {
 
 export const getPurchaseOrderByPoNum = async (poNum: string | null): Promise<PO | null> => {
   try {
-    const auth = { withCredentials: true };
-    const res = await api.get(`/api/po/poNum/${poNum}`, auth);
+    const res = await api.get(`/api/po/poNum/${poNum}`);
     return parsePoDataRes(res.data)[0];
   } catch (err) {
     console.error(err);
@@ -51,8 +49,7 @@ export const getPurchaseOrderByPoNum = async (poNum: string | null): Promise<PO 
 
 export const getSomePurchaseOrders = async (page: number, limit: number, showIncomming: boolean): Promise<{ pageCount: number, rows: PO[] }> => {
   try {
-    const auth = { withCredentials: true };
-    const res = await api.get(`/api/po/limit/${JSON.stringify({ page: (page - 1) * limit, limit, showIncomming })}`, auth);
+    const res = await api.get(`/api/po/limit/${JSON.stringify({ page: (page - 1) * limit, limit, showIncomming })}`);
     return { pageCount: res.data.pageCount, rows: parsePoDataRes(res.data.rows) };
   } catch (err) {
     console.error(err);
@@ -62,8 +59,7 @@ export const getSomePurchaseOrders = async (page: number, limit: number, showInc
 
 export const searchPurchaseOrders = async (searchData: POSearch): Promise<{ pageCount: number, rows: PO[] }> => {
   try {
-    const auth = { withCredentials: true };
-    const res = await api.get(`/api/po/search/${JSON.stringify(searchData)}`, auth);
+    const res = await api.get(`/api/po/search/${JSON.stringify(searchData)}`);
     return { pageCount: res.data.pageCount, rows: parsePoDataRes(res.data.rows) };
   } catch (err) {
     console.error(err);
@@ -75,8 +71,7 @@ export const searchPurchaseOrders = async (searchData: POSearch): Promise<{ page
 
 export const addBlankPurchaseOrder = async (poNum: number) => {
   try {
-    const auth = { withCredentials: true };
-    await api.post('/api/po', { poNum }, auth);
+    await api.post('/api/po', { poNum });
   } catch (err) {
     console.error(err);
   }
@@ -84,8 +79,7 @@ export const addBlankPurchaseOrder = async (poNum: number) => {
 
 export const addPurchaseOrderItem = async (newItem: POItem) => {
   try {
-    const auth = { withCredentials: true };
-    const res = await api.post('/api/po/item', newItem, auth);
+    const res = await api.post('/api/po/item', newItem);
     return res.data.id;
   } catch (err) {
     console.error(err);
@@ -94,8 +88,7 @@ export const addPurchaseOrderItem = async (newItem: POItem) => {
 
 export const addPurchaseOrderReceivedItem = async (newItem: POReceivedItem) => {
   try {
-    const auth = { withCredentials: true };
-    await api.post('/api/po/received-item', newItem, auth);
+    await api.post('/api/po/received-item', newItem);
   } catch (err) {
     console.error(err);
   }
@@ -105,8 +98,7 @@ export const addPurchaseOrderReceivedItem = async (newItem: POReceivedItem) => {
 
 export const editPurchaseOrder = async (po: PO) => {
   try {
-    const auth = { withCredentials: true };
-    await api.put('/api/po', po, auth);
+    await api.put('/api/po', po);
   } catch (err) {
     console.error(err);
   }
@@ -114,8 +106,7 @@ export const editPurchaseOrder = async (po: PO) => {
 
 export const editPurchaseOrderItem = async (item: POItem) => {
   try {
-    const auth = { withCredentials: true };
-    await api.put('/api/po/item', item, auth);
+    await api.put('/api/po/item', item);
   } catch (err) {
     console.error(err);
   }
@@ -123,8 +114,7 @@ export const editPurchaseOrderItem = async (item: POItem) => {
 
 export const editPurchaseOrderReceivedItem = async (item: POReceivedItem) => {
   try {
-    const auth = { withCredentials: true };
-    await api.put('/api/po/received-item', item, auth);
+    await api.put('/api/po/received-item', item);
   } catch (err) {
     console.error(err);
   }
@@ -134,8 +124,7 @@ export const editPurchaseOrderReceivedItem = async (item: POReceivedItem) => {
 
 export const togglePurchaseOrderReceived = async (id: number, isReceived: boolean) => {
   try {
-    const auth = { withCredentials: true };
-    await api.patch(`/api/po/received`, { id, isReceived }, auth);
+    await api.patch(`/api/po/received`, { id, isReceived });
   } catch (err) {
     console.error(err);
   }
@@ -143,8 +132,7 @@ export const togglePurchaseOrderReceived = async (id: number, isReceived: boolea
 
 export const togglePurchaseOrderItemReceived = async (id: number, isReceived: boolean) => {
   try {
-    const auth = { withCredentials: true };
-    await api.patch(`/api/po/received/item/${id}`, { isReceived }, auth);
+    await api.patch(`/api/po/received/item/${id}`, { isReceived });
   } catch (err) {
     console.error(err);
   }
@@ -154,8 +142,7 @@ export const togglePurchaseOrderItemReceived = async (id: number, isReceived: bo
 
 export const deletePurchaseOrder = async (id: number) => {
   try {
-    const auth = { withCredentials: true };
-    await api.delete(`/api/po/${id}`, auth);
+    await api.delete(`/api/po/${id}`);
   } catch (err) {
     console.error(err);
   }
@@ -163,8 +150,7 @@ export const deletePurchaseOrder = async (id: number) => {
 
 export const deletePurchaseOrderItem = async (id: number) => {
   try {
-    const auth = { withCredentials: true };
-    await api.delete(`/api/po/item/${id}`, auth);
+    await api.delete(`/api/po/item/${id}`);
   } catch (err) {
     console.error(err);
   }
@@ -172,8 +158,7 @@ export const deletePurchaseOrderItem = async (id: number) => {
 
 export const deletePurchaseOrderReceivedItem = async (id: number) => {
   try {
-    const auth = { withCredentials: true };
-    await api.delete(`/api/po/received-item/${id}`, auth);
+    await api.delete(`/api/po/received-item/${id}`);
   } catch (err) {
     console.error(err);
   }

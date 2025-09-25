@@ -52,10 +52,8 @@ const parseQuotesRes = (data: any) => {
 
 export const getSomeQuotes = async (page: number, limit: number, partNum: string, customerId: number, isEngineQuote = false): Promise<{ pageCount: number, rows: Quote[] }> => {
   try {
-    const auth = { withCredentials: true };
-    const res = await api.get(`/api/quotes/limit/${JSON.stringify({ page: (page - 1) * limit, limit, partNum, customerId, isEngineQuote })}`, auth);
-    res.data = { pageCount: res.data.pageCount, rows: parseQuotesRes(res.data.rows)};
-    return res.data;
+    const res = await api.get(`/api/quotes/limit/${JSON.stringify({ page: (page - 1) * limit, limit, partNum, customerId, isEngineQuote })}`);
+    return { pageCount: res.data.pageCount, rows: parseQuotesRes(res.data.rows)};
   } catch (err) {
     console.error(err);
     return { pageCount: 0, rows: [] };
@@ -65,8 +63,7 @@ export const getSomeQuotes = async (page: number, limit: number, partNum: string
 export const getQuotesByCustomer = async (id: number | null): Promise<any> => {
   try {
     if (!id) return { rows: [], pageCount: [] };
-    const auth = { withCredentials: true };
-    const res = await api.get(`/api/quotes/customer/${id}`, auth);
+    const res = await api.get(`/api/quotes/customer/${id}`);
     return {
       rows: parseQuotesRes(res.data.rows) ?? [],
       pageCount: res.data.pageCount ?? []
@@ -78,8 +75,7 @@ export const getQuotesByCustomer = async (id: number | null): Promise<any> => {
 
 export const getSomeUnsoldQuotesByPartNum = async (page: number, limit: number, partNum: string, customerId: number, includeAlts: boolean): Promise<{ pageCount: number, rows: Quote[] }> => {
   try {
-    const auth = { withCredentials: true };
-    const res = await api.get(`/api/quotes/unsold-quotes/part-num/${JSON.stringify({ page: (page - 1) * limit, limit, partNum, customerId, includeAlts })}`, auth);
+    const res = await api.get(`/api/quotes/unsold-quotes/part-num/${JSON.stringify({ page: (page - 1) * limit, limit, partNum, customerId, includeAlts })}`);
     return {
       pageCount: res.data.pageCount,
       rows: res.data.rows.map((row: any) => {
@@ -94,10 +90,8 @@ export const getSomeUnsoldQuotesByPartNum = async (page: number, limit: number, 
 
 export const searchQuotes = async (quote: QuoteSearchData, customerId: number) => {
   try {
-    const auth = { withCredentials: true };
-    const res = await api.get(`/api/quotes/search/${encodeURIComponent(JSON.stringify({ ...quote, customerId }))}`, auth);
-    res.data = { pageCount: res.data.pageCount, rows: parseQuotesRes(res.data.rows)};
-    return res.data;
+    const res = await api.get(`/api/quotes/search/${encodeURIComponent(JSON.stringify({ ...quote, customerId }))}`);
+    return { pageCount: res.data.pageCount, rows: parseQuotesRes(res.data.rows)};
   } catch (err) {
     console.error(err);
   }
@@ -105,8 +99,7 @@ export const searchQuotes = async (quote: QuoteSearchData, customerId: number) =
 
 export const getQuotesByEngineModel = async (model: string): Promise<EngineQuote[]> => {
   try {
-    const auth = { withCredentials: true };
-    const res = await api.get(`/api/quotes/engine/${model}`, auth);
+    const res = await api.get(`/api/quotes/engine/${model}`);
     res.data = parseQuotesRes(res.data);
     return res.data.reverse();
   } catch (err) {
@@ -119,8 +112,7 @@ export const getQuotesByEngineModel = async (model: string): Promise<EngineQuote
 
 export const addQuote = async (quote: NewQuote) => {
   try {
-    const auth = { withCredentials: true };
-    const res = await api.post('/api/quotes', { quote }, auth);
+    const res = await api.post('/api/quotes', { quote });
     return res.data.id;
   } catch (err) {
     console.error(err);
@@ -131,8 +123,7 @@ export const addQuote = async (quote: NewQuote) => {
 
 export const editQuote = async (quote: Quote) => {
   try {
-    const auth = { withCredentials: true };
-    await api.put('/api/quotes', quote, auth);
+    await api.put('/api/quotes', quote);
   } catch (err) {
     console.error(err);
   }
@@ -140,8 +131,7 @@ export const editQuote = async (quote: Quote) => {
 
 export const toggleQuoteSold = async (quote: Quote) => {
   try {
-    const auth = { withCredentials: true };
-    await api.put('/api/quotes/toggle', quote, auth);
+    await api.put('/api/quotes/toggle', quote);
   } catch (err) {
     console.error(err);
   }
@@ -151,8 +141,7 @@ export const toggleQuoteSold = async (quote: Quote) => {
 
 export const piggybackQuote = async (parentId: number, piggybackId: number) => {
   try {
-    const auth = { withCredentials: true };
-    await api.patch('/api/quotes', { parentId, piggybackId }, auth);
+    await api.patch('/api/quotes', { parentId, piggybackId });
   } catch (err) {
     console.error(err);
   }
@@ -160,8 +149,7 @@ export const piggybackQuote = async (parentId: number, piggybackId: number) => {
 
 export const toggleAddToEmail = async (id: number, value: boolean) => {
   try {
-    const auth = { withCredentials: true };
-    await api.patch('/api/quotes/add-to-email', { id, value }, auth);
+    await api.patch('/api/quotes/add-to-email', { id, value });
   } catch (err) {
     console.error(err);
   }
@@ -171,8 +159,7 @@ export const toggleAddToEmail = async (id: number, value: boolean) => {
 
 export const deleteQuote = async (id: number) => {
   try {
-    const auth = { withCredentials: true };
-    await api.delete(`/api/quotes/${id}`, auth);
+    await api.delete(`/api/quotes/${id}`);
   } catch (err) {
     console.error(err);
   }

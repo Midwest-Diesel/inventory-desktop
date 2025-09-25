@@ -40,10 +40,8 @@ const parseEngineRes = (data: any) => {
 
 export const getAllEngines = async () => {
   try {
-    const auth = { withCredentials: true };
-    const res = await api.get('/api/engines', auth);
-    res.data = parseEngineRes(res.data);
-    return res.data;
+    const res = await api.get('/api/engines');
+    return parseEngineRes(res.data);
   } catch (err) {
     console.error(err);
   }
@@ -51,10 +49,8 @@ export const getAllEngines = async () => {
 
 export const getAutofillEngine = async (engineNum: number) => {
   try {
-    const auth = { withCredentials: true };
-    const res = await api.get(`/api/engines/autofill/${engineNum}`, auth);
-    res.data = parseEngineRes(res.data)[0];
-    return res.data;
+    const res = await api.get(`/api/engines/autofill/${engineNum}`);
+    return parseEngineRes(res.data)[0];
   } catch (err) {
     console.error(err);
   }
@@ -62,8 +58,7 @@ export const getAutofillEngine = async (engineNum: number) => {
 
 export const getEnginesByStatus = async (status: EngineStatus, page: number, limit: number): Promise<{ pageCount: number, rows: Engine[] }> => {
   try {
-    const auth = { withCredentials: true };
-    const res = await api.get(`/api/engines/status/${encodeURI(JSON.stringify({ status, offset: (page - 1) * limit, limit }))}`, auth);
+    const res = await api.get(`/api/engines/status/${encodeURI(JSON.stringify({ status, offset: (page - 1) * limit, limit }))}`);
     return { pageCount: res.data.pageCount, rows: parseEngineRes(res.data.rows) };
   } catch (err) {
     console.error(err);
@@ -73,8 +68,7 @@ export const getEnginesByStatus = async (status: EngineStatus, page: number, lim
 
 export const searchEngines = async (search: EngineSearch): Promise<{ pageCount: number, rows: Engine[] }> => {
   try {
-    const auth = { withCredentials: true };
-    const res = await api.get(`/api/engines/search/${encodeURI(JSON.stringify({ ...search, offset: (search.page - 1) * search.limit }))}`, auth);
+    const res = await api.get(`/api/engines/search/${encodeURI(JSON.stringify({ ...search, offset: (search.page - 1) * search.limit }))}`);
     return { pageCount: res.data.pageCount, rows: parseEngineRes(res.data.rows) };
   } catch (err) {
     console.error(err);
@@ -84,10 +78,8 @@ export const searchEngines = async (search: EngineSearch): Promise<{ pageCount: 
 
 export const getEngineByStockNum = async (stockNum: number | null): Promise<Engine | null> => {
   try {
-    const auth = { withCredentials: true };
-    const res = await api.get(`/api/engines/stock-num/${stockNum}`, auth);
-    res.data = parseEngineRes(res.data);
-    return res.data[0];
+    const res = await api.get(`/api/engines/stock-num/${stockNum}`);
+    return parseEngineRes(res.data)[0];
   } catch (err) {
     console.error(err);
     return null;
@@ -96,10 +88,8 @@ export const getEngineByStockNum = async (stockNum: number | null): Promise<Engi
 
 export const getEnginesByEngineData = async (data: CustomerEngineData) => {
   try {
-    const auth = { withCredentials: true };
-    const res = await api.get(`/api/engines/data/${JSON.stringify(data)}`, auth);
-    res.data = parseEngineRes(res.data);
-    return res.data;
+    const res = await api.get(`/api/engines/data/${JSON.stringify(data)}`);
+    return parseEngineRes(res.data);
   } catch (err) {
     console.error(err);
   }
@@ -107,8 +97,7 @@ export const getEnginesByEngineData = async (data: CustomerEngineData) => {
 
 export const getEngineCostRemaining = async (stockNum: number): Promise<number> => {
   try {
-    const auth = { withCredentials: true };
-    const res = await api.get(`/api/engines/cost-remaining/${stockNum}`, auth);
+    const res = await api.get(`/api/engines/cost-remaining/${stockNum}`);
     return res.data[0].costRemaining || 0;
   } catch (err) {
     console.error(err);
@@ -118,8 +107,7 @@ export const getEngineCostRemaining = async (stockNum: number): Promise<number> 
 
 export const getEngineProfit = async (stockNum: number) => {
   try {
-    const auth = { withCredentials: true };
-    const res = await api.get(`/api/engines/profit/${stockNum}`, auth);
+    const res = await api.get(`/api/engines/profit/${stockNum}`);
     return res.data;
   } catch (err) {
     console.error(err);
@@ -130,8 +118,7 @@ export const getEngineProfit = async (stockNum: number) => {
 
 export const addEngine = async (engine: EngineAddOn) => {
   try {
-    const auth = { withCredentials: true };
-    await api.post('/api/engines', engine, auth);
+    await api.post('/api/engines', engine);
   } catch (err) {
     console.error(err);
   }
@@ -139,8 +126,7 @@ export const addEngine = async (engine: EngineAddOn) => {
 
 export const addEngineCostIn = async (engineStockNum: number, cost: number, invoiceNum: string, vendor: string, costType: string, note: string) => {
   try {
-    const auth = { withCredentials: true };
-    await api.post('/api/engines/cost-in', { engineStockNum, cost, invoiceNum, vendor, costType, note }, auth);
+    await api.post('/api/engines/cost-in', { engineStockNum, cost, invoiceNum, vendor, costType, note });
   } catch (err) {
     console.error(err);
   }
@@ -148,8 +134,7 @@ export const addEngineCostIn = async (engineStockNum: number, cost: number, invo
 
 export const addEngineCostOut = async (stockNum: string, engineStockNum: number, cost: number, costType: string, note: string) => {
   try {
-    const auth = { withCredentials: true };
-    await api.post('/api/engines/cost-out', { stockNum, engineStockNum, cost, costType, note }, auth);
+    await api.post('/api/engines/cost-out', { stockNum, engineStockNum, cost, costType, note });
   } catch (err) {
     console.error(err);
   }
@@ -159,8 +144,7 @@ export const addEngineCostOut = async (stockNum: string, engineStockNum: number,
 
 export const editEngine = async (engine: Engine) => {
   try {
-    const auth = { withCredentials: true };
-    await api.put('/api/engines', engine, auth);
+    await api.put('/api/engines', engine);
   } catch (err) {
     console.error(err);
   }
@@ -168,8 +152,7 @@ export const editEngine = async (engine: Engine) => {
 
 export const editEngineCostIn = async (engine: EngineCostIn) => {
   try {
-    const auth = { withCredentials: true };
-    await api.put('/api/engines/cost-in', engine, auth);
+    await api.put('/api/engines/cost-in', engine);
   } catch (err) {
     console.error(err);
   }
@@ -177,8 +160,7 @@ export const editEngineCostIn = async (engine: EngineCostIn) => {
 
 export const editEngineCostOut = async (engine: EngineCostOut) => {
   try {
-    const auth = { withCredentials: true };
-    await api.put('/api/engines/cost-out', engine, auth);
+    await api.put('/api/engines/cost-out', engine);
   } catch (err) {
     console.error(err);
   }
@@ -186,8 +168,7 @@ export const editEngineCostOut = async (engine: EngineCostOut) => {
 
 export const editEnginePartsTable = async (parts: EnginePartsTable, id: number) => {
   try {
-    const auth = { withCredentials: true };
-    await api.put('/api/engines/parts-table', { parts, id }, auth);
+    await api.put('/api/engines/parts-table', { parts, id });
   } catch (err) {
     console.error(err);
   }
@@ -197,8 +178,7 @@ export const editEnginePartsTable = async (parts: EnginePartsTable, id: number) 
 
 export const deleteEngine = async (id: number) => {
   try {
-    const auth = { withCredentials: true };
-    await api.delete(`/api/engines/${id}`, auth);
+    await api.delete(`/api/engines/${id}`);
   } catch (err) {
     console.error(err);
   }
@@ -206,8 +186,7 @@ export const deleteEngine = async (id: number) => {
 
 export const deleteEngineCostIn = async (id: number) => {
   try {
-    const auth = { withCredentials: true };
-    await api.delete(`/api/engines/cost-in/${id}`, auth);
+    await api.delete(`/api/engines/cost-in/${id}`);
   } catch (err) {
     console.error(err);
   }
@@ -215,8 +194,7 @@ export const deleteEngineCostIn = async (id: number) => {
 
 export const deleteEngineCostOut = async (id: number) => {
   try {
-    const auth = { withCredentials: true };
-    await api.delete(`/api/engines/cost-out/${id}`, auth);
+    await api.delete(`/api/engines/cost-out/${id}`);
   } catch (err) {
     console.error(err);
   }

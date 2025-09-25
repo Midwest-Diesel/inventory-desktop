@@ -20,10 +20,8 @@ const parseAlertDataRes = (data: any) => {
 
 export const getAlerts = async (): Promise<Alert[]> => {
   try {
-    const auth = { withCredentials: true };
-    const res = await api.get('/api/alerts', auth);
-    res.data = parseAlertDataRes(res.data);
-    return res.data;
+    const res = await api.get('/api/alerts');
+    return parseAlertDataRes(res.data);
   } catch (err) {
     console.error(err);
     return [];
@@ -33,10 +31,8 @@ export const getAlerts = async (): Promise<Alert[]> => {
 export const detectAlerts = async (partNum: string): Promise<Alert[]> => {
   if (!partNum || partNum === '*') return [];
   try {
-    const auth = { withCredentials: true };
-    const res = await api.get(`/api/alerts/${partNum}`, auth);
-    res.data = parseAlertDataRes(res.data);
-    return res.data;
+    const res = await api.get(`/api/alerts/${partNum}`);
+    return parseAlertDataRes(res.data);
   } catch (err) {
     console.error(err);
     return [];
@@ -47,8 +43,7 @@ export const detectAlerts = async (partNum: string): Promise<Alert[]> => {
 
 export const addAlert = async (alert: NewAlert) => {
   try {
-    const auth = { withCredentials: true };
-    await api.post('/api/alerts', alert, auth);
+    await api.post('/api/alerts', alert);
   } catch (err) {
     console.error(err);
   }
@@ -58,8 +53,7 @@ export const addAlert = async (alert: NewAlert) => {
 
 export const editAlert = async (alert: Alert) => {
   try {
-    const auth = { withCredentials: true };
-    await api.put('/api/alerts', alert, auth);
+    await api.put('/api/alerts', alert);
   } catch (err) {
     console.error(err);
   }
@@ -69,8 +63,7 @@ export const editAlert = async (alert: Alert) => {
 
 export const deleteAlert = async (id: number) => {
   try {
-    const auth = { withCredentials: true };
-    await api.delete(`/api/alerts/${id}`, auth);
+    await api.delete(`/api/alerts/${id}`);
   } catch (err) {
     console.error(err);
   }

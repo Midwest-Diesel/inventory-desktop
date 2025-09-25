@@ -11,15 +11,13 @@ interface RecentSearch {
 
 export const getRecentPartSearches = async (partNum: string) => {
   try {
-    const auth = { withCredentials: true };
-    const res = await api.get(`/api/recent-searches/parts/${partNum}`, auth);
-    res.data = res.data.map((search: any) => {
+    const res = await api.get(`/api/recent-searches/parts/${partNum}`);
+    return res.data.map((search: any) => {
       return {
         ...search,
         date: parseResDate(search.date)
       };
     });
-    return res.data;
   } catch (err) {
     console.error(err);
   }
@@ -27,15 +25,13 @@ export const getRecentPartSearches = async (partNum: string) => {
 
 export const getQuotesByPartNum = async (partNum: string) => {
   try {
-    const auth = { withCredentials: true };
-    const res = await api.get(`/api/recent-searches/quotes/${partNum}`, auth);
-    res.data = res.data.map((search: any) => {
+    const res = await api.get(`/api/recent-searches/quotes/${partNum}`);
+    return res.data.map((search: any) => {
       return {
         ...search,
         date: parseResDate(search.date)
       };
     });
-    return res.data;
   } catch (err) {
     console.error(err);
   }
@@ -45,8 +41,7 @@ export const getQuotesByPartNum = async (partNum: string) => {
 
 export const addRecentSearch = async (payload: RecentSearch) => {
   try {
-    const auth = { withCredentials: true };
-    await api.post('/api/recent-searches', payload, auth);
+    await api.post('/api/recent-searches', payload);
   } catch (err) {
     console.error(err);
   }

@@ -5,9 +5,7 @@ import api from "../config/axios";
 
 export const getAltShipByCustomerId = async (customerId: number): Promise<AltShip[]> => {
   try {
-    const auth = { withCredentials: true };
-    const res = await api.get(`/api/alt-ship/${customerId}`, auth);
-    return res.data;
+    return await api.get(`/api/alt-ship/${customerId}`);
   } catch (err) {
     console.error(err);
     return [];
@@ -18,8 +16,7 @@ export const getAltShipByCustomerId = async (customerId: number): Promise<AltShi
 
 export const addAltShipAddress = async (altShip: AltShip) => {
   try {
-    const auth = { withCredentials: true };
-    await api.post('/api/alt-ship', altShip, auth);
+    await api.post('/api/alt-ship', altShip);
   } catch (err) {
     console.error(err);
   }
@@ -29,8 +26,7 @@ export const addAltShipAddress = async (altShip: AltShip) => {
 
 export const editAltShipAddress = async (altShip: AltShip) => {
   try {
-    const auth = { withCredentials: true };
-    await api.put('/api/alt-ship', altShip, auth);
+    await api.put('/api/alt-ship', altShip);
   } catch (err) {
     console.error(err);
   }
@@ -40,8 +36,7 @@ export const editAltShipAddress = async (altShip: AltShip) => {
 
 export const deleteAltShipAddress = async (id: number) => {
   try {
-    const auth = { withCredentials: true };
-    await api.delete(`/api/alt-ship/${id}`, auth);
+    await api.delete(`/api/alt-ship/${id}`);
   } catch (err) {
     console.error(err);
   }

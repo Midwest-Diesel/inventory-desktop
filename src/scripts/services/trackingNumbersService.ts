@@ -5,8 +5,7 @@ import api from "../config/axios";
 
 export const addTrackingNumber = async (handwrittenId: number, trackingNumber: string) => {
   try {
-    const auth = { withCredentials: true };
-    await api.post('/api/tracking-numbers', { handwrittenId, trackingNumber }, auth);
+    await api.post('/api/tracking-numbers', { handwrittenId, trackingNumber });
   } catch (err) {
     console.error(err);
   }
@@ -16,8 +15,7 @@ export const addTrackingNumber = async (handwrittenId: number, trackingNumber: s
 
 export const editTrackingNumber = async (id: number, trackingNumber: string) => {
   try {
-    const auth = { withCredentials: true };
-    await api.patch('/api/tracking-numbers', { id, trackingNumber }, auth);
+    await api.patch('/api/tracking-numbers', { id, trackingNumber });
   } catch (err) {
     console.error(err);
   }
@@ -27,8 +25,7 @@ export const editTrackingNumber = async (id: number, trackingNumber: string) => 
 
 export const deleteTrackingNumber = async (id: number) => {
   try {
-    const auth = { withCredentials: true };
-    await api.delete(`/api/tracking-numbers/${id}`, auth);
+    await api.delete(`/api/tracking-numbers/${id}`);
   } catch (err) {
     console.error(err);
   }

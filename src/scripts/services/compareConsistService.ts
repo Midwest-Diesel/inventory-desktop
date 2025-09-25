@@ -13,8 +13,7 @@ const parseCompareDataRes = (data: any) => {
 
 export const getCompareDataByCustomer = async (id: number) => {
   try {
-    const auth = { withCredentials: true };
-    const res = await api.get(`/api/compare-consist/customer/${id}`, auth);
+    const res = await api.get(`/api/compare-consist/customer/${id}`);
     return parseCompareDataRes(res.data);
   } catch (err) {
     console.error(err);
@@ -23,8 +22,7 @@ export const getCompareDataByCustomer = async (id: number) => {
 
 export const searchCompareData = async (customerId: number, serialNum: string, arrNum: string) => {
   try {
-    const auth = { withCredentials: true };
-    const res = await api.get(`/api/compare-consist/search/${JSON.stringify({ customerId, serialNum, arrNum })}`, auth);
+    const res = await api.get(`/api/compare-consist/search/${JSON.stringify({ customerId, serialNum, arrNum })}`);
     return parseCompareDataRes(res.data);
   } catch (err) {
     console.error(err);
@@ -33,10 +31,8 @@ export const searchCompareData = async (customerId: number, serialNum: string, a
 
 export const getCompareDataById = async (id: number) => {
   try {
-    const auth = { withCredentials: true };
-    const res = await api.get(`/api/compare-consist/id/${id}`, auth);
-    res.data = parseCompareDataRes(res.data);
-    return res.data[0];
+    const res = await api.get(`/api/compare-consist/id/${id}`);
+    return parseCompareDataRes(res.data)[0];
   } catch (err) {
     console.error(err);
   }
@@ -44,8 +40,7 @@ export const getCompareDataById = async (id: number) => {
 
 export const getPartsOnEngines = async (partNum: string) => {
   try {
-    const auth = { withCredentials: true };
-    const res = await api.get(`/api/compare-consist/on-engines/${partNum}`, auth);
+    const res = await api.get(`/api/compare-consist/on-engines/${partNum}`);
     const parsedDataPromises = res.data.map(async (eng: any) => {
       const costRemaining = await getEngineCostRemaining(eng.stockNum);
       return { ...eng, loginDate: parseResDate(eng.loginDate), costRemaining  };
@@ -61,8 +56,7 @@ export const getPartsOnEngines = async (partNum: string) => {
 
 export const addCompareData = async (data: CompareConsist) => {
   try {
-    const auth = { withCredentials: true };
-    await api.post('/api/compare-consist', data, auth);
+    await api.post('/api/compare-consist', data);
   } catch (err) {
     console.error(err);
   }
@@ -72,8 +66,7 @@ export const addCompareData = async (data: CompareConsist) => {
 
 export const deleteCompareData = async (id: number) => {
   try {
-    const auth = { withCredentials: true };
-    await api.delete(`/api/compare-consist/${id}`, auth);
+    await api.delete(`/api/compare-consist/${id}`);
   } catch (err) {
     console.error(err);
   }
