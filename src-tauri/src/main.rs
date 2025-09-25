@@ -1,8 +1,8 @@
 /*  
-==========================================================
-Printer names are hard coded, you will have to change some
-of them when replacing a printer.
-==========================================================
+=====================================================
+Printer names are hard coded, you will have to change
+them when replacing a printer.
+=====================================================
 */
 
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
@@ -412,7 +412,7 @@ fn create_directories() {
   let directories = vec!["scripts", "scripts/screenshots", "updates"];
   for dir_name in directories {
     if std::fs::read_dir(format!("C:/MWD/{}", dir_name)).is_err() {
-      std::fs::create_dir(format!("C:/MWD/{}", dir_name));
+      let _ = std::fs::create_dir(format!("C:/MWD/{}", dir_name));
     }
   }
 

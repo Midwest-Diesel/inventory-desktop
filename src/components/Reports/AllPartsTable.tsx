@@ -21,11 +21,21 @@ export default function AllPartsTable({ closeTable, data }: Props) {
     closeTable();
   };
 
+  const copyToClipboard = () => {
+    const rowsText = data.map((row) =>
+      [row.altParts, row.firstOfDesc, row.sumOfQtySold, row.sales].join('\t')
+    ).join('\n');
+    navigator.clipboard.writeText(rowsText);
+  };
+
 
   return (
     <div className="reports-table">
       <div className="reports-table__top-row">
-        <Button onClick={handleGoBack}>Back</Button>
+        <div className="reports-table__top-bar">
+          <Button onClick={handleGoBack}>Back</Button>
+          <Button onClick={copyToClipboard}>Copy</Button>
+        </div>
         <h3>Total: { formatCurrency(total) }</h3>
       </div>
 
@@ -44,7 +54,7 @@ export default function AllPartsTable({ closeTable, data }: Props) {
               <tr key={i}>
                 <td>{ row.altParts }</td>
                 <td>{ row.firstOfDesc }</td>
-                <td>{ formatCurrency(row.sumOfQtySold) }</td>
+                <td>{ row.sumOfQtySold }</td>
                 <td>{ formatCurrency(row.sales) }</td>
               </tr>
             );

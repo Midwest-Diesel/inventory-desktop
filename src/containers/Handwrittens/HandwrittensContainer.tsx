@@ -80,7 +80,7 @@ export default function HandwrittensContainer() {
     setSearchData(search);
     queryClient.setQueryData(['handwrittens', currentPage, searchData], {
       rows: results,
-      pageCount: pageCount
+      pageCount
     });
   };
 
