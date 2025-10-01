@@ -31,7 +31,7 @@ export default function HandwrittenDetailsContainer() {
 
   useEffect(() => {
     const tab = tabs.find((t) => t.selected);
-    if (!params || tab?.history[tab.history.length - 2].url !== `/handwrittens/${params.handwritten}`) return;
+    if (!params || tab?.history[tab.history.length - 2]?.url !== `/handwrittens/${params.handwritten}`) return;
     fetchData();
   }, [tabs]);
 
