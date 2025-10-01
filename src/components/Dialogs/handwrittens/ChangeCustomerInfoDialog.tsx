@@ -7,7 +7,7 @@ import { editCustomer } from "@/scripts/services/customerService";
 interface Props {
   open: boolean
   setOpen: (open: boolean) => void
-  customer: Customer
+  customer: Customer | null
   handwritten: Handwritten | null
   setIsEditing: (value: boolean) => void
   returnAfterDone: boolean
@@ -21,19 +21,18 @@ export default function ChangeCustomerInfoDialog({ open, setOpen, customer, hand
   const [billToCity, setBillToCity] = useState<string>(handwritten?.billToCity ?? '');
   const [billToState, setBillToState] = useState<string>(handwritten?.billToState ?? '');
   const [billToZip, setBillToZip] = useState<string>(handwritten?.billToZip ?? '');
-  const [billToPhone, setBillToPhone] = useState<string>(handwritten?.billToPhone ?? '');
-  const [showBillToCompany] = useState<boolean>((billToCompany || '') !== (customer.company || ''));
-  const [showBillToAddress] = useState<boolean>((billToAddress || '') !== (customer.billToAddress || ''));
-  const [showBillToAddress2] = useState<boolean>((billToAddress2 || '') !== (customer.billToAddress2 || ''));
-  const [showBillToCity] = useState<boolean>((billToCity || '') !== (customer.billToCity || ''));
-  const [showBillToState] = useState<boolean>((billToState || '') !== (customer.billToState || ''));
-  const [showBillToZip] = useState<boolean>((billToZip || '') !== (customer.billToZip || ''));
-  const [showBillToPhone] = useState<boolean>((billToPhone || '') !== (customer.billToPhone || ''));
+  const showBillToCompany = handwritten?.billToCompany !== customer?.company;
+  const showBillToAddress = handwritten?.billToAddress !== customer?.billToAddress;
+  const showBillToAddress2 = handwritten?.billToAddress2 !== customer?.billToAddress2;
+  const showBillToCity = handwritten?.billToCity !== customer?.billToCity;
+  const showBillToState = handwritten?.billToState !== customer?.billToState;
+  const showBillToZip = handwritten?.billToZip !== customer?.billToZip;
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     handleClose();
-    await editCustomer({ ...customer, company: billToCompany, billToAddress, billToAddress2, billToCity, billToState, billToZip, billToPhone });
+    if (!customer) return;
+    await editCustomer({ ...customer, company: billToCompany, billToAddress, billToAddress2, billToCity, billToState, billToZip });
   };
 
   const handleClose = () => {
@@ -54,13 +53,12 @@ export default function ChangeCustomerInfoDialog({ open, setOpen, customer, hand
         <div style={{ display: 'flex', gap: '1rem' }}>
           <div>
             <h3>Old Customer Info</h3>
-            { showBillToCompany && <p><strong>Bill to Company</strong> { customer.company }</p> }
-            { showBillToAddress && <p><strong>Bill to Address</strong> { customer.billToAddress }</p> }
-            { showBillToAddress2 && <p><strong>Bill to Address 2</strong> { customer.billToAddress2 }</p> }
-            { showBillToCity && <p><strong>Bill to City</strong> { customer.billToCity }</p> }
-            { showBillToState && <p><strong>Bill to State</strong> { customer.billToState }</p> }
-            { showBillToZip && <p><strong>Bill to Zip</strong> { customer.billToZip }</p> }
-            { showBillToPhone && <p><strong>Bill to Phone</strong> { customer.billToPhone }</p> }
+            { showBillToCompany && <p><strong>Bill to Company</strong> { customer?.company || 'EMPTY' }</p> }
+            { showBillToAddress && <p><strong>Bill to Address</strong> { customer?.billToAddress || 'EMPTY' }</p> }
+            { showBillToAddress2 && <p><strong>Bill to Address 2</strong> { customer?.billToAddress2 || 'EMPTY' }</p> }
+            { showBillToCity && <p><strong>Bill to City</strong> { customer?.billToCity || 'EMPTY' }</p> }
+            { showBillToState && <p><strong>Bill to State</strong> { customer?.billToState || 'EMPTY' }</p> }
+            { showBillToZip && <p><strong>Bill to Zip</strong> { customer?.billToZip || 'EMPTY' }</p> }
           </div>
 
           <div>
@@ -111,14 +109,6 @@ export default function ChangeCustomerInfoDialog({ open, setOpen, customer, hand
                 label="Bill to Zip"
                 value={billToZip}
                 onChange={(e: any) => setBillToZip(e.target.value)}
-              />
-            }
-            {showBillToPhone &&
-              <Input
-                variant={['label-bold', 'label-no-stack', 'label-space-between']}
-                label="Bill to Phone"
-                value={billToPhone}
-                onChange={(e: any) => setBillToPhone(e.target.value)}
               />
             }
           </div>

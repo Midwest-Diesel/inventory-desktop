@@ -10,7 +10,7 @@ import { formatCurrency, formatDate, parseDateInputValue } from "@/scripts/tools
 import Button from "../Library/Button";
 import Table from "../Library/Table";
 import CustomerDropdown from "../Library/Dropdown/CustomerDropdown";
-import { getCustomerByName } from "@/scripts/services/customerService";
+import { getCustomerById, getCustomerByName } from "@/scripts/services/customerService";
 import { getAllSources } from "@/scripts/services/sourcesService";
 import { deleteCoreByItemId, editCoreCustomer } from "@/scripts/services/coresService";
 import ShippingListDialog from "../Dialogs/handwrittens/ShippingListDialog";
@@ -31,6 +31,7 @@ import { ask } from "@/scripts/config/tauri";
 import { getAltShipByCustomerId } from "@/scripts/services/altShipService";
 import AltShipDialog from "../Dialogs/handwrittens/AltShipDialog";
 import { usePrintQue } from "@/hooks/usePrintQue";
+import { useQuery } from "@tanstack/react-query";
 
 interface Props {
   handwritten: Handwritten
@@ -170,6 +171,11 @@ export default function EditHandwrittenDetails({
     setOrderNotes(handwritten.orderNotes ?? '');
   }, [handwritten]);
 
+  const { data: customerData } = useQuery<Customer | null>({
+    queryKey: ['customerData'],
+    queryFn: () => getCustomerById(handwritten.customer.id)
+  });
+
   const saveChanges = async (e: FormEvent) => {
     e.preventDefault();
     if (!changesSaved && !await ask('Are you sure you want to save these changes?')) return;
@@ -297,8 +303,7 @@ export default function EditHandwrittenDetails({
       billToAddress2: newInvoice.billToAddress2 || '',
       billToCity: newInvoice.billToCity || '',
       billToState: newInvoice.billToState || '',
-      billToZip: newInvoice.billToZip || '',
-      billToPhone: newInvoice.billToPhone || ''
+      billToZip: newInvoice.billToZip || ''
     });
     const customerBillTo = JSON.stringify({
       billToCompany: newInvoice.customer.company || '',
@@ -306,8 +311,7 @@ export default function EditHandwrittenDetails({
       billToAddress2: newInvoice.customer.billToAddress2 || '',
       billToCity: newInvoice.customer.billToCity || '',
       billToState: newInvoice.customer.billToState || '',
-      billToZip: newInvoice.customer.billToZip || '',
-      billToPhone: newInvoice.customer.billToPhone || ''
+      billToZip: newInvoice.customer.billToZip || ''
     });
 
     if (handwrittenBillTo !== customerBillTo) {
@@ -647,7 +651,7 @@ export default function EditHandwrittenDetails({
         <ChangeCustomerInfoDialog
           open={changeCustomerDialogOpen}
           setOpen={setChangeCustomerDialogOpen}
-          customer={handwritten.customer}
+          customer={customerData ?? null}
           handwritten={changeCustomerDialogData}
           setIsEditing={setIsEditing}
           returnAfterDone={returnAfterDone}
