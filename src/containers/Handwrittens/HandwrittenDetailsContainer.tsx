@@ -30,27 +30,14 @@ export default function HandwrittenDetailsContainer() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const fetchData = async () => {
-      const tab = tabs.find((t) => t.selected);
-      if (!params || tab?.history[tab.history.length - 1].url !== `/handwrittens/${params.handwritten}`) return;
-      setLoading(true);
-      const res = await getHandwrittenById(Number(params.handwritten));
-      setTitle(`${res?.id} Handwritten`);
-      setHandwritten(res);
-      setPayment(res?.payment ?? '');
-      if (res?.invoiceStatus === 'INVOICE PENDING') setIsEditing(true);
-
-      const itemsWithChildren = res?.handwrittenItems.filter((item) => item.invoiceItemChildren && item.invoiceItemChildren.length > 0) ?? [];
-      itemsWithChildren.forEach((item) => {
-        const res = item.invoiceItemChildren.find((child) => child.cost === 0.04);
-        if (res) {
-          toast.sendToast(`Cost still detected on item <span style="color: var(--orange-1)">${res.partNum}</span>!`, 'error', 6000);
-        }
-      });
-      setLoading(false);
-    };
+    const tab = tabs.find((t) => t.selected);
+    if (!params || tab?.history[tab.history.length - 2].url !== `/handwrittens/${params.handwritten}`) return;
     fetchData();
-  }, [params, tabs]);
+  }, [tabs]);
+
+  useEffect(() => {
+    fetchData();
+  }, [params]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -60,6 +47,24 @@ export default function HandwrittenDetailsContainer() {
     };
     fetchData();
   }, [isEditing]);
+
+  const fetchData = async () => {
+    setLoading(true);
+    const res = await getHandwrittenById(Number(params.handwritten));
+    setTitle(`${res?.id} Handwritten`);
+    setHandwritten(res);
+    setPayment(res?.payment ?? '');
+    if (res?.invoiceStatus === 'INVOICE PENDING') setIsEditing(true);
+
+    const itemsWithChildren = res?.handwrittenItems.filter((item) => item.invoiceItemChildren && item.invoiceItemChildren.length > 0) ?? [];
+    itemsWithChildren.forEach((item) => {
+      const res = item.invoiceItemChildren.find((child) => child.cost === 0.04);
+      if (res) {
+        toast.sendToast(`Cost still detected on item <span style="color: var(--orange-1)">${res.partNum}</span>!`, 'error', 6000);
+      }
+    });
+    setLoading(false);
+  };
 
   const handleAltShip = async () => {
     if (!handwritten) return;

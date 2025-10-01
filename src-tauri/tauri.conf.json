@@ -9,7 +9,7 @@
   },
   "package": {
     "productName": "Inventory",
-    "version": "0.29.14"
+    "version": "0.29.15"
   },
   "tauri": {
     "allowlist": {
