@@ -94,8 +94,8 @@ export default function QuoteSearchDialog({ open, setOpen, setQuotes, setCount, 
     if (isValidSearch) {
       setSearchData(quoteSearch);
       const res = await searchQuotes(quoteSearch, filterByCustomer ? Number(localStorage.getItem("customerId")) : 0);
-      setQuotes(res.rows);
-      setCount(res.pageCount);
+      setQuotes(res?.rows ?? []);
+      setCount(res?.pageCount ?? 1);
     } else {
       setSearchData(null);
       backupFunction(null, page, true);
