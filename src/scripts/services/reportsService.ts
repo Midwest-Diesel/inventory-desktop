@@ -29,6 +29,15 @@ export const reportSingleCompany = async (customer: number, startDate: Date | nu
   }
 };
 
+export const reportSalesByBillToCompany = async (billToCompany: string, startDate: Date | null, endDate: Date | null) => {
+  try {
+    const res = await api.get(`/api/reports/sales-by-bill-to-company/${JSON.stringify({billToCompany, startDate, endDate})}`);
+    return parseReportData(res.data);
+  } catch (err) {
+    console.error(err);
+  }
+};
+
 export const reportAllCompanies = async (startDate: Date | null, endDate: Date | null) => {
   try {
     const res = await api.get(`/api/reports/all-companies/${JSON.stringify({startDate, endDate})}`);

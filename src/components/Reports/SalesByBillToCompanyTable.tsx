@@ -11,7 +11,7 @@ interface Props {
 }
 
 
-export default function SingleCompanyTable({ closeTable, data }: Props) {
+export default function SalesByBillToCompanyTable({ closeTable, data }: Props) {
   const [total, setTotal] = useState(0);
 
   useEffect(() => {

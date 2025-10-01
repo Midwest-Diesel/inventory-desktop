@@ -8,6 +8,7 @@ import HandwrittenCompanyDialog from "@/components/Dialogs/reports/HandwrittenCo
 import PartDescDialog from "@/components/Dialogs/reports/PartDescDialog";
 import PricingChangesDialog from "@/components/Dialogs/reports/PricingChangesDialog";
 import RecentSearchesDialog from "@/components/Dialogs/reports/RecentSearchesDialog";
+import SalesByBillToCompanyDialog from "@/components/Dialogs/reports/SalesByBillToCompanyDialog";
 import SingleCompanyDialog from "@/components/Dialogs/reports/SingleCompanyDialog";
 import SingleCompanyEnginesDialog from "@/components/Dialogs/reports/SingleCompanyEnginesDialog";
 import SingleCompanyPartsDialog from "@/components/Dialogs/reports/SingleCompanyPartsDialog";
@@ -27,12 +28,13 @@ import PartDescTable from "@/components/Reports/PartDescTable";
 import PBBTable from "@/components/Reports/PBBTable";
 import PricingChanges from "@/components/Reports/PricingChangesTable/PricingChanges";
 import RecentSearchesTable from "@/components/Reports/RecentSearchesTable";
+import SalesByBillToCompanyTable from "@/components/Reports/SalesByBillToCompanyTable";
 import SingleCompanyEnginesTable from "@/components/Reports/SingleCompanyEnginesTable";
 import SingleCompanyPartsTable from "@/components/Reports/SingleCompanyPartsTable";
 import SingleCompanyTable from "@/components/Reports/SingleCompanyTable";
 import TheMachinesTable from "@/components/Reports/TheMachinesTable";
 import { useNavState } from "@/hooks/useNavState";
-import { allCompaniesReportAtom, allEnginesReportAtom, allPartsReportAtom, allSalesmenReportAtom, allSourcesReportAtom, arielSalesReportAtom, enginesCompanyReportAtom, handwrittensCompanyReportAtom, noLocationPartsReportAtom, outstandingHighCoresReportAtom, partDescReportAtom, partsCompanyReportAtom, PBBListReportAtom, pricingChangesReportAtom, recentSearchesReportAtom, singleCompanyReportAtom, theMachinesReportAtom } from "@/scripts/atoms/reports";
+import { allCompaniesReportAtom, allEnginesReportAtom, allPartsReportAtom, allSalesmenReportAtom, allSourcesReportAtom, arielSalesReportAtom, enginesCompanyReportAtom, handwrittensCompanyReportAtom, noLocationPartsReportAtom, outstandingHighCoresReportAtom, partDescReportAtom, partsCompanyReportAtom, PBBListReportAtom, pricingChangesReportAtom, recentSearchesReportAtom, salesByBillToCompanyReportAtom, singleCompanyReportAtom, theMachinesReportAtom } from "@/scripts/atoms/reports";
 import { reportNoLocationParts, reportOutstandingCores, reportPBB } from "@/scripts/services/reportsService";
 import { useAtom } from "jotai";
 import { useState } from "react";
@@ -44,6 +46,7 @@ export default function ReportsContainer() {
   const [searchParams] = useSearchParams();
   const [openedReport, setOpenedReport] = useState('');
   const [singleCompanyData, setSingleCompanyData] = useAtom<SingleCompany[]>(singleCompanyReportAtom);
+  const [salesByBillToCompanyData, setSalesByBillToCompanyData] = useAtom<SingleCompany[]>(salesByBillToCompanyReportAtom);
   const [allCompaniesData, setAllCompaniesData] = useAtom<AllCompaniesReport[]>(allCompaniesReportAtom);
   const [allPartsData, setAllPartsData] = useAtom<AllPartsReport[]>(allPartsReportAtom);
   const [partDescData, setPartDescData] = useAtom<PartDescReport[]>(partDescReportAtom);
@@ -106,7 +109,8 @@ export default function ReportsContainer() {
             <div className="reports-page-section">
               <h2>Sales Reports</h2>
               <div className="reports-page-section__buttons">
-                <Button onClick={() => toggleOpenedReport('single-company')}>Single Company/Keyword</Button>
+                <Button onClick={() => toggleOpenedReport('single-company')}>Sales by Customer</Button>
+                <Button onClick={() => toggleOpenedReport('sales-by-bill-to-company')}>Sales by BillToCompany</Button>
                 <Button onClick={() => toggleOpenedReport('all-companies')}>All Companies</Button>
                 <Button onClick={() => toggleOpenedReport('all-parts')}>All Parts</Button>
                 <Button onClick={() => toggleOpenedReport('part-desc')}>Single Part Description</Button>
@@ -146,6 +150,14 @@ export default function ReportsContainer() {
               setOpen={() => toggleOpenedReport('')}
               openTable={() => openTable('single-company')}
               setTableData={setSingleCompanyData}
+            />
+          }
+          {isReportOpened('sales-by-bill-to-company') &&
+            <SalesByBillToCompanyDialog
+              open={isReportOpened('sales-by-bill-to-company')}
+              setOpen={() => toggleOpenedReport('')}
+              openTable={() => openTable('sales-by-bill-to-company')}
+              setTableData={setSalesByBillToCompanyData}
             />
           }
           {isReportOpened('all-companies') &&
@@ -256,6 +268,7 @@ export default function ReportsContainer() {
         :
         <>
           { isTableOpened('single-company') && <SingleCompanyTable closeTable={() => openTable('')} data={singleCompanyData} /> }
+          { isTableOpened('sales-by-bill-to-company') && <SalesByBillToCompanyTable closeTable={() => openTable('')} data={salesByBillToCompanyData} /> }
           { isTableOpened('all-companies') && <AllCompaniesTable closeTable={() => openTable('')} data={allCompaniesData} /> }
           { isTableOpened('all-parts') && <AllPartsTable closeTable={() => openTable('')} data={allPartsData} /> }
           { isTableOpened('part-desc') && <PartDescTable closeTable={() => openTable('')} data={partDescData} /> }
