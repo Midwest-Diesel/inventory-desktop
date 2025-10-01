@@ -5,7 +5,8 @@ import api from "../config/axios";
 
 export const getAltShipByCustomerId = async (customerId: number): Promise<AltShip[]> => {
   try {
-    return await api.get(`/api/alt-ship/${customerId}`);
+    const res = await api.get(`/api/alt-ship/${customerId}`);
+    return res.data;
   } catch (err) {
     console.error(err);
     return [];
