@@ -181,7 +181,7 @@ export default function EmailQuotesDialog({ open, setOpen, quote }: Props) {
                     <td>{ quote.partNum }</td>
                     <td>{ quote.stockNum }</td>
                     <td>{ quote.desc }</td>
-                    <td>{ formatCurrency(quote.part ? (quote.price ?? 0) * quote.part.qty : quote.price) }</td>
+                    <td>{ formatCurrency(quote.price) }</td>
                   </tr>
                 );
               })}
@@ -193,7 +193,7 @@ export default function EmailQuotesDialog({ open, setOpen, quote }: Props) {
                     <td>{ piggybackQuote.partNum }</td>
                     <td>{ piggybackQuote.stockNum }</td>
                     <td>{ piggybackQuote.desc }</td>
-                    <td>{ formatCurrency(piggybackQuote.part ? (piggybackQuote.price ?? 0) * piggybackQuote.part.qty : piggybackQuote.price) }</td>
+                    <td>{ formatCurrency(piggybackQuote.price) }</td>
                   </tr>
                 );
               })}
@@ -227,7 +227,7 @@ export default function EmailQuotesDialog({ open, setOpen, quote }: Props) {
                         <td>{ quote.partNum }</td>
                         <td>{ quote.stockNum }</td>
                         <td>{ quote.desc }</td>
-                        <td>{ formatCurrency(quote.part ? (quote.price ?? 0) * quote.part.qty : quote.price) }</td>
+                        <td>{ formatCurrency(quote.price) }</td>
                       </tr>
                     );
                   })}
