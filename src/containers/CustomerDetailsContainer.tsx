@@ -282,7 +282,7 @@ export default function CustomerDetailsContainer() {
                   <tbody>
                     <tr>
                       <th>Comments</th>
-                      <td>{ customer.comments }</td>
+                      <td style={{ whiteSpace: 'pre-wrap' }}>{ customer.comments }</td>
                     </tr>
                   </tbody>
                 </Table>

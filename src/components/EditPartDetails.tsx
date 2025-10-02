@@ -14,6 +14,7 @@ import Loading from "./Library/Loading";
 import { ask } from "@/scripts/config/tauri";
 import Select from "./Library/Select/Select";
 import CustomerDropdown from "./Library/Dropdown/CustomerDropdown";
+import TextArea from "./Library/TextArea";
 
 interface Props {
   part: Part
@@ -528,8 +529,8 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
                   <tr>
                     <th>Remarks</th>
                     <td>
-                      <Input
-                        variant={['label-stack', 'label-bold', 'text-area']}
+                      <TextArea
+                        variant={['label-stack', 'label-bold']}
                         rows={5}
                         cols={100}
                         value={remarks}
@@ -640,8 +641,8 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
                 <tr>
                   <th>Sales Notes</th>
                   <td>
-                    <Input
-                      variant={['label-stack', 'label-bold', 'text-area']}
+                    <TextArea
+                      variant={['label-stack', 'label-bold']}
                       rows={5}
                       cols={100}
                       value={specialNotes}

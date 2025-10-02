@@ -264,7 +264,7 @@ export default function OfficePartAddonRow({ addOn, onSave, onModifyAddOnData }:
             <tr>
               <td>
                 <Input
-                  variant={['small', 'thin', 'text-area']}
+                  variant={['small', 'thin']}
                   value={addOn.remarks !== null ? addOn.remarks : ''}
                   onChange={(e: any) => handleEditAddOn({ ...addOn, remarks: e.target.value })}
                   onBlur={(e: any) => handleEditAddOn({ ...addOn, rating: getRatingFromRemarks(e.target.value) })}
@@ -300,21 +300,21 @@ export default function OfficePartAddonRow({ addOn, onSave, onModifyAddOnData }:
               </td>
               <td>
                 <Input
-                  variant={['small', 'thin', 'text-area']}
+                  variant={['small', 'thin']}
                   value={addOn.hp !== null ? addOn.hp : ''}
                   onChange={(e: any) => handleEditAddOn({ ...addOn, hp: e.target.value })}
                 />
               </td>
               <td>
                 <Input
-                  variant={['small', 'thin', 'text-area']}
+                  variant={['small', 'thin']}
                   value={addOn.serialNum !== null ? addOn.serialNum : ''}
                   onChange={(e: any) => handleEditAddOn({ ...addOn, serialNum: e.target.value })}
                 />
               </td>
               <td>
                 <Input
-                  variant={['small', 'thin', 'text-area']}
+                  variant={['small', 'thin']}
                   type="number"
                   value={addOn.rating !== null ? addOn.rating : ''}
                   onChange={(e: any) => handleEditAddOn({ ...addOn, rating: e.target.value })}
@@ -322,7 +322,7 @@ export default function OfficePartAddonRow({ addOn, onSave, onModifyAddOnData }:
               </td>
               <td>
                 <Input
-                  variant={['small', 'thin', 'text-area']}
+                  variant={['small', 'thin']}
                   type="number"
                   value={addOn.po !== null ? addOn.po : ''}
                   onChange={(e: any) => handleEditAddOn({ ...addOn, po: e.target.value })}

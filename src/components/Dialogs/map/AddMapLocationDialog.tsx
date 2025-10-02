@@ -2,6 +2,7 @@ import Button from "@/components/Library/Button";
 import Dialog from "@/components/Library/Dialog";
 import Input from "@/components/Library/Input";
 import Select from "@/components/Library/Select/Select";
+import TextArea from "@/components/Library/TextArea";
 import { getCustomerById, getCustomers } from "@/scripts/services/customerService";
 import { FormEvent, useEffect, useState } from "react";
 
@@ -89,8 +90,8 @@ export default function AddMapLocationDialog({ open, setOpen, onSubmit }: Props)
           <option>customer</option>
           <option>vendor</option>
         </Select>
-        <Input
-          variant={['label-bold', 'text-area']}
+        <TextArea
+          variant={['label-bold']}
           label="Notes"
           value={notes}
           onChange={(e: any) => setNotes(e.target.value)}

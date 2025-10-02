@@ -7,6 +7,7 @@ import SourceSelect from "../Library/Select/SourceSelect";
 import Button from "../Library/Button";
 import { useToast } from "@/hooks/useToast";
 import CustomerDropdown from "../Library/Dropdown/CustomerDropdown";
+import TextArea from "../Library/TextArea";
 
 interface Props {
   open: boolean
@@ -118,9 +119,9 @@ export default function NewEngineQuoteDialog({ open, setOpen, engine, onNewQuote
             data-testid="price"
           />
 
-          <Input
+          <TextArea
             label="Notes"
-            variant={['label-stack', 'text-area', 'label-bold', 'label-stack', 'label-fit-content']}
+            variant={['label-stack', 'label-bold', 'label-stack', 'label-fit-content']}
             rows={5}
             cols={100}
             value={notes}

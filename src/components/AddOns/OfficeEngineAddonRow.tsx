@@ -225,7 +225,7 @@ export default function OfficeEngineAddOnRow({ addOn, onSave }: Props) {
                 </td>
                 <td>
                   <Input
-                    variant={['small', 'thin', 'text-area']}
+                    variant={['small', 'thin']}
                     style={{ width: '18rem' }}
                     value={addOn.notes !== null ? addOn.notes : ''}
                     onChange={(e: any) => handleEditAddOn({ ...addOn, notes: e.target.value })}

@@ -13,6 +13,7 @@ import { enginePartsTableAtom } from "@/scripts/atoms/state";
 import { useAtom } from "jotai";
 import { PreventNavigation } from "../PreventNavigation";
 import { ask } from "@/scripts/config/tauri";
+import TextArea from "../Library/TextArea";
 
 interface Props {
   engine: Engine
@@ -581,8 +582,8 @@ export default function EditEngineDetails({ engine, setIsEditing, refetch }: Pro
                     <tr>
                       <th>Comments</th>
                       <td>
-                        <Input
-                          variant={['label-stack', 'label-bold', 'text-area']}
+                        <TextArea
+                          variant={['label-stack', 'label-bold']}
                           rows={5}
                           cols={100}
                           value={comments}
@@ -593,8 +594,8 @@ export default function EditEngineDetails({ engine, setIsEditing, refetch }: Pro
                     <tr>
                       <th>Parts Pulled</th>
                       <td>
-                        <Input
-                          variant={['label-stack', 'label-bold', 'text-area']}
+                        <TextArea
+                          variant={['label-stack', 'label-bold']}
                           rows={5}
                           cols={100}
                           value={partsPulled}

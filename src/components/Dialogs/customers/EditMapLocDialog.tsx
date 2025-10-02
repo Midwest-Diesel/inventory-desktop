@@ -5,6 +5,7 @@ import Select from "@/components/Library/Select/Select";
 import { editMapLocation, getGeoLocation } from "@/scripts/services/mapService";
 import { FormEvent, useState } from "react";
 import { ask } from "@/scripts/config/tauri";
+import TextArea from "@/components/Library/TextArea";
 
 interface Props {
   open: boolean
@@ -75,8 +76,8 @@ export default function EditMapLocDialog({ open, setOpen, loc }: Props) {
           <option>customer</option>
           <option>vendor</option>
         </Select>
-        <Input
-          variant={['label-bold', 'text-area']}
+        <TextArea
+          variant={['label-bold']}
           label="Notes"
           value={notes}
           onChange={(e: any) => setNotes(e.target.value)}

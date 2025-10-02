@@ -13,6 +13,7 @@ import CustomerContactsBlock from "./CustomerContactsBlock";
 import Select from "../Library/Select/Select";
 import Checkbox from "../Library/Checkbox";
 import { ask } from "@/scripts/config/tauri";
+import TextArea from "../Library/TextArea";
 
 interface Props {
   customer: Customer
@@ -400,10 +401,9 @@ export default function CustomerDetails({ customer, setCustomer, setIsEditing }:
                     <tr>
                       <th>Comments</th>
                       <td>
-                        <Input
-                          variant={['label-stack', 'label-bold', 'text-area']}
-                          rows={5}
-                          cols={100}
+                        <TextArea
+                          style={{ height: '100%' }}
+                          variant={['auto-size']}
                           value={comments}
                           onChange={(e: any) => setComments(e.target.value)}
                         />

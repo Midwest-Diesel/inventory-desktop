@@ -11,6 +11,7 @@ import { useAtom } from "jotai";
 import { customerNamesAtom } from "@/scripts/atoms/state";
 import PartSelectDialog from "./PartSelectDialog";
 import Select from "@/components/Library/Select/Select";
+import TextArea from "@/components/Library/TextArea";
 
 interface Props {
   setQuoteEdited: (quote: Quote | null) => void
@@ -153,9 +154,9 @@ export default function EditQuoteDialog({ setQuoteEdited, quote, setQuote }: Pro
             required
           />
 
-          <Input
+          <TextArea
             label="Notes"
-            variant={['label-stack', 'text-area', 'label-bold', 'label-stack', 'label-fit-content']}
+            variant={['label-stack', 'label-bold', 'label-stack', 'label-fit-content']}
             rows={5}
             cols={100}
             value={notes}
