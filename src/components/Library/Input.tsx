@@ -5,16 +5,14 @@ interface Props extends InputHTML {
   children?: any
   className?: string
   labelClass?: string
-  variant?: ('thin' | 'small' | 'x-small' | 'search' | 'label-stack' | 'label-no-stack' | 'label-space-between' | 'md-text' | 'label-full-width' | 'label-bold' | 'text-area' | 'label-inline' | 'label-no-margin' | 'no-style' | 'label-fit-content' | 'autofill-input' | 'no-arrows')[]
+  variant?: ('thin' | 'small' | 'x-small' | 'search' | 'label-stack' | 'label-no-stack' | 'label-space-between' | 'md-text' | 'label-full-width' | 'label-bold' | 'label-inline' | 'label-no-margin' | 'no-style' | 'label-fit-content' | 'autofill-input' | 'no-arrows')[]
   label?: string
-  cols?: number
-  rows?: number
   autofill?: string
   onAutofill?: (value: string) => void
 }
 
 
-const Input = forwardRef<HTMLInputElement, Props>(({ children, className = '', labelClass = '', autofill = '', onAutofill, variant = [], label, cols, rows, ...props }, ref) => {
+const Input = forwardRef<HTMLInputElement, Props>(({ children, className = '', labelClass = '', autofill = '', onAutofill, variant = [], label, ...props }, ref) => {
   const labelClassList = variant.filter((v) => v.includes('label'));
   const classes = generateClasses(className, variant ? variant.filter((v) => !labelClassList.includes(v)) : [], 'input');
   const labelClasses = generateClasses(labelClass, labelClassList, 'input');
@@ -49,35 +47,23 @@ const Input = forwardRef<HTMLInputElement, Props>(({ children, className = '', l
     <label {...parseClasses(labelClasses)}>
       { label }
 
-      {variant && variant.includes('text-area') ?
-        <textarea
+      {!variant.includes('autofill-input') ?
+        <input
           {...parseClasses(classes)}
-          {...props as any}
-          cols={cols}
-          rows={rows}
+          {...props}
           autoComplete="new-password"
+          ref={ref}
         />
         :
-        <>
-          {!variant.includes('autofill-input') ?
-            <input
-              {...parseClasses(classes)}
-              {...props}
-              autoComplete="new-password"
-              ref={ref}
-            />
-            :
-            <div style={{ position: 'relative' }}>
-              <input
-                {...parseClasses(classes)}
-                {...props}
-                ref={inputRef}
-                autoComplete="new-password"
-              />
-              <Input variant={['small', 'thin']} style={{ opacity: '0.5' }} value={autofill} onChange={() => {}} tabIndex={-1} />
-            </div>
-          }
-        </>
+        <div style={{ position: 'relative' }}>
+          <input
+            {...parseClasses(classes)}
+            {...props}
+            ref={inputRef}
+            autoComplete="new-password"
+          />
+          <Input variant={['small', 'thin']} style={{ opacity: '0.5' }} value={autofill} onChange={() => {}} tabIndex={-1} />
+        </div>
       }
       { children }
     </label>

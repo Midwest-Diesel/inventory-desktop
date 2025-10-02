@@ -10,6 +10,7 @@ import VendorDropdown from "../Library/Dropdown/VendorDropdown";
 import { PreventNavigation } from "../PreventNavigation";
 import Checkbox from "../Library/Checkbox";
 import { ask } from "@/scripts/config/tauri";
+import TextArea from "../Library/TextArea";
 
 interface Props {
   poData: PO
@@ -417,8 +418,8 @@ export default function EditPoDetails({ poData, setPo, setIsEditing, poItems, po
                   <tr style={{ height: '4rem' }}>
                     <th>Special Instructions</th>
                     <td>
-                      <Input
-                        variant={['label-stack', 'label-bold', 'text-area']}
+                      <TextArea
+                        variant={['label-stack', 'label-bold']}
                         rows={3}
                         cols={100}
                         value={specialInstructions}
@@ -429,8 +430,8 @@ export default function EditPoDetails({ poData, setPo, setIsEditing, poItems, po
                   <tr style={{ height: '4rem' }}>
                     <th>Comments</th>
                     <td>
-                      <Input
-                        variant={['label-stack', 'label-bold', 'text-area']}
+                      <TextArea
+                        variant={['label-stack', 'label-bold']}
                         rows={3}
                         cols={100}
                         value={comments}

@@ -4,6 +4,7 @@ import Dialog from "@/components/Library/Dialog";
 import Input from "@/components/Library/Input";
 import Select from "@/components/Library/Select/Select";
 import { getCustomerById, getCustomers } from "@/scripts/services/customerService";
+import TextArea from "@/components/Library/TextArea";
 
 interface Props {
   open: boolean
@@ -86,8 +87,8 @@ export default function EditMapLocationDialog({ open, setOpen, data, onSubmit }:
           <option>customer</option>
           <option>vendor</option>
         </Select>
-        <Input
-          variant={['label-bold', 'text-area']}
+        <TextArea
+          variant={['label-bold']}
           label="Notes"
           value={notes}
           onChange={(e: any) => setNotes(e.target.value)}

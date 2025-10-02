@@ -5,6 +5,7 @@ import Button from "../../Library/Button";
 import { useAtom } from "jotai";
 import { alertsAtom, userAtom } from "@/scripts/atoms/state";
 import { editAlert, getAlerts } from "@/scripts/services/alertsService";
+import TextArea from "@/components/Library/TextArea";
 
 interface Props {
   open: boolean
@@ -73,9 +74,9 @@ export default function EditAlertDialog({ open, setOpen, alert }: Props) {
           required
         />
 
-        <Input
+        <TextArea
           label="Note"
-          variant={['label-stack', 'label-bold', 'text-area']}
+          variant={['label-stack', 'label-bold']}
           rows={5}
           cols={100}
           value={note}

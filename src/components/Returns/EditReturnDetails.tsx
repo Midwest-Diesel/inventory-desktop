@@ -12,6 +12,7 @@ import UserSelect from "../Library/Select/UserSelect";
 import { getCustomerByName } from "@/scripts/services/customerService";
 import { ask } from "@/scripts/config/tauri";
 import CustomerDropdown from "../Library/Dropdown/CustomerDropdown";
+import TextArea from "../Library/TextArea";
 
 interface Props {
   returnData: Return
@@ -221,8 +222,8 @@ export default function EditReturnDetails({ returnData, setReturn, setIsEditing 
                   <tr>
                     <th>Return Notes</th>
                     <td>
-                      <Input
-                        variant={['label-stack', 'label-bold', 'text-area']}
+                      <TextArea
+                        variant={['label-stack', 'label-bold']}
                         rows={5}
                         cols={100}
                         value={returnNotes}
@@ -233,8 +234,8 @@ export default function EditReturnDetails({ returnData, setReturn, setIsEditing 
                   <tr>
                     <th>Return Reason</th>
                     <td>
-                      <Input
-                        variant={['label-stack', 'label-bold', 'text-area']}
+                      <TextArea
+                        variant={['label-stack', 'label-bold']}
                         rows={5}
                         cols={100}
                         value={returnReason}

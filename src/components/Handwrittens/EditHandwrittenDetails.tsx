@@ -32,6 +32,7 @@ import { getAltShipByCustomerId } from "@/scripts/services/altShipService";
 import AltShipDialog from "../Dialogs/handwrittens/AltShipDialog";
 import { usePrintQue } from "@/hooks/usePrintQue";
 import { useQuery } from "@tanstack/react-query";
+import TextArea from "../Library/TextArea";
 
 interface Props {
   handwritten: Handwritten
@@ -1294,10 +1295,10 @@ export default function EditHandwrittenDetails({
 
               <GridItem variant={['low-opacity-bg']} colStart={1} colEnd={7}>
                 <div className="handwritten-details__shipping-notes">
-                  <Input
+                  <TextArea
                     style={{ maxWidth: 'none' }}
                     label="Shipping Notes"
-                    variant={['label-stack', 'label-bold', 'text-area', 'label-full-width']}
+                    variant={['label-stack', 'label-bold', 'label-full-width']}
                     rows={5}
                     value={shippingNotes}
                     onChange={(e: any) => setShippingNotes(e.target.value)}
@@ -1364,10 +1365,10 @@ export default function EditHandwrittenDetails({
 
               <GridItem variant={['low-opacity-bg']} colStart={7} colEnd={12} breakpoints={[{width: 1500, colStart: 1, colEnd: 5}]}>
                 <div>
-                  <Input
+                  <TextArea
                     style={{ maxWidth: 'none' }}
                     label="Order Notes"
-                    variant={['label-stack', 'label-bold', 'text-area']}
+                    variant={['label-stack', 'label-bold']}
                     rows={5}
                     maxLength={245}
                     value={orderNotes}
