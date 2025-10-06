@@ -33,7 +33,15 @@ export default function CustomerSearch({ selectedCustomer, setSelectedCustomer, 
 
   const handleAddCustomer = async () => {
     const name = prompt('Enter customer name');
-    if (!name) return;
+    if (!name) {
+      alert('Name cannot be empty');
+      return;
+    }
+    const existingCustomer = await getCustomerByName(name);
+    if (existingCustomer) {
+      alert('Customer already exists');
+      return;
+    }
     await addCustomer(name);
     const res = await getCustomerByName(name);
     if (!res) {
