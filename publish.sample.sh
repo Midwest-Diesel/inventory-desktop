@@ -11,7 +11,7 @@ version=$(jq -r '.package.version' src-tauri/tauri.conf.json)
 bundle_dir="src-tauri/target/release/bundle/nsis"
 signature_file="$bundle_dir/Inventory_${version}_x64-setup.nsis.zip.sig"
 zip_file="$bundle_dir/Inventory_${version}_x64-setup.nsis.zip"
-latest_json="latest.json"
+latest_json="$bundle_dir/latest.json"
 
 # Copy signature content
 if [ -f "$signature_file" ]; then
@@ -42,13 +42,13 @@ echo "latest.json updated with version $version."
 
 TAG="v$version"
 TITLE="v$version"
-BODY="Release for version $version"
+BODY="$notes"
 
 # Create the release
 response=$(curl -s -X POST "https://api.github.com/repos/$REPO/releases" \
--H "Authorization: token $GITHUB_TOKEN" \
--H "Accept: application/vnd.github.v3+json" \
--d @- <<EOF
+  -H "Authorization: token $GITHUB_TOKEN" \
+  -H "Accept: application/vnd.github.v3+json" \
+  -d @- <<EOF
 {
   "tag_name": "$TAG",
   "name": "$TITLE",
@@ -69,7 +69,6 @@ if [ "$upload_url" != "null" ]; then
   "$upload_url?name=$(basename "$zip_file")"
 else
   echo "Failed to create release: $response"
-  exit 1
 fi
 
 if [ -d "$bundle_dir" ]; then
