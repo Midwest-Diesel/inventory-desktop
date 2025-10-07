@@ -526,7 +526,7 @@ async fn download_update() -> Result<(), Box<dyn std::error::Error>> {
 
   let (product_name, update_json_url, install_dir) = if exe_name.contains("Staging") {
     ("Inventory-Staging",
-      "https://raw.githubusercontent.com/Midwest-Diesel/inventory-desktop/refs/heads/staging/latest.staging.json",
+      "https://raw.githubusercontent.com/Midwest-Diesel/inventory-desktop/refs/heads/main/latest.staging.json",
       r"C:\MWD\staging")
   } else {
     ("Inventory",
