@@ -14,9 +14,11 @@ interface Props {
 export function Layout({ children, title }: Props) {
   const [user] = useAtom<User>(userAtom);
   const [alerts, setAlerts] = useAtom<Alert[]>(selectedAlertsAtom);
+  const isStaging = import.meta.env.TAURI_DEBUG === 'true';
+  const baseTitle = isStaging ? 'Inventory (staging)' : 'Inventory';
 
   useEffect(() => {
-    document.title = title ? `${title} | Inventory` : 'Inventory';
+    document.title = title ? `${title} | ${baseTitle}` : baseTitle;
 
     document.addEventListener('wheel', (event: any) => {
       if (event.target.type === 'number') {

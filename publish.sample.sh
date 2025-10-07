@@ -2,6 +2,8 @@
 
 export TAURI_PRIVATE_KEY="PATH TO KEY"
 export TAURI_KEY_PASSWORD=""
+GITHUB_TOKEN="GITHUB PERSONAL ACCESS TOKEN"
+REPO="Midwest-Diesel/inventory-desktop"
 
 npm run tauri build
 version=$(jq -r '.package.version' src-tauri/tauri.conf.json)
@@ -38,9 +40,6 @@ jq --arg version "$version" \
 
 echo "latest.json updated with version $version."
 
-
-GITHUB_TOKEN="GITHUB PERSONAL ACCESS TOKEN"
-REPO="Midwest-Diesel/inventory-desktop"
 TAG="v$version"
 TITLE="v$version"
 BODY="Release for version $version"

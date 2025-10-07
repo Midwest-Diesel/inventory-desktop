@@ -24,7 +24,8 @@
     "test:e2e": "playwright test --workers 1 && rm -rf playwright-report ./test-results",
     "test:e2e:spec": "rm -rf playwright-report ./test-results && node src/tests/testSpec.mjs",
     "test:e2e:ui": "playwright test --workers 1 --ui && rm -rf playwright-report ./test-results",
-    "publish": "sh ./publish.sh"
+    "publish": "sh ./publish.sh",
+    "publish:staging": "sh ./publish.staging.sh"
   },
   "dependencies": {
     "@azure/msal-browser": "^3.23.0",

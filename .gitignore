@@ -8,6 +8,7 @@ next-env.d.ts
 /cypress/screenshots
 /build
 publish.sh
+publish.staging.sh
 /test-results/
 /playwright-report/
 /blob-report/

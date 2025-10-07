@@ -8,8 +8,8 @@
     "withGlobalTauri": true
   },
   "package": {
-    "productName": "Inventory",
-    "version": "0.29.16"
+    "productName": "Inventory-Staging",
+    "version": "0.29.15"
   },
   "tauri": {
     "allowlist": {
@@ -30,18 +30,16 @@
       "active": true,
       "category": "DeveloperTool",
       "copyright": "",
-      "deb": {
-        "depends": []
-      },
+      "deb": { "depends": [] },
       "externalBin": [],
       "icon": [
-        "icons/release/32x32.png",
-        "icons/release/128x128.png",
-        "icons/release/128x128@2x.png",
-        "icons/release/icon.icns",
-        "icons/release/icon.ico"
+        "icons/debug/32x32.png",
+        "icons/debug/128x128.png",
+        "icons/debug/128x128@2x.png",
+        "icons/debug/icon.icns",
+        "icons/debug/icon.ico"
       ],
-      "identifier": "com.tauri.mwd-inventory",
+      "identifier": "com.tauri.mwd-inventory-staging",
       "longDescription": "",
       "macOS": {
         "entitlements": null,
@@ -70,7 +68,7 @@
       "active": true,
       "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEM3OTcxNDU2QTQ1OEI3NUEKUldSYXQxaWtWaFNYeDgrRWY1REMraHdSanJsMGdWSWZ5OHdNdHJRZXZjZTV0TUczdld5YTlVOGwK",
       "endpoints": [
-        "https://raw.githubusercontent.com/Midwest-Diesel/inventory-desktop/refs/heads/main/latest.json"
+        "https://raw.githubusercontent.com/Midwest-Diesel/inventory-desktop/refs/heads/staging/latest.staging.json"
       ],
       "dialog": false,
       "windows": {
@@ -82,7 +80,7 @@
         "fullscreen": false,
         "height": 800,
         "resizable": true,
-        "title": "Inventory",
+        "title": "Inventory (Staging)",
         "width": 1500,
         "maximized": true
       }
