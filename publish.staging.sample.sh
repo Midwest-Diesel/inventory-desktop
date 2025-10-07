@@ -36,6 +36,17 @@ jq --arg version "$version" \
     .pub_date = $pub_date' \
    "$latest_json" > tmp.json && mv tmp.json "$latest_json"
 
+# Delete any existing staging release
+existing_staging_ids=$(curl -s -H "Authorization: token $GITHUB_TOKEN" \
+  "https://api.github.com/repos/$REPO/releases" \
+  | jq -r '.[] | select(.tag_name | contains("-staging")) | .id')
+
+for release_id in $existing_staging_ids; do
+  echo "Deleting previous staging release (ID $release_id)..."
+  curl -s -X DELETE -H "Authorization: token $GITHUB_TOKEN" \
+    "https://api.github.com/repos/$REPO/releases/$release_id"
+done
+
 TAG="v${version}-staging"
 TITLE="Staging v${version}"
 BODY=""
