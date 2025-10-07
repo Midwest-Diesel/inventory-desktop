@@ -488,6 +488,7 @@ fn install_update() {
         .to_string();
 
       let product_name = if exe_name.contains("Staging") {"Inventory-Staging"} else {"Inventory"};
+      let install_dir = if product_name.contains("Staging") {r"C:\MWD\staging"} else {r"C:\MWD"};
       let batch_script = format!(r#"
       @echo off
       echo Installing update...
@@ -497,7 +498,7 @@ fn install_update() {
       echo Training AI...
       "%SystemRoot%\\System32\\timeout.exe" /T 1 /NOBREAK > NUL
       taskkill /F /IM {product_name}.exe > NUL 2>&1
-      start "" "C:\\MWD\\{product_name}.exe"
+      start "" "{install_dir}\{product_name}.exe"
       del "%~f0" & exit
       "#);
 
@@ -505,8 +506,8 @@ fn install_update() {
       std::fs::write(script_path, batch_script).unwrap();
 
       let _ = Command::new("cmd.exe")
-          .args(["/C", script_path])
-          .spawn();
+        .args(["/C", script_path])
+        .spawn();
 
       std::process::exit(0);
     }
@@ -523,10 +524,14 @@ async fn download_update() -> Result<(), Box<dyn std::error::Error>> {
     .to_string_lossy()
     .to_string();
 
-  let (product_name, update_json_url) = if exe_name.contains("Staging") {
-    ("Inventory-Staging", "https://raw.githubusercontent.com/Midwest-Diesel/inventory-desktop/refs/heads/staging/latest.staging.json")
+  let (product_name, update_json_url, install_dir) = if exe_name.contains("Staging") {
+    ("Inventory-Staging",
+      "https://raw.githubusercontent.com/Midwest-Diesel/inventory-desktop/refs/heads/staging/latest.staging.json",
+      r"C:\MWD\staging")
   } else {
-    ("Inventory", "https://raw.githubusercontent.com/Midwest-Diesel/inventory-desktop/refs/heads/main/latest.json")
+    ("Inventory",
+      "https://raw.githubusercontent.com/Midwest-Diesel/inventory-desktop/refs/heads/main/latest.json",
+      r"C:\MWD")
   };
 
   remove_file("C:/mwd/scripts/launch_test.vbs").unwrap();
@@ -569,7 +574,7 @@ async fn download_update() -> Result<(), Box<dyn std::error::Error>> {
 
   let installer_path = format!("C:/MWD/updates/{}_{}_x64-setup.exe", product_name, version_file);
   let _ = Command::new(installer_path)
-    .arg("/S")
+    .args(["/S", &format!("/D={}", install_dir)])
     .spawn()?;
   println!("Installer executed.");
   Ok(())
