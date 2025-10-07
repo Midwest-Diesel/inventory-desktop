@@ -538,13 +538,13 @@ async fn download_update() -> Result<(), Box<dyn std::error::Error>> {
     .json::<LatestVersionInfo>()
     .await?;
 
-  let version = res.version.trim_start_matches('v').replace("-staging", "");
+  let version = res.version.trim_start_matches('v');
   let url = format!(
     "https://github.com/Midwest-Diesel/inventory-desktop/releases/download/v{}/{}_{}_x64-setup.nsis.zip",
     version, product_name, version
   );
   let response = client.get(url).send().await?;
-  let zip_path = format!("C:/MWD/updates/Inventory_{}_x64-setup.nsis.zip", version);
+  let zip_path = format!("C:/MWD/updates/{}_{}_x64-setup.nsis.zip", product_name, version);
   let mut dest = File::create(&zip_path)?;
   copy(&mut response.bytes().await?.as_ref(), &mut dest)?;
   println!("Update downloaded successfully.");
@@ -566,7 +566,7 @@ async fn download_update() -> Result<(), Box<dyn std::error::Error>> {
   }
   println!("Update extracted successfully.");
 
-  let installer_path = format!("C:/MWD/updates/Inventory_{}_x64-setup.exe", version);
+  let installer_path = format!("C:/MWD/updates/{}_{}_x64-setup.exe", product_name, version);
   let _ = Command::new(installer_path)
     .arg("/S")
     .spawn()?;
