@@ -480,7 +480,14 @@ fn install_update() {
     } else {
       println!("Update successful, restarting app...");
       io::stdout().flush().unwrap();
-      let product_name = if cfg!(feature = "staging") { "Inventory-Staging" } else { "Inventory" };
+      let exe_name = env::current_exe()
+        .unwrap()
+        .file_name()
+        .unwrap()
+        .to_string_lossy()
+        .to_string();
+
+      let product_name = if exe_name.contains("Staging") {"Inventory-Staging"} else {"Inventory"};
       let batch_script = format!(r#"
       @echo off
       echo Installing update...
@@ -509,11 +516,17 @@ fn install_update() {
 }
 
 async fn download_update() -> Result<(), Box<dyn std::error::Error>> {
-  let product_name = if cfg!(feature = "staging") { "Inventory-Staging" } else { "Inventory" };
-  let update_json_url = if cfg!(feature = "staging") {
-    "https://raw.githubusercontent.com/Midwest-Diesel/inventory-desktop/refs/heads/staging/latest.staging.json"
+  let exe_name = env::current_exe()
+    .unwrap()
+    .file_name()
+    .unwrap()
+    .to_string_lossy()
+    .to_string();
+
+  let (product_name, update_json_url) = if exe_name.contains("Staging") {
+    ("Inventory-Staging", "https://raw.githubusercontent.com/Midwest-Diesel/inventory-desktop/refs/heads/staging/latest.staging.json")
   } else {
-    "https://raw.githubusercontent.com/Midwest-Diesel/inventory-desktop/refs/heads/main/latest.json"
+    ("Inventory", "https://raw.githubusercontent.com/Midwest-Diesel/inventory-desktop/refs/heads/main/latest.json")
   };
 
   remove_file("C:/mwd/scripts/launch_test.vbs").unwrap();
