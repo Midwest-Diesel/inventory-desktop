@@ -9,7 +9,7 @@
   },
   "package": {
     "productName": "Inventory-Staging",
-    "version": "0.29.18"
+    "version": "0.29.19"
   },
   "tauri": {
     "allowlist": {
@@ -79,7 +79,7 @@
       "active": true,
       "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEM3OTcxNDU2QTQ1OEI3NUEKUldSYXQxaWtWaFNYeDgrRWY1REMraHdSanJsMGdWSWZ5OHdNdHJRZXZjZTV0TUczdld5YTlVOGwK",
       "endpoints": [
-        "https://raw.githubusercontent.com/Midwest-Diesel/inventory-desktop/refs/heads/staging/latest.staging.json"
+        "https://raw.githubusercontent.com/Midwest-Diesel/inventory-desktop/refs/heads/main/latest.staging.json"
       ],
       "dialog": false,
       "windows": {
