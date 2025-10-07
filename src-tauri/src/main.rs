@@ -480,8 +480,8 @@ fn install_update() {
     } else {
       println!("Update successful, restarting app...");
       io::stdout().flush().unwrap();
-
-      let batch_script = r#"
+      let product_name = if cfg!(feature = "staging") { "Inventory-Staging" } else { "Inventory" };
+      let batch_script = format!(r#"
       @echo off
       echo Installing update...
       "%SystemRoot%\\System32\\timeout.exe" /T 1 /NOBREAK > NUL
@@ -489,10 +489,10 @@ fn install_update() {
       "%SystemRoot%\\System32\\timeout.exe" /T 1 /NOBREAK > NUL
       echo Training AI...
       "%SystemRoot%\\System32\\timeout.exe" /T 1 /NOBREAK > NUL
-      taskkill /F /IM Inventory.exe > NUL 2>&1
-      start "" "C:\\MWD\\Inventory.exe"
+      taskkill /F /IM {product_name}.exe > NUL 2>&1
+      start "" "C:\\MWD\\{product_name}.exe"
       del "%~f0" & exit
-      "#;
+      "#);
 
       let script_path = "C:\\MWD\\updates\\restart_app.bat";
       std::fs::write(script_path, batch_script).unwrap();
@@ -509,21 +509,27 @@ fn install_update() {
 }
 
 async fn download_update() -> Result<(), Box<dyn std::error::Error>> {
+  let product_name = if cfg!(feature = "staging") { "Inventory-Staging" } else { "Inventory" };
+  let update_json_url = if cfg!(feature = "staging") {
+    "https://raw.githubusercontent.com/Midwest-Diesel/inventory-desktop/refs/heads/staging/latest.staging.json"
+  } else {
+    "https://raw.githubusercontent.com/Midwest-Diesel/inventory-desktop/refs/heads/main/latest.json"
+  };
+
   remove_file("C:/mwd/scripts/launch_test.vbs").unwrap();
   let client = Client::new();
   let res = client
-    .get("https://raw.githubusercontent.com/Midwest-Diesel/inventory-desktop/main/latest.json")
+    .get(update_json_url)
     .send()
     .await?
     .json::<LatestVersionInfo>()
     .await?;
-  let version = res.version.trim_start_matches('v').to_string();
 
+  let version = res.version.trim_start_matches('v').replace("-staging", "");
   let url = format!(
-    "https://github.com/Midwest-Diesel/inventory-desktop/releases/download/v{}/Inventory_{}_x64-setup.nsis.zip",
-    version, version
+    "https://github.com/Midwest-Diesel/inventory-desktop/releases/download/v{}/{}_{}_x64-setup.nsis.zip",
+    version, product_name, version
   );
-  let client = Client::new();
   let response = client.get(url).send().await?;
   let zip_path = format!("C:/MWD/updates/Inventory_{}_x64-setup.nsis.zip", version);
   let mut dest = File::create(&zip_path)?;
