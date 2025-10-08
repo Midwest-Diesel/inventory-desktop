@@ -8,11 +8,10 @@ import { getAutofillEngine } from "@/scripts/services/enginesService";
 import { deleteEngineAddOn, editEngineAddOnPrintStatus } from "@/scripts/services/engineAddOnsService";
 import { useAtom } from "jotai";
 import { engineAddOnsAtom } from "@/scripts/atoms/state";
-import { formatDate } from "@/scripts/tools/stringUtils";
 import VendorSelect from "../Library/Select/VendorSelect";
-import { getEngineImages } from "@/scripts/services/imagesService";
 import { ask } from "@/scripts/config/tauri";
 import { usePrintQue } from "@/hooks/usePrintQue";
+import { formatDate } from "@/scripts/tools/stringUtils";
 
 interface Props {
   addOn: EngineAddOn
@@ -87,23 +86,27 @@ export default function ShopEngineAddOnRow({ addOn, handleDuplicateAddOn, onSave
   };
 
   const handlePrint = async () => {
+    if (!addOn.engineNum) {
+      alert('Engine Num cannot be empty');
+      return;
+    }
+
     await onSave();
     await editEngineAddOnPrintStatus(addOn.id, true);
-    const pictures = await getEngineImages(addOn.engineNum);
     for (let i = 0; i < printQty; i++) {
       const args = {
-        stockNum: addOn.engineNum?.toString() ?? '',
-        model: addOn.model ?? '',
-        serialNum: addOn.serialNum ?? '',
-        hp: addOn.hp ?? '',
+        date: formatDate(addOn.entryDate),
         location: addOn.location ?? '',
-        remarks: addOn.notes ?? '',
-        date: formatDate(addOn.entryDate) ?? '',
-        partNum: addOn.arrNum ?? '',
-        rating: '0',
-        hasPictures: pictures.length > 0
+        serialNum: addOn.serialNum ?? '',
+        model: addOn.model ?? '',
+        arrNum: addOn.arrNum ?? '',
+        horsePower: addOn.hp ?? '',
+        comments: addOn.notes ?? '',
+        purchasedFrom: addOn.purchasedFrom ?? '',
+        currentStatus: addOn.currentStatus ?? '',
+        stockNum: addOn.engineNum.toString()
       };
-      addToQue('partTag', 'print_part_tag', args, '1500px', '1000px');
+      addToQue('engineTag', 'print_engine_tag', args, '700px', '1500px');
     }
     printQue();
   };

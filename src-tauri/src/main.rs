@@ -398,6 +398,7 @@ async fn main() {
       print_ci,
       print_coo,
       print_part_tag,
+      print_engine_tag,
       print_return,
       print_warranty,
       print_packing_slip,
@@ -1615,6 +1616,51 @@ async fn print_part_tag(imageData: String) -> Result<(), String> {
       &rotated_img,
       rotated_img.width() * 2,
       rotated_img.height() * 2,
+      FilterType::Lanczos3,
+    );
+
+    {
+      let mut file = File::create(file_path).map_err(|e| e.to_string())?;
+      upscaled_img.write_to(&mut file, ImageOutputFormat::Png).map_err(|e| e.to_string())?;
+    }
+
+    Command::new("mspaint")
+      .current_dir("C:/mwd/scripts/screenshots")
+      .args([file_path, "/pt", &printer])
+      .output()
+      .map_err(|e| e.to_string())?;
+
+    Ok(())
+  }).await;
+  res.unwrap()
+}
+
+#[tauri::command]
+async fn print_engine_tag(imageData: String) -> Result<(), String> {
+  if let Ok(val) = env::var("DISABLE_PRINTING") {
+    if val == "TRUE" { return Ok(()) }
+  }
+
+  let res = tauri::async_runtime::spawn_blocking(move || {
+    let data = decode(imageData.split(',').nth(1).unwrap()).map_err(|e| e.to_string())?;
+    let file_path = "C:/mwd/scripts/screenshots/engine_tag.png";
+    let printers = get_available_printers();
+    let printer = if printers.contains(&PART_TAG_PRINTER.to_string()) {
+      PART_TAG_PRINTER.to_string()
+    } else {
+      format!("\\\\DESKTOP-NR6SQFE\\{}", PART_TAG_PRINTER)
+    };
+
+    let img = ImageReader::new(Cursor::new(&data))
+      .with_guessed_format()
+      .map_err(|e| e.to_string())?
+      .decode()
+      .map_err(|e| e.to_string())?;
+
+    let upscaled_img = image::imageops::resize(
+      &img,
+      img.width() * 2,
+      img.height() * 2,
       FilterType::Lanczos3,
     );
 

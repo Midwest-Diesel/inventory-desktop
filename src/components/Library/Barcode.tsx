@@ -1,8 +1,14 @@
 import { useEffect, useRef } from 'react';
 import JsBarcode from 'jsbarcode';
 
+interface Props {
+  value: string
+  width?: number
+  height?: number
+}
 
-export default function Barcode({ value }: { value: string }) {
+
+export default function Barcode({ value, width = 3, height = 180 }: Props) {
   const svgRef = useRef<SVGSVGElement>(null);
 
   useEffect(() => {
@@ -11,8 +17,8 @@ export default function Barcode({ value }: { value: string }) {
         format: 'CODE39',
         displayValue: false,
         margin: 0,
-        height: 180,
-        width: 3
+        height,
+        width
       });
     }
   }, [value]);
