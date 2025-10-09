@@ -15,6 +15,7 @@ import { toPng } from "html-to-image";
 import { useEffect, useRef, useState } from "react";
 import PartTagUP from "@/components/PrintableComponents/PartTagUP";
 import EngineTag from "@/components/PrintableComponents/EngineTag";
+import EngineChecklist from "@/components/PrintableComponents/EngineChecklist";
 
 
 export default function Print() {
@@ -57,6 +58,7 @@ export default function Print() {
       { activeSheet === 'partTag' && <PartTag data={data} /> }
       { activeSheet === 'partTagUP' && <PartTagUP data={data} /> }
       { activeSheet === 'engineTag' && <EngineTag data={data} /> }
+      { activeSheet === 'engineChecklist' && <EngineChecklist /> }
       { activeSheet === 'handwrittenAcct' && <HandwrittenAccountingTemplate data={data} /> }
       { activeSheet === 'handwrittenShip' && <HandwrittenShippingTemplate data={data} /> }
       { activeSheet === 'handwrittenCore' && <HandwrittenCoreTemplate data={data} /> }

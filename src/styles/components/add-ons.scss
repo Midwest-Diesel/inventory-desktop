@@ -1,6 +1,12 @@
 .add-ons {
   position: relative;
 
+  &__top-buttons {
+    display: flex;
+    gap: 0.3rem;
+    margin-bottom: 0.5rem;
+  }
+
   &__list {
     display: flex;
     flex-direction: column;
