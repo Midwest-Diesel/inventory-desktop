@@ -1,6 +1,7 @@
 import ShopEngineAddOnRow from "@/components/AddOns/ShopEngineAddonRow";
 import Button from "@/components/Library/Button";
 import { PreventNavigation } from "@/components/PreventNavigation";
+import { usePrintQue } from "@/hooks/usePrintQue";
 import { engineAddOnsAtom } from "@/scripts/atoms/state";
 import { supabase } from "@/scripts/config/supabase";
 import { addEngineAddOn, editEngineAddOn, getAllEngineAddOns } from "@/scripts/services/engineAddOnsService";
@@ -14,6 +15,7 @@ export default function ShopEngineAddOnsContainer() {
   const [prevAddons, setPrevAddons] = useState<EngineAddOn[]>([]);
   const [savedBtnText, setSavedBtnText] = useState('Save');
   const [shouldPreventLeave, setShouldPreventLeave] = useState(false);
+  const { addToQue, printQue } = usePrintQue();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -37,11 +39,11 @@ export default function ShopEngineAddOnsContainer() {
 
   const refreshAddOnsInsert = (e: RealtimePostgresInsertPayload<EngineAddOn>) => {
     setAddons((prev) => {
-      if (prev.some(a => a.id === e.new.id)) return prev;
+      if (prev.some((a) => a.id === e.new.id)) return prev;
       return [e.new, ...prev];
     });
     setPrevAddons((prev) => {
-      if (prev.some(a => a.id === e.new.id)) return prev;
+      if (prev.some((a) => a.id === e.new.id)) return prev;
       return [e.new, ...prev];
     });
   };
@@ -82,6 +84,11 @@ export default function ShopEngineAddOnsContainer() {
     setTimeout(() => setSavedBtnText('Save'), 1000);
   };
 
+  const handlePrintChecklist = () => {
+    addToQue('engineChecklist', 'print_engine_checklist', null, '1500px', '1000px');
+    printQue();
+  };
+
 
   return (
     <>
@@ -89,12 +96,20 @@ export default function ShopEngineAddOnsContainer() {
 
       <div className="add-ons">
         <h1>Shop Engine Add Ons</h1>
-        <Button
-          variant={['fit']}
-          onClick={handleNewAddOn}
-        >
-          New Engine
-        </Button>
+        <div className="add-ons__top-buttons">
+          <Button
+            variant={['fit']}
+            onClick={handleNewAddOn}
+          >
+            New Engine
+          </Button>
+          <Button
+            variant={['fit']}
+            onClick={handlePrintChecklist}
+          >
+            Print Checklist
+          </Button>
+        </div>
 
         <form onSubmit={handleEditAddOns} onChange={() => setShouldPreventLeave(true)}>
           <div className="header__btn-container">

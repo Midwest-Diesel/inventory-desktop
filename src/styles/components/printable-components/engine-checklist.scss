@@ -1,0 +1,25 @@
+.engine-checklist {
+  font-size: 45px;
+  margin-top: 1rem;
+
+  thead {
+    padding-bottom: 1rem;
+
+    th {
+      text-decoration: underline;
+    }
+  }
+
+  th {
+    font-weight: bold;
+  }
+
+  td {
+    padding: 1.2rem 4rem;
+    
+    span {
+      border: 2px solid black;
+      padding: 0.3rem 3.8rem;
+    }
+  }
+}

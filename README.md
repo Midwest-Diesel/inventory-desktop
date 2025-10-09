@@ -11,18 +11,23 @@ This application is currently only compatible with windows.
 - `git clone git@github.com:Midwest-Diesel/inventory-desktop.git`
 - `npm install`
 - Create *.env.production* and *.env.development* files
-- Create a *publish.sh* file
+- Create *publish.sh* and *publish.staging.sh* files
 - Run the following commands:
   - `chmod +x publish.sh`
   - `npm run tauri dev`
   - In a new terminal `npm run dev:test`
 
 ## Publish Changes
-- Change version inside of *src-tauri/tauri.conf.json*
-- `npm run publish`
-- Commit and push
+- Publish to staging:
+  - Change version inside of *src-tauri/tauri.staging.conf.json*
+  - `npm run publish:staging`
+  - Commit and push
+- Publish to production:
+  - Change version inside of *src-tauri/tauri.conf.json*
+  - `npm run publish`
+  - Commit and push
 
-Sometimes it can take 5 min for the update to propagate to production, if you push multiple updates in close proximity.
+Sometimes it can take 5 min for the update to propagate if you push multiple updates in close proximity.
 
 ## Testing
 Make sure you run `npm run dev:test` to host the test client.
