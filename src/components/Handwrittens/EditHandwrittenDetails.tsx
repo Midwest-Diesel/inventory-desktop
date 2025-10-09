@@ -252,7 +252,7 @@ export default function EditHandwrittenDetails({
           stockNum: item.stockNum,
           location: item.location,
           cost: item.stockNum ? Number(item.cost) : 0,
-          qty: item.stockNum ? Number(item.qty) : 0,
+          qty: Number(item.qty) ?? 1,
           partNum: item.partNum,
           desc: item.desc,
           unitPrice: Number(item.unitPrice),
@@ -1172,7 +1172,7 @@ export default function EditHandwrittenDetails({
                   </thead>
                   <tbody>
                     {handwrittenItems.map((item: HandwrittenItem, i: number) => {
-                      const isDisabled = item.desc === 'TAX' || item.partNum === 'FREIGHT' || handwritten.invoiceStatus === 'SENT TO ACCOUNTING';
+                      const isDisabled = item.desc === 'TAX' || handwritten.invoiceStatus === 'SENT TO ACCOUNTING';
                       return (
                         <tr key={i}>
                           <td>
