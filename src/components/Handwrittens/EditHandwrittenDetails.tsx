@@ -12,7 +12,7 @@ import Table from "../Library/Table";
 import CustomerDropdown from "../Library/Dropdown/CustomerDropdown";
 import { getCustomerById, getCustomerByName } from "@/scripts/services/customerService";
 import { getAllSources } from "@/scripts/services/sourcesService";
-import { deleteCoreByItemId, editCoreCharge, editCoreCustomer, getCoresByHandwrittenItem, searchCores } from "@/scripts/services/coresService";
+import { deleteCoreByItemId, editCoreCharge, editCoreCustomer, getCoresByHandwrittenItem } from "@/scripts/services/coresService";
 import ShippingListDialog from "../Dialogs/handwrittens/ShippingListDialog";
 import Checkbox from "../Library/Checkbox";
 import { PreventNavigation } from "../PreventNavigation";
@@ -254,7 +254,7 @@ export default function EditHandwrittenDetails({
           stockNum: item.stockNum,
           location: item.location,
           cost: item.stockNum ? Number(item.cost) : 0,
-          qty: Number(item.qty) ?? 1,
+          qty: Number(item.qty),
           partNum: item.partNum,
           desc: item.desc,
           unitPrice: Number(item.unitPrice),

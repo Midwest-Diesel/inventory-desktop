@@ -1,11 +1,9 @@
-import { cap, formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
+import { formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
 import Table from "../Library/Table";
 import Button from "../Library/Button";
-import { addHandwrittenItem, getHandwrittenById } from "@/scripts/services/handwrittensService";
-import { addCore } from "@/scripts/services/coresService";
+import { getHandwrittenById } from "@/scripts/services/handwrittensService";
 import HandwrittenChildrenDialog from "../Dialogs/handwrittens/HandwrittenChildrenDialog";
 import { useEffect, useState } from "react";
-import { ask } from "@/scripts/config/tauri";
 import { useAtom } from "jotai";
 import { quickPickItemIdAtom } from "@/scripts/atoms/state";
 import { addCoreCharge } from "@/scripts/logic/handwrittens";
