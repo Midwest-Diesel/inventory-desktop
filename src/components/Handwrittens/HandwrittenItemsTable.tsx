@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { ask } from "@/scripts/config/tauri";
 import { useAtom } from "jotai";
 import { quickPickItemIdAtom } from "@/scripts/atoms/state";
+import { addCoreCharge } from "@/scripts/logic/handwrittens";
 
 interface Props {
   className?: string
@@ -51,40 +52,7 @@ export default function HandwrittenItemsTable({ className, handwritten, setHandw
   const totalColorStyle = getInvoiceTotal() < 0 ? { color: 'var(--red-2)' } : '';
 
   const handleCoreCharge = async (item: HandwrittenItem) => {
-    if (!await ask('Are you sure you want to add a core charge?') || handwritten.invoiceStatus === 'SENT TO ACCOUNTING') return;
-    const newItem = {
-      handwrittenId: handwritten.id,
-      date: new Date(),
-      desc: item.desc,
-      partNum: 'CORE DEPOSIT',
-      stockNum: item.stockNum,
-      unitPrice: Number(item.unitPrice),
-      qty: Number(item.qty),
-      cost: 0.01,
-      location: 'CORE DEPOSIT',
-      partId: item.partId
-    };
-    const newItemId = await addHandwrittenItem(newItem);
-    
-    const priority = cap((prompt('Enter core priority', 'Low') || 'Low').toLowerCase());
-    const newCore = {
-      date: new Date(),
-      qty: item.qty,
-      partNum: item.partNum,
-      desc: item.desc,
-      unitPrice: item.unitPrice,
-      customerId: handwritten.customer.id,
-      partInvoiceId: item.handwrittenId,
-      handwrittenId: handwritten.id,
-      billToCompany: handwritten.billToCompany,
-      shipToCompany: handwritten.shipToCompany,
-      charge: item.unitPrice,
-      priority,
-      salesmanId: handwritten.soldById,
-      partId: item.partId,
-      handwrittenItemId: newItemId
-    } as any;
-    await addCore(newCore);
+    await addCoreCharge(handwritten, item);
     const res = await getHandwrittenById(handwritten.id);
     if (res) setHandwritten(res);
   };

@@ -88,6 +88,7 @@ export default function CoreCreditsDialog({ open, setOpen, cores, handwritten }:
         style={{ marginBottom: '0.3rem' }}
         onClick={handleCredit}
         disabled={inputCore !== null || selectedCores.length === 0}
+        type="button"
         data-testid="core-credit-submit-btn"
       >
         Credit

@@ -1,5 +1,5 @@
-import { errorAtom, sourcesAtom } from "@/scripts/atoms/state";
-import { addHandwrittenItem, deleteHandwrittenItem, editHandwritten, editHandwrittenItem, editHandwrittenTaxable, getHandwrittenEmails } from "@/scripts/services/handwrittensService";
+import { errorAtom, quickPickItemIdAtom, sourcesAtom } from "@/scripts/atoms/state";
+import { addHandwrittenItem, deleteHandwrittenItem, editHandwritten, editHandwrittenItem, editHandwrittenTaxable, getHandwrittenById, getHandwrittenEmails } from "@/scripts/services/handwrittensService";
 import { useAtom } from "jotai";
 import { FormEvent, Fragment, useEffect, useState } from "react";
 import GridItem from "../Library/Grid/GridItem";
@@ -12,7 +12,7 @@ import Table from "../Library/Table";
 import CustomerDropdown from "../Library/Dropdown/CustomerDropdown";
 import { getCustomerById, getCustomerByName } from "@/scripts/services/customerService";
 import { getAllSources } from "@/scripts/services/sourcesService";
-import { deleteCoreByItemId, editCoreCustomer } from "@/scripts/services/coresService";
+import { deleteCoreByItemId, editCoreCharge, editCoreCustomer, getCoresByHandwrittenItem, searchCores } from "@/scripts/services/coresService";
 import ShippingListDialog from "../Dialogs/handwrittens/ShippingListDialog";
 import Checkbox from "../Library/Checkbox";
 import { PreventNavigation } from "../PreventNavigation";
@@ -33,6 +33,7 @@ import AltShipDialog from "../Dialogs/handwrittens/AltShipDialog";
 import { usePrintQue } from "@/hooks/usePrintQue";
 import { useQuery } from "@tanstack/react-query";
 import TextArea from "../Library/TextArea";
+import { addCoreCharge } from "@/scripts/logic/handwrittens";
 
 interface Props {
   handwritten: Handwritten
@@ -82,6 +83,7 @@ export default function EditHandwrittenDetails({
 }: Props) {
   const { addToQue, printQue } = usePrintQue();
   const [sourcesData, setSourcesData] = useAtom<string[]>(sourcesAtom);
+  const [quickPickItemId, setQuickPickItemId] = useAtom<number>(quickPickItemIdAtom);
   const [, setError] = useAtom<string>(errorAtom);
   const [date, setDate] = useState<Date>(handwritten.date);
   const [poNum, setPoNum] = useState<string>(handwritten.poNum ?? '');
@@ -259,6 +261,12 @@ export default function EditHandwrittenDetails({
           date: item.date
         } as HandwrittenItem;
         await editHandwrittenItem(newItem);
+
+        // Edit core charge if item cost has changed
+        if (item.partNum?.includes('CORE DEPOSIT')) {
+          const cores = await getCoresByHandwrittenItem(item.id);
+          if (cores[0]?.charge !== Number(item.unitPrice)) await editCoreCharge(Number(cores[0]?.id), Number(item.unitPrice));
+        }
       }
     }
 
@@ -419,7 +427,7 @@ export default function EditHandwrittenDetails({
     printQue();
   };
 
-  const handleEditItem = (item: HandwrittenItem, i: number) => {
+  const handleEditItem = async (item: HandwrittenItem, i: number) => {
     const newItems = [...handwrittenItems];
     newItems[i] = item;
     setHandwrittenItems(newItems);
@@ -635,6 +643,21 @@ export default function EditHandwrittenDetails({
       const hasCore = handwrittenItems.some((item) => item.location === 'CORE DEPOSIT');
       await handlePrintCCLabel();
       await printHandwritten(hasCore, newInvoice);
+    }
+  };
+
+  const toggleQuickPick = (item: HandwrittenItem) => {
+    setQuickPickItemId(quickPickItemId ? 0 : item.id);
+  };
+
+  const handleCoreCharge = async (item: HandwrittenItem) => {
+    const created = await addCoreCharge(handwritten, item);
+    const res = await getHandwrittenById(handwritten.id);
+    if (!res) return;
+
+    const duplicate = handwrittenItems.some((h) => h.id === res.handwrittenItems[0].id);
+    if (created && !duplicate) {
+      setHandwrittenItems((prev) => [res.handwrittenItems[0], ...prev]);
     }
   };
 
@@ -1159,6 +1182,7 @@ export default function EditHandwrittenDetails({
                 <Table variant={['plain', 'edit-row-details']}>
                   <thead>
                     <tr>
+                      <th></th>
                       <th style={{ color: 'white' }}>Stock Number</th>
                       <th style={{ color: 'white' }}>Location</th>
                       <th style={{ color: 'white' }}>Cost</th>
@@ -1175,6 +1199,27 @@ export default function EditHandwrittenDetails({
                       const isDisabled = item.desc === 'TAX' || handwritten.invoiceStatus === 'SENT TO ACCOUNTING';
                       return (
                         <tr key={i}>
+                          <td>
+                            {!isDisabled && item.location && !item.location.includes('CORE DEPOSIT') && item.invoiceItemChildren.length === 0 &&
+                              <Button
+                                variant={['x-small']}
+                                onClick={() => handleCoreCharge(item)}
+                                data-testid="core-charge-btn"
+                                type="button"
+                              >
+                                Core Charge
+                              </Button>
+                            }
+                            {!isDisabled && item.invoiceItemChildren.some((i) => i.stockNum === 'In/Out') &&
+                              <Button
+                                variant={['x-small']}
+                                onClick={() => toggleQuickPick(item)}
+                                type="button"
+                              >
+                                { quickPickItemId > 0 ? 'Disable' : 'Enable' } Quick Pick
+                              </Button>
+                            }
+                          </td>
                           <td>
                             <Input
                               value={item.stockNum ?? ''}

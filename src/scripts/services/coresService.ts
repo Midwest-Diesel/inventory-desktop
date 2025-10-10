@@ -53,6 +53,17 @@ export const getCoreReturnsByCustomer = async (id: number): Promise<Core[]> => {
   }
 };
 
+export const getCoresByHandwrittenItem = async (id: number): Promise<Core[]> => {
+  try {
+    if (!id) return [];
+    const res = await api.get(`/api/cores/handwritten-item/${id}`);
+    return parseCoreDataRes(res.data) ?? [];
+  } catch (err) {
+    console.error(err);
+    return [];
+  }
+};
+
 // === POST routes === //
 
 export const addCore = async (core: Core) => {
@@ -76,6 +87,14 @@ export const removeQtyFromCore = async (core: Core, qtyRemoved: number) => {
 export const editCoreCustomer = async (handwrittenId: number, customerId: number | null) => {
   try {
     await api.patch('/api/cores/customer', { handwrittenId, customerId });
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+export const editCoreCharge = async (coreId: number, charge: number) => {
+  try {
+    await api.patch('/api/cores/charge', { coreId, charge });
   } catch (err) {
     console.error(err);
   }
