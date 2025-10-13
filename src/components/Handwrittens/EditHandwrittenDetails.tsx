@@ -189,7 +189,6 @@ export default function EditHandwrittenDetails({
       return;
     }
 
-    await handleAltShip();
     const newCustomer = await getCustomerByName(company);
     const newInvoice = {
       id: handwritten.id,
@@ -244,6 +243,18 @@ export default function EditHandwrittenDetails({
     setNewShippingListRow(newInvoice);
     await editHandwritten(newInvoice);
     await editCoreCustomer(handwritten.id, newCustomer?.id ?? null);
+
+    // Alt ship
+    if (
+      newInvoice.shipToAddress !== handwritten.shipToAddress ||
+      newInvoice.shipToAddress2 !== handwritten.shipToAddress2 ||
+      newInvoice.shipToCity !== handwritten.shipToCity ||
+      newInvoice.shipToState !== handwritten.shipToState ||
+      newInvoice.shipToZip !== handwritten.shipToZip ||
+      newInvoice.shipToCompany !== handwritten.shipToCompany
+    ) {
+      await handleAltShip();
+    }
 
     if (!arrayOfObjectsMatch(handwrittenItems, handwritten.handwrittenItems)) {
       for (let i = 0; i < handwrittenItems.length; i++) {
@@ -860,8 +871,8 @@ export default function EditHandwrittenDetails({
                         <Input
                           variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                           value={parseDateInputValue(date)}
-                          type="date"
                           onChange={(e: any) => setDate(new Date(e.target.value))}
+                          type="date"
                         />
                       </td>
                     </tr>
