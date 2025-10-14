@@ -1,7 +1,6 @@
 import { ask } from "../config/tauri";
 import { addCore } from "../services/coresService";
 import { addHandwrittenItem } from "../services/handwrittensService";
-import { cap } from "../tools/stringUtils";
 
 
 export const paymentTypes = ['Net 30', 'Wire Transfer', 'EBPP - Secure', 'Visa', 'Mastercard', 'AMEX', 'Discover', 'Comchek', 'T-Check', 'Check', 'Cash', 'Card on File', 'Net 10', 'No Charge'].sort();
@@ -22,7 +21,7 @@ export const addCoreCharge = async (handwritten: Handwritten, item: HandwrittenI
   };
   const newItemId = await addHandwrittenItem(newItem);
   
-  const priority = cap((prompt('Enter core priority', 'Low') || 'Low').toLowerCase());
+  const priority = await ask('Is this HIGH priority?') ? 'High' : 'Low';
   const newCore = {
     date: new Date(),
     qty: item.qty,
