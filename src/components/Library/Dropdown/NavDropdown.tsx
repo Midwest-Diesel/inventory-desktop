@@ -7,7 +7,7 @@ interface Props {
 }
 
 
-export default function NavDropdown({ children, className, label }: Props) {
+export default function NavDropdown({ children, className, label, ...props }: Props) {
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
@@ -26,7 +26,7 @@ export default function NavDropdown({ children, className, label }: Props) {
 
 
   return (
-    <div onClick={() => setIsOpen(!isOpen)} className={`nav-dropdown${className ? className : ''}`}>
+    <div onClick={() => setIsOpen(!isOpen)} className={`nav-dropdown${className ? className : ''}`} {...props}>
       <span className="nav-dropdown__label">{ label }</span>
       <div className="nav-dropdown__list" style={isOpen ? {} : { display: 'none' }}>
         <div className="nav-dropdown__list--container">

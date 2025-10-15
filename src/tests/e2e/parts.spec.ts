@@ -1,5 +1,5 @@
 import { test, expect, Dialog, Page } from '@playwright/test';
-import { altSearch, partSearch } from '../utils';
+import { altSearch, goto, partSearch } from '../utils';
 import { resetDb } from '../resetDatabase';
 
 const onAddAltPartsDialog = (dialog: Dialog) => dialog.accept('9N3242');
@@ -11,6 +11,7 @@ test.beforeEach(async ({ page }) => {
   await page.getByTestId('username').fill('bennett');
   await page.getByTestId('login-btn').click();
   await page.waitForSelector('.navbar');
+  await goto(page, '/');
 });
 
 
@@ -45,7 +46,7 @@ test.describe('Parts', () => {
     await addAltPart(page);
     await expect(page.getByTestId('alt-parts')).toHaveText('9N3240, 9N3242, 7L0406');
 
-    await page.goto('http://localhost:3001');
+    await goto(page, '/');
     await page.waitForLoadState('networkidle');
     await altSearch(page, { partNum: '7L0406' });
     await page.getByTestId('part-num-link').nth(2).click();
@@ -54,7 +55,7 @@ test.describe('Parts', () => {
 
   test('Remove altPart', async ({ page }) => {
     await addAltPart(page);
-    await page.goto('http://localhost:3001');
+    await goto(page, '/');
 
     await page.waitForLoadState('networkidle');
     await altSearch(page, { partNum: '9N3240' });
@@ -69,7 +70,7 @@ test.describe('Parts', () => {
     await page.waitForLoadState('networkidle');
     await expect(page.getByTestId('alt-parts')).toHaveText('9N3240');
 
-    await page.goto('http://localhost:3001');
+    await goto(page, '/');
     await page.waitForLoadState('networkidle');
     await altSearch(page, { partNum: '7L0406' });
     await page.getByTestId('part-num-link').first().click();

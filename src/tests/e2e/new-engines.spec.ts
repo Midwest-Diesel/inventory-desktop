@@ -1,12 +1,14 @@
 import { test, expect } from '@playwright/test';
 import { resetDb } from '../resetDatabase';
+import { goto } from '../utils';
 
 test.beforeEach(async ({ page }) => {
   await resetDb();
-  await page.goto('http://localhost:3001/engines/new-engine');
+  await page.goto('http://localhost:3001/');
   await page.getByTestId('username').fill('bennett');
   await page.getByTestId('login-btn').click();
   await page.waitForSelector('.navbar');
+  await goto(page, '/engines/new-engine');
   await page.getByTestId('model-btn').first().click();
 });
 
@@ -22,7 +24,7 @@ test.describe('Quotes', () => {
     await page.getByTestId('price').fill('100');
     await page.getByTestId('save-btn').click();
     await page.waitForLoadState('networkidle');
-    await page.goto('http://localhost:3001');
+    await goto(page, '/');
     await page.getByTestId('engine-quotes-btn').click();
     await expect(page.getByTestId('quote-stock-num').first()).toHaveText(stockNum!);
   });

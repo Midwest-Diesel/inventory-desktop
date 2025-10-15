@@ -1,13 +1,14 @@
 import { test, expect, Page } from '@playwright/test';
-import { altSearch } from '../utils';
+import { altSearch, goto } from '../utils';
 import { resetDb } from '../resetDatabase';
 
 test.beforeEach(async ({ page }) => {
   await resetDb();
-  await page.goto('http://localhost:3001/add-ons/shop/part');
+  await page.goto('http://localhost:3001/');
   await page.getByTestId('username').fill('bennett');
   await page.getByTestId('login-btn').click();
   await page.waitForSelector('.navbar');
+  await goto(page, '/add-ons/shop/part');
   page.on('dialog', (dialog) => dialog.accept());
 });
 
@@ -96,13 +97,13 @@ test.describe('Create addon and add to inventory', () => {
     await page.keyboard.down('Tab');
     await page.getByTestId('print-btn').first().click();
     await page.waitForLoadState('networkidle');
-    await page.goto('http://localhost:3001/add-ons/office/part');
+    await goto(page, '/add-ons/office/part');
     await expect(page.getByTestId('stock-num').first()).toHaveValue(formatDateStockNum('A'));
 
     // Add to inventory
     await page.getByTestId('add-to-inventory-btn').first().click();
     await page.waitForLoadState('networkidle');
-    await page.goto('http://localhost:3001');
+    await goto(page, '/');
 
     const stockNum = formatDateStockNum('A');
     await altSearch(page, { stockNum });

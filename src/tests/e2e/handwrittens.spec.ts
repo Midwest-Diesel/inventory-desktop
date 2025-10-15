@@ -1,6 +1,6 @@
 import { formatDate } from '@/scripts/tools/stringUtils';
 import { test, expect, Page } from '@playwright/test';
-import { altSearch } from '../utils';
+import { altSearch, goto } from '../utils';
 
 test.describe.configure({ mode: 'serial' });
 let page: Page;
@@ -12,10 +12,11 @@ let qty = 0;
 test.beforeAll(async ({ browser }) => {
   page = await browser.newPage();
   page.on('dialog', (dialog) => dialog.accept('confirm'));
-  await page.goto('http://localhost:3001/handwrittens');
+  await page.goto('http://localhost:3001/');
   await page.getByTestId('username').fill('bennett');
   await page.getByTestId('login-btn').click();
   await page.waitForSelector('.navbar');
+  await goto(page, '/handwrittens');
 });
 
 
@@ -27,7 +28,7 @@ test.describe('Basic Functionality', () => {
   });
 
   test('Create handwritten from customer', async () => {
-    await page.goto('http://localhost:3001');
+    await goto(page, '/');
     await page.getByTestId('customer-input').fill('ALT');
     await page.getByTestId('customer-search-btn').click();
     await page.getByTestId('customer-row').first().click();
@@ -53,7 +54,7 @@ test.describe('Basic Functionality', () => {
   });
 
   test('Create blank handwritten', async () => {
-    await page.goto('http://localhost:3001/handwrittens');
+    await goto(page, '/handwrittens');
     const prevId = await page.getByTestId('link').first().textContent() ?? '';
     await page.getByTestId('new-btn').click();
     await page.$('li').then((el) => el?.click());
@@ -118,7 +119,7 @@ test.describe('Basic Functionality', () => {
 
 test.describe('Handwritten items', () => {
   test('Add handwritten items', async () => {
-    await page.goto('http://localhost:3001');
+    await goto(page, '/');
     partNum = await page.getByTestId('part-num-link').nth(1).textContent() ?? '';
     stockNum = await page.getByTestId('stock-num').nth(1).textContent() ?? '';
     qty = Number(await page.getByTestId('qty').nth(1).textContent());
@@ -165,7 +166,7 @@ test.describe('Handwritten items', () => {
 
 test.describe('Cores', () => {
   test('Core charge', async () => {
-    await page.goto('http://localhost:3001/handwrittens');
+    await goto(page, '/handwrittens');
     await page.getByTestId('link').first().click();
     await page.getByTestId('save-btn').click();
     await page.getByTestId('no-changes-btn').click();
@@ -174,12 +175,12 @@ test.describe('Cores', () => {
     await expect(page.getByTestId('item-part-num').first()).toHaveText('CORE DEPOSIT');
     await expect(page.getByTestId('item-stock-num').first()).toHaveText(stockNum);
   
-    await page.goto('http://localhost:3001/cores');
+    await goto(page, '/cores');
     await expect(page.getByTestId('part-num').first()).toHaveText(partNum);
   });
 
   test('Core deposit', async () => {
-    await page.goto('http://localhost:3001/handwrittens');
+    await goto(page, '/handwrittens');
     await page.getByTestId('link').first().click();
     await page.getByTestId('save-btn').click();
     await page.getByTestId('no-changes-btn').click();
@@ -200,7 +201,7 @@ test.describe('Cores', () => {
 
 test.describe('Takeoffs', () => {
   test('Create date code stockNum after takeoff', async () => {
-    await page.goto('http://localhost:3001/handwrittens');
+    await goto(page, '/handwrittens');
     await page.getByTestId('link').nth(1).click();
     await page.getByTestId('save-btn').click();
     await page.getByTestId('no-changes-btn').click();
@@ -212,7 +213,7 @@ test.describe('Takeoffs', () => {
     await page.getByTestId('takeoff-submit-btn').click();
     await page.waitForTimeout(100);
 
-    await page.goto('http://localhost:3001');
+    await goto(page, '/');
     await altSearch(page, { stockNum });
     await expect(page.getByTestId('qty').first()).toHaveText(`${qty - 6}`);
     await altSearch(page, { stockNum: `${stockNum} (${formatDate(new Date())})` });
@@ -228,7 +229,7 @@ test.describe('Takeoffs', () => {
   });
 
   test('Complete normal takeoff', async () => {
-    await page.goto('http://localhost:3001/handwrittens');
+    await goto(page, '/handwrittens');
     await page.getByTestId('link').nth(2).click();
     await page.getByTestId('save-btn').click();
     await page.waitForTimeout(100);
@@ -240,7 +241,7 @@ test.describe('Takeoffs', () => {
     await page.getByTestId('takeoff-submit-btn').click();
     await page.waitForTimeout(100);
 
-    await page.goto('http://localhost:3001');
+    await goto(page, '/');
     await altSearch(page, { stockNum: stockNum2 });
     await expect(page.getByTestId('qty').first()).toHaveText('0');
     await expect(page.getByTestId('stock-num').first()).toHaveText(stockNum2);
@@ -257,7 +258,7 @@ test.describe('Takeoffs', () => {
 
 test.describe('SENT TO ACCOUNTING', () => {
   test('Prompt for promotional materials', async () => {
-    await page.goto('http://localhost:3001/handwrittens');
+    await goto(page, '/handwrittens');
     await page.getByTestId('link').nth(1).click();
     await page.getByTestId('item-cost').nth(1).fill('60');
     await page.getByTestId('sales-status').selectOption('SENT TO ACCOUNTING');
@@ -283,7 +284,7 @@ test.describe('SENT TO ACCOUNTING', () => {
 
 test.describe('Clean up', () => {
   test('Delete handwritten', async () => {
-    await page.goto('http://localhost:3001/handwrittens');
+    await goto(page, '/handwrittens');
     const oldIdLocator = page.getByTestId('link').first();
     await expect(oldIdLocator).toBeVisible();
     const oldId = await oldIdLocator.textContent();

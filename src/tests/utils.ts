@@ -14,6 +14,25 @@ interface SearchData {
 }
 
 
+let tabs: Tab[] = [{ id: 0, name: null, urlIndex: 0, history: [{name: 'Home', url: '/'}], selected: true }];
+export const goto = async (page: Page, url: string) => {
+  let selectedTab: Tab | undefined;
+  tabs = tabs.map((tab) => {
+    if (tab.selected) {
+      const newHistory = [...tab.history.slice(0, tab.urlIndex + 1), { name: url, url }];
+      selectedTab = { ...tab, history: newHistory, urlIndex: newHistory.length - 1 };
+      return selectedTab;
+    }
+    return tab;
+  });
+
+  await page.evaluate((tabs) => {
+    localStorage.setItem('tabs', JSON.stringify(tabs));
+  }, tabs);
+  await page.goto(`http://localhost:3001${url}`);
+  await page.waitForSelector('.navbar');
+};
+
 export const partSearch = async (page: Page, search: SearchData) => {
   await page.getByTestId('part-search-btn').click();
   const { partNum, stockNum, desc, location, qty, remarks, rating, purchFrom, serialNum, hp } = search;
