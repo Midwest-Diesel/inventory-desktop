@@ -3,12 +3,14 @@ import Pagination from "../../Library/Pagination";
 import Table from "../../Library/Table";
 import { useAtom } from "jotai";
 import { customersAtom, selectedCustomerAtom } from "@/scripts/atoms/state";
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useState } from "react";
 import Link from "../../Library/Link";
 import { getCustomerTypes, getSomeCustomers, searchCustomers } from "@/scripts/services/customerService";
 import Button from "@/components/Library/Button";
 import Input from "@/components/Library/Input";
 import Select from "@/components/Library/Select/Select";
+import { useQuery } from "@tanstack/react-query";
+import { isObjectNull } from "@/scripts/tools/utils";
 
 interface Props {
   open: boolean
@@ -17,15 +19,13 @@ interface Props {
 }
 
 
+const LIMIT = 25;
+
 export default function CustomerSearchDialog({ open, setOpen, searchTerm }: Props) {
   const [customersData, setCustomersData] = useAtom<Customer[]>(customersAtom);
-  const [searchedCustomers, setSearchedCustomers] = useState<Customer[]>([]);
   const [selectedCustomer, setSelectedCustomer] = useAtom<Customer>(selectedCustomerAtom);
-  const [pageCount, setPageCount] = useState(0);
-  const [customers, setCustomers] = useState<Customer[]>(customersData);
-  const [customerTypes, setCustomerTypes] = useState<string[]>([]);
-  const [page, setPage] = useState<number>(1);
-  const [isSearching, setIsSearching] = useState<boolean>(false);
+  const [page, setPage] = useState(1);
+  const [pageCount, setPageCount] = useState(1);
   const [name, setName] = useState(searchTerm);
   const [phone, setPhone] = useState('');
   const [state, setState] = useState('');
@@ -33,57 +33,43 @@ export default function CustomerSearchDialog({ open, setOpen, searchTerm }: Prop
   const [country, setCountry] = useState('');
   const [customerType, setCustomerType] = useState('');
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const res = await getSomeCustomers(1, 25);
-      setCustomersData(res.rows);
-      setPageCount(res.pageCount);
-      const types = await getCustomerTypes();
-      setCustomerTypes(types);
-    };
-    fetchData();
-  }, []);
+  const { data: customerTypes = [] } = useQuery<string[]>({
+    queryKey: ['customerTypes'],
+    queryFn: getCustomerTypes
+  });  
 
-  useEffect(() => {
-    const fetchData = async () => {
-      if (searchTerm && open) {
-        setIsSearching(true);
-        const results = await searchCustomers({ name: searchTerm, phone, state, zip, country, customerType });
-        setSearchedCustomers(results);
-        setPage(1);
+  const { data: customers = customersData, refetch } = useQuery<Customer[]>({
+    queryKey: ['customers', page, open, searchTerm],
+    queryFn: async () => {
+      if (isObjectNull({ name: name || searchTerm, phone, state, zip, country, customerType })) {
+        const res = await getSomeCustomers(page, LIMIT);
+        setCustomersData(res.rows);
+        setPageCount(res.pageCount);
+        return res.rows;
       } else {
-        setIsSearching(false);
+        const res = await searchCustomers({ name: name || searchTerm, phone, state, zip, country, customerType, page, limit: LIMIT });
+        setCustomersData(res.rows);
+        setPageCount(res.pageCount);
+        return res.rows;
       }
-    };
-    fetchData();
-  }, [searchTerm, customersData, open]);
+    },
+    enabled: open
+  });
 
   const selectCustomer = (customer: Customer) => {
     localStorage.setItem('customerId', customer.id.toString());
     setSelectedCustomer(customer);
   };
 
-  const handleChangePage = async (_: any, page: number) => {
-    setPage(page);
-    if (isSearching) {
-      const startIndex = (page - 1) * 25;
-      const endIndex = startIndex + 25;
-      setCustomers(searchedCustomers.slice(startIndex, endIndex));
-    } else {
-      const res = await getSomeCustomers(page, 25);
-      setCustomers(res.rows);
-    }
-  };
-
   const handleCustomerSearch = async (e: FormEvent) => {
     e.preventDefault();
-    setIsSearching(true);
-    const res = await searchCustomers({ name, phone, state, zip, country, customerType });
-    setSearchedCustomers(res);
     setPage(1);
+    await refetch();
   };
 
-  const displayedCustomers = isSearching ? searchedCustomers.slice((page - 1) * 25, page * 25) : customers;
+  const handleChangePage = (_: any, newPage: number) => {
+    setPage(newPage);
+  };
 
   
   return (
@@ -134,7 +120,7 @@ export default function CustomerSearchDialog({ open, setOpen, searchTerm }: Prop
           value={customerType}
         >
           <option value=""></option>
-          {customerTypes.map((type, i) => {
+          {customerTypes.map((type: string, i: number) => {
             return <option key={i} value={type}>{ type }</option>;
           })}
         </Select>
@@ -152,7 +138,7 @@ export default function CustomerSearchDialog({ open, setOpen, searchTerm }: Prop
           </tr>
         </thead>
         <tbody>
-          {displayedCustomers && displayedCustomers.map((customer: Customer) => {
+          {customers.map((customer: Customer) => {
             return (
               <tr key={customer.id} onClick={() => selectCustomer(customer)} className={`${customer.id === selectedCustomer.id ? 'customer-search__selected-customer' : ''}`} data-testid="customer-row">
                 <td><Link href={`customer/${customer.id}`}>Details</Link></td>
@@ -164,13 +150,14 @@ export default function CustomerSearchDialog({ open, setOpen, searchTerm }: Prop
           })}
         </tbody>
       </Table>
+      { customers.length === 0 && <p>No results</p> }
+
       <Pagination
-        data={isSearching ? searchedCustomers : customersData}
+        data={customersData}
         setData={handleChangePage}
         pageCount={pageCount}
-        pageSize={25}
+        pageSize={LIMIT}
       />
-      { displayedCustomers.length === 0 && <p>No results</p> }
     </Dialog>
   );
 }

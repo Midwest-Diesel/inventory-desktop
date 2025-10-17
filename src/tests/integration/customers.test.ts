@@ -67,8 +67,8 @@ describe('Customers Integration', () => {
   });
 
   it('Search customer', async () => {
-    const res = await searchCustomers({ name: 'conequip', phone: '', state: '', zip: '', country: '', customerType: '' });
-    expect(res[0]).toEqual(expect.objectContaining({ company: 'ConEquip Parts & Equipment (14196)' }));
+    const res = await searchCustomers({ name: 'conequip', phone: '', state: '', zip: '', country: '', customerType: '', page: 1, limit: 25 });
+    expect(res.rows[0]).toEqual(expect.objectContaining({ company: 'ConEquip Parts & Equipment (14196)' }));
   });
 
   it('Merge customer', async () => {

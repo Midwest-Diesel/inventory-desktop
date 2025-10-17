@@ -1,6 +1,17 @@
 import api from "../config/axios";
 import { parseResDate } from "../tools/stringUtils";
 
+interface CustomerSearch {
+  name: string
+  phone: string
+  state: string
+  zip: string
+  country: string
+  customerType: string
+  page: number
+  limit: number
+}
+
 
 const parseCustomerRes = (data: any[]) => {
   return data.map((customer: any) => {
@@ -25,7 +36,7 @@ export const getCustomers = async (): Promise<Customer[]> => {
 
 export const getSomeCustomers = async (page: number, limit: number): Promise<{ pageCount: number, rows: Customer[] }> => {
   try {
-    const res = await api.get(`/api/customers/limit/${JSON.stringify({ page: (page - 1) * limit, limit: limit })}`);
+    const res = await api.get(`/api/customers/limit/${JSON.stringify({ page: (page - 1) * limit, limit })}`);
     return { pageCount: res.data.pageCount, rows: parseCustomerRes(res.data.rows) };
   } catch (err) {
     console.error(err);
@@ -33,13 +44,13 @@ export const getSomeCustomers = async (page: number, limit: number): Promise<{ p
   }
 };
 
-export const searchCustomers = async (data: { name: string, phone: string, state: string, zip: string, country: string, customerType: string }): Promise<Customer[]> => {
+export const searchCustomers = async (data: CustomerSearch): Promise<{ pageCount: number, rows: Customer[] }> => {
   try {
-    const res = await api.get(`/api/customers/search/${JSON.stringify(data)}`);
-    return parseCustomerRes(res.data);
+    const res = await api.get(`/api/customers/search/${JSON.stringify({ ...data, page: (data.page - 1) * data.limit, limit: data.limit })}`);
+    return { pageCount: res.data.pageCount, rows: parseCustomerRes(res.data.rows) };
   } catch (err) {
     console.error(err);
-    return [];
+    return { pageCount: 0, rows: [] };
   }
 };
 
