@@ -722,7 +722,7 @@ export default function HandwrittenDetails({
             </div>
           </GridItem>
 
-          <GridItem variant={['low-opacity-bg']} colStart={7} colEnd={12}>
+          <GridItem style={{ height: '100%' }} variant={['low-opacity-bg']} colStart={7} colEnd={12}>
             <h4 style={{ marginBottom: '0.3rem' }}>Order Notes</h4>
             <p style={{ whiteSpace: 'pre-line' }} data-testid="order-notes">{ handwritten.orderNotes }</p>
           </GridItem>
