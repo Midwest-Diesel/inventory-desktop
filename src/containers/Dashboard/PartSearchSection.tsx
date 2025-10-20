@@ -43,6 +43,7 @@ export interface PartSearchParams {
   isAltSearch: boolean
 }
 
+
 const LIMIT = 52;
 const getStoredSearch = (key: string) => JSON.parse(localStorage.getItem(key) || 'null') || {};
 
@@ -55,7 +56,6 @@ const hasSearchInput = () => {
     ) || !isObjectNull(partSearch)
   );
 };
-
 
 export default function PartSearchSection({ selectHandwrittenOpen, setSelectHandwrittenOpen, setSelectedHandwrittenPart, handleNewQuote }: Props) {
   const toast = useToast();
@@ -166,10 +166,10 @@ export default function PartSearchSection({ selectHandwrittenOpen, setSelectHand
       {partsOpen && (
         <>
           <div className="parts-search-top-bar">
-            <Button onClick={findPartsOnEngines} disabled={!getSearchedPartNum()}>On Engines</Button>
+            <Button onClick={() => setAltPartsSearchOpen(true)} data-testid="alt-search-btn">Alt Parts Search</Button>
             <Button onClick={() => setSalesInfoOpen(true)} disabled={!isValidSearch}>Sales Info</Button>
             <Button onClick={() => setPartsSearchOpen(true)} data-testid="part-search-btn">Parts Search</Button>
-            <Button onClick={() => setAltPartsSearchOpen(true)} data-testid="alt-search-btn">Alt Parts Search</Button>
+            <Button onClick={findPartsOnEngines} disabled={!getSearchedPartNum()}>On Engines</Button>
             <Button onClick={() => setShowSoldParts(!showSoldParts)}>{showSoldParts ? "Hide" : "Show"} Sold Parts</Button>
             <Button onClick={() => setCoreFamilyOpen(true)}>Search Core Family</Button>
             <Link className="parts-search-top-bar__link"
