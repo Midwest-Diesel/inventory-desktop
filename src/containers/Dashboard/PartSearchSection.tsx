@@ -99,7 +99,7 @@ export default function PartSearchSection({ selectHandwrittenOpen, setSelectHand
         .map((v: any) => v.replace?.('*', ''))
         .some(Boolean)
     );
-  }, [parts]);
+  }, [parts, search]);
 
   const findPartsOnEngines = async () => {
     const partNum = getSearchedPartNum();
