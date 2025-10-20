@@ -16,7 +16,6 @@
 @use 'components/library/tabs';
 @use 'components/library/toast';
 @use 'components/library/tooltip';
-@use 'components/about';
 @use 'components/add-ons';
 @use 'components/addon-alt-parts-dialog';
 @use 'components/alerts';
@@ -73,3 +72,4 @@
 @use 'components/warranties-details';
 @use 'components/warranties';
 @use 'components/library/text-area';
+@use 'components/system';
