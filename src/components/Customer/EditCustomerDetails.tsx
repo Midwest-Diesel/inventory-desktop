@@ -117,6 +117,14 @@ export default function CustomerDetails({ customer, setCustomer, setIsEditing }:
     }
   };
 
+  const sameAsBillTo = () => {
+    setShipToAddress(billToAddress);
+    setShipToAddress2(billToAddress2);
+    setShipToCity(billToCity);
+    setShipToState(billToState);
+    setShipToZip(billToZip);
+  };
+
   
   return (
     <>
@@ -299,6 +307,7 @@ export default function CustomerDetails({ customer, setCustomer, setIsEditing }:
               </GridItem>
 
               <GridItem colStart={1} colEnd={5} variant={['low-opacity-bg']}>
+                <Button variant={['xx-small']} onClick={sameAsBillTo} type="button">Same as bill to</Button>
                 <Table variant={['plain', 'row-details', 'edit-row-details']}>
                   <tbody>
                     <tr>
