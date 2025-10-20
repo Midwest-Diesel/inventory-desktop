@@ -42,7 +42,7 @@ export default function OfficeNavbar({ user }: Props) {
       </NavDropdown>
       <Link href="/alerts" className="navbar__link">Alerts</Link>
       <Link href="/map" className="navbar__link">Map</Link>
-      <Link href="/about" className="navbar__link">About</Link>
+      <Link href="/system" className="navbar__link">System</Link>
     </>
   );
 }

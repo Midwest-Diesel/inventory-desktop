@@ -10,7 +10,7 @@ import { userAtom } from "@/scripts/atoms/state";
 import { cap } from "@/scripts/tools/stringUtils";
 
 
-export default function About() {
+export default function System() {
   const [user] = useAtom<User>(userAtom);
   const [version, setVersion] = useState('0.0.0');
   const [status, setStatus] = useState('');
@@ -45,12 +45,12 @@ export default function About() {
 
 
   return (
-    <Layout title="About">
-      <div className="about-page">
+    <Layout title="System">
+      <div className="system-page">
         <h3>v{ version }</h3>
-        <p className="about-page__username">Logged in as <span>{ cap(user.username) }</span></p>
+        <p className="system-page__username">Logged in as <span>{ cap(user.username) }</span></p>
         { !status && <Button variant={['fit']} onClick={checkForUpdates}>Check For Updates</Button> }
-        { status && <p className="about-page__status-text">{ status }</p> }
+        { status && <p className="system-page__status-text">{ status }</p> }
         <br />
         
         <Button variant={['fit']} onClick={closeAllTabs}>Close All Tabs</Button>
