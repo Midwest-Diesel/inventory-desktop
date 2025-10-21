@@ -75,7 +75,7 @@ export default function EditPoDetails({ poData, setPo, setIsEditing, poItems, po
       purchasedFor,
       isItemReceived: poData.isItemReceived,
       vendorContact,
-      shippingMethod,
+      shippingMethod
     } as PO;
     await editPurchaseOrder(newPo);
     // Edit PO items

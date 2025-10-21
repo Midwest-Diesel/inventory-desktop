@@ -167,7 +167,7 @@ export default function EditEngineDetails({ engine, setIsEditing, refetch }: Pro
             stockNum: item.engineStockNum,
             cost: item.cost,
             costType: item.costType,
-            note: item.note,
+            note: item.note
           } as EngineCostOut;
           await editEngineCostOut(newItem);
         } else {
@@ -178,7 +178,7 @@ export default function EditEngineDetails({ engine, setIsEditing, refetch }: Pro
             invoiceNum: item.invoiceNum,
             costType: item.costType,
             vendor: item.vendor,
-            note: item.note,
+            note: item.note
           } as EngineCostIn;
           await editEngineCostIn(newItem);
         }
@@ -193,7 +193,7 @@ export default function EditEngineDetails({ engine, setIsEditing, refetch }: Pro
           stockNum: item.stockNum,
           cost: item.cost,
           costType: item.costType,
-          note: item.note,
+          note: item.note
         } as EngineCostOut;
         await editEngineCostOut(newItem);
       }

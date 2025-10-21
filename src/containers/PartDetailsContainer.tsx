@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 import { formatCurrency, formatDate, formatPercent } from "@/scripts/tools/stringUtils";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { getImagesFromPart, getImagesFromStockNum } from "@/scripts/services/imagesService";
 import Table from "@/components/Library/Table";
 import Button from "@/components/Library/Button";
@@ -24,90 +24,98 @@ import { useNavState } from "@/hooks/useNavState";
 import { usePrintQue } from "@/hooks/usePrintQue";
 import { ask } from "@/scripts/config/tauri";
 import PartQtyHistoryDialog from "@/components/Dialogs/PartQtyHistoryDialog";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 
 export default function PartDetailsContainer() {
   const { closeDetailsBtn, push } = useNavState();
   const { addToQue, printQue } = usePrintQue();
-  const params = useParams();
   const [user] = useAtom<User>(userAtom);
-  const [part, setPart] = useState<Part | null>(null);
-  const [engine, setEngine] = useState<Engine | null>(null);
-  const [history, setHistory] = useState<PartQtyHistory[]>([]);
   const [picturesOpen, setPicturesOpen] = useState(false);
   const [snPicturesOpen, setSnPicturesOpen] = useState(false);
-  const [pictures, setPictures] = useState<Picture[]>([]);
-  const [snPictures, setSnPictures] = useState<Picture[]>([]);
   const [isEditingPart, setIsEditingPart] = useState(false);
-  const [costRemaining, setCostRemaining] = useState<number | null>(null);
-  const [partCostIn, setPartCostIn] = useState<PartCostIn[]>([]);
-  const [engineCostOut, setEngineCostOut] = useState<EngineCostOut[]>([]);
   const [costAlertAmount, setCostAlertAmount] = useState('');
   const [costAlertPurchasedFrom, setCostAlertPurchasedFrom] = useState('');
   const [costAlertOpen, setCostAlertOpen] = useState(false);
   const [partQtyHistoryOpen, setPartQtyHistoryOpen] = useState(false);
+  const queryClient = useQueryClient();
+  const params = useParams();
+  const partId = Number(params.partNum);
 
-  useEffect(() => {
-    fetchData();
-  }, [params]);
+  const { data: part, isFetching } = useQuery<Part | null>({
+    queryKey: ['part', partId],
+    queryFn: async () => {
+      const res = await getPartById(partId);
+      if (res) setTitle(`${res.partNum} ${res.desc}`);
+      return res;
+    },
+    enabled: !!partId
+  });
 
-  useEffect(() => {
-    if (!part || isEditingPart) return;
-    const fetchTables = async () => {
-      const costRes = await getEngineCostRemaining(part?.engineNum ?? 0);
-      setCostRemaining(costRes);
-      setPartCostIn(await getPartCostIn(part?.stockNum ?? ''));
-      setEngineCostOut(await getPartEngineCostOut(part?.stockNum ?? ''));
-    };
-    fetchTables();
-  }, [isEditingPart]);
+  const { data: engine } = useQuery<Engine | null>({
+    queryKey: ['engine', part?.engineNum],
+    queryFn: () => getEngineByStockNum(part?.engineNum ?? 0),
+    enabled: !!part?.engineNum
+  });
 
-  useEffect(() => {
-    if (!part) return;
-    const fetchData = async () => {
-      const history = await getPartsQtyHistory(part.id);
-      setHistory(history);
-    };
-    fetchData();
-  }, [partQtyHistoryOpen, part]);
+  // Engine cost remaining
+  const { data: costRemaining = 0 } = useQuery<number>({
+    queryKey: ['costRemaining', part?.engineNum],
+    queryFn: () => getEngineCostRemaining(part?.engineNum ?? 0),
+    enabled: !!part?.engineNum && !isEditingPart
+  });
 
-  useEffect(() => {}, [pictures, snPictures, part]);
+  // Part cost in
+  const { data: partCostIn = [] } = useQuery<PartCostIn[]>({
+    queryKey: ['partCostIn', part?.stockNum],
+    queryFn: () => getPartCostIn(part?.stockNum ?? ''),
+    enabled: !!part?.stockNum && !isEditingPart
+  });
 
-  const fetchData = async () => {
-    if (!params) return;
-    const part = await getPartById(Number(params.partNum));
-    if (!part) return;
-    const engine = await getEngineByStockNum(part.engineNum);
-    setTitle(`${part.partNum} ${part.desc}`);
-    setPart(part);
-    setEngine(engine);
+  // Engine cost out
+  const { data: engineCostOut = [] } = useQuery<EngineCostOut[]>({
+    queryKey: ['engineCostOut', part?.stockNum],
+    queryFn: () => getPartEngineCostOut(part?.stockNum ?? ''),
+    enabled: !!part?.stockNum && !isEditingPart
+  });
 
-    const costRes = await getEngineCostRemaining(part.engineNum ?? 0);
-    setCostRemaining(costRes);
-    if (Number(costRes) > 0) {
-      setCostAlertAmount(formatCurrency(costRes));
-      setCostAlertOpen(true);
+  // Qty history
+  const { data: history = [] } = useQuery<PartQtyHistory[]>({
+    queryKey: ['partQtyHistory', part?.id, partQtyHistoryOpen],
+    queryFn: () => getPartsQtyHistory(part!.id)
+  });
+
+  // Pictures
+  const { data: pictures = [] } = useQuery<Picture[]>({
+    queryKey: ['pictures', part?.partNum],
+    queryFn: () => getImagesFromPart(part?.partNum ?? ''),
+    enabled: !!part?.partNum
+  });
+
+  const { data: snPictures = [] } = useQuery<Picture[]>({
+    queryKey: ['snPictures', part?.stockNum],
+    queryFn: () => getImagesFromStockNum(part?.stockNum ?? ''),
+    enabled: !!part?.stockNum
+  });
+
+  // Surplus
+  useQuery({
+    queryKey: ['surplusCostRemaining', part?.purchasedFrom],
+    queryFn: () => getSurplusCostRemaining(part?.purchasedFrom ?? ''),
+    enabled: !!part?.purchasedFrom,
+    onSuccess: (res) => {
+      if (res && Number(res) > 0) {
+        setCostAlertAmount(formatCurrency(res));
+        setCostAlertPurchasedFrom(part?.purchasedFrom ?? '');
+        setCostAlertOpen(true);
+      }
     }
-    
-    setPartCostIn(await getPartCostIn(part.stockNum ?? ''));
-    setEngineCostOut(await getPartEngineCostOut(part.stockNum ?? ''));
-
-    const pictures = await getImagesFromPart(part.partNum) ?? [];
-    setPictures(pictures);
-    setSnPictures(await getImagesFromStockNum(part.stockNum ?? '') ?? []);
-
-    if (!part.purchasedFrom) return;
-    const costRemaining = await getSurplusCostRemaining(part.purchasedFrom);
-    if (Number(costRemaining) > 0) {
-      setCostAlertAmount(formatCurrency(costRemaining));
-      setCostAlertPurchasedFrom(part.purchasedFrom ?? '');
-      setCostAlertOpen(true);
-    }
-  };
+  });
 
   const handleDelete = async () => {
     if (!part?.id || user.accessLevel <= 1 || prompt('Type "confirm" to delete this part') !== 'confirm') return;
     await deletePart(part.id);
+    await queryClient.invalidateQueries({ queryKey: ['part', part.id] });
     await push('Home', '/');
   };
 
@@ -116,7 +124,7 @@ export default function PartDetailsContainer() {
     if (!qty || !part) return;
     await editPart({ ...part, qty: qty + (part?.qty ?? 0) });
     await addToPartQtyHistory(part.id, qty);
-    await fetchData();
+    await queryClient.invalidateQueries({ queryKey: ['part', part.id] });
     await handlePrint();
   };
 
@@ -157,9 +165,12 @@ export default function PartDetailsContainer() {
     if (!nextUP || !part || !await ask(`Change the current stock number to ${nextUP}?`)) return;
     const newPart = { ...part, stockNum: nextUP };
     await editPart(newPart);
-    setPart(newPart);
+    await queryClient.invalidateQueries({ queryKey: ['part', part.id] });
   };
 
+
+  if (isFetching) return <Loading />;
+  if (!part) return <p>Part not found</p>;
 
   return (
     <div>
@@ -183,24 +194,22 @@ export default function PartDetailsContainer() {
         </Modal>
       }
 
-      {part &&
-        <PartQtyHistoryDialog
-          open={partQtyHistoryOpen}
-          setOpen={setPartQtyHistoryOpen}
-          part={part}
-          history={history}
-        />
-      }
+      <PartQtyHistoryDialog
+        open={partQtyHistoryOpen}
+        setOpen={setPartQtyHistoryOpen}
+        part={part}
+        history={history}
+      />
 
-      {part ? isEditingPart ?
+      {isEditingPart ?
         <EditPartDetails
           part={part}
-          setPart={setPart}
+          setPart={() => queryClient.invalidateQueries({ queryKey: ['part', part.id] })}
           setIsEditingPart={setIsEditingPart}
           partCostInData={partCostIn}
           engineCostOutData={engineCostOut}
-          setPartCostInData={setPartCostIn}
-          setEngineCostOutData={setEngineCostOut}
+          setPartCostInData={() => queryClient.invalidateQueries({ queryKey: ['partCostIn', part.stockNum] })}
+          setEngineCostOutData={() => queryClient.invalidateQueries({ queryKey: ['engineCostOut', part.stockNum] })}
         />
         :
         <div className="part-details">
@@ -514,8 +523,6 @@ export default function PartDetailsContainer() {
             </GridItem>
           </Grid>
         </div>
-        :
-        <Loading />
       }
     </div>
   );

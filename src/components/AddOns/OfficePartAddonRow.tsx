@@ -141,7 +141,6 @@ export default function OfficePartAddonRow({ addOn, onSave, onModifyAddOnData }:
   };
 
   const loadAddOnAltParts = async () => {
-    if (!isNewPart) return;
     const res = await getAddOnById(addOn.id);
     onModifyAddOnData(res);
   };

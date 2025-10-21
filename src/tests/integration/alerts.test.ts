@@ -28,7 +28,7 @@ describe('Alerts Integration', () => {
       note: '3406E/C15 Gear - Lots of matches!  6I4578 Is for older 5ek, uses a 6I3621 stubshaft, 1304701 uses a 1302979 or 1515966 subshaft',
       partNum: '1304701',
       salesmanId: 8,
-      type: 'ALERT!!!',
+      type: 'ALERT!!!'
     };
     expect(res[0]).toEqual(alert);
   });
@@ -41,7 +41,7 @@ describe('Alerts Integration', () => {
       note: '3406E/C15 Gear - Lots of matches!  6I4578 Is for older 5ek, uses a 6I3621 stubshaft, 1304701 uses a 1302979 or 1515966 subshaft',
       partNum: '1304701',
       salesmanId: 8,
-      type: 'ALERT!!!',
+      type: 'ALERT!!!'
     };
     expect(res[0]).toEqual(expect.objectContaining(alert));
   });

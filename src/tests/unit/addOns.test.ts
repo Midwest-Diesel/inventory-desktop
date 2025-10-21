@@ -22,7 +22,7 @@ describe('getNextStockNumberSuffix', () => {
   test('Get next letter in sequence', async () => {
     vi.spyOn(partsModule, 'getPartsByStockNum').mockResolvedValue([
       { stockNum: 'TU505-10A' },
-      { stockNum: 'TU505-10B' },
+      { stockNum: 'TU505-10B' }
     ] as any);
     const letter = await getNextStockNumberSuffix('TU505-10', addOns);
     expect(letter).toEqual('C');

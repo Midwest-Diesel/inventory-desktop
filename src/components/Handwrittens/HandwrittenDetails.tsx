@@ -247,7 +247,7 @@ export default function HandwrittenDetails({
           shipToCompany: handwritten?.shipToCompany ?? '',
           shipToAddress: handwritten?.shipToAddress ?? '',
           shipToAddress2: handwritten?.shipToAddress2 ? `${handwritten?.shipToAddress2}\n` : '',
-          shipToCityStateZip: shipToCityStateZip ?? '',
+          shipToCityStateZip: shipToCityStateZip ?? ''
         };
         addToQue('shippingLabel', 'print_shipping_label', args, '576px', '374.4px');
       } else {
@@ -260,7 +260,7 @@ export default function HandwrittenDetails({
           shipToCompany: handwritten?.shipToCompany ?? '',
           shipToAddress: handwritten?.shipToAddress ?? '',
           shipToAddress2: handwritten?.shipToAddress2 ? `${handwritten?.shipToAddress2}\n` : '',
-          shipToCityStateZip: shipToCityStateZip ?? '',
+          shipToCityStateZip: shipToCityStateZip ?? ''
         };
         addToQue('shippingLabel', 'print_shipping_label', args, '576px', '374.4px');
       }

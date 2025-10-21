@@ -176,7 +176,7 @@ export default function ShopPartAddonRow({ addOn, handleDuplicateAddOn, partNumL
       ...addOn,
       stockNum: newStockNum,
       hp: res?.horsePower ?? '',
-      serialNum: res?.serialNum ?? '',
+      serialNum: res?.serialNum ?? ''
     } as AddOn;
 
     const updatedAddOns = addOns.map((a: AddOn) => (a.id === addOn.id ? newAddOn : a));

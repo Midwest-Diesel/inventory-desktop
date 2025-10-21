@@ -19,15 +19,15 @@ export default defineConfig({
     }),
     nodePolyfills({
       include: ['events', 'util', 'timers'],
-      globals: { process: true, Buffer: true },
-    }),
+      globals: { process: true, Buffer: true }
+    })
   ],
   optimizeDeps: {
-    include: ['node-schedule'],
+    include: ['node-schedule']
   },
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "src"),
-    },
-  },
+      "@": path.resolve(__dirname, "src")
+    }
+  }
 });

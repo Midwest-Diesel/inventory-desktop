@@ -8,7 +8,7 @@ export const client = new pg.Client({
   port: 54329,
   user: 'postgres',
   password: 'postgres',
-  database: 'inventory_testing',
+  database: 'inventory_testing'
 });
 client.connect();
 

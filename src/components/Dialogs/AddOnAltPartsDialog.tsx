@@ -42,7 +42,14 @@ export default function AddOnAltPartsDialog({ open, setOpen, addOn, partNumList 
 
   const handleRemoveAlt = async (alt: string) => {
     if (!addOn) return;
-    const updatedAlts = alts.filter((a) => alt !== a);
+    const altSet: Set<string> = new Set();
+    const partsInfo = await getPartInfoByPartNum(alt);
+    partsInfo?.altParts.split(',')
+      .map((s) => s.trim())
+      .filter(Boolean)
+      .forEach((a) => altSet.add(a));
+    const altsToRemove = Array.from(altSet);
+    const updatedAlts = alts.filter((a) => !altsToRemove.includes(a));
     await editAddOnAltParts(addOn.id, updatedAlts.join(', '));
     setAlts(updatedAlts);
   };

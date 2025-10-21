@@ -64,7 +64,7 @@ export default function MapContainer() {
 
     const loader = new Loader({
       apiKey: import.meta.env.VITE_PUBLIC_MAPS_API ?? '',
-      version: "weekly",
+      version: 'weekly'
     });
 
     loader.load().then(() => {
@@ -74,7 +74,7 @@ export default function MapContainer() {
         center: startPos,
         mapId: 'a2dddb21852be68532c48ddd',
         mapTypeControl: false,
-        streetViewControl: false,
+        streetViewControl: false
       });
       mapInstanceRef.current = map;
     });
@@ -101,7 +101,7 @@ export default function MapContainer() {
           borderColor: border,
           glyphColor: 'white',
           glyph: getPinIcon(loc),
-          scale: 0.9,
+          scale: 0.9
         });
     
         const marker = new AdvancedMarkerElement({
@@ -109,7 +109,7 @@ export default function MapContainer() {
           position: loc.location,
           title: loc.address,
           content: pin.element,
-          gmpClickable: true,
+          gmpClickable: true
         });
         markers.push(marker);
     

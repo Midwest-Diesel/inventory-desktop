@@ -88,7 +88,7 @@ export default function NewReturnDialog({ open, setOpen, handwritten }: Props) {
           isReturnReceived: false,
           isReturnAsDescribed: false,
           isReturnPutAway: false,
-          notes: '',
+          notes: ''
         } as any;
       }
     });

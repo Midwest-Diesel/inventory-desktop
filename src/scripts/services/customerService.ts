@@ -17,7 +17,7 @@ const parseCustomerRes = (data: any[]) => {
   return data.map((customer: any) => {
     return {
       ...customer,
-      dateContacted: customer.dateContacted && parseResDate(customer.dateContacted),
+      dateContacted: customer.dateContacted && parseResDate(customer.dateContacted)
     };
   });
 };
