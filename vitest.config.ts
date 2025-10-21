@@ -18,17 +18,18 @@ export default defineConfig({
         plugins,
         test: {
           name: 'UNIT',
-          include: ['./src/tests/unit/**/*.test.{ts,tsx}'],
-        },
+          include: ['./src/tests/unit/**/*.test.{ts,tsx}']
+        }
       },
       {
         plugins,
         test: {
           name: 'INTEGRATION',
+          environment: 'jsdom',
           include: ['./src/tests/integration/**/*.test.{ts,tsx}'],
-          globalSetup: './src/tests/globalSetup.ts',
-        },
-      },
-    ],
-  },
+          globalSetup: './src/tests/globalSetup.ts'
+        }
+      }
+    ]
+  }
 });

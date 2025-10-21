@@ -46,7 +46,7 @@ export default function CoreCreditsDialog({ open, setOpen, cores, handwritten }:
         unitPrice: core.charge,
         return: false,
         date: core.date,
-        invoiceItemChildren: [],
+        invoiceItemChildren: []
       } as any;
       await addHandwrittenItem(newItem);
       await removeQtyFromCore(core, qty);

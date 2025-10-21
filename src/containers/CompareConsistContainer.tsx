@@ -76,7 +76,7 @@ export default function CompareConsistContainer() {
   const getEngineData = useCallback(() => {
     const data: any = {
       serialNum,
-      arrNum,
+      arrNum
     };
 
     ENGINE_PARTS.forEach((part) => {
@@ -136,7 +136,7 @@ export default function CompareConsistContainer() {
       model: '',
       notes: '',
       dateCreated: new Date(),
-      ...getEngineData(),
+      ...getEngineData()
     } as CompareConsist;
     await addCompareData(data);
   };

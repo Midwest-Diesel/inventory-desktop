@@ -50,10 +50,10 @@ test.describe('Parts', () => {
     await page.waitForLoadState('networkidle');
     await altSearch(page, { partNum: '7L0406' });
     await page.getByTestId('part-num-link').nth(2).click();
-    await expect(page.getByTestId('alt-parts')).toHaveText('7L0406, 9N3242, 9N3240');
+    await expect(page.getByTestId('alt-parts')).toHaveText('9N3240, 9N3242, 7L0406');
   });
 
-  test('Remove altPart', async ({ page }) => {
+  test('Remove single altPart', async ({ page }) => {
     await addAltPart(page);
     await goto(page, '/');
 

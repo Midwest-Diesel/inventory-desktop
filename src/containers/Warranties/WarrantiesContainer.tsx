@@ -66,7 +66,7 @@ export default function WarrantiesContainer() {
       completed: false,
       completedDate: null,
       vendorWarrantyNum: null,
-      handwrittenId: null,
+      handwrittenId: null
     } as any;
     await addWarranty(newWarranty);
     await refetch();

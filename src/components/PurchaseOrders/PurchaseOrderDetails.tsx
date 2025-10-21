@@ -52,7 +52,7 @@ export default function PurchaseOrderDetails({ poData, handleReceiveItem, setIsE
           qty: item.qty ?? '',
           desc: item.desc ?? '',
           price: formatCurrency(item.unitPrice) || '$0.00',
-          total: formatCurrency((item.unitPrice ?? 0) * (item.qty ?? 0)) || '$0.00',
+          total: formatCurrency((item.unitPrice ?? 0) * (item.qty ?? 0)) || '$0.00'
         };
       }) || []
     };

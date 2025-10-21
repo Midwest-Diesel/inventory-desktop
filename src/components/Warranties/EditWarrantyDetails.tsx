@@ -90,7 +90,7 @@ export default function EditWarrantyDetails({ warrantyData, setWarranty, setIsEd
       vendorReport: '',
       hasVendorReplacedPart: false,
       vendorCredit: '',
-      isCustomerCredited: false,
+      isCustomerCredited: false
     } as any;
     await addWarrantyItem(newItem);
     const res = await getWarrantyById(warrantyData.id);

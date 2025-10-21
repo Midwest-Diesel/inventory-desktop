@@ -76,7 +76,7 @@ export default function DashboardContainer() {
       qty: qty,
       cost,
       location: selectedHandwrittenPart?.location ?? null,
-      partId: selectedHandwrittenPart?.id ?? null,
+      partId: selectedHandwrittenPart?.id ?? null
     };
     await addHandwrittenItem(newItem);
     if (warranty) await editHandwrittenOrderNotes(id, warranty);

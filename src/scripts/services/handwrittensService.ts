@@ -51,9 +51,9 @@ export const parseHandwrittenRes = (data: any) => {
       coreReturns: handwritten.coreReturns ? handwritten.coreReturns.map((item: any) => {
         return {
           ...item,
-          date: item.date && parseResDate(item.date),
+          date: item.date && parseResDate(item.date)
         };
-      }) : [],
+      }) : []
     };
   });
 };

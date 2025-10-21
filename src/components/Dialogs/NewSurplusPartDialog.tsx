@@ -25,7 +25,7 @@ export default function NewSurplusPartDialog({ open, setOpen, refetch }: Props) 
       name,
       price: Number(price),
       date: parseResDate(parseDateInputValue(date)),
-      notes: null,
+      notes: null
     } as Surplus;
     await addSurplus(newSurplus);
     refetch();

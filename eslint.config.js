@@ -33,7 +33,8 @@ export default tseslint.config(
         'error',
         { 'argsIgnorePattern': '^_' }
       ],
-      'no-prototype-builtins': 'off'
+      'no-prototype-builtins': 'off',
+      'comma-dangle': ['error', 'never']
     },
   },
 );

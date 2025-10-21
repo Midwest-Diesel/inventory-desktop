@@ -15,7 +15,7 @@ const parsePartsData = async (parts: any) => {
       partsCostIn: part.partsCostIn ? part.partsCostIn.filter((part: any) => !isObjectNull(part)) : [],
       engineCostOut: part.engineCostOut ? part.engineCostOut.filter((part: any) => !isObjectNull(part)) : [],
       imageExists: (window as any).__TAURI_IPC__ && await checkImageExists(part.partNum, 'part'),
-      snImageExists: (window as any).__TAURI_IPC__ && await checkImageExists(part.stockNum, 'stock'),
+      snImageExists: (window as any).__TAURI_IPC__ && await checkImageExists(part.stockNum, 'stock')
     };
   }));
   return partsWithImages;
@@ -247,7 +247,13 @@ export const addPart = async (part: Part, partInfoExists: boolean, updateLoading
 
     // Adds this part to all connected part records
     if (filteredAlts.length > 0) {
-      await addAltParts(partNum, includedAlts, updateLoading);
+      const filteredAlts = includedAlts.filter((p) => p && p !== partNum);
+      for (let i = 0; i < filteredAlts.length; i++) {
+        if (updateLoading) updateLoading(i + 1, filteredAlts.length);
+        for (let j = 0; j < includedAlts.length; j++) {
+          await api.put('/api/parts/parts-info/add', { partNum: filteredAlts[i], altParts: includedAlts[j] });
+        }
+      }
       // Updates alt parts
       let altsToAdd: any[] = [];
       const res = await searchAltParts({ partNum: `*${filteredAlts[0]}`, showSoldParts: true }, 1, 999999999) ?? [];
@@ -317,34 +323,6 @@ export const editPartCostIn = async (part: PartCostIn) => {
 export const editAltParts = async (partNum: string, altParts: string[]) => {
   try {
     await api.put('/api/parts/parts-info', { partNum, altParts });
-  } catch (err) {
-    console.error(err);
-  }
-};
-
-// Adds alt parts to all connected records but the one being edited
-export const addAltParts = async (partNum: string, altParts: string[], updateLoading?: (i: number, total: number) => void) => {
-  try {
-    const filteredAlts = altParts.filter((p) => p && p !== partNum);
-    for (let i = 0; i < filteredAlts.length; i++) {
-      if (updateLoading) updateLoading(i + 1, filteredAlts.length);
-      for (let j = 0; j < altParts.length; j++) {
-        await api.put('/api/parts/parts-info/add', { partNum: filteredAlts[i], altParts: altParts[j] });
-      }
-    }
-  } catch (err) {
-    console.error(err);
-  }
-};
-
-export const removeAltParts = async (partNum: string, altParts: string[]) => {
-  try {
-    const filteredAlts = altParts.filter((p) => p && p !== partNum);
-    for (let i = 0; i < filteredAlts.length; i++) {
-      for (let j = 0; j < altParts.length; j++) {
-        await api.put('/api/parts/parts-info/remove', { partNum: filteredAlts[i], altParts: altParts[j] });
-      }
-    }
   } catch (err) {
     console.error(err);
   }

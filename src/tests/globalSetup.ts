@@ -28,7 +28,7 @@ export default async function globalSetup() {
     port: 54329,
     user: 'postgres',
     password: 'postgres',
-    database: 'inventory_testing',
+    database: 'inventory_testing'
   });
   await client.connect();
 

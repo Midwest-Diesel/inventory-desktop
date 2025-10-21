@@ -94,7 +94,7 @@ export default function CustomerSearch({ selectedCustomer, setSelectedCustomer, 
       cardName: '',
       invoiceStatus: 'INVOICE PENDING',
       accountingStatus: '',
-      shippingStatus: '',
+      shippingStatus: ''
     } as any;
     const handwrittenId = await addHandwritten(newHandwritten);
     await newTab([{ name: 'Handwritten', url: `/handwrittens/${handwrittenId}` }]);

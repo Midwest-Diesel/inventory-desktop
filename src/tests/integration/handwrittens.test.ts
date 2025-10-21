@@ -106,7 +106,7 @@ describe('Handwrittens Integration', () => {
           stockNum: null,
           unitPrice: 0,
           weight: 0,
-          width: 0,
+          width: 0
         }
       ],
       shipVia: {

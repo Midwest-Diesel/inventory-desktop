@@ -55,6 +55,8 @@ export const loginUser = async (user: UserLogin) => {
   }
 };
 
+// === DELETE routes === //
+
 export const logout = async () => {
   try {
     await api.delete('/api/account/logout');

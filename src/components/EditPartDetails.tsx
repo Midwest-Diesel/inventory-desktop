@@ -4,7 +4,7 @@ import Grid from "./Library/Grid/Grid";
 import GridItem from "./Library/Grid/GridItem";
 import { FormEvent, useState } from "react";
 import Input from "@/components/Library/Input";
-import { addAltParts, addPartCostIn, addToPartQtyHistory, deletePartCostIn, editAltParts, editPart, editPartCostIn, getPartInfoByAltParts, getPartInfoByPartNum, setPartLastUpdated, getPartById } from "@/scripts/services/partsService";
+import { addPartCostIn, addToPartQtyHistory, deletePartCostIn, editPart, editPartCostIn, getPartInfoByPartNum, setPartLastUpdated, getPartById } from "@/scripts/services/partsService";
 import Table from "./Library/Table";
 import { addEngineCostOut, deleteEngineCostOut, editEngineCostOut } from "@/scripts/services/enginesService";
 import { userAtom } from "@/scripts/atoms/state";
@@ -15,6 +15,7 @@ import { ask } from "@/scripts/config/tauri";
 import Select from "./Library/Select/Select";
 import CustomerDropdown from "./Library/Dropdown/CustomerDropdown";
 import TextArea from "./Library/TextArea";
+import { promptAddAltParts, promptRemoveAltParts } from "@/scripts/logic/parts";
 
 interface Props {
   part: Part
@@ -27,7 +28,7 @@ interface Props {
 }
 
 
-export default function PartDetails({ part, setPart, setIsEditingPart, partCostInData, engineCostOutData, setPartCostInData, setEngineCostOutData }: Props) {
+export default function EditPartDetails({ part, setPart, setIsEditingPart, partCostInData, engineCostOutData, setPartCostInData, setEngineCostOutData }: Props) {
   const [user] = useAtom<User>(userAtom);
   const [desc, setDesc] = useState<string>(part.desc ?? '');
   const [qty, setQty] = useState<number>(part.qty);
@@ -58,7 +59,6 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
   const [partCostIn, setPartCostIn] = useState<PartCostIn[]>(partCostInData);
   const [engineCostOut, setEngineCostOut] = useState<EngineCostOut[]>(engineCostOutData);
   const [changesSaved, setChangesSaved] = useState(true);
-  const [loadingAlts, isLoadingAlts] = useState(false);
   const [loadingProgress, setLoadingProgress] = useState('');
   const blankPartCostIn = { id: 0, stockNum: part.stockNum, handwrittenId: '', cost: '', vendor: '', costType: '', note: '' };
   const blankEngineCostOut = { id: 0, stockNum: part.stockNum, engineStockNum: Number(part.engineNum), cost: '', costType: '', note: '' };
@@ -129,7 +129,7 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
           cost: Number(item.cost),
           costType: item.costType,
           vendor: item.vendor,
-          note: item.note,
+          note: item.note
         } as PartCostIn;
         await editPartCostIn(newItem);
         setPartCostInData(partCostIn);
@@ -144,7 +144,7 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
           stockNum: item.stockNum,
           cost: Number(item.cost),
           costType: item.costType,
-          note: item.note,
+          note: item.note
         } as EngineCostOut;
         await editEngineCostOut(newItem);
         setEngineCostOutData(engineCostOut);
@@ -241,54 +241,24 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
   };
 
   const handleAddAltPart = async () => {
-    const input = prompt('Enter part numbers separated by a comma');
-    if (!input) return;
-    const values = input.toUpperCase().trim().replace(/\s*,\s*/g, ',').split(',');
-  
-    let altsToAdd: any = new Set();
-    for (const value of values) {
-      const partInfo = await getPartInfoByPartNum(value);
-      if (partInfo) {
-        partInfo.altParts.split(', ').forEach((alt: string) => altsToAdd.add(alt));
-      }
-    }
-    altsToAdd = Array.from(altsToAdd);
-  
-    const uniqueAlts = [...altsToAdd].filter((a) => a !== part.partNum && !part.altParts.includes(a));
-    if (!await ask(`Are you sure you want to add: ${input}?\n\nNew Alt Parts:\n${[...part.altParts, ...uniqueAlts].join(', ')}`)) return;
-    if (uniqueAlts.length === 0) return;
-    isLoadingAlts(true);
-    await editAltParts(part.partNum, [...altParts, ...uniqueAlts]);
-    await addAltParts(part.partNum, [...altParts, ...uniqueAlts], updateLoading);
-  
-    isLoadingAlts(false);
-    setAltParts([...altParts, ...uniqueAlts]);
-    setPart({ ...part, altParts: [...altParts, ...uniqueAlts] });
+    await promptAddAltParts(part.partNum, updateLoading);
   };
 
   const handleRemoveAltPart = async () => {
-    const input = prompt('Enter part numbers seperated by comma');
-    const removedParts = input?.toUpperCase().trim().replace(/\s*,\s*/g, ',').split(',') ?? [];
-    const updatedAltString = altParts.filter((a) => !removedParts.includes(a));
-    if (!input || !await ask(`Are you sure you want to remove: ${removedParts.join(', ')}?\n\nNew Alt Parts:\n${updatedAltString.join(', ')}`)) return;
-
-    const partsInfo = await getPartInfoByAltParts(removedParts[0]);
-    for (let i = 0; i < partsInfo.length; i++) {
-      if (removedParts.includes(partsInfo[i].partNum)) {
-        await editAltParts(partsInfo[i].partNum, [partsInfo[i].partNum]);
-      } else {
-        const filteredParts = altParts.filter((part) => !removedParts.includes(part));
-        await editAltParts(partsInfo[i].partNum, filteredParts);
-      }
-    }
-
+    await promptRemoveAltParts(part.partNum);    
     const newAltParts = (await getPartInfoByPartNum(part.partNum))?.altParts.split(', ') ?? [];
     setAltParts(newAltParts);
     setPart({ ...part, altParts: newAltParts });
   };
 
-  const updateLoading = (i: number, total: number) => {
+  const updateLoading = async (i: number, total: number) => {
     setLoadingProgress(`${i}/${total}`);
+    if (i === total) {
+      setLoadingProgress('');
+      const newAltParts = (await getPartInfoByPartNum(part.partNum))?.altParts.split(', ') ?? [];
+      setAltParts(newAltParts);
+      setPart({ ...part, altParts: newAltParts });
+    }
   };
 
   
@@ -505,7 +475,7 @@ export default function PartDetails({ part, setPart, setIsEditingPart, partCostI
                   <tr>
                     <th>Alt Parts</th>
                     <td>
-                      {!loadingAlts ?
+                      {!loadingProgress ?
                         user.accessLevel >= 2 ?
                           <>
                             <p style={{ margin: '0.8rem' }}>{ altParts.join(', ') }</p>

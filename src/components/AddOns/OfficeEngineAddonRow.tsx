@@ -78,7 +78,7 @@ export default function OfficeEngineAddOnRow({ addOn, onSave }: Props) {
       arrNum: res.arrNum,
       currentStatus: res.currentStatus,
       location: res.location,
-      notes: res.comments,
+      notes: res.comments
     } as EngineAddOn;
     const updatedAddOns = addOns.map((a: EngineAddOn) => {
       if (a.id === addOn.id) {

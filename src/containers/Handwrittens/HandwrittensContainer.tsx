@@ -53,7 +53,7 @@ export default function HandwrittensContainer() {
       if (hasValidSearchCriteria) {
         return await searchHandwrittens({
           ...searchData,
-          offset: (currentPage - 1) * LIMIT,
+          offset: (currentPage - 1) * LIMIT
         });
       }
       return await getSomeHandwrittens(currentPage, LIMIT);
@@ -121,7 +121,7 @@ export default function HandwrittensContainer() {
       accountingStatus: null,
       shippingStatus: null,
       billToCompany: customer.company,
-      shipToCompany: null,
+      shipToCompany: null
     } as any;
 
     await addHandwritten(newHandwritten);
