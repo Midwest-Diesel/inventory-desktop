@@ -1,17 +1,21 @@
 /*  
-=====================================================
-Printer names are hard coded, you will have to change
+==================================================================
+Printer and computer names are hard coded, you will have to change
 them when replacing a printer.
-=====================================================
+==================================================================
 */
 
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
+const PART_TAG_COMPUTER: &str = "DESKTOP-NR6SQFE";
+const FRONT_DESK_COMPUTER: &str = "FRONT-DESK";
+const SHOP_COMPUTER: &str = "JIM-PC";
+
 const OFFICE_PRINTER: &str = "Brother MFC-L3770CDW";
 const FRONT_DESK_PRINTER: &str = "Brother HL-L5200DW";
-const FRONT_DESK_CC_PRINTER: &str = "\\\\FRONT-DESK\\ZDesigner GC420d";
-const SHIPPING_LABEL_PRINTER: &str = "\\\\FRONT-DESK\\Zebra  ZP 450-200 dpi";
-const SHOP_PRINTER: &str = "\\\\JIM-PC\\HP LaserJet Pro M402-M403 n-dne PCL 6";
+const FRONT_DESK_CC_PRINTER: &str = "ZDesigner GC420d";
+const SHIPPING_LABEL_PRINTER: &str = "Zebra  ZP 450-200 dpi";
+const SHOP_PRINTER: &str = "HP LaserJet Pro M402-M403 n-dne PCL 6";
 const PART_TAG_PRINTER: &str = "D550 Printer";
 
 use image::{io::Reader as ImageReader, ImageOutputFormat, DynamicImage, imageops::{rotate90, FilterType}};
@@ -24,7 +28,7 @@ use std::io::{self, Cursor, Write};
 use reqwest::Client;
 use std::path::{Path};
 use zip::read::ZipArchive;
-use base64::{engine::general_purpose::STANDARD as BASE64_STANDARD, Engine, decode};
+use base64::{engine::general_purpose::STANDARD as BASE64_STANDARD, Engine};
 use url::Url;
 
 #[derive(Deserialize, Debug)]
@@ -123,236 +127,29 @@ struct FileArgs {
 }
 
 #[derive(Deserialize, Serialize)]
-struct ShippingLabelArgs {
-  shipFromCompany: String,
-  shipFromAddress: String,
-  shipFromAddress2: String,
-  shipFromCityStateZip: String,
-  shipToCompany: String,
-  shipToAddress: String,
-  shipToAddress2: String,
-  shipToCityStateZip: String,
-  copies: i8
-}
-
-#[derive(Deserialize, Serialize)]
-struct CCLabelArgs {
-  cardNum: i64,
-  expDate: String,
-  cvv: i8,
-  cardZip: String,
-  cardName: String,
-  cardAddress: String
-}
-
-#[derive(Deserialize, Serialize)]
 struct BOLArgs {
-  shipToCompany: String,
-  shipToAddress: String,
-  shipToAddress2: String,
-  shipToCityStateZip: String,
-  shipFromCompany: String,
-  shipFromAddress: String,
-  shipFromAddress2: String,
-  shipFromCityStateZip: String,
-  shipVia: String,
+  ship_to_company: String,
+  ship_to_address: String,
+  ship_to_address_2: String,
+  ship_to_city_state_zip: String,
+  ship_from_company: String,
+  ship_from_address: String,
+  ship_from_address_2: String,
+  ship_from_city_state_zip: String,
+  ship_via: String,
   prepaid: bool,
   collect: bool,
-  thirdParty: bool
-}
-
-#[derive(Deserialize, Serialize)]
-struct ShippingInvoiceArgs {
-  billToCompany: String,
-  billToAddress: String,
-  billToAddress2: String,
-  billToCity: String,
-  billToState: String,
-  billToZip: String,
-  billToCountry: String,
-  shipToCompany: String,
-  shipToAddress: String,
-  shipToAddress2: String,
-  shipToCity: String,
-  shipToState: String,
-  shipToZip: String,
-  shipToContact: String,
-  shipToCountry: String,
-  accountNum: String,
-  paymentType: String,
-  createdBy: String,
-  soldBy: String,
-  handwrittenId: i32,
-  date: String,
-  contact: String,
-  poNum: String,
-  shipVia: String,
-  items: String,
-  invoiceNotes: String,
-  shippingNotes: String,
-  mp: String,
-  cap: String,
-  br: String,
-  fl: String,
-  setup: bool,
-  taxable: bool,
-  blind: bool,
-  npi: bool,
-  collect: bool,
-  thirdParty: bool
-}
-
-#[derive(Deserialize, Serialize)]
-struct AccountingInvoiceArgs {
-  billToCompany: String,
-  billToAddress: String,
-  billToAddress2: String,
-  billToCity: String,
-  billToState: String,
-  billToZip: String,
-  billToCountry: String,
-  shipToCompany: String,
-  shipToAddress: String,
-  shipToAddress2: String,
-  shipToCity: String,
-  shipToState: String,
-  shipToZip: String,
-  shipToContact: String,
-  shipToCountry: String,
-  accountNum: String,
-  paymentType: String,
-  createdBy: String,
-  soldBy: String,
-  handwrittenId: i32,
-  date: String,
-  contact: String,
-  poNum: String,
-  shipVia: String,
-  items: String,
-  invoiceNotes: String,
-  shippingNotes: String,
-  handwrittenTotal: String,
-  setup: bool,
-  taxable: bool,
-  blind: bool,
-  npi: bool,
-  collect: bool,
-  thirdParty: bool
+  third_party: bool
 }
 
 #[derive(Deserialize, Serialize)]
 struct CIArgs {
   company: String,
   address: String,
-  address2: String,
-  cityStateZip: String,
+  address_2: String,
+  city_state_zip: String,
   date: String,
   po: String
-}
-
-#[derive(Deserialize, Serialize)]
-struct PartTagArgs {
-  stockNum: String,
-  model: String,
-  serialNum: String,
-  hp: String,
-  location: String,
-  remarks: String,
-  date: String,
-  partNum: String,
-  rating: String,
-  hasPictures: bool,
-  copies: i8
-}
-
-#[derive(Deserialize, Serialize)]
-struct PrintReturnArgs {
-  createdBy: String,
-  date: String,
-  poNum: String,
-  id: i16,
-  invoiceDate: String,
-  billToCompany: String,
-  shipToCompany: String,
-  billToAddress: String,
-  billToCity: String,
-  billToState: String,
-  billToZip: String,
-  billToPhone: String,
-  dateCalled: String,
-  salesman: String,
-  returnReason: String,
-  returnNotes: String,
-  returnPaymentTerms: String,
-  payment: String,
-  restockFee: String,
-  items: String
-}
-
-#[derive(Deserialize, Serialize)]
-struct PrintWarrantyArgs {
-  vendor: String,
-  createdDate: String,
-  id: i16,
-  vendorWarrantyId: i16,
-  completed: String,
-  billToAddress: String,
-  shipToAddress: String,
-  claimReason: String,
-  paymentTerms: String,
-  restockFee: String,
-  vendorReport: String,
-  items: String
-}
-
-#[derive(Deserialize, Serialize)]
-struct PrintPackingSlipArgs {
-  invoiceDate: String,
-  poNum: String,
-  billToCompany: String,
-  billToAddress: String,
-  billToAddress2: String,
-  billToCityStateZip: String,
-  shipToCompany: String,
-  shipToContact: String,
-  shipToAddress: String,
-  shipToAddress2: String,
-  shipToCityStateZip: String,
-  items: String
-}
-
-#[derive(Deserialize, Serialize)]
-struct PrintPackingSlipBlindArgs {
-  invoiceDate: String,
-  billToCompany: String,
-  billToAddress: String,
-  billToAddress2: String,
-  billToCityStateZip: String,
-  shipToCompany: String,
-  shipToContact: String,
-  shipToAddress: String,
-  shipToAddress2: String,
-  shipToCityStateZip: String,
-  items: String
-}
-
-#[derive(Deserialize, Serialize)]
-struct PrintPOArgs {
-  id: i16,
-  vendor: String,
-  address: String,
-  city: String,
-  state: String,
-  zip: String,
-  phone: String,
-  fax: String,
-  paymentTerms: String,
-  purchasedFor: String,
-  specialInstructions: String,
-  comments: String,
-  date: String,
-  orderedBy: String,
-  items: String
 }
 
 #[derive(Deserialize, Serialize)]
@@ -364,14 +161,14 @@ struct EmailEndOfDayArgs {
   year: String,
   month: String,
   day: String,
-  shipVia: String,
-  trackingNumbers: Vec<String>
+  ship_via: String,
+  tracking_numbers: Vec<String>
 }
 
 #[tokio::main]
 async fn main() {
   dotenv::from_filename(".env.development").ok();
-  tauri::Builder::default()
+  let _ = tauri::Builder::default()
     .setup(|_| {
       create_directories();
       Ok(())
@@ -611,7 +408,7 @@ async fn get_part_num_images(picture_args: PictureArgs) -> Result<Vec<Picture>, 
       }
       Ok(pictures)
     }
-    Err(e) => Ok(vec![]),
+    Err(_) => Ok(vec![]),
   }
 }
 
@@ -644,7 +441,7 @@ async fn get_stock_num_images(picture_args: PictureArgs) -> Result<Vec<Picture>,
       }
       Ok(pictures)
     }
-    Err(e) => Ok(vec![]),
+    Err(_) => Ok(vec![]),
   }
 }
 
@@ -677,7 +474,7 @@ async fn get_engine_images(picture_args: PictureArgs) -> Result<Vec<Picture>, St
       }
       Ok(pictures)
     }
-    Err(e) => Ok(vec![]),
+    Err(_) => Ok(vec![]),
   }
 }
 
@@ -947,16 +744,20 @@ fn upload_file(file_args: FileArgs) -> Result<(), String> {
 }
 
 #[tauri::command]
-async fn print_shipping_label(imageData: String) -> Result<(), String> {
+async fn print_shipping_label(image_data: String) -> Result<(), String> {
   if let Ok(val) = env::var("DISABLE_PRINTING") {
     if val == "TRUE" { return Ok(()) }
   }
 
   let res = tauri::async_runtime::spawn_blocking(move || {
-    let data = decode(imageData.split(',').nth(1).unwrap()).map_err(|e| e.to_string())?;
+    let data = BASE64_STANDARD.decode(image_data.split(',').nth(1).unwrap()).map_err(|e| e.to_string())?;
     let file_path = "C:/mwd/scripts/screenshots/shipping_label.png";
     let printers = get_available_printers();
-    let printer = printers.iter().find(|&p| p.contains(&SHIPPING_LABEL_PRINTER.to_string())).cloned().unwrap_or_else(|| "".to_string());
+    let printer = if printers.contains(&SHIPPING_LABEL_PRINTER.to_string()) {
+      SHIPPING_LABEL_PRINTER.to_string()
+    } else {
+      format!("\\\\{}\\{}", FRONT_DESK_COMPUTER, SHIPPING_LABEL_PRINTER)
+    };
 
     let img = ImageReader::new(Cursor::new(&data))
       .with_guessed_format()
@@ -989,13 +790,13 @@ async fn print_shipping_label(imageData: String) -> Result<(), String> {
 }
 
 #[tauri::command]
-async fn print_cc_label(imageData: String) -> Result<(), String> {
+async fn print_cc_label(image_data: String) -> Result<(), String> {
   if let Ok(val) = env::var("DISABLE_PRINTING") {
     if val == "TRUE" { return Ok(()) }
   }
 
   let res = tauri::async_runtime::spawn_blocking(move || {
-    let data = decode(imageData.split(',').nth(1).unwrap()).map_err(|e| e.to_string())?;
+    let data = BASE64_STANDARD.decode(image_data.split(',').nth(1).unwrap()).map_err(|e| e.to_string())?;
     let file_path = "C:/mwd/scripts/screenshots/cc_label.png";
     /* 
       PRINTER DIMENSION SETTNGS (windows printer settings > printer > printer preferences):
@@ -1003,7 +804,11 @@ async fn print_cc_label(imageData: String) -> Result<(), String> {
       height: 1 in
     */
     let printers = get_available_printers();
-    let printer = printers.iter().find(|&p| p.contains(&FRONT_DESK_CC_PRINTER.to_string())).cloned().unwrap_or_else(|| "".to_string());
+    let printer = if printers.contains(&FRONT_DESK_CC_PRINTER.to_string()) {
+      FRONT_DESK_CC_PRINTER.to_string()
+    } else {
+      format!("\\\\{}\\{}", FRONT_DESK_COMPUTER, FRONT_DESK_CC_PRINTER)
+    };
 
     let img = ImageReader::new(Cursor::new(&data))
       .with_guessed_format()
@@ -1135,20 +940,20 @@ fn print_bol(args: BOLArgs) -> Result<(), String> {
 
     doc.ActivePrinter = "{}"
     "#,
-    args.shipToCompany,
-    args.shipToAddress,
-    if args.shipToAddress2 == "" {"True"} else {"False"},
-    args.shipToAddress2,
-    args.shipToCityStateZip,
-    args.shipFromCompany,
-    args.shipFromAddress,
-    if args.shipFromAddress2 == "" {"True"} else {"False"},
-    args.shipFromAddress2,
-    args.shipFromCityStateZip,
-    args.shipVia,
+    args.ship_to_company,
+    args.ship_to_address,
+    if args.ship_to_address_2 == "" {"True"} else {"False"},
+    args.ship_to_address_2,
+    args.ship_to_city_state_zip,
+    args.ship_from_company,
+    args.ship_from_address,
+    if args.ship_from_address_2 == "" {"True"} else {"False"},
+    args.ship_from_address_2,
+    args.ship_from_city_state_zip,
+    args.ship_via,
     if args.prepaid {"True"} else {"False"},
     if args.collect {"True"} else {"False"},
-    if args.thirdParty {"True"} else {"False"},
+    if args.third_party {"True"} else {"False"},
     printer
   );
 
@@ -1162,13 +967,13 @@ fn print_bol(args: BOLArgs) -> Result<(), String> {
 }
 
 #[tauri::command]
-async fn print_accounting_handwritten(imageData: String) -> Result<(), String> {
+async fn print_accounting_handwritten(image_data: String) -> Result<(), String> {
   if let Ok(val) = env::var("DISABLE_PRINTING") {
     if val == "TRUE" { return Ok(()) }
   }
 
   let res = tauri::async_runtime::spawn_blocking(move || {
-    let data = decode(imageData.split(',').nth(1).unwrap()).map_err(|e| e.to_string())?;
+    let data = BASE64_STANDARD.decode(image_data.split(',').nth(1).unwrap()).map_err(|e| e.to_string())?;
     let file_path = "C:/mwd/scripts/screenshots/accounting_handwritten.png";
     let printers = get_available_printers();
     let printer = printers.iter().find(|&p| p.contains(&FRONT_DESK_PRINTER.to_string())).cloned().unwrap_or_else(|| "".to_string());
@@ -1204,16 +1009,20 @@ async fn print_accounting_handwritten(imageData: String) -> Result<(), String> {
 }
 
 #[tauri::command]
-async fn print_shipping_handwritten(imageData: String) -> Result<(), String> {
+async fn print_shipping_handwritten(image_data: String) -> Result<(), String> {
   if let Ok(val) = env::var("DISABLE_PRINTING") {
     if val == "TRUE" { return Ok(()) }
   }
 
   let res = tauri::async_runtime::spawn_blocking(move || {
-    let data = decode(imageData.split(',').nth(1).unwrap()).map_err(|e| e.to_string())?;
+    let data = BASE64_STANDARD.decode(image_data.split(',').nth(1).unwrap()).map_err(|e| e.to_string())?;
     let file_path = "C:/mwd/scripts/screenshots/shipping_handwritten.png";
     let printers = get_available_printers();
-    let printer = printers.iter().find(|&p| p.contains(&SHOP_PRINTER.to_string())).cloned().unwrap_or_else(|| "".to_string());
+    let printer = if printers.contains(&SHOP_PRINTER.to_string()) {
+      SHOP_PRINTER.to_string()
+    } else {
+      format!("\\\\{}\\{}", SHOP_COMPUTER, SHOP_PRINTER)
+    };
 
     let img = ImageReader::new(Cursor::new(&data))
       .with_guessed_format()
@@ -1246,13 +1055,13 @@ async fn print_shipping_handwritten(imageData: String) -> Result<(), String> {
 }
 
 #[tauri::command]
-async fn print_core_handwritten(imageData: String) -> Result<(), String> {
+async fn print_core_handwritten(image_data: String) -> Result<(), String> {
   if let Ok(val) = env::var("DISABLE_PRINTING") {
     if val == "TRUE" { return Ok(()) }
   }
 
   let res = tauri::async_runtime::spawn_blocking(move || {
-    let data = decode(imageData.split(',').nth(1).unwrap()).map_err(|e| e.to_string())?;
+    let data = BASE64_STANDARD.decode(image_data.split(',').nth(1).unwrap()).map_err(|e| e.to_string())?;
     let file_path = "C:/mwd/scripts/screenshots/core_handwritten.png";
     let printers = get_available_printers();
     let printer = printers.iter().find(|&p| p.contains(&FRONT_DESK_PRINTER.to_string())).cloned().unwrap_or_else(|| "".to_string());
@@ -1318,9 +1127,9 @@ fn print_ci(args: CIArgs) -> Result<(), String> {
     doc.ActivePrinter = "{}"
     "#,
     args.company,
-    args.address2,
+    args.address_2,
     args.address,
-    args.cityStateZip,
+    args.city_state_zip,
     args.date,
     args.po,
     printer
@@ -1360,13 +1169,13 @@ fn print_coo() -> Result<(), String> {
 }
 
 #[tauri::command]
-async fn print_return(imageData: String) -> Result<(), String> {
+async fn print_return(image_data: String) -> Result<(), String> {
   if let Ok(val) = env::var("DISABLE_PRINTING") {
     if val == "TRUE" { return Ok(()) }
   }
 
   let res = tauri::async_runtime::spawn_blocking(move || {
-    let data = decode(imageData.split(',').nth(1).unwrap()).map_err(|e| e.to_string())?;
+    let data = BASE64_STANDARD.decode(image_data.split(',').nth(1).unwrap()).map_err(|e| e.to_string())?;
     let file_path = "C:/mwd/scripts/screenshots/return.png";
     let printers = get_available_printers();
     let printer = printers.iter().find(|&p| p.contains(&OFFICE_PRINTER.to_string())).cloned().unwrap_or_else(|| "".to_string());
@@ -1401,13 +1210,13 @@ async fn print_return(imageData: String) -> Result<(), String> {
 }
 
 #[tauri::command]
-async fn print_warranty(imageData: String) -> Result<(), String> {
+async fn print_warranty(image_data: String) -> Result<(), String> {
   if let Ok(val) = env::var("DISABLE_PRINTING") {
     if val == "TRUE" { return Ok(()) }
   }
 
   let res = tauri::async_runtime::spawn_blocking(move || {
-    let data = decode(imageData.split(',').nth(1).unwrap()).map_err(|e| e.to_string())?;
+    let data = BASE64_STANDARD.decode(image_data.split(',').nth(1).unwrap()).map_err(|e| e.to_string())?;
     let file_path = "C:/mwd/scripts/screenshots/warranty.png";
     let printers = get_available_printers();
     let printer = printers.iter().find(|&p| p.contains(&OFFICE_PRINTER.to_string())).cloned().unwrap_or_else(|| "".to_string());
@@ -1442,13 +1251,13 @@ async fn print_warranty(imageData: String) -> Result<(), String> {
 }
 
 #[tauri::command]
-async fn print_packing_slip(imageData: String) -> Result<(), String> {
+async fn print_packing_slip(image_data: String) -> Result<(), String> {
   if let Ok(val) = env::var("DISABLE_PRINTING") {
     if val == "TRUE" { return Ok(()) }
   }
 
   let res = tauri::async_runtime::spawn_blocking(move || {
-    let data = decode(imageData.split(',').nth(1).unwrap()).map_err(|e| e.to_string())?;
+    let data = BASE64_STANDARD.decode(image_data.split(',').nth(1).unwrap()).map_err(|e| e.to_string())?;
     let file_path = "C:/mwd/scripts/screenshots/packing_slip.png";
     let printers = get_available_printers();
     let printer = printers.iter().find(|&p| p.contains(&OFFICE_PRINTER.to_string())).cloned().unwrap_or_else(|| "".to_string());
@@ -1483,13 +1292,13 @@ async fn print_packing_slip(imageData: String) -> Result<(), String> {
 }
 
 #[tauri::command]
-async fn print_po(imageData: String) -> Result<(), String> {
+async fn print_po(image_data: String) -> Result<(), String> {
   if let Ok(val) = env::var("DISABLE_PRINTING") {
     if val == "TRUE" { return Ok(()) }
   }
 
   let res = tauri::async_runtime::spawn_blocking(move || {
-    let data = decode(imageData.split(',').nth(1).unwrap()).map_err(|e| e.to_string())?;
+    let data = BASE64_STANDARD.decode(image_data.split(',').nth(1).unwrap()).map_err(|e| e.to_string())?;
     let file_path = "C:/mwd/scripts/screenshots/po.png";
     let printers = get_available_printers();
     let printer = printers.iter().find(|&p| p.contains(&OFFICE_PRINTER.to_string())).cloned().unwrap_or_else(|| "".to_string());
@@ -1536,21 +1345,21 @@ fn email_end_of_day(args: EmailEndOfDayArgs) {
     \"<strong>Fax:</strong> (763) 450-2197\"",
     args.company.replace("\"", "\"\""),
     args.date,
-    if !args.shipVia.is_empty() {
-      format!("\"<strong>Ship Via: </strong> {}<br />\" & vbCrLf & _\n", args.shipVia.replace("\"", "\"\""))
+    if !args.ship_via.is_empty() {
+      format!("\"<strong>Ship Via: </strong> {}<br />\" & vbCrLf & _\n", args.ship_via.replace("\"", "\"\""))
     } else {
       "".to_string()
     },
-    if !args.trackingNumbers.is_empty() {
-      if args.trackingNumbers.len() > 1 {
+    if !args.tracking_numbers.is_empty() {
+      if args.tracking_numbers.len() > 1 {
         format!(
           "\"<strong>Tracking Numbers:</strong><ul>{}</ul>\" & vbCrLf & _\n",
-          args.trackingNumbers.join("").replace("\"", "\"\"")
+          args.tracking_numbers.join("").replace("\"", "\"\"")
         )
       } else {
         format!(
           "\"<strong>Tracking Number:</strong><ul>{}</ul>\" & vbCrLf & _\n",
-          args.trackingNumbers[0].replace("\"", "\"\"")
+          args.tracking_numbers[0].replace("\"", "\"\"")
         )
       }
     } else {
@@ -1591,19 +1400,19 @@ fn email_end_of_day(args: EmailEndOfDayArgs) {
 }
 
 #[tauri::command]
-async fn print_part_tag(imageData: String) -> Result<(), String> {
+async fn print_part_tag(image_data: String) -> Result<(), String> {
   if let Ok(val) = env::var("DISABLE_PRINTING") {
     if val == "TRUE" { return Ok(()) }
   }
 
   let res = tauri::async_runtime::spawn_blocking(move || {
-    let data = decode(imageData.split(',').nth(1).unwrap()).map_err(|e| e.to_string())?;
+    let data = BASE64_STANDARD.decode(image_data.split(',').nth(1).unwrap()).map_err(|e| e.to_string())?;
     let file_path = "C:/mwd/scripts/screenshots/part_tag.png";
     let printers = get_available_printers();
     let printer = if printers.contains(&PART_TAG_PRINTER.to_string()) {
       PART_TAG_PRINTER.to_string()
     } else {
-      format!("\\\\DESKTOP-NR6SQFE\\{}", PART_TAG_PRINTER)
+      format!("\\\\{}\\{}", PART_TAG_COMPUTER, PART_TAG_PRINTER)
     };
 
     let img = ImageReader::new(Cursor::new(&data))
@@ -1637,19 +1446,19 @@ async fn print_part_tag(imageData: String) -> Result<(), String> {
 }
 
 #[tauri::command]
-async fn print_engine_tag(imageData: String) -> Result<(), String> {
+async fn print_engine_tag(image_data: String) -> Result<(), String> {
   if let Ok(val) = env::var("DISABLE_PRINTING") {
     if val == "TRUE" { return Ok(()) }
   }
 
   let res = tauri::async_runtime::spawn_blocking(move || {
-    let data = decode(imageData.split(',').nth(1).unwrap()).map_err(|e| e.to_string())?;
+    let data = BASE64_STANDARD.decode(image_data.split(',').nth(1).unwrap()).map_err(|e| e.to_string())?;
     let file_path = "C:/mwd/scripts/screenshots/engine_tag.png";
     let printers = get_available_printers();
     let printer = if printers.contains(&PART_TAG_PRINTER.to_string()) {
       PART_TAG_PRINTER.to_string()
     } else {
-      format!("\\\\DESKTOP-NR6SQFE\\{}", PART_TAG_PRINTER)
+      format!("\\\\{}\\{}", PART_TAG_COMPUTER, PART_TAG_PRINTER)
     };
 
     let img = ImageReader::new(Cursor::new(&data))
@@ -1682,19 +1491,19 @@ async fn print_engine_tag(imageData: String) -> Result<(), String> {
 }
 
 #[tauri::command]
-async fn print_engine_checklist(imageData: String) -> Result<(), String> {
+async fn print_engine_checklist(image_data: String) -> Result<(), String> {
   if let Ok(val) = env::var("DISABLE_PRINTING") {
     if val == "TRUE" { return Ok(()) }
   }
 
   let res = tauri::async_runtime::spawn_blocking(move || {
-    let data = decode(imageData.split(',').nth(1).unwrap()).map_err(|e| e.to_string())?;
+    let data = BASE64_STANDARD.decode(image_data.split(',').nth(1).unwrap()).map_err(|e| e.to_string())?;
     let file_path = "C:/mwd/scripts/screenshots/engine_checklist.png";
     let printers = get_available_printers();
     let printer = if printers.contains(&PART_TAG_PRINTER.to_string()) {
       PART_TAG_PRINTER.to_string()
     } else {
-      format!("\\\\DESKTOP-NR6SQFE\\{}", PART_TAG_PRINTER)
+      format!("\\\\{}\\{}", PART_TAG_COMPUTER, PART_TAG_PRINTER)
     };
 
     let img = ImageReader::new(Cursor::new(&data))

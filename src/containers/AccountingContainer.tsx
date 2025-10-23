@@ -56,8 +56,8 @@ export default function AccountingContainer() {
         year: handwritten.date.getUTCFullYear().toString(),
         month: (handwritten.date.getUTCMonth() + 1).toString(),
         day: handwritten.date.getUTCDate().toString(),
-        shipVia: handwritten.shipVia?.name ?? '',
-        trackingNumbers: handwritten.trackingNumbers.map((num) => `<li style='margin: 0;'>${num.trackingNumber}</li>`)
+        ship_via: handwritten.shipVia?.name ?? '',
+        tracking_numbers: handwritten.trackingNumbers.map((num) => `<li style='margin: 0;'>${num.trackingNumber}</li>`)
       };
       await invoke('email_end_of_day', { args });
     }

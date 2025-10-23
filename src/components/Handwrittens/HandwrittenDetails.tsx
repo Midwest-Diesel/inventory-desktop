@@ -143,18 +143,18 @@ export default function HandwrittenDetails({
 
       const cityStateZip = `${handwritten?.shipToCity} ${handwritten?.shipToState} ${handwritten?.shipToZip}`;
       const args = {
-        shipToCompany: handwritten?.shipToCompany ?? '',
-        shipToAddress: handwritten?.shipToAddress ?? '',
-        shipToAddress2: `, ${handwritten?.shipToAddress2}`,
-        shipToCityStateZip: cityStateZip ?? '',
-        shipFromCompany: 'MIDWEST DIESEL',
-        shipFromAddress: '3051 82ND LANE NE',
-        shipFromAddress2: '',
-        shipFromCityStateZip: 'MINNEAPOLIS MN 55449',
-        shipVia: handwritten?.shipVia.name ?? '',
+        ship_to_company: handwritten?.shipToCompany ?? '',
+        ship_to_address: handwritten?.shipToAddress ?? '',
+        ship_to_address_2: `, ${handwritten?.shipToAddress2}`,
+        ship_to_city_state_zip: cityStateZip ?? '',
+        ship_from_company: 'MIDWEST DIESEL',
+        ship_from_address: '3051 82ND LANE NE',
+        ship_from_address_2: '',
+        ship_from_city_state_zip: 'MINNEAPOLIS MN 55449',
+        ship_via: handwritten?.shipVia.name ?? '',
         prepaid: (!handwritten?.isCollect && !handwritten?.isThirdParty),
         collect: handwritten?.isCollect,
-        thirdParty: handwritten?.isThirdParty
+        third_party: handwritten?.isThirdParty
       };
       await invoke('print_bol', { args });
     } else if (await ask('Print packing slip?')) {
@@ -169,18 +169,18 @@ export default function HandwrittenDetails({
 
       const cityStateZip = `${handwritten?.shipToCity} ${handwritten?.shipToState} ${handwritten?.shipToZip}`;
       const args = {
-        shipToCompany: handwritten?.shipToCompany ?? '',
-        shipToAddress: handwritten?.shipToAddress ?? '',
-        shipToAddress2: `, ${handwritten?.shipToAddress2}`,
-        shipToCityStateZip: cityStateZip ?? '',
-        shipFromCompany: '',
-        shipFromAddress: '',
-        shipFromAddress2: '',
-        shipFromCityStateZip: '',
-        shipVia: handwritten?.shipVia.name ?? '',
+        ship_to_company: handwritten?.shipToCompany ?? '',
+        ship_to_address: handwritten?.shipToAddress ?? '',
+        ship_to_address_2: `, ${handwritten?.shipToAddress2}`,
+        ship_to_city_state_zip: cityStateZip ?? '',
+        ship_from_company: '',
+        ship_from_address: '',
+        ship_from_address_2: '',
+        ship_from_city_state_zip: '',
+        ship_via: handwritten?.shipVia.name ?? '',
         prepaid: (!handwritten?.isCollect && !handwritten?.isThirdParty),
         collect: handwritten?.isCollect,
-        thirdParty: handwritten?.isThirdParty
+        third_party: handwritten?.isThirdParty
       };
       await invoke('print_bol', { args });
     } else if (await ask('Print packing slip?')) {
@@ -209,10 +209,10 @@ export default function HandwrittenDetails({
         billToAddress: handwritten?.billToAddress ?? '',
         billToAddress2: handwritten?.billToAddress2 ?? '',
         billToCityStateZip,
-        shipToCompany: handwritten?.shipToCompany ?? '',
+        ship_to_company: handwritten?.shipToCompany ?? '',
         shipToContact: handwritten?.shipToContact ?? '',
-        shipToAddress: handwritten?.shipToAddress ?? '',
-        shipToAddress2: handwritten?.shipToAddress2 ?? '',
+        ship_to_address: handwritten?.shipToAddress ?? '',
+        ship_to_address_2: handwritten?.shipToAddress2 ?? '',
         shipToCityStateZip,
         blind,
         items: chunk.map((item) => {
@@ -240,27 +240,27 @@ export default function HandwrittenDetails({
         const shipFromCityStateZip = [handwritten?.billToCity, `${handwritten?.billToState} ${handwritten?.billToZip}`].join(', ');
         const shipToCityStateZip = [handwritten?.shipToCity, `${handwritten?.shipToState} ${handwritten?.shipToZip}`].join(', ');
         const args = {
-          shipFromCompany: handwritten?.billToCompany ?? '',
-          shipFromAddress: handwritten?.billToAddress ?? '',
-          shipFromAddress2: handwritten?.billToAddress2 ? `${handwritten?.billToAddress2}\n` : '',
-          shipFromCityStateZip: shipFromCityStateZip ?? '',
-          shipToCompany: handwritten?.shipToCompany ?? '',
-          shipToAddress: handwritten?.shipToAddress ?? '',
-          shipToAddress2: handwritten?.shipToAddress2 ? `${handwritten?.shipToAddress2}\n` : '',
-          shipToCityStateZip: shipToCityStateZip ?? ''
+          ship_from_company: handwritten?.billToCompany ?? '',
+          ship_from_address: handwritten?.billToAddress ?? '',
+          ship_from_address_2: handwritten?.billToAddress2 ? `${handwritten?.billToAddress2}\n` : '',
+          ship_from_city_state_zip: shipFromCityStateZip ?? '',
+          ship_to_company: handwritten?.shipToCompany ?? '',
+          ship_to_address: handwritten?.shipToAddress ?? '',
+          ship_to_address_2: handwritten?.shipToAddress2 ? `${handwritten?.shipToAddress2}\n` : '',
+          ship_to_city_state_zip: shipToCityStateZip ?? ''
         };
         addToQue('shippingLabel', 'print_shipping_label', args, '576px', '374.4px');
       } else {
         const shipToCityStateZip = [handwritten?.shipToCity, `${handwritten?.shipToState} ${handwritten?.shipToZip}`].join(', ');
         const args = {
-          shipFromCompany: 'MIDWEST DIESEL',
-          shipFromAddress: '3051 82ND LANE NE',
-          shipFromAddress2: '',
-          shipFromCityStateZip: 'BLAINE, MN 55449',
-          shipToCompany: handwritten?.shipToCompany ?? '',
-          shipToAddress: handwritten?.shipToAddress ?? '',
-          shipToAddress2: handwritten?.shipToAddress2 ? `${handwritten?.shipToAddress2}\n` : '',
-          shipToCityStateZip: shipToCityStateZip ?? ''
+          ship_from_company: 'MIDWEST DIESEL',
+          ship_from_address: '3051 82ND LANE NE',
+          ship_from_address_2: '',
+          ship_from_city_state_zip: 'BLAINE, MN 55449',
+          ship_to_company: handwritten?.shipToCompany ?? '',
+          ship_to_address: handwritten?.shipToAddress ?? '',
+          ship_to_address_2: handwritten?.shipToAddress2 ? `${handwritten?.shipToAddress2}\n` : '',
+          ship_to_city_state_zip: shipToCityStateZip ?? ''
         };
         addToQue('shippingLabel', 'print_shipping_label', args, '576px', '374.4px');
       }
@@ -273,8 +273,8 @@ export default function HandwrittenDetails({
     const args = {
       company: handwritten?.shipToCompany ?? '',
       address: handwritten?.shipToAddress ?? '',
-      address2: (handwritten?.shipToAddress2 ? handwritten?.shipToAddress2 : cityStateZip) ?? '',
-      cityStateZip: cityStateZip && handwritten?.shipToAddress2 ? cityStateZip : '',
+      address_2: (handwritten?.shipToAddress2 ? handwritten?.shipToAddress2 : cityStateZip) ?? '',
+      city_state_zip: cityStateZip && handwritten?.shipToAddress2 ? cityStateZip : '',
       date: formatDate(handwritten?.date) ?? '',
       po: handwritten?.poNum ?? ''
     };
@@ -285,25 +285,28 @@ export default function HandwrittenDetails({
   const handlePrintReturnBOL = async () => {
     const cityStateZip = `${handwritten?.shipToCity} ${handwritten?.shipToState} ${handwritten?.shipToZip}`;
     const args = {
-      shipFromCompany: handwritten?.shipToCompany ?? '',
-      shipFromAddress: handwritten?.shipToAddress ?? '',
-      shipFromAddress2: handwritten?.shipToAddress2 ?? '',
-      shipFromCityStateZip: cityStateZip ?? '',
-      shipToCompany: 'MIDWEST DIESEL',
-      shipToAddress: '3051 82ND LANE NE',
-      shipToAddress2: '',
-      shipToCityStateZip: 'MINNEAPOLIS MN 55449',
-      shipVia: handwritten?.shipVia?.name ?? '',
+      ship_from_company: handwritten?.shipToCompany ?? '',
+      ship_from_address: handwritten?.shipToAddress ?? '',
+      ship_from_address_2: handwritten?.shipToAddress2 ?? '',
+      ship_from_city_state_zip: cityStateZip ?? '',
+      ship_to_company: 'MIDWEST DIESEL',
+      ship_to_address: '3051 82ND LANE NE',
+      ship_to_address_2: '',
+      ship_to_city_state_zip: 'MINNEAPOLIS MN 55449',
+      ship_via: handwritten?.shipVia?.name ?? '',
       prepaid: (!handwritten?.isCollect && !handwritten?.isThirdParty),
       collect: handwritten?.isCollect,
-      thirdParty: handwritten?.isThirdParty
+      third_party: handwritten?.isThirdParty
     };
     await invoke('print_bol', { args });
   };
 
   const handlePrintCCLabel = async () => {
     if (!await confirm('Print a CC label?')) return;
-    if (!cardNum || !expDate || !cvv) return;
+    if (!cardNum || !expDate || !cvv) {
+      alert('Missing cardNum, expDate, or cvv');
+      return;
+    }
     addToQue('ccLabel', 'print_cc_label', { cardNum, expDate, cvv, cardZip, cardName, cardAddress }, '200px', '135px');
     printQue();
   };
@@ -347,7 +350,7 @@ export default function HandwrittenDetails({
       year: handwritten.date.getUTCFullYear().toString(),
       month: (handwritten.date.getUTCMonth() + 1).toString(),
       day: handwritten.date.getUTCDate().toString(),
-      shipVia: handwritten.shipVia?.name ?? '',
+      ship_via: handwritten.shipVia?.name ?? '',
       trackingNumbers: handwritten.trackingNumbers.map((num) => `<li style='margin: 0;'>${num.trackingNumber}</li>`)
     };
     invoke('email_end_of_day', { args });

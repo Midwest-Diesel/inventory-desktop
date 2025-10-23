@@ -14,7 +14,7 @@
     "dev:vite": "vite --port 3000",
     "bundle:watch": "node watch-bundle-scss.cjs",
     "build": "tsc -b && vite build",
-    "start": "vite -port 3000",
+    "start": "vite --port 3000",
     "lint": "run-s lint:ts lint:scss",
     "lint:ts": "eslint .",
     "lint:scss": "stylelint **/*.scss",
