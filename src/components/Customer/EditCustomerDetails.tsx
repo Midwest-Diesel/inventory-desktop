@@ -103,7 +103,11 @@ export default function CustomerDetails({ customer, setCustomer, setIsEditing }:
     );
     if (Boolean(location) && isLocationChanged) {
       setLoc(location);
-      if (await ask('Do you want to update the map location?')) setEditLocDialogOpen(true);
+      if (await ask('Do you want to update the map location?')) {
+        setEditLocDialogOpen(true);
+      } else {
+        setIsEditing(false);
+      }
     } else {
       setIsEditing(false);
     }
