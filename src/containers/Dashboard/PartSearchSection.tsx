@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Button from "@/components/Library/Button";
 import { useAtom } from "jotai";
 import { quickPickItemIdAtom, recentQuotesAtom, selectedCustomerAtom, showSoldPartsAtom } from "@/scripts/atoms/state";
@@ -72,7 +72,6 @@ export default function PartSearchSection({ selectHandwrittenOpen, setSelectHand
   const [coreFamilyOpen, setCoreFamilyOpen] = useState(false);
   const [partsOnEngsOpen, setPartsOnEngsOpen] = useState(false);
   const [partsOnEngs, setPartsOnEngs] = useState<{ partNum: string; engines: Engine[] }[]>([]);
-  const [isValidSearch, setIsValidSearch] = useState(false);
   const [searchParams, setSearchParams] = useState<PartSearchParams | null>(null);
 
   const { data: parts, isFetching } = useQuery<PartsRes>({
@@ -91,15 +90,6 @@ export default function PartSearchSection({ selectHandwrittenOpen, setSelectHand
     },
     enabled: !!searchParams
   });
-
-  useEffect(() => {
-    const prevSearches = getStoredSearch('altPartSearches') || getStoredSearch('partSearches');
-    setIsValidSearch(
-      !!prevSearches && Object.values(prevSearches)
-        .map((v: any) => v.replace?.('*', ''))
-        .some(Boolean)
-    );
-  }, [parts, search]);
 
   const findPartsOnEngines = async () => {
     const partNum = getSearchedPartNum();
@@ -145,7 +135,7 @@ export default function PartSearchSection({ selectHandwrittenOpen, setSelectHand
 
   return (
     <div className="part-search">
-      { isValidSearch && <SalesInfoDialog open={salesInfoOpen} setOpen={setSalesInfoOpen} /> }
+      { hasSearchInput() && <SalesInfoDialog open={salesInfoOpen} setOpen={setSalesInfoOpen} /> }
       <PartsSearchDialog open={partsSearchOpen} setOpen={setPartsSearchOpen} handleSearch={handleSearch} />
       <AltPartsSearchDialog open={altPartsSearchOpen} setOpen={setAltPartsSearchOpen} handleSearch={handleSearch} />
       <PartsOnEnginesDialog open={partsOnEngsOpen} setOpen={setPartsOnEngsOpen} searchResults={partsOnEngs} />
@@ -167,13 +157,15 @@ export default function PartSearchSection({ selectHandwrittenOpen, setSelectHand
         <>
           <div className="parts-search-top-bar">
             <Button onClick={() => setAltPartsSearchOpen(true)} data-testid="alt-search-btn">Alt Parts Search</Button>
-            <Button onClick={() => setSalesInfoOpen(true)} disabled={!isValidSearch}>Sales Info</Button>
+            <Button onClick={() => setSalesInfoOpen(true)} disabled={!hasSearchInput()}>Sales Info</Button>
             <Button onClick={() => setPartsSearchOpen(true)} data-testid="part-search-btn">Parts Search</Button>
             <Button onClick={findPartsOnEngines} disabled={!getSearchedPartNum()}>On Engines</Button>
             <Button onClick={() => setShowSoldParts(!showSoldParts)}>{showSoldParts ? "Hide" : "Show"} Sold Parts</Button>
             <Button onClick={() => setCoreFamilyOpen(true)}>Search Core Family</Button>
-            <Link className="parts-search-top-bar__link"
-              href={`/compare-consist${!isObjectNull(selectedCustomer) ? `?c=${selectedCustomer.id}` : ""}`}>
+            <Link
+              className="parts-search-top-bar__link"
+              href={`/compare-consist${!isObjectNull(selectedCustomer) ? `?c=${selectedCustomer.id}` : ""}`}
+            >
               Compare / Consist
             </Link>
           </div>
