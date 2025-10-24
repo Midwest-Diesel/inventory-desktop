@@ -118,7 +118,7 @@ export default function HandwrittenItemsTable({ className, handwritten, setHandw
                       { item.partNum }
                     </td>
                     <td data-testid="item-desc">{ item.desc }</td>
-                    <td>{ item.desc === 'TAX' ? formatCurrency(taxTotal) : formatCurrency(item.unitPrice) }</td>
+                    <td>{ item.desc === 'TAX' ? formatCurrency(taxTotal) : formatCurrency(Number(item.qty) < 0 ? -Number(item.unitPrice) : item.unitPrice) }</td>
                     <td>{ formatDate(item.date) }</td>
                   </tr>
                 );
