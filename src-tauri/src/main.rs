@@ -845,10 +845,21 @@ fn print_bol(args: BOLArgs) -> Result<(), String> {
   let printer = printers.iter().find(|&p| p.contains(&FRONT_DESK_PRINTER.to_string())).cloned().unwrap_or_else(|| "".to_string());
   let vbs_script = format!(
     r#"
-    Dim doc, sheet1
+    Dim fso, src, dest, doc, sheet1
+    Set fso = CreateObject("Scripting.FileSystemObject")
+
+    src = "\\MWD1-SERVER\Server\BOLtemplate.docm"
+    dest = "C:\Users\Public\BOLtemplate.docm"
+
+    If fso.FileExists(dest) Then
+      fso.DeleteFile dest, True
+    End If
+
+    fso.CopyFile src, dest, True
+
     Set doc = CreateObject("Word.Application")
     doc.Visible = True
-    Set sheet1 = doc.Documents.Open("\\MWD1-SERVER\Server\BOLtemplate.docm")
+    Set sheet1 = doc.Documents.Open(dest, False)
 
     With sheet1.Content.Find
       .Text = "<SHIP_TO_COMPANY>"
@@ -1102,10 +1113,21 @@ fn print_ci(args: CIArgs) -> Result<(), String> {
   let printer = printers.iter().find(|&p| p.contains(&OFFICE_PRINTER.to_string())).cloned().unwrap_or_else(|| "".to_string());
   let vbs_script = format!(
     r#"
-    Dim doc, sheet1
+    Dim fso, src, dest, doc, sheet1
+    Set fso = CreateObject("Scripting.FileSystemObject")
+
+    src = "\\MWD1-SERVER\Server\COMINVtemplate.docm"
+    dest = "C:\Users\Public\COMINVtemplate.docm"
+
+    If fso.FileExists(dest) Then
+      fso.DeleteFile dest, True
+    End If
+
+    fso.CopyFile src, dest, True
+
     Set doc = CreateObject("Word.Application")
     doc.Visible = True
-    Set sheet1 = doc.Documents.Open("\\MWD1-SERVER\Server\COMINVtemplate.docm")
+    Set sheet1 = doc.Documents.Open(dest, False)
 
     Sub ReplaceAndSetColor(sheet, findText, replaceText)
       With sheet.Content.Find
@@ -1150,10 +1172,21 @@ fn print_coo() -> Result<(), String> {
   let printer = printers.iter().find(|&p| p.contains(&OFFICE_PRINTER.to_string())).cloned().unwrap_or_else(|| "".to_string());
   let vbs_script = format!(
     r#"
-    Dim doc, sheet1
+    Dim fso, src, dest, doc, sheet1
+    Set fso = CreateObject("Scripting.FileSystemObject")
+
+    src = "\\MWD1-SERVER\Server\CERTOOtemplate.docm"
+    dest = "C:\Users\Public\CERTOOtemplate.docm"
+
+    If fso.FileExists(dest) Then
+      fso.DeleteFile dest, True
+    End If
+
+    fso.CopyFile src, dest, True
+
     Set doc = CreateObject("Word.Application")
-    doc.Visible = False
-    Set sheet1 = doc.Documents.Open("\\MWD1-SERVER\Server\CERTOOtemplate.docm")
+    doc.Visible = True
+    Set sheet1 = doc.Documents.Open(dest, False)
     doc.ActivePrinter = "{}"
     "#,
     printer,
