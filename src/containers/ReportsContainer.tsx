@@ -113,11 +113,10 @@ export default function ReportsContainer() {
                 <Button onClick={() => toggleOpenedReport('sales-by-bill-to-company')}>Sales by BillToCompany</Button>
                 <Button onClick={() => toggleOpenedReport('all-companies')}>All Companies</Button>
                 <Button onClick={() => toggleOpenedReport('all-parts')}>All Parts</Button>
-                <Button onClick={() => toggleOpenedReport('part-desc')}>Single Part Description</Button>
+                <Button onClick={() => toggleOpenedReport('part-desc')}>Sales by Part Desc</Button>
                 <Button onClick={() => toggleOpenedReport('all-engines')}>All Engines</Button>
                 <Button onClick={() => toggleOpenedReport('all-sources')}>All Sources</Button>
                 <Button onClick={() => toggleOpenedReport('all-salesmen')}>All Salesmen</Button>
-                <Button onClick={() => toggleOpenedReport('the-machines')}>The Machines</Button>
                 <Button onClick={() => toggleOpenedReport('ariel-sales')}>Ariel Sales</Button>
               </div>
             </div>
@@ -133,12 +132,13 @@ export default function ReportsContainer() {
             <div className="reports-page-section">
               <h2>Misc Reports</h2>
               <div className="reports-page-section__buttons">
-                <Button onClick={() => toggleOpenedReport('handwrittens-company')}>Handwrittens - Single Company/Keyword</Button>
+                <Button onClick={() => toggleOpenedReport('handwrittens-company')}>Handwrittens by Year</Button>
                 <Button onClick={handleSearchPBB}>PBB List</Button>
                 <Button onClick={handleSearchNoLocationParts}>No Location Parts</Button>
                 <Button onClick={() => toggleOpenedReport('recent-searches')}>Recent Searches</Button>
                 <Button onClick={handleSearchOutstandingCores}>Outstanding High Cores</Button>
                 <Button onClick={() => toggleOpenedReport('pricing-changes')}>Pricing Changes</Button>
+                <Button onClick={() => toggleOpenedReport('the-machines')}>Part Availability</Button>
                 <Button onClick={() => openTable('inventory-value')}>Inventory Accounting</Button>
               </div>
             </div>

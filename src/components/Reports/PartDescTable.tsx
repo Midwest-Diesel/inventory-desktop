@@ -33,7 +33,7 @@ export default function PartDescTable({ closeTable, data }: Props) {
               <tr key={i}>
                 <td>{ row.altParts }</td>
                 <td>{ row.firstOfDesc }</td>
-                <td>{ formatCurrency(row.sumOfQtySold) }</td>
+                <td>{ row.sumOfQtySold }</td>
                 <td>{ formatCurrency(row.sales) }</td>
               </tr>
             );

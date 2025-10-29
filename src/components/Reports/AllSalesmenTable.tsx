@@ -32,7 +32,7 @@ export default function AllSalesmenTable({ closeTable, data }: Props) {
             return (
               <tr key={i}>
                 <td>{ formatCurrency(row.totalSales) }</td>
-                <td>{ formatCurrency(row.salesCost) }</td>
+                <td>{ formatCurrency(row.totalCost) }</td>
                 <td>{ formatCurrency(row.netSales) }</td>
                 <td>{ row.salesman }</td>
               </tr>

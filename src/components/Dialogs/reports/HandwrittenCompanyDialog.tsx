@@ -29,15 +29,17 @@ export default function HandwrittenCompanyDialog({ open, setOpen, openTable, set
     <Dialog
       open={open}
       setOpen={setOpen}
-      title="Single Company/Handwritten"
+      title="Handwrittens by Year"
       y={-100}
+      height={300}
+      width={300}
       className="reports-dialog"
     >
       <form onSubmit={handleSearch}>
         <CustomerDropdownId
           label="Company"
           variant={['label-full-width', 'no-margin', 'label-inline', 'label-stack']}
-          maxHeight="25rem"
+          maxHeight="10rem"
           value={customerId}
           onChange={(id: number) => setCustomerId(id)}
         />
@@ -46,6 +48,7 @@ export default function HandwrittenCompanyDialog({ open, setOpen, openTable, set
           variant={['label-stack']}
           value={year}
           onChange={(e: any) => setYear(e.target.value)}
+          type="number"
         />
 
         <div className="form__footer">

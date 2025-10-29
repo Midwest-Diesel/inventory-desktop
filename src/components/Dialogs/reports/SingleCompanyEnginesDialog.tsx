@@ -1,6 +1,5 @@
 import Button from "@/components/Library/Button";
 import Dialog from "@/components/Library/Dialog";
-import CustomerDropdownId from "@/components/Library/Dropdown/CustomerDropdownId";
 import Input from "@/components/Library/Input";
 import { reportSingleCompanyEngines } from "@/scripts/services/reportsService";
 import { parseDateInputValue } from "@/scripts/tools/stringUtils";
@@ -15,14 +14,14 @@ interface Props {
 
 
 export default function SingleCompanyEnginesDialog({ open, setOpen, openTable, setTableData }: Props) {
-  const [customerId, setCustomerId] = useState(0);
+  const [purchasedFrom, setPurchasedFrom] = useState('');
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
 
   const handleSearch = async () => {
     openTable();
     setOpen(false);
-    const res = await reportSingleCompanyEngines(customerId, startDate, endDate);
+    const res = await reportSingleCompanyEngines(purchasedFrom, startDate, endDate);
     setTableData(res);
   };
 
@@ -38,12 +37,12 @@ export default function SingleCompanyEnginesDialog({ open, setOpen, openTable, s
       className="reports-dialog"
     >
       <form onSubmit={handleSearch}>
-        <CustomerDropdownId
-          label="Company"
-          variant={['label-full-width', 'no-margin', 'label-inline', 'label-stack']}
-          maxHeight="10rem"
-          value={customerId}
-          onChange={(id: number) => setCustomerId(id)}
+        <Input
+          label="Purchased From"
+          variant={['label-stack']}
+          value={purchasedFrom}
+          onChange={(e) => setPurchasedFrom(e.target.value)}
+          required
         />
         <Input
           label="Start Date"

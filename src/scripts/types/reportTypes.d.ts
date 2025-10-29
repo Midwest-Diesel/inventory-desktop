@@ -52,7 +52,7 @@ interface AllSourcesReport {
 
 interface AllSalesmenReport {
   totalSales: number
-  salesCost: number
+  totalCost: number
   netSales: number
   salesman: string
 }

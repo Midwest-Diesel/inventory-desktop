@@ -110,18 +110,18 @@ export const reportArielSales = async (startDate: Date | null, endDate: Date | n
   }
 };
 
-export const reportSingleCompanyParts = async (customer: number, startDate: Date | null, endDate: Date | null) => {
+export const reportSingleCompanyParts = async (purchasedFrom: string, startDate: Date | null, endDate: Date | null) => {
   try {
-    const res = await api.get(`/api/reports/single-company-parts/${JSON.stringify({customer, startDate, endDate})}`);
+    const res = await api.get(`/api/reports/single-company-parts/${JSON.stringify({purchasedFrom, startDate, endDate})}`);
     return parseReportData(res.data);
   } catch (err) {
     console.error(err);
   }
 };
 
-export const reportSingleCompanyEngines = async (customer: number, startDate: Date | null, endDate: Date | null) => {
+export const reportSingleCompanyEngines = async (purchasedFrom: string, startDate: Date | null, endDate: Date | null) => {
   try {
-    const res = await api.get(`/api/reports/single-company-engines/${JSON.stringify({customer, startDate, endDate})}`);
+    const res = await api.get(`/api/reports/single-company-engines/${JSON.stringify({purchasedFrom, startDate, endDate})}`);
     return parseReportData(res.data);
   } catch (err) {
     console.error(err);

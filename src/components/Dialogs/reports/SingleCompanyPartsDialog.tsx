@@ -1,6 +1,5 @@
 import Button from "@/components/Library/Button";
 import Dialog from "@/components/Library/Dialog";
-import CustomerDropdownId from "@/components/Library/Dropdown/CustomerDropdownId";
 import Input from "@/components/Library/Input";
 import { reportSingleCompanyParts } from "@/scripts/services/reportsService";
 import { parseDateInputValue } from "@/scripts/tools/stringUtils";
@@ -15,14 +14,14 @@ interface Props {
 
 
 export default function SingleCompanyPartsDialog({ open, setOpen, openTable, setTableData }: Props) {
-  const [customerId, setCustomerId] = useState(0);
+  const [purchasedFrom, setPurchasedFrom] = useState('');
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
 
   const handleSearch = async () => {
     openTable();
     setOpen(false);
-    const res = await reportSingleCompanyParts(customerId, startDate, endDate);
+    const res = await reportSingleCompanyParts(purchasedFrom, startDate, endDate);
     setTableData(res);
   };
 
@@ -38,19 +37,19 @@ export default function SingleCompanyPartsDialog({ open, setOpen, openTable, set
       className="reports-dialog"
     >
       <form onSubmit={handleSearch}>
-        <CustomerDropdownId
-          label="Company"
-          variant={['label-full-width', 'no-margin', 'label-inline', 'label-stack']}
-          maxHeight="10rem"
-          value={customerId}
-          onChange={(id: number) => setCustomerId(id)}
+        <Input
+          label="Purchased From"
+          variant={['label-stack']}
+          value={purchasedFrom}
+          onChange={(e) => setPurchasedFrom(e.target.value)}
+          required
         />
         <Input
           label="Start Date"
           variant={['label-stack']}
           type="date"
           value={parseDateInputValue(startDate)}
-          onChange={(e: any) => setStartDate(new Date(e.target.value))}
+          onChange={(e) => setStartDate(new Date(e.target.value))}
           required
         />
         <Input
@@ -58,7 +57,7 @@ export default function SingleCompanyPartsDialog({ open, setOpen, openTable, set
           variant={['label-stack']}
           type="date"
           value={parseDateInputValue(endDate)}
-          onChange={(e: any) => setEndDate(new Date(e.target.value))}
+          onChange={(e) => setEndDate(new Date(e.target.value))}
           required
         />
 
