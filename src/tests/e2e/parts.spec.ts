@@ -62,10 +62,12 @@ test.describe('Parts', () => {
     await page.getByTestId('part-num-link').first().click();
     await page.waitForLoadState('networkidle');
     await page.getByTestId('edit-btn').click();
+    await expect(page.getByTestId('alt-parts')).toHaveText('9N3240, 9N3242, 7L0406');
 
     page.off('dialog', onAddAltPartsDialog);
     page.on('dialog', onRemoveAltPartsDialog);
     await page.getByTestId('remove-alts').click();
+    await page.waitForLoadState('networkidle');
     await page.getByTestId('save-btn').click();
     await page.waitForLoadState('networkidle');
     await expect(page.getByTestId('alt-parts')).toHaveText('9N3240');
@@ -74,6 +76,8 @@ test.describe('Parts', () => {
     await page.waitForLoadState('networkidle');
     await altSearch(page, { partNum: '7L0406' });
     await page.getByTestId('part-num-link').first().click();
+    await page.waitForLoadState('networkidle');
+    await page.getByTestId('edit-btn').click();
     await expect(page.getByTestId('alt-parts')).toHaveText('7L0406');
   });
 });

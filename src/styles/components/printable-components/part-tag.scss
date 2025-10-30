@@ -4,6 +4,9 @@
   padding: 1rem;
   text-align: center;
   font-size: 60px;
+  position: relative;
+  height: 100%;
+  width: 100%;
 
   h1 {
     font-size: 170px;
@@ -18,7 +21,7 @@
     margin: 0;
 
     h1 {
-      margin: 2.2rem 0 -2rem;
+      margin: -2rem 0 0;
     }
 
     img {
@@ -46,14 +49,17 @@
     transform: rotate(90deg);
     padding: 0 0 3.5rem;
     height: 0;
+    margin-top: 5rem;
   }
 
   &__barcode {
-    transform: rotate(-90deg);
     position: absolute;
-    right: 0;
-    top: 0;
-    bottom: 0;
+    right: 11.5rem;
+    top: 50%;
+    width: fit-content;
+    height: fit-content;
+    transform: rotate(-90deg) translateX(50%);
+    transform-origin: top right;
   }
 
   &__remarks {
@@ -100,6 +106,7 @@
   &__date {
     text-align: start;
     font-size: 40px;
+    margin-left: 1rem;
   }
 
   &__middle {
@@ -116,17 +123,18 @@
     padding: 0 0 3.5rem;
     height: 0;
     position: absolute;
-    left: 0;
+    left: 1rem;
     top: 60%;
   }
 
   &__barcode {
-    transform: rotate(-90deg);
     position: absolute;
-    height: 0;
-    right: 0;
-    top: 60%;
+    right: 11.5rem;
+    top: 50%;
     width: fit-content;
+    height: fit-content;
+    transform: rotate(-90deg) translateX(50%);
+    transform-origin: top right;
   }
 }
 

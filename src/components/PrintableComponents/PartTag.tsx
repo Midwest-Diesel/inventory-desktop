@@ -34,9 +34,10 @@ export default function PartTag({ data }: Props) {
       <div className="part-tag__middle">
         <p className="part-tag__location">{ location.replaceAll(' ', '_') }</p>
         <p className="part-tag__remarks">{ remarks }</p>
-        <div className="part-tag__barcode">
-          <Barcode value={stockNum ?? ''} />
-        </div>
+      </div>
+      
+      <div className="part-tag__barcode">
+        <Barcode value={stockNum ?? ''} />
       </div>
 
       <div className="part-tag__bottom-row">

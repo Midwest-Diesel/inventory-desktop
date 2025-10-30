@@ -478,14 +478,14 @@ export default function EditPartDetails({ part, setPart, setIsEditingPart, partC
                       {!loadingProgress ?
                         user.accessLevel >= 2 ?
                           <>
-                            <p style={{ margin: '0.8rem' }}>{ altParts.join(', ') }</p>
+                            <p style={{ margin: '0.8rem' }} data-testid="alt-parts">{ altParts.join(', ') }</p>
                             <div className="edit-part-details__alt-parts-btn-container">
                               <Button type="button" onClick={handleAddAltPart} data-testid="add-alts">Add</Button>
                               <Button variant={['danger']} type="button" onClick={handleRemoveAltPart} data-testid="remove-alts">Remove</Button>
                             </div>
                           </>
                           :
-                          <p style={{ marginLeft: '0.8rem' }}>{ altParts.join(', ') }</p>
+                          <p style={{ marginLeft: '0.8rem' }} data-testid="alt-parts">{ altParts.join(', ') }</p>
                         :
                         <center>
                           <p>Modifying Alts</p>
