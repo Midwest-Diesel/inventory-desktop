@@ -1,4 +1,4 @@
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import Dialog from "../Library/Dialog";
 import { getPartInfoByPartNum } from "@/scripts/services/partsService";
 import Input from "../Library/Input";
@@ -17,6 +17,10 @@ export default function AddOnAltPartsDialog({ open, setOpen, addOn, partNumList 
   const [autofillPartNum, setAutofillPartNum] = useState('');
   const [partNum, setPartNum] = useState('');
   const [alts, setAlts] = useState<string[]>(addOn?.altParts ?? []);
+
+  useEffect(() => {
+    setAlts(addOn?.altParts ?? []);
+  }, [partNumList]);
 
   const autofillFromPartNum = (partNum: string) => {
     if (!partNum) {

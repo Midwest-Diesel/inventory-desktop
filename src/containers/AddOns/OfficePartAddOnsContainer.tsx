@@ -40,7 +40,7 @@ export default function OfficePartAddOnsContainer() {
     return () => {
       channel.unsubscribe();
     };
-  }, []);
+  }, [selectedAddOnData]);
 
   const refreshAddOnsInsert = (e: RealtimePostgresInsertPayload<AddOn>) => {
     setAddons((prev) => {

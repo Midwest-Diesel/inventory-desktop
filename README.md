@@ -27,7 +27,7 @@ This application is currently only compatible with windows.
   - `npm run publish`
   - Commit and push
 
-Sometimes it can take 5 min for the update to propagate if you push multiple updates in close proximity.
+Sometimes it can take around 5 min for the update to propagate if you push multiple updates in close proximity.
 
 ## Testing
 Make sure you run `npm run dev:test` to host the test client.
