@@ -18,8 +18,6 @@ const parsePoDataRes = (data: any) => {
     return {
       ...d,
       id: Number(d.id),
-      shipToZip: Number(d.shipToZip),
-      vendorZip: Number(d.vendorZip),
       date: parseResDate(`${d.date}`),
       poReceivedItems: d.poReceivedItems.filter((item) => item)
     };

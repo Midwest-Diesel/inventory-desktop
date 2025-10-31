@@ -1,5 +1,5 @@
 import Button from "@/components/Library/Button";
-import { addMapLocation, deleteMapLocation, editMapLocation, fixMapLocation, getBrokenLocations, getGeoLocation, getMapLocations, getMapTopCustomers } from "@/scripts/services/mapService";
+import { addMapLocation, deleteMapLocation, editMapLocation, fixMapLocation, getBrokenLocations, getGeoLocation, getMapLocations, getMapNewLeads, getMapTopCustomers } from "@/scripts/services/mapService";
 import { FormEvent, Fragment, useEffect, useRef, useState } from "react";
 import { Loader } from "@googlemaps/js-api-loader";
 import { MarkerClusterer } from "@googlemaps/markerclusterer";
@@ -16,7 +16,7 @@ import Select from "@/components/Library/Select/Select";
 import Pagination from "@/components/Library/Pagination";
 import AddMapLocationDialog from "@/components/Dialogs/map/AddMapLocationDialog";
 import EditMapLocationDialog from "@/components/Dialogs/map/EditMapLocationDialog";
-import Loading from "@/components/Library/Loading";
+import { useQuery } from "@tanstack/react-query";
 
 type LocationFormData = {
   id?: number
@@ -28,42 +28,42 @@ type LocationFormData = {
 };
 
 
+const START_POS = { lat: 44.98022676149887, lng: -93.35875786260717 };
+const LIMIT = 30;
+
 export default function MapContainer() {
   const [user] = useAtom<User>(userAtom);
-  const startPos = { lat: 44.980227, lng: -93.358758 };
-  const mapRef = useRef<HTMLDivElement | null>(null);
+  const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<google.maps.Map | null>(null);
   const markersRef = useRef<Map<number, google.maps.marker.AdvancedMarkerElement>>(new Map());
-  const [usersList, setUsersList] = useState<User[]>([]);
   const [listOfLocations, setListOfLocations] = useState<MapLocation[]>([]);
   const [filteredLocations, setFilteredLocations] = useState<MapLocation[]>([]);
   const [listDisplayItems, setListDisplayItems] = useState<MapLocation[]>([]);
   const [newLocationDialogOpen, setNewLocationDialogOpen] = useState(false);
   const [editLocationDialogOpen, setEditLocationDialogOpen] = useState(false);
   const [editLocationData, setEditLocationData] = useState<MapLocation | null>(null);
-  const [filterName, setFilterName] = useState("");
-  const [filterType, setFilterType] = useState("all");
-  const [filterCustomerType, setFilterCustomerType] = useState("all");
-  const [filterSalesman, setFilterSalesman] = useState("all");
-  const [locationsCount, setLocationsCount] = useState(0);
+  const [filterName, setFilterName] = useState('');
+  const [filterType, setFilterType] = useState('all');
+  const [filterCustomerType, setFilterCustomerType] = useState('all');
+  const [filterSalesman, setFilterSalesman] = useState('all');
   const [cluster, setCluster] = useState<MarkerClusterer | null>(null);
-  const [loading, setLoading] = useState(true);
-  const LIMIT = 30;
+
+  const { data: usersList = [] } = useQuery<User[]>({
+    queryKey: ['usersList'],
+    queryFn: getAllUsers
+  });
 
   useEffect(() => {
     const fetchData = async () => {
-      const users = await getAllUsers();
-      setUsersList(users);
       const res = await getMapLocations();
       setListOfLocations(res);
       setFilteredLocations(res);
       handleFilters(res);
-      setLoading(false);
     };
     fetchData();
 
     const loader = new Loader({
-      apiKey: import.meta.env.VITE_PUBLIC_MAPS_API ?? '',
+      apiKey: process.env.NEXT_PUBLIC_MAPS_API!,
       version: 'weekly'
     });
 
@@ -71,8 +71,8 @@ export default function MapContainer() {
       if (!mapRef.current) return;
       const map = new google.maps.Map(mapRef.current, {
         zoom: 9,
-        center: startPos,
-        mapId: 'a2dddb21852be68532c48ddd',
+        center: START_POS,
+        mapId: 'ldT4&DjKDaAaivn%uumtvEya@Jxw9CC', // Map style
         mapTypeControl: false,
         streetViewControl: false
       });
@@ -85,8 +85,17 @@ export default function MapContainer() {
     let clickEvent: any;
     let closeWindowsEvent: any;
 
+    handlePageChange(null, 1);
+
+    supabase
+      .channel('mapLocations')
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'mapLocations' }, addRealtimeMapChanges)
+      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'mapLocations' }, editRealtimeMapChanges)
+      .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'mapLocations' }, deleteRealtimeMapChanges)
+      .subscribe();
+    
     const loadMarkers = async () => {
-      const { AdvancedMarkerElement, PinElement } = await google.maps.importLibrary("marker") as google.maps.MarkerLibrary;
+      const { AdvancedMarkerElement, PinElement } = await google.maps.importLibrary('marker') as google.maps.MarkerLibrary;
       const { InfoWindow } = google.maps;
       const infoWindow = new InfoWindow();
       const markers: any[] = [];
@@ -101,7 +110,7 @@ export default function MapContainer() {
           borderColor: border,
           glyphColor: 'white',
           glyph: getPinIcon(loc),
-          scale: 0.9
+          scale: 0.9,
         });
     
         const marker = new AdvancedMarkerElement({
@@ -109,7 +118,7 @@ export default function MapContainer() {
           position: loc.location,
           title: loc.address,
           content: pin.element,
-          gmpClickable: true
+          gmpClickable: true,
         });
         markers.push(marker);
     
@@ -138,30 +147,19 @@ export default function MapContainer() {
     loadMarkers();
 
     return () => {
-      if (closeWindowsEvent) closeWindowsEvent.removeEventListener();
+      closeWindowsEvent && closeWindowsEvent.removeEventListener();
       google.maps.event.removeListener(clickEvent);
     };    
   }, [filteredLocations, listOfLocations, mapInstanceRef]);
 
-  useEffect(() => {
-    const channel = supabase
-      .channel('mapLocations')
-      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'mapLocations' }, addRealtimeMapChanges)
-      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'mapLocations' }, editRealtimeMapChanges)
-      .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'mapLocations' }, deleteRealtimeMapChanges);
-    channel.subscribe();
-    
-    return () => {
-      channel.unsubscribe();
-    };
-  }, []);
-
   const addRealtimeMapChanges = async (e: RealtimePostgresInsertPayload<MapLocation>) => {
     const payload: any = e.new;
     const customer = payload.customerId ? await getCustomerById(payload.customerId) : null;
-    const salesman = usersList.find((u) => u.id === payload.salesmanId)?.initials;
-    const newSearchData = { ...e.new, date: parseResDate(e.new.date as any), salesman, customer, location: { lat: payload.lat, lng: payload.lng }};
-    const newLocations: any[] = [newSearchData, ...listOfLocations];
+    const salesman = usersList.find((u) => u.id === payload.salesmanId)?.initials ?? '';
+    const date = parseResDate(e.new.date as any);
+    if (!date) return;
+    const newSearchData: MapLocation = { ...e.new, date, salesman, customer, location: { lat: payload.lat, lng: payload.lng }};
+    const newLocations: MapLocation[] = [newSearchData, ...listOfLocations];
     setListOfLocations(newLocations);
     handleFilters(newLocations);
   };
@@ -169,9 +167,11 @@ export default function MapContainer() {
   const editRealtimeMapChanges = async (e: RealtimePostgresUpdatePayload<MapLocation>) => {
     const payload: any = e.new;
     const customer = payload.customerId ? await getCustomerById(payload.customerId) : null;
-    const salesman = usersList.find((u) => u.id === payload.salesmanId)?.initials;
-    const newSearchData = { ...e.new, date: parseResDate(e.new.date as any), salesman, customer, location: { lat: payload.lat, lng: payload.lng }};
-    const newLocations: any[] = listOfLocations.map((loc) => {
+    const salesman = usersList.find((u) => u.id === payload.salesmanId)?.initials ?? '';
+    const date = parseResDate(e.new.date as any);
+    if (!date) return;
+    const newSearchData: MapLocation = { ...e.new, date, salesman, customer, location: { lat: payload.lat, lng: payload.lng }};
+    const newLocations: MapLocation[] = listOfLocations.map((loc) => {
       if (loc.id === newSearchData.id)
         return newSearchData;
       else
@@ -188,41 +188,39 @@ export default function MapContainer() {
 
   const handlePageChange = (_: any, page: number) => {
     setListDisplayItems(filteredLocations.slice((page - 1) * LIMIT, page * LIMIT));
-    setLocationsCount(filteredLocations.length);
   };
   
   const getPinStyles = (str: string) => {
     switch (str) {
-      case 'BS':
-        return { bg: '#3C89D5', border: '#3C74D5' };
-      case 'MR':
-        return { bg: '#D3640A', border: '#CB5E05' };
-      case 'JS':
-        return { bg: '#6B4E43', border: '#60453C' };
-      case 'TT':
-        return { bg: '#741CDA', border: '#6B18CA' };
-      case 'JF':
-        return { bg: '#0A9618', border: '#088615' };
-      case 'JMF':
-        return { bg: '#01A987', border: '#019578' };
-      case 'vendor':
-        return { bg: '#555555', border: '#494949' };
-      default:
-        return { bg: '', border: '' };
+    case 'BS':
+      return { bg: '#3C89D5', border: '#3C74D5' };
+    case 'MR':
+      return { bg: '#D3640A', border: '#CB5E05' };
+    case 'JS':
+      return { bg: '#6B4E43', border: '#60453C' };
+    case 'TT':
+      return { bg: '#741CDA', border: '#6B18CA' };
+    case 'JF':
+      return { bg: '#0A9618', border: '#088615' };
+    case 'JMF':
+      return { bg: '#01A987', border: '#019578' };
+    case 'vendor':
+      return { bg: '#555555', border: '#494949' };
+    default:
+      return { bg: '', border: '' };
     }
   };
 
   const getPinIcon = (loc: MapLocation) => {
     switch (loc.type) {
-      case 'customer':
-        return loc.salesman;
-      case 'vendor': {
-        const img = document.createElement('img');
-        img.src = '/images/shop.svg';
-        return img;
-      }
-      default:
-        return '';
+    case 'customer':
+      return loc.salesman;
+    case 'vendor':
+      const img = document.createElement('img');
+      img.src = '/images/shop.svg';
+      return img;
+    default:
+      return '';
     }
   };
 
@@ -233,8 +231,9 @@ export default function MapContainer() {
 
   const handleViewLoc = (loc: any) => {
     panTo(loc);
-    const zoom = mapInstanceRef.current?.getZoom() ?? 0;
-    mapInstanceRef.current?.setZoom(zoom >= 15 ? zoom : 15);
+    if (!mapInstanceRef.current) return;
+    const zoom = Number(mapInstanceRef.current.getZoom());
+    mapInstanceRef.current.setZoom(zoom >= 15 ? zoom : 15);
   };
 
   const handleDeleteLocation = async (loc: MapLocation) => {
@@ -244,8 +243,8 @@ export default function MapContainer() {
 
   const handleAddLocation = async (name: string, location: { lat: number, lng: number }, type: MapLocationType, customerId: number | null, notes: string) => {
     const geocoder = new window.google.maps.Geocoder();
-    await geocoder.geocode({ location }, async (results: any, status: string) => {
-      if (status === "OK") {
+    await geocoder.geocode({ location }, async (results, status) => {
+      if (status === 'OK' && results) {
         if (results[0]) {
           const address = results[0].formatted_address;
           const loc = results[0].geometry.location;
@@ -253,15 +252,15 @@ export default function MapContainer() {
           await addMapLocation({ name, address: parsedAddress, ...location, type, salesmanId: user.id, legacyId: customerId, notes, date: new Date() });
         }
       } else {
-        console.error("Geocoder failed due to: " + status);
+        console.error('Geocoder failed due to: ' + status);
       }
     });
   };
 
   const handleEditLocation = async (id: number, name: string, location: { lat: number, lng: number }, type: MapLocationType, customerId: number | null, notes: string) => {
     const geocoder = new window.google.maps.Geocoder();
-    await geocoder.geocode({ location }, async (results: any, status: string) => {
-      if (status === "OK") {
+    await geocoder.geocode({ location }, async (results, status) => {
+      if (status === 'OK' && results) {
         if (results[0]) {
           const address = results[0].formatted_address;
           const loc = results[0].geometry.location;
@@ -269,7 +268,7 @@ export default function MapContainer() {
           await editMapLocation({ id, name, address: parsedAddress, ...location, type, legacyId: customerId, notes });
         }
       } else {
-        console.error("Geocoder failed due to: " + status);
+        console.error('Geocoder failed due to: ' + status);
       }
     });
   };
@@ -293,16 +292,15 @@ export default function MapContainer() {
   };
 
   const handleSubmitEditLocation = async (data: LocationFormData) => {
-    if (!data.id) return;
     const loc = await getGeoLocation(data.address);
     if (loc.length === 0) return;
     const { lat, lng } = loc[0].geometry.location;
-    handleEditLocation(data.id, data.name, { lat, lng }, data.type, data.customerId, data.notes);
+    handleEditLocation(Number(data.id), data.name, { lat, lng }, data.type, data.customerId, data.notes);
     panTo({ lat, lng });
   };
 
   const handleFilters = (locations: MapLocation[]) => {
-    if (cluster) cluster.clearMarkers();
+    cluster && cluster.clearMarkers();
     const filteredLocations = locations.filter((loc) => {
       const matchesName = filterName === '' || loc.name.toLowerCase().includes(filterName.toLowerCase());
       const matchesType = filterType === 'all' || loc.type === filterType;
@@ -314,7 +312,7 @@ export default function MapContainer() {
   };
 
   const handleClearFilters = () => {
-    if (cluster) cluster.clearMarkers();
+    cluster && cluster.clearMarkers();
     setFilterName('');
     setFilterType('all');
     setFilterCustomerType('all');
@@ -323,10 +321,18 @@ export default function MapContainer() {
   };
 
   const handleFilterTopCustomers = async () => {
-    if (cluster) cluster.clearMarkers();
+    cluster && cluster.clearMarkers();
     const topCustomers: number[] = await getMapTopCustomers();
     const newList = listOfLocations.filter((loc) => {
       return loc.customer && topCustomers.includes(loc.customer.id);
+    });
+    setFilteredLocations(newList);
+  };
+
+  const handleFilterNewLeads = async () => {
+    const newLeads: number[] = await getMapNewLeads();
+    const newList = listOfLocations.filter((loc) => {
+      return loc.customer && newLeads.includes(loc.customer.id);
     });
     setFilteredLocations(newList);
   };
@@ -354,7 +360,7 @@ export default function MapContainer() {
   
 
   return (
-    <>
+    <div className="map-page-container">
       <form
         className="map-page-filters"
         onSubmit={(e) => {
@@ -413,64 +419,59 @@ export default function MapContainer() {
           <Button type="submit">Filter</Button>
           <Button type="button" onClick={handleClearFilters}>Clear Filters</Button>
           <br />
-          <Button type="button" onClick={handleFilterTopCustomers}>Top Customers</Button>
+          <Button type="button" onClick={handleFilterTopCustomers}>Top 100 Customers</Button>
           {/* <Button type="button" onClick={handleFilterNewLeads}>New Leads</Button> */}
         </div>
       </form>
 
-      {loading ?
-        <Loading />
-        :
-        <div className="map-page">
-          <AddMapLocationDialog open={newLocationDialogOpen} setOpen={setNewLocationDialogOpen} onSubmit={handleSubmitNewLocation} />
-          {editLocationDialogOpen &&
-            <EditMapLocationDialog
-              open={editLocationDialogOpen}
-              setOpen={setEditLocationDialogOpen}
-              data={editLocationData}
-              onSubmit={handleSubmitEditLocation}
-            />
-          }
+      <div className="map-page">
+        <AddMapLocationDialog open={newLocationDialogOpen} setOpen={setNewLocationDialogOpen} onSubmit={handleSubmitNewLocation} />
+        {editLocationDialogOpen &&
+          <EditMapLocationDialog
+            open={editLocationDialogOpen}
+            setOpen={setEditLocationDialogOpen}
+            data={editLocationData}
+            onSubmit={handleSubmitEditLocation}
+          />
+        }
 
-          <div ref={mapRef} className="map-page__map"></div>
+        <div ref={mapRef} className="map-page__map"></div>
 
-          <div className="map-page__right-side">
-            <form className="map-page__right-side-search" onSubmit={handleAdd}>
-              <Button type="submit">Add</Button>
-              { user.id === 1 && <Button type="button" onClick={handleFixCoords}>Fix Coords</Button> }
-            </form>
+        <div className="map-page__right-side">
+          <form className="map-page__right-side-search" onSubmit={handleAdd}>
+            <Button type="submit">Add</Button>
+            { user.id === 1 && <Button type="button" onClick={handleFixCoords}>Fix Coords</Button> }
+          </form>
 
-            <div className="map-page__pagination-container">
-              <div className="map-locations">
-                {listDisplayItems.map((loc: MapLocation) => {
-                  return (
-                    <Fragment key={loc.id}>
-                      <div
-                        className="map-locations__item"
-                      >
-                        <h3>{ loc.name }</h3>
-                        <p>{ loc.address }</p>
-                        <div className="map-locations__btn-container">
-                          <Button onClick={() => handleViewLoc(loc.location)}>View</Button>
-                          <Button onClick={() => handleEdit(loc)}>Edit</Button>
-                          <Button onClick={() => handleDeleteLocation(loc)}>Delete</Button>
-                        </div>
+          <div className="map-page__pagination-container">
+            <div className="map-locations">
+              {listDisplayItems.map((loc: MapLocation) => {
+                return (
+                  <Fragment key={loc.id}>
+                    <div className="map-locations__item">
+                      <h3>{ loc.name }</h3>
+                      <p>{ loc.address }</p>
+                      <div className="map-locations__btn-container">
+                        <Button onClick={() => handleViewLoc(loc.location)}>View</Button>
+                        <Button onClick={() => handleEdit(loc)}>Edit</Button>
+                        <Button onClick={() => handleDeleteLocation(loc)}>Delete</Button>
                       </div>
-                    </Fragment>
-                  );
-                })}
-                <Pagination
-                  data={filteredLocations}
-                  setData={handlePageChange}
-                  pageCount={locationsCount}
-                  pageSize={LIMIT}
-                  buttonsDisplayed={3}
-                />
-              </div>
+                    </div>
+                  </Fragment>
+                );
+              })}
             </div>
+
+            <Pagination
+              data={filteredLocations}
+              setData={handlePageChange}
+              pageCount={filteredLocations.length}
+              pageSize={LIMIT}
+              buttonsDisplayed={3}
+            />
           </div>
         </div>
-      }
-    </>
+      </div>
+    </div>
   );
 }

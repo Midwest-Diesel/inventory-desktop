@@ -11,6 +11,7 @@ import { PreventNavigation } from "../PreventNavigation";
 import Checkbox from "../Library/Checkbox";
 import { ask } from "@/scripts/config/tauri";
 import TextArea from "../Library/TextArea";
+import VendorSelect from "../Library/Select/VendorSelect";
 
 interface Props {
   poData: PO
@@ -153,8 +154,8 @@ export default function EditPoDetails({ poData, setPo, setIsEditing, poItems, po
     setPoItems([...poItems, { ...newItem, id }]);
   };
 
-  const handleChangeVendor = async (vendor: Vendor) => {
-    setPurchasedFrom(vendor.name ?? '');
+  const handleChangeVendor = async (vendor: string) => {
+    setPurchasedFrom(vendor);
   };
 
 
@@ -213,11 +214,10 @@ export default function EditPoDetails({ poData, setPo, setIsEditing, poItems, po
                   <tr>
                     <th>Vendor</th>
                     <td>
-                      <VendorDropdown
-                        variant={['label-full-width', 'no-margin', 'label-full-height', 'fill']}
+                      <VendorSelect
+                        variant={['label-full-width']}
                         value={purchasedFrom}
-                        onChange={(vendor: Vendor) => handleChangeVendor(vendor)}
-                        maxHeight="14rem"
+                        onChange={(e) => handleChangeVendor(e.target.value)}
                       />
                     </td>
                   </tr>

@@ -82,8 +82,8 @@ export default function WarrantySearchDialog({ open, setOpen, limit }: Props) {
           onChange={(e: any) => setStatus(e.target.value)}
         >
           <option value="">Both</option>
-          <option value="TRUE">True</option>
-          <option value="FALSE">False</option>
+          <option value="TRUE">Closed</option>
+          <option value="FALSE">Open</option>
         </Select>
 
         <div className="form__footer">

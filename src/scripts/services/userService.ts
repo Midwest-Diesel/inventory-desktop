@@ -22,12 +22,13 @@ export const getUser = async (): Promise<User | null> => {
   }
 };
 
-export const getAllUsers = async () => {
+export const getAllUsers = async (): Promise<User[]> => {
   try {
     const res = await api.get('/api/account/all');
     return res.data;
   } catch (err) {
     console.error(`Unrelated Error: ${err}`);
+    return [];
   }
 };
 

@@ -11,6 +11,10 @@
   }
 }
 
+.map-page-container {
+  height: 83vh;
+}
+
 .map-page {
   border: none;
   height: 90%;
@@ -24,7 +28,7 @@
   }
 
   &__right-side {
-    min-width: 20%;
+    min-width: 25%;
     max-height: 49.3rem;
 
     &-search {
