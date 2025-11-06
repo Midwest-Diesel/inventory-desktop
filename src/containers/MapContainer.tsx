@@ -1,5 +1,5 @@
 import Button from "@/components/Library/Button";
-import { addMapLocation, deleteMapLocation, editMapLocation, fixMapLocation, getBrokenLocations, getGeoLocation, getMapLocations, getMapNewLeads, getMapTopCustomers } from "@/scripts/services/mapService";
+import { addMapLocation, deleteMapLocation, editMapLocation, fixMapLocation, getBrokenLocations, getGeoLocation, getMapLocations, getMapTopCustomers } from "@/scripts/services/mapService";
 import { FormEvent, Fragment, useEffect, useRef, useState } from "react";
 import { Loader } from "@googlemaps/js-api-loader";
 import { MarkerClusterer } from "@googlemaps/markerclusterer";
@@ -28,7 +28,7 @@ type LocationFormData = {
 };
 
 
-const START_POS = { lat: 44.98022676149887, lng: -93.35875786260717 };
+const START_POS = { lat: 44.98022677, lng: -93.35875787 };
 const LIMIT = 30;
 
 export default function MapContainer() {
@@ -110,7 +110,7 @@ export default function MapContainer() {
           borderColor: border,
           glyphColor: 'white',
           glyph: getPinIcon(loc),
-          scale: 0.9,
+          scale: 0.9
         });
     
         const marker = new AdvancedMarkerElement({
@@ -118,7 +118,7 @@ export default function MapContainer() {
           position: loc.location,
           title: loc.address,
           content: pin.element,
-          gmpClickable: true,
+          gmpClickable: true
         });
         markers.push(marker);
     
@@ -147,7 +147,7 @@ export default function MapContainer() {
     loadMarkers();
 
     return () => {
-      closeWindowsEvent && closeWindowsEvent.removeEventListener();
+      closeWindowsEvent?.removeEventListener();
       google.maps.event.removeListener(clickEvent);
     };    
   }, [filteredLocations, listOfLocations, mapInstanceRef]);
@@ -192,35 +192,36 @@ export default function MapContainer() {
   
   const getPinStyles = (str: string) => {
     switch (str) {
-    case 'BS':
-      return { bg: '#3C89D5', border: '#3C74D5' };
-    case 'MR':
-      return { bg: '#D3640A', border: '#CB5E05' };
-    case 'JS':
-      return { bg: '#6B4E43', border: '#60453C' };
-    case 'TT':
-      return { bg: '#741CDA', border: '#6B18CA' };
-    case 'JF':
-      return { bg: '#0A9618', border: '#088615' };
-    case 'JMF':
-      return { bg: '#01A987', border: '#019578' };
-    case 'vendor':
-      return { bg: '#555555', border: '#494949' };
-    default:
-      return { bg: '', border: '' };
+      case 'BS':
+        return { bg: '#3C89D5', border: '#3C74D5' };
+      case 'MR':
+        return { bg: '#D3640A', border: '#CB5E05' };
+      case 'JS':
+        return { bg: '#6B4E43', border: '#60453C' };
+      case 'TT':
+        return { bg: '#741CDA', border: '#6B18CA' };
+      case 'JF':
+        return { bg: '#0A9618', border: '#088615' };
+      case 'JMF':
+        return { bg: '#01A987', border: '#019578' };
+      case 'vendor':
+        return { bg: '#555555', border: '#494949' };
+      default:
+        return { bg: '', border: '' };
     }
   };
 
   const getPinIcon = (loc: MapLocation) => {
+    const img = document.createElement('img');
+
     switch (loc.type) {
-    case 'customer':
-      return loc.salesman;
-    case 'vendor':
-      const img = document.createElement('img');
-      img.src = '/images/shop.svg';
-      return img;
-    default:
-      return '';
+      case 'customer':
+        return loc.salesman;
+      case 'vendor':
+        img.src = '/images/shop.svg';
+        return img;
+      default:
+        return '';
     }
   };
 
@@ -300,7 +301,7 @@ export default function MapContainer() {
   };
 
   const handleFilters = (locations: MapLocation[]) => {
-    cluster && cluster.clearMarkers();
+    cluster?.clearMarkers();
     const filteredLocations = locations.filter((loc) => {
       const matchesName = filterName === '' || loc.name.toLowerCase().includes(filterName.toLowerCase());
       const matchesType = filterType === 'all' || loc.type === filterType;
@@ -312,7 +313,7 @@ export default function MapContainer() {
   };
 
   const handleClearFilters = () => {
-    cluster && cluster.clearMarkers();
+    cluster?.clearMarkers();
     setFilterName('');
     setFilterType('all');
     setFilterCustomerType('all');
@@ -321,18 +322,10 @@ export default function MapContainer() {
   };
 
   const handleFilterTopCustomers = async () => {
-    cluster && cluster.clearMarkers();
+    cluster?.clearMarkers();
     const topCustomers: number[] = await getMapTopCustomers();
     const newList = listOfLocations.filter((loc) => {
       return loc.customer && topCustomers.includes(loc.customer.id);
-    });
-    setFilteredLocations(newList);
-  };
-
-  const handleFilterNewLeads = async () => {
-    const newLeads: number[] = await getMapNewLeads();
-    const newList = listOfLocations.filter((loc) => {
-      return loc.customer && newLeads.includes(loc.customer.id);
     });
     setFilteredLocations(newList);
   };

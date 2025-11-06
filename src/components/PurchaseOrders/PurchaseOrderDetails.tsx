@@ -77,6 +77,7 @@ export default function PurchaseOrderDetails({ poData, handleReceiveItem, setIsE
             variant={['blue']}
             className="purchase-order-details__edit-btn"
             onClick={() => setIsEditing(true)}
+            data-testid="edit-btn"
           >
             Edit
           </Button>
@@ -89,6 +90,7 @@ export default function PurchaseOrderDetails({ poData, handleReceiveItem, setIsE
           <Button
             variant={['danger']}
             onClick={handleDelete}
+            data-testid="delete-btn"
           >
             Delete
           </Button>
@@ -193,7 +195,7 @@ export default function PurchaseOrderDetails({ poData, handleReceiveItem, setIsE
               <tbody>
                 <tr>
                   <th>Purchased For</th>
-                  <td>{ poData.purchasedFor }</td>
+                  <td data-testid="purchased-for">{ poData.purchasedFor }</td>
                 </tr>
               </tbody>
             </Table>

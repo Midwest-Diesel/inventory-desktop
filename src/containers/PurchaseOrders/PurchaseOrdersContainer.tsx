@@ -68,7 +68,7 @@ export default function PurchaseOrdersContainer() {
           <h1>Purchase Orders</h1>
           <div className="purchase-orders-page__top-buttons">
             <Button onClick={() => setShowSearchDialog(true)}>Search</Button>
-            <Button onClick={handleNewPurchaseOrder}>New</Button>
+            <Button onClick={handleNewPurchaseOrder} data-testid="new-btn">New</Button>
             <Button onClick={() => setShowIncomming(!showIncomming)}>{showIncomming ? 'Show All' : 'Show Incomming'}</Button>
           </div>
           
@@ -95,7 +95,7 @@ export default function PurchaseOrdersContainer() {
                     {purchaseOrders.rows.map((po: PO) => {
                       return (
                         <tr key={po.id} onClick={() => setFocusedPurchaseOrder(po)} style={ focusedPurchaseOrder && po.id === focusedPurchaseOrder.id ? { border: 'solid 3px var(--yellow-2)' } : {} }>
-                          <td><Link href={`/purchase-orders/${po.poNum}`}>{ po.poNum }</Link></td>
+                          <td><Link href={`/purchase-orders/${po.poNum}`} data-testid="po-num-link">{ po.poNum }</Link></td>
                           <td>{ formatDate(po.date) }</td>
                           <td>{ po.purchasedFrom }</td>
                           <td>{ po.purchasedFor }</td>

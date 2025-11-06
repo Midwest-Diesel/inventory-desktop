@@ -6,7 +6,6 @@ import Input from "../Library/Input";
 import Table from "../Library/Table";
 import { parseDateInputValue } from "@/scripts/tools/stringUtils";
 import { addPurchaseOrderItem, deletePurchaseOrderItem, deletePurchaseOrderReceivedItem, editPurchaseOrder, editPurchaseOrderItem, editPurchaseOrderReceivedItem, getPurchaseOrderById } from "@/scripts/services/purchaseOrderService";
-import VendorDropdown from "../Library/Dropdown/VendorDropdown";
 import { PreventNavigation } from "../PreventNavigation";
 import Checkbox from "../Library/Checkbox";
 import { ask } from "@/scripts/config/tauri";
@@ -173,6 +172,7 @@ export default function EditPoDetails({ poData, setPo, setIsEditing, poItems, po
                 variant={['save']}
                 className="edit-purchase-order-details__save-btn"
                 type="submit"
+                data-testid="save-btn"
               >
                 Save
               </Button>
@@ -404,6 +404,7 @@ export default function EditPoDetails({ poData, setPo, setIsEditing, poItems, po
                           variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                           value={purchasedFor}
                           onChange={(e: any) => setPurchasedFor(e.target.value)}
+                          data-testid="purchased-for"
                         />
                       </td>
                     </tr>

@@ -169,9 +169,9 @@ export const searchAltParts = async (part: PartSearchData, page: number, limit: 
   }
 };
 
-export const getSalesInfo = async (altParts: string) => {
+export const getSalesInfo = async (altParts: string): Promise<SalesInfo> => {
   try {
-    if (!altParts) return;
+    if (!altParts) return { sales: [], quotes: [], counters: { new: 0, recon: 0, used: 0, core: 0 }};
     const res = await api.get(`/api/parts/sales-info/${altParts}`);
     return {
       ...res.data,
@@ -190,6 +190,7 @@ export const getSalesInfo = async (altParts: string) => {
     };
   } catch (err) {
     console.error(err);
+    return { sales: [], quotes: [], counters: { new: 0, recon: 0, used: 0, core: 0 }};
   }
 };
 

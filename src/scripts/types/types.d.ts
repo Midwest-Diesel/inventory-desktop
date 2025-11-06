@@ -377,6 +377,39 @@ type WarrantyItem = {
   isCustomerCredited: boolean
 };
 
+type SalesInfoSales = {
+  id: number
+  soldToDate: Date
+  partNum: string
+  soldTo: string | null
+  qtySold: number
+  sellingPrice: number
+  condition: string | null
+  handwrittenId: number | null
+  soldBy: string | null
+};
+
+type SalesInfoQuote = {
+  id: number
+  salesman: string
+  date: Date
+  customer: string
+  price: number
+  condition: string | null
+  notes: string | null
+};
+
+type SalesInfo = {
+  sales: SalesInfoSales[]
+  quotes: SalesInfoQuote[]
+  counters: {
+    new: number
+    used: number
+    recon: number
+    core: number
+  }
+};
+
 type PartInfo = {
   id: number
   partNum: string
