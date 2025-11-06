@@ -1,4 +1,4 @@
-export const getSalesByYear = (sales: Part[]): { year: number, amount: number }[] => {
+export const getSalesByYear = (sales: SalesInfoSales[]): { year: number, amount: number }[] => {
   const salesByYear: { [year: number]: { year: number, amount: number } } = {};
   sales.forEach((sale) => {
     const year = sale.soldToDate?.getUTCFullYear();

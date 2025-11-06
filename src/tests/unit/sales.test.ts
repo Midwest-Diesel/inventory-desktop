@@ -11,7 +11,7 @@ describe('Get sales by year', () => {
       { soldToDate: new Date('2023-01-01'), qtySold: 1 },
       { soldToDate: new Date('2024-01-01'), qtySold: 2 }
     ];
-    const result = getSalesByYear(sales as Part[]);
+    const result = getSalesByYear(sales as SalesInfoSales[]);
     expect(result).toEqual([{ year: 2024, amount: 2 }, { year: 2023, amount: 5 }, { year: 2022, amount: 4 }]);
   });
 });

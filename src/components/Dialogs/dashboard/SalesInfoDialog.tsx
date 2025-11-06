@@ -2,9 +2,9 @@ import { formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
 import Dialog from "../../Library/Dialog";
 import Table from "../../Library/Table";
 import Link from "../../Library/Link";
-import { useEffect, useState } from "react";
 import { getPartInfoByPartNum, getSalesInfo, searchAltParts, searchParts } from "@/scripts/services/partsService";
 import { getSalesByYear } from "@/scripts/logic/sales";
+import { useQuery } from "@tanstack/react-query";
 
 interface Props {
   open: boolean
@@ -13,13 +13,9 @@ interface Props {
 
 
 export default function SalesInfo({ open, setOpen }: Props) {
-  const [sales, setSales] = useState<Part[]>([]);
-  const [quotes, setQuotes] = useState<Quote[]>([]);
-  const [counters, setCounters] = useState({ new: 0, recon: 0, used: 0, core: 0 });
-
-  useEffect(() => {
-    const fetchData = async () => {
-      if (!open) return;
+  const { data: prevSearch } = useQuery<{ pageCount: number, totalQty: number, rows: Part[], rowsHidden: number | null } | null>({
+    queryKey: ['prevSearch', open],
+    queryFn: async () => {
       const rawPartSearch = JSON.parse(localStorage.getItem('partSearches')!);
       const filteredPartSearch = rawPartSearch && Object.fromEntries(
         Object.entries(rawPartSearch).filter(([_, value]) => (value as any).toString().replace('*', ''))
@@ -31,23 +27,33 @@ export default function SalesInfo({ open, setOpen }: Props) {
       const partSearch = filteredPartSearch && await searchParts({ ...filteredPartSearch, showSoldParts: true }, 1, 1);
       const altPartSearch = filteredAltPartSearch && await searchAltParts({ ...filteredAltPartSearch, showSoldParts: true }, 1, 1);
       const prevSearch = partSearch ?? altPartSearch;
+
       if (prevSearch.rows.length === 0) {
         alert('Failed to search for part records');
-        return;
+        return null;
       }
+      return prevSearch;
+    },
+    enabled: open
+  });
 
-      const res = await getPartInfoByPartNum(prevSearch.rows[0].partNum);
-      if (!res) {
-        alert('Could not find partNum in partsInfo table.');
-        return;
-      }
-      const salesInfo = await getSalesInfo(res.altParts);
-      setSales(salesInfo.sales);
-      setQuotes(salesInfo.quotes);
-      setCounters(salesInfo.counters);
-    };
-    fetchData();
-  }, [open]);
+  const { data: partInfo } = useQuery<PartInfo | null>({
+    queryKey: ['partInfo', open, prevSearch],
+    queryFn: async () => {
+      if (!prevSearch) return null;
+      return await getPartInfoByPartNum(prevSearch.rows[0].partNum);
+    },
+    enabled: open
+  });
+
+  const { data: salesInfo } = useQuery<SalesInfo>({
+    queryKey: ['salesInfo', open, partInfo],
+    queryFn: async () => {
+      if (!partInfo) return { sales: [], quotes: [], counters: { new: 0, recon: 0, used: 0, core: 0 }};
+      return await getSalesInfo(partInfo.altParts);
+    },
+    enabled: open
+  });
 
 
   return (
@@ -63,19 +69,19 @@ export default function SalesInfo({ open, setOpen }: Props) {
         <div className="sales-info__top-section">
           <div>
             <h2>New</h2>
-            <p>{ counters.new }</p>
+            <p>{ salesInfo?.counters.new }</p>
           </div>
           <div>
             <h2>Recon</h2>
-            <p>{ counters.recon }</p>
+            <p>{ salesInfo?.counters.recon }</p>
           </div>
           <div>
             <h2>Used</h2>
-            <p>{ counters.used }</p>
+            <p>{ salesInfo?.counters.used }</p>
           </div>
           <div>
             <h2>Core</h2>
-            <p>{ counters.core }</p>
+            <p>{ salesInfo?.counters.core }</p>
           </div>
         </div>
 
@@ -86,6 +92,7 @@ export default function SalesInfo({ open, setOpen }: Props) {
               <thead>
                 <tr>
                   <th>Part Number</th>
+                  <th>Sold By</th>
                   <th>Sold Date</th>
                   <th>Customer</th>
                   <th>Qty Sold</th>
@@ -95,16 +102,17 @@ export default function SalesInfo({ open, setOpen }: Props) {
                 </tr>
               </thead>
               <tbody>
-                {sales.map((part: Part) => {
+                {salesInfo?.sales.map((info: SalesInfoSales) => {
                   return (
-                    <tr key={part.id}>
-                      <td><Link href={`/part/${part.id}`}>{ part.partNum }</Link></td>
-                      <td>{ formatDate(part.soldToDate) }</td>
-                      <td>{ part.soldTo }</td>
-                      <td>{ part.qtySold }</td>
-                      <td>{ formatCurrency(part.sellingPrice) }</td>
-                      <td>{ part.condition }</td>
-                      <td><Link href={`/handwrittens/${part.handwrittenId}`}>{ part.handwrittenId }</Link></td>
+                    <tr key={info.id}>
+                      <td><Link href={`/part/${info.id}`}>{ info.partNum }</Link></td>
+                      <td>{ info.soldBy }</td>
+                      <td>{ formatDate(info.soldToDate) }</td>
+                      <td>{ info.soldTo }</td>
+                      <td>{ info.qtySold }</td>
+                      <td>{ formatCurrency(info.sellingPrice) }</td>
+                      <td>{ info.condition }</td>
+                      <td><Link href={`/handwrittens/${info.handwrittenId}`}>{ info.handwrittenId }</Link></td>
                     </tr>
                   );
                 })}
@@ -112,7 +120,7 @@ export default function SalesInfo({ open, setOpen }: Props) {
             </Table>
           </div>
 
-          {quotes.length > 0 &&
+          {Number(salesInfo?.quotes.length) > 0 &&
             <div style={{ display: 'flex' }}>
               <div>
                 <h3>Quotes</h3>
@@ -120,7 +128,7 @@ export default function SalesInfo({ open, setOpen }: Props) {
                   <Table>
                     <thead>
                       <tr>
-                        <th>Initials</th>
+                        <th>Salesperson</th>
                         <th>Date</th>
                         <th>Customer</th>
                         <th>Price</th>
@@ -129,14 +137,14 @@ export default function SalesInfo({ open, setOpen }: Props) {
                       </tr>
                     </thead>
                     <tbody>
-                      {quotes.map((quote: Quote) => {
+                      {salesInfo?.quotes.map((quote: SalesInfoQuote) => {
                         return (
                           <tr key={quote.id}>
                             <td>{ quote.salesman }</td>
                             <td>{ formatDate(quote.date) }</td>
                             <td>{ quote.customer as any }</td>
                             <td>{ formatCurrency(quote.price) }</td>
-                            <td>{ (quote as any).condition }</td>
+                            <td>{ quote.condition }</td>
                             <td>{ quote.notes }</td>
                           </tr>
                         );
@@ -145,9 +153,10 @@ export default function SalesInfo({ open, setOpen }: Props) {
                   </Table>
                 </div>
               </div>
+
               <div className="sales-info__sales-by-year">
                 <h3>Sales by Year</h3>
-                {getSalesByYear(sales).map((sale: any, i: number) => {
+                {getSalesByYear(salesInfo?.sales ?? []).map((sale: { year: number, amount: number }, i: number) => {
                   return (
                     <div key={i} className="sales-info__sales-by-year--row">
                       <p>{ sale.year }</p>
