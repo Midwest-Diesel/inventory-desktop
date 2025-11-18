@@ -8,7 +8,6 @@ interface SelectHTML extends React.InputHTMLAttributes<HTMLSelectElement> {}
 type User = {
   id: number
   username: string
-  password: string
   initials: string
   accessLevel: number
   type: 'office' | 'shop'
@@ -889,6 +888,7 @@ type Alert = {
   date: Date
   addedBy: string | null
   note: string | null
+  subtext: string | null
 };
 
 type Toast = {

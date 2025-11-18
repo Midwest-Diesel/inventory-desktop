@@ -13,7 +13,7 @@ interface Props extends SelectHTML {
 
 
 export default function UserSelect({ variant, label, userSubtype, ...props }: Props) {
-  const [usersData, setUsersData] = useAtom<{ id: number, username: string, initials: string, type: string, subtype: string }[]>(usersAtom);
+  const [usersData, setUsersData] = useAtom<User[]>(usersAtom);
 
   useEffect(() => {
     const fetchData = async () => {
