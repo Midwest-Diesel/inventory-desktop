@@ -7,6 +7,7 @@
   position: relative;
   height: 100%;
   width: 100%;
+  margin-left: 1rem;
 
   h1 {
     font-size: 170px;
@@ -23,10 +24,6 @@
     h1 {
       margin: -2rem 0 0;
     }
-
-    img {
-      margin-top: 3rem;
-    }
   }
 
   &__row {
@@ -41,15 +38,17 @@
 
   &__middle {
     display: flex;
-    justify-content: space-between;
-    margin-right: 18rem;
+    justify-content: center;
+    width: 66rem;
+    margin: auto;
   }
 
   &__location {
     transform: rotate(90deg);
-    padding: 0 0 3.5rem;
-    height: 0;
-    margin-top: 5rem;
+    height: fit-content;
+    position: absolute;
+    top: 50;
+    left: 2rem;
   }
 
   &__barcode {
