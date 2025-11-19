@@ -19,6 +19,7 @@ interface Props {
 
 export default function PartPicturesDialog({ open, setOpen, pictures, partNum }: Props) {
   const [selectedImages, setSelectedImages] = useState<string[]>([]);
+  const DIRECTORY = `\\\\MWD1-SERVER\\Server\\Pictures\\parts_dir\\${partNum}`;
 
   useEffect(() => {
     if (!open) return;
@@ -38,14 +39,18 @@ export default function PartPicturesDialog({ open, setOpen, pictures, partNum }:
       subject: 'Part Pictures',
       body: '',
       recipients: [],
-      attachments: pictures.filter((pic) => selectedImages.includes(pic.name)).map((pic) => `\\\\MWD1-SERVER/Server/Pictures/parts_dir/${partNum}/${pic.name}`)
+      attachments: pictures.filter((pic) => selectedImages.includes(pic.name)).map((pic) => `${DIRECTORY}/${pic.name}`)
     };
     await invoke('new_email_draft', { emailArgs: args });
   };
 
   const handleAttachEmail = async () => {
-    const attachments = pictures.filter((pic) => selectedImages.includes(pic.name)).map((pic) => `\\\\MWD1-SERVER/Server/Pictures/parts_dir/${partNum}/${pic.name}`).join(';');
+    const attachments = pictures.filter((pic) => selectedImages.includes(pic.name)).map((pic) => `${DIRECTORY}/${pic.name}`).join(';');
     await invoke('attach_to_existing_email', { attachments });
+  };
+
+  const openFolder = async () => {
+    await invoke('view_file', { filepath: DIRECTORY });
   };
   
 
@@ -60,6 +65,7 @@ export default function PartPicturesDialog({ open, setOpen, pictures, partNum }:
     >
       <Button onClick={handleNewEmail}>Add to New Email</Button>
       <Button onClick={handleAttachEmail}>Attach to Existing Email</Button>
+      <Button onClick={openFolder}>Open Folder</Button>
 
       {pictures.map((pic: Picture, i) => {
         return (
