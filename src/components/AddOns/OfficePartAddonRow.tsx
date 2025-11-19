@@ -13,8 +13,9 @@ import Table from "../Library/Table";
 import Select from "../Library/Select/Select";
 import Input from "../Library/Input";
 import Loading from "../Library/Loading";
-import VendorSelect from "../Library/Select/VendorSelect";
 import Link from "../Library/Link";
+import { useQuery } from "@tanstack/react-query";
+import { getVendors } from "@/scripts/services/vendorsService";
 
 interface Props {
   addOn: AddOn
@@ -28,11 +29,16 @@ export default function OfficePartAddonRow({ addOn, onSave, onModifyAddOnData }:
   const [engineCostRemaining, setEngineCostRemaining] = useState(0);
   const [loading, setLoading] = useState(false);
   const [loadingProgress, setLoadingProgress] = useState('');
-  const [showVendorSelect, setShowVendorSelect] = useState(false);
   const [isDuplicateStockNum, setIsDuplicateStockNum] = useState(false);
   const [highlightPurchasePrice, setHighlightPurchasePrice] = useState(false);
+  const [purchasedFrom, setPurchasedFrom] = useState<string>(addOn.purchasedFrom?.toString() ?? '');
   const [isNewPart, setIsNewPart] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
+  const ref = useRef<HTMLDivElement | null>(null);
+
+  const { data: vendors = [] } = useQuery<Vendor[]>({
+    queryKey: ['vendors'],
+    queryFn: getVendors
+  });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -66,15 +72,6 @@ export default function OfficePartAddonRow({ addOn, onSave, onModifyAddOnData }:
     };
     fetchData();
   }, [addOn.partNum]);
-
-  useEffect(() => {
-    if (!showVendorSelect) return;
-    setTimeout(() => {
-      if (!ref.current) return;
-      const select = ref.current.querySelectorAll('select');
-      if (select.length > 0) select[select.length - 1].focus();
-    }, 30);
-  }, [showVendorSelect]);
 
   useEffect(() => {
     setHighlightPurchasePrice(Boolean(engineCostRemaining > 0 || addOn.purchasedFrom) && !addOn.purchasePrice);
@@ -134,6 +131,27 @@ export default function OfficePartAddonRow({ addOn, onSave, onModifyAddOnData }:
     await deleteAddOn(updatedAddOn.id);
     setAddons(addOns.filter((a) => a.id !== updatedAddOn.id));
     setLoading(false);
+  };
+
+  const autofillFromPurchasedFrom = (value: string) => {
+    if (!value) {
+      setPurchasedFrom('');
+    } else {
+      setPurchasedFrom(vendors.find((v: Vendor) => v.name?.toLowerCase().startsWith(value))?.name ?? '');
+    }
+  };
+
+  const updateAutofillPurchasedFromData = async (value: string) => {
+    const newAddOn = {
+      ...addOn,
+      purchasedFrom: value
+    } as AddOn;
+    const updatedAddOns = addOns.map((a: AddOn) => {
+      if (a.id === addOn.id) return newAddOn;
+      return a;
+    });
+    setAddons(updatedAddOns);
+    setPurchasedFrom('');
   };
 
   const updateLoading = (i: number, total: number) => {
@@ -394,23 +412,16 @@ export default function OfficePartAddonRow({ addOn, onSave, onModifyAddOnData }:
               </td>
               <td>
                 <div style={{ width: '21rem' }}>
-                  {showVendorSelect ?
-                    <VendorSelect
-                      variant={['label-full-width']}
-                      value={addOn.purchasedFrom ?? ''}
-                      onChange={(e: any) => handleEditAddOn({ ...addOn, purchasedFrom: e.target.value })}
-                      onBlur={() => setShowVendorSelect(false)}
-                    />
-                    :
-                    <Button
-                      type="button"
-                      style={{ marginLeft: '0.3rem', width: '100%', textAlign: 'start' }}
-                      variant={['no-style', 'x-small']}
-                      onFocus={() => setShowVendorSelect(true)}
-                    >
-                      { addOn.purchasedFrom || 'Select Vendor' }
-                    </Button>
-                  }
+                  <Input
+                    variant={['small', 'thin', 'label-bold', 'search', 'autofill-input']}
+                    value={addOn.purchasedFrom ?? ''}
+                    autofill={purchasedFrom}
+                    onAutofill={(value) => updateAutofillPurchasedFromData(value)}
+                    onChange={(e) => {
+                      handleEditAddOn({ ...addOn, purchasedFrom: e.target.value });
+                      autofillFromPurchasedFrom(e.target.value.toLowerCase());
+                    }}
+                  />
                 </div>
               </td>
             </tr>

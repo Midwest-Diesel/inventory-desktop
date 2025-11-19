@@ -7,6 +7,7 @@ import { shopAddOnsAtom } from "@/scripts/atoms/state";
 import { supabase } from "@/scripts/config/supabase";
 import { addAddOn, editAddOn, getAllAddOns } from "@/scripts/services/addOnsService";
 import { getAllPartNums } from "@/scripts/services/partsService";
+import { parseResDate } from "@/scripts/tools/stringUtils";
 import { RealtimePostgresDeletePayload, RealtimePostgresInsertPayload, RealtimePostgresUpdatePayload } from "@supabase/supabase-js";
 import { useAtom } from "jotai";
 import { Fragment, useEffect, useState } from "react";
@@ -22,13 +23,15 @@ export default function ShopPartAddOnsContainer() {
   const { selectedPoAddOn, addOn, receivedItemsDialogOpen } = selectedPoData;
 
   const refreshAddOnsInsert = (e: RealtimePostgresInsertPayload<AddOn>) => {
+    const newAddOn = { ...e.new, entryDate: parseResDate(e.new.entryDate as any), altParts: [] };
+
     setAddons((prev) => {
-      if (prev.some(a => a.id === e.new.id)) return prev;
-      return [e.new, ...prev];
+      if (prev.some((a) => a.id === newAddOn.id)) return prev;
+      return [newAddOn, ...prev];
     });
     setPrevAddons((prev) => {
-      if (prev.some(a => a.id === e.new.id)) return prev;
-      return [e.new, ...prev];
+      if (prev.some((a) => a.id === newAddOn.id)) return prev;
+      return [newAddOn, ...prev];
     });
   };
 

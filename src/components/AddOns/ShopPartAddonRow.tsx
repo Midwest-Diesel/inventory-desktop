@@ -4,14 +4,13 @@ import Button from "../Library/Button";
 import Checkbox from "../Library/Checkbox";
 import Table from "../Library/Table";
 import Select from "../Library/Select/Select";
-import { deleteAddOn, editAddOnIsPoOpened, editAddOnPrintStatus } from "@/scripts/services/addOnsService";
+import { addAddOn, deleteAddOn, editAddOnIsPoOpened, editAddOnPrintStatus } from "@/scripts/services/addOnsService";
 import { getNextUPStockNum, getPartsByStockNum, getPartInfoByPartNum } from "@/scripts/services/partsService";
 import { useEffect, useRef, useState } from "react";
 import Input from "../Library/Input";
 import Link from "../Library/Link";
 import { getEngineByStockNum } from "@/scripts/services/enginesService";
 import { formatDate } from "@/scripts/tools/stringUtils";
-import VendorSelect from "../Library/Select/VendorSelect";
 import { getPurchaseOrderByPoNum } from "@/scripts/services/purchaseOrderService";
 import { getRatingFromRemarks } from "@/scripts/tools/utils";
 import { getImagesFromPart } from "@/scripts/services/imagesService";
@@ -20,6 +19,8 @@ import { usePrintQue } from "@/hooks/usePrintQue";
 import { selectedPoAddOnAtom } from "@/scripts/atoms/components";
 import { useClickOutside } from "@/hooks/useClickOutside";
 import { commonPrefixLength, getAddOnDateCode, getNextStockNumberSuffix } from "@/scripts/logic/addOns";
+import { useQuery } from "@tanstack/react-query";
+import { getVendors } from "@/scripts/services/vendorsService";
 
 interface Props {
   addOn: AddOn
@@ -36,23 +37,20 @@ export default function ShopPartAddonRow({ addOn, handleDuplicateAddOn, partNumL
   const [poLink, setPoLink] = useState<string>(addOn.po ? `${addOn.po}` : '');
   const [partNum, setPartNum] = useState<string>(addOn.partNum ?? '');
   const [engineNum, setEngineNum] = useState<string>(addOn.engineNum?.toString() ?? '');
+  const [purchasedFrom, setPurchasedFrom] = useState<string>(addOn.purchasedFrom?.toString() ?? '');
   const [showPartNumSelect, setShowPartNumSelect] = useState(false);
-  const [showVendorSelect, setShowVendorSelect] = useState(false);
   const [printQty, setPrintQty] = useState(1);
   const ref = useRef<HTMLDivElement>(null);
   const partNumListRefs = useRef<(HTMLLIElement | null)[]>([]);
   const partNumRef = useRef<HTMLDivElement>(null);
   const prevEngineNum = useRef<string | null>(null);
+  const qtyRef = useRef<HTMLInputElement | null>(null);
   useClickOutside(partNumRef, () => setShowPartNumSelect(false));
 
-  useEffect(() => {
-    if (!showVendorSelect) return;
-    setTimeout(() => {
-      if (!ref.current) return;
-      const select = ref.current.querySelectorAll('select');
-      if (select.length > 0) select[select.length - 1].focus();
-    }, 30);
-  }, [showVendorSelect]);
+  const { data: vendors = [] } = useQuery<Vendor[]>({
+    queryKey: ['vendors'],
+    queryFn: getVendors
+  });
 
   useEffect(() => {
     if (!showPartNumSelect) return;
@@ -81,6 +79,10 @@ export default function ShopPartAddonRow({ addOn, handleDuplicateAddOn, partNumL
     checkDuplicateStockNum(addOn.stockNum ?? '', false);
   }, [addOn.stockNum]);
 
+  useEffect(() => {
+    if (addOns[0].id === addOn.id) qtyRef.current?.focus();
+  }, []);
+
   const handleEditAddOn = async (newAddOn: AddOn) => {
     const updatedAddOns = addOns.map((a: AddOn) => {
       if (a.id === newAddOn.id) {
@@ -102,6 +104,14 @@ export default function ShopPartAddonRow({ addOn, handleDuplicateAddOn, partNumL
       setPartNum('');
     } else {
       setPartNum(partNumList.find((p) => p.startsWith(partNum)) ?? '');
+    }
+  };
+
+  const autofillFromPurchasedFrom = (value: string) => {
+    if (!value) {
+      setPurchasedFrom('');
+    } else {
+      setPurchasedFrom(vendors.find((v: Vendor) => v.name?.toLowerCase().startsWith(value))?.name ?? '');
     }
   };
 
@@ -132,6 +142,19 @@ export default function ShopPartAddonRow({ addOn, handleDuplicateAddOn, partNumL
     } else {
       await autofillUsingEngineNum(value);
     }
+  };
+
+  const updateAutofillPurchasedFromData = async (value: string) => {
+    const newAddOn = {
+      ...addOn,
+      purchasedFrom: value
+    } as AddOn;
+    const updatedAddOns = addOns.map((a: AddOn) => {
+      if (a.id === addOn.id) return newAddOn;
+      return a;
+    });
+    setAddons(updatedAddOns);
+    setPurchasedFrom('');
   };
 
   const autofillNextAvailableUP = async () => {
@@ -204,16 +227,52 @@ export default function ShopPartAddonRow({ addOn, handleDuplicateAddOn, partNumL
     setAddons(updatedAddOns);
   };
 
+  const isBlankAddOn = (addOn: AddOn) => (
+    addOn.qty === null &&
+    addOn.partNum === null &&
+    addOn.desc === null &&
+    addOn.stockNum === null &&
+    addOn.location === null &&
+    addOn.remarks === null &&
+    addOn.rating === null &&
+    addOn.engineNum === null &&
+    addOn.condition === "New" &&
+    addOn.purchasePrice === null &&
+    addOn.purchasedFrom === null &&
+    addOn.po === null &&
+    addOn.manufacturer === null &&
+    addOn.isSpecialCost === null &&
+    addOn.type === "Truck" &&
+    addOn.hp === null &&
+    addOn.serialNum === null &&
+    addOn.newPrice === null &&
+    addOn.remanPrice === null &&
+    addOn.dealerPrice === null &&
+    addOn.priceStatus === "We have pricing" &&
+    addOn.altParts.length === 0 &&
+    addOn.isPrinted === false &&
+    addOn.isPoOpened === false &&
+    addOn.prefix === null
+  );
+
   const handlePrint = async () => {
-    if (await checkDuplicateStockNum(addOn.stockNum ?? '')) return;
+    if (!addOn.stockNum) {
+      alert('Missing stock number');
+      return;
+    }
+    if (await checkDuplicateStockNum(addOn.stockNum)) {
+      alert(`Duplicate stock number: ${addOn.stockNum}`);
+      return;
+    }
     await onSave();
+    if (!isBlankAddOn(addOns[0])) await addAddOn();
     const engine = await getEngineByStockNum(addOn.engineNum);
     const pictures = await getImagesFromPart(addOn.partNum);
     await editAddOnPrintStatus(addOn.id, true);
 
     for (let i = 0; i < printQty; i++) {
       const args = {
-        stockNum: addOn.stockNum ?? '',
+        stockNum: addOn.stockNum,
         model: engine?.model ?? '',
         serialNum: engine?.serialNum ?? '',
         hp: engine?.horsePower ?? '',
@@ -275,6 +334,7 @@ export default function ShopPartAddonRow({ addOn, handleDuplicateAddOn, partNumL
               <tr>
                 <td>
                   <Input
+                    ref={qtyRef}
                     variant={['x-small', 'thin']}
                     type="number"
                     value={addOn.qty !== null ? addOn.qty : ''}
@@ -518,23 +578,16 @@ export default function ShopPartAddonRow({ addOn, handleDuplicateAddOn, partNumL
                 </td>
                 <td>
                   <div style={{ width: '21rem' }}>
-                    {showVendorSelect ?
-                      <VendorSelect
-                        variant={['label-full-width']}
-                        value={addOn.purchasedFrom ?? ''}
-                        onChange={(e: any) => handleEditAddOn({ ...addOn, purchasedFrom: e.target.value })}
-                        onBlur={() => setShowVendorSelect(false)}
-                      />
-                      :
-                      <Button
-                        type="button"
-                        style={{ marginLeft: '0.3rem', width: '100%', textAlign: 'start' }}
-                        variant={['no-style', 'x-small']}
-                        onFocus={() => setShowVendorSelect(true)}
-                      >
-                        { addOn.purchasedFrom || 'Select Vendor' }
-                      </Button>
-                    }
+                    <Input
+                      variant={['small', 'thin', 'label-bold', 'search', 'autofill-input']}
+                      value={addOn.purchasedFrom ?? ''}
+                      autofill={purchasedFrom}
+                      onAutofill={(value) => updateAutofillPurchasedFromData(value)}
+                      onChange={(e) => {
+                        handleEditAddOn({ ...addOn, purchasedFrom: e.target.value });
+                        autofillFromPurchasedFrom(e.target.value.toLowerCase());
+                      }}
+                    />
                   </div>
                 </td>
               </tr>

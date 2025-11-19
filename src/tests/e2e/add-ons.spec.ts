@@ -51,6 +51,13 @@ test.describe('Create addon and add to inventory', () => {
     await expect(page.getByTestId('desc').first()).toHaveValue('INJECTOR C9');
   });
 
+  test('Set rating from remarks', async ({ page }) => {
+    await newAddon(page);
+    await page.getByTestId('remarks').first().fill('(9.5) TEST');
+    await page.keyboard.down('Tab');
+    await expect(page.getByTestId('rating').first()).toHaveValue('9.5');
+  });
+
   test('Autofill stock number', async ({ page }) => {
     await newAddon(page);
     await page.getByTestId('engine-num').first().fill('5168');
