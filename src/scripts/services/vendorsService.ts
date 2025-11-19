@@ -14,12 +14,13 @@ interface NewVendor {
 
 // === GET routes === //
 
-export const getVendors = async () => {
+export const getVendors = async (): Promise<Vendor[]> => {
   try {
     const res = await api.get('/api/vendors');
     return res.data;
   } catch (err) {
     console.error(err);
+    return [];
   }
 };
 

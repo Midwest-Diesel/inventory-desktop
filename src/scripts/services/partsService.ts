@@ -65,6 +65,7 @@ export const getPartByEngineNum = async (engineNum: number): Promise<Part | null
 
 export const getPartsByStockNum = async (stockNum: string): Promise<Part[]> => {
   try {
+    if (!stockNum) return [];
     const res = await api.get(`/api/parts/stock-num/${stockNum}`);
     return await parsePartsData(res.data);
   } catch (err) {
