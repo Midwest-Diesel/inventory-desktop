@@ -59,6 +59,7 @@ test.describe('Parts', () => {
 
     await page.waitForLoadState('networkidle');
     await altSearch(page, { partNum: '9N3240' });
+    await page.waitForTimeout(100);
     await page.getByTestId('part-num-link').first().click();
     await page.waitForLoadState('networkidle');
     await page.getByTestId('edit-btn').click();
