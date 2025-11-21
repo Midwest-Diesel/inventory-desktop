@@ -5,6 +5,7 @@ import { APIProvider } from '@vis.gl/react-google-maps';
 import { Provider } from 'jotai';
 import App from './components/App';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import ErrorBoundary from './components/ErrorBoundry';
 import './styles/globals.scss';
 
 
@@ -22,7 +23,9 @@ app.render(
       <QueryClientProvider client={queryClient}>
         <APIProvider apiKey={import.meta.env.VITE_PUBLIC_MAPS_API ?? ''}>
           <GlobalData>
-            <App />
+            <ErrorBoundary>
+              <App />
+            </ErrorBoundary>
           </GlobalData>
         </APIProvider>
       </QueryClientProvider>
