@@ -13,10 +13,21 @@ export default function TheMachinesTable({ closeTable, data }: Props) {
     closeTable();
   };
 
+  const copyToClipboard = () => {
+    const rowsText = data.map((row) =>
+      [row.partNum, row.desc, row.total].join('\t')
+    ).join('\n');
+    navigator.clipboard.writeText(rowsText);
+  };
+
 
   return (
     <div className="reports-table">
-      <Button onClick={handleGoBack}>Back</Button>
+      <div className="reports-table__top-bar">
+        <Button onClick={handleGoBack}>Back</Button>
+        <Button onClick={copyToClipboard}>Copy</Button>
+      </div>
+
       <Table>
         <thead>
           <tr>

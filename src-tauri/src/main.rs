@@ -537,21 +537,9 @@ fn new_email_draft(email_args: EmailArgs) {
     subject,
     body.replace("\"", "\"\"").replace("\n", "\" & vbCrLf & \"").trim(),
     recipients,
-    if !cc_recipients.is_empty() {
-      format!("MailItem.CC = \"{}\"", cc_recipients.replace("\"", "\"\""))
-    } else {
-      "".to_string()
-    },
-    if !bcc_recipients.is_empty() {
-      format!("MailItem.BCC = \"{}\"", bcc_recipients.replace("\"", "\"\""))
-    } else {
-      "".to_string()
-    },
-    if !attachments_joined.is_empty() {
-      format!("Dim attachments: attachments = \"{}\"", attachments_joined.replace("\"", "\"\""))
-    } else {
-      "".to_string()
-    }
+    if !cc_recipients.is_empty() { format!("MailItem.CC = \"{}\"", cc_recipients.replace("\"", "\"\"")) } else { "".to_string() },
+    if !bcc_recipients.is_empty() { format!("MailItem.BCC = \"{}\"", bcc_recipients.replace("\"", "\"\"")) } else { "".to_string() },
+    if !attachments_joined.is_empty() { format!("Dim attachments: attachments = \"{}\"", attachments_joined.replace("\"", "\"\"")) } else { "".to_string() }
   );
 
   let temp_vbs_path = "C:/mwd/scripts/CreateEmailDraft.vbs";

@@ -99,7 +99,6 @@ describe('Handwrittens Integration', () => {
           legacyId: 139693,
           length: 0,
           location: null,
-          parentId: null,
           partId: 1,
           partNum: 'FREIGHT',
           qty: 1,

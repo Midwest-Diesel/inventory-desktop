@@ -1,7 +1,7 @@
 import { errorAtom, quickPickItemIdAtom, sourcesAtom } from "@/scripts/atoms/state";
 import { addHandwrittenItem, deleteHandwrittenItem, editHandwritten, editHandwrittenItem, editHandwrittenTaxable, getHandwrittenById, getHandwrittenEmails } from "@/scripts/services/handwrittensService";
 import { useAtom } from "jotai";
-import { FormEvent, Fragment, useEffect, useState } from "react";
+import { FormEvent, Fragment, useEffect, useMemo, useState } from "react";
 import GridItem from "../Library/Grid/GridItem";
 import Input from "../Library/Input";
 import Grid from "../Library/Grid/Grid";
@@ -33,7 +33,7 @@ import AltShipDialog from "../Dialogs/handwrittens/AltShipDialog";
 import { usePrintQue } from "@/hooks/usePrintQue";
 import { useQuery } from "@tanstack/react-query";
 import TextArea from "../Library/TextArea";
-import { addCoreCharge } from "@/scripts/logic/handwrittens";
+import { addCoreCharge, getTaxValue } from "@/scripts/logic/handwrittens";
 
 interface Props {
   handwritten: Handwritten
@@ -136,33 +136,20 @@ export default function EditHandwrittenDetails({
   const [changesSaved, setChangesSaved] = useState(true);
   const [changeCustomerDialogOpen, setChangeCustomerDialogOpen] = useState(false);
   const [changeCustomerDialogData, setChangeCustomerDialogData] = useState<Handwritten | null>(null);
-  const [taxTotal, setTaxTotal] = useState(0);
-  const [users, setUsers] = useState<User[]>([]);
-  const [emails, setEmails] = useState<string[]>([]);
   const [altShipOpen, setAltShipOpen] = useState(false);
   const [altShipData, setAltShipData] = useState<AltShip[]>([]);
   const [returnAfterDone, setReturnAfterDone] = useState(true);
   const [loading, setLoading] = useState(false);
-  const TAX_RATE = 0.08375;
+  const taxTotal = useMemo(() => getTaxValue(handwrittenItems), [handwrittenItems]);
 
   useEffect(() => {
     const fetchData = async () => {
       if (sourcesData.length === 0) setSourcesData(await getAllSources());
-      const users = await getAllUsers();
-      setUsers(users);
-      const emails = await getHandwrittenEmails(handwritten.customer.id);
-      setEmails(emails);
-
       const altShip = await getAltShipByCustomerId(handwritten.customer.id);
       setAltShipData(altShip);
     };
     fetchData();
   }, []);
-
-  useEffect(() => {
-    const taxItemsAmount = handwrittenItems.map((item) => (item.qty ?? 0) * (item.unitPrice ?? 0)).reduce((acc, cur) => acc + cur, 0);
-    setTaxTotal(Number((taxItemsAmount * TAX_RATE).toFixed(2)));
-  }, [handwrittenItems]);
 
   useEffect(() => {
     setShipToAddress(handwritten.shipToAddress ?? '');
@@ -173,6 +160,16 @@ export default function EditHandwrittenDetails({
     setShipToCompany(handwritten.shipToCompany ?? '');
     setOrderNotes(handwritten.orderNotes ?? '');
   }, [handwritten]);
+
+  const { data: users = [] } = useQuery<User[]>({
+    queryKey: ['users'],
+    queryFn: getAllUsers
+  });
+
+  const { data: emails = [] } = useQuery<string[]>({
+    queryKey: ['emails', handwritten.customer],
+    queryFn: async () => await getHandwrittenEmails(handwritten.customer.id)
+  });
 
   const { data: customerData } = useQuery<Customer | null>({
     queryKey: ['customerData'],

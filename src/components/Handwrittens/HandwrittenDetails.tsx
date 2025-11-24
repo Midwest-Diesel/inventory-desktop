@@ -50,6 +50,8 @@ interface Props {
 }
 
 
+const MAX_ROWS = 20;
+
 export default function HandwrittenDetails({
   handwritten,
   setHandwritten,
@@ -85,21 +87,14 @@ export default function HandwrittenDetails({
   const [unitPrice, setUnitPrice] = useState(0);
   const [takeoffItem, setTakeoffItem] = useState<HandwrittenItem | HandwrittenItemChild | null>(null);
   const [takeoffsOpen, setTakeoffsOpen] = useState(false);
-  const [taxTotal, setTaxTotal] = useState(0);
-  const takeoffInputRef = useRef<HTMLInputElement>(null);
-  const TAX_RATE = 0.08375;
-  const MAX_ROWS = 20;
+  const takeoffInputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
-    const taxItemsAmount = (handwritten && handwritten.handwrittenItems.map((item) => (item?.qty ?? 0) * (item?.unitPrice ?? 0)).reduce((acc, cur) => acc + cur, 0)) ?? 0;
-    setTaxTotal(Number((taxItemsAmount * TAX_RATE).toFixed(2)));
-
+    if (!handwritten) return;
     const fetchData = async () => {
-      if (handwritten) {
-        const altShip = await getAltShipByCustomerId(handwritten.customer.id);
-        setAltShipData(altShip);
-        setPayment(handwritten.payment ?? '');
-      }
+      const altShip = await getAltShipByCustomerId(handwritten.customer.id);
+      setAltShipData(altShip);
+      setPayment(handwritten.payment ?? '');
     };
     fetchData();
   }, [handwritten]);
@@ -674,7 +669,6 @@ export default function HandwrittenDetails({
               className="handwritten-items-table--handwrittens-page"
               handwritten={handwritten}
               setHandwritten={setHandwritten}
-              taxTotal={taxTotal}
             />
           </GridItem>
 

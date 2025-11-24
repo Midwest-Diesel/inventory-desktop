@@ -3,23 +3,23 @@ import Table from "../Library/Table";
 import Button from "../Library/Button";
 import { getHandwrittenById } from "@/scripts/services/handwrittensService";
 import HandwrittenChildrenDialog from "../Dialogs/handwrittens/HandwrittenChildrenDialog";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useAtom } from "jotai";
 import { quickPickItemIdAtom } from "@/scripts/atoms/state";
-import { addCoreCharge } from "@/scripts/logic/handwrittens";
+import { addCoreCharge, getTaxValue } from "@/scripts/logic/handwrittens";
 
 interface Props {
   className?: string
   handwritten: Handwritten
   setHandwritten: (handwritten: Handwritten) => void
-  taxTotal: number
 }
 
 
-export default function HandwrittenItemsTable({ className, handwritten, setHandwritten, taxTotal }: Props) {
+export default function HandwrittenItemsTable({ className, handwritten, setHandwritten }: Props) {
   const [quickPickItemId, setQuickPickItemId] = useAtom<number>(quickPickItemIdAtom);
   const [childrenOpen, setChildrenOpen] = useState(false);
   const [stockNumChildren, setStockNumChildren] = useState<HandwrittenItemChild[]>([]);
+  const taxTotal = useMemo(() => getTaxValue(handwritten.handwrittenItems), [handwritten.handwrittenItems]);
 
   useEffect(() => {
     if (stockNumChildren.length === 0) return;
@@ -28,8 +28,7 @@ export default function HandwrittenItemsTable({ className, handwritten, setHandw
 
   const textStyles = (item: HandwrittenItem) => {
     const styles = {} as any;
-    if (!item.location) return {};
-    if (item.location.includes('CORE DEPOSIT')) {
+    if (item.location?.includes('CORE DEPOSIT') || item.partNum?.includes('CORE DEPOSIT')) {
       styles.color = 'var(--red-2)';
       styles.fontWeight = 'bold';
     }
@@ -41,10 +40,12 @@ export default function HandwrittenItemsTable({ className, handwritten, setHandw
   };
 
   const getTotalCost = (): number => {
-    return (handwritten.handwrittenItems as any).reduce((acc: number, item: HandwrittenItem) => item.cost !== 0.04 && item.cost !== 0.01 && acc + ((item.cost ?? 0) * (item.qty ?? 0)), 0);
+    return (handwritten.handwrittenItems as any)
+      .reduce((acc: number, item: HandwrittenItem) => item.cost !== 0.04 && item.cost !== 0.01 && acc + ((item.cost ?? 0) * (item.qty ?? 0)), 0);
   };
   const getInvoiceTotal = (): number => {
-    return handwritten.handwrittenItems.reduce((acc, item) => acc + ((item.unitPrice ?? 0) * (item.qty ?? 0)), 0);
+    return handwritten.handwrittenItems
+      .reduce((acc, item) => acc + ((item.unitPrice ?? 0) * (item.qty ?? 0)), 0);
   };
   const costColorStyle = getTotalCost() < 0 ? { color: 'var(--red-2)' } : '';
   const totalColorStyle = getInvoiceTotal() < 0 ? { color: 'var(--red-2)' } : '';
@@ -63,13 +64,19 @@ export default function HandwrittenItemsTable({ className, handwritten, setHandw
   const toggleQuickPick = (item: HandwrittenItem) => {
     setQuickPickItemId(quickPickItemId ? 0 : item.id);
   };
-
+  
 
   return (
     <div className={`handwritten-items-table ${className && className}`}>
       {handwritten.handwrittenItems &&
         <>
-          <HandwrittenChildrenDialog open={childrenOpen} setOpen={setChildrenOpen} stockNumChildren={stockNumChildren} handwritten={handwritten} setHandwritten={setHandwritten} />
+          <HandwrittenChildrenDialog
+            open={childrenOpen}
+            setOpen={setChildrenOpen}
+            stockNumChildren={stockNumChildren}
+            handwritten={handwritten}
+            setHandwritten={setHandwritten}
+          />
 
           <p><strong>Invoice Total: </strong><span style={{ ...totalColorStyle }}>{ formatCurrency(getInvoiceTotal()) }</span></p>
           <p><strong>Cost Total: </strong><span style={{ ...costColorStyle }}>{ formatCurrency(getTotalCost()) }</span></p>

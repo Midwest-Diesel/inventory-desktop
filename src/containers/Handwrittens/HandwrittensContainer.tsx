@@ -10,13 +10,12 @@ import { addHandwritten, getSomeHandwrittens, getYeserdayCOGS, getYeserdaySales,
 import { formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
 import { useAtom } from "jotai";
 import Link from "@/components/Library/Link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useArrowSelector } from "@/hooks/useArrowSelector";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 
-const TAX_RATE = 0.08375;
-const LIMIT = 40;
 
+const LIMIT = 40;
 
 export default function HandwrittensContainer() {
   const [user] = useAtom<User>(userAtom);
@@ -25,7 +24,6 @@ export default function HandwrittensContainer() {
   const [customerSelectOpen, setCustomerSelectOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchData, setSearchData] = useState<any>({});
-  const [taxTotal, setTaxTotal] = useState(0);
   const queryClient = useQueryClient();
 
   const { data: totalSales = 0, isFetching: isSalesLoading } = useQuery<number>({
@@ -59,16 +57,6 @@ export default function HandwrittensContainer() {
       return await getSomeHandwrittens(currentPage, LIMIT);
     }
   });
-
-  useEffect(() => {
-    if (!focusedHandwritten) return;
-    const taxItemsAmount = (
-      focusedHandwritten.handwrittenItems
-        .map((item) => (item.qty ?? 0) * (item.unitPrice ?? 0))
-        .reduce((acc, cur) => acc + cur, 0) ?? 0
-    );
-    setTaxTotal(Number((taxItemsAmount * TAX_RATE).toFixed(2)));
-  }, [focusedHandwritten]);
 
   useArrowSelector(handwrittensRes?.rows ?? [], focusedHandwritten, setFocusedHandwritten);
 
@@ -217,7 +205,6 @@ export default function HandwrittensContainer() {
             className="handwritten-items-table--handwrittens-page"
             handwritten={focusedHandwritten}
             setHandwritten={setFocusedHandwritten}
-            taxTotal={taxTotal}
           />
         }
       </div>

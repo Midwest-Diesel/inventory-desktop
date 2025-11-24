@@ -172,12 +172,13 @@ export const getYeserdayCOGS = async (): Promise<number> => {
   }
 };
 
-export const getHandwrittenEmails = async (customerId: number) => {
+export const getHandwrittenEmails = async (customerId: number): Promise<string[]> => {
   try {
     const res = await api.get(`/api/handwrittens/emails/${customerId}`);
     return res.data;
   } catch (err) {
     console.error(err);
+    return [];
   }
 };
 
@@ -202,12 +203,13 @@ export const addHandwritten = async (handwritten: Handwritten) => {
   }
 };
 
-export const addHandwrittenItem = async (item: NewHandwrittenItem) => {
+export const addHandwrittenItem = async (item: NewHandwrittenItem): Promise<number | null> => {
   try {
     const res = await api.post('/api/handwrittens/item', item);
-    return (res as any).data.id;
+    return Number(res.data.id);
   } catch (err) {
     console.error(err);
+    return null;
   }
 };
 

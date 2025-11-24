@@ -68,7 +68,7 @@ export default function TheMachinesDialog({ open, setOpen, openTable, setTableDa
     <Dialog
       open={open}
       setOpen={setOpen}
-      title="Gonculator"
+      title="Part Availability"
       width={400}
       y={-100}
       className="reports-dialog"
