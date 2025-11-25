@@ -3,10 +3,10 @@ import Table from "../Library/Table";
 import Button from "../Library/Button";
 import { getHandwrittenById } from "@/scripts/services/handwrittensService";
 import HandwrittenChildrenDialog from "../Dialogs/handwrittens/HandwrittenChildrenDialog";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useAtom } from "jotai";
 import { quickPickItemIdAtom } from "@/scripts/atoms/state";
-import { addCoreCharge, getTaxValue } from "@/scripts/logic/handwrittens";
+import { addCoreCharge } from "@/scripts/logic/handwrittens";
 
 interface Props {
   className?: string
@@ -19,7 +19,6 @@ export default function HandwrittenItemsTable({ className, handwritten, setHandw
   const [quickPickItemId, setQuickPickItemId] = useAtom<number>(quickPickItemIdAtom);
   const [childrenOpen, setChildrenOpen] = useState(false);
   const [stockNumChildren, setStockNumChildren] = useState<HandwrittenItemChild[]>([]);
-  const taxTotal = useMemo(() => getTaxValue(handwritten.handwrittenItems), [handwritten.handwrittenItems]);
 
   useEffect(() => {
     if (stockNumChildren.length === 0) return;
@@ -125,7 +124,7 @@ export default function HandwrittenItemsTable({ className, handwritten, setHandw
                       { item.partNum }
                     </td>
                     <td data-testid="item-desc">{ item.desc }</td>
-                    <td>{ item.desc === 'TAX' ? formatCurrency(taxTotal) : formatCurrency(Number(item.qty) < 0 ? -Number(item.unitPrice) : item.unitPrice) }</td>
+                    <td>{ formatCurrency(Number(item.qty) < 0 ? -Number(item.unitPrice) : item.unitPrice) }</td>
                     <td>{ formatDate(item.date) }</td>
                   </tr>
                 );

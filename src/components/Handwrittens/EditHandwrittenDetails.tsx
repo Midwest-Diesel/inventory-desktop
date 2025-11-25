@@ -1,7 +1,7 @@
 import { errorAtom, quickPickItemIdAtom, sourcesAtom } from "@/scripts/atoms/state";
 import { addHandwrittenItem, deleteHandwrittenItem, editHandwritten, editHandwrittenItem, editHandwrittenTaxable, getHandwrittenById, getHandwrittenEmails } from "@/scripts/services/handwrittensService";
 import { useAtom } from "jotai";
-import { FormEvent, Fragment, useEffect, useMemo, useState } from "react";
+import { FormEvent, Fragment, useEffect, useState } from "react";
 import GridItem from "../Library/Grid/GridItem";
 import Input from "../Library/Input";
 import Grid from "../Library/Grid/Grid";
@@ -33,7 +33,7 @@ import AltShipDialog from "../Dialogs/handwrittens/AltShipDialog";
 import { usePrintQue } from "@/hooks/usePrintQue";
 import { useQuery } from "@tanstack/react-query";
 import TextArea from "../Library/TextArea";
-import { addCoreCharge, getTaxValue } from "@/scripts/logic/handwrittens";
+import { addCoreCharge } from "@/scripts/logic/handwrittens";
 
 interface Props {
   handwritten: Handwritten
@@ -140,7 +140,7 @@ export default function EditHandwrittenDetails({
   const [altShipData, setAltShipData] = useState<AltShip[]>([]);
   const [returnAfterDone, setReturnAfterDone] = useState(true);
   const [loading, setLoading] = useState(false);
-  const taxTotal = useMemo(() => getTaxValue(handwrittenItems), [handwrittenItems]);
+  
 
   useEffect(() => {
     const fetchData = async () => {
@@ -476,7 +476,7 @@ export default function EditHandwrittenDetails({
         desc: 'TAX',
         partNum: 'TAX',
         stockNum: '',
-        unitPrice: taxTotal,
+        unitPrice: 0,
         qty: 1,
         cost: 0,
         location: '',
@@ -1277,7 +1277,7 @@ export default function EditHandwrittenDetails({
                           </td>
                           <td>
                             <Input
-                              value={item.desc === 'TAX' ? taxTotal : item.unitPrice ?? ''}
+                              value={item.unitPrice ?? ''}
                               onChange={(e: any) => handleEditItem({ ...item, unitPrice: e.target.value }, i)}
                               disabled={isDisabled}
                               type="number"

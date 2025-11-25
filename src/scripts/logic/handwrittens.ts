@@ -42,11 +42,3 @@ export const addCoreCharge = async (handwritten: Handwritten, item: HandwrittenI
   await addCore(newCore);
   return true;
 };
-
-const TAX_RATE = 0.08375;
-export const getTaxValue = (handwrittenItems: HandwrittenItem[]) => {
-  const taxItemsAmount = handwrittenItems
-    .filter((item) => item.desc !== 'TAX')
-    .reduce((acc, item) => acc + Number(item.unitPrice), 0);
-  return Number((taxItemsAmount * TAX_RATE).toFixed(2));
-};

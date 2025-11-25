@@ -32,21 +32,19 @@ export default function CustomerDropdown({ variant, label, value, onChange, maxH
 
 
   return (
-    <>
-      <Dropdown
-        label={label}
-        variant={variant}
-        value={value}
-        onChange={(c: string) => onChange(c)}
-        maxHeight={maxHeight}
-      >
-        <DropdownOption value="">-- SELECT A CUSTOMER --</DropdownOption>
-        {customers.length > 0 && customers.sort((a, b) => a.localeCompare(b)).map((customer: string, i) => {
-          return (
-            <DropdownOption key={i} value={customer}>{ customer }</DropdownOption>
-          );
-        })}
-      </Dropdown>
-    </>
+    <Dropdown
+      label={label}
+      variant={variant}
+      value={value}
+      onChange={(c: string) => onChange(c)}
+      maxHeight={maxHeight}
+    >
+      <DropdownOption value="">-- SELECT A CUSTOMER --</DropdownOption>
+      {customers.length > 0 && customers.sort((a, b) => a.localeCompare(b)).map((customer: string, i) => {
+        return (
+          <DropdownOption key={i} value={customer}>{ customer }</DropdownOption>
+        );
+      })}
+    </Dropdown>
   );
 }

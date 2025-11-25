@@ -193,13 +193,32 @@ const checkForCustomerAlert = (customer: Customer | null) => {
   }
 };
 
-export const addHandwritten = async (handwritten: Handwritten) => {
+export const addHandwritten = async (handwritten: Handwritten): Promise<number | null> => {
   try {
     const res = await api.post('/api/handwrittens', handwritten);
+    // Add TAX line item if customer is taxable
+    if (handwritten.customer.isTaxable) {
+      const item = {
+        handwrittenId: Number(res.data.id),
+        date: new Date(),
+        desc: 'TAX',
+        partNum: 'TAX',
+        stockNum: '',
+        unitPrice: 0,
+        qty: 1,
+        cost: 0,
+        location: '',
+        partId: null,
+        invoiceItemChildren: []
+      } as any;
+      await addHandwrittenItem(item);
+    }
+
     checkForCustomerAlert(handwritten.customer);
-    return (res as any).data.id;
+    return Number(res.data.id);
   } catch (err) {
     console.error(err);
+    return null;
   }
 };
 
