@@ -140,7 +140,7 @@ export default function SalesInfo({ open, setOpen }: Props) {
                       {salesInfo?.quotes.map((quote: SalesInfoQuote) => {
                         return (
                           <tr key={quote.id}>
-                            <td>{ quote.salesman }</td>
+                            <td>{ quote.soldBy }</td>
                             <td>{ formatDate(quote.date) }</td>
                             <td>{ quote.customer as any }</td>
                             <td>{ formatCurrency(quote.price) }</td>

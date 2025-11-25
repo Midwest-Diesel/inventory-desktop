@@ -390,7 +390,7 @@ type SalesInfoSales = {
 
 type SalesInfoQuote = {
   id: number
-  salesman: string
+  soldBy: string
   date: Date
   customer: string
   price: number

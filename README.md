@@ -7,6 +7,8 @@ This application is currently only compatible with windows.
 - Launch the installer
 - Set the install location *C:\MWD* when prompted during the installation process
 
+# Development
+
 ## Getting Started
 - `git clone git@github.com:Midwest-Diesel/inventory-desktop.git`
 - `npm install`
