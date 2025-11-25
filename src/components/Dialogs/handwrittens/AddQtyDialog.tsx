@@ -54,7 +54,7 @@ export default function AddQtyDialog({ open, setOpen, handwritten, setHandwritte
       partNum: part.partNum,
       stockNum: 'In/Out'
     };
-    await addHandwrittenItemChild(id, newChild);
+    await addHandwrittenItemChild(Number(id), newChild);
 
     const res = await getHandwrittenById(handwritten.id);
     if (res) setHandwritten(res);
