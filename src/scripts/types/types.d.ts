@@ -399,6 +399,7 @@ type SalesInfoQuote = {
 };
 
 type SalesInfo = {
+  salesByYearList: SalesInfoSales[]
   sales: SalesInfoSales[]
   quotes: SalesInfoQuote[]
   counters: {

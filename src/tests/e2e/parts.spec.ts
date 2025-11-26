@@ -62,6 +62,7 @@ test.describe('Parts', () => {
     await page.waitForTimeout(100);
     await page.getByTestId('part-num-link').first().click();
     await page.waitForLoadState('networkidle');
+    await page.waitForTimeout(100);
     await page.getByTestId('edit-btn').click();
     await expect(page.getByTestId('alt-parts')).toHaveText('9N3240, 9N3242, 7L0406');
 

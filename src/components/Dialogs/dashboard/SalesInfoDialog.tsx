@@ -49,7 +49,7 @@ export default function SalesInfo({ open, setOpen }: Props) {
   const { data: salesInfo } = useQuery<SalesInfo>({
     queryKey: ['salesInfo', open, partInfo],
     queryFn: async () => {
-      if (!partInfo) return { sales: [], quotes: [], counters: { new: 0, recon: 0, used: 0, core: 0 }};
+      if (!partInfo) return { sales: [], quotes: [], salesByYearList: [], counters: { new: 0, recon: 0, used: 0, core: 0 }};
       return await getSalesInfo(partInfo.altParts);
     },
     enabled: open
@@ -85,7 +85,7 @@ export default function SalesInfo({ open, setOpen }: Props) {
           </div>
         </div>
 
-        <section>
+        <div>
           <h3>Sales History</h3>
           <div className="sales-info__sales-history">
             <Table>
@@ -102,9 +102,9 @@ export default function SalesInfo({ open, setOpen }: Props) {
                 </tr>
               </thead>
               <tbody>
-                {salesInfo?.sales.map((info: SalesInfoSales) => {
+                {salesInfo?.sales.map((info: SalesInfoSales, i) => {
                   return (
-                    <tr key={info.id}>
+                    <tr key={i}>
                       <td><Link href={`/part/${info.id}`}>{ info.partNum }</Link></td>
                       <td>{ info.soldBy }</td>
                       <td>{ formatDate(info.soldToDate) }</td>
@@ -156,7 +156,7 @@ export default function SalesInfo({ open, setOpen }: Props) {
 
               <div className="sales-info__sales-by-year">
                 <h3>Sales by Year</h3>
-                {getSalesByYear(salesInfo?.sales ?? []).map((sale: { year: number, amount: number }, i: number) => {
+                {getSalesByYear(salesInfo?.salesByYearList ?? []).map((sale: { year: number, amount: number }, i: number) => {
                   return (
                     <div key={i} className="sales-info__sales-by-year--row">
                       <p>{ sale.year }</p>
@@ -168,7 +168,7 @@ export default function SalesInfo({ open, setOpen }: Props) {
               </div>
             </div>
           }
-        </section>
+        </div>
       </div>
     </Dialog>
   );
