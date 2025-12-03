@@ -44,17 +44,17 @@ export default function TakeoffsDialog({ open, setOpen, item, unitPrice, setHand
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (!part) return;
-    setLoading(true);
     if (part.qty - Number(qty) < 0) {
       alert('Part qty cannot go below 0');
       return;
     }
-    if (part.purchasePrice !== item.cost) {
+    if (Number(part.purchasePrice) !== item.cost) {
       alert(`Part cost of ${formatCurrency(part.purchasePrice)} doesn't equal line item cost of ${formatCurrency(item.cost)}`);
       return;
     }
     const handwritten = await getHandwrittenById(Number(params.handwritten));
     if (!handwritten) return;
+    setLoading(true);
 
     await handlePartTakeoff(part.id, Number(qty), handwritten?.billToCompany ?? '', unitPrice, handwritten.id);
     await editHandwrittenTakeoffState(item.id, true);

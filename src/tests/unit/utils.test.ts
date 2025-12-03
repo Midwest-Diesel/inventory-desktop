@@ -113,4 +113,10 @@ describe('arrayOfObjectsMatch', () => {
     const arr2 = [{ color: 'blue', id: 1, name: 'John' }];
     expect(arrayOfObjectsMatch(arr1, arr2)).toEqual(false);
   });
+
+  test('Handle date values', () => {
+    const arr1 = [{ date: new Date('11/26/2025') }];
+    const arr2 = [{ date: new Date('12/01/2025') }];
+    expect(arrayOfObjectsMatch(arr1, arr2)).toEqual(false);
+  });
 });

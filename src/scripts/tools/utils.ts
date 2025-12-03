@@ -82,6 +82,10 @@ export const windowConfirm = (msg: string) => confirm(msg);
 export const arrayOfObjectsMatch = (arr1: any[], arr2: any[]): boolean => {
   if (arr1.length !== arr2.length) return false;
   const objectsEqual = (o1: any, o2: any): boolean => {
+    if (o1 instanceof Date && o2 instanceof Date) {
+      return o1.getTime() === o2.getTime();
+    }
+    
     if (o1 !== null && typeof o1 === 'object' && o2 !== null && typeof o2 === 'object') {
       return Object.keys(o1).length === Object.keys(o2).length && Object.keys(o1).every(p => objectsEqual(o1[p], o2[p]));
     } else {

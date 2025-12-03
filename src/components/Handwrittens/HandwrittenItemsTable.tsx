@@ -39,14 +39,13 @@ export default function HandwrittenItemsTable({ className, handwritten, setHandw
   };
 
   const getTotalCost = (): number => {
-    return (handwritten.handwrittenItems as any)
-      .reduce((acc: number, item: HandwrittenItem) => item.cost !== 0.04 && item.cost !== 0.01 && acc + ((item.cost ?? 0) * (item.qty ?? 0)), 0);
+    return handwritten.handwrittenItems
+      .reduce((acc, item) => acc + ((item.cost ?? 0) * (item.qty ?? 0)), 0);
   };
   const getInvoiceTotal = (): number => {
     return handwritten.handwrittenItems
       .reduce((acc, item) => acc + ((item.unitPrice ?? 0) * (item.qty ?? 0)), 0);
   };
-  const costColorStyle = getTotalCost() < 0 ? { color: 'var(--red-2)' } : '';
   const totalColorStyle = getInvoiceTotal() < 0 ? { color: 'var(--red-2)' } : '';
 
   const handleCoreCharge = async (item: HandwrittenItem) => {
@@ -78,11 +77,12 @@ export default function HandwrittenItemsTable({ className, handwritten, setHandw
           />
 
           <p><strong>Invoice Total: </strong><span style={{ ...totalColorStyle }}>{ formatCurrency(getInvoiceTotal()) }</span></p>
-          <p><strong>Cost Total: </strong><span style={{ ...costColorStyle }}>{ formatCurrency(getTotalCost()) }</span></p>
+          <p><strong>Cost Total: </strong>{ formatCurrency(getTotalCost()) }</p>
           <Table>
             <thead>
               <tr>
                 { handwritten.invoiceStatus !== 'SENT TO ACCOUNTING' && <th></th> }
+                <th>Date</th>
                 <th>Stock Number</th>
                 <th>Location</th>
                 <th>Cost</th>
@@ -90,13 +90,14 @@ export default function HandwrittenItemsTable({ className, handwritten, setHandw
                 <th>Part Number</th>
                 <th>Description</th>
                 <th>Unit Price</th>
-                <th>Date</th>
+                <th>Total Price</th>
               </tr>
             </thead>
             <tbody>
               {handwritten.handwrittenItems.map((item: HandwrittenItem, i: number) => {
                 return (
                   <tr key={i}>
+                    <td>{ formatDate(item.date) }</td>
                     {handwritten.invoiceStatus !== 'SENT TO ACCOUNTING' &&
                       <td>
                         {item.location && !item.location.includes('CORE DEPOSIT') && item.invoiceItemChildren.length === 0 &&
@@ -124,8 +125,8 @@ export default function HandwrittenItemsTable({ className, handwritten, setHandw
                       { item.partNum }
                     </td>
                     <td data-testid="item-desc">{ item.desc }</td>
-                    <td>{ formatCurrency(Number(item.qty) < 0 ? -Number(item.unitPrice) : item.unitPrice) }</td>
-                    <td>{ formatDate(item.date) }</td>
+                    <td>{ formatCurrency(Number(item.unitPrice)) }</td>
+                    <td>{ formatCurrency(Number(item.unitPrice) * Number(item.qty)) }</td>
                   </tr>
                 );
               })}
