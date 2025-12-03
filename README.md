@@ -39,8 +39,3 @@ Make sure you run `npm run dev:test` to host the test client.
 - `npm run test:e2e` Run E2E tests in the CLI
 - `npm run test:e2e:spec` Run specific E2E tests in the CLI (Ex: `npm run test:e2e:spec -- handwrittens`)
 - `npm run test:e2e:ui` Run E2E tests in the playwright UI
-
-## Other Things
-
-### SCSS Bundling
-`globals.scss` is importing the rest of the scss files from `./bundle.scss`. That file is updated by some scripts in the root directory, and runs whenever a scss file changes. Whenever you create/remove a scss file inside the styles directory, it will automatically create/remove an import statement inside the `bundle.scss` file.
