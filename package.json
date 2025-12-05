@@ -9,7 +9,7 @@
   "scripts": {
     "tauri": "tauri",
     "preview": "vite preview",
-    "dev": "run-p bundle:watch dev:vite",
+    "dev": "run-p scss:watch dev:vite",
     "dev:test": "cross-env VITE_NODE_ENV=test vite --port 3001",
     "dev:vite": "vite --port 3000",
     "scss:watch": "scss-bundling watch",

@@ -7,33 +7,46 @@ interface RecentSearch {
 }
 
 
+const parseRecentSearches = (data: any[]) => {
+  return data.map((search: any) => {
+    return {
+      ...search,
+      date: parseResDate(search.date)
+    };
+  });
+};
+
 // === GET routes === //
 
-export const getRecentPartSearches = async (partNum: string) => {
+export const getRecentPartSearches = async (partNum: string): Promise<RecentPartSearch[]> => {
   try {
-    const res = await api.get(`/api/recent-searches/parts/${partNum}`);
-    return res.data.map((search: any) => {
-      return {
-        ...search,
-        date: parseResDate(search.date)
-      };
-    });
+    const params = { partNum };
+    const res = await api.get(`/api/recent-searches/parts`, { params });
+    return parseRecentSearches(res.data);
   } catch (err) {
     console.error(err);
+    return [];
   }
 };
 
-export const getQuotesByPartNum = async (partNum: string) => {
+export const getRecentPartSearchesToday = async (): Promise<RecentPartSearch[]> => {
   try {
-    const res = await api.get(`/api/recent-searches/quotes/${partNum}`);
-    return res.data.map((search: any) => {
-      return {
-        ...search,
-        date: parseResDate(search.date)
-      };
-    });
+    const res = await api.get(`/api/recent-searches/parts/today`);
+    return parseRecentSearches(res.data);
   } catch (err) {
     console.error(err);
+    return [];
+  }
+};
+
+export const getQuotesByPartNum = async (partNum: string): Promise<RecentQuoteSearch[]> => {
+  try {
+    const params = { partNum };
+    const res = await api.get(`/api/recent-searches/quotes`, { params });
+    return parseRecentSearches(res.data);
+  } catch (err) {
+    console.error(err);
+    return [];
   }
 };
 

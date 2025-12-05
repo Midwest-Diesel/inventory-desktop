@@ -5,8 +5,8 @@ import { FormEvent, useEffect, useState } from "react";
 import Button from "@/components/Library/Button";
 import { deleteHandwrittenItemChild, editHandwrittenItemChild, getHandwrittenById } from "@/scripts/services/handwrittensService";
 import { ask } from "@/scripts/config/tauri";
-
 import PartSelectDialog from "../dashboard/PartSelectDialog";
+import { formatCurrency } from "@/scripts/tools/stringUtils";
 
 interface Props {
   open: boolean
@@ -114,7 +114,7 @@ export default function HandwrittenChildrenDialog({ open, setOpen, stockNumChild
                     <td>{ item.qty }</td>
                     <td>{ item.partNum }</td>
                     <td>{ item.stockNum }</td>
-                    <td>{ item.cost }</td>
+                    <td>{ formatCurrency(item.cost) }</td>
                     <td>
                       <div style={{ display: 'flex', gap: '0.2rem' }}>
                         <Button

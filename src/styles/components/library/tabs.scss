@@ -3,6 +3,8 @@
 
   &__links {
     margin-left: 0.1rem;
+    display: flex;
+    gap: 0.13rem;
 
     button {
       background-color: var(--grey-dark-3);
