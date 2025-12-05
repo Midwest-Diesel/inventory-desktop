@@ -128,6 +128,16 @@ export const getSomeHandwrittensByStatus = async (page: number, limit: number, s
   }
 };
 
+export const getCustomerHandwrittenItems = async (billToCompany: string): Promise<CustomerHandwrittenItem[]> => {
+  try {
+    const res = await api.get(`/api/handwrittens/item/customer/${billToCompany}`);
+    return res.data.map((item: any) => ({ ...item, date: parseResDate(item.date) }));
+  } catch (err) {
+    console.error(err);
+    return [];
+  }
+};
+
 export const getSomeUnsoldItems = async (page: number, limit: number, salesmanId: number): Promise<{ pageCount: number, rows: SalesEndOfDayItem[] }> => {
   try {
     const res = await api.get(`/api/handwrittens/unsold-items/${JSON.stringify({ page: (page - 1) * limit, limit, salesmanId })}`);

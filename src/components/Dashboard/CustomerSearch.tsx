@@ -9,6 +9,7 @@ import { useNavState } from "../../hooks/useNavState";
 import { userAtom } from "@/scripts/atoms/state";
 import { useAtom } from "jotai";
 import { useToast } from "@/hooks/useToast";
+import HandwrittensListModal from "../Modals/HandwrittensListModal";
 
 interface Props {
   selectedCustomer: Customer
@@ -25,6 +26,7 @@ export default function CustomerSearch({ selectedCustomer, setSelectedCustomer, 
   const [user] = useAtom<User>(userAtom);
   const [searchDialogOpen, setSearchDialogOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
+  const [handwrittensModalOpen, setHandwrittensModalOpen] = useState(false);
 
   const handleCustomerSearch = (e: FormEvent) => {
     e.preventDefault();
@@ -101,9 +103,16 @@ export default function CustomerSearch({ selectedCustomer, setSelectedCustomer, 
     toast.sendToast('Created handwritten', 'success');
   };
   
-    
+
   return (
-    <div style={{ display: 'flex' }}>
+    <div style={{ display: 'flex', whiteSpace: 'nowrap' }}>
+      <HandwrittensListModal
+        open={handwrittensModalOpen}
+        setOpen={setHandwrittensModalOpen}
+        customerId={selectedCustomer.id}
+        company={selectedCustomer.company ?? ''}
+      />
+
       <h2 className="no-select">Customer Search</h2>
 
       <div className="customer-search__buttons">
@@ -123,6 +132,7 @@ export default function CustomerSearch({ selectedCustomer, setSelectedCustomer, 
               { expandedDetailsOpen ? 'Collapse' : 'Expand' }
             </Button>
             <Button variant={['x-small']} onClick={handleNewHandwritten} data-testid="new-handwritten-btn">New Handwritten</Button>
+            <Button variant={['x-small']} onClick={() => setHandwrittensModalOpen(true)}>View Handwrittens</Button>
           </>
         }
       </div>

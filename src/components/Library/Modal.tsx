@@ -54,20 +54,24 @@ export default function Modal({ children, className = '', variant = [], title, c
     
 
   return (
-    <div className="modal__bg" ref={ref} style={{ zIndex: '40', position: 'absolute', top: 0, left: 0, height: '100%' }}>
-      <dialog
-        open={open}
-        style={{ width: width, height: height }}
-        onKeyDown={(e) => (exitWithEsc && e.key === 'Escape') && closeModal()}
-        {...parseClasses(classes)}
-        {...props}
-      >
-        <h3 className="modal__title">{ title }</h3>
-        { showCloseBtn && <Button variant={["X"]} onClick={closeModal} data-testid="alert-close-btn">X</Button> }
-        <div className="modal__content" style={{ maxHeight: maxHeight }}>
-          { children }
+    <>
+      {open &&
+        <div className="modal__bg" ref={ref} style={{ zIndex: '40', position: 'absolute', top: 0, left: 0, height: '100%' }}>
+          <dialog
+            open={open}
+            style={{ width: width, height: height }}
+            onKeyDown={(e) => (exitWithEsc && e.key === 'Escape') && closeModal()}
+            {...parseClasses(classes)}
+            {...props}
+          >
+            <h3 className="modal__title">{ title }</h3>
+            { showCloseBtn && <Button variant={["X"]} onClick={closeModal} data-testid="alert-close-btn">X</Button> }
+            <div className="modal__content" style={{ maxHeight: maxHeight }}>
+              { children }
+            </div>
+          </dialog>
         </div>
-      </dialog>
-    </div>
+      }
+    </>
   );
 }

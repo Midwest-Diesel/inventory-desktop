@@ -284,6 +284,17 @@ type HandwrittenItemChild = {
   stockNum: string | null
 };
 
+type CustomerHandwrittenItem = {
+  handwrittenId: number
+  partId: number | null
+  date: Date | null
+  qty: number | null
+  partNum: string | null
+  desc: string | null
+  unitPrice: number | null
+  payment: string | null
+};
+
 type SelectHandwrittenDialogResult = {
   id: number
   date: Date
