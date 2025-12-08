@@ -1,11 +1,530 @@
 import { Layout } from "@/components/Layout";
-import PartDetailsContainer from "@/containers/PartDetailsContainer";
+import { useParams } from "react-router-dom";
+import { formatCurrency, formatDate, formatPercent } from "@/scripts/tools/stringUtils";
+import { useState } from "react";
+import { getImagesFromPart, getImagesFromStockNum } from "@/scripts/services/imagesService";
+import Table from "@/components/library/Table";
+import Button from "@/components/library/Button";
+import Grid from "@/components/library/grid/Grid";
+import GridItem from "@/components/library/grid/GridItem";
+import { useAtom } from "jotai";
+import { userAtom } from "@/scripts/atoms/state";
+import { addToPartQtyHistory, deletePart, editPart, getNextUPStockNum, getPartById, getPartCostIn, getPartEngineCostOut, getPartsQtyHistory } from "@/scripts/services/partsService";
+import PartPicturesDialog from "@/components/dialogs/PartPicturesDialog";
+import EditPartDetails from "@/components/parts/EditPartDetails";
+import EngineCostOutTable from "@/components/engines/EngineCostOut";
+import Loading from "@/components/library/Loading";
+import Link from "@/components/library/Link";
+import { getEngineByStockNum, getEngineCostRemaining } from "@/scripts/services/enginesService";
+import PartCostIn from "@/components/parts/PartCostIn";
+import StockNumPicturesDialog from "@/components/dialogs/StockNumPicturesDialog";
+import { setTitle } from "@/scripts/tools/utils";
+import Modal from "@/components/library/Modal";
+import { getSurplusCostRemaining } from "@/scripts/services/surplusService";
+import { useNavState } from "@/hooks/useNavState";
+import { usePrintQue } from "@/hooks/usePrintQue";
+import { ask } from "@/scripts/config/tauri";
+import PartQtyHistoryDialog from "@/components/parts/dialogs/PartQtyHistoryDialog";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 
 export default function PartDetails() {
+  const { closeDetailsBtn, push } = useNavState();
+  const { addToQue, printQue } = usePrintQue();
+  const [user] = useAtom<User>(userAtom);
+  const [picturesOpen, setPicturesOpen] = useState(false);
+  const [snPicturesOpen, setSnPicturesOpen] = useState(false);
+  const [isEditingPart, setIsEditingPart] = useState(false);
+  const [costAlertAmount, setCostAlertAmount] = useState('');
+  const [costAlertPurchasedFrom, setCostAlertPurchasedFrom] = useState('');
+  const [costAlertOpen, setCostAlertOpen] = useState(false);
+  const [partQtyHistoryOpen, setPartQtyHistoryOpen] = useState(false);
+  const queryClient = useQueryClient();
+  const params = useParams();
+  const partId = Number(params.partNum);
+
+  const { data: part, isFetching } = useQuery<Part | null>({
+    queryKey: ['part', partId],
+    queryFn: async () => {
+      const res = await getPartById(partId);
+      if (res) setTitle(`${res.partNum} ${res.desc}`);
+      return res;
+    },
+    enabled: !!partId
+  });
+
+  const { data: engine } = useQuery<Engine | null>({
+    queryKey: ['engine', part?.engineNum],
+    queryFn: () => getEngineByStockNum(part?.engineNum ?? 0),
+    enabled: !!part?.engineNum
+  });
+
+  // Engine cost remaining
+  const { data: costRemaining = 0 } = useQuery<number>({
+    queryKey: ['costRemaining', part?.engineNum],
+    queryFn: () => getEngineCostRemaining(part?.engineNum ?? 0),
+    enabled: !!part?.engineNum && !isEditingPart
+  });
+
+  // Part cost in
+  const { data: partCostIn = [] } = useQuery<PartCostIn[]>({
+    queryKey: ['partCostIn', part?.stockNum],
+    queryFn: () => getPartCostIn(part?.stockNum ?? ''),
+    enabled: !!part?.stockNum && !isEditingPart
+  });
+
+  // Engine cost out
+  const { data: engineCostOut = [] } = useQuery<EngineCostOut[]>({
+    queryKey: ['engineCostOut', part?.stockNum],
+    queryFn: () => getPartEngineCostOut(part?.stockNum ?? ''),
+    enabled: !!part?.stockNum && !isEditingPart
+  });
+
+  // Qty history
+  const { data: history = [] } = useQuery<PartQtyHistory[]>({
+    queryKey: ['partQtyHistory', part?.id, partQtyHistoryOpen],
+    queryFn: () => getPartsQtyHistory(part!.id)
+  });
+
+  // Pictures
+  const { data: pictures = [] } = useQuery<Picture[]>({
+    queryKey: ['pictures', part?.partNum],
+    queryFn: () => getImagesFromPart(part?.partNum ?? ''),
+    enabled: !!part?.partNum
+  });
+
+  const { data: snPictures = [] } = useQuery<Picture[]>({
+    queryKey: ['snPictures', part?.stockNum],
+    queryFn: () => getImagesFromStockNum(part?.stockNum ?? ''),
+    enabled: !!part?.stockNum
+  });
+
+  // Surplus
+  useQuery({
+    queryKey: ['surplusCostRemaining', part?.purchasedFrom],
+    queryFn: () => getSurplusCostRemaining(part?.purchasedFrom ?? ''),
+    enabled: !!part?.purchasedFrom,
+    onSuccess: (res) => {
+      if (res && Number(res) > 0) {
+        setCostAlertAmount(formatCurrency(res));
+        setCostAlertPurchasedFrom(part?.purchasedFrom ?? '');
+        setCostAlertOpen(true);
+      }
+    }
+  });
+
+  const handleDelete = async () => {
+    if (!part?.id || user.accessLevel <= 1 || prompt('Type "confirm" to delete this part') !== 'confirm') return;
+    await deletePart(part.id);
+    await queryClient.invalidateQueries({ queryKey: ['part', part.id] });
+    await push('Home', '/');
+  };
+
+  const handleAddToUP = async () => {
+    const qty = Number(prompt('Enter qty to add'));
+    if (!qty || !part) return;
+    await editPart({ ...part, qty: qty + (part?.qty ?? 0) });
+    await addToPartQtyHistory(part.id, qty);
+    await queryClient.invalidateQueries({ queryKey: ['part', part.id] });
+    await handlePrint();
+  };
+
+  const handlePrint = async () => {
+    const copies = Number(prompt('How many tags do you want to print?', '1'));
+    if (copies <= 0) return;
+    const pictures = await getImagesFromPart(part?.partNum ?? '') ?? [];
+
+    for (let i = 0; i < copies; i++) {
+      const args = {
+        stockNum: part?.stockNum ?? '',
+        model: engine?.model ?? '',
+        serialNum: engine?.serialNum ?? '',
+        hp: engine?.horsePower ?? '',
+        location: part?.location ?? '',
+        remarks: part?.remarks ?? '',
+        date: formatDate(part?.entryDate) ?? '',
+        partNum: part?.partNum ?? '',
+        rating: part?.rating,
+        hasPictures: pictures.length > 0
+      };
+      if (args.stockNum.toString().toUpperCase().includes('UP')) {
+        addToQue('partTagUP', 'print_part_tag', args, '1500px', '1000px');
+      } else {
+        addToQue('partTag', 'print_part_tag', args, '1500px', '1000px');
+      }
+    }
+    printQue();
+  };
+
+  const handleSetNextUP = async () => {
+    const latestUP = await getNextUPStockNum();
+    if (!latestUP) {
+      alert('Failed to fetch latest UP');
+      return;
+    }
+    const nextUP = `UP${parseInt(latestUP.slice(2), 10) + 1}`;
+    if (!nextUP || !part || !await ask(`Change the current stock number to ${nextUP}?`)) return;
+    const newPart = { ...part, stockNum: nextUP };
+    await editPart(newPart);
+    await queryClient.invalidateQueries({ queryKey: ['part', part.id] });
+  };
+
+
+  if (isFetching) return <Loading />;
+  if (!part) return <p>Part not found</p>;
+
   return (
     <Layout title="Part">
-      <PartDetailsContainer />
+      {costAlertOpen &&
+        <Modal
+          style={{ backgroundColor: 'var(--orange-1)' }}
+          open={costAlertOpen}
+          setOpen={setCostAlertOpen}
+        >
+          <h2>If you are selling this part</h2>
+          <h1>STOP!!!</h1>
+          <br />
+          {costAlertPurchasedFrom &&
+            <>
+              <h2>This part is from:</h2>
+              <h1>{ costAlertPurchasedFrom }</h1>
+            </>
+          }
+          <h2>Cost Remaining:</h2>
+          <h1>{ costAlertAmount }</h1>
+        </Modal>
+      }
+
+      <PartQtyHistoryDialog
+        open={partQtyHistoryOpen}
+        setOpen={setPartQtyHistoryOpen}
+        part={part}
+        history={history}
+      />
+
+      {isEditingPart ?
+        <EditPartDetails
+          part={part}
+          setPart={() => queryClient.invalidateQueries({ queryKey: ['part', part.id] })}
+          setIsEditingPart={setIsEditingPart}
+          partCostInData={partCostIn}
+          engineCostOutData={engineCostOut}
+          setPartCostInData={() => queryClient.invalidateQueries({ queryKey: ['partCostIn', part.stockNum] })}
+          setEngineCostOutData={() => queryClient.invalidateQueries({ queryKey: ['engineCostOut', part.stockNum] })}
+        />
+        :
+        <div className="part-details">
+          <div className="part-details__header">
+            <div className="header__btn-container">
+              <Button
+                variant={['blue']}
+                className="part-details__edit-btn"
+                onClick={() => setIsEditingPart(true)}
+                disabled={costRemaining === null}
+                data-testid="edit-btn"
+              >
+                Edit
+              </Button>
+              <Button
+                className="part-details__close-btn"
+                onClick={async () => closeDetailsBtn()}
+              >
+                Back
+              </Button>
+              {user.accessLevel > 1 &&
+                <Button
+                  variant={['danger']}
+                  className="part-details__delete-btn"
+                  onClick={handleDelete}
+                  data-testid="delete-btn"
+                >
+                  Delete
+                </Button>
+              }
+            </div>
+
+            <h2>{ part.partNum }</h2>
+            <h2>{ part.desc }</h2>
+            {part.imageExists &&
+              <Button
+                variant={['plain','hover-move']}
+                onClick={() => setPicturesOpen(true)}
+              >
+                <img
+                  src="/images/icons/image.svg"
+                  alt="detail"
+                  width={20}
+                  height={20}
+                  style={{ alignSelf: 'center' }}
+                />
+              </Button>
+            }
+          </div>
+
+          <div className="part-details__top-bar">
+            <Button onClick={handleAddToUP} data-testid="add-to-up-btn">Add to UP</Button>
+            <Button onClick={() => handlePrint()}>Print Tag</Button>
+            <Button onClick={() => handleSetNextUP()}>Set Next UP #</Button>
+            <Button onClick={() => setPartQtyHistoryOpen(true)} disabled={history.length === 0}>Qty History</Button>
+          </div>
+
+
+          { part.imageExists && picturesOpen && <PartPicturesDialog open={picturesOpen} setOpen={setPicturesOpen} pictures={pictures} partNum={part.partNum} /> }        
+          { part.snImageExists && snPicturesOpen && <StockNumPicturesDialog open={snPicturesOpen} setOpen={setSnPicturesOpen} pictures={snPictures} stockNum={part.stockNum} /> }
+
+          <Grid rows={1} cols={12} gap={1}>
+            <GridItem colStart={1} colEnd={7} rowStart={1} variant={['low-opacity-bg']}>
+              <Table variant={['plain', 'row-details']}>
+                <tbody>
+                  <tr>
+                    <th>Qty</th>
+                    <td data-testid="qty">{ part.qty }</td>
+                  </tr>
+                  <tr>
+                    <th>Stock Number</th>
+                    <td>
+                      <div className="part-details__stock-pics">
+                        { part.stockNum }
+                        {part.snImageExists &&
+                          <Button
+                            variant={['plain','hover-move']}
+                            onClick={() => setSnPicturesOpen(true)}
+                          >
+                            <img
+                              src="/images/icons/image.svg"
+                              alt="detail"
+                              width={20}
+                              height={20}
+                              style={{ alignSelf: 'center' }}
+                            />
+                          </Button>
+                        }
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>Location</th>
+                    <td>{ part.location }</td>
+                  </tr>
+                  <tr>
+                    <th>Manufacturer</th>
+                    <td>{ part.manufacturer }</td>
+                  </tr>
+                  <tr>
+                    <th>Purchased From</th>
+                    <td>{ part.purchasedFrom }</td>
+                  </tr>
+                  <tr>
+                    <th>Condition</th>
+                    <td>{ part.condition }</td>
+                  </tr>
+                  <tr>
+                    <th>Rating</th>
+                    <td>{ part.rating }</td>
+                  </tr>
+                  <tr>
+                    <th>Core Family</th>
+                    <td>{ part.coreFam }</td>
+                  </tr>
+                  <tr>
+                    <th>Entry Date</th>
+                    <td>{ formatDate(part.entryDate) }</td>
+                  </tr>
+                  <tr>
+                    <th>Price Last Updated</th>
+                    <td>{ formatDate(part.priceLastUpdated) }</td>
+                  </tr>
+                </tbody>
+              </Table>
+            </GridItem>
+
+            <GridItem colStart={1} colEnd={7} rowStart={2} variant={['low-opacity-bg']}>
+              <Table variant={['plain', 'row-details']}>
+                <tbody>
+                  <tr>
+                    <th>New List Price</th>
+                    <td>{ formatCurrency(part.listPrice) }</td>
+                  </tr>
+                  <tr>
+                    <th>Dealer Price</th>
+                    <td>{ formatCurrency(part.fleetPrice) }</td>
+                  </tr>
+                  <tr>
+                    <th>Reman List Price</th>
+                    <td>{ formatCurrency(part.remanListPrice) }</td>
+                  </tr>
+                  <tr>
+                    <th>Reman Fleet Price</th>
+                    <td>{ formatCurrency(part.remanFleetPrice) }</td>
+                  </tr>
+                  <tr>
+                    <th>Core Price</th>
+                    <td>{ formatCurrency(part.corePrice) }</td>
+                  </tr>
+                  <tr>
+                    <th>Purchase Price</th>
+                    <td>{ formatCurrency(part.purchasePrice) }</td>
+                  </tr>
+                </tbody>
+              </Table>
+            </GridItem>
+
+            <GridItem rowStart={1} colStart={7} colEnd={13} variant={['no-style']}>
+              <GridItem variant={['low-opacity-bg']}>
+                <Table variant={['plain', 'row-details']}>
+                  <tbody>
+                    <tr style={{ height: '4rem' }}>
+                      <th>Alt Parts</th>
+                      <td data-testid="alt-parts">{ part.altParts.join(', ') }</td>
+                    </tr>
+                    <tr style={{ height: '4rem' }}>
+                      <th>Remarks</th>
+                      <td>{ part.remarks }</td>
+                    </tr>
+                  </tbody>
+                </Table>
+              </GridItem>
+              <br />
+
+              <GridItem variant={['low-opacity-bg']}>
+                <Table variant={['plain', 'row-details']}>
+                  <tbody>
+                    <tr>
+                      <th>Sold Date</th>
+                      <td data-testid="sold-date">{ formatDate(part.soldToDate) }</td>
+                    </tr>
+                    <tr>
+                      <th>Qty Sold</th>
+                      <td data-testid="qty-sold">{ part.qtySold }</td>
+                    </tr>
+                    <tr>
+                      <th>Sell Price</th>
+                      <td data-testid="selling-price">{ formatCurrency(part.sellingPrice) }</td>
+                    </tr>
+                    <tr>
+                      <th>Sold To</th>
+                      <td data-testid="sold-to">{ part.soldTo }</td>
+                    </tr>
+                    <tr>
+                      <th>Profit Margin</th>
+                      <td data-testid="profit-margin">{ formatCurrency(part.profitMargin) }</td>
+                    </tr>
+                    <tr>
+                      <th>Profit %</th>
+                      <td data-testid="profit-percent">{ Number(part.profitPercent) > 0 && formatPercent(part.profitPercent) }</td>
+                    </tr>
+                    <tr>
+                      <th>Handwritten</th>
+                      <td>{ part.handwrittenId ? <Link href={`/handwrittens/${part.handwrittenId}`}>{ part.handwrittenId }</Link> : null }</td>
+                    </tr>
+                  </tbody>
+                </Table>
+              </GridItem>
+            </GridItem>
+
+            <GridItem colStart={7} colEnd={13} rowStart={2} variant={['low-opacity-bg']}>
+              <Table variant={['plain', 'row-details']}>
+                <tbody>
+                  <tr>
+                    <th>Engine Stock #</th>
+                    <td>
+                      {engine && (part?.engineNum ?? 0) > 1 ?
+                        <Link href={`/engines/${part.engineNum}`}>{ part.engineNum }</Link>
+                        :
+                        <p>{ part.engineNum }</p>
+                      }
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>Serial Number</th>
+                    <td>{ engine?.serialNum }</td>
+                  </tr>
+                  <tr>
+                    <th>Horse Power</th>
+                    <td>{ engine?.horsePower }</td>
+                  </tr>
+                  <tr>
+                    {costRemaining !== null ?
+                      <>
+                        <th style={costRemaining > 0 ? { color: 'var(--red-2)' } : { color: 'var(--green-light-1)' }}>Engine Cost Remaining</th>
+                        <td>{ formatCurrency(costRemaining) }</td>
+                      </>
+                      :
+                      <>
+                        <th>Engine Cost Remaining</th>
+                        <td><Loading size={20} /></td>
+                      </>
+                    }
+                  </tr>
+                </tbody>
+              </Table>
+            </GridItem>
+
+            <GridItem colStart={1} colEnd={7} rowStart={3} variant={['low-opacity-bg']}>
+              <Table variant={['plain', 'row-details']}>
+                <tbody>
+                  <tr>
+                    <th>Shipping Weights/Dims</th>
+                    <td>{ part.weightDims }</td>
+                  </tr>
+                  <tr style={{ height: '4rem' }}>
+                    <th>Sales Notes</th>
+                    <td>{ part.specialNotes }</td>
+                  </tr>
+                </tbody>
+              </Table>
+            </GridItem>
+
+            {part.partsCostIn && part.partsCostIn.length > 0 &&
+              <GridItem variant={['no-style']} rowStart={3} colStart={1} colEnd={12}>
+                <h2>Parts Cost In</h2>
+                <Table>
+                  <thead>
+                    <tr>
+                      <th>Invoice Number</th>
+                      <th>Vendor</th>
+                      <th>Cost Type</th>
+                      <th>Cost</th>
+                      <th>Note</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {part.partsCostIn.map((item, i) => {
+                      return (
+                        <tr key={i}>
+                          <td>{ item.invoiceNum }</td>
+                          <td>{ item.vendor }</td>
+                          <td>{ item.costType }</td>
+                          <td>{ item.cost }</td>
+                          <td>{ item.note }</td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </Table>
+              </GridItem>
+            }
+
+            <GridItem variant={['no-style']} rowStart={4} colStart={1} colEnd={6}>
+              <h2>Part Cost In</h2>
+              {partCostIn.length > 0 ?
+                <PartCostIn partCostInData={partCostIn} />
+                :
+                <p>Empty</p>
+              }
+            </GridItem>
+
+            <GridItem variant={['no-style']} rowStart={4} colStart={7} colEnd={12}>
+              <h2>Engine Cost Out</h2>
+              {engineCostOut.length > 0 ?
+                <EngineCostOutTable engineCostOut={engineCostOut} />
+                :
+                <p>Empty</p>
+              }
+            </GridItem>
+          </Grid>
+        </div>
+      }
     </Layout>
   );
 }

@@ -1,16 +1,16 @@
 import { FormEvent, useState } from "react";
-import Button from "../Library/Button";
-import Grid from "../Library/Grid/Grid";
-import GridItem from "../Library/Grid/GridItem";
-import Input from "../Library/Input";
-import Table from "../Library/Table";
+import Button from "../library/Button";
+import Grid from "../library/grid/Grid";
+import GridItem from "../library/grid/GridItem";
+import Input from "../library/Input";
+import Table from "../library/Table";
 import { parseDateInputValue } from "@/scripts/tools/stringUtils";
 import { addPurchaseOrderItem, deletePurchaseOrderItem, deletePurchaseOrderReceivedItem, editPurchaseOrder, editPurchaseOrderItem, editPurchaseOrderReceivedItem, getPurchaseOrderById } from "@/scripts/services/purchaseOrderService";
-import { PreventNavigation } from "../PreventNavigation";
-import Checkbox from "../Library/Checkbox";
+import { usePreventNavigation } from "../../hooks/usePreventNavigation";
+import Checkbox from "../library/Checkbox";
 import { ask } from "@/scripts/config/tauri";
-import TextArea from "../Library/TextArea";
-import VendorSelect from "../Library/Select/VendorSelect";
+import TextArea from "../library/TextArea";
+import VendorSelect from "../library/select/VendorSelect";
 
 interface Props {
   poData: PO
@@ -47,6 +47,7 @@ export default function EditPoDetails({ poData, setPo, setIsEditing, poItems, po
   const [vendorContact, setVendorContact] = useState<string>(poData.vendorContact ?? '');
   const [shippingMethod, setShippingMethod] = useState<string>(poData.shippingMethod ?? '');
   const [changesSaved, setChangesSaved] = useState(true);
+  usePreventNavigation(!changesSaved, 'Leave without saving changes?');
 
   const saveChanges = async (e: FormEvent) => {
     e.preventDefault();
@@ -158,427 +159,423 @@ export default function EditPoDetails({ poData, setPo, setIsEditing, poItems, po
   };
 
 
+  if (!poData) return null;
+
   return (
-    <>
-      <PreventNavigation shouldPrevent={!changesSaved} text="Leave without saving changes?" />
+    <form className="edit-purchase-order-details" onSubmit={(e) => saveChanges(e)} onChange={() => setChangesSaved(false)}>
+      <div className="edit-purchase-order-details__header">
+        <h2>{ poData.id }</h2>
+      
+        <div className="header__btn-container">
+          <Button
+            variant={['save']}
+            className="edit-purchase-order-details__save-btn"
+            type="submit"
+            data-testid="save-btn"
+          >
+            Save
+          </Button>
+          <Button
+            className="edit-purchase-order-details__close-btn"
+            type="button"
+            onClick={stopEditing}
+          >
+            Cancel Editing
+          </Button>
+        </div>
+      </div>
 
-      {poData &&
-        <form className="edit-purchase-order-details" onSubmit={(e) => saveChanges(e)} onChange={() => setChangesSaved(false)}>
-          <div className="edit-purchase-order-details__header">
-            <h2>{ poData.id }</h2>
-          
-            <div className="header__btn-container">
-              <Button
-                variant={['save']}
-                className="edit-purchase-order-details__save-btn"
-                type="submit"
-                data-testid="save-btn"
-              >
-                Save
-              </Button>
-              <Button
-                className="edit-purchase-order-details__close-btn"
-                type="button"
-                onClick={stopEditing}
-              >
-                Cancel Editing
-              </Button>
-            </div>
-          </div>
+      <Grid rows={1} cols={12} gap={1}>
+        <GridItem colStart={1} colEnd={6} variant={['low-opacity-bg']}>
+          <Table variant={['plain', 'edit-row-details']}>
+            <tbody>
+              <tr>
+                <th>Date</th>
+                <td>
+                  <Input
+                    variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+                    value={parseDateInputValue(date)}
+                    type="date"
+                    onChange={(e: any) => setDate(new Date(e.target.value))}
+                  />
+                </td>
+              </tr>
+              <tr>
+                <th>Ordered By</th>
+                <td>
+                  <Input
+                    variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+                    value={orderedBy}
+                    onChange={(e: any) => setOrderedBy(e.target.value)}
+                  />
+                </td>
+              </tr>
+              <tr>
+                <th>Vendor</th>
+                <td>
+                  <VendorSelect
+                    variant={['label-full-width']}
+                    value={purchasedFrom}
+                    onChange={(e) => handleChangeVendor(e.target.value)}
+                  />
+                </td>
+              </tr>
+              <tr>
+                <th>Vendor Contact</th>
+                <td>
+                  <Input
+                    variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+                    value={vendorContact}
+                    onChange={(e: any) => setVendorContact(e.target.value)}
+                  />
+                </td>
+              </tr>
+              <tr>
+                <th>Vendor Address</th>
+                <td>
+                  <Input
+                    variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+                    value={vendorAddress}
+                    onChange={(e: any) => setVendorAddress(e.target.value)}
+                  />
+                </td>
+              </tr>
+              <tr>
+                <th>Vendor City</th>
+                <td>
+                  <Input
+                    variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+                    value={vendorCity}
+                    onChange={(e: any) => setVendorCity(e.target.value)}
+                  />
+                </td>
+              </tr>
+              <tr>
+                <th>Vendor State</th>
+                <td>
+                  <Input
+                    variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+                    value={vendorState}
+                    onChange={(e: any) => setVendorState(e.target.value)}
+                  />
+                </td>
+              </tr>
+              <tr>
+                <th>Vendor Zip</th>
+                <td>
+                  <Input
+                    variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+                    value={vendorZip}
+                    onChange={(e: any) => setVendorZip(e.target.value)}
+                  />
+                </td>
+              </tr>
+              <tr>
+                <th>Vendor Phone</th>
+                <td>
+                  <Input
+                    variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+                    value={vendorPhone}
+                    onChange={(e: any) => setVendorPhone(e.target.value)}
+                  />
+                </td>
+              </tr>
+              <tr>
+                <th>Vendor Fax</th>
+                <td>
+                  <Input
+                    variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+                    value={vendorFax}
+                    onChange={(e: any) => setVendorFax(e.target.value)}
+                  />
+                </td>
+              </tr>
+              <tr>
+                <th>Payment Terms</th>
+                <td>
+                  <Input
+                    variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+                    value={paymentTerms}
+                    onChange={(e: any) => setPaymentTerms(e.target.value)}
+                  />
+                </td>
+              </tr>
+            </tbody>
+          </Table>
+        </GridItem>
 
-          <Grid rows={1} cols={12} gap={1}>
-            <GridItem colStart={1} colEnd={6} variant={['low-opacity-bg']}>
-              <Table variant={['plain', 'edit-row-details']}>
-                <tbody>
-                  <tr>
-                    <th>Date</th>
-                    <td>
-                      <Input
-                        variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
-                        value={parseDateInputValue(date)}
-                        type="date"
-                        onChange={(e: any) => setDate(new Date(e.target.value))}
-                      />
-                    </td>
-                  </tr>
-                  <tr>
-                    <th>Ordered By</th>
-                    <td>
-                      <Input
-                        variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
-                        value={orderedBy}
-                        onChange={(e: any) => setOrderedBy(e.target.value)}
-                      />
-                    </td>
-                  </tr>
-                  <tr>
-                    <th>Vendor</th>
-                    <td>
-                      <VendorSelect
-                        variant={['label-full-width']}
-                        value={purchasedFrom}
-                        onChange={(e) => handleChangeVendor(e.target.value)}
-                      />
-                    </td>
-                  </tr>
-                  <tr>
-                    <th>Vendor Contact</th>
-                    <td>
-                      <Input
-                        variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
-                        value={vendorContact}
-                        onChange={(e: any) => setVendorContact(e.target.value)}
-                      />
-                    </td>
-                  </tr>
-                  <tr>
-                    <th>Vendor Address</th>
-                    <td>
-                      <Input
-                        variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
-                        value={vendorAddress}
-                        onChange={(e: any) => setVendorAddress(e.target.value)}
-                      />
-                    </td>
-                  </tr>
-                  <tr>
-                    <th>Vendor City</th>
-                    <td>
-                      <Input
-                        variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
-                        value={vendorCity}
-                        onChange={(e: any) => setVendorCity(e.target.value)}
-                      />
-                    </td>
-                  </tr>
-                  <tr>
-                    <th>Vendor State</th>
-                    <td>
-                      <Input
-                        variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
-                        value={vendorState}
-                        onChange={(e: any) => setVendorState(e.target.value)}
-                      />
-                    </td>
-                  </tr>
-                  <tr>
-                    <th>Vendor Zip</th>
-                    <td>
-                      <Input
-                        variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
-                        value={vendorZip}
-                        onChange={(e: any) => setVendorZip(e.target.value)}
-                      />
-                    </td>
-                  </tr>
-                  <tr>
-                    <th>Vendor Phone</th>
-                    <td>
-                      <Input
-                        variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
-                        value={vendorPhone}
-                        onChange={(e: any) => setVendorPhone(e.target.value)}
-                      />
-                    </td>
-                  </tr>
-                  <tr>
-                    <th>Vendor Fax</th>
-                    <td>
-                      <Input
-                        variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
-                        value={vendorFax}
-                        onChange={(e: any) => setVendorFax(e.target.value)}
-                      />
-                    </td>
-                  </tr>
-                  <tr>
-                    <th>Payment Terms</th>
-                    <td>
-                      <Input
-                        variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
-                        value={paymentTerms}
-                        onChange={(e: any) => setPaymentTerms(e.target.value)}
-                      />
-                    </td>
-                  </tr>
-                </tbody>
-              </Table>
-            </GridItem>
+        <GridItem colStart={6} colEnd={11} variant={['no-style']}>
+          <GridItem colStart={6} colEnd={11} variant={['low-opacity-bg']}>
+            <Table variant={['plain', 'edit-row-details']}>
+              <tbody>
+                <tr>
+                  <th>Ship To Company</th>
+                  <td>
+                    <Input
+                      variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+                      value={shipToCompany}
+                      onChange={(e: any) => setShipToCompany(e.target.value)}
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <th>Ship To Address</th>
+                  <td>
+                    <Input
+                      variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+                      value={shipToAddress}
+                      onChange={(e: any) => setShipToAddress(e.target.value)}
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <th>Ship To City</th>
+                  <td>
+                    <Input
+                      variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+                      value={shipToCity}
+                      onChange={(e: any) => setShipToCity(e.target.value)}
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <th>Ship To State</th>
+                  <td>
+                    <Input
+                      variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+                      value={shipToState}
+                      onChange={(e: any) => setShipToState(e.target.value)}
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <th>Ship To Zip</th>
+                  <td>
+                    <Input
+                      variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+                      value={shipToZip}
+                      onChange={(e: any) => setShipToZip(e.target.value)}
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <th>Ship To Phone</th>
+                  <td>
+                    <Input
+                      variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+                      value={shipToPhone}
+                      onChange={(e: any) => setShipToPhone(e.target.value)}
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <th>Ship To Fax</th>
+                  <td>
+                    <Input
+                      variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+                      value={shipToFax}
+                      onChange={(e: any) => setShipToFax(e.target.value)}
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <th>Shipping Method</th>
+                  <td>
+                    <Input
+                      variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+                      value={shippingMethod}
+                      onChange={(e: any) => setShippingMethod(e.target.value)}
+                    />
+                  </td>
+                </tr>
+              </tbody>
+            </Table>
+          </GridItem>
 
-            <GridItem colStart={6} colEnd={11} variant={['no-style']}>
-              <GridItem colStart={6} colEnd={11} variant={['low-opacity-bg']}>
-                <Table variant={['plain', 'edit-row-details']}>
-                  <tbody>
-                    <tr>
-                      <th>Ship To Company</th>
-                      <td>
-                        <Input
-                          variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
-                          value={shipToCompany}
-                          onChange={(e: any) => setShipToCompany(e.target.value)}
-                        />
-                      </td>
-                    </tr>
-                    <tr>
-                      <th>Ship To Address</th>
-                      <td>
-                        <Input
-                          variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
-                          value={shipToAddress}
-                          onChange={(e: any) => setShipToAddress(e.target.value)}
-                        />
-                      </td>
-                    </tr>
-                    <tr>
-                      <th>Ship To City</th>
-                      <td>
-                        <Input
-                          variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
-                          value={shipToCity}
-                          onChange={(e: any) => setShipToCity(e.target.value)}
-                        />
-                      </td>
-                    </tr>
-                    <tr>
-                      <th>Ship To State</th>
-                      <td>
-                        <Input
-                          variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
-                          value={shipToState}
-                          onChange={(e: any) => setShipToState(e.target.value)}
-                        />
-                      </td>
-                    </tr>
-                    <tr>
-                      <th>Ship To Zip</th>
-                      <td>
-                        <Input
-                          variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
-                          value={shipToZip}
-                          onChange={(e: any) => setShipToZip(e.target.value)}
-                        />
-                      </td>
-                    </tr>
-                    <tr>
-                      <th>Ship To Phone</th>
-                      <td>
-                        <Input
-                          variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
-                          value={shipToPhone}
-                          onChange={(e: any) => setShipToPhone(e.target.value)}
-                        />
-                      </td>
-                    </tr>
-                    <tr>
-                      <th>Ship To Fax</th>
-                      <td>
-                        <Input
-                          variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
-                          value={shipToFax}
-                          onChange={(e: any) => setShipToFax(e.target.value)}
-                        />
-                      </td>
-                    </tr>
-                    <tr>
-                      <th>Shipping Method</th>
-                      <td>
-                        <Input
-                          variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
-                          value={shippingMethod}
-                          onChange={(e: any) => setShippingMethod(e.target.value)}
-                        />
-                      </td>
-                    </tr>
-                  </tbody>
-                </Table>
-              </GridItem>
+          <br />
+          <GridItem colStart={6} colEnd={11} variant={['low-opacity-bg']}>
+            <Table variant={['plain', 'edit-row-details']}>
+              <tbody>
+                <tr>
+                  <th>Purchased For</th>
+                  <td>
+                    <Input
+                      variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+                      value={purchasedFor}
+                      onChange={(e: any) => setPurchasedFor(e.target.value)}
+                      data-testid="purchased-for"
+                    />
+                  </td>
+                </tr>
+              </tbody>
+            </Table>
+          </GridItem>
+        </GridItem>
 
-              <br />
-              <GridItem colStart={6} colEnd={11} variant={['low-opacity-bg']}>
-                <Table variant={['plain', 'edit-row-details']}>
-                  <tbody>
-                    <tr>
-                      <th>Purchased For</th>
-                      <td>
-                        <Input
-                          variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
-                          value={purchasedFor}
-                          onChange={(e: any) => setPurchasedFor(e.target.value)}
-                          data-testid="purchased-for"
-                        />
-                      </td>
-                    </tr>
-                  </tbody>
-                </Table>
-              </GridItem>
-            </GridItem>
+        <GridItem colStart={1} colEnd={6} variant={['low-opacity-bg']}>
+          <Table variant={['plain', 'edit-row-details']}>
+            <tbody>
+              <tr style={{ height: '4rem' }}>
+                <th>Special Instructions</th>
+                <td>
+                  <TextArea
+                    variant={['label-stack', 'label-bold']}
+                    rows={3}
+                    cols={100}
+                    value={specialInstructions}
+                    onChange={(e: any) => setSpecialInstructions(e.target.value)}
+                  />
+                </td>
+              </tr>
+              <tr style={{ height: '4rem' }}>
+                <th>Comments</th>
+                <td>
+                  <TextArea
+                    variant={['label-stack', 'label-bold']}
+                    rows={3}
+                    cols={100}
+                    value={comments}
+                    onChange={(e: any) => setComments(e.target.value)}
+                  />
+                </td>
+              </tr>
+            </tbody>
+          </Table>
+        </GridItem>
 
-            <GridItem colStart={1} colEnd={6} variant={['low-opacity-bg']}>
-              <Table variant={['plain', 'edit-row-details']}>
-                <tbody>
-                  <tr style={{ height: '4rem' }}>
-                    <th>Special Instructions</th>
+        <GridItem colStart={1} colEnd={12} variant={['no-style']} style={{ marginTop: '1rem' }}>
+          <h3>PO Items</h3>
+          <Table>
+            <thead>
+              <tr>
+                <th>Qty</th>
+                <th>Description</th>
+                <th>Unit Price</th>
+                <th>Total Price</th>
+                <th>Received</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {poItems.map((item: POItem, i: number) => { 
+                return (
+                  <tr key={i}>
                     <td>
-                      <TextArea
-                        variant={['label-stack', 'label-bold']}
-                        rows={3}
-                        cols={100}
-                        value={specialInstructions}
-                        onChange={(e: any) => setSpecialInstructions(e.target.value)}
+                      <Input
+                        value={item.qty ?? ''}
+                        onChange={(e: any) => handleEditItem({ ...item, qty: e.target.value }, i)}
+                        type="number"
+                        required
                       />
                     </td>
-                  </tr>
-                  <tr style={{ height: '4rem' }}>
-                    <th>Comments</th>
                     <td>
-                      <TextArea
-                        variant={['label-stack', 'label-bold']}
-                        rows={3}
-                        cols={100}
-                        value={comments}
-                        onChange={(e: any) => setComments(e.target.value)}
+                      <Input
+                        value={item.desc ?? ''}
+                        onChange={(e: any) => handleEditItem({ ...item, desc: e.target.value }, i)}
                       />
                     </td>
+                    <td>
+                      <Input
+                        value={item.unitPrice ?? ''}
+                        onChange={(e: any) => handleEditItem({ ...item, unitPrice: e.target.value }, i)}
+                        type="number"
+                        step="any"
+                        required
+                      />
+                    </td>
+                    <td>
+                      <Input
+                        value={item.totalPrice ?? ''}
+                        onChange={(e: any) => handleEditItem({ ...item, totalPrice: e.target.value }, i)}
+                        type="number"
+                        step="any"
+                        required
+                      />
+                    </td>
+                    <td className="cbx-td">
+                      <Checkbox
+                        checked={item.isReceived}
+                        onChange={(e: any) => handleEditItem({ ...item, isReceived: e.target.checked }, i)}
+                      />
+                    </td>
+                    <td style={{ textAlign: 'center' }}>
+                      <Button
+                        variant={['danger', 'center']}
+                        onClick={() => handleDeleteItem(item.id)}
+                        type="button"
+                      >
+                        Delete
+                      </Button>
+                    </td>
                   </tr>
-                </tbody>
-              </Table>
-            </GridItem>
+                );
+              })}
+            </tbody>
+          </Table>
 
-            <GridItem colStart={1} colEnd={12} variant={['no-style']} style={{ marginTop: '1rem' }}>
-              <h3>PO Items</h3>
-              <Table>
-                <thead>
-                  <tr>
-                    <th>Qty</th>
-                    <th>Description</th>
-                    <th>Unit Price</th>
-                    <th>Total Price</th>
-                    <th>Received</th>
-                    <th></th>
+          <Button type="button" onClick={handleNewItem}>Add</Button>
+        </GridItem>
+
+        <GridItem colStart={1} colEnd={12} variant={['no-style']} style={{ marginTop: '1rem' }}>
+          <h3>PO Items Received</h3>
+          <Table>
+            <thead>
+              <tr>
+                <th>Part Number</th>
+                <th>Stock Number</th>
+                <th>Description</th>
+                <th>Cost</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {poItemsReceived.map((item: POReceivedItem, i: number) => { 
+                return (
+                  <tr key={i}>
+                    <td>
+                      <Input
+                        value={item.partNum ?? ''}
+                        onChange={(e: any) => handleEditReceivedItem({ ...item, partNum: e.target.value }, i)}
+                        required
+                      />
+                    </td>
+                    <td>
+                      <Input
+                        value={item.stockNum ?? ''}
+                        onChange={(e: any) => handleEditReceivedItem({ ...item, stockNum: e.target.value }, i)}
+                        required
+                      />
+                    </td>
+                    <td>
+                      <Input
+                        value={item.desc ?? ''}
+                        onChange={(e: any) => handleEditReceivedItem({ ...item, desc: e.target.value }, i)}
+                      />
+                    </td>
+                    <td>
+                      <Input
+                        value={item.cost ?? ''}
+                        onChange={(e: any) => handleEditReceivedItem({ ...item, cost: e.target.value }, i)}
+                        type="number"
+                        step="any"
+                      />
+                    </td>
+                    <td style={{ textAlign: 'center' }}>
+                      <Button
+                        variant={['danger', 'center']}
+                        onClick={() => handleDeleteReceivedItem(item.id)}
+                        type="button"
+                      >
+                        Delete
+                      </Button>
+                    </td>
                   </tr>
-                </thead>
-                <tbody>
-                  {poItems.map((item: POItem, i: number) => { 
-                    return (
-                      <tr key={i}>
-                        <td>
-                          <Input
-                            value={item.qty ?? ''}
-                            onChange={(e: any) => handleEditItem({ ...item, qty: e.target.value }, i)}
-                            type="number"
-                            required
-                          />
-                        </td>
-                        <td>
-                          <Input
-                            value={item.desc ?? ''}
-                            onChange={(e: any) => handleEditItem({ ...item, desc: e.target.value }, i)}
-                          />
-                        </td>
-                        <td>
-                          <Input
-                            value={item.unitPrice ?? ''}
-                            onChange={(e: any) => handleEditItem({ ...item, unitPrice: e.target.value }, i)}
-                            type="number"
-                            step="any"
-                            required
-                          />
-                        </td>
-                        <td>
-                          <Input
-                            value={item.totalPrice ?? ''}
-                            onChange={(e: any) => handleEditItem({ ...item, totalPrice: e.target.value }, i)}
-                            type="number"
-                            step="any"
-                            required
-                          />
-                        </td>
-                        <td className="cbx-td">
-                          <Checkbox
-                            checked={item.isReceived}
-                            onChange={(e: any) => handleEditItem({ ...item, isReceived: e.target.checked }, i)}
-                          />
-                        </td>
-                        <td style={{ textAlign: 'center' }}>
-                          <Button
-                            variant={['danger', 'center']}
-                            onClick={() => handleDeleteItem(item.id)}
-                            type="button"
-                          >
-                            Delete
-                          </Button>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </Table>
-
-              <Button type="button" onClick={handleNewItem}>Add</Button>
-            </GridItem>
-
-            <GridItem colStart={1} colEnd={12} variant={['no-style']} style={{ marginTop: '1rem' }}>
-              <h3>PO Items Received</h3>
-              <Table>
-                <thead>
-                  <tr>
-                    <th>Part Number</th>
-                    <th>Stock Number</th>
-                    <th>Description</th>
-                    <th>Cost</th>
-                    <th></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {poItemsReceived.map((item: POReceivedItem, i: number) => { 
-                    return (
-                      <tr key={i}>
-                        <td>
-                          <Input
-                            value={item.partNum ?? ''}
-                            onChange={(e: any) => handleEditReceivedItem({ ...item, partNum: e.target.value }, i)}
-                            required
-                          />
-                        </td>
-                        <td>
-                          <Input
-                            value={item.stockNum ?? ''}
-                            onChange={(e: any) => handleEditReceivedItem({ ...item, stockNum: e.target.value }, i)}
-                            required
-                          />
-                        </td>
-                        <td>
-                          <Input
-                            value={item.desc ?? ''}
-                            onChange={(e: any) => handleEditReceivedItem({ ...item, desc: e.target.value }, i)}
-                          />
-                        </td>
-                        <td>
-                          <Input
-                            value={item.cost ?? ''}
-                            onChange={(e: any) => handleEditReceivedItem({ ...item, cost: e.target.value }, i)}
-                            type="number"
-                            step="any"
-                          />
-                        </td>
-                        <td style={{ textAlign: 'center' }}>
-                          <Button
-                            variant={['danger', 'center']}
-                            onClick={() => handleDeleteReceivedItem(item.id)}
-                            type="button"
-                          >
-                            Delete
-                          </Button>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </Table>
-            </GridItem>
-          </Grid>
-        </form>
-      }
-    </>
+                );
+              })}
+            </tbody>
+          </Table>
+        </GridItem>
+      </Grid>
+    </form>
   );
 }

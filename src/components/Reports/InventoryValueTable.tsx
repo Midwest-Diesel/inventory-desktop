@@ -1,6 +1,6 @@
-import Button from "../Library/Button";
-import Loading from "../Library/Loading";
-import Table from "../Library/Table";
+import Button from "../library/Button";
+import Loading from "../library/Loading";
+import Table from "../library/Table";
 import { useState } from "react";
 import { reportInventoryValueCoreEngines, reportInventoryValueParts, reportInventoryValueRunningEngines, reportInventoryValueShortBlocks, reportInventoryValueSurplus, reportInventoryValueToreDownEngines } from "@/scripts/services/reportsService";
 import { formatCurrency, formatDate } from "@/scripts/tools/stringUtils";

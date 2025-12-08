@@ -7,15 +7,16 @@ import { getEngineCostRemaining } from "@/scripts/services/enginesService";
 import { getRatingFromRemarks } from "@/scripts/tools/utils";
 import { ask } from "@/scripts/config/tauri";
 import { formatCurrency } from "@/scripts/tools/stringUtils";
-import Button from "../Library/Button";
-import Checkbox from "../Library/Checkbox";
-import Table from "../Library/Table";
-import Select from "../Library/Select/Select";
-import Input from "../Library/Input";
-import Loading from "../Library/Loading";
-import Link from "../Library/Link";
+import Button from "../library/Button";
+import Checkbox from "../library/Checkbox";
+import Table from "../library/Table";
+import Select from "../library/select/Select";
+import Input from "../library/Input";
+import Loading from "../library/Loading";
+import Link from "../library/Link";
 import { useQuery } from "@tanstack/react-query";
 import { getVendors } from "@/scripts/services/vendorsService";
+import { deleteEngineAddOn } from "@/scripts/services/engineAddOnsService";
 
 interface Props {
   addOn: AddOn
@@ -85,9 +86,9 @@ export default function OfficePartAddonRow({ addOn, onSave, onModifyAddOnData }:
     setAddons(updatedAddOns);
   };
 
-  const handleDeleteAddOn = async () => {
+  const onClickDeleteAddOn = async () => {
     if (!await ask('Are you sure you want to delete this part?')) return;
-    await deleteAddOn(addOn.id);
+    await deleteEngineAddOn(addOn.id);
     setAddons(addOns.filter((a) => a.id !== addOn.id));
   };
 
@@ -449,7 +450,7 @@ export default function OfficePartAddonRow({ addOn, onSave, onModifyAddOnData }:
             <Button type="button" onClick={handleAddToInventory} data-testid="add-to-inventory-btn">Add to Inventory</Button>
           </>
         }
-        <Button type="button" variant={['danger']} onClick={handleDeleteAddOn}>Delete</Button>
+        <Button type="button" variant={['danger']} onClick={onClickDeleteAddOn}>Delete</Button>
       </div>
     </div>
   );

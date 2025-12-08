@@ -1,9 +1,9 @@
 import { formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
-import Button from "../Library/Button";
-import Table from "../Library/Table";
-import Loading from "../Library/Loading";
+import Button from "../library/Button";
+import Table from "../library/Table";
+import Loading from "../library/Loading";
 import { useEffect, useState } from "react";
-import Link from "../Library/Link";
+import Link from "../library/Link";
 
 interface Props {
   closeTable: () => void

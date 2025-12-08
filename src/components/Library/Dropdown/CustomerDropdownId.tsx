@@ -1,6 +1,6 @@
 import { useEffect } from "react";
-import Dropdown from "../Dropdown/Dropdown";
-import DropdownOption from "../Dropdown/DropdownOption";
+import Dropdown from "./Dropdown";
+import DropdownOption from "./DropdownOption";
 import React from "react";
 import { useAtom } from "jotai";
 import { customersMinAtom } from "@/scripts/atoms/state";

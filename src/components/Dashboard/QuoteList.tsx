@@ -1,12 +1,12 @@
 /* eslint-disable */
 
 import { Fragment, useState } from "react";
-import Button from "../Library/Button";
-import Table from "@/components/Library/Table";
-import Pagination from "@/components/Library/Pagination";
+import Button from "../library/Button";
+import Table from "@/components/library/Table";
+import Pagination from "@/components/library/Pagination";
 import { formatCurrency, formatDate, formatPhone } from "@/scripts/tools/stringUtils";
-import Checkbox from "@/components/Library/Checkbox";
-import Link from "../Library/Link";
+import Checkbox from "@/components/library/Checkbox";
+import Link from "../library/Link";
 import { ask } from "@/scripts/config/tauri";
 import { deleteQuote, toggleAddToEmail, toggleQuoteSold } from "@/scripts/services/quotesService";
 import { useAtom } from "jotai";

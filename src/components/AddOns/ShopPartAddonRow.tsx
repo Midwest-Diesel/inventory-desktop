@@ -1,14 +1,14 @@
 import { useAtom } from "jotai";
 import { shopAddOnsAtom } from "@/scripts/atoms/state";
-import Button from "../Library/Button";
-import Checkbox from "../Library/Checkbox";
-import Table from "../Library/Table";
-import Select from "../Library/Select/Select";
-import { addAddOn, deleteAddOn, editAddOnIsPoOpened, editAddOnPrintStatus } from "@/scripts/services/addOnsService";
+import Button from "../library/Button";
+import Checkbox from "../library/Checkbox";
+import Table from "../library/Table";
+import Select from "../library/select/Select";
+import { addAddOn, editAddOnIsPoOpened, editAddOnPrintStatus } from "@/scripts/services/addOnsService";
 import { getNextUPStockNum, getPartsByStockNum, getPartInfoByPartNum } from "@/scripts/services/partsService";
 import { useEffect, useRef, useState } from "react";
-import Input from "../Library/Input";
-import Link from "../Library/Link";
+import Input from "../library/Input";
+import Link from "../library/Link";
 import { getEngineByStockNum } from "@/scripts/services/enginesService";
 import { formatDate } from "@/scripts/tools/stringUtils";
 import { getPurchaseOrderByPoNum } from "@/scripts/services/purchaseOrderService";
@@ -21,6 +21,7 @@ import { useClickOutside } from "@/hooks/useClickOutside";
 import { commonPrefixLength, getAddOnDateCode, getNextStockNumberSuffix } from "@/scripts/logic/addOns";
 import { useQuery } from "@tanstack/react-query";
 import { getVendors } from "@/scripts/services/vendorsService";
+import { deleteEngineAddOn } from "@/scripts/services/engineAddOnsService";
 
 interface Props {
   addOn: AddOn
@@ -93,12 +94,12 @@ export default function ShopPartAddonRow({ addOn, handleDuplicateAddOn, partNumL
     setAddons(updatedAddOns);
   };
 
-  const handleDeleteAddOn = async () => {
+  const onClickDeleteAddOn = async () => {
     if (!await ask('Are you sure you want to delete this part?')) return;
-    await deleteAddOn(addOn.id);
+    await deleteEngineAddOn(addOn.id);
     setAddons(addOns.filter((a) => a.id !== addOn.id));
   };
-
+  
   const autofillFromPartNum = (partNum: string) => {
     if (!partNum) {
       setPartNum('');
@@ -614,7 +615,7 @@ export default function ShopPartAddonRow({ addOn, handleDuplicateAddOn, partNumL
           >
             <Button type="button" variant={['search']} onClick={handlePrint} data-testid="print-btn">Print</Button>
           </Input>
-          <Button type="button" variant={['danger']} onClick={handleDeleteAddOn}>Delete</Button>
+          <Button type="button" variant={['danger']} onClick={onClickDeleteAddOn}>Delete</Button>
         </div>
       </div>
     </>

@@ -1,9 +1,9 @@
 import { useAtom } from "jotai";
-import Table from "../Library/Table";
+import Table from "../library/Table";
 import { recentPartSearchesAtom, userAtom } from "@/scripts/atoms/state";
 import { formatDate, formatTime, parseResDate } from "@/scripts/tools/stringUtils";
 import { useEffect } from "react";
-import Tabs from "../Library/Tabs";
+import Tabs from "../library/Tabs";
 import { supabase } from "@/scripts/config/supabase";
 import { RealtimePostgresInsertPayload } from "@supabase/supabase-js";
 import { getRecentPartSearches, getRecentPartSearchesToday } from "@/scripts/services/recentSearchesService";

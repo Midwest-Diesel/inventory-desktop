@@ -1,5 +1,5 @@
 import { formatCurrency } from "@/scripts/tools/stringUtils";
-import Table from "../Library/Table";
+import Table from "../library/Table";
 
 interface Props {
   className?: string

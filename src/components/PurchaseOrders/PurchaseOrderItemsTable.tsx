@@ -1,6 +1,6 @@
 import { formatCurrency } from "@/scripts/tools/stringUtils";
-import Table from "../Library/Table";
-import Checkbox from "../Library/Checkbox";
+import Table from "../library/Table";
+import Checkbox from "../library/Checkbox";
 
 interface Props {
   className?: string

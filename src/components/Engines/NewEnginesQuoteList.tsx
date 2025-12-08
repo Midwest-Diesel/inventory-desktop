@@ -1,10 +1,10 @@
 import { getQuotesByEngineModel } from "@/scripts/services/quotesService";
-import Table from "../Library/Table";
+import Table from "../library/Table";
 import { formatCurrency, formatDate, formatPhone } from "@/scripts/tools/stringUtils";
-import Checkbox from "../Library/Checkbox";
-import Link from "@/components/Library/Link";
+import Checkbox from "../library/Checkbox";
+import Link from "@/components/library/Link";
 import { useQuery } from "@tanstack/react-query";
-import Button from "../Library/Button";
+import Button from "../library/Button";
 
 interface Props {
   model: string

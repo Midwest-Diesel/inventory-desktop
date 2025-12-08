@@ -5,9 +5,9 @@ import Login from "./Login";
 import { getUser } from "@/scripts/services/userService";
 import { getAlerts } from "@/scripts/services/alertsService";
 import { checkUpdate } from '@tauri-apps/api/updater';
-import UpdateModal from "./Modals/UpdateModal";
-import ToastContainer from "@/containers/ToastContainer";
-import Tooltip from "./Library/Tooltip";
+import UpdateModal from "./modals/UpdateModal";
+import ToastContainer from "@/components/library/toast/ToastContainer";
+import Tooltip from "./library/Tooltip";
 import { useNavigate } from "react-router-dom";
 
 interface Props {

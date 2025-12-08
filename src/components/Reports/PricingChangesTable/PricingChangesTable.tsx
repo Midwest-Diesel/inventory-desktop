@@ -1,10 +1,10 @@
 import { formatCurrency } from "@/scripts/tools/stringUtils";
-import Button from "../../Library/Button";
-import Loading from "../../Library/Loading";
-import Table from "../../Library/Table";
-import Pagination from "../../Library/Pagination";
+import Button from "../../library/Button";
+import Loading from "../../library/Loading";
+import Table from "../../library/Table";
+import Pagination from "../../library/Pagination";
 import { useEffect, useMemo, useState } from "react";
-import Select from "@/components/Library/Select/Select";
+import Select from "@/components/library/select/Select";
 
 interface Props {
   data: PricingChangesReport[]

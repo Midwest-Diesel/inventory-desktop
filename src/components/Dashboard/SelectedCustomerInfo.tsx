@@ -1,10 +1,10 @@
-import Link from "../Library/Link";
-import GridItem from "../Library/Grid/GridItem";
-import Grid from "../Library/Grid/Grid";
+import Link from "../library/Link";
+import GridItem from "../library/grid/GridItem";
+import Grid from "../library/grid/Grid";
 import { formatCurrency, formatPhone } from "@/scripts/tools/stringUtils";
-import Table from "../Library/Table";
+import Table from "../library/Table";
 import { getCustomerSalesHistory } from "@/scripts/services/customerService";
-import CustomerContactsBlock from "../Customer/CustomerContactsBlock";
+import CustomerContactsBlock from "../customers/contacts/CustomerContactsBlock";
 import { useQuery } from "@tanstack/react-query";
 import { useAtom } from "jotai";
 import { selectedCustomerAtom } from "@/scripts/atoms/state";

@@ -1,12 +1,12 @@
-import Table from "../Library/Table";
-import Button from "../Library/Button";
+import Table from "../library/Table";
+import Button from "../library/Button";
 import { extractStatusColors, formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
-import Pagination from "../Library/Pagination";
-import Link from "../Library/Link";
+import Pagination from "../library/Pagination";
+import Link from "../library/Link";
 import { getImagesFromPart, getImagesFromStockNum } from "@/scripts/services/imagesService";
 import { useState } from "react";
-import PartPicturesDialog from "../Dialogs/PartPicturesDialog";
-import StockNumPicturesDialog from "../Dialogs/StockNumPicturesDialog";
+import PartPicturesDialog from "../dialogs/PartPicturesDialog";
+import StockNumPicturesDialog from "../dialogs/StockNumPicturesDialog";
 import { useTooltip } from "@/hooks/useTooltip";
 
 interface Props {

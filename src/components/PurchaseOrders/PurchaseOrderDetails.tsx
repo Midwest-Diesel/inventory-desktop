@@ -1,7 +1,7 @@
-import Button from "../Library/Button";
-import Grid from "../Library/Grid/Grid";
-import GridItem from "../Library/Grid/GridItem";
-import Table from "../Library/Table";
+import Button from "../library/Button";
+import Grid from "../library/grid/Grid";
+import GridItem from "../library/grid/GridItem";
+import Table from "../library/Table";
 import PurchaseOrderItemsTable from "./PurchaseOrderItemsTable";
 import { deletePurchaseOrder } from "@/scripts/services/purchaseOrderService";
 import { formatCurrency, formatDate } from "@/scripts/tools/stringUtils";

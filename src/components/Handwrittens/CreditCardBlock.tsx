@@ -1,8 +1,8 @@
 import { editHandwrittenPaymentType } from "@/scripts/services/handwrittensService";
-import Button from "../Library/Button";
-import Input from "../Library/Input";
-import Select from "../Library/Select/Select";
-import Table from "../Library/Table";
+import Button from "../library/Button";
+import Input from "../library/Input";
+import Select from "../library/select/Select";
+import Table from "../library/Table";
 import { useRef } from "react";
 import { paymentTypes } from "@/scripts/logic/handwrittens";
 

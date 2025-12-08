@@ -1,4 +1,4 @@
-import { CoreSearch } from "@/components/Dialogs/CoreSearchDialog";
+import { CoreSearch } from "@/components/cores/dialogs/CoreSearchDialog";
 import api from "../config/axios";
 import { parseResDate } from "../tools/stringUtils";
 import { deleteHandwrittenItem } from "./handwrittensService";

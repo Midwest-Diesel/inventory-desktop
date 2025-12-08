@@ -1,5 +1,5 @@
 import { useAtom } from "jotai";
-import Table from "../Library/Table";
+import Table from "../library/Table";
 import { recentQuotesAtom } from "@/scripts/atoms/state";
 import { formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
 

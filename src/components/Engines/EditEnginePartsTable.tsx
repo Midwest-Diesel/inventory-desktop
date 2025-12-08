@@ -1,6 +1,6 @@
 import React, { ChangeEvent } from 'react';
-import Table from "../Library/Table";
-import Input from '../Library/Input';
+import Table from "../library/Table";
+import Input from '../library/Input';
 import { useAtom } from 'jotai';
 import { enginePartsTableAtom } from '@/scripts/atoms/state';
 

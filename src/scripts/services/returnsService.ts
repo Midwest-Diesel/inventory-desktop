@@ -16,12 +16,13 @@ const parseReturnRes = (data: any) => {
 
 // === GET routes === //
 
-export const getReturnById = async (id: number) => {
+export const getReturnById = async (id: number): Promise<Return | null> => {
   try {
     const res = await api.get(`/api/returns/id/${id}`);
     return parseReturnRes(res.data)[0];
   } catch (err) {
     console.error(err);
+    return null;
   }
 };
 

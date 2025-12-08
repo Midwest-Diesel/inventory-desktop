@@ -1,5 +1,5 @@
-import Modal from "../Library/Modal";
-import Button from "../Library/Button";
+import Modal from "../library/Modal";
+import Button from "../library/Button";
 import { invoke } from "@/scripts/config/tauri";
 
 interface Props {

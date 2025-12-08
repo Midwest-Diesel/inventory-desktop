@@ -1,8 +1,8 @@
-import Dialog from "../Library/Dialog";
-import Checkbox from "../Library/Checkbox";
+import Dialog from "../library/Dialog";
+import Checkbox from "../library/Checkbox";
 import { useEffect, useState } from "react";
 import { invoke } from "@/scripts/config/tauri";
-import Button from "../Library/Button";
+import Button from "../library/Button";
 
 interface Props {
   open: boolean

@@ -1,7 +1,7 @@
 import { FormEvent, useState } from "react";
-import Dialog from "../Library/Dialog";
-import Input from "../Library/Input";
-import Button from "../Library/Button";
+import Dialog from "../library/Dialog";
+import Input from "../library/Input";
+import Button from "../library/Button";
 import { invoke } from "@/scripts/config/tauri";
 import { addEmailStuffItem } from "@/scripts/services/emailStuffService";
 

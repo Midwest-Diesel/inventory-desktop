@@ -1,10 +1,10 @@
 import { useEffect, useState, useCallback } from "react";
-import Table from "../Library/Table";
-import Link from "../Library/Link";
-import Checkbox from "../Library/Checkbox";
-import Button from "../Library/Button";
-import Pagination from "../Library/Pagination";
-import Loading from "../Library/Loading";
+import Table from "../library/Table";
+import Link from "../library/Link";
+import Checkbox from "../library/Checkbox";
+import Button from "../library/Button";
+import Pagination from "../library/Pagination";
+import Loading from "../library/Loading";
 import { formatCurrency } from "@/scripts/tools/stringUtils";
 import { getAllEngines, getEnginesByEngineData } from "@/scripts/services/enginesService";
 

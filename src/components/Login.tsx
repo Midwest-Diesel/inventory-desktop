@@ -1,10 +1,10 @@
 import { getUser, loginUser } from "@/scripts/services/userService";
-import Button from "./Library/Button";
+import Button from "./library/Button";
 import { useAtom } from "jotai";
 import { userAtom } from "@/scripts/atoms/state";
 import { Layout } from "./Layout";
 import { FormEvent, useState } from "react";
-import Input from "./Library/Input";
+import Input from "./library/Input";
 import Error from "./Error";
 
 

@@ -1,8 +1,8 @@
-import Checkbox from "@/components/Library/Checkbox";
-import Loading from "@/components/Library/Loading";
-import Table from "@/components/Library/Table";
+import Checkbox from "@/components/library/Checkbox";
+import Loading from "@/components/library/Loading";
+import Table from "@/components/library/Table";
 import { formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
-import Link from "@/components/Library/Link";
+import Link from "@/components/library/Link";
 
 interface Props {
   engines: Engine[];

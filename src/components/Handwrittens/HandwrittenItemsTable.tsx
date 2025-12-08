@@ -1,12 +1,12 @@
 import { formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
-import Table from "../Library/Table";
-import Button from "../Library/Button";
+import Table from "../library/Table";
+import Button from "../library/Button";
 import { getHandwrittenById } from "@/scripts/services/handwrittensService";
-import HandwrittenChildrenDialog from "../Dialogs/handwrittens/HandwrittenChildrenDialog";
 import { useEffect, useState } from "react";
 import { useAtom } from "jotai";
 import { quickPickItemIdAtom } from "@/scripts/atoms/state";
 import { addCoreCharge } from "@/scripts/logic/handwrittens";
+import HandwrittenChildrenDialog from "./dialogs/HandwrittenChildrenDialog";
 
 interface Props {
   className?: string

@@ -1,6 +1,6 @@
 
-import NavDropdown from "../Library/Dropdown/NavDropdown";
-import Link from "../Library/Link";
+import NavDropdown from "../library/dropdown/NavDropdown";
+import Link from "../library/Link";
 
 
 export default function ShopNavbar() {

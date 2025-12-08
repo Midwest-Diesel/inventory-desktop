@@ -1,4 +1,4 @@
-import Barcode from "../Library/Barcode";
+import Barcode from "../library/Barcode";
 
 interface Props {
   data: {

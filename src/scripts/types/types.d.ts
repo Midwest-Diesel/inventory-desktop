@@ -347,12 +347,12 @@ type EngineAddOn = {
   ecm: boolean
   jakeBrake: boolean
   oilPan: '' | 'FS' | 'RS' | 'CS'
-  engineStockNum: number | null
-  cost: number | null
-  invoiceNum: string | null
-  costType: CostType | null
-  vendor: string | null
-  note: string | null
+  engineCostInStockNum: number | null
+  engineCostInCost: number | null
+  engineCostInInvoiceNum: string | null
+  engineCostInCostType: CostType | null
+  engineCostInVendor: string | null
+  engineCostInNote: string | null
   isPrinted: boolean
 };
 

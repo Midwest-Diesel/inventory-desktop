@@ -1,4 +1,4 @@
-import Button from "../../Library/Button";
+import Button from "../../library/Button";
 import { getSupabaseFile } from "@/scripts/config/supabase";
 import { useEffect, useState } from "react";
 import PricingChangesTable from "./PricingChangesTable";

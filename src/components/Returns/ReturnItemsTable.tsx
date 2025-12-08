@@ -1,12 +1,12 @@
 import { formatCurrency } from "@/scripts/tools/stringUtils";
-import Table from "../Library/Table";
-import Checkbox from "../Library/Checkbox";
+import Table from "../library/Table";
+import Checkbox from "../library/Checkbox";
 import { editReturnItem } from "@/scripts/services/returnsService";
-import Button from "../Library/Button";
+import Button from "../library/Button";
 import { confirm } from "@/scripts/config/tauri";
 import { editPart } from "@/scripts/services/partsService";
 import { useNavState } from "../../hooks/useNavState";
-import ReturnItemChildrenDialog from "../Dialogs/ReturnItemChildrenDialog";
+import ReturnItemChildrenDialog from "./dialogs/ReturnItemChildrenDialog";
 import { useState } from "react";
 
 interface Props {

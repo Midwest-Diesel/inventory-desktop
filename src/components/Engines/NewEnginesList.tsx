@@ -1,8 +1,8 @@
-import Checkbox from "../Library/Checkbox";
-import Table from "../Library/Table";
-import Button from "../Library/Button";
-import Select from "../Library/Select/Select";
-import Link from "../Library/Link";
+import Checkbox from "../library/Checkbox";
+import Table from "../library/Table";
+import Button from "../library/Button";
+import Select from "../library/select/Select";
+import Link from "../library/Link";
 import { useMemo, useState } from "react";
 import { formatCurrency } from "@/scripts/tools/stringUtils";
 import { useTooltip } from "@/hooks/useTooltip";

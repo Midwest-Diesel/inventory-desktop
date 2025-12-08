@@ -1,21 +1,21 @@
 import { useNavState } from "@/hooks/useNavState";
-import CreditCardLabelTemplate from "@/components/PrintableComponents/CreditCardLabelTemplate";
-import HandwrittenAccountingTemplate from "@/components/PrintableComponents/HandwrittenAccountingTemplate";
-import HandwrittenCoreTemplate from "@/components/PrintableComponents/HandwrittenCoreTemplate";
-import HandwrittenShippingTemplate from "@/components/PrintableComponents/HandwrittenShippingTemplate";
-import PackingSlipTemplate from "@/components/PrintableComponents/PackingSlipTemplate";
-import PartTag from "@/components/PrintableComponents/PartTag";
-import PurchaseOrderTemplate from "@/components/PrintableComponents/PurchaseOrderTemplate";
-import ReturnTemplate from "@/components/PrintableComponents/ReturnTemplate";
-import ShippingLabelTemplate from "@/components/PrintableComponents/ShippingLabelTemplate";
+import CreditCardLabelTemplate from "@/components/printableComponents/CreditCardLabelTemplate";
+import HandwrittenAccountingTemplate from "@/components/printableComponents/HandwrittenAccountingTemplate";
+import HandwrittenCoreTemplate from "@/components/printableComponents/HandwrittenCoreTemplate";
+import HandwrittenShippingTemplate from "@/components/printableComponents/HandwrittenShippingTemplate";
+import PackingSlipTemplate from "@/components/printableComponents/PackingSlipTemplate";
+import PartTag from "@/components/printableComponents/PartTag";
+import PurchaseOrderTemplate from "@/components/printableComponents/PurchaseOrderTemplate";
+import ReturnTemplate from "@/components/printableComponents/ReturnTemplate";
+import ShippingLabelTemplate from "@/components/printableComponents/ShippingLabelTemplate";
 import { usePrintQue } from "@/hooks/usePrintQue";
-import WarrantyTemplate from "@/components/PrintableComponents/WarrantyTemplate";
+import WarrantyTemplate from "@/components/printableComponents/WarrantyTemplate";
 import { invoke } from "@/scripts/config/tauri";
 import { toPng } from "html-to-image";
 import { useEffect, useRef, useState } from "react";
-import PartTagUP from "@/components/PrintableComponents/PartTagUP";
-import EngineTag from "@/components/PrintableComponents/EngineTag";
-import EngineChecklist from "@/components/PrintableComponents/EngineChecklist";
+import PartTagUP from "@/components/printableComponents/PartTagUP";
+import EngineTag from "@/components/printableComponents/EngineTag";
+import EngineChecklist from "@/components/printableComponents/EngineChecklist";
 
 
 export default function Print() {

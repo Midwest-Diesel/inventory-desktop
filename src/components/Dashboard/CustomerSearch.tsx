@@ -1,7 +1,7 @@
 import { FormEvent, useState } from "react";
-import CustomerSearchDialog from "../Dialogs/dashboard/CustomerSearchDialog";
-import Button from "../Library/Button";
-import Input from "../Library/Input";
+import CustomerSearchDialog from "./dialogs/CustomerSearchDialog";
+import Button from "../library/Button";
+import Input from "../library/Input";
 import { addCustomer, getCustomerByName } from "@/scripts/services/customerService";
 import { addHandwritten } from "@/scripts/services/handwrittensService";
 import { isObjectNull } from "@/scripts/tools/utils";
@@ -9,7 +9,7 @@ import { useNavState } from "../../hooks/useNavState";
 import { userAtom } from "@/scripts/atoms/state";
 import { useAtom } from "jotai";
 import { useToast } from "@/hooks/useToast";
-import HandwrittensListModal from "../Modals/HandwrittensListModal";
+import HandwrittensListModal from "../handwrittens/modals/HandwrittensListModal";
 
 interface Props {
   selectedCustomer: Customer

@@ -2,9 +2,9 @@ import { userAtom } from "@/scripts/atoms/state";
 import { useAtom } from "jotai";
 import OfficeNavbar from "./OfficeNavbar";
 import ShopNavbar from "./ShopNavbar";
-import Button from "../Library/Button";
+import Button from "../library/Button";
 import { useNavState } from "../../hooks/useNavState";
-import ContextMenu from "../Library/ContextMenu";
+import ContextMenu from "../library/ContextMenu";
 import { useState } from "react";
 import NavTab from "./NavTab";
 

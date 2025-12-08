@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import Button from "../Library/Button";
-import Table from "../Library/Table";
-import Checkbox from "../Library/Checkbox";
-import Input from "../Library/Input";
+import Button from "../library/Button";
+import Table from "../library/Table";
+import Checkbox from "../library/Checkbox";
+import Input from "../library/Input";
 import { formatCurrency } from "@/scripts/tools/stringUtils";
 import { addQuote } from "@/scripts/services/quotesService";
 import { useAtom } from "jotai";

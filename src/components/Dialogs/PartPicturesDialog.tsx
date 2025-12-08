@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import Dialog from "../Library/Dialog";
-import Checkbox from "../Library/Checkbox";
-import Button from "../Library/Button";
+import Dialog from "../library/Dialog";
+import Checkbox from "../library/Checkbox";
+import Button from "../library/Button";
 import { invoke } from "@/scripts/config/tauri";
 
 interface Picture {

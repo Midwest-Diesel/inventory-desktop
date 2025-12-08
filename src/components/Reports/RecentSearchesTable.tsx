@@ -1,7 +1,7 @@
 import { formatDate, formatTime } from "@/scripts/tools/stringUtils";
-import Button from "../Library/Button";
-import Loading from "../Library/Loading";
-import Table from "../Library/Table";
+import Button from "../library/Button";
+import Loading from "../library/Loading";
+import Table from "../library/Table";
 
 interface Props {
   closeTable: () => void

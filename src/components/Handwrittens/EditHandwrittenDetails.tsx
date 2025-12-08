@@ -2,37 +2,37 @@ import { errorAtom, quickPickItemIdAtom, sourcesAtom } from "@/scripts/atoms/sta
 import { addHandwrittenItem, deleteHandwrittenItem, editHandwritten, editHandwrittenItem, editHandwrittenTaxable, getHandwrittenById, getHandwrittenEmails } from "@/scripts/services/handwrittensService";
 import { useAtom } from "jotai";
 import { FormEvent, Fragment, useEffect, useState } from "react";
-import GridItem from "../Library/Grid/GridItem";
-import Input from "../Library/Input";
-import Grid from "../Library/Grid/Grid";
-import Select from "../Library/Select/Select";
+import GridItem from "../library/grid/GridItem";
+import Input from "../library/Input";
+import Grid from "../library/grid/Grid";
+import Select from "../library/select/Select";
 import { formatCurrency, formatDate, parseDateInputValue } from "@/scripts/tools/stringUtils";
-import Button from "../Library/Button";
-import Table from "../Library/Table";
-import CustomerDropdown from "../Library/Dropdown/CustomerDropdown";
+import Button from "../library/Button";
+import Table from "../library/Table";
+import CustomerDropdown from "../library/dropdown/CustomerDropdown";
 import { getCustomerById, getCustomerByName } from "@/scripts/services/customerService";
 import { getAllSources } from "@/scripts/services/sourcesService";
 import { deleteCoreByItemId, editCoreCharge, editCoreCustomer, getCoresByHandwrittenItem } from "@/scripts/services/coresService";
-import ShippingListDialog from "../Dialogs/handwrittens/ShippingListDialog";
-import Checkbox from "../Library/Checkbox";
-import { PreventNavigation } from "../PreventNavigation";
-import ChangeCustomerInfoDialog from "../Dialogs/handwrittens/ChangeCustomerInfoDialog";
+import ShippingListDialog from "./dialogs/ShippingListDialog";
+import Checkbox from "../library/Checkbox";
+import { usePreventNavigation } from "../../hooks/usePreventNavigation";
+import ChangeCustomerInfoDialog from "./dialogs/ChangeCustomerInfoDialog";
 import { addTrackingNumber, deleteTrackingNumber, editTrackingNumber } from "@/scripts/services/trackingNumbersService";
-import FreightCarrierSelect from "../Library/Select/FreightCarrierSelect";
+import FreightCarrierSelect from "../library/select/FreightCarrierSelect";
 import { getFreightCarrierById } from "@/scripts/services/freightCarriersService";
 import { getAllUsers } from "@/scripts/services/userService";
 import CreditCardBlock from "./CreditCardBlock";
-import Dropdown from "../Library/Dropdown/Dropdown";
-import DropdownOption from "../Library/Dropdown/DropdownOption";
+import Dropdown from "../library/dropdown/Dropdown";
+import DropdownOption from "../library/dropdown/DropdownOption";
 import { arrayOfObjectsMatch } from "@/scripts/tools/utils";
-import PromotionalDialog from "../Dialogs/handwrittens/PromotionalDialog";
-import Loading from "../Library/Loading";
+import PromotionalDialog from "./dialogs/PromotionalDialog";
+import Loading from "../library/Loading";
 import { ask } from "@/scripts/config/tauri";
 import { getAltShipByCustomerId } from "@/scripts/services/altShipService";
-import AltShipDialog from "../Dialogs/handwrittens/AltShipDialog";
+import AltShipDialog from "./dialogs/AltShipDialog";
 import { usePrintQue } from "@/hooks/usePrintQue";
 import { useQuery } from "@tanstack/react-query";
-import TextArea from "../Library/TextArea";
+import TextArea from "../library/TextArea";
 import { addCoreCharge } from "@/scripts/logic/handwrittens";
 
 interface Props {
@@ -140,6 +140,7 @@ export default function EditHandwrittenDetails({
   const [altShipData, setAltShipData] = useState<AltShip[]>([]);
   const [returnAfterDone, setReturnAfterDone] = useState(true);
   const [loading, setLoading] = useState(false);
+  usePreventNavigation(!changesSaved, 'Leave without saving changes?');
   
 
   useEffect(() => {
@@ -672,7 +673,6 @@ export default function EditHandwrittenDetails({
 
   return (
     <>
-      <PreventNavigation shouldPrevent={!changesSaved} text="Leave without saving changes?" />
       {loading &&
         <div style={{ position: 'absolute', inset: 0, alignContent: 'center', backgroundColor: 'rgba(0, 0, 0, 0.4)', zIndex: 1 }}>
           <Loading />

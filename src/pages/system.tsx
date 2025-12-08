@@ -1,5 +1,5 @@
 import { Layout } from "@/components/Layout";
-import Button from "@/components/Library/Button";
+import Button from "@/components/library/Button";
 import { invoke } from "@/scripts/config/tauri";
 import { getVersion } from "@tauri-apps/api/app";
 import { checkUpdate } from "@tauri-apps/api/updater";

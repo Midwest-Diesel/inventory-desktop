@@ -1,4 +1,4 @@
-import Table from "../Library/Table";
+import Table from "../library/Table";
 
 interface Props {
   data: {

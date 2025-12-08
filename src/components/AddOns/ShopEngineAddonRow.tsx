@@ -1,14 +1,14 @@
-import Button from "../Library/Button";
-import Checkbox from "../Library/Checkbox";
-import Table from "../Library/Table";
-import Select from "../Library/Select/Select";
+import Button from "../library/Button";
+import Checkbox from "../library/Checkbox";
+import Table from "../library/Table";
+import Select from "../library/select/Select";
 import { useEffect, useRef, useState } from "react";
-import Input from "../Library/Input";
+import Input from "../library/Input";
 import { getAutofillEngine } from "@/scripts/services/enginesService";
 import { deleteEngineAddOn, editEngineAddOnPrintStatus } from "@/scripts/services/engineAddOnsService";
 import { useAtom } from "jotai";
 import { engineAddOnsAtom } from "@/scripts/atoms/state";
-import VendorSelect from "../Library/Select/VendorSelect";
+import VendorSelect from "../library/select/VendorSelect";
 import { ask } from "@/scripts/config/tauri";
 import { usePrintQue } from "@/hooks/usePrintQue";
 import { formatDate } from "@/scripts/tools/stringUtils";
@@ -47,7 +47,7 @@ export default function ShopEngineAddOnRow({ addOn, handleDuplicateAddOn, onSave
     setAddons(updatedAddOns);
   };
 
-  const handleDeleteAddOn = async () => {
+  const onClickDeleteAddOn = async () => {
     if (!await ask('Are you sure you want to delete this part?')) return;
     await deleteEngineAddOn(addOn.id);
     setAddons(addOns.filter((a) => a.id !== addOn.id));
@@ -279,7 +279,7 @@ export default function ShopEngineAddOnRow({ addOn, handleDuplicateAddOn, onSave
           >
             <Button type="button" variant={['search']} onClick={handlePrint}>Print</Button>
           </Input>
-          <Button variant={['danger']} type="button" onClick={handleDeleteAddOn}>Delete</Button>
+          <Button variant={['danger']} type="button" onClick={onClickDeleteAddOn}>Delete</Button>
         </div>
       </div>
     </>

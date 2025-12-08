@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
-import Navbar from "./Navbar/Navbar";
-import AlertModal from "./Modals/AlertModal";
+import Navbar from "./navbar/Navbar";
+import AlertModal from "./alerts/modals/AlertModal";
 import { useAtom } from "jotai";
 import { selectedAlertsAtom } from "@/scripts/atoms/components";
 import { userAtom } from "@/scripts/atoms/state";
