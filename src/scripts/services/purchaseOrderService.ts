@@ -67,9 +67,9 @@ export const searchPurchaseOrders = async (searchData: POSearch): Promise<{ page
 
 // === POST routes === //
 
-export const addBlankPurchaseOrder = async (poNum: number) => {
+export const addBlankPurchaseOrder = async () => {
   try {
-    await api.post('/api/po', { poNum });
+    await api.post('/api/po');
   } catch (err) {
     console.error(err);
   }

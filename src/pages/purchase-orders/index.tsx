@@ -15,10 +15,10 @@ import { useState } from "react";
 import { useArrowSelector } from "@/hooks/useArrowSelector";
 import { useQuery } from "@tanstack/react-query";
 
-const LIMIT = 26;
 
+const LIMIT = 40;
 
-export default function PurchaseOrders() {
+export default function PurchaseOrders() { 
   const [searchData] = useAtom(POSearchAtom);
   const [focusedPurchaseOrder, setFocusedPurchaseOrder] = useState<PO | null>(null);
   const [showIncomming, setShowIncomming] = useState(false);
@@ -53,9 +53,7 @@ export default function PurchaseOrders() {
   };
 
   const handleNewPurchaseOrder = async () => {
-    const poNum = prompt('Enter PO Number');
-    if (!poNum) return;
-    await addBlankPurchaseOrder(Number(poNum));
+    await addBlankPurchaseOrder();
     await refetch();
   };
 

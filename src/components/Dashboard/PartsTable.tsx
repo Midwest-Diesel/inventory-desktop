@@ -33,15 +33,15 @@ export default function PartsTable({ parts, partsData, pageCount, partsQty, rows
   const [snImagesOpen, setSnImagesOpen] = useState(false);
 
   const openPartImages = async (part: Part) => {
+    setPartImagesOpen(true);
     setPartImages(await getImagesFromPart(part.partNum));
     setPicturesPartNum(part.partNum);
-    setPartImagesOpen(true);
   };
 
   const openStockNumImages = async (part: Part) => {
+    setSnImagesOpen(true);
     setSnImages(await getImagesFromStockNum(part.stockNum ?? ''));
     setPicturesStockNum(part.stockNum ?? '');
-    setSnImagesOpen(true);
   };
 
   const partCostStyles = (part: Part) => {
