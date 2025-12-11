@@ -46,7 +46,17 @@ export const getSomeCustomers = async (page: number, limit: number): Promise<{ p
 
 export const searchCustomers = async (data: CustomerSearch): Promise<{ pageCount: number, rows: Customer[] }> => {
   try {
-    const res = await api.get(`/api/customers/search/${JSON.stringify({ ...data, page: (data.page - 1) * data.limit, limit: data.limit })}`);
+    const params = new URLSearchParams(
+      Object.fromEntries(
+        Object.entries({
+          ...data,
+          page: (data.page - 1) * data.limit,
+          limit: data.limit
+        }).map(([a, b]) => [a, String(b)])
+      )
+    );
+
+    const res = await api.get(`/api/customers/search?${params.toString()}`);
     return { pageCount: res.data.pageCount, rows: parseCustomerRes(res.data.rows) };
   } catch (err) {
     console.error(err);
@@ -77,7 +87,7 @@ export const getCustomersMin = async (): Promise<CustomerMin[]> => {
 
 export const getCustomerById = async (id: number) => {
   try {
-    const res = await api.get(`/api/customers/${id}`);
+    const res = await api.get(`/api/customers/id/${id}`);
     return parseCustomerRes(res.data)[0];
   } catch (err) {
     console.error(err);

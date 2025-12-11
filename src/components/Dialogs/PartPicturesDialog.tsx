@@ -3,6 +3,7 @@ import Dialog from "../library/Dialog";
 import Checkbox from "../library/Checkbox";
 import Button from "../library/Button";
 import { invoke } from "@/scripts/config/tauri";
+import Loading from "../library/Loading";
 
 interface Picture {
   url: string
@@ -67,6 +68,7 @@ export default function PartPicturesDialog({ open, setOpen, pictures, partNum }:
       <Button onClick={handleAttachEmail}>Attach to Existing Email</Button>
       <Button onClick={openFolder}>Open Folder</Button>
 
+      { pictures.length === 0 && <Loading /> }
       {pictures.map((pic: Picture, i) => {
         return (
           <div key={i} className="part-pictures-dialog__img-container">

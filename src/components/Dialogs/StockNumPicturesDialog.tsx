@@ -3,6 +3,7 @@ import Checkbox from "../library/Checkbox";
 import { useEffect, useState } from "react";
 import { invoke } from "@/scripts/config/tauri";
 import Button from "../library/Button";
+import Loading from "../library/Loading";
 
 interface Props {
   open: boolean
@@ -62,6 +63,7 @@ export default function StockNumPicturesDialog({ open, setOpen, pictures = [], s
       <Button onClick={handleAttachEmail}>Attach to Existing Email</Button>
       <Button onClick={openFolder}>Open Folder</Button>
 
+      { pictures.length === 0 && <Loading /> }
       {pictures.map((pic: Picture, i) => {
         return (
           <div key={i} className="part-pictures-dialog__img-container">
