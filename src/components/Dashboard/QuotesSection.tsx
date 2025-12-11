@@ -161,6 +161,8 @@ export default function QuotesSection({ quotes, setQuotes, setHandwrittenQuote, 
         { isFetchingQuotes && <Loading size={28} /> }
       </div>
 
+      { quoteEdited && <EditQuoteDialog setQuoteEdited={setQuoteEdited} quote={quoteEdited} setQuote={(q: Quote) => handleEdit(q)} /> }
+
       {quotesOpen &&
         <>
           {quoteEmailed &&
@@ -186,7 +188,6 @@ export default function QuotesSection({ quotes, setQuotes, setHandwrittenQuote, 
             />
           }
           <SalesEndOfDayDialog open={endOfDayOpen} setOpen={setEndOfDayOpen} />
-          { quoteEdited && <EditQuoteDialog setQuoteEdited={setQuoteEdited} quote={quoteEdited} setQuote={(q: Quote) => handleEdit(q)} /> }
           {piggybackQuote &&
             <PiggybackQuoteDialog
               open={piggybackQuoteOpen}
