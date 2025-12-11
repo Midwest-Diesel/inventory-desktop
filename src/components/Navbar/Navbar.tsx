@@ -11,7 +11,7 @@ import NavTab from "./NavTab";
 
 export default function Navbar() {
   const [user] = useAtom(userAtom);
-  const { tabs, setTabs, forward, backward, handleChangeTab, newTab, deleteTab } = useNavState();
+  const { tabs, setTabs, forward, backward, changeTab, newTab, deleteTab } = useNavState();
   const [menuOpen, setMenuOpen] = useState(false);
   const [selectedTab, setSelectedTab] = useState<Tab | null>(null);
 
@@ -50,7 +50,7 @@ export default function Navbar() {
               <NavTab
                 key={tab.id}
                 tab={tab}
-                handleChangeTab={handleChangeTab}
+                changeTab={changeTab}
                 handleDeleteTab={deleteTab}
                 setSelectedTab={setSelectedTab}
                 closeBtnActive={tabs.length > 1}

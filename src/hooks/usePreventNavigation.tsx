@@ -4,7 +4,7 @@ import { ask } from '@/scripts/config/tauri';
 
 
 export const usePreventNavigation = (shouldPrevent: boolean, text: string) => {
-  const { forward, backward, push, handleChangeTab, newTab } = useNavState();
+  const { forward, backward, push, changeTab, newTab } = useNavState();
 
   useEffect(() => {
     const handleClick = async (e: MouseEvent) => {
@@ -25,7 +25,7 @@ export const usePreventNavigation = (shouldPrevent: boolean, text: string) => {
           newTab();
         } else if (tab) {
           const tabId = Number(tab.getAttribute('data-tabid'));
-          handleChangeTab(tabId);
+          changeTab(tabId);
         } else if (foward) {
           forward();
         } else if (back) {

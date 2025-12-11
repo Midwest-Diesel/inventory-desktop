@@ -21,7 +21,7 @@ import PartSearchSection from "@/components/dashboard/PartSearchSection";
 
 
 export default function Dashboard() {
-  const { push, newTab, tabs, handleChangeTab } = useNavState();
+  const { push, newTab, tabs, changeTab } = useNavState();
   const toast = useToast();
   const [user] = useAtom<User>(userAtom);
   const [recentPartSearches, setRecentPartSearches] = useAtom<RecentPartSearch[]>(recentPartSearchesAtom);
@@ -120,7 +120,7 @@ export default function Dashboard() {
 
     const tab: Tab | null = tabs.find((tab: Tab) => tab.history[tab.history.length - 1].url === `/handwrittens/${handwritten.id}`) ?? null;
     if (tab) {
-      await handleChangeTab(tab.id);
+      await changeTab(tab.id);
     } else {
       await newTab([{ name: 'Handwritten', url: `/handwrittens/${handwritten.id}` }]);
     }

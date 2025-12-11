@@ -2,6 +2,7 @@ import { useAtom } from "jotai";
 import { tabsAtom } from "@/scripts/atoms/state";
 import { useNavigate } from "react-router-dom";
 import { toAbsolutePath } from "@/scripts/tools/stringUtils";
+import { useState } from "react";
 
 
 const MAX_HISTORY = 40;
@@ -9,6 +10,9 @@ const MAX_HISTORY = 40;
 export function useNavState() {
   const navigate = useNavigate();
   const [tabs, setTabsAtom] = useAtom<Tab[]>(tabsAtom);
+  const [deletedTabs, setDeletedTabs] = useState<Tab[]>([]);
+
+  const selectedTab = () => tabs.find((t) => t.selected)!;
 
   const setTabs = (tabsInput: Tab[] | ((prevTabs: Tab[]) => Tab[])) => {
     const newTabs = typeof tabsInput === 'function' ? (tabsInput as (prev: Tab[]) => Tab[])(tabs) : tabsInput;
@@ -17,7 +21,7 @@ export function useNavState() {
   };
 
   const forward = async () => {
-    const tab = tabs.find((t) => t.selected);
+    const tab = selectedTab();
     if (!tab) return;
     if (tab.urlIndex === tab.history.length - 1) return;
     const nextTab = tab.history[tab.urlIndex + 1];
@@ -26,7 +30,7 @@ export function useNavState() {
   };
 
   const backward = async () => {    
-    const tab = tabs.find((t) => t.selected);
+    const tab = selectedTab();
     if (!tab) return;
     if (tab.urlIndex === 0) return;
     const prevTab = tab.history[tab.urlIndex - 1];
@@ -34,7 +38,7 @@ export function useNavState() {
     navigate(toAbsolutePath(prevTab.url), { replace: false });
   };
 
-  const handleChangeTab = async (tabId: number) => {
+  const changeTab = async (tabId: number) => {
     setTabs(tabs.map((tab) => ({ ...tab, selected: tab.id === tabId })));
     const tab = tabs.find((t) => t.id === tabId);
     if (tab) navigate(toAbsolutePath(tab.history[tab.urlIndex].url), { replace: false });
@@ -79,16 +83,16 @@ export function useNavState() {
     }, 0);
   };
 
-  const newTab = async (history = [{ name: 'Home', url: '/' }], moveImmediately = true) => {
+  const newTab = async (history = [{ name: 'Home', url: '/' }], moveImmediately = true, urlIndex = 0) => {
     const id = tabs.length ? Math.max(...tabs.map(t => t.id)) + 1 : 1;
     const newTabObj: Tab = {
       id,
       name: null,
-      urlIndex: 0,
+      urlIndex,
       history,
       selected: false
     };
-    const newTabs = [...tabs.map(t => ({ ...t, selected: moveImmediately ? false : t.selected })), newTabObj];
+    const newTabs = [...tabs.map((t) => ({ ...t, selected: moveImmediately ? false : t.selected })), newTabObj];
 
     if (moveImmediately) {
       const tabsWithSelection = newTabs.map((t) => ({ ...t, selected: t.id === id }));
@@ -100,6 +104,7 @@ export function useNavState() {
   };
 
   const deleteTab = async (id: number) => {
+    setDeletedTabs((arr) => [...arr, { ...selectedTab(), urlIndex: selectedTab().urlIndex }]);
     let newTabs = tabs.filter((t) => t.id !== id);
     const wasSelected = tabs.find((t) => t.id === id)?.selected;
     if (wasSelected && newTabs.length > 0) {
@@ -112,7 +117,7 @@ export function useNavState() {
   };
 
   const removeLastFromHistory = async () => {
-    const tab = tabs.find((t) => t.selected);
+    const tab = selectedTab();
     if (!tab || tab.history.length <= 1) return;
     
     const newHistory = tab.history.slice(0, -1);
@@ -123,6 +128,15 @@ export function useNavState() {
     }));
     navigate(toAbsolutePath(newHistory[newHistory.length - 1].url), { replace: false });
   };
+
+  const restoreTab = async () => {
+    setDeletedTabs((prev) => {
+      if (prev.length === 0) return prev;
+      const deletedTab = prev[prev.length - 1];
+      newTab(deletedTab.history, false, deletedTab.urlIndex);
+      return prev.slice(0, -1);
+    });
+  }
   
-  return { tabs, setTabs, forward, backward, handleChangeTab, push, newTab, closeDetailsBtn, deleteTab, removeLastFromHistory };
+  return { tabs, setTabs, forward, backward, changeTab, push, newTab, closeDetailsBtn, deleteTab, removeLastFromHistory, selectedTab, restoreTab };
 }

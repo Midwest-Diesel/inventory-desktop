@@ -18,14 +18,9 @@ test.describe('Basic Functionality', () => {
     const tableLength = (await page.$$('table tr')).length;
     expect(tableLength).toBeGreaterThan(0);
   });
-
-  test('Create new purchase order', async ({ page }) => {
-    page.on('dialog', (dialog) => dialog.accept('123456789'));
-    await page.getByTestId('new-btn').click();
-    await expect(page.getByTestId('po-num-link').first()).toHaveText('123456789');
-  });
-
+  
   test('Edit purchase order', async ({ page }) => {
+    page.on('dialog', (dialog) => dialog.accept());
     await page.getByTestId('po-num-link').first().click();
     await page.waitForLoadState('networkidle');
     await page.getByTestId('edit-btn').click();

@@ -9,6 +9,7 @@ import UpdateModal from "./modals/UpdateModal";
 import ToastContainer from "@/components/library/toast/ToastContainer";
 import Tooltip from "./library/Tooltip";
 import { useNavigate } from "react-router-dom";
+import useHotkeys from "@/hooks/useHotkeys";
 
 interface Props {
   children: any
@@ -25,6 +26,7 @@ export default function GlobalData({ children }: Props) {
   const [loaded, setLoaded] = useState(false);
   const [updateDialogOpen, setUpdateDialogOpen] = useState(false);
   const [updateNotes, setUpdateNotes] = useState('');
+  useHotkeys();
 
   useEffect(() => {
     checkForUpdates();

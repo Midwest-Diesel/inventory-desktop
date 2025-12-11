@@ -164,7 +164,7 @@ export default function EditPoDetails({ poData, setPo, setIsEditing, poItems, po
   return (
     <form className="edit-purchase-order-details" onSubmit={(e) => saveChanges(e)} onChange={() => setChangesSaved(false)}>
       <div className="edit-purchase-order-details__header">
-        <h2>{ poData.id }</h2>
+        <h2>{ poData.poNum }</h2>
       
         <div className="header__btn-container">
           <Button
@@ -536,14 +536,12 @@ export default function EditPoDetails({ poData, setPo, setIsEditing, poItems, po
                       <Input
                         value={item.partNum ?? ''}
                         onChange={(e: any) => handleEditReceivedItem({ ...item, partNum: e.target.value }, i)}
-                        required
                       />
                     </td>
                     <td>
                       <Input
                         value={item.stockNum ?? ''}
                         onChange={(e: any) => handleEditReceivedItem({ ...item, stockNum: e.target.value }, i)}
-                        required
                       />
                     </td>
                     <td>
