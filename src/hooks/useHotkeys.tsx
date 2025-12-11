@@ -10,7 +10,7 @@ export default function useHotkeys() {
 
     return () => {
       document.removeEventListener('keyup', onKeyUp);
-    }
+    };
   }, [tabs]);
 
   const onKeyUp = (e: KeyboardEvent) => {

@@ -10,7 +10,7 @@ const MAX_HISTORY = 40;
 export function useNavState() {
   const navigate = useNavigate();
   const [tabs, setTabsAtom] = useAtom<Tab[]>(tabsAtom);
-  const [deletedTabs, setDeletedTabs] = useState<Tab[]>([]);
+  const [, setDeletedTabs] = useState<Tab[]>([]);
 
   const selectedTab = () => tabs.find((t) => t.selected)!;
 
@@ -136,7 +136,7 @@ export function useNavState() {
       newTab(deletedTab.history, false, deletedTab.urlIndex);
       return prev.slice(0, -1);
     });
-  }
+  };
   
   return { tabs, setTabs, forward, backward, changeTab, push, newTab, closeDetailsBtn, deleteTab, removeLastFromHistory, selectedTab, restoreTab };
 }
