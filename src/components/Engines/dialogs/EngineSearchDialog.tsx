@@ -1,4 +1,4 @@
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import Dialog from "@/components/library/Dialog";
 import Input from "@/components/library/Input";
 import Button from "@/components/library/Button";
@@ -10,12 +10,13 @@ interface Props {
   open: boolean
   setOpen: (open: boolean) => void
   onSearch: (search: EngineSearch) => void
+  listOpen: EngineStatus
   page: number
   limit: number
 }
 
 
-export default function EngineSearchDialog({ open, setOpen, onSearch, page, limit }: Props) {
+export default function EngineSearchDialog({ open, setOpen, onSearch, listOpen, page, limit }: Props) {
   const [stockNum, setStockNum] = useState('');
   const [model, setModel] = useState('');
   const [serialNum, setSerialNum] = useState('');
@@ -27,8 +28,12 @@ export default function EngineSearchDialog({ open, setOpen, onSearch, page, limi
   const [warranty, setWarranty] = useState<'' | 'TRUE' | 'FALSE'>('');
   const [testRun, setTestRun] = useState<'' | 'TRUE' | 'FALSE'>('');
   const [mileage, setMileage] = useState('');
-  const [currentStatus, setCurrentStatus] = useState<EngineStatus>('RunnerReady');
+  const [currentStatus, setCurrentStatus] = useState<EngineStatus>(listOpen);
   const statusList: EngineStatus[] = ['RunnerReady', 'RunnerNotReady', 'HoldSoldRunner', 'ToreDown', 'CoreEngine', 'Sold', 'ShortBlock', 'LongBlock'];
+
+  useEffect(() => {
+    setCurrentStatus(listOpen);
+  }, [listOpen]);
 
   const clearInputs = () => {
     setStockNum('');
@@ -42,7 +47,7 @@ export default function EngineSearchDialog({ open, setOpen, onSearch, page, limi
     setWarranty('');
     setTestRun('');
     setMileage('');
-    setCurrentStatus('RunnerReady');
+    setCurrentStatus(listOpen);
   };
 
   const handleSubmit = (e: FormEvent) => {

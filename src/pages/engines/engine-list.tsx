@@ -118,6 +118,7 @@ export default function EngineList() {
           open={openSearch}
           setOpen={setOpenSearch}
           onSearch={onSearch}
+          listOpen={STATUS_MAP[listOpen][0]}
           page={currentPage}
           limit={LIMIT}
         />
