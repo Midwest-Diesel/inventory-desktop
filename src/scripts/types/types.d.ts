@@ -284,6 +284,17 @@ type HandwrittenItemChild = {
   stockNum: string | null
 };
 
+type CustomerHandwritten = {
+  id: number
+  date: Date
+  billToCompany: string | null
+  shipToCompany: string | null
+  source: string | null
+  payment: string | null
+  invoiceStatus: InvoiceStatus
+  accountingStatus: AccountingStatus
+};
+
 type CustomerHandwrittenItem = {
   handwrittenId: number
   partId: number | null

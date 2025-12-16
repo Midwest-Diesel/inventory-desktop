@@ -1,32 +1,22 @@
-import { formatDate } from "@/scripts/tools/stringUtils";
 import Modal from "../../library/Modal";
-import { useQuery } from "@tanstack/react-query";
-import { searchHandwrittens } from "@/scripts/services/handwrittensService";
-import Table from "../../library/Table";
-import Link from "../../library/Link";
-import Loading from "../../library/Loading";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CustomerHandwrittenItemsList from "../../dashboard/CustomerHandwrittenItemsList";
 import Button from "../../library/Button";
+import CustomerHandwrittensList from "@/components/dashboard/CustomerHandwrittensList";
 
 interface Props {
   open: boolean
   setOpen: (value: boolean) => void
-  customerId: number
   company: string
 }
 
 
-export default function HandwrittensListModal({ open, setOpen, customerId, company }: Props) {
+export default function HandwrittensListModal({ open, setOpen, company }: Props) {
   const [showItems, setShowItems] = useState(false);
 
-  const { data: handwrittens = [], isFetching } = useQuery<Handwritten[]>({
-    queryKey: ['handwrittens', open],
-    queryFn: async () => {
-      const res = await searchHandwrittens({ customerId, limit: 9999, offset: 0 });
-      return res.rows;
-    }
-  });
+  useEffect(() => {
+    if (!open) setShowItems(false);
+  }, [open]);
 
 
   return (
@@ -36,8 +26,6 @@ export default function HandwrittensListModal({ open, setOpen, customerId, compa
       closeOnOutsideClick={true}
       maxHeight="70vh"
     >
-      { isFetching && <Loading /> }
-
       <div style={{ marginBottom: '0.3rem' }}>
         <Button onClick={() => setShowItems(!showItems)}>{ showItems ? 'Hide' : 'Show' } Items</Button>
       </div>
@@ -45,36 +33,7 @@ export default function HandwrittensListModal({ open, setOpen, customerId, compa
       {showItems ?
         <CustomerHandwrittenItemsList company={company} />
         :
-        <Table>
-          <thead>
-            <tr>
-              <th></th>
-              <th>Date</th>
-              <th>Bill To Company</th>
-              <th>Ship To Company</th>
-              <th>Source</th>
-              <th>Payment</th>
-              <th>Status</th>
-              <th>Accounting</th>
-            </tr>
-          </thead>
-          <tbody>
-            {handwrittens.map((handwritten: Handwritten) => {
-              return (
-                <tr key={handwritten.id}>
-                  <td><Link href={`/handwrittens/${handwritten.id}`} data-testid="link">{ handwritten.id }</Link></td>
-                  <td>{ formatDate(handwritten.date) }</td>
-                  <td>{ handwritten.billToCompany }</td>
-                  <td>{ handwritten.shipToCompany }</td>
-                  <td>{ handwritten.source }</td>
-                  <td>{ handwritten.payment }</td>
-                  <td>{ handwritten.invoiceStatus }</td>
-                  <td>{ handwritten.accountingStatus }</td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </Table>
+        <CustomerHandwrittensList company={company} />
       }
     </Modal>
   );
