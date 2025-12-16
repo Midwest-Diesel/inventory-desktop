@@ -195,7 +195,7 @@ export const reportInventoryValueParts = async (): Promise<InventoryValueReportP
 export const reportInventoryValueCoreEngines = async (): Promise<InventoryValueReportCoreEngines> => {
   try {
     const res = await api.get(`/api/reports/inventory-value/core-engines`);
-    return res.data;
+    return { combinedTotal: res.data.combinedTotal, data: res.data.data.map((r: any) => ({ ...r, loginDate: parseResDate(r.loginDate) })) };
   } catch (err) {
     console.error(err);
     return { combinedTotal: 0, data: [] };

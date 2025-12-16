@@ -78,6 +78,7 @@ export default function CustomerSearchDialog({ open, setOpen, searchTerm }: Prop
       setOpen={setOpen}
       title="Customers"
       maxHeight="30rem"
+      minWidth={680}
       className="customer-search-dialog"
       data-testid="customer-search-dialog"
     >

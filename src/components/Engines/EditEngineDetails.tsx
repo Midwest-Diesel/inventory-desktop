@@ -792,6 +792,7 @@ export default function EditEngineDetails({ engine, setIsEditing, refetch }: Pro
                         value={item.engineStockNum ?? ''}
                         onChange={(e: any) => handleChangeEngineCostOut({ ...item, engineStockNum: e.target.value }, i)}
                         type="number"
+                        required
                       />
                     </td>
                     <td>
@@ -799,6 +800,7 @@ export default function EditEngineDetails({ engine, setIsEditing, refetch }: Pro
                         variant={['x-small', 'thin', 'label-bold']}
                         value={item.stockNum ?? ''}
                         onChange={(e: any) => handleChangeEngineCostOut({ ...item, stockNum: e.target.value }, i)}
+                        required
                       />
                     </td>
                     <td>

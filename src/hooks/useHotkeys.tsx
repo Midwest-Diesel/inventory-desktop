@@ -3,7 +3,7 @@ import { useNavState } from "./useNavState";
 
 
 export default function useHotkeys() {
-  const { newTab, deleteTab, tabs, selectedTab, restoreTab, changeTab } = useNavState();
+  const { newTab, deleteTab, tabs, selectedTab, restoreTab } = useNavState();
 
   useEffect(() => {
     document.addEventListener('keyup', onKeyUp);
@@ -21,12 +21,6 @@ export default function useHotkeys() {
           break;
         case 'w':
           handleCloseTab();
-          break;
-        case 'ArrowLeft':
-          handleSwitchTabLeft();
-          break;
-        case 'ArrowRight':
-          handleSwitchTabRight();
           break;
         default:
           break;
@@ -53,19 +47,5 @@ export default function useHotkeys() {
     const tab = selectedTab();
     if (!tab || tabs.length === 1) return;
     deleteTab(tab?.id);
-  };
-
-  const handleSwitchTabLeft = () => {
-    const index = tabs.indexOf(selectedTab());
-    if (index === 0) return;
-    const tab = tabs[index - 1];
-    changeTab(tab.id);
-  };
-
-  const handleSwitchTabRight = () => {
-    const index = tabs.indexOf(selectedTab());
-    if (index === tabs.length - 1) return;
-    const tab = tabs[index + 1];
-    changeTab(tab.id);
   };
 }

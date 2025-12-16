@@ -14,6 +14,7 @@ interface Props {
   exitWithEsc?: boolean
   hasCloseBtn?: boolean
   width?: number
+  minWidth?: number
   height?: number
   maxHeight?: string
   open?: boolean
@@ -22,7 +23,7 @@ interface Props {
   y?: number
 }
 
-export default function Dialog({ children, className = '', variant = [], title, closeOnOutsideClick, exitWithEsc = true, hasCloseBtn = true, width, height, maxHeight, open, setOpen, x, y, ...props }: Props) {
+export default function Dialog({ children, className = '', variant = [], title, closeOnOutsideClick, exitWithEsc = true, hasCloseBtn = true, width, minWidth, height, maxHeight, open, setOpen, x, y, ...props }: Props) {
   const [dialogs, setDialogs] = useAtom<{ order: number, div: HTMLDivElement }[]>(dialogsAtom);
   const container = useRef<HTMLDivElement>(null);
   const ref = useRef<HTMLDialogElement>(null);
@@ -94,7 +95,7 @@ export default function Dialog({ children, className = '', variant = [], title, 
           open={open}
           ref={ref}
           {...parseClasses(classes)}
-          style={{ width: width, height: height }}
+          style={{ width, minWidth, height }}
           onPointerDown={bringToFront}
           onKeyDown={(e) => (exitWithEsc && e.key === 'Escape') && closeDialog()}
         >

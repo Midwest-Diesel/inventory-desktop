@@ -12,9 +12,10 @@
 
   &__table-container {
     overflow-y: auto;
+    overflow-x: none;
     max-height: 9rem;
     min-height: 7.3rem;
-    max-width: 31.8rem;
+    max-width: 33rem;
 
     th, td {
       padding: 0.25rem;
