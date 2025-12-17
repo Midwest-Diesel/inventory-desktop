@@ -770,6 +770,7 @@ type Return = {
   source: string | null
   returnItems: ReturnItem[]
   returnPart: ReturnPart | null
+  returnTotal: number
 };
 
 type ReturnItem = {

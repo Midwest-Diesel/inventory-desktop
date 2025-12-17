@@ -23,10 +23,6 @@ export default function ReturnItemsTable({ className, returnItems, returnData, s
   const [returnItemChildren, setReturnItemChildren] = useState<ReturnItemChild[]>([]);
   const [returnItemId, setReturnItemId] = useState<number>(0);
 
-  const getTotalPrice = (): number => {
-    return (returnItems as any).reduce((acc: number, item: ReturnItem) => item.cost !== 0.04 && item.cost !== 0.01 && acc + ((item?.unitPrice ?? 0) * (item?.qty ?? 0)), 0);
-  };
-
   const handleToggleIsReceived = async (part: ReturnItem, value: boolean) => {
     await editReturnItem({ ...part, isReturnReceived: value });
     setReturnData({ ...returnData, returnItems: returnData.returnItems.map((item) => {
@@ -78,7 +74,7 @@ export default function ReturnItemsTable({ className, returnItems, returnData, s
       <div className={`return-items-table ${className && className}`}>
         {returnItems.sort((a, b) => b.id - a.id) &&
           <>
-            <p><strong>Return Total: </strong>{ formatCurrency(getTotalPrice()) }</p>
+            <p><strong>Return Total: </strong>{ formatCurrency(returnData.returnTotal) }</p>
             <Table>
               <thead>
                 <tr>
