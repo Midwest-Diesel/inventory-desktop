@@ -4,21 +4,15 @@ import { invoke } from "@/scripts/config/tauri";
 
 interface Props {
   open: boolean
-  setOpen: (open: boolean) => void
   notes: string
 }
 
 
-export default function UpdateModal({ open, setOpen, notes }: Props) {
+export default function UpdateModal({ open, notes }: Props) {
   const handleUpdate = () => {
     invoke('install_update');
   };
-
-  const handleClose = () => {
-    setOpen(false);
-    localStorage.setItem('showUpdate', 'false');
-  };
-
+  
 
   return (
     <>
@@ -29,7 +23,7 @@ export default function UpdateModal({ open, setOpen, notes }: Props) {
           style={{ maxWidth: '18rem' }}
           closeOnOutsideClick={false}
           exitWithEsc={false}
-          onClose={handleClose}
+          showCloseBtn={false}
         >
           <div className="form__footer">
             <Button onClick={handleUpdate}>Install and restart</Button>

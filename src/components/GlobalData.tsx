@@ -80,7 +80,7 @@ export default function GlobalData({ children }: Props) {
 
   return (
     <>
-      <UpdateModal open={updateDialogOpen} setOpen={setUpdateDialogOpen} notes={updateNotes} />
+      <UpdateModal open={updateDialogOpen} notes={updateNotes} />
       <ToastContainer />
       { tooltip && <Tooltip msg={tooltip} /> }
       { user ? children : loaded && <Login /> }
