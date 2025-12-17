@@ -1,4 +1,4 @@
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 import Dialog from "../../library/Dialog";
 import Input from "../../library/Input";
 import Button from "../../library/Button";
@@ -29,6 +29,7 @@ export default function PartsSearchDialog({ open, setOpen, handleSearch }: Props
   const [purchasedFrom, setPurchasedFrom] = useState('');
   const [serialNum, setSerialNum] = useState('');
   const [hp, setHp] = useState('');
+  const inputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
     if (prevSearches){
@@ -52,7 +53,8 @@ export default function PartsSearchDialog({ open, setOpen, handleSearch }: Props
   }, [showSoldParts]);
 
   useEffect(() => {
-    document.getElementById('part-search-input')?.focus();
+    inputRef.current?.focus();
+    inputRef.current?.select();
   }, [open]);
 
   const clearInputs = () => {
@@ -95,7 +97,7 @@ export default function PartsSearchDialog({ open, setOpen, handleSearch }: Props
           variant={['small', 'thin', 'label-no-stack', 'label-space-between']}
           value={partNum.replaceAll(' ', '')}
           onChange={(e: any) => setPartNum(e.target.value.toUpperCase())}
-          id="part-search-input"
+          ref={inputRef}
           data-testid="part-search-part-num"
         />
 

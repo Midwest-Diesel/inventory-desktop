@@ -1,4 +1,4 @@
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 import Dialog from "../../library/Dialog";
 import Input from "../../library/Input";
 import Button from "../../library/Button";
@@ -29,6 +29,7 @@ export default function AltPartsSearchDialog({ open, setOpen, handleSearch }: Pr
   const [purchasedFrom, setPurchasedFrom] = useState('');
   const [serialNum, setSerialNum] = useState('');
   const [hp, setHp] = useState('');
+  const inputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
     if (prevSearches){
@@ -52,9 +53,9 @@ export default function AltPartsSearchDialog({ open, setOpen, handleSearch }: Pr
   }, [showSoldParts]);
 
   useEffect(() => {
-    document.getElementById('alt-part-search-input')?.focus();
+    inputRef.current?.focus();
+    inputRef.current?.select();
   }, [open]);
-
 
   const clearInputs = () => {
     setPartNum('*');
@@ -95,7 +96,7 @@ export default function AltPartsSearchDialog({ open, setOpen, handleSearch }: Pr
           variant={['small', 'thin', 'label-no-stack', 'label-space-between']}
           value={partNum.replaceAll(' ', '')}
           onChange={(e: any) => setPartNum(`*${e.target.value.toUpperCase().replace('*', '')}`)}
-          id="alt-part-search-input"
+          ref={inputRef}
           data-testid="alt-search-part-num"
         />
 

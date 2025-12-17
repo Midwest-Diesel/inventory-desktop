@@ -46,7 +46,7 @@ export default function EditReturnDetails({ returnData, setReturn, setIsEditing 
   const [returnReason, setReturnReason] = useState<string>(returnData.returnReason ?? '');
   const [returnPaymentTerms, setReturnPaymentTerms] = useState<string>(returnData.returnPaymentTerms ?? '');
   const [restockFee, setRestockFee] = useState<string>(returnData.restockFee ?? '');
-  const [changesSaved, setChangesSaved] = useState<boolean>(true);
+  const [changesSaved, setChangesSaved] = useState(true);
   usePreventNavigation(!changesSaved, 'Leave without saving changes?');
 
   const saveChanges = async (e: FormEvent) => {
