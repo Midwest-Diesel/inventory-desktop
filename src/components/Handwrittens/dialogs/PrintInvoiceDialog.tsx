@@ -12,12 +12,13 @@ interface Props {
 }
 
 
+const MAX_ROWS = 12;
+
 export default function PrintInvoiceDialog({ open, setOpen, handwritten }: Props) {
   const { addToQue, printQue } = usePrintQue();
   const [accounting, setAccounting] = useState(true);
   const [shipping, setShipping] = useState(true);
   const [coreDeposit, setCoreDeposit] = useState(false);
-  const MAX_ROWS = 12;
 
   useEffect(() => {
     if (!open) return;

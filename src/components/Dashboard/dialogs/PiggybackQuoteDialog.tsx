@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Dialog from "../../library/Dialog";
 import Table from "@/components/library/Table";
 import Pagination from "@/components/library/Pagination";
@@ -6,41 +6,40 @@ import { useAtom } from "jotai";
 import { showSoldPartsAtom, userAtom } from "@/scripts/atoms/state";
 import Button from "@/components/library/Button";
 import { getCustomerById } from "@/scripts/services/customerService";
-import { getPartById, getPartsQty, getSomeParts, searchAltParts } from "@/scripts/services/partsService";
-import PiggybackPartSearchDialog from "./PiggybackPartSearchDialog";
+import { getPartById, searchAltParts, searchParts } from "@/scripts/services/partsService";
 import Loading from "@/components/library/Loading";
 import { addQuote, piggybackQuote } from "@/scripts/services/quotesService";
+import { useQuery } from "@tanstack/react-query";
 
 interface Props {
   open: boolean
   setOpen: (open: boolean) => void
   quote: Quote
-  handleChangeQuotesPage: (_: any, page: number) => void
+  handleChangeQuotesPage: (_: any, page: number) => Promise<void>
   quotesPage: number
 }
 
 
+const LIMIT = 26;
+
 export default function PiggybackQuoteDialog({ open, setOpen, quote, handleChangeQuotesPage, quotesPage }: Props) {
   const [user] = useAtom<User>(userAtom);
   const [showSoldParts] = useAtom<boolean>(showSoldPartsAtom);
-  const [partsData, setPartsData] = useState<Part[]>([]);
-  const [parts, setParts] = useState<Part[]>([]);
-  const [partCount, setPartCount] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
-  const [selectedPartId, setSelectedPartId] = useState(0);
-  const [partSearchOpen, setPartSearchOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [isSearchMode, setIsSearchMode] = useState(false);
+  const [selectedPartId, setSelectedPartId] = useState<number | null>(null);
   const [showRemarksList, setShowRemarksList] = useState<{ [id: number]: boolean }>({});
-  const [searchData, setSearchData] = useState<PartSearchData>({ showSoldParts: true });
-  const LIMIT = 26;
+  const [searchParams, setSearchParams] = useState(JSON.parse(localStorage.getItem('altPartSearches') || JSON.parse(localStorage.getItem('partSearches')!)));
 
-  useEffect(() => {
-    const fetchData = async () => {
-      resetPartsList();
-    };
-    fetchData();
-  }, [open]);
+  const { data: parts, isFetching: isSearchFetching } = useQuery<PartsRes>({
+    queryKey: ['searchParts', searchParams, showSoldParts],
+    queryFn: () => {
+      if (!searchParams) throw new Error('No search params');
+      return searchParams.isAltSearch
+        ? searchAltParts({ ...searchParams, showSoldParts }, searchParams.page, LIMIT)
+        : searchParts({ ...searchParams, showSoldParts }, searchParams.page, LIMIT);
+    },
+    enabled: !!searchParams
+  });
 
   const handleMouseOver = (partId: number) => {
     setShowRemarksList({});
@@ -50,28 +49,15 @@ export default function PiggybackQuoteDialog({ open, setOpen, quote, handleChang
   const handleMouseOut = (partId: number) => {
     setShowRemarksList((prevState) => ({ ...prevState, [partId]: false }));
   };
-
-  const resetPartsList = async () => {
-    const pageCount = await getPartsQty(showSoldParts);
-    setPartCount(pageCount);
-    const res = await getSomeParts(1, LIMIT, showSoldParts);
-    setPartsData(res.rows);
-    setParts(res.rows);
-  };
   
-  const handleChangePage = async (_: any, page: number) => {
+  const handleChangePage = (_: any, page: number) => {
     if (page === currentPage) return;
-    if (isSearchMode) {
-      handleSearch(searchData);
-    } else {
-      const res = await getSomeParts(page, LIMIT, showSoldParts);
-      setParts(res.rows);
-      setPartCount(res.pageCount);
-    }
     setCurrentPage(page);
+    if (searchParams) setSearchParams({ ...searchParams, page });
   };
 
   const handlePiggybackQuote = async () => {
+    if (!selectedPartId) return;
     const customerId = Number(localStorage.getItem('customerId'));
     const customer = await getCustomerById(customerId) as Customer;
     const part = await getPartById(selectedPartId);
@@ -98,87 +84,70 @@ export default function PiggybackQuoteDialog({ open, setOpen, quote, handleChang
     setOpen(false);
   };
 
-  const handleSearch = async (search: PartSearchData) => {
-    setLoading(true);
-    setIsSearchMode(true);
-    setSearchData(search);
-    const results = await searchAltParts(search, currentPage, LIMIT);
-    setParts(results.rows);
-    setPartCount(results.pageCount);
-    setCurrentPage(1);
-    setLoading(false);
-  };
-
 
   return (
-    <>
-      <PiggybackPartSearchDialog open={partSearchOpen} setOpen={setPartSearchOpen} handleSearch={handleSearch} />
+    <Dialog
+      open={open}
+      setOpen={setOpen}
+      title="Select Part"
+      className="piggyback-quote-dialog"
+      maxHeight="30rem"
+    >
+      { isSearchFetching && <Loading /> }
+      {parts ?
+        <>
+          <Button onClick={handlePiggybackQuote} className="piggyback-quote-dialog__submit-btn">Submit</Button>
 
-      <Dialog
-        open={open}
-        setOpen={setOpen}
-        title="Select Part"
-        width={660}
-        className="piggyback-quote-dialog"
-      >
-        <div className="piggyback-quote-dialog__top-bar">
-          <Button onClick={() => setPartSearchOpen(true)}>Search</Button>
-        </div>
-        {loading ?
-          <Loading />
-          :
-          <>
-            <div className="select-handwritten-dialog">
-              <Table>
-                <thead>
-                  <tr>
-                    <th>Qty</th>
-                    <th>PartNum</th>
-                    <th>Desc</th>
-                    <th>StockNum</th>
-                    <th>Location</th>
-                    <th>Remarks</th>
+          <Table>
+            <thead>
+              <tr>
+                <th>Qty</th>
+                <th>PartNum</th>
+                <th>Desc</th>
+                <th>StockNum</th>
+                <th>Location</th>
+                <th>Remarks</th>
+              </tr>
+            </thead>
+            <tbody>
+              {parts.rows.map((part: Part) => {
+                return (
+                  <tr key={part.id} onClick={() => setSelectedPartId(part.id)} className={part.id === selectedPartId ? 'select-handwritten-dialog--selected' : ''} style={{ position: 'relative' }}>
+                    <td>{ part.qty }</td>
+                    <td>{ part.partNum }</td>
+                    <td>{ part.desc }</td>
+                    <td>{ part.stockNum }</td>
+                    <td>{ part.location }</td>
+                    <td
+                      onMouseOver={() => handleMouseOver(part.id)}
+                      onMouseOut={() => handleMouseOut(part.id)}
+                    >
+                      {showRemarksList[part.id] ?
+                        <div className="piggyback-quote-dialog__remarks">
+                          <p>{ part.remarks }</p>
+                        </div>
+                        :
+                        <p style={{ textAlign: 'center' }}>
+                          ?
+                        </p>
+                      }
+                    </td>
                   </tr>
-                </thead>
-                <tbody>
-                  {parts.map((part: Part) => {
-                    return (
-                      <tr key={part.id} onClick={() => setSelectedPartId(part.id)} className={part.id === selectedPartId ? 'select-handwritten-dialog--selected' : ''} style={{ position: 'relative' }}>
-                        <td>{ part.qty }</td>
-                        <td>{ part.partNum }</td>
-                        <td>{ part.desc }</td>
-                        <td>{ part.stockNum }</td>
-                        <td>{ part.location }</td>
-                        <td
-                          onMouseOver={() => handleMouseOver(part.id)}
-                          onMouseOut={() => handleMouseOut(part.id)}
-                        >
-                          {showRemarksList[part.id] ?
-                            <div className="piggyback-quote-dialog__remarks">
-                              <p>{ part.remarks }</p>
-                            </div>
-                            :
-                            <p style={{ textAlign: 'center' }}>
-                              ?
-                            </p>
-                          }
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </Table>
-            </div>
-            <Pagination
-              data={partsData}
-              setData={handleChangePage}
-              pageCount={partCount}
-              pageSize={LIMIT}
-            />
-            <Button onClick={handlePiggybackQuote} className="piggyback-quote-dialog__submit-btn">Submit</Button>
-          </>
-        }
-      </Dialog>
-    </>
+                );
+              })}
+            </tbody>
+          </Table>
+
+          <Pagination
+            data={parts?.rows ?? []}
+            setData={handleChangePage}
+            pageCount={parts?.pageCount ?? 0}
+            pageSize={LIMIT}
+          />
+        </>
+        :
+        !isSearchFetching && <p>Failed searching parts</p>
+      }
+    </Dialog>
   );
 }

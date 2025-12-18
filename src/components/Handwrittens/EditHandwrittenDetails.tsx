@@ -59,6 +59,8 @@ interface Props {
 }
 
 
+const MAX_ROWS = 12;
+
 export default function EditHandwrittenDetails({
   handwritten,
   setHandwritten,
@@ -353,79 +355,90 @@ export default function EditHandwrittenDetails({
     const itemTotals: number[] = handwrittenItems.map((item) => (item.qty ?? 0) * (item.unitPrice ?? 0));
     const handwrittenTotal = formatCurrency(itemTotals.reduce((acc, cur) => acc + cur, 0));
     const shipVia = await getFreightCarrierById(shipViaId);
-    const args = {
-      billToCompany: handwritten.billToCompany ?? '',
-      billToAddress: handwritten.billToAddress ?? '',
-      billToAddress2: handwritten.billToAddress2 ?? '',
-      billToCity: handwritten.billToCity ?? '',
-      billToState: handwritten.billToState ?? '',
-      billToZip: handwritten.billToZip ?? '',
-      billToCountry: handwritten.billToCountry ?? '',
-      shipToCompany: handwritten.shipToCompany ?? '',
-      shipToAddress: handwritten.shipToAddress ?? '',
-      shipToAddress2: handwritten.shipToAddress2 ?? '',
-      shipToCity: handwritten.shipToCity ?? '',
-      shipToState: handwritten.shipToState ?? '',
-      shipToZip: handwritten.shipToZip ?? '',
-      shipToContact: handwritten.shipToContact ?? '',
-      shipToCountry: '',
-      accountNum: handwritten?.thirdPartyAccount ?? '',
-      paymentType: handwritten.payment ?? '',
-      createdBy: handwritten.createdBy ?? '',
-      soldBy: handwritten.soldBy ?? '',
-      legacyId: handwritten?.legacyId ?? '',
-      handwrittenId: Number(handwritten.id),
-      date: formatDate(handwritten.date) ?? '',
-      contact: handwritten.shipToContact ?? '',
-      poNum: handwritten.poNum ?? '',
-      shipVia: shipVia?.name ?? '',
-      source: handwritten.source ?? '',
-      invoiceNotes: handwritten.orderNotes ? handwritten.orderNotes.replace(/[\n\r]/g, '  ').replaceAll('…', '...') : '',
-      shippingNotes: handwritten.shippingNotes ? handwritten.shippingNotes.replace(/[\n\r]/g, '  ').replaceAll('…', '...') : '',
-      mp: `${handwritten.mp ?? 0} Mousepads`,
-      cap: `${handwritten.cap ?? 0} Hats`,
-      br: `${handwritten.br ?? 0} Brochures`,
-      fl: `${handwritten.fl ?? 0} Flashlights`,
-      setup: handwritten.isSetup ?? false,
-      taxable: handwritten.isTaxable ?? false,
-      blind: handwritten.isBlindShipment ?? false,
-      npi: handwritten.isNoPriceInvoice ?? false,
-      collect: handwritten.isCollect ?? false,
-      thirdParty: handwritten.isThirdParty ?? false,
-      handwrittenTotal,
-      items: handwrittenItems.map((item) => {
-        return {
-          stockNum: item.stockNum ?? '',
-          location: item.location ?? '',
-          cost: formatCurrency(item.cost).replaceAll(',', '|') ?? '$0.00',
-          qty: item.qty,
-          partNum: item.partNum ?? '',
-          desc: item.desc ?? '',
-          unitPrice: formatCurrency(item.unitPrice).replaceAll(',', '|') ?? '$0.00',
-          total: formatCurrency((item.qty ?? 0) * (item.unitPrice ?? 0)).replaceAll(',', '|') ?? '$0.00',
-          itemChildren: item.invoiceItemChildren
-        };
-      }) ?? []
+
+    const splitItems = (items: any[], size: number) => {
+      const chunks = [];
+      for (let i = 0; i < items.length; i += size) {
+        chunks.push(items.slice(i, i + size));
+      }
+      return chunks;
     };
-    const itemChildren = handwrittenItems.map((item) => {
-      if (item.invoiceItemChildren.length > 0) return item.invoiceItemChildren.map((child) => {
-        return {
+    const itemChunks = splitItems(handwritten?.handwrittenItems ?? [], MAX_ROWS);
+
+    for (let i = 0; i < itemChunks.length; i++) {
+      const chunk = itemChunks[i];
+      const args = {
+        billToCompany: handwritten.billToCompany ?? '',
+        billToAddress: handwritten.billToAddress ?? '',
+        billToAddress2: handwritten.billToAddress2 ?? '',
+        billToCity: handwritten.billToCity ?? '',
+        billToState: handwritten.billToState ?? '',
+        billToZip: handwritten.billToZip ?? '',
+        billToCountry: handwritten.billToCountry ?? '',
+        shipToCompany: handwritten.shipToCompany ?? '',
+        shipToAddress: handwritten.shipToAddress ?? '',
+        shipToAddress2: handwritten.shipToAddress2 ?? '',
+        shipToCity: handwritten.shipToCity ?? '',
+        shipToState: handwritten.shipToState ?? '',
+        shipToZip: handwritten.shipToZip ?? '',
+        shipToContact: handwritten.shipToContact ?? '',
+        shipToCountry: '',
+        accountNum: handwritten?.thirdPartyAccount ?? '',
+        paymentType: handwritten.payment ?? '',
+        createdBy: handwritten.createdBy ?? '',
+        soldBy: handwritten.soldBy ?? '',
+        legacyId: handwritten?.legacyId ?? '',
+        handwrittenId: Number(handwritten.id),
+        date: formatDate(handwritten.date) ?? '',
+        contact: handwritten.shipToContact ?? '',
+        poNum: handwritten.poNum ?? '',
+        shipVia: shipVia?.name ?? '',
+        source: handwritten.source ?? '',
+        invoiceNotes: handwritten.orderNotes ? handwritten.orderNotes.replace(/[\n\r]/g, '  ').replaceAll('…', '...') : '',
+        shippingNotes: handwritten.shippingNotes ? handwritten.shippingNotes.replace(/[\n\r]/g, '  ').replaceAll('…', '...') : '',
+        mp: `${handwritten.mp ?? 0} Mousepads`,
+        cap: `${handwritten.cap ?? 0} Hats`,
+        br: `${handwritten.br ?? 0} Brochures`,
+        fl: `${handwritten.fl ?? 0} Flashlights`,
+        setup: handwritten.isSetup ?? false,
+        taxable: handwritten.isTaxable ?? false,
+        blind: handwritten.isBlindShipment ?? false,
+        npi: handwritten.isNoPriceInvoice ?? false,
+        collect: handwritten.isCollect ?? false,
+        thirdParty: handwritten.isThirdParty ?? false,
+        handwrittenTotal,
+        items: chunk.map((item) => {
+          return {
+            stockNum: item.stockNum ?? '',
+            location: item.location ?? '',
+            cost: formatCurrency(item.cost).replaceAll(',', '|') ?? '$0.00',
+            qty: item.qty,
+            partNum: item.partNum ?? '',
+            desc: item.desc ?? '',
+            unitPrice: formatCurrency(item.unitPrice).replaceAll(',', '|') ?? '$0.00',
+            total: formatCurrency((item.qty ?? 0) * (item.unitPrice ?? 0)).replaceAll(',', '|') ?? '$0.00',
+            itemChildren: item.invoiceItemChildren
+          };
+        }) ?? []
+      };
+      const itemChildren = chunk.flatMap((item) =>
+        (item.invoiceItemChildren ?? []).map((child: HandwrittenItemChild) => ({
           cost: formatCurrency(child.cost).replaceAll(',', '|') || '$0.00',
           qty: child.qty,
           partNum: child.partNum,
           desc: child.part?.desc,
           stockNum: child.stockNum,
           location: child.part?.location,
-          unitPrice: formatCurrency(item.unitPrice).replaceAll(',', '|') || '$0.00',
-          total: formatCurrency((child.qty ?? 0) * (item.unitPrice ?? 0)).replaceAll(',', '|') || '$0.00'
-        };
-      });
-    }).filter((item) => item).flat();
-    const itemsWithChildren = [...args.items.filter((item: any) => item.itemChildren.length === 0), ...itemChildren ];
+          unitPrice: formatCurrency((item?.unitPrice ?? 0)).replaceAll(',', '|') || '$0.00',
+          total: formatCurrency((child?.qty ?? 0) * (item?.unitPrice ?? 0)).replaceAll(',', '|') || '$0.00'
+        }))
+      );
+      const itemsWithChildren = [...args.items.filter((item: any) => item.itemChildren.length === 0), ...(itemChildren ?? [])];
 
-    addToQue('handwrittenAcct', 'print_accounting_handwritten', { ...args, items: args.items }, '1100px', '816px');
-    addToQue('handwrittenShip', 'print_shipping_handwritten', { ...args, items: itemsWithChildren }, '1100px', '816px');
-    if (hasCore) addToQue('handwrittenCore', 'print_core_handwritten', args, '1100px', '816px');
+      addToQue('handwrittenAcct', 'print_accounting_handwritten', { ...args, items: args.items }, '1100px', '816px');
+      addToQue('handwrittenShip', 'print_shipping_handwritten', { ...args, items: itemsWithChildren }, '1100px', '816px');
+      if (hasCore) addToQue('handwrittenCore', 'print_core_handwritten', args, '1100px', '816px');
+    }
     printQue();
     setLoading(false);
   };
