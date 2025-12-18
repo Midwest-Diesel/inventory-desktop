@@ -1,4 +1,4 @@
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 import Dialog from "../../library/Dialog";
 import Input from "../../library/Input";
 import Button from "../../library/Button";
@@ -31,13 +31,16 @@ export default function EditQuoteDialog({ setQuoteEdited, quote, setQuote }: Pro
   const [price, setPrice] = useState<number>(Number(quote.price));
   const [notes, setNotes] = useState<string>(quote.notes ?? '');
   const [partSelectOpen, setPartSelectOpen] = useState(false);
+  const inputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
       if (customerNames.length === 0) setCustomerNames(await getCustomerNames());
+      
+      inputRef.current?.select();
     };
     fetchData();
-  }, []);
+  }, [quote]);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -151,6 +154,7 @@ export default function EditQuoteDialog({ setQuoteEdited, quote, setQuote }: Pro
             onChange={(e: any) => setPrice(e.target.value)}
             type="number"
             step="any"
+            ref={inputRef}
             required
           />
 
