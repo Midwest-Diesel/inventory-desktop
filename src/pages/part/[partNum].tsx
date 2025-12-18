@@ -171,7 +171,7 @@ export default function PartDetails() {
 
 
   if (isFetching) return <Loading />;
-  if (!part) return <p>Part not found</p>;
+  if (!part) throw new Error('Part not found');
 
   return (
     <Layout title="Part">

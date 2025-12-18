@@ -8,6 +8,8 @@ import { formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
 import { useParams } from "react-router-dom";
 import { FormEvent, RefObject, useEffect, useRef, useState } from "react";
 import Loading from "@/components/library/Loading";
+import { confirm } from "@/scripts/config/tauri";
+import { useNavState } from "@/hooks/useNavState";
 
 interface Props {
   open: boolean
@@ -26,6 +28,7 @@ export default function TakeoffsDialog({ open, setOpen, item, unitPrice, setHand
   const [part, setPart] = useState<Part | null>(null);
   const [loading, setLoading] = useState(false);
   const ref = useRef<HTMLDivElement | null>(null);
+  const { newTab } = useNavState();
 
   useEffect(() => {
     if (!open) return;
@@ -48,10 +51,8 @@ export default function TakeoffsDialog({ open, setOpen, item, unitPrice, setHand
       alert('Part qty cannot go below 0');
       return;
     }
-    if (Number(part.purchasePrice) !== item.cost) {
-      alert(`Part cost of ${formatCurrency(part.purchasePrice)} doesn't equal line item cost of ${formatCurrency(item.cost)}`);
-      return;
-    }
+
+    // Remove qty and edit surplus when applicable
     const handwritten = await getHandwrittenById(Number(params.handwritten));
     if (!handwritten) return;
     setLoading(true);
@@ -73,10 +74,22 @@ export default function TakeoffsDialog({ open, setOpen, item, unitPrice, setHand
     } else {
       const isPartUP = part.stockNum?.split('').slice(0, 2).join('').toUpperCase() === 'UP';
       const newStockNum = isPartUP ? `${part.stockNum} (${formatDate(new Date())})` : part.stockNum;
-      await addPart({ ...part, qty: 0, qtySold: Number(qty), stockNum: newStockNum, soldTo: handwritten?.billToCompany ?? '', sellingPrice: unitPrice, handwrittenId: handwritten.id }, true);
-      await addPartCostIn(newStockNum ?? '', Number(item.cost), null, part.purchasedFrom ?? '', 'PurchasePrice', '');
+      const newId = await addPart({ ...part, qty: 0, qtySold: Number(qty), stockNum: newStockNum, soldTo: handwritten?.billToCompany ?? '', sellingPrice: unitPrice, handwrittenId: handwritten.id }, true);
+      if (!newStockNum) {
+        alert('Failed to add PartCostIn data: newStockNum is invalid');
+        return;
+      }
+      await addPartCostIn(newStockNum, Number(item.cost), null, part.purchasedFrom ?? '', 'PurchasePrice', '');
+
+      // When the part cost doesn't match the line item cost,
+      // prompt the user to go to the new part created
+      // This will take the user to the part details, where they can change it manually
+      if (Number(part.purchasePrice) !== item.cost && await confirm(`Part cost of ${formatCurrency(part.purchasePrice)} doesn't equal line item cost of ${formatCurrency(item.cost)}. Do you want to open the new part created?`)) {
+        await newTab([{ name: part.partNum, url: `/part/${newId}` }]);
+      }
     }
 
+    // Finalize takeoff
     const res = await getHandwrittenById(Number(params.handwritten));
     onSubmit();
     setLoading(false);

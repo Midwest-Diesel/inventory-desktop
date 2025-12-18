@@ -243,7 +243,7 @@ export const getPartsQtyHistory = async (partId: number): Promise<PartQtyHistory
 
 // === POST routes === //
 
-export const addPart = async (part: Part, partInfoExists: boolean, updateLoading?: (i: number, total: number) => void) => {
+export const addPart = async (part: Part, partInfoExists: boolean, updateLoading?: (i: number, total: number) => void): Promise<number | null> => {
   try {
     const partNum = part.partNum;
     const filteredAlts = part ? part.altParts.filter((p) => p !== partNum) : [];
@@ -251,7 +251,7 @@ export const addPart = async (part: Part, partInfoExists: boolean, updateLoading
 
     // Create new part record
     const data = { ...part, altParts: filteredAlts.reverse().join(','), partInfoExists };
-    await api.post('/api/parts', data);
+    const id = await api.post('/api/parts', data);
 
     // Adds this part to all connected part records
     if (filteredAlts.length > 0) {
@@ -271,8 +271,11 @@ export const addPart = async (part: Part, partInfoExists: boolean, updateLoading
       altsToAdd = Array.from(new Set(altsToAdd.reverse()));
       await editAltParts(partNum, altsToAdd);
     }
+
+    return Number(id.data);
   } catch (err) {
     console.error(err);
+    return null;
   }
 };
 

@@ -94,7 +94,7 @@ export default function Return() {
 
 
   if (loading) return <Layout title="Return Details"><Loading /></Layout>;
-  if (!returnData) return <p>Failed to fetch return data</p>;
+  if (!returnData) throw new Error('Failed to fetch return data');
   
   return (
     <Layout title="Return Details">

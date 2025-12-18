@@ -26,7 +26,7 @@ export default function EngineDetailsPage() {
   });
 
 
-  if (!engine && isFetched) return <p>No engine data found...</p>;
+  if (!engine && isFetched) throw new Error('No engine data found');
   if (!engine) return null;
 
   return (
