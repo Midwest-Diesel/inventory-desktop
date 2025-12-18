@@ -372,7 +372,8 @@ export default function EditHandwrittenDetails({
       accountNum: handwritten?.thirdPartyAccount ?? '',
       paymentType: handwritten.payment ?? '',
       createdBy: handwritten.createdBy ?? '',
-      soldBy: users.find((user) => user.id === Number(handwritten.soldBy))?.initials ?? '',
+      soldBy: handwritten.soldBy ?? '',
+      legacyId: handwritten?.legacyId ?? '',
       handwrittenId: Number(handwritten.id),
       date: formatDate(handwritten.date) ?? '',
       contact: handwritten.shipToContact ?? '',
@@ -422,7 +423,6 @@ export default function EditHandwrittenDetails({
     }).filter((item) => item).flat();
     const itemsWithChildren = [...args.items.filter((item: any) => item.itemChildren.length === 0), ...itemChildren ];
 
-    console.log({ ...args, items: args.items });
     addToQue('handwrittenAcct', 'print_accounting_handwritten', { ...args, items: args.items }, '1100px', '816px');
     addToQue('handwrittenShip', 'print_shipping_handwritten', { ...args, items: itemsWithChildren }, '1100px', '816px');
     if (hasCore) addToQue('handwrittenCore', 'print_core_handwritten', args, '1100px', '816px');

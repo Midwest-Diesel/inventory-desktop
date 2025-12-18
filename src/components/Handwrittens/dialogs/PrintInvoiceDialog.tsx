@@ -61,7 +61,7 @@ export default function PrintInvoiceDialog({ open, setOpen, handwritten }: Props
         paymentType: handwritten?.payment ?? '',
         createdBy: handwritten?.createdBy ?? '',
         soldBy: handwritten?.soldBy ?? '',
-        legacyId: Number(handwritten?.legacyId),
+        legacyId: handwritten?.legacyId ?? '',
         handwrittenId: Number(handwritten?.id),
         date: formatDate(handwritten?.date) ?? '',
         contact: handwritten?.shipToContact ?? '',
