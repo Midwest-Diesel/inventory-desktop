@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Dialog from "../../library/Dialog";
 import Table from "@/components/library/Table";
 import Pagination from "@/components/library/Pagination";
@@ -29,14 +29,18 @@ export default function PiggybackQuoteDialog({ open, setOpen, quote, handleChang
   const [selectedPartId, setSelectedPartId] = useState<number | null>(null);
   const [showRemarksList, setShowRemarksList] = useState<{ [id: number]: boolean }>({});
   const [searchParams, setSearchParams] = useState(JSON.parse(localStorage.getItem('altPartSearches') || JSON.parse(localStorage.getItem('partSearches')!)));
+  
+  useEffect(() => {
+    setSearchParams(JSON.parse(localStorage.getItem('altPartSearches') || JSON.parse(localStorage.getItem('partSearches')!)));
+  }, [open, showSoldParts, quote]);
 
   const { data: parts, isFetching: isSearchFetching } = useQuery<PartsRes>({
-    queryKey: ['searchParts', searchParams, showSoldParts],
+    queryKey: ['searchParts', searchParams, currentPage],
     queryFn: () => {
       if (!searchParams) throw new Error('No search params');
       return searchParams.isAltSearch
-        ? searchAltParts({ ...searchParams, showSoldParts }, searchParams.page, LIMIT)
-        : searchParts({ ...searchParams, showSoldParts }, searchParams.page, LIMIT);
+        ? searchAltParts({ ...searchParams, showSoldParts }, currentPage, LIMIT)
+        : searchParts({ ...searchParams, showSoldParts }, currentPage, LIMIT);
     },
     enabled: !!searchParams
   });
