@@ -126,7 +126,7 @@ export default function QuotesSection({ quotes, setQuotes, setHandwrittenQuote, 
     setQuotesOpen(!quotesOpen);
   };
 
-  const onChangePage = (_: any, newPage: number, resetSearch = false) => {
+  const onChangePage = async (_: any, newPage: number, resetSearch = false) => {
     setPage(newPage);
     if (resetSearch) setSearchData(null);
     refetch();
