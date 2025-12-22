@@ -1,4 +1,4 @@
-import { editReturn, getReturnById } from "@/scripts/services/returnsService";
+import { editReturn, editReturnItem, getReturnById } from "@/scripts/services/returnsService";
 import { FormEvent, useState } from "react";
 import Input from "../library/Input";
 import Button from "../library/Button";
@@ -11,8 +11,9 @@ import { usePreventNavigation } from "../../hooks/usePreventNavigation";
 import UserSelect from "../library/select/UserSelect";
 import { getCustomerByName } from "@/scripts/services/customerService";
 import { ask } from "@/scripts/config/tauri";
-import CustomerDropdown from "../library/dropdown/CustomerDropdown";
 import TextArea from "../library/TextArea";
+import CustomerSelect from "../library/select/CustomerSelect";
+import EditReturnItemsTable from "./EditReturnItemsTable";
 
 interface Props {
   returnData: Return
@@ -46,6 +47,7 @@ export default function EditReturnDetails({ returnData, setReturn, setIsEditing 
   const [returnReason, setReturnReason] = useState<string>(returnData.returnReason ?? '');
   const [returnPaymentTerms, setReturnPaymentTerms] = useState<string>(returnData.returnPaymentTerms ?? '');
   const [restockFee, setRestockFee] = useState<string>(returnData.restockFee ?? '');
+  const [returnItems, setReturnItems] = useState<ReturnItem[]>(returnData.returnItems);
   const [changesSaved, setChangesSaved] = useState(true);
   usePreventNavigation(!changesSaved, 'Leave without saving changes?');
 
@@ -82,6 +84,11 @@ export default function EditReturnDetails({ returnData, setReturn, setIsEditing 
       customerId
     };
     await editReturn(newReturn);
+
+    for (const item of returnItems) {
+      await editReturnItem(item);
+    }
+
     const res = await getReturnById(returnData.id);
     if (!res) return;
     setReturn(res);
@@ -89,9 +96,7 @@ export default function EditReturnDetails({ returnData, setReturn, setIsEditing 
   };
 
   const stopEditing = async () => {
-    if (changesSaved) {
-      setIsEditing(false);
-    } else if (await ask('Do you want to leave without saving?')) {
+    if (changesSaved || await ask('Do you want to leave without saving?')) {
       setIsEditing(false);
     }
   };
@@ -130,11 +135,10 @@ export default function EditReturnDetails({ returnData, setReturn, setIsEditing 
               <tr>
                 <th>Customer</th>
                 <td>
-                  <CustomerDropdown
-                    variant={['label-full-width', 'label-bold', 'no-margin', 'label-inline']}
-                    maxHeight="25rem"
+                  <CustomerSelect
+                    variant={['label-full-width', 'label-bold', 'label-inline']}
                     value={company}
-                    onChange={(e: any) => setCompany(e.target.value)}
+                    onChange={(e) => setCompany(e.target.value)}
                   />
                 </td>
               </tr>
@@ -144,7 +148,7 @@ export default function EditReturnDetails({ returnData, setReturn, setIsEditing 
                   <Input
                     variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                     value={poNum}
-                    onChange={(e: any) => setPoNum(e.target.value)}
+                    onChange={(e) => setPoNum(e.target.value)}
                     data-testid="po-input"
                   />
                 </td>
@@ -155,7 +159,7 @@ export default function EditReturnDetails({ returnData, setReturn, setIsEditing 
                   <Input
                     variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                     value={payment}
-                    onChange={(e: any) => setPayment(e.target.value)}
+                    onChange={(e) => setPayment(e.target.value)}
                   />
                 </td>
               </tr>
@@ -164,7 +168,7 @@ export default function EditReturnDetails({ returnData, setReturn, setIsEditing 
                 <td>
                   <SourceSelect
                     value={source}
-                    onChange={(e: any) => setSource(e.target.value)}
+                    onChange={(e) => setSource(e.target.value)}
                   />
                 </td>
               </tr>
@@ -174,7 +178,7 @@ export default function EditReturnDetails({ returnData, setReturn, setIsEditing 
                   <UserSelect
                     variant={['label-space-between', 'label-full-width', 'label-bold']}
                     value={salesmanId}
-                    onChange={(e: any) => setSalesmanId(e.target.value)}
+                    onChange={(e) => setSalesmanId(Number(e.target.value))}
                     userSubtype="sales"
                   />
                 </td>
@@ -193,7 +197,7 @@ export default function EditReturnDetails({ returnData, setReturn, setIsEditing 
                     variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                     value={parseDateInputValue(dateCalled)}
                     type="date"
-                    onChange={(e: any) => setDateCalled(new Date(e.target.value))}
+                    onChange={(e) => setDateCalled(new Date(e.target.value))}
                   />
                 </td>
               </tr>
@@ -204,7 +208,7 @@ export default function EditReturnDetails({ returnData, setReturn, setIsEditing 
                     variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                     value={parseDateInputValue(dateReceived)}
                     type="date"
-                    onChange={(e: any) => setDateReceived(new Date(e.target.value))}
+                    onChange={(e) => setDateReceived(new Date(e.target.value))}
                   />
                 </td>
               </tr>
@@ -215,7 +219,7 @@ export default function EditReturnDetails({ returnData, setReturn, setIsEditing 
                     variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                     value={parseDateInputValue(creditIssued)}
                     type="date"
-                    onChange={(e: any) => setCreditIssued(new Date(e.target.value))}
+                    onChange={(e) => setCreditIssued(new Date(e.target.value))}
                   />
                 </td>
               </tr>
@@ -224,10 +228,9 @@ export default function EditReturnDetails({ returnData, setReturn, setIsEditing 
                 <td>
                   <TextArea
                     variant={['label-stack', 'label-bold']}
-                    rows={5}
-                    cols={100}
+                    rows={1}
                     value={returnNotes}
-                    onChange={(e: any) => setReturnNotes(e.target.value)}
+                    onChange={(e) => setReturnNotes(e.target.value)}
                   />
                 </td>
               </tr>
@@ -236,10 +239,9 @@ export default function EditReturnDetails({ returnData, setReturn, setIsEditing 
                 <td>
                   <TextArea
                     variant={['label-stack', 'label-bold']}
-                    rows={5}
-                    cols={100}
+                    rows={1}
                     value={returnReason}
-                    onChange={(e: any) => setReturnReason(e.target.value)}
+                    onChange={(e) => setReturnReason(e.target.value)}
                   />
                 </td>
               </tr>
@@ -249,7 +251,7 @@ export default function EditReturnDetails({ returnData, setReturn, setIsEditing 
                   <Input
                     variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                     value={returnPaymentTerms}
-                    onChange={(e: any) => setReturnPaymentTerms(e.target.value)}
+                    onChange={(e) => setReturnPaymentTerms(e.target.value)}
                   />
                 </td>
               </tr>
@@ -259,7 +261,7 @@ export default function EditReturnDetails({ returnData, setReturn, setIsEditing 
                   <Input
                     variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                     value={restockFee}
-                    onChange={(e: any) => setRestockFee(e.target.value)}
+                    onChange={(e) => setRestockFee(e.target.value)}
                   />
                 </td>
               </tr>
@@ -276,7 +278,7 @@ export default function EditReturnDetails({ returnData, setReturn, setIsEditing 
                   <Input
                     variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                     value={billToAddress}
-                    onChange={(e: any) => setBillToAddress(e.target.value)}
+                    onChange={(e) => setBillToAddress(e.target.value)}
                   />
                 </td>
               </tr>
@@ -286,7 +288,7 @@ export default function EditReturnDetails({ returnData, setReturn, setIsEditing 
                   <Input
                     variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                     value={billToAddress2}
-                    onChange={(e: any) => setBillToAddress2(e.target.value)}
+                    onChange={(e) => setBillToAddress2(e.target.value)}
                   />
                 </td>
               </tr>
@@ -296,7 +298,7 @@ export default function EditReturnDetails({ returnData, setReturn, setIsEditing 
                   <Input
                     variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                     value={billToCity}
-                    onChange={(e: any) => setBillToCity(e.target.value)}
+                    onChange={(e) => setBillToCity(e.target.value)}
                   />
                 </td>
               </tr>
@@ -306,7 +308,7 @@ export default function EditReturnDetails({ returnData, setReturn, setIsEditing 
                   <Input
                     variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                     value={billToState}
-                    onChange={(e: any) => setBillToState(e.target.value)}
+                    onChange={(e) => setBillToState(e.target.value)}
                   />
                 </td>
               </tr>
@@ -316,7 +318,7 @@ export default function EditReturnDetails({ returnData, setReturn, setIsEditing 
                   <Input
                     variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                     value={billToZip}
-                    onChange={(e: any) => setBillToZip(e.target.value)}
+                    onChange={(e) => setBillToZip(e.target.value)}
                   />
                 </td>
               </tr>
@@ -326,7 +328,7 @@ export default function EditReturnDetails({ returnData, setReturn, setIsEditing 
                   <Input
                     variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                     value={billToPhone}
-                    onChange={(e: any) => setBillToPhone(e.target.value)}
+                    onChange={(e) => setBillToPhone(e.target.value)}
                   />
                 </td>
               </tr>
@@ -336,7 +338,7 @@ export default function EditReturnDetails({ returnData, setReturn, setIsEditing 
                   <Input
                     variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                     value={billToContact}
-                    onChange={(e: any) => setBillToContact(e.target.value)}
+                    onChange={(e) => setBillToContact(e.target.value)}
                   />
                 </td>
               </tr>
@@ -353,7 +355,7 @@ export default function EditReturnDetails({ returnData, setReturn, setIsEditing 
                   <Input
                     variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                     value={shipToAddress}
-                    onChange={(e: any) => setShipToAddress(e.target.value)}
+                    onChange={(e) => setShipToAddress(e.target.value)}
                   />
                 </td>
               </tr>
@@ -363,7 +365,7 @@ export default function EditReturnDetails({ returnData, setReturn, setIsEditing 
                   <Input
                     variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                     value={shipToAddress2}
-                    onChange={(e: any) => setShipToAddress2(e.target.value)}
+                    onChange={(e) => setShipToAddress2(e.target.value)}
                   />
                 </td>
               </tr>
@@ -373,7 +375,7 @@ export default function EditReturnDetails({ returnData, setReturn, setIsEditing 
                   <Input
                     variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                     value={shipToCity}
-                    onChange={(e: any) => setShipToCity(e.target.value)}
+                    onChange={(e) => setShipToCity(e.target.value)}
                   />
                 </td>
               </tr>
@@ -383,7 +385,7 @@ export default function EditReturnDetails({ returnData, setReturn, setIsEditing 
                   <Input
                     variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                     value={shipToState}
-                    onChange={(e: any) => setShipToState(e.target.value)}
+                    onChange={(e) => setShipToState(e.target.value)}
                   />
                 </td>
               </tr>
@@ -393,12 +395,20 @@ export default function EditReturnDetails({ returnData, setReturn, setIsEditing 
                   <Input
                     variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                     value={shipToZip}
-                    onChange={(e: any) => setShipToZip(e.target.value)}
+                    onChange={(e) => setShipToZip(e.target.value)}
                   />
                 </td>
               </tr>
             </tbody>
           </Table>
+        </GridItem>
+
+        <GridItem variant={['no-style']} colStart={1} colEnd={12}>
+          <EditReturnItemsTable
+            returnData={returnData}
+            returnItems={returnItems}
+            setReturnItems={setReturnItems}
+          />
         </GridItem>
       </Grid>
     </form>

@@ -72,7 +72,7 @@ export default function ReturnItemsTable({ className, returnItems, returnData, s
       />
 
       <div className={`return-items-table ${className && className}`}>
-        {returnItems.sort((a, b) => b.id - a.id) &&
+        {returnItems &&
           <>
             <p><strong>Return Total: </strong>{ formatCurrency(returnData.returnTotal) }</p>
             <Table>
