@@ -16,8 +16,18 @@ export const getUser = async (): Promise<User | null> => {
     };
     const res = await api.get('/api/account', config);
     return res.data.user;
-  } catch (err) {
-    console.error(`Unrelated Error: ${err}`);
+  } catch (error) {
+    console.error(`Unrelated Error: ${error}`);
+    return null;
+  }
+};
+
+export const getUserById = async (id: number): Promise<User | null> => {
+  try {
+    const res = await api.get(`/api/account/id/${id}`);
+    return res.data;
+  } catch (error) {
+    console.error(error);
     return null;
   }
 };
@@ -26,8 +36,8 @@ export const getAllUsers = async (): Promise<User[]> => {
   try {
     const res = await api.get('/api/account/all');
     return res.data;
-  } catch (err) {
-    console.error(`Unrelated Error: ${err}`);
+  } catch (error) {
+    console.error(`Unrelated Error: ${error}`);
     return [];
   }
 };
@@ -35,8 +45,8 @@ export const getAllUsers = async (): Promise<User[]> => {
 const checkSession = async () => {
   try {
     await api.get('/api/account/session-check');
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
     location.reload();
   }
 };
@@ -50,9 +60,9 @@ export const loginUser = async (user: UserLogin) => {
       headers: { 'Content-Type': 'application/json' }
     };
     await api.post('/api/account/authenticate', user, config);
-  } catch (err: any) {
-    console.error(err);
-    return err?.response.data.message;
+  } catch (error: any) {
+    console.error(error);
+    return error?.response.data.message;
   }
 };
 
@@ -62,7 +72,7 @@ export const logout = async () => {
   try {
     await api.delete('/api/account/logout');
     location.reload();
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
   }
 };

@@ -25,7 +25,7 @@ interface Props {
     legacyId: string
     handwrittenId: string
     date: string
-    contact: string
+    contactName: string
     poNum: string
     shipVia: string
     source: string
@@ -108,7 +108,7 @@ export default function HandwrittenAccountingTemplate({ data }: Props) {
           <table style={{ minWidth: '20rem' }}>
             <tbody>
               <tr><td colSpan={2}>{ data.date || <span className="print-placeholder">DATE</span> }</td></tr>
-              <tr><td colSpan={2}>{ data.contact || <span className="print-placeholder">CONTACT NAME</span> }</td></tr>
+              <tr><td colSpan={2}>{ data.contactName || <span className="print-placeholder">CONTACT NAME</span> }</td></tr>
               <tr><td colSpan={2}>{ data.poNum || <span className="print-placeholder">PO#</span> }</td></tr>
               <tr>
                 <td>{ data.shipVia || <span className="print-placeholder">SHIP VIA</span> }</td>

@@ -65,7 +65,7 @@ export default function PrintInvoiceDialog({ open, setOpen, handwritten }: Props
         legacyId: handwritten?.legacyId ?? '',
         handwrittenId: Number(handwritten?.id),
         date: formatDate(handwritten?.date) ?? '',
-        contact: handwritten?.shipToContact ?? '',
+        contact: handwritten?.contactName ?? '',
         poNum: handwritten?.poNum ?? '',
         shipVia: handwritten?.shipVia?.name ?? '',
         source: handwritten?.source ?? '',

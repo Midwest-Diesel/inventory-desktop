@@ -20,7 +20,7 @@ import ChangeCustomerInfoDialog from "./dialogs/ChangeCustomerInfoDialog";
 import { addTrackingNumber, deleteTrackingNumber, editTrackingNumber } from "@/scripts/services/trackingNumbersService";
 import FreightCarrierSelect from "../library/select/FreightCarrierSelect";
 import { getFreightCarrierById } from "@/scripts/services/freightCarriersService";
-import { getAllUsers } from "@/scripts/services/userService";
+import { getAllUsers, getUserById } from "@/scripts/services/userService";
 import CreditCardBlock from "./CreditCardBlock";
 import Dropdown from "../library/dropdown/Dropdown";
 import DropdownOption from "../library/dropdown/DropdownOption";
@@ -34,6 +34,7 @@ import { usePrintQue } from "@/hooks/usePrintQue";
 import { useQuery } from "@tanstack/react-query";
 import TextArea from "../library/TextArea";
 import { addCoreCharge } from "@/scripts/logic/handwrittens";
+import EditHandwrittenItemsTable from "./EditHandwrittenItemsTable";
 
 interface Props {
   handwritten: Handwritten
@@ -190,6 +191,7 @@ export default function EditHandwrittenDetails({
     }
 
     const newCustomer = await getCustomerByName(company);
+    const user = await getUserById(soldBy);
     const newInvoice = {
       id: handwritten.id,
       shipViaId,
@@ -237,8 +239,9 @@ export default function EditHandwrittenDetails({
       isSetup,
       isEndOfDay,
       thirdPartyAccount,
-      soldBy,
-      createdBy: handwritten.createdBy ?? ''
+      soldById: soldBy,
+      soldBy: user?.initials,
+      createdBy: handwritten.createdBy
     } as any;
     setNewShippingListRow(newInvoice);
     await editHandwritten(newInvoice);
@@ -390,7 +393,7 @@ export default function EditHandwrittenDetails({
         legacyId: handwritten?.legacyId ?? '',
         handwrittenId: Number(handwritten.id),
         date: formatDate(handwritten.date) ?? '',
-        contact: handwritten.shipToContact ?? '',
+        contactName: handwritten.contactName ?? '',
         poNum: handwritten.poNum ?? '',
         shipVia: shipVia?.name ?? '',
         source: handwritten.source ?? '',
@@ -548,10 +551,11 @@ export default function EditHandwrittenDetails({
 
   const onPrintHandwritten = async () => {
     const newCustomer = await getCustomerByName(company);
+    const user = await getUserById(soldBy);
     const newInvoice = {
       id: handwritten.id,
       shipViaId,
-      handwrittenItems: handwrittenItems,
+      handwrittenItems,
       customer: newCustomer,
       date,
       poNum,
@@ -595,7 +599,9 @@ export default function EditHandwrittenDetails({
       isSetup,
       isEndOfDay,
       thirdPartyAccount,
-      soldBy
+      soldById: soldBy,
+      soldBy: user?.initials,
+      createdBy: handwritten.createdBy
     } as any;
     const hasCore = handwrittenItems.some((item) => item.location === 'CORE DEPOSIT');
     await printHandwritten(hasCore, newInvoice);
@@ -613,6 +619,7 @@ export default function EditHandwrittenDetails({
       setShippingListDialogOpen(true);
     } else {
       const newCustomer = await getCustomerByName(company);
+      const user = await getUserById(soldBy);
       const newInvoice = {
         id: handwritten.id,
         shipViaId,
@@ -660,7 +667,9 @@ export default function EditHandwrittenDetails({
         isSetup,
         isEndOfDay,
         thirdPartyAccount,
-        soldBy
+        soldById: soldBy,
+        soldBy: user?.initials,
+        createdBy: handwritten.createdBy
       } as any;
       const hasCore = handwrittenItems.some((item) => item.location === 'CORE DEPOSIT');
       await handlePrintCCLabel();
@@ -1199,129 +1208,15 @@ export default function EditHandwrittenDetails({
               </GridItem>
 
               <GridItem colStart={1} colEnd={8} variant={['no-style']} style={{ marginTop: '1rem' }}>
-                <h3>Handwritten Items</h3> 
-                <Table variant={['plain', 'edit-row-details']}>
-                  <thead>
-                    <tr>
-                      <th></th>
-                      <th style={{ color: 'white' }}>Stock Number</th>
-                      <th style={{ color: 'white' }}>Location</th>
-                      <th style={{ color: 'white' }}>Cost</th>
-                      <th style={{ color: 'white' }}>Qty</th>
-                      <th style={{ color: 'white' }}>Part Number</th>
-                      <th style={{ color: 'white' }}>Description</th>
-                      <th style={{ color: 'white' }}>Unit Price</th>
-                      <th style={{ color: 'white' }}>Date</th>
-                      { handwritten.invoiceStatus !== 'SENT TO ACCOUNTING' && <th style={{ color: 'white' }}></th> }
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {handwrittenItems.map((item: HandwrittenItem, i: number) => {
-                      const isDisabled = handwritten.invoiceStatus === 'SENT TO ACCOUNTING';
-                      return (
-                        <tr key={i}>
-                          <td>
-                            {!isDisabled && item.location && !item.location.includes('CORE DEPOSIT') && item.invoiceItemChildren.length === 0 &&
-                              <Button
-                                variant={['x-small']}
-                                onClick={() => handleCoreCharge(item)}
-                                data-testid="core-charge-btn"
-                                type="button"
-                              >
-                                Core Charge
-                              </Button>
-                            }
-                            {!isDisabled && item.invoiceItemChildren.some((i) => i.stockNum === 'In/Out') &&
-                              <Button
-                                variant={['x-small']}
-                                onClick={() => toggleQuickPick(item)}
-                                type="button"
-                              >
-                                { quickPickItemId > 0 ? 'Disable' : 'Enable' } Quick Pick
-                              </Button>
-                            }
-                          </td>
-                          <td>
-                            <Input
-                              value={item.stockNum ?? ''}
-                              onChange={(e: any) => handleEditItem({ ...item, stockNum: e.target.value }, i)}
-                              disabled={isDisabled}
-                            />
-                          </td>
-                          <td>
-                            <Input
-                              value={item.location ?? ''}
-                              onChange={(e: any) => handleEditItem({ ...item, location: e.target.value }, i)}
-                              disabled={isDisabled}
-                            />
-                          </td>
-                          <td>
-                            <Input
-                              value={item.cost ?? ''}
-                              onChange={(e: any) => handleEditItem({ ...item, cost: e.target.value }, i)}
-                              disabled={isDisabled}
-                              data-testid="item-cost"
-                              type="number"
-                              step="any"
-                            />
-                          </td>
-                          <td>
-                            <Input
-                              value={item.qty ?? ''}
-                              type="number"
-                              onChange={(e: any) => handleEditItem({ ...item, qty: e.target.value }, i)}
-                              disabled={isDisabled}
-                              data-testid="item-qty"
-                            />
-                          </td>
-                          <td>
-                            <Input
-                              value={item.partNum ?? ''}
-                              onChange={(e: any) => handleEditItem({ ...item, partNum: e.target.value }, i)}
-                              disabled={isDisabled}
-                            />
-                          </td>
-                          <td>
-                            <Input
-                              value={item.desc ?? ''}
-                              onChange={(e: any) => handleEditItem({ ...item, desc: e.target.value }, i)}
-                              disabled={isDisabled}
-                            />
-                          </td>
-                          <td>
-                            <Input
-                              value={item.unitPrice ?? ''}
-                              onChange={(e: any) => handleEditItem({ ...item, unitPrice: e.target.value }, i)}
-                              disabled={isDisabled}
-                              type="number"
-                              step="any"
-                            />
-                          </td>
-                          <td>
-                            <Input
-                              value={parseDateInputValue(item.date)}
-                              onChange={(e: any) => handleEditItem({ ...item, date: new Date(e.target.value) }, i)}
-                              disabled={isDisabled}
-                              type="date"
-                            />
-                          </td>
-                          {handwritten.invoiceStatus !== 'SENT TO ACCOUNTING' &&
-                            <td>
-                              <Button
-                                variant={['red-color']}
-                                onClick={() => handleDeleteItem(item)}
-                                type="button"
-                                data-testid="item-delete-btn"
-                              >
-                                Delete
-                              </Button>
-                            </td>
-                          }
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </Table>
+                <EditHandwrittenItemsTable
+                  handwritten={handwritten}
+                  handwrittenItems={handwrittenItems}
+                  handleCoreCharge={handleCoreCharge}
+                  toggleQuickPick={toggleQuickPick}
+                  quickPickItemId={quickPickItemId}
+                  handleEditItem={handleEditItem}
+                  handleDeleteItem={handleDeleteItem}
+                />
               </GridItem>
 
               <GridItem colStart={9} colEnd={12} variant={['no-style']} style={{ marginTop: '1rem' }}>
