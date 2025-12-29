@@ -79,7 +79,7 @@ export default function EditReturnItemsTable({ className, returnData, returnItem
                     <td>
                       {ret.stockNum ?
                         ret.stockNum
-                      :
+                        :
                         <Button onClick={() => handleOpenStockNumbers(ret)} type="button">Stock Numbers</Button>
                       }
                     </td>

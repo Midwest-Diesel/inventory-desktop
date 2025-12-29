@@ -1,7 +1,9 @@
 import api from "../config/axios";
+import { formatRemarksSoldText } from "../logic/parts";
 import { parseResDate } from "../tools/stringUtils";
 import { filterNullObjValuesArr } from "../tools/utils";
 import { getCoresByCustomer, getCoreReturnsByCustomer } from "./coresService";
+import { editPart, getPartById } from "./partsService";
 
 export interface HandwrittenSearch {
   id?: number
@@ -245,6 +247,18 @@ export const addHandwritten = async (handwritten: Handwritten): Promise<number |
 export const addHandwrittenItem = async (item: NewHandwrittenItem): Promise<number | null> => {
   try {
     const res = await api.post('/api/handwrittens/item', item);
+    
+    // Add "SOLD" to the remarks of the connected part
+    if (item.partId) {
+      const part = await getPartById(item.partId);
+      const handwritten = await getHandwrittenById(item.handwrittenId);
+      if (!part || !handwritten) return Number(res.data.id);
+
+      const qtySold = part.qty > 1 ? item.qty : null;
+      const remarks = formatRemarksSoldText(part.remarks, qtySold, handwritten.soldBy, handwritten.customer.company ?? '');
+      await editPart({ ...part, remarks });
+    }
+
     return Number(res.data.id);
   } catch (err) {
     console.error(err);

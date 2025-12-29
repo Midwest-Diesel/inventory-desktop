@@ -108,10 +108,10 @@ export default function Dashboard() {
         await addHandwrittenItemChild(newItem.id, { partId: part.id, qty, cost });
         await editHandwrittenOrderNotes(handwritten.id, warranty);
       } else {
-        handleAddToHandwritten(handwritten.id, desc, qty, price, warranty, stockNum);
+        await handleAddToHandwritten(handwritten.id, desc, qty, price, warranty, stockNum);
       }
     } else {
-      handleAddToHandwritten(handwritten.id, desc, qty, price, warranty, stockNum);
+      await handleAddToHandwritten(handwritten.id, desc, qty, price, warranty, stockNum);
     }
 
     const updatedQuote = { ...handwrittenQuote, sale: true };

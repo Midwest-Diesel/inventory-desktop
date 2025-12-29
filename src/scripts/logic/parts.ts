@@ -1,6 +1,7 @@
 import { ask } from "../config/tauri";
 import { editAddOnAltParts, getOfficeAddOns } from "../services/addOnsService";
 import { editAltParts, getPartInfoByPartNum } from "../services/partsService";
+import { formatDate } from "../tools/stringUtils";
 
 
 const getAltPartsToAdd = async (partNum: string, altParts: string[]): Promise<string[]> => {
@@ -112,4 +113,9 @@ export const removeAltParts = async (partNum: string, altPartsToRemove: string[]
       await editAddOnAltParts(addOn.id, filteredAlts.join(', '));
     }
   }
+};
+
+export const formatRemarksSoldText = (remarks: string | null, qtySold: number | null, salesman: string, customer: string): string => {
+  if (!remarks) return '';
+  return `^ ${qtySold ? `${qtySold} ` : ''}SOLD BY ${salesman} ${formatDate(new Date())} ${customer} ^^${remarks}`;
 };

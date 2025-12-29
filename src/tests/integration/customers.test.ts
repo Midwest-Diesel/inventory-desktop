@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, beforeAll, afterAll } from 'vitest';
 import { client, resetDb } from '../resetDatabase';
 import { setApiBaseUrl } from '@/scripts/config/axios';
 import { loginUser } from '@/scripts/services/userService';
-import { addCustomer, customerMerge, getCustomerById, getCustomers, searchCustomers } from '@/scripts/services/customerService';
+import { addCustomer, customerMerge, getCustomerById, getCustomerByName, searchCustomers } from '@/scripts/services/customerService';
 import { getHandwrittenById } from '@/scripts/services/handwrittensService';
 
 beforeAll(async () => {
@@ -59,11 +59,9 @@ describe('Customers Integration', () => {
   });
 
   it('Create customer', async () => {
-    await addCustomer('JOHN SMITH');
-  
-    const res = await getCustomers();
-    const customer = res[res.length - 1];
-    expect(customer).toEqual(expect.objectContaining({ company: 'JOHN SMITH' }));
+    await addCustomer('JOHN SMITH TEST');
+    const res = await getCustomerByName('JOHN SMITH TEST');
+    expect(res).toEqual(expect.objectContaining({ company: 'JOHN SMITH TEST' }));
   });
 
   it('Search customer', async () => {
