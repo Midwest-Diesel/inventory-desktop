@@ -5,6 +5,7 @@ import Link from "../../library/Link";
 import { getPartInfoByPartNum, getSalesInfo, searchAltParts, searchParts } from "@/scripts/services/partsService";
 import { getSalesByYear } from "@/scripts/logic/sales";
 import { useQuery } from "@tanstack/react-query";
+import Loading from "@/components/library/Loading";
 
 interface Props {
   open: boolean
@@ -46,7 +47,7 @@ export default function SalesInfo({ open, setOpen }: Props) {
     enabled: open
   });
 
-  const { data: salesInfo } = useQuery<SalesInfo>({
+  const { data: salesInfo, isFetching } = useQuery<SalesInfo>({
     queryKey: ['salesInfo', open, partInfo],
     queryFn: async () => {
       if (!partInfo) return { sales: [], quotes: [], salesByYearList: [], counters: { new: 0, recon: 0, used: 0, core: 0 }};
@@ -102,7 +103,8 @@ export default function SalesInfo({ open, setOpen }: Props) {
                 </tr>
               </thead>
               <tbody>
-                {salesInfo?.sales.map((info: SalesInfoSales, i) => {
+                { isFetching && <Loading /> }
+                {!isFetching && salesInfo?.sales.map((info: SalesInfoSales, i) => {
                   return (
                     <tr key={i}>
                       <td><Link href={`/part/${info.id}`}>{ info.partNum }</Link></td>
