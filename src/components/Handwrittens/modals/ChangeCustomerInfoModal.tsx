@@ -1,20 +1,21 @@
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import Button from "@/components/library/Button";
 import Modal from "@/components/library/Modal";
 import Input from "@/components/library/Input";
 import { editCustomer } from "@/scripts/services/customerService";
 
 interface Props {
-  open: boolean
-  setOpen: (open: boolean) => void
+  open?: boolean
+  onNext?: () => void
+  onPrev?: () => void
+  onClose?: () => void
   customer: Customer | null
   handwritten: Handwritten | null
-  setIsEditing: (value: boolean) => void
-  returnAfterDone: boolean
 }
 
 
-export default function ChangeCustomerInfoDialog({ open, setOpen, customer, handwritten, setIsEditing, returnAfterDone }: Props) {
+export default function ChangeCustomerInfoModal({ open, onNext, onPrev, customer, handwritten }: Props) {
+  const [loading, setLoading] = useState(true);
   const [billToCompany, setBillToCompany] = useState<string>(handwritten?.billToCompany ?? '');
   const [billToAddress, setBillToAddress] = useState<string>(handwritten?.billToAddress ?? '');
   const [billToAddress2, setBillToAddress2] = useState<string>(handwritten?.billToAddress2 ?? '');
@@ -28,26 +29,39 @@ export default function ChangeCustomerInfoDialog({ open, setOpen, customer, hand
   const showBillToState = handwritten?.billToState !== customer?.billToState;
   const showBillToZip = handwritten?.billToZip !== customer?.billToZip;
 
+  useEffect(() => {
+    if (!open || !onNext) return;
+    const handwrittenBillTo = JSON.stringify({ billToCompany, billToAddress, billToAddress2, billToCity, billToState, billToZip });
+    const customerBillTo = JSON.stringify({
+      billToCompany: customer?.company ?? '',
+      billToAddress: customer?.billToAddress ?? '',
+      billToAddress2: customer?.billToAddress2 ?? '',
+      billToCity: customer?.billToCity ?? '',
+      billToState: customer?.billToState ?? '',
+      billToZip: customer?.billToZip ?? ''
+    });
+
+    if (handwrittenBillTo === customerBillTo) {
+      onNext();
+    } else {
+      setLoading(false);
+    }
+  }, [open]);
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    handleClose();
     if (!customer) return;
     await editCustomer({ ...customer, company: billToCompany, billToAddress, billToAddress2, billToCity, billToState, billToZip });
+    if (onNext) onNext();
   };
 
-  const handleClose = () => {
-    if (returnAfterDone) setIsEditing(false);
-    setOpen(false);
-  };
 
+  if (loading) return null;
 
   return (
     <Modal
       open={open}
-      setOpen={setOpen}
       title="Change Customer Info?"
-      exitWithEsc={false}
-      showCloseBtn={false}
     >
       <form onSubmit={handleSubmit}>
         <div style={{ display: 'flex', gap: '1rem' }}>
@@ -115,8 +129,9 @@ export default function ChangeCustomerInfoDialog({ open, setOpen, customer, hand
         </div>
 
         <div className="form__footer">
-          <Button type="button" onClick={handleClose} data-testid="no-changes-btn">No Changes</Button>
-          <Button type="submit">Save</Button>
+          { onPrev && <Button onClick={onPrev}>Back</Button> }
+          <Button onClick={onNext} data-testid="no-changes-btn">No Changes</Button>
+          <Button type="submit">Next</Button>
         </div>
       </form>
     </Modal>

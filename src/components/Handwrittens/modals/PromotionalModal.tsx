@@ -1,20 +1,21 @@
 import { useState } from "react";
-import Dialog from "../../library/Dialog";
 import Table from "../../library/Table";
 import Input from "@/components/library/Input";
 import Button from "@/components/library/Button";
 import { editHandwrittenPromotionals } from "@/scripts/services/handwrittensService";
+import Modal from "@/components/library/Modal";
 
 interface Props {
-  open: boolean
-  setOpen: (open: boolean) => void
+  open?: boolean
+  onNext?: () => void
+  onPrev?: () => void
+  onClose?: () => void
   handwritten: Handwritten
   onAddPromotionals: (mp: number, cap: number, br: number, fl: number) => void
-  onClose: () => void
 }
 
 
-export default function PromotionalDialog({ open, setOpen, handwritten, onAddPromotionals, onClose }: Props) {
+export default function PromotionalModal({ open, onNext, onPrev, handwritten, onAddPromotionals }: Props) {
   const [mp, setMp] = useState<number>(handwritten.mp ?? 0);
   const [cap, setCap] = useState<number>(handwritten.cap ?? 0);
   const [br, setBr] = useState<number>(handwritten.br ?? 0);
@@ -23,20 +24,14 @@ export default function PromotionalDialog({ open, setOpen, handwritten, onAddPro
   const handleAddPromotionals = async () => {
     await editHandwrittenPromotionals(handwritten.id, mp, cap, br, fl);
     onAddPromotionals(mp, cap, br, fl);
-    handleClose();
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-    onClose();
+    if (onNext) onNext();
   };
 
 
   return (
-    <Dialog
+    <Modal
       open={open}
-      setOpen={setOpen}
-      title="Promotional Materials"
+      title="Add Promotional Materials?"
       width={250}
       data-testid="promotional-dialog"
     >
@@ -94,9 +89,9 @@ export default function PromotionalDialog({ open, setOpen, handwritten, onAddPro
       </Table>
 
       <div className="form__footer">
-        <Button onClick={handleClose}>Cancel</Button>
-        <Button onClick={handleAddPromotionals} data-testid="submit-btn">Add</Button>
+        { onPrev && <Button onClick={onPrev}>Back</Button> }
+        <Button onClick={handleAddPromotionals} data-testid="submit-btn">Next</Button>
       </div>
-    </Dialog>
+    </Modal>
   );
 }

@@ -144,7 +144,7 @@ export default function CustomerSearch({ selectedCustomer, setSelectedCustomer, 
           value={searchTerm}
           data-testid="customer-input"
         >
-          <Button variant={['search']} style={{ height: '2.1rem' }} data-testid="customer-search-btn">Search</Button>
+          <Button variant={['search']} style={{ height: '2.1rem' }} type="submit" data-testid="customer-search-btn">Search</Button>
         </Input>
       </form>
 

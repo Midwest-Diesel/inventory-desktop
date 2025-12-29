@@ -1,5 +1,4 @@
 import Input from "@/components/library/Input";
-import Dialog from "../../library/Dialog";
 import { FormEvent, useEffect, useState } from "react";
 import { parseDateInputValue } from "@/scripts/tools/stringUtils";
 import Checkbox from "@/components/library/Checkbox";
@@ -9,22 +8,22 @@ import Button from "@/components/library/Button";
 import Loading from "@/components/library/Loading";
 import { getHandwrittenById } from "@/scripts/services/handwrittensService";
 import { getImagesFromStockNum } from "@/scripts/services/imagesService";
+import Modal from "@/components/library/Modal";
 
 interface Props {
-  open: boolean
-  setOpen: (open: boolean) => void
+  open?: boolean
+  onNext?: () => void
+  onPrev?: () => void
+  onClose?: () => void
   handwrittenItems: HandwrittenItem[]
   newShippingListRow: Handwritten | null
-  setIsEditing: (value: boolean) => void
-  onPrintCCLabel: () => void
-  onPrintHandwritten: () => void
 }
+
 
 const CURRENT_WEEK_FILENAME = 'shipping_list_current_week.xlsx';
 const NEXT_WEEK_FILENAME = 'shipping_list_next_week.xlsx';
 
-
-export default function ShippingListDialog({ open, setOpen, handwrittenItems, newShippingListRow, setIsEditing, onPrintCCLabel, onPrintHandwritten }: Props) {
+export default function ShippingListModal({ open, onNext, onPrev, handwrittenItems, newShippingListRow }: Props) {
   const [handwritten, setHandwritten] = useState<Handwritten | null>(null);
   const [date, setDate] = useState<Date>(new Date());
   const [isCondensed, setIsCondensed] = useState(handwrittenItems.filter((i) => ['FREIGHT', 'TAX', 'CORE DEPOSIT'].includes(i.partNum ?? '')).length > 2);
@@ -113,22 +112,16 @@ export default function ShippingListDialog({ open, setOpen, handwrittenItems, ne
         await invoke('add_to_shipping_list', { newShippingListRow: new_shipping_list_row });
       }
     }
-    onPrintCCLabel();
-    onPrintHandwritten();
     setLoading(false);
-    setOpen(false);
-    setIsEditing(false);
+    if (onNext) onNext();
   };
 
 
   return (
-    <Dialog
+    <Modal
       open={open}
-      setOpen={setOpen}
       title="Add to Shipping List"
-      maxHeight="28rem"
       width={370}
-      y={-150}
     >
       <form onSubmit={handleSubmit}>
         <Input
@@ -167,10 +160,14 @@ export default function ShippingListDialog({ open, setOpen, handwrittenItems, ne
           {loading ?
             <Loading />
             :
-            <Button type="submit" data-testid="shipping-list-submit-btn">Submit</Button>
+            <>
+              { onPrev && <Button onClick={onPrev}>Back</Button> }
+              <Button onClick={onNext}>Skip</Button>
+              <Button type="submit" data-testid="shipping-list-submit-btn">Next</Button>
+            </>
           }
         </div>
       </form>
-    </Dialog>
+    </Modal>
   );
 }

@@ -4,20 +4,20 @@ import Button from "@/components/library/Button";
 import { deleteAltShipAddress, editAltShipAddress } from "@/scripts/services/altShipService";
 import { editHandwritten, getHandwrittenById } from "@/scripts/services/handwrittensService";
 import { ask } from "@/scripts/config/tauri";
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useState } from "react";
 
 interface Props {
   open: boolean
   setOpen: (open: boolean) => void
   handwritten: Handwritten
   setHandwritten: (handwritten: Handwritten | null) => void
-  altShipData: AltShip[]
-  setAltShipData: (data: AltShip[]) => void
+  altShip: AltShip[]
+  refetchAltShip: () => void
   onChangeAltShip: () => void
 }
 
 
-export default function AltShipDialog({ open, setOpen, handwritten, setHandwritten, altShipData, setAltShipData, onChangeAltShip }: Props) {
+export default function AltShipDialog({ open, setOpen, handwritten, setHandwritten, altShip, refetchAltShip, onChangeAltShip }: Props) {
   const [shipToCompany, setShipToCompany] = useState('');
   const [shipToAddress, setShipToAddress] = useState('');
   const [shipToAddress2, setShipToAddress2] = useState('');
@@ -25,8 +25,6 @@ export default function AltShipDialog({ open, setOpen, handwritten, setHandwritt
   const [shipToState, setShipToState] = useState('');
   const [shipToZip, setShipToZip] = useState('');
   const [altShipEdited, setAltShipEdited] = useState<AltShip | null>(null);
-
-  useEffect(() => {}, [altShipData]);
 
   const selectAddress = async (data: AltShip) => {
     if (!await ask('Are you sure you want to use this address?')) return;
@@ -48,7 +46,7 @@ export default function AltShipDialog({ open, setOpen, handwritten, setHandwritt
   const handleDelete = async (id: number) => {
     if (!await ask('Are you sure you want to delete this?')) return;
     await deleteAltShipAddress(id);
-    setAltShipData(altShipData.filter((data) => data.id !== id));
+    refetchAltShip();
   };
 
   const editAltShip = (data: AltShip) => {
@@ -74,10 +72,7 @@ export default function AltShipDialog({ open, setOpen, handwritten, setHandwritt
       shipToZip
     } as AltShip;
     await editAltShipAddress(newAltShip);
-    setAltShipData(altShipData.map((alt) => {
-      if (alt.id === newAltShip.id) return newAltShip;
-      return alt;
-    }));
+    refetchAltShip();
     resetData();
   };
 
@@ -102,7 +97,7 @@ export default function AltShipDialog({ open, setOpen, handwritten, setHandwritt
       className="alt-ship-dialog"
       y={-150}
     >
-      {!altShipEdited && altShipData.map((data: AltShip, i) => {
+      {!altShipEdited && altShip.map((data: AltShip, i) => {
         return (
           <div key={i} className="alt-ship-dialog__box">
             <p>{ data.shipToCompany }</p>

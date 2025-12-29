@@ -13,10 +13,10 @@ import CustomerDropdown from "../library/dropdown/CustomerDropdown";
 import { getCustomerById, getCustomerByName } from "@/scripts/services/customerService";
 import { getAllSources } from "@/scripts/services/sourcesService";
 import { deleteCoreByItemId, editCoreCharge, editCoreCustomer, getCoresByHandwrittenItem } from "@/scripts/services/coresService";
-import ShippingListDialog from "./dialogs/ShippingListDialog";
+import ShippingListModal from "./modals/ShippingListModal";
 import Checkbox from "../library/Checkbox";
 import { usePreventNavigation } from "../../hooks/usePreventNavigation";
-import ChangeCustomerInfoDialog from "./dialogs/ChangeCustomerInfoDialog";
+import ChangeCustomerInfoModal from "./modals/ChangeCustomerInfoModal";
 import { addTrackingNumber, deleteTrackingNumber, editTrackingNumber } from "@/scripts/services/trackingNumbersService";
 import FreightCarrierSelect from "../library/select/FreightCarrierSelect";
 import { getFreightCarrierById } from "@/scripts/services/freightCarriersService";
@@ -25,7 +25,7 @@ import CreditCardBlock from "./CreditCardBlock";
 import Dropdown from "../library/dropdown/Dropdown";
 import DropdownOption from "../library/dropdown/DropdownOption";
 import { arrayOfObjectsMatch } from "@/scripts/tools/utils";
-import PromotionalDialog from "./dialogs/PromotionalDialog";
+import PromotionalModal from "./modals/PromotionalModal";
 import Loading from "../library/Loading";
 import { ask } from "@/scripts/config/tauri";
 import { getAltShipByCustomerId } from "@/scripts/services/altShipService";
@@ -35,6 +35,7 @@ import { useQuery } from "@tanstack/react-query";
 import TextArea from "../library/TextArea";
 import { addCoreCharge } from "@/scripts/logic/handwrittens";
 import EditHandwrittenItemsTable from "./EditHandwrittenItemsTable";
+import ModalList from "../library/ModalList";
 
 interface Props {
   handwritten: Handwritten
@@ -61,6 +62,7 @@ interface Props {
 
 
 const MAX_ROWS = 12;
+const CUSTOMER_INFO_MODAL_PAGE = 2;
 
 export default function EditHandwrittenDetails({
   handwritten,
@@ -124,8 +126,6 @@ export default function EditHandwrittenDetails({
   const [fl, setFl] = useState<number>(handwritten.fl);
   const [trackingNumbers, setTrackingNumbers] = useState<TrackingNumber[]>(handwritten.trackingNumbers);
   const [blankTrackingNumber, setBlankTrackingNumber] = useState('');
-  const [shippingListDialogOpen, setShippingListDialogOpen] = useState(false);
-  const [promotionalDialogOpen, setPromotionalDialogOpen] = useState(false);
   const [newShippingListRow, setNewShippingListRow] = useState<Handwritten | null>(null);
   const [isTaxable, setIsTaxable] = useState<boolean>(handwritten.isTaxable);
   const [isBlindShipment, setIsBlind] = useState<boolean>(handwritten.isBlindShipment);
@@ -137,24 +137,15 @@ export default function EditHandwrittenDetails({
   const [thirdPartyAccount, setThirdPartyAccount] = useState<string>(handwritten.thirdPartyAccount ?? '');
   const [soldBy, setSoldBy] = useState<number>(handwritten.soldById);
   const [changesSaved, setChangesSaved] = useState(true);
-  const [changeCustomerDialogOpen, setChangeCustomerDialogOpen] = useState(false);
   const [changeCustomerDialogData, setChangeCustomerDialogData] = useState<Handwritten | null>(null);
   const [altShipOpen, setAltShipOpen] = useState(false);
-  const [altShipData, setAltShipData] = useState<AltShip[]>([]);
-  const [returnAfterDone, setReturnAfterDone] = useState(true);
+  const [accountingProcessOpen, setAccountingProcessOpen] = useState(false);
+  const [accountingProcessInitPage, setAccountingProcessInitPage] = useState(0);
+  const [isSentToAccounting, setIsSentToAccounting] = useState(false);
   const [loading, setLoading] = useState(false);
   const accountNumRef = useRef<HTMLInputElement | null>(null);
   usePreventNavigation(!changesSaved, 'Leave without saving changes?');
   
-
-  useEffect(() => {
-    const fetchData = async () => {
-      if (sourcesData.length === 0) setSourcesData(await getAllSources());
-      const altShip = await getAltShipByCustomerId(handwritten.customer.id);
-      setAltShipData(altShip);
-    };
-    fetchData();
-  }, []);
 
   useEffect(() => {
     setShipToAddress(handwritten.shipToAddress ?? '');
@@ -166,9 +157,23 @@ export default function EditHandwrittenDetails({
     setOrderNotes(handwritten.orderNotes ?? '');
   }, [handwritten]);
 
+  useQuery({
+    queryKey: ['sources'],
+    queryFn: getAllSources,
+    enabled: sourcesData.length === 0,
+    onSuccess: (data: string[]) => {
+      setSourcesData(data);
+    }
+  });
+
   const { data: users = [] } = useQuery<User[]>({
     queryKey: ['users'],
     queryFn: getAllUsers
+  });
+
+  const { data: altShip = [], refetch: refetchAltShip } = useQuery<AltShip[]>({
+    queryKey: ['altShip', handwritten.customer.id],
+    queryFn: () => getAltShipByCustomerId(handwritten.customer.id)
   });
 
   const { data: emails = [] } = useQuery<string[]>({
@@ -186,11 +191,13 @@ export default function EditHandwrittenDetails({
     if (!changesSaved && !await ask('Are you sure you want to save these changes?')) return;
     setChangesSaved(true);
     const isSentToAccounting = invoiceStatus === 'SENT TO ACCOUNTING' && handwritten.invoiceStatus !== 'SENT TO ACCOUNTING';
+    setIsSentToAccounting(isSentToAccounting);
     if (isSentToAccounting && handwrittenItems.some((item) => item.cost === 0.04)) {
       setError('Can\'t save when items have $0.04 cost');
       return;
     }
 
+    // Save handwritten data
     const newCustomer = await getCustomerByName(company);
     const user = await getUserById(soldBy);
     const newInvoice = {
@@ -248,7 +255,18 @@ export default function EditHandwrittenDetails({
     await editHandwritten(newInvoice);
     await editCoreCustomer(handwritten.id, newCustomer?.id ?? null);
 
-    // Alt ship
+    // Save other data related to handwritten
+    await saveAltShip(newInvoice);
+    await saveTrackingNumbers();
+
+    // Start SEND TO ACCOUNTING process
+    // If the handwritten is not being SENT TO ACCOUNTING then skip to the CustomerInfoModal instead
+    setChangeCustomerDialogData(newInvoice);
+    if (!isSentToAccounting) setAccountingProcessInitPage(CUSTOMER_INFO_MODAL_PAGE);
+    setAccountingProcessOpen(true);
+  };
+
+  const saveAltShip = async (newInvoice: Handwritten) => {
     if (
       newInvoice.shipToAddress !== handwritten.shipToAddress ||
       newInvoice.shipToAddress2 !== handwritten.shipToAddress2 ||
@@ -284,24 +302,9 @@ export default function EditHandwrittenDetails({
         }
       }
     }
+  };
 
-    if (isSentToAccounting) {
-      if (await ask('Do you want to add marketing materials?')) {
-        setPromotionalDialogOpen(true);
-        setReturnAfterDone(false);
-      } else {
-        if (await ask('Add this to shipping list?')) {
-          setShippingListDialogOpen(true);
-          setReturnAfterDone(false);
-        } else {
-          const hasCore = handwrittenItems.some((item) => item.location === 'CORE DEPOSIT');
-          await handlePrintCCLabel();
-          await printHandwritten(hasCore, newInvoice);
-        }
-      }
-    }
-
-    // Tracking numbers
+  const saveTrackingNumbers = async () => {
     const deletedNumbers: number[] = [];
     for (let i = 0; i < handwritten.trackingNumbers.length; i++) {
       const id = handwritten.trackingNumbers[i].id;
@@ -318,31 +321,6 @@ export default function EditHandwrittenDetails({
       } else if (trackingNumbers[i].trackingNumber !== handwritten.trackingNumbers[i].trackingNumber) {
         await editTrackingNumber(trackingNumbers[i].id, trackingNumbers[i].trackingNumber);
       }
-    }
-
-    // Prompt to change customer info if data has changed
-    const handwrittenBillTo = JSON.stringify({
-      billToCompany: newInvoice.billToCompany || '',
-      billToAddress: newInvoice.billToAddress || '',
-      billToAddress2: newInvoice.billToAddress2 || '',
-      billToCity: newInvoice.billToCity || '',
-      billToState: newInvoice.billToState || '',
-      billToZip: newInvoice.billToZip || ''
-    });
-    const customerBillTo = JSON.stringify({
-      billToCompany: newInvoice.customer.company || '',
-      billToAddress: newInvoice.customer.billToAddress || '',
-      billToAddress2: newInvoice.customer.billToAddress2 || '',
-      billToCity: newInvoice.customer.billToCity || '',
-      billToState: newInvoice.customer.billToState || '',
-      billToZip: newInvoice.customer.billToZip || ''
-    });
-
-    if (handwrittenBillTo !== customerBillTo) {
-      setChangeCustomerDialogData(newInvoice);
-      setChangeCustomerDialogOpen(true);
-    } else if (invoiceStatus !== 'SENT TO ACCOUNTING' || handwritten.invoiceStatus === 'SENT TO ACCOUNTING') {
-      setIsEditing(false);
     }
   };
 
@@ -615,69 +593,6 @@ export default function EditHandwrittenDetails({
     setFl(fl);
   };
 
-  const onPromotionalsClose = async () => {
-    if (await ask('Add this to shipping list?')) {
-      setShippingListDialogOpen(true);
-    } else {
-      const newCustomer = await getCustomerByName(company);
-      const user = await getUserById(soldBy);
-      const newInvoice = {
-        id: handwritten.id,
-        shipViaId,
-        handwrittenItems: handwrittenItems,
-        customer: newCustomer,
-        date,
-        poNum,
-        billToCompany,
-        billToAddress,
-        billToAddress2,
-        billToCity,
-        billToState,
-        billToZip,
-        billToPhone,
-        fax: contactFax,
-        shipToAddress,
-        shipToAddress2,
-        shipToCity,
-        shipToState,
-        shipToZip,
-        shipToCompany,
-        source,
-        payment,
-        phone: contactPhone,
-        cell: contactCell,
-        email: contactEmail,
-        contactName: contact,
-        shipToContact,
-        invoiceStatus,
-        accountingStatus,
-        shippingStatus,
-        cores: handwritten.cores,
-        coreReturns: handwritten.coreReturns,
-        orderNotes,
-        shippingNotes,
-        mp: Number(mp),
-        cap: Number(cap),
-        br: Number(br),
-        fl: Number(fl),
-        isTaxable,
-        isBlindShipment,
-        isNoPriceInvoice,
-        isThirdParty,
-        isCollect,
-        isSetup,
-        isEndOfDay,
-        thirdPartyAccount,
-        soldById: soldBy,
-        soldBy: user?.initials,
-        createdBy: handwritten.createdBy
-      } as any;
-      const hasCore = handwrittenItems.some((item) => item.location === 'CORE DEPOSIT');
-      await handlePrintCCLabel();
-      await printHandwritten(hasCore, newInvoice);
-    }
-  };
-
   const toggleQuickPick = (item: HandwrittenItem) => {
     setQuickPickItemId(quickPickItemId ? 0 : item.id);
   };
@@ -693,6 +608,15 @@ export default function EditHandwrittenDetails({
     }
   };
 
+  const onAccountingProcessClose = async () => {
+    if (isSentToAccounting) {
+      await onPrintCCLabel();
+      await onPrintHandwritten();
+    }
+    setAccountingProcessOpen(false);
+    setIsEditing(false);
+  };
+
 
   return (
     <>
@@ -702,37 +626,23 @@ export default function EditHandwrittenDetails({
         </div>
       }
 
-      {changeCustomerDialogOpen &&
-        <ChangeCustomerInfoDialog
-          open={changeCustomerDialogOpen}
-          setOpen={setChangeCustomerDialogOpen}
-          customer={customerData ?? null}
-          handwritten={changeCustomerDialogData}
-          setIsEditing={setIsEditing}
-          returnAfterDone={returnAfterDone}
-        />
-      }
+      {accountingProcessOpen &&
+        <ModalList onClose={onAccountingProcessClose} initialPage={accountingProcessInitPage}>
+          <PromotionalModal
+            handwritten={handwritten}
+            onAddPromotionals={onAddPromotionals}
+          />
 
-      {promotionalDialogOpen &&
-        <PromotionalDialog
-          open={promotionalDialogOpen}
-          setOpen={setPromotionalDialogOpen}
-          handwritten={handwritten}
-          onAddPromotionals={onAddPromotionals}
-          onClose={onPromotionalsClose}
-        />
-      }
+          <ShippingListModal
+            handwrittenItems={handwrittenItems}
+            newShippingListRow={newShippingListRow}
+          />
 
-      {shippingListDialogOpen &&
-        <ShippingListDialog
-          open={shippingListDialogOpen}
-          setOpen={setShippingListDialogOpen}
-          handwrittenItems={handwrittenItems}
-          newShippingListRow={newShippingListRow}
-          setIsEditing={setIsEditing}
-          onPrintCCLabel={onPrintCCLabel}
-          onPrintHandwritten={onPrintHandwritten}
-        />
+          <ChangeCustomerInfoModal
+            customer={customerData ?? null}
+            handwritten={changeCustomerDialogData}
+          />
+        </ModalList>
       }
 
       {handwritten &&
@@ -742,8 +652,8 @@ export default function EditHandwrittenDetails({
             setOpen={setAltShipOpen}
             handwritten={handwritten}
             setHandwritten={setHandwritten}
-            altShipData={altShipData}
-            setAltShipData={setAltShipData}
+            altShip={altShip}
+            refetchAltShip={refetchAltShip}
             onChangeAltShip={handleAltShip}
           />
 
@@ -772,7 +682,7 @@ export default function EditHandwrittenDetails({
             </div>
 
             <div className="edit-handwritten-details__top-bar">
-              <Button type="button" onClick={() => setAltShipOpen(!altShipOpen)} disabled={altShipData.length === 0}>Alt Ship</Button>
+              <Button type="button" onClick={() => setAltShipOpen(!altShipOpen)} disabled={altShip.length === 0}>Alt Ship</Button>
               <Button type="button" onClick={() => setAddQtyDialogOpen(true)} disabled={handwritten.invoiceStatus === 'SENT TO ACCOUNTING'} data-testid="add-qty-io-btn">Add Qty | I/O</Button>
             </div>
 

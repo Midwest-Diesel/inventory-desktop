@@ -40,6 +40,7 @@ test.describe('Basic Functionality', () => {
     await page.getByTestId('add-item-btn').first().click();
     await page.getByTestId('select-handwritten-dialog').isVisible();
     await page.getByTestId('select-handwritten-row').first().click();
+    await page.getByTestId('select-handwritten-desc').fill('ROCKER ARM');
     await page.getByTestId('select-handwritten-qty').fill('38');
     await page.getByTestId('select-handwritten-price').fill('80');
     await page.getByTestId('select-handwritten-submit-btn').click();
@@ -260,12 +261,12 @@ test.describe('SENT TO ACCOUNTING', () => {
   test('Prompt for promotional materials', async () => {
     await goto(page, '/handwrittens');
     await page.getByTestId('link').nth(1).click();
+    await page.waitForLoadState('networkidle');
     await page.getByTestId('item-cost').nth(1).fill('60');
     await page.getByTestId('sales-status').selectOption('SENT TO ACCOUNTING');
     await page.getByTestId('save-btn').click();
 
     await page.waitForSelector('[data-testid="promotional-dialog"]');
-    await page.getByTestId('no-changes-btn').click();
     await page.waitForLoadState('networkidle');
     await page.getByTestId('mp-input').fill('1');
     await page.getByTestId('cap-input').fill('2');
@@ -273,6 +274,8 @@ test.describe('SENT TO ACCOUNTING', () => {
     await page.getByTestId('fl-input').fill('4');
     await page.getByTestId('submit-btn').click();
     await page.getByTestId('shipping-list-submit-btn').click();
+    await page.waitForLoadState('networkidle');
+    await page.getByTestId('no-changes-btn').click();
     await page.waitForLoadState('networkidle');
 
     await expect(page.getByTestId('mp')).toHaveText('1');

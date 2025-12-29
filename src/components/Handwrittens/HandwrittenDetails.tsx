@@ -25,6 +25,7 @@ import CreditCardBlock from "@/components/handwrittens/CreditCardBlock";
 import { ask } from "@/scripts/config/tauri";
 import { usePrintQue } from "@/hooks/usePrintQue";
 import { getAltShipByCustomerId } from "@/scripts/services/altShipService";
+import { useQuery } from "@tanstack/react-query";
 
 interface Props {
   handwritten: Handwritten
@@ -81,7 +82,6 @@ export default function HandwrittenDetails({
   const [coreCreditsOpen, setCoreCreditsOpen] = useState(false);
   const [returnsOpen, setReturnsOpen] = useState(false);
   const [altShipOpen, setAltShipOpen] = useState(false);
-  const [altShipData, setAltShipData] = useState<AltShip[]>([]);
   const [printInvoiceOpen, setPrintInvoiceOpen] = useState(false);
   const [takeoff, setTakeoff] = useState('');
   const [unitPrice, setUnitPrice] = useState(0);
@@ -90,13 +90,7 @@ export default function HandwrittenDetails({
   const takeoffInputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
-    if (!handwritten) return;
-    const fetchData = async () => {
-      const altShip = await getAltShipByCustomerId(handwritten.customer.id);
-      setAltShipData(altShip);
-      setPayment(handwritten.payment ?? '');
-    };
-    fetchData();
+    if (handwritten) setPayment(handwritten.payment ?? '');
   }, [handwritten]);
 
   useEffect(() => {
@@ -110,6 +104,11 @@ export default function HandwrittenDetails({
       channel.unsubscribe();
     };
   }, []);
+
+  const { data: altShip = [], refetch: refetchAltShip } = useQuery<AltShip[]>({
+    queryKey: ['altShip', handwritten.customer.id],
+    queryFn: () => getAltShipByCustomerId(handwritten.customer.id)
+  });
 
   const refreshHandwrittenItems = async () => {
     const res = await getHandwrittenById(Number(params.handwritten));
@@ -308,13 +307,13 @@ export default function HandwrittenDetails({
 
   const handleTakeoffs = (e: FormEvent) => {
     e.preventDefault();
-    const stockNum = takeoff.replace('<', '').replace('>', '');
+    const stockNum = takeoff.replace('<', '').replace('>', '').toUpperCase();
     const children: HandwrittenItemChild[] = [];
-    const item: HandwrittenItem | null = handwritten?.handwrittenItems.find((item) => item.stockNum === stockNum && item.location !== 'CORE DEPOSIT') ?? null;
+    const item: HandwrittenItem | null = handwritten?.handwrittenItems.find((item) => item.stockNum?.toUpperCase() === stockNum && item.location !== 'CORE DEPOSIT') ?? null;
     handwritten?.handwrittenItems.forEach((item) => {
       if (item.invoiceItemChildren.length > 0) children.push(...item.invoiceItemChildren);
     });
-    const itemChild: HandwrittenItemChild | null = children.find((item) => item.stockNum === stockNum) ?? null;
+    const itemChild: HandwrittenItemChild | null = children.find((item) => item.stockNum?.toUpperCase() === stockNum) ?? null;
     const parentItem = itemChild ? handwritten.handwrittenItems.find((i) => i.id === itemChild.parentId) : null;
 
     if (!item && !itemChild) return;
@@ -400,7 +399,7 @@ export default function HandwrittenDetails({
 
         <div className="handwritten-details__top-bar">
           <Button onClick={() => setCoreCreditsOpen(!coreCreditsOpen)} disabled={handwritten.cores.length === 0} data-testid="core-credit-btn">Core Credit</Button>
-          <Button onClick={() => setAltShipOpen(!altShipOpen)} disabled={altShipData.length === 0}>Alt Ship</Button>
+          <Button onClick={() => setAltShipOpen(!altShipOpen)} disabled={altShip.length === 0}>Alt Ship</Button>
           <Button onClick={() => setReturnsOpen(!returnsOpen)} data-testid="new-return-btn">New Return</Button>
           <Button onClick={() => setAddQtyDialogOpen(true)} disabled={handwritten.invoiceStatus === 'SENT TO ACCOUNTING'} data-testid="add-qty-io-btn">Add Qty | I/O</Button>
           <Button onClick={handleViewKarmak}>View Karmak</Button>
@@ -414,8 +413,8 @@ export default function HandwrittenDetails({
           setOpen={setAltShipOpen}
           handwritten={handwritten}
           setHandwritten={setHandwritten}
-          altShipData={altShipData}
-          setAltShipData={setAltShipData}
+          altShip={altShip}
+          refetchAltShip={refetchAltShip}
           onChangeAltShip={handleAltShip}
         />
 
