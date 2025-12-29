@@ -1,7 +1,7 @@
 import { errorAtom, quickPickItemIdAtom, sourcesAtom } from "@/scripts/atoms/state";
 import { addHandwrittenItem, deleteHandwrittenItem, editHandwritten, editHandwrittenItem, editHandwrittenTaxable, getHandwrittenById, getHandwrittenEmails } from "@/scripts/services/handwrittensService";
 import { useAtom } from "jotai";
-import { FormEvent, Fragment, useEffect, useState } from "react";
+import { FormEvent, Fragment, useEffect, useRef, useState } from "react";
 import GridItem from "../library/grid/GridItem";
 import Input from "../library/Input";
 import Grid from "../library/grid/Grid";
@@ -143,6 +143,7 @@ export default function EditHandwrittenDetails({
   const [altShipData, setAltShipData] = useState<AltShip[]>([]);
   const [returnAfterDone, setReturnAfterDone] = useState(true);
   const [loading, setLoading] = useState(false);
+  const accountNumRef = useRef<HTMLInputElement | null>(null);
   usePreventNavigation(!changesSaved, 'Leave without saving changes?');
   
 
@@ -1105,6 +1106,7 @@ export default function EditHandwrittenDetails({
                     onChange={(e: any) => {
                       setIsThirdParty(e.target.checked);
                       setIsCollect(false);
+                      setTimeout(() => accountNumRef.current?.focus(), 100);
                     }}
                   />
                   <Checkbox
@@ -1114,6 +1116,7 @@ export default function EditHandwrittenDetails({
                     onChange={(e: any) => {
                       setIsCollect(e.target.checked);
                       setIsThirdParty(false);
+                      setTimeout(() => accountNumRef.current?.focus(), 100);
                     }}
                   />
                 </div>
@@ -1123,6 +1126,7 @@ export default function EditHandwrittenDetails({
                     label="Account Number "
                     value={thirdPartyAccount}
                     onChange={(e: any) => setThirdPartyAccount(e.target.value)}
+                    ref={accountNumRef}
                   />
                 }
               </GridItem>
