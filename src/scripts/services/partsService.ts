@@ -134,6 +134,17 @@ export const getPartsQty = async (showSoldParts: boolean): Promise<number> => {
   }
 };
 
+export const getPartQty = async (partNum: string): Promise<number | null> => {
+  try {
+    const params = new URLSearchParams({ partNum });
+    const res = await api.get(`/api/parts/part-qty?${params.toString()}`);
+    return res.data.qty;
+  } catch (err) {
+    console.error(err);
+    return null;
+  }
+};
+
 export const getAltsByPartNum = async (partNum: string) => {
   try {
     const res = await api.get(`/api/parts/alts/${partNum}`);
@@ -210,7 +221,7 @@ export const checkForNewPartNum = async (partNum: string) => {
   }
 };
 
-export const getPartsByCoreFamily = async (coreFamily: string): Promise<Part[] | []> => {
+export const getPartsByCoreFamily = async (coreFamily: string): Promise<Part[]> => {
   try {
     const res = await api.get(`/api/parts/core-family?coreFamily=${coreFamily}`);
     return res.data;
@@ -230,7 +241,7 @@ export const getNextUPStockNum = async (): Promise<string | null> => {
   }
 };
 
-export const getPartsQtyHistory = async (partId: number): Promise<PartQtyHistory[] | []> => {
+export const getPartsQtyHistory = async (partId: number): Promise<PartQtyHistory[]> => {
   try {
     const res = await api.get(`/api/parts/qty-history?partId=${partId}`);
     return res.data.map((r: any) => ({ ...r, dateChanged: new Date(r.dateChanged) }));

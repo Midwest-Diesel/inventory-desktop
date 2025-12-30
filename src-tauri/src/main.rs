@@ -733,10 +733,6 @@ fn upload_file(file_args: FileArgs) -> Result<(), String> {
 
 #[tauri::command]
 async fn print_shipping_label(image_data: String) -> Result<(), String> {
-  if let Ok(val) = env::var("DISABLE_PRINTING") {
-    if val == "TRUE" { return Ok(()) }
-  }
-
   let res = tauri::async_runtime::spawn_blocking(move || {
     let data = BASE64_STANDARD.decode(image_data.split(',').nth(1).unwrap()).map_err(|e| e.to_string())?;
     let file_path = "C:/mwd/scripts/screenshots/shipping_label.png";
@@ -766,6 +762,10 @@ async fn print_shipping_label(image_data: String) -> Result<(), String> {
       upscaled_img.write_to(&mut file, ImageOutputFormat::Png).map_err(|e| e.to_string())?;
     }
 
+    if let Ok(val) = env::var("DISABLE_PRINTING") {
+      if val == "TRUE" { return Ok(()) }
+    }
+
     Command::new("mspaint")
       .current_dir("C:/mwd/scripts/screenshots")
       .args([file_path, "/pt", &printer])
@@ -779,10 +779,6 @@ async fn print_shipping_label(image_data: String) -> Result<(), String> {
 
 #[tauri::command]
 async fn print_cc_label(image_data: String) -> Result<(), String> {
-  if let Ok(val) = env::var("DISABLE_PRINTING") {
-    if val == "TRUE" { return Ok(()) }
-  }
-
   let res = tauri::async_runtime::spawn_blocking(move || {
     let data = BASE64_STANDARD.decode(image_data.split(',').nth(1).unwrap()).map_err(|e| e.to_string())?;
     let file_path = "C:/mwd/scripts/screenshots/cc_label.png";
@@ -814,6 +810,10 @@ async fn print_cc_label(image_data: String) -> Result<(), String> {
     {
       let mut file = File::create(file_path).map_err(|e| e.to_string())?;
       upscaled_img.write_to(&mut file, ImageOutputFormat::Png).map_err(|e| e.to_string())?;
+    }
+
+    if let Ok(val) = env::var("DISABLE_PRINTING") {
+      if val == "TRUE" { return Ok(()) }
     }
 
     Command::new("mspaint")
@@ -967,10 +967,6 @@ fn print_bol(args: BOLArgs) -> Result<(), String> {
 
 #[tauri::command]
 async fn print_accounting_handwritten(image_data: String) -> Result<(), String> {
-  if let Ok(val) = env::var("DISABLE_PRINTING") {
-    if val == "TRUE" { return Ok(()) }
-  }
-
   let res = tauri::async_runtime::spawn_blocking(move || {
     let data = BASE64_STANDARD.decode(image_data.split(',').nth(1).unwrap()).map_err(|e| e.to_string())?;
     let file_path = "C:/mwd/scripts/screenshots/accounting_handwritten.png";
@@ -996,6 +992,10 @@ async fn print_accounting_handwritten(image_data: String) -> Result<(), String> 
       upscaled_img.write_to(&mut file, ImageOutputFormat::Png).map_err(|e| e.to_string())?;
     }
 
+    if let Ok(val) = env::var("DISABLE_PRINTING") {
+      if val == "TRUE" { return Ok(()) }
+    }
+
     Command::new("mspaint")
       .current_dir("C:/mwd/scripts/screenshots")
       .args([file_path, "/pt", &printer])
@@ -1009,10 +1009,6 @@ async fn print_accounting_handwritten(image_data: String) -> Result<(), String> 
 
 #[tauri::command]
 async fn print_shipping_handwritten(image_data: String) -> Result<(), String> {
-  if let Ok(val) = env::var("DISABLE_PRINTING") {
-    if val == "TRUE" { return Ok(()) }
-  }
-
   let res = tauri::async_runtime::spawn_blocking(move || {
     let data = BASE64_STANDARD.decode(image_data.split(',').nth(1).unwrap()).map_err(|e| e.to_string())?;
     let file_path = "C:/mwd/scripts/screenshots/shipping_handwritten.png";
@@ -1042,6 +1038,10 @@ async fn print_shipping_handwritten(image_data: String) -> Result<(), String> {
       upscaled_img.write_to(&mut file, ImageOutputFormat::Png).map_err(|e| e.to_string())?;
     }
 
+    if let Ok(val) = env::var("DISABLE_PRINTING") {
+      if val == "TRUE" { return Ok(()) }
+    }
+
     Command::new("mspaint")
       .current_dir("C:/mwd/scripts/screenshots")
       .args([file_path, "/pt", &printer])
@@ -1055,10 +1055,6 @@ async fn print_shipping_handwritten(image_data: String) -> Result<(), String> {
 
 #[tauri::command]
 async fn print_core_handwritten(image_data: String) -> Result<(), String> {
-  if let Ok(val) = env::var("DISABLE_PRINTING") {
-    if val == "TRUE" { return Ok(()) }
-  }
-
   let res = tauri::async_runtime::spawn_blocking(move || {
     let data = BASE64_STANDARD.decode(image_data.split(',').nth(1).unwrap()).map_err(|e| e.to_string())?;
     let file_path = "C:/mwd/scripts/screenshots/core_handwritten.png";
@@ -1082,6 +1078,10 @@ async fn print_core_handwritten(image_data: String) -> Result<(), String> {
     {
       let mut file = File::create(file_path).map_err(|e| e.to_string())?;
       upscaled_img.write_to(&mut file, ImageOutputFormat::Png).map_err(|e| e.to_string())?;
+    }
+
+    if let Ok(val) = env::var("DISABLE_PRINTING") {
+      if val == "TRUE" { return Ok(()) }
     }
 
     Command::new("mspaint")
@@ -1191,10 +1191,6 @@ fn print_coo() -> Result<(), String> {
 
 #[tauri::command]
 async fn print_return(image_data: String) -> Result<(), String> {
-  if let Ok(val) = env::var("DISABLE_PRINTING") {
-    if val == "TRUE" { return Ok(()) }
-  }
-
   let res = tauri::async_runtime::spawn_blocking(move || {
     let data = BASE64_STANDARD.decode(image_data.split(',').nth(1).unwrap()).map_err(|e| e.to_string())?;
     let file_path = "C:/mwd/scripts/screenshots/return.png";
@@ -1219,6 +1215,10 @@ async fn print_return(image_data: String) -> Result<(), String> {
       upscaled_img.write_to(&mut file, ImageOutputFormat::Png).map_err(|e| e.to_string())?;
     }
 
+    if let Ok(val) = env::var("DISABLE_PRINTING") {
+      if val == "TRUE" { return Ok(()) }
+    }
+
     Command::new("mspaint")
       .current_dir("C:/mwd/scripts/screenshots")
       .args([file_path, "/pt", &printer])
@@ -1232,10 +1232,6 @@ async fn print_return(image_data: String) -> Result<(), String> {
 
 #[tauri::command]
 async fn print_warranty(image_data: String) -> Result<(), String> {
-  if let Ok(val) = env::var("DISABLE_PRINTING") {
-    if val == "TRUE" { return Ok(()) }
-  }
-
   let res = tauri::async_runtime::spawn_blocking(move || {
     let data = BASE64_STANDARD.decode(image_data.split(',').nth(1).unwrap()).map_err(|e| e.to_string())?;
     let file_path = "C:/mwd/scripts/screenshots/warranty.png";
@@ -1260,6 +1256,10 @@ async fn print_warranty(image_data: String) -> Result<(), String> {
       upscaled_img.write_to(&mut file, ImageOutputFormat::Png).map_err(|e| e.to_string())?;
     }
 
+    if let Ok(val) = env::var("DISABLE_PRINTING") {
+      if val == "TRUE" { return Ok(()) }
+    }
+
     Command::new("mspaint")
       .current_dir("C:/mwd/scripts/screenshots")
       .args([file_path, "/pt", &printer])
@@ -1273,10 +1273,6 @@ async fn print_warranty(image_data: String) -> Result<(), String> {
 
 #[tauri::command]
 async fn print_packing_slip(image_data: String) -> Result<(), String> {
-  if let Ok(val) = env::var("DISABLE_PRINTING") {
-    if val == "TRUE" { return Ok(()) }
-  }
-
   let res = tauri::async_runtime::spawn_blocking(move || {
     let data = BASE64_STANDARD.decode(image_data.split(',').nth(1).unwrap()).map_err(|e| e.to_string())?;
     let file_path = "C:/mwd/scripts/screenshots/packing_slip.png";
@@ -1301,6 +1297,10 @@ async fn print_packing_slip(image_data: String) -> Result<(), String> {
       upscaled_img.write_to(&mut file, ImageOutputFormat::Png).map_err(|e| e.to_string())?;
     }
 
+    if let Ok(val) = env::var("DISABLE_PRINTING") {
+      if val == "TRUE" { return Ok(()) }
+    }
+
     Command::new("mspaint")
       .current_dir("C:/mwd/scripts/screenshots")
       .args([file_path, "/pt", &printer])
@@ -1314,10 +1314,6 @@ async fn print_packing_slip(image_data: String) -> Result<(), String> {
 
 #[tauri::command]
 async fn print_po(image_data: String) -> Result<(), String> {
-  if let Ok(val) = env::var("DISABLE_PRINTING") {
-    if val == "TRUE" { return Ok(()) }
-  }
-
   let res = tauri::async_runtime::spawn_blocking(move || {
     let data = BASE64_STANDARD.decode(image_data.split(',').nth(1).unwrap()).map_err(|e| e.to_string())?;
     let file_path = "C:/mwd/scripts/screenshots/po.png";
@@ -1340,6 +1336,10 @@ async fn print_po(image_data: String) -> Result<(), String> {
     {
       let mut file = File::create(file_path).map_err(|e| e.to_string())?;
       upscaled_img.write_to(&mut file, ImageOutputFormat::Png).map_err(|e| e.to_string())?;
+    }
+
+    if let Ok(val) = env::var("DISABLE_PRINTING") {
+      if val == "TRUE" { return Ok(()) }
     }
 
     Command::new("mspaint")
@@ -1422,10 +1422,6 @@ fn email_end_of_day(args: EmailEndOfDayArgs) {
 
 #[tauri::command]
 async fn print_part_tag(image_data: String) -> Result<(), String> {
-  if let Ok(val) = env::var("DISABLE_PRINTING") {
-    if val == "TRUE" { return Ok(()) }
-  }
-
   let res = tauri::async_runtime::spawn_blocking(move || {
     let data = BASE64_STANDARD.decode(image_data.split(',').nth(1).unwrap()).map_err(|e| e.to_string())?;
     let file_path = "C:/mwd/scripts/screenshots/part_tag.png";
@@ -1455,6 +1451,10 @@ async fn print_part_tag(image_data: String) -> Result<(), String> {
       upscaled_img.write_to(&mut file, ImageOutputFormat::Png).map_err(|e| e.to_string())?;
     }
 
+    if let Ok(val) = env::var("DISABLE_PRINTING") {
+      if val == "TRUE" { return Ok(()) }
+    }
+
     Command::new("mspaint")
       .current_dir("C:/mwd/scripts/screenshots")
       .args([file_path, "/pt", &printer])
@@ -1468,10 +1468,6 @@ async fn print_part_tag(image_data: String) -> Result<(), String> {
 
 #[tauri::command]
 async fn print_engine_tag(image_data: String) -> Result<(), String> {
-  if let Ok(val) = env::var("DISABLE_PRINTING") {
-    if val == "TRUE" { return Ok(()) }
-  }
-
   let res = tauri::async_runtime::spawn_blocking(move || {
     let data = BASE64_STANDARD.decode(image_data.split(',').nth(1).unwrap()).map_err(|e| e.to_string())?;
     let file_path = "C:/mwd/scripts/screenshots/engine_tag.png";
@@ -1500,6 +1496,10 @@ async fn print_engine_tag(image_data: String) -> Result<(), String> {
       upscaled_img.write_to(&mut file, ImageOutputFormat::Png).map_err(|e| e.to_string())?;
     }
 
+    if let Ok(val) = env::var("DISABLE_PRINTING") {
+      if val == "TRUE" { return Ok(()) }
+    }
+
     Command::new("mspaint")
       .current_dir("C:/mwd/scripts/screenshots")
       .args([file_path, "/pt", &printer])
@@ -1513,10 +1513,6 @@ async fn print_engine_tag(image_data: String) -> Result<(), String> {
 
 #[tauri::command]
 async fn print_engine_checklist(image_data: String) -> Result<(), String> {
-  if let Ok(val) = env::var("DISABLE_PRINTING") {
-    if val == "TRUE" { return Ok(()) }
-  }
-
   let res = tauri::async_runtime::spawn_blocking(move || {
     let data = BASE64_STANDARD.decode(image_data.split(',').nth(1).unwrap()).map_err(|e| e.to_string())?;
     let file_path = "C:/mwd/scripts/screenshots/engine_checklist.png";
@@ -1544,6 +1540,10 @@ async fn print_engine_checklist(image_data: String) -> Result<(), String> {
     {
       let mut file = File::create(file_path).map_err(|e| e.to_string())?;
       upscaled_img.write_to(&mut file, ImageOutputFormat::Png).map_err(|e| e.to_string())?;
+    }
+
+    if let Ok(val) = env::var("DISABLE_PRINTING") {
+      if val == "TRUE" { return Ok(()) }
     }
 
     Command::new("mspaint")

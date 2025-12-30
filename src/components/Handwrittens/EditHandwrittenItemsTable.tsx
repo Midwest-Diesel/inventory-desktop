@@ -34,6 +34,7 @@ export default function EditHandwrittenItemsTable({ handwritten, handwrittenItem
         <thead>
           <tr>
             <th></th>
+            <th style={{ color: 'white' }}>Date</th>
             <th style={{ color: 'white' }}>Stock Number</th>
             <th style={{ color: 'white' }}>Location</th>
             <th style={{ color: 'white' }}>Cost</th>
@@ -41,7 +42,6 @@ export default function EditHandwrittenItemsTable({ handwritten, handwrittenItem
             <th style={{ color: 'white' }}>Part Number</th>
             <th style={{ color: 'white' }}>Description</th>
             <th style={{ color: 'white' }}>Unit Price</th>
-            <th style={{ color: 'white' }}>Date</th>
             { handwritten.invoiceStatus !== 'SENT TO ACCOUNTING' && <th style={{ color: 'white' }}></th> }
           </tr>
         </thead>
@@ -73,22 +73,29 @@ export default function EditHandwrittenItemsTable({ handwritten, handwrittenItem
                 </td>
                 <td>
                   <Input
+                    value={parseDateInputValue(item.date)}
+                    onChange={(e) => handleEditItem({ ...item, date: new Date(e.target.value) }, i)}
+                    type="date"
+                  />
+                </td>
+                <td>
+                  <Input
                     value={item.stockNum ?? ''}
-                    onChange={(e: any) => handleEditItem({ ...item, stockNum: e.target.value }, i)}
+                    onChange={(e) => handleEditItem({ ...item, stockNum: e.target.value }, i)}
                     disabled={isDisabled}
                   />
                 </td>
                 <td>
                   <Input
                     value={item.location ?? ''}
-                    onChange={(e: any) => handleEditItem({ ...item, location: e.target.value }, i)}
+                    onChange={(e) => handleEditItem({ ...item, location: e.target.value }, i)}
                     disabled={isDisabled}
                   />
                 </td>
                 <td>
                   <Input
                     value={item.cost ?? ''}
-                    onChange={(e: any) => handleEditItem({ ...item, cost: e.target.value }, i)}
+                    onChange={(e) => handleEditItem({ ...item, cost: e.target.value ? Number(e.target.value) : null }, i)}
                     disabled={isDisabled}
                     data-testid="item-cost"
                     type="number"
@@ -99,7 +106,7 @@ export default function EditHandwrittenItemsTable({ handwritten, handwrittenItem
                   <Input
                     value={item.qty ?? ''}
                     type="number"
-                    onChange={(e: any) => handleEditItem({ ...item, qty: e.target.value }, i)}
+                    onChange={(e) => handleEditItem({ ...item, qty: e.target.value ? Number(e.target.value) : null }, i)}
                     disabled={isDisabled}
                     data-testid="item-qty"
                   />
@@ -107,32 +114,24 @@ export default function EditHandwrittenItemsTable({ handwritten, handwrittenItem
                 <td>
                   <Input
                     value={item.partNum ?? ''}
-                    onChange={(e: any) => handleEditItem({ ...item, partNum: e.target.value }, i)}
+                    onChange={(e) => handleEditItem({ ...item, partNum: e.target.value }, i)}
                     disabled={isDisabled}
                   />
                 </td>
                 <td>
                   <Input
                     value={item.desc ?? ''}
-                    onChange={(e: any) => handleEditItem({ ...item, desc: e.target.value }, i)}
+                    onChange={(e) => handleEditItem({ ...item, desc: e.target.value }, i)}
                     disabled={isDisabled}
                   />
                 </td>
                 <td>
                   <Input
                     value={item.unitPrice ?? ''}
-                    onChange={(e: any) => handleEditItem({ ...item, unitPrice: e.target.value }, i)}
+                    onChange={(e) => handleEditItem({ ...item, unitPrice: e.target.value ? Number(e.target.value) : null }, i)}
                     disabled={isDisabled}
                     type="number"
                     step="any"
-                  />
-                </td>
-                <td>
-                  <Input
-                    value={parseDateInputValue(item.date)}
-                    onChange={(e: any) => handleEditItem({ ...item, date: new Date(e.target.value) }, i)}
-                    disabled={isDisabled}
-                    type="date"
                   />
                 </td>
                 {handwritten.invoiceStatus !== 'SENT TO ACCOUNTING' &&

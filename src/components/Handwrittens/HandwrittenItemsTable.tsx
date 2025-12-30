@@ -97,7 +97,6 @@ export default function HandwrittenItemsTable({ className, handwritten, setHandw
               {handwritten.handwrittenItems.map((item: HandwrittenItem, i: number) => {
                 return (
                   <tr key={i}>
-                    <td>{ formatDate(item.date) }</td>
                     {handwritten.invoiceStatus !== 'SENT TO ACCOUNTING' &&
                       <td>
                         {item.location && !item.location.includes('CORE DEPOSIT') && item.invoiceItemChildren.length === 0 &&
@@ -114,6 +113,7 @@ export default function HandwrittenItemsTable({ className, handwritten, setHandw
                         }
                       </td>
                     }
+                    <td>{ formatDate(item.date) }</td>
                     <td className="handwritten-items-table__stock-num" style={ textStyles(item) } data-testid="item-stock-num">
                       { item.stockNum }
                       { item.invoiceItemChildren && item.invoiceItemChildren.length > 0 && <Button variant={['x-small']} onClick={() => handleOpenStockNums(item.invoiceItemChildren)}>View</Button> }

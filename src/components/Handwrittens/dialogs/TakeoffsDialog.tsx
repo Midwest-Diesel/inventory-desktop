@@ -2,13 +2,13 @@ import Button from "@/components/library/Button";
 import Dialog from "@/components/library/Dialog";
 import Input from "@/components/library/Input";
 import { editHandwrittenTakeoffState, getHandwrittenById } from "@/scripts/services/handwrittensService";
-import { addPart, addPartCostIn, addToPartQtyHistory, editPartCostIn, getPartById, getPartCostIn, handlePartTakeoff } from "@/scripts/services/partsService";
+import { addPart, addPartCostIn, addToPartQtyHistory, editPartCostIn, getPartById, getPartCostIn, getPartQty, handlePartTakeoff } from "@/scripts/services/partsService";
 import { getSurplusByCode, zeroAllSurplusItems } from "@/scripts/services/surplusService";
 import { formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
 import { useParams } from "react-router-dom";
 import { FormEvent, RefObject, useEffect, useRef, useState } from "react";
 import Loading from "@/components/library/Loading";
-import { confirm } from "@/scripts/config/tauri";
+import { ask, invoke } from "@/scripts/config/tauri";
 import { useNavState } from "@/hooks/useNavState";
 
 interface Props {
@@ -21,6 +21,8 @@ interface Props {
   takeoffInputRef: RefObject<HTMLInputElement>
 }
 
+
+const OUT_OF_STOCK_EMAIL_RECEPIENTS = ['terry@midwestdiesel.com', 'jack@midwestdiesel.com', 'matt@midwestdiesel.com', 'jason@midwestdiesel.com', 'jon@midwestdiesel.com'];
 
 export default function TakeoffsDialog({ open, setOpen, item, unitPrice, setHandwritten, onSubmit, takeoffInputRef }: Props) {
   const params = useParams();
@@ -57,16 +59,29 @@ export default function TakeoffsDialog({ open, setOpen, item, unitPrice, setHand
     if (!handwritten) return;
     setLoading(true);
 
+    // Do the takeoff
     await handlePartTakeoff(part.id, Number(qty), handwritten?.billToCompany ?? '', unitPrice, handwritten.id);
     await editHandwrittenTakeoffState(item.id, true);
     await addToPartQtyHistory(part.id, -Number(qty));
     
+    // Set all connected surplus cost to $0.01
     const surplus: Surplus | null = await getSurplusByCode(part.purchasedFrom ?? '');
     if (surplus && surplus.price - Number(item.cost) <= 0) await zeroAllSurplusItems(surplus.code);
+
+    // Prompt to send a part "out of stock" email if there's no more of these parts left
+    if (await getPartQty(part.partNum) === 0 && await ask('Do you want to send an "out of stock" email?')) {
+      const emailArgs: Email = {
+        subject: `Important Part OUT OF STOCK!`,
+        body: `The following part is no longer in stock: ${part.partNum} ${part.desc} sold for ${formatCurrency(unitPrice)}`,
+        recipients: OUT_OF_STOCK_EMAIL_RECEPIENTS,
+        attachments: []
+      };
+      await invoke('new_email_draft', { emailArgs });
+    }
     
     // When the qty remaining after takeoffs is not 0
     // then it will create a new part with a date code, with the qtySold value
-    // instead of changing the qtySold for the original part
+    // instead of changing the qtySold for the original part.
     if (part.qty - Number(qty) === 0) {
       const res = await getPartCostIn(part.stockNum ?? '');
       const partCostIn: PartCostIn | null = res.find((p: PartCostIn) => p.vendor === part.purchasedFrom) ?? null;
@@ -84,9 +99,12 @@ export default function TakeoffsDialog({ open, setOpen, item, unitPrice, setHand
       // When the part cost doesn't match the line item cost,
       // prompt the user to go to the new part created
       // This will take the user to the part details, where they can change it manually
-      if (Number(part.purchasePrice) !== item.cost && await confirm(`Part cost of ${formatCurrency(part.purchasePrice)} doesn't equal line item cost of ${formatCurrency(item.cost)}. Do you want to open the new part created?`)) {
+      if (Number(part.purchasePrice) !== item.cost && await ask(`Part cost of ${formatCurrency(part.purchasePrice)} doesn't equal line item cost of ${formatCurrency(item.cost)}. Do you want to open the new part created?`)) {
         await newTab([{ name: part.partNum, url: `/part/${newId}` }]);
       }
+
+      // TODO: Bring the user to the original part details so they can edit the remarks
+      
     }
 
     // Finalize takeoff
