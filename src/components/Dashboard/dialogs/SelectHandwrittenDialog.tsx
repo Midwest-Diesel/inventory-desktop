@@ -174,6 +174,7 @@ export default function SelectHandwrittenDialog({ open, setOpen, part, onSubmit 
     const cost = part.partsCostIn.reduce((acc, val) => acc + val.cost, 0) || 0.01;
     onSubmit(handwritten, [...Array.from(filteredWar)].join('\n').trim(), Number(qty), desc, Number(price), part.stockNum ?? '', cost);
     setShowButtons(true);
+    setLoading(true);
   };
 
 

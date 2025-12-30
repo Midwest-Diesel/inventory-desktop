@@ -163,7 +163,7 @@ export default function HandwrittenAccountingTemplate({ data }: Props) {
 
       <div className="handwritten-acct-template__bottom-section">
         <h4 className="handwritten-acct-template__total">{ data.handwrittenTotal }</h4>
-        <p>{ data.invoiceNotes || <span className="print-placeholder">INVOICE NOTES</span> }</p>
+        <p>{ data.invoiceNotes.split('\n').join(', ') || <span className="print-placeholder">INVOICE NOTES</span> }</p>
         <p>{ data.shippingNotes || <span className="print-placeholder">SHIPPING NOTES</span> }</p>
         <h2 className="print-placeholder">ACCOUNTING COPY</h2>
       </div>
