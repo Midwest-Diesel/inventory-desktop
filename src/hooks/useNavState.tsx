@@ -116,14 +116,7 @@ export function useNavState() {
         return tab;
       });
 
-      const updated = moveImmediately
-        ? [
-            ...prev.map(t => ({ ...t, selected: false })),
-            ...newTabObjs
-          ]
-        : [...prev, ...newTabObjs];
-
-      return updated;
+      return moveImmediately ? [...prev.map(t => ({ ...t, selected: false })), ...newTabObjs] : [...prev, ...newTabObjs];
     });
 
     if (moveImmediately) {

@@ -121,6 +121,14 @@ export const deleteReturn = async (id: number) => {
   }
 };
 
+export const deleteReturnItem = async (id: number) => {
+  try {
+    await api.delete(`/api/returns/item/${id}`);
+  } catch (err) {
+    console.error(err);
+  }
+};
+
 export const deleteReturnItemChild = async (id: number) => {
   try {
     await api.delete(`/api/returns/item-child/${id}`);

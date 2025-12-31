@@ -18,6 +18,7 @@ import { useEffect, useState } from "react";
 import { useNavState } from "@/hooks/useNavState";
 import { ask } from "@/scripts/config/tauri";
 import { usePrintQue } from "@/hooks/usePrintQue";
+import { addHandwritten, addHandwrittenItem } from "@/scripts/services/handwrittensService";
 
 
 export default function Return() {
@@ -52,6 +53,48 @@ export default function Return() {
     if (!returnData || returnData.creditIssued || !await ask('Are you sure you want to credit this?')) return;
     await issueReturnCredit(returnData.id);
     setReturnData({ ...returnData, creditIssued: new Date() });
+
+    // Create return handwritten
+    const newHandwritten = {
+      customer: returnData.customer,
+      poNum: returnData.poNum,
+      billToCompany: returnData.billToCompany,
+      billToAddress: returnData.billToAddress,
+      billToAddress2: returnData.billToAddress2,
+      billToCity: returnData.billToCity,
+      billToState: returnData.billToState,
+      billToZip: returnData.billToZip,
+      billToPhone: returnData.billToPhone,
+      shipToCompany: returnData.shipToCompany,
+      shipToAddress: returnData.shipToAddress,
+      shipToAddress2: returnData.shipToAddress2,
+      shipToCity: returnData.shipToCity,
+      shipToState: returnData.shipToState,
+      shipToZip: returnData.shipToZip,
+      salesmanId: returnData.salesman?.id,
+      invoiceStatus: 'INVOICE PENDING'
+    } as any;
+    const id = await addHandwritten(newHandwritten);
+
+    for (let i = 0; i < returnData.returnItems.length; i++) {
+      const item = returnData.returnItems[i];
+      const newItem = {
+        handwrittenId: id,
+        partId: item.part?.id ?? null,
+        stockNum: item.part?.stockNum ?? '',
+        location: `RETURNED PART: ${item.desc}`,
+        cost: 0.01,
+        qty: -Number(item.qty),
+        partNum: item.partNum,
+        desc: item.desc,
+        unitPrice: item.unitPrice,
+        return: false,
+        date: null,
+        invoiceItemChildren: []
+      } as any;
+      await addHandwrittenItem(newItem);
+    }
+    await push('Handwrittens', `/handwrittens`);
   };
 
   const onClickPrint = async () => {

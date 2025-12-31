@@ -2,12 +2,13 @@ import { formatCurrency } from "@/scripts/tools/stringUtils";
 import Table from "../library/Table";
 import Checkbox from "../library/Checkbox";
 import Button from "../library/Button";
-import { confirm } from "@/scripts/config/tauri";
+import { ask, confirm } from "@/scripts/config/tauri";
 import { editPart } from "@/scripts/services/partsService";
 import { useNavState } from "../../hooks/useNavState";
 import ReturnItemChildrenDialog from "./dialogs/ReturnItemChildrenDialog";
 import { useState } from "react";
 import Input from "../library/Input";
+import { deleteReturnItem } from "@/scripts/services/returnsService";
 
 interface Props {
   className?: string
@@ -38,9 +39,15 @@ export default function EditReturnItemsTable({ className, returnData, returnItem
 
   const handleEditItem = (ret: ReturnItem) => {
     setReturnItems(returnItems.map((item) => {
-      if (item.id === ret.id) return ret;
+      if (item.id === item.id) return ret;
       return item;
     }));
+  };
+
+  const onClickDeleteItem = async (id: number) => {
+    if (!await ask('Do you want to delete this item?')) return;
+    await deleteReturnItem(id);
+    setReturnItems(returnItems.filter((item) => item.id !== id));
   };
 
 
@@ -70,76 +77,80 @@ export default function EditReturnItemsTable({ className, returnData, returnItem
                 <th>As Described</th>
                 <th>Put Away</th>
                 <th></th>
+                <th></th>
               </tr>
             </thead>
             <tbody>
-              {returnItems.map((ret: ReturnItem) => {
+              {returnItems.map((item: ReturnItem) => {
                 return (
-                  <tr key={ret.id}>
+                  <tr key={item.id}>
                     <td>
-                      {ret.stockNum ?
-                        ret.stockNum
+                      {item.stockNum ?
+                        item.stockNum
                         :
-                        <Button onClick={() => handleOpenStockNumbers(ret)} type="button">Stock Numbers</Button>
+                        <Button onClick={() => handleOpenStockNumbers(item)} type="button">Stock Numbers</Button>
                       }
                     </td>
                     <td>
                       <Input
-                        value={ret.cost || ''}
-                        onChange={(e) => handleEditItem({ ...ret, cost: Number(e.target.value) })}
+                        value={item.cost || ''}
+                        onChange={(e) => handleEditItem({ ...item, cost: Number(e.target.value) })}
                         type="number"
                       />
                     </td>
                     <td>
-                      {ret.returnItemChildren.length > 0 ?
-                        ret.returnItemChildren.reduce((acc, cur) => acc + cur.qty, 0)
+                      {item.returnItemChildren.length > 0 ?
+                        item.returnItemChildren.reduce((acc, cur) => acc + cur.qty, 0)
                         :
                         <Input
-                          value={ret.qty || ''}
-                          onChange={(e) => handleEditItem({ ...ret, qty: Number(e.target.value) })}
+                          value={item.qty || ''}
+                          onChange={(e) => handleEditItem({ ...item, qty: Number(e.target.value) })}
                           type="number"
                         />
                       }
                     </td>
                     <td>
                       <Input
-                        value={ret.partNum ?? ''}
-                        onChange={(e) => handleEditItem({ ...ret, partNum: e.target.value })}
+                        value={item.partNum ?? ''}
+                        onChange={(e) => handleEditItem({ ...item, partNum: e.target.value })}
                       />
                     </td>
                     <td>
                       <Input
-                        value={ret.desc ?? ''}
-                        onChange={(e) => handleEditItem({ ...ret, desc: e.target.value })}
+                        value={item.desc ?? ''}
+                        onChange={(e) => handleEditItem({ ...item, desc: e.target.value })}
                       />
                     </td>
                     <td>
                       <Input
-                        value={ret.unitPrice || ''}
-                        onChange={(e) => handleEditItem({ ...ret, unitPrice: Number(e.target.value) })}
+                        value={item.unitPrice || ''}
+                        onChange={(e) => handleEditItem({ ...item, unitPrice: Number(e.target.value) })}
                         type="number"
                       />
                     </td>
                     <td className="cbx-td">
                       <Checkbox
-                        checked={ret.isReturnReceived}
-                        onChange={(e) => handleEditItem({ ...ret, isReturnReceived: e.target.checked })}
+                        checked={item.isReturnReceived}
+                        onChange={(e) => handleEditItem({ ...item, isReturnReceived: e.target.checked })}
                       />
                     </td>
                     <td className="cbx-td">
                       <Checkbox
-                        checked={ret.isReturnAsDescribed}
-                        onChange={(e) => handleEditItem({ ...ret, isReturnAsDescribed: e.target.checked })}
+                        checked={item.isReturnAsDescribed}
+                        onChange={(e) => handleEditItem({ ...item, isReturnAsDescribed: e.target.checked })}
                       />
                     </td>
                     <td className="cbx-td">
                       <Checkbox
-                        checked={ret.isReturnPutAway}
-                        onChange={(e) => handleEditItem({ ...ret, isReturnPutAway: e.target.checked })}
+                        checked={item.isReturnPutAway}
+                        onChange={(e) => handleEditItem({ ...item, isReturnPutAway: e.target.checked })}
                       />
                     </td>
                     <td>
-                      { ret.part?.id && <Button onClick={() => handleOpenPart(ret)}>Open Part</Button> }
+                      { item.part?.id && <Button onClick={() => handleOpenPart(item)}>Open Part</Button> }
+                    </td>
+                    <td>
+                      <Button variant={['danger']} onClick={() => onClickDeleteItem(item.id)}>Delete</Button>
                     </td>
                   </tr>
                 );
