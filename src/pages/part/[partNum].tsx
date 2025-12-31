@@ -180,6 +180,9 @@ export default function PartDetails() {
           style={{ backgroundColor: 'var(--orange-1)' }}
           open={costAlertOpen}
           setOpen={setCostAlertOpen}
+          onClose={() => {}}
+          closeOnOutsideClick={true}
+          exitWithEsc={true}
         >
           <h2>If you are selling this part</h2>
           <h1>STOP!!!</h1>

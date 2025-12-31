@@ -2,6 +2,12 @@ import { ask } from "../config/tauri";
 import { addCore } from "../services/coresService";
 import { addHandwrittenItem } from "../services/handwrittensService";
 
+interface TakeoffRes {
+  item: HandwrittenItem | null
+  itemChild: HandwrittenItemChild | null
+  parentItem: HandwrittenItem | null
+}
+
 
 export const paymentTypes = ['Net 30', 'Wire Transfer', 'EBPP - Secure', 'Visa', 'Mastercard', 'AMEX', 'Discover', 'Comchek', 'T-Check', 'Check', 'Cash', 'Card on File', 'Net 10', 'No Charge'].sort();
 
@@ -41,4 +47,22 @@ export const addCoreCharge = async (handwritten: Handwritten, item: HandwrittenI
   } as any;
   await addCore(newCore);
   return true;
+};
+
+export const startTakeoff = (input: string, handwritten: Handwritten): TakeoffRes => {
+  const stockNum = input.replace('<', '').replace('>', '').toUpperCase();
+  const children: HandwrittenItemChild[] = [];
+  const item: HandwrittenItem | null = handwritten.handwrittenItems.find((item) => item.stockNum?.toUpperCase() === stockNum && item.location !== 'CORE DEPOSIT') ?? null;
+  handwritten.handwrittenItems.forEach((item) => {
+    if (item.invoiceItemChildren.length > 0) children.push(...item.invoiceItemChildren);
+  });
+
+  if (Number(item?.qty) <= 0) {
+    alert('Cannot perform takeoff on item with no qty');
+    return { item: null, itemChild: null, parentItem: null };
+  }
+
+  const itemChild: HandwrittenItemChild | null = children.find((item) => item.stockNum?.toUpperCase() === stockNum) ?? null;
+  const parentItem = itemChild ? handwritten.handwrittenItems.find((i) => i.id === itemChild.parentId) ?? null : null;
+  return { item, itemChild, parentItem };
 };

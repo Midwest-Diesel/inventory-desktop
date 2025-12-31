@@ -5,7 +5,6 @@ import { editHandwrittenTakeoffState, getHandwrittenById } from "@/scripts/servi
 import { addPart, addPartCostIn, addToPartQtyHistory, editPartCostIn, getPartById, getPartCostIn, getPartQty, handlePartTakeoff } from "@/scripts/services/partsService";
 import { getSurplusByCode, zeroAllSurplusItems } from "@/scripts/services/surplusService";
 import { formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
-import { useParams } from "react-router-dom";
 import { FormEvent, RefObject, useEffect, useRef, useState } from "react";
 import Loading from "@/components/library/Loading";
 import { ask, invoke } from "@/scripts/config/tauri";
@@ -19,13 +18,13 @@ interface Props {
   setHandwritten: (handwritten: Handwritten | null) => void
   onSubmit: () => void
   takeoffInputRef: RefObject<HTMLInputElement>
+  handwrittenId: number
 }
 
 
 const OUT_OF_STOCK_EMAIL_RECEPIENTS = ['terry@midwestdiesel.com', 'jack@midwestdiesel.com', 'matt@midwestdiesel.com', 'jason@midwestdiesel.com', 'jon@midwestdiesel.com'];
 
-export default function TakeoffsDialog({ open, setOpen, item, unitPrice, setHandwritten, onSubmit, takeoffInputRef }: Props) {
-  const params = useParams();
+export default function TakeoffsDialog({ open, setOpen, item, unitPrice, setHandwritten, onSubmit, takeoffInputRef, handwrittenId }: Props) {
   const [qty, setQty] = useState<number>(item.qty ?? 0);
   const [part, setPart] = useState<Part | null>(null);
   const [loading, setLoading] = useState(false);
@@ -44,7 +43,7 @@ export default function TakeoffsDialog({ open, setOpen, item, unitPrice, setHand
       setPart(res);
     };
     fetchData();
-  }, []);
+  }, [item]);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -55,7 +54,7 @@ export default function TakeoffsDialog({ open, setOpen, item, unitPrice, setHand
     }
 
     // Remove qty and edit surplus when applicable
-    const handwritten = await getHandwrittenById(Number(params.handwritten));
+    const handwritten = await getHandwrittenById(handwrittenId);
     if (!handwritten) return;
     setLoading(true);
 
@@ -112,7 +111,7 @@ export default function TakeoffsDialog({ open, setOpen, item, unitPrice, setHand
     }
 
     // Finalize takeoff
-    const res = await getHandwrittenById(Number(params.handwritten));
+    const res = await getHandwrittenById(handwrittenId);
     onSubmit();
     setLoading(false);
     setHandwritten(res);

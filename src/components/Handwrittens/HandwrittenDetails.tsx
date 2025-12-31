@@ -26,6 +26,7 @@ import { ask } from "@/scripts/config/tauri";
 import { usePrintQue } from "@/hooks/usePrintQue";
 import { getAltShipByCustomerId } from "@/scripts/services/altShipService";
 import { useQuery } from "@tanstack/react-query";
+import { startTakeoff } from "@/scripts/logic/handwrittens";
 
 interface Props {
   handwritten: Handwritten
@@ -307,16 +308,9 @@ export default function HandwrittenDetails({
 
   const handleTakeoffs = (e: FormEvent) => {
     e.preventDefault();
-    const stockNum = takeoff.replace('<', '').replace('>', '').toUpperCase();
-    const children: HandwrittenItemChild[] = [];
-    const item: HandwrittenItem | null = handwritten?.handwrittenItems.find((item) => item.stockNum?.toUpperCase() === stockNum && item.location !== 'CORE DEPOSIT') ?? null;
-    handwritten?.handwrittenItems.forEach((item) => {
-      if (item.invoiceItemChildren.length > 0) children.push(...item.invoiceItemChildren);
-    });
-    const itemChild: HandwrittenItemChild | null = children.find((item) => item.stockNum?.toUpperCase() === stockNum) ?? null;
-    const parentItem = itemChild ? handwritten.handwrittenItems.find((i) => i.id === itemChild.parentId) : null;
-
+    const { item, itemChild, parentItem } = startTakeoff(takeoff, handwritten);
     if (!item && !itemChild) return;
+
     setTakeoffsOpen(true);
     setTakeoffItem(item || itemChild);
     setUnitPrice(Number(item?.unitPrice || parentItem?.unitPrice));
@@ -363,6 +357,7 @@ export default function HandwrittenDetails({
           setHandwritten={setHandwritten}
           onSubmit={onSubmitTakeoff}
           takeoffInputRef={takeoffInputRef}
+          handwrittenId={Number(params.handwritten)}
         />
       }
 

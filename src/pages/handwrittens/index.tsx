@@ -11,9 +11,12 @@ import { addHandwritten, getSomeHandwrittens, getYeserdayCOGS, getYeserdaySales,
 import { formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
 import { useAtom } from "jotai";
 import Link from "@/components/library/Link";
-import { useState } from "react";
+import { FormEvent, useRef, useState } from "react";
 import { useArrowSelector } from "@/hooks/useArrowSelector";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import TakeoffsDialog from "@/components/handwrittens/dialogs/TakeoffsDialog";
+import { startTakeoff } from "@/scripts/logic/handwrittens";
+import Input from "@/components/library/Input";
 
 
 const LIMIT = 40;
@@ -25,6 +28,11 @@ export default function Handwrittens() {
   const [customerSelectOpen, setCustomerSelectOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchData, setSearchData] = useState<any>({});
+  const [takeoff, setTakeoff] = useState('');
+  const [unitPrice, setUnitPrice] = useState(0);
+  const [takeoffItem, setTakeoffItem] = useState<HandwrittenItem | HandwrittenItemChild | null>(null);
+  const [takeoffsOpen, setTakeoffsOpen] = useState(false);
+  const takeoffInputRef = useRef<HTMLInputElement | null>(null);
   const queryClient = useQueryClient();
 
   const { data: totalSales = 0, isFetching: isSalesLoading } = useQuery<number>({
@@ -37,7 +45,7 @@ export default function Handwrittens() {
     queryFn: getYeserdayCOGS
   });
 
-  const { data: handwrittensRes, isFetching } = useQuery<HandwrittenRes>({
+  const { data: handwrittensRes, isFetching, refetch } = useQuery<HandwrittenRes>({
     queryKey: ['handwrittens', currentPage, searchData],
     queryFn: async () => {
       const hasValidSearchCriteria =
@@ -122,6 +130,25 @@ export default function Handwrittens() {
     setFocusedHandwritten(handwritten);
   };
 
+  const handleTakeoffs = (e: FormEvent) => {
+    e.preventDefault();
+    if (!focusedHandwritten) {
+      alert('You must select a handwritten to do takeoffs');
+      return;
+    }
+    const { item, itemChild, parentItem } = startTakeoff(takeoff, focusedHandwritten);
+    if (!item && !itemChild) return;
+
+    setTakeoffsOpen(true);
+    setTakeoffItem(item || itemChild);
+    setUnitPrice(Number(item?.unitPrice || parentItem?.unitPrice));
+  };
+
+  const onSubmitTakeoff = () => {
+    setTakeoff('');
+    takeoffInputRef.current?.focus();
+  };
+
 
   return (
     <Layout title="Handwrittens">
@@ -136,6 +163,22 @@ export default function Handwrittens() {
         setOpen={setCustomerSelectOpen}
         onSubmit={handleNewHandwritten}
       />
+
+      {takeoffItem &&
+        <TakeoffsDialog
+          open={takeoffsOpen}
+          setOpen={setTakeoffsOpen}
+          item={takeoffItem}
+          unitPrice={unitPrice}
+          setHandwritten={(h) => {
+            setFocusedHandwritten(h);
+            refetch();
+          }}
+          onSubmit={onSubmitTakeoff}
+          takeoffInputRef={takeoffInputRef}
+          handwrittenId={Number(focusedHandwritten?.id)}
+        />
+      }
 
       <div className="handwrittens__container">
         <div className="handwrittens">
@@ -153,6 +196,18 @@ export default function Handwrittens() {
               <h4>Yesterday&apos;s Sales</h4>
               <p>{ isSalesLoading ? 'Loading...' : formatCurrency(totalSales) }</p>
             </div>
+
+            <form onSubmit={handleTakeoffs}>
+              <Input
+                ref={takeoffInputRef}
+                variant={['label-bold', 'label-stack', 'small']}
+                label="Takeoff"
+                value={takeoff}
+                onChange={(e) => setTakeoff(e.target.value)}
+                required
+                data-testid="takeoff-input"
+              />
+            </form>
           </div>
 
           { isFetching && <Loading /> }
