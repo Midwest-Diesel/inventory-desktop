@@ -123,6 +123,7 @@ export default function EditHandwrittenItemsTable({ handwritten, handwrittenItem
                     value={item.desc ?? ''}
                     onChange={(e) => handleEditItem({ ...item, desc: e.target.value }, i)}
                     disabled={isDisabled}
+                    data-testid="item-desc"
                   />
                 </td>
                 <td>

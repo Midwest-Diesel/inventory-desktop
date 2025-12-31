@@ -55,12 +55,16 @@ test.describe('Basic Functionality', () => {
   });
 });
 
-test.describe('Credits', () => {
+test.describe('Return Credits', () => {
   test('Issue credit', async ({ page }) => {
     await goto(page, '/returns');
     await createReturn(page);
     await page.getByTestId('return-link').first().click();
     await page.getByTestId('credit-issued-btn').click();
-    await expect(page.getByTestId('credit-issued')).toHaveText(formatDate(new Date()));
+    await page.waitForLoadState('networkidle');
+    await page.getByTestId('link').first().click();
+    await page.waitForLoadState('networkidle');
+    await expect(page.getByTestId('item-qty').first()).toHaveText('-1');
+    await expect(page.getByTestId('item-desc').first()).toHaveText('RETURNED PART: G/U ROTARY SOLENOID');
   });
 });
