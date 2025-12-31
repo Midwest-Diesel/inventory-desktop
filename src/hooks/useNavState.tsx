@@ -90,16 +90,44 @@ export function useNavState() {
       name: null,
       urlIndex,
       history,
-      selected: false
+      selected: moveImmediately
     };
-    const newTabs = [...tabs.map((t) => ({ ...t, selected: moveImmediately ? false : t.selected })), newTabObj];
 
     if (moveImmediately) {
-      const tabsWithSelection = newTabs.map((t) => ({ ...t, selected: t.id === id }));
-      setTabs(tabsWithSelection);
+      setTabs((t) => [...(t.map((tabs) => ({ ...tabs, selected: false }))), newTabObj]);
       navigate(toAbsolutePath(history[0].url), { replace: false });
     } else {
-      setTabs(newTabs);
+      setTabs((t) => [...t, newTabObj]);
+    }
+  };
+
+  const newTabs = async (history = [[{ name: 'Home', url: '/' }]], moveImmediately = false, urlIndex = 0) => {
+    setTabs((prev) => {
+      let nextId = prev.length ? Math.max(...prev.map(t => t.id)) + 1 : 1;
+
+      const newTabObjs: Tab[] = history.map((history, index) => {
+        const tab: Tab = {
+          id: nextId++,
+          name: null,
+          urlIndex,
+          history,
+          selected: moveImmediately && index === 0
+        };
+        return tab;
+      });
+
+      const updated = moveImmediately
+        ? [
+            ...prev.map(t => ({ ...t, selected: false })),
+            ...newTabObjs
+          ]
+        : [...prev, ...newTabObjs];
+
+      return updated;
+    });
+
+    if (moveImmediately) {
+      navigate(toAbsolutePath(history[0][0].url), { replace: false });
     }
   };
 
@@ -138,5 +166,5 @@ export function useNavState() {
     });
   };
   
-  return { tabs, setTabs, forward, backward, changeTab, push, newTab, closeDetailsBtn, deleteTab, removeLastFromHistory, selectedTab, restoreTab };
+  return { tabs, setTabs, forward, backward, changeTab, push, newTab, newTabs, closeDetailsBtn, deleteTab, removeLastFromHistory, selectedTab, restoreTab };
 }

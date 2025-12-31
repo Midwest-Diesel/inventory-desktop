@@ -30,7 +30,7 @@ export default function TakeoffsDialog({ open, setOpen, item, unitPrice, setHand
   const [part, setPart] = useState<Part | null>(null);
   const [loading, setLoading] = useState(false);
   const ref = useRef<HTMLDivElement | null>(null);
-  const { newTab } = useNavState();
+  const { newTabs } = useNavState();
 
   useEffect(() => {
     if (!open) return;
@@ -87,8 +87,7 @@ export default function TakeoffsDialog({ open, setOpen, item, unitPrice, setHand
       const partCostIn: PartCostIn | null = res.find((p: PartCostIn) => p.vendor === part.purchasedFrom) ?? null;
       if (partCostIn) await editPartCostIn({ ...partCostIn, cost: item.cost });
     } else {
-      const isPartUP = part.stockNum?.split('').slice(0, 2).join('').toUpperCase() === 'UP';
-      const newStockNum = isPartUP ? `${part.stockNum} (${formatDate(new Date())})` : part.stockNum;
+      const newStockNum = `${part.stockNum} (${formatDate(new Date())})`;
       const newId = await addPart({ ...part, qty: 0, qtySold: Number(qty), stockNum: newStockNum, soldTo: handwritten?.billToCompany ?? '', sellingPrice: unitPrice, handwrittenId: handwritten.id }, true);
       if (!newStockNum) {
         alert('Failed to add PartCostIn data: newStockNum is invalid');
@@ -96,15 +95,20 @@ export default function TakeoffsDialog({ open, setOpen, item, unitPrice, setHand
       }
       await addPartCostIn(newStockNum, Number(item.cost), null, part.purchasedFrom ?? '', 'PurchasePrice', '');
 
+      const tabs = [];
       // When the part cost doesn't match the line item cost,
       // prompt the user to go to the new part created
       // This will take the user to the part details, where they can change it manually
-      if (Number(part.purchasePrice) !== item.cost && await ask(`Part cost of ${formatCurrency(part.purchasePrice)} doesn't equal line item cost of ${formatCurrency(item.cost)}. Do you want to open the new part created?`)) {
-        await newTab([{ name: part.partNum, url: `/part/${newId}` }]);
+      if (Number(part.purchasePrice) !== item.cost && await ask(`Part cost of ${formatCurrency(part.purchasePrice)} doesn't equal line item cost of ${formatCurrency(item.cost)}. Do you want to open the new part created?\n\nThis will create a new tab.`)) {
+        tabs.push([{ name: part.partNum, url: `/part/${newId}` }]);
       }
 
-      // TODO: Bring the user to the original part details so they can edit the remarks
-      
+      // Bring the user to the original part details so they can edit the remarks
+      if (await ask('There\'s still qty left over, do you want to edit the part remarks?\n\nThis will create a new tab.')) {
+        tabs.push([{ name: part.stockNum!, url: `/part/${part.id}` }]);
+      }
+
+      await newTabs(tabs);
     }
 
     // Finalize takeoff
