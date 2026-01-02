@@ -15,11 +15,10 @@ describe('Format date', () => {
   });
 
   test('should format time', () => {
-    const parsedDate = parseResDate('2024-06-11T19:24:47.601Z') ?? '';
+    const parsedDate = parseResDate('2026-01-02T07:31:32.000Z') ?? '';
     const date = new Date(parsedDate);
-    const expected = new Intl.DateTimeFormat('en-US', { hour: 'numeric', minute: 'numeric', hour12: true }).format(date);
     const result = formatTime(date);
-    expect(result).toEqual(expected);
+    expect(result).toEqual('7:31 AM');
   });
 });
 

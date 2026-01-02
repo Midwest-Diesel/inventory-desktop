@@ -17,8 +17,8 @@ export const parseResDate = (date: string): Date | null => {
 };
 
 export const formatTime = (date: Date): string => {
-  let hours = date.getHours();
-  const minutes = date.getMinutes();
+  let hours = date.getUTCHours();
+  const minutes = date.getUTCMinutes();
   const ampm = hours >= 12 ? 'PM' : 'AM';
   hours = hours % 12;
   hours = hours ? hours : 12;
