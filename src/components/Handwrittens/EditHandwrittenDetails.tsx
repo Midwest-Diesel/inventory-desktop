@@ -255,6 +255,10 @@ export default function EditHandwrittenDetails({
     await editHandwritten(newInvoice);
     await editCoreCustomer(handwritten.id, newCustomer?.id ?? null);
 
+    if (newInvoice.billToCompany !== newInvoice.shipToCompany && !newInvoice.isBlindShipment && !newInvoice.isNoPriceInvoice) {
+      await promptBlindShipment(newInvoice);
+    }
+
     // Save other data related to handwritten
     await saveAltShip(newInvoice);
     await saveTrackingNumbers();
@@ -321,6 +325,14 @@ export default function EditHandwrittenDetails({
       } else if (trackingNumbers[i].trackingNumber !== handwritten.trackingNumbers[i].trackingNumber) {
         await editTrackingNumber(trackingNumbers[i].id, trackingNumbers[i].trackingNumber);
       }
+    }
+  };
+
+  const promptBlindShipment = async (newInvoice: Handwritten) => {
+    if (await ask('Make shipment blind?')) {
+      await editHandwritten({ ...newInvoice, isBlindShipment: true, isNoPriceInvoice: true });
+    } else if (await ask('Set No Price Invoice?')) {
+      await editHandwritten({ ...newInvoice, isNoPriceInvoice: true });
     }
   };
 
