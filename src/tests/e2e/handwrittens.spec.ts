@@ -161,7 +161,7 @@ test.describe('Handwritten items', () => {
     await page.getByTestId('no-changes-btn').click();
     await page.waitForLoadState('networkidle');
     await expect(page.getByTestId('item-desc').first()).toHaveText('TEST ITEM');
-    expect(await page.getByTestId('order-notes').first().textContent()).toEqual('TEST WARRANTY\nNo CAT Warranty\nInjector warranty');
+    expect(await page.getByTestId('order-notes').first().textContent()).toEqual('TEST WARRANTY\nCaterpillar warranty is not available on surplus engines and surplus parts.\nRebuilt Injectors come with a 6 month part replacement only warranty through Midwest Diesel, No labor or progressive damage.');
   });
 });
 

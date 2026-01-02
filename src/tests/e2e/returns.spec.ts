@@ -1,4 +1,3 @@
-import { formatDate } from '@/scripts/tools/stringUtils';
 import { test, expect, Page } from '@playwright/test';
 import { resetDb } from '../resetDatabase';
 import { goto } from '../utils';
@@ -63,6 +62,8 @@ test.describe('Return Credits', () => {
     await page.getByTestId('credit-issued-btn').click();
     await page.waitForLoadState('networkidle');
     await page.getByTestId('link').first().click();
+    await page.waitForLoadState('networkidle');
+    await page.getByTestId('stop-edit-btn').click();
     await page.waitForLoadState('networkidle');
     await expect(page.getByTestId('item-qty').first()).toHaveText('-1');
     await expect(page.getByTestId('item-desc').first()).toHaveText('RETURNED PART: G/U ROTARY SOLENOID');
