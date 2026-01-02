@@ -110,6 +110,8 @@ export const extractStatusColors = (text: string | null): string => {
   if (!text || text === '') return '';
   if (text.toLowerCase().includes('sold')) {
     return 'sold';
+  } else if (text.toLowerCase().includes('engine')) {
+    return 'special';
   } else if (text.toLowerCase().includes('new')) {
     return 'new';
   } else if (text.toLowerCase().includes('rebuilt')) {
