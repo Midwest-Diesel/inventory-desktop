@@ -100,12 +100,15 @@
     margin-bottom: 0.8rem;
   }
 
-  table td {
-    min-width: 5rem;
+  &__top-content {
+    margin-bottom: 0.3rem;
+
+    span {
+      font-weight: 400;
+    }
   }
 
-  &__table-container {
-    overflow-y: auto;
-    max-height: 28rem;
+  table td {
+    min-width: 5rem;
   }
 }

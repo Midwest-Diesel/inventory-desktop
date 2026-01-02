@@ -1,21 +1,27 @@
 import Dialog from "../../library/Dialog";
 import Button from "../../library/Button";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { formatDate } from "@/scripts/tools/stringUtils";
 import Table from "../../library/Table";
 import { useNavState } from "../../../hooks/useNavState";
 import { deleteCompareData } from "@/scripts/services/compareConsistService";
+import { ask } from "@/scripts/config/tauri";
 
 interface Props {
   open: boolean
   setOpen: (open: boolean) => void
   searchData: CompareConsist[]
+  setSearchData: (data: CompareConsist[]) => void
 }
 
 
-export default function CompareConsistHistoryDialog({ open, setOpen, searchData }: Props) {
-  const { push } = useNavState();
+export default function CompareConsistHistoryDialog({ open, setOpen, searchData, setSearchData }: Props) {
   const [page, setPage] = useState(0);
+  const { push } = useNavState();
+
+  useEffect(() => {
+    if (searchData.length === 0) setOpen(false);
+  }, [searchData]);
 
   const prevPage = () => {
     if (page === 0) {
@@ -40,8 +46,10 @@ export default function CompareConsistHistoryDialog({ open, setOpen, searchData 
   };
 
   const handleDelete = async () => {
+    if (!await ask('Delete this search?')) return;
     await deleteCompareData(searchData[page].id);
-    nextPage();
+    setSearchData(searchData.filter((s) => s.id !== searchData[page].id));
+    setPage(0);
   };
 
 
@@ -49,18 +57,24 @@ export default function CompareConsistHistoryDialog({ open, setOpen, searchData 
     <Dialog
       open={open}
       setOpen={setOpen}
-      title="Previous Records"
+      title={`Previous Searches (${searchData.length} ${searchData.length > 1 ? 'results' : 'result'})`}
       width={800}
+      maxHeight="38rem"
       className="compare-consist-history-dialog"
     >
       <div className="div__footer">
-        <Button type="submit" variant={['small']} onClick={prevPage}>Prev</Button>
+        <Button type="submit" variant={['small']} onClick={prevPage} disabled={searchData.length === 1}>Prev</Button>
         <Button type="submit" variant={['small']} onClick={handleLoad}>Load</Button>
-        <Button type="submit" variant={['small']} onClick={nextPage}>Next</Button>
+        <Button type="submit" variant={['small']} onClick={nextPage} disabled={searchData.length === 1}>Next</Button>
       </div>
         
       {searchData && searchData[page] &&
         <div className="compare-consist-history-dialog__table-container">
+          <div className="compare-consist-history-dialog__top-content">
+            <h3>Serial Number: <span>{ searchData[page].serialNum }</span></h3>
+            <h3>Arrangement Number: <span>{ searchData[page].arrNum }</span></h3>
+          </div>
+
           <h4>{ formatDate(searchData[page].dateCreated) }</h4>
           <Table>
             <tbody>
@@ -73,7 +87,7 @@ export default function CompareConsistHistoryDialog({ open, setOpen, searchData 
               <tr>
                 <th>Block</th>
                 <td>{ searchData[page].blockNew }</td>
-                <th>Head Reman</th>
+                <th>Block Reman</th>
                 <td>{ searchData[page].blockReman }</td>
               </tr>
               <tr>
