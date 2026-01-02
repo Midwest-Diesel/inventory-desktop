@@ -163,8 +163,8 @@ export default function SelectHandwrittenDialog({ open, setOpen, part, onSubmit 
 
     let fullWar = [handwritten.orderNotes];
     if (customWar) fullWar.push(`${warranty}`);
-    if (noWarranty) fullWar.push('No CAT Warranty');
-    if (injectorWar) fullWar.push('Injector warranty');
+    if (noWarranty) fullWar.push('Caterpillar warranty is not available on surplus engines and surplus parts.');
+    if (injectorWar) fullWar.push('Rebuilt Injectors come with a 6 month part replacement only warranty through Midwest Diesel, No labor or progressive damage.');
     if (!fullWar && !warranty && !noVerbage) {
       console.error('Warranty cannot be blank');
       return;
