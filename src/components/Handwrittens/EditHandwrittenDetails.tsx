@@ -114,6 +114,7 @@ export default function EditHandwrittenDetails({
   const [contactCell] = useState<string>(handwritten.cell ?? '');
   const [contactFax] = useState<string>(handwritten.fax ?? '');
   const [contactEmail, setContactEmail] = useState<string>(handwritten.email ?? '');
+  const [customerEngineInfo, setCustomerEngineInfo] = useState<string>(handwritten.customerEngineInfo ?? '');
   const [invoiceStatus, setInvoiceStatus] = useState<InvoiceStatus>(handwritten.invoiceStatus);
   const [accountingStatus, setAccountingStatus] = useState<AccountingStatus>(handwritten.accountingStatus ?? '');
   const [shippingStatus, setShippingStatus] = useState<ShippingStatus>(handwritten.shippingStatus ?? '');
@@ -228,6 +229,7 @@ export default function EditHandwrittenDetails({
       email: contactEmail,
       contactName: contact,
       shipToContact,
+      customerEngineInfo,
       invoiceStatus,
       accountingStatus,
       shippingStatus,
@@ -1015,6 +1017,16 @@ export default function EditHandwrittenDetails({
                             return <DropdownOption key={i} value={email}>{ email }</DropdownOption>;
                           })}
                         </Dropdown>
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>Customer Engine Info</th>
+                      <td>
+                        <Input
+                          variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+                          value={customerEngineInfo}
+                          onChange={(e) => setCustomerEngineInfo(e.target.value)}
+                        />
                       </td>
                     </tr>
                   </tbody>

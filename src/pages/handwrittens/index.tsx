@@ -104,7 +104,7 @@ export default function Handwrittens() {
       salesmanId: user.id,
       phone: '',
       cell: null,
-      engineSerialNum: null,
+      customerEngineInfo: null,
       isBlindShipment: false,
       isNoPriceInvoice: false,
       isTaxable: customer.isTaxable,

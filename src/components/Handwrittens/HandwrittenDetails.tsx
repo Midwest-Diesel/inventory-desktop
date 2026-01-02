@@ -555,6 +555,10 @@ export default function HandwrittenDetails({
                   <th><strong>EOD Email</strong></th>
                   <td>{ handwritten.email }</td>
                 </tr>
+                <tr>
+                  <th><strong>Customer Engine Info</strong></th>
+                  <td>{ handwritten.customerEngineInfo }</td>
+                </tr>
               </tbody>
             </Table>
 

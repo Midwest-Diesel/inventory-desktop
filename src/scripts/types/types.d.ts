@@ -218,7 +218,7 @@ type Handwritten = {
   payment: string | null
   phone: string | null
   cell: string | null
-  engineSerialNum: string | null
+  customerEngineInfo: string | null
   isBlindShipment: boolean
   isNoPriceInvoice: boolean
   shipVia: FreightCarrier | null
