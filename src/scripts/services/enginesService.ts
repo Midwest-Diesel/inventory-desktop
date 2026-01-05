@@ -140,6 +140,16 @@ export const addEngineCostOut = async (stockNum: string, engineStockNum: number,
   }
 };
 
+// === PATCH routes === //
+
+export const editEngineStatus = async (id: number, currentStatus: EngineStatus) => {
+  try {
+    await api.patch('/api/engines/status', { id, currentStatus });
+  } catch (err) {
+    console.error(err);
+  }
+};
+
 // === PUT routes === //
 
 export const editEngine = async (engine: Engine) => {

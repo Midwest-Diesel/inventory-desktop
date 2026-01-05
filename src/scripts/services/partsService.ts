@@ -23,8 +23,9 @@ const parsePartsData = async (parts: any) => {
 
 // === GET routes === //
 
-export const getPartById = async (id: number): Promise<Part | null> => {
+export const getPartById = async (id: number | null): Promise<Part | null> => {
   try {
+    if (!id) return null;
     const res = await api.get(`/api/parts/part/${id}`);
     return (await parsePartsData(res.data))[0];
   } catch (err) {

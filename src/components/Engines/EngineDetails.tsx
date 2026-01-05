@@ -53,7 +53,7 @@ export default function EngineDetails({ engine, setIsEditing, setEngineProfitOpe
       <div className="engine-details__header">
         <div>
           <h2>Stock Number: { engine.stockNum }</h2>
-          <h3>Current Status: { engine.currentStatus }</h3>
+          <h3 data-testid="status">Current Status: { engine.currentStatus }</h3>
         </div>
         
         <div className="header__btn-container">

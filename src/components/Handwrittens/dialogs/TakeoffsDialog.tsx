@@ -9,6 +9,7 @@ import { FormEvent, RefObject, useEffect, useRef, useState } from "react";
 import Loading from "@/components/library/Loading";
 import { ask, invoke } from "@/scripts/config/tauri";
 import { useNavState } from "@/hooks/useNavState";
+import { editEngineStatus, getEngineByStockNum } from "@/scripts/services/enginesService";
 
 interface Props {
   open: boolean
@@ -27,9 +28,10 @@ const OUT_OF_STOCK_EMAIL_RECEPIENTS = ['terry@midwestdiesel.com', 'jack@midwestd
 export default function TakeoffsDialog({ open, setOpen, item, unitPrice, setHandwritten, onSubmit, takeoffInputRef, handwrittenId }: Props) {
   const [qty, setQty] = useState<number>(item.qty ?? 0);
   const [part, setPart] = useState<Part | null>(null);
+  const [engine, setEngine] = useState<Engine | null>(null);
   const [loading, setLoading] = useState(false);
   const ref = useRef<HTMLDivElement | null>(null);
-  const { newTabs } = useNavState();
+  const { newTabs, newTab } = useNavState();
 
   useEffect(() => {
     if (!open) return;
@@ -38,9 +40,13 @@ export default function TakeoffsDialog({ open, setOpen, item, unitPrice, setHand
 
   useEffect(() => {
     const fetchData = async () => {
-      if (!item.partId) return;
       const res = await getPartById(item.partId);
-      setPart(res);
+      if (res) {
+        setPart(res);
+      } else {
+        const engineRes = await getEngineByStockNum(Number(item.stockNum));
+        setEngine(engineRes);
+      }
     };
     fetchData();
   }, [item]);
@@ -119,6 +125,19 @@ export default function TakeoffsDialog({ open, setOpen, item, unitPrice, setHand
     setOpen(false);
   };
 
+  const handleSubmitEngine = async (e: FormEvent) => {
+    e.preventDefault();
+    if (!engine) return;
+
+    await editEngineStatus(engine.id, 'Sold');
+    await newTab([{ name: engine.stockNum.toString(), url: `/engines/${engine.stockNum}` }]);
+    await editHandwrittenTakeoffState(item.id, true);
+
+    onSubmit();
+    takeoffInputRef.current?.focus();
+    setOpen(false);
+  };
+
 
   return (
     <Dialog
@@ -144,6 +163,20 @@ export default function TakeoffsDialog({ open, setOpen, item, unitPrice, setHand
             type="number"
             data-testid="takeoff-qty-input"
           />
+
+          <div className="form__footer" ref={ref}>
+            {loading ?
+              <Loading />
+              :
+              <Button type="submit" data-testid="takeoff-submit-btn">Submit</Button>
+            }
+          </div>
+        </form>
+      }
+
+      {engine &&
+        <form onSubmit={handleSubmitEngine}>
+          <p><strong>Engine Stock Number:</strong> { engine.stockNum }</p>
 
           <div className="form__footer" ref={ref}>
             {loading ?

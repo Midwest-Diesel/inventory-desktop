@@ -255,6 +255,19 @@ test.describe('Takeoffs', () => {
     await expect(page.getByTestId('profit-margin')).toHaveText('$80.00');
     await expect(page.getByTestId('profit-percent')).toHaveText('100%');
   });
+
+  test.skip('Complete engine takeoff', async () => {
+    await goto(page, '/handwrittens');
+    await page.getByTestId('handwritten-row').nth(3).click();
+    await page.getByTestId('takeoff-input').fill('7234');
+    await page.getByTestId('takeoff-input').focus();
+    await page.keyboard.press('Enter');
+    await page.waitForTimeout(100);
+    await page.getByTestId('takeoff-submit-btn').click();
+
+    await page.waitForLoadState('networkidle');
+    await expect(page.getByTestId('status')).toHaveText('Sold');
+  });
 });
 
 test.describe('SENT TO ACCOUNTING', () => {

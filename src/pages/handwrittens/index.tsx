@@ -231,7 +231,12 @@ export default function Handwrittens() {
                   <tbody>
                     {handwrittensRes.rows.map((handwritten: Handwritten) => {
                       return (
-                        <tr key={handwritten.id} onClick={() => handleFocusHandwritten(handwritten)} style={ focusedHandwritten && handwritten.id === focusedHandwritten.id ? { border: 'solid 3px var(--yellow-2)' } : {} }>
+                        <tr
+                          key={handwritten.id}
+                          onClick={() => handleFocusHandwritten(handwritten)}
+                          style={ focusedHandwritten && handwritten.id === focusedHandwritten.id ? { border: 'solid 3px var(--yellow-2)' } : {} }
+                          data-testid="handwritten-row"
+                        >
                           <td><Link href={`/handwrittens/${handwritten.id}`} data-testid="link">{ handwritten.id }</Link></td>
                           <td>{ formatDate(handwritten.date) }</td>
                           <td>{ handwritten.billToCompany }</td>
