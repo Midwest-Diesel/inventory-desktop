@@ -25,6 +25,7 @@ export default function ContactsControls({ isEditing, setIsEditing, contact, set
     const name = prompt('Enter a contact name');
     if (!name) return;
     await addCustomerContact(customer.id, name);
+    await onSelectChangeContact(name);
     const res = await getCustomerById(customer.id);
     setCustomer(res);
   };

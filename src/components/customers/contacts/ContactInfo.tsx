@@ -7,6 +7,10 @@ export default function ContactInfo({ contact }: Props) {
   return (
     <>
       <div className="contacts-block__row">
+        <p><strong>Name</strong></p>
+        <p>{ contact?.name }</p>
+      </div>
+      <div className="contacts-block__row">
         <p><strong>Position</strong></p>
         <p>{ contact?.position }</p>
       </div>
