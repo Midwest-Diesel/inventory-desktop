@@ -45,8 +45,8 @@ export default function PartsTable({ parts, partsData, pageCount, partsQty, rows
   };
 
   const partCostStyles = (part: Part) => {
-    if (!part.costRemaining) return;
-    return part.costRemaining >= 0.04 ? { color: 'var(--orange-1)', fontWeight: 'bold' } : {};
+    if (!part.purchasePrice) return;
+    return part.purchasePrice >= 0.04 ? { color: 'var(--orange-1)', fontWeight: 'bold' } : {};
   };
 
 
