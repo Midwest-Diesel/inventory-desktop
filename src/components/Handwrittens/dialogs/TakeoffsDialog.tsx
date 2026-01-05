@@ -22,7 +22,7 @@ interface Props {
 }
 
 
-const OUT_OF_STOCK_EMAIL_RECEPIENTS = ['terry@midwestdiesel.com', 'jack@midwestdiesel.com', 'matt@midwestdiesel.com', 'jason@midwestdiesel.com', 'jon@midwestdiesel.com'];
+const OUT_OF_STOCK_EMAIL_RECEPIENTS = ['terry@midwestdiesel.com', 'jack@midwestdiesel.com', 'matt@midwestdiesel.com', 'jason@midwestdiesel.com', 'jon@midwestdiesel.com', 'ryan@midwestdiesel.com'];
 
 export default function TakeoffsDialog({ open, setOpen, item, unitPrice, setHandwritten, onSubmit, takeoffInputRef, handwrittenId }: Props) {
   const [qty, setQty] = useState<number>(item.qty ?? 0);
