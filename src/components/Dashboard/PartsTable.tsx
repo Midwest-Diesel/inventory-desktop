@@ -77,7 +77,7 @@ export default function PartsTable({ parts, partsData, pageCount, partsQty, rows
           </thead>
           <tbody className="parts-list">
             {parts && parts.map((part: Part, i) => {
-              const status = extractStatusColors(part.remarks);
+              const status = extractStatusColors(part);
               return (
                 <tr key={i}>
                   <td className="parts-list__left-col table-buttons table-buttons--grid">
@@ -140,7 +140,7 @@ export default function PartsTable({ parts, partsData, pageCount, partsQty, rows
                       <span data-testid="stock-num">{ part.stockNum }</span>
                     </div>
                   </td>
-                  <td>{ part.location }</td>
+                  <td style={status === 'on-engine' ? { color: 'var(--status-on-engine)', fontWeight: 500 } : {}} >{ part.location }</td>
                   <td style={{ width:'22rem', fontSize:'var(--font-xsm)', backgroundColor:`var(--status-${status})`, color: `${status ? 'black' : 'white'}` }}>
                     { part.remarks }
                   </td>

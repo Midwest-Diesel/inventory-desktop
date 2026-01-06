@@ -106,12 +106,13 @@ export const parsePhone = (value: string) => {
   return value.replace(/\D/g, '');
 };
 
-export const extractStatusColors = (text: string | null): string => {
+export const extractStatusColors = (part: Part): string => {
+  if (part.location?.toLowerCase().includes('on engine')) return 'on-engine';
+  
+  const text = part.remarks;
   if (!text || text === '') return '';
   if (text.toLowerCase().includes('sold')) {
     return 'sold';
-  } else if (text.toLowerCase().includes('engine')) {
-    return 'special';
   } else if (text.toLowerCase().includes('new')) {
     return 'new';
   } else if (text.toLowerCase().includes('rebuilt')) {
