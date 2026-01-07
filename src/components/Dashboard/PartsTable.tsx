@@ -141,8 +141,10 @@ export default function PartsTable({ parts, partsData, pageCount, partsQty, rows
                     </div>
                   </td>
                   <td style={status === 'on-engine' ? { color: 'var(--status-on-engine)', fontWeight: 500 } : {}} >{ part.location }</td>
-                  <td style={{ width:'22rem', fontSize:'var(--font-xsm)', backgroundColor:`var(--status-${status})`, color: `${status ? 'black' : 'white'}` }}>
-                    { part.remarks }
+                  <td style={{ width: '22rem', padding: '0 0 0 0.3rem', backgroundColor:`var(--status-${status})`, color: `${status ? 'black' : 'white'}` }}>
+                    <div className="parts-list__remarks">
+                      { part.remarks }
+                    </div>
                   </td>
                   <td style={partCostStyles(part)}>{ formatCurrency(part.purchasePrice) }</td>
                   <td style={{ fontSize: 'var(--font-xsm)' }}>
