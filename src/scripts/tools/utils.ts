@@ -98,3 +98,9 @@ export const arrayOfObjectsMatch = (arr1: any[], arr2: any[]): boolean => {
   }
   return true;
 };
+
+export const getYesterday = (): Date => {
+  const date = new Date();
+  date.setDate(date.getDate() - 1);
+  return date;
+};

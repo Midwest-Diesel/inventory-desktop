@@ -11,6 +11,7 @@ import Checkbox from "@/components/library/Checkbox";
 import Input from "@/components/library/Input";
 import { useNavState } from "@/hooks/useNavState";
 import { ask } from "@/scripts/config/tauri";
+import { getYesterday } from "@/scripts/tools/utils";
 
 interface Props {
   open: boolean
@@ -29,7 +30,7 @@ export default function CoreCreditsDialog({ open, setOpen, cores, handwritten }:
 
   const handleCredit = async () => {
     if (selectedCores.length === 0 || !await ask('Are you sure?')) return;
-    const id = await addHandwritten({ ...handwritten, date: new Date(), salesmanId: user.id } as any);
+    const id = await addHandwritten({ ...handwritten, date: getYesterday(), salesmanId: user.id } as Handwritten);
 
     for (let i = 0; i < selectedCores.length; i++) {
       const core = selectedCores[i];
@@ -45,7 +46,7 @@ export default function CoreCreditsDialog({ open, setOpen, cores, handwritten }:
         desc: core.desc,
         unitPrice: core.charge,
         return: false,
-        date: core.date,
+        date: getYesterday(),
         invoiceItemChildren: []
       } as any;
       await addHandwrittenItem(newItem);
