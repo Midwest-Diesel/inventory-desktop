@@ -11,6 +11,7 @@ import Checkbox from "../library/Checkbox";
 import { ask } from "@/scripts/config/tauri";
 import TextArea from "../library/TextArea";
 import VendorSelect from "../library/select/VendorSelect";
+import Select from "../library/select/Select";
 
 interface Props {
   poData: PO
@@ -51,7 +52,12 @@ export default function EditPoDetails({ poData, setPo, setIsEditing, poItems, po
 
   const saveChanges = async (e: FormEvent) => {
     e.preventDefault();
+    if (!paymentTerms) {
+      alert('Select an option for payment terms');
+      return;
+    }
     if (!changesSaved && !await ask('Are you sure you want to save these changes?')) return;
+
     setChangesSaved(false);
     const newPo = {
       id: poData.id,
@@ -293,11 +299,18 @@ export default function EditPoDetails({ poData, setPo, setIsEditing, poItems, po
               <tr>
                 <th>Payment Terms</th>
                 <td>
-                  <Input
-                    variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+                  <Select
+                    variant={['label-space-between', 'label-full-width', 'label-bold']}
                     value={paymentTerms}
                     onChange={(e: any) => setPaymentTerms(e.target.value)}
-                  />
+                    required
+                  >
+                    <option>-- SELECT PAYMENT TERMS --</option>
+                    <option>On Account</option>
+                    <option>Credit Card</option>
+                    <option>Wire Transfer</option>
+                    <option>Check</option>
+                  </Select>
                 </td>
               </tr>
             </tbody>
@@ -403,6 +416,7 @@ export default function EditPoDetails({ poData, setPo, setIsEditing, poItems, po
                       variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                       value={purchasedFor}
                       onChange={(e: any) => setPurchasedFor(e.target.value)}
+                      required
                       data-testid="purchased-for"
                     />
                   </td>

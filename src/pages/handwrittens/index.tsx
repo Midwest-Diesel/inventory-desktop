@@ -27,7 +27,8 @@ export default function Handwrittens() {
   const [openSearch, setOpenSearch] = useState(false);
   const [customerSelectOpen, setCustomerSelectOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [searchData, setSearchData] = useState<any>({});
+  const [searchData, setSearchData] = useState<HandwrittenSearch>({} as HandwrittenSearch);
+  const [quickSearchId, setQuickSearchId] = useState<number | null>(null);
   const [takeoff, setTakeoff] = useState('');
   const [unitPrice, setUnitPrice] = useState(0);
   const [takeoffItem, setTakeoffItem] = useState<HandwrittenItem | HandwrittenItemChild | null>(null);
@@ -149,6 +150,15 @@ export default function Handwrittens() {
     takeoffInputRef.current?.focus();
   };
 
+  const onSubmitQuickSearch = async (e: FormEvent) => {
+    e.preventDefault();
+    if (quickSearchId) {
+      setSearchData({ id: quickSearchId, limit: 99999, offset: 0 });
+    } else {
+      setSearchData({ limit: 99999, offset: 0 });
+    }
+  };
+
 
   return (
     <Layout title="Handwrittens">
@@ -208,6 +218,17 @@ export default function Handwrittens() {
                 data-testid="takeoff-input"
               />
             </form>
+
+            <form onSubmit={onSubmitQuickSearch}>
+              <Input
+                variant={['label-bold', 'label-stack', 'small']}
+                label="Quick Search"
+                value={quickSearchId ?? ''}
+                onChange={(e) => setQuickSearchId(e.target.value ? Number(e.target.value) : null)}
+                type="number"
+                data-testid="quick-search-input"
+              />
+            </form>
           </div>
 
           { isFetching && <Loading /> }
@@ -234,10 +255,18 @@ export default function Handwrittens() {
                         <tr
                           key={handwritten.id}
                           onClick={() => handleFocusHandwritten(handwritten)}
-                          style={ focusedHandwritten && handwritten.id === focusedHandwritten.id ? { border: 'solid 3px var(--yellow-2)' } : {} }
+                          style={focusedHandwritten && handwritten.id === focusedHandwritten.id ? { border: 'solid 3px var(--yellow-2)' } : {}}
                           data-testid="handwritten-row"
                         >
-                          <td><Link href={`/handwrittens/${handwritten.id}`} data-testid="link">{ handwritten.id }</Link></td>
+                          <td>
+                            <Link
+                              style={handwritten.allTakeoffsCompleted ? { color: 'var(--yellow-2)' } : {}}
+                              href={`/handwrittens/${handwritten.id}`}
+                              data-testid="link"
+                            >
+                              { handwritten.id }
+                            </Link>
+                          </td>
                           <td>{ formatDate(handwritten.date) }</td>
                           <td>{ handwritten.billToCompany }</td>
                           <td>{ handwritten.shipToCompany }</td>

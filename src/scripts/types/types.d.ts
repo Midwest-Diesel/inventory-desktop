@@ -245,6 +245,7 @@ type Handwritten = {
   isEndOfDay: boolean
   trackingNumbers: TrackingNumber[]
   thirdPartyAccount: string | null
+  allTakeoffsCompleted: boolean
 };
 
 type InvoiceStatus = 'INVOICE PENDING' | 'SENT TO ACCOUNTING' | 'CANCELLED' | 'STOP - HOLD' | 'HOLD AS FAVOR';
