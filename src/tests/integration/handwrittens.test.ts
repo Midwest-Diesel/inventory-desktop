@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, beforeAll, afterAll } from 'vitest';
 import { client, resetDb } from '../resetDatabase';
 import { setApiBaseUrl } from '@/scripts/config/axios';
 import { loginUser } from '@/scripts/services/userService';
-import { addHandwritten, addHandwrittenItemChild, editHandwritten, editHandwrittenTakeoffState, getHandwrittenById, getHandwrittenItemById, searchHandwrittens } from '@/scripts/services/handwrittensService';
+import { addHandwritten, addHandwrittenItemChild, editHandwritten, editHandwrittenItemTakeoffState, getHandwrittenById, getHandwrittenItemById, searchHandwrittens } from '@/scripts/services/handwrittensService';
 
 beforeAll(async () => {
   setApiBaseUrl('http://localhost:8001');
@@ -208,7 +208,7 @@ describe('Handwrittens Integration', () => {
   });
 
   it('Edit takeoff state', async () => {
-    await editHandwrittenTakeoffState(1, true);
+    await editHandwrittenItemTakeoffState(1, true);
     const res = await getHandwrittenItemById(1);
     expect(res?.isTakeoffDone).toEqual(true);
   });

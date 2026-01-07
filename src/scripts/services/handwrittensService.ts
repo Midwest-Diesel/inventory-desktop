@@ -284,9 +284,17 @@ export const editHandwrittenPaymentType = async (id: number, payment: string) =>
   }
 };
 
-export const editHandwrittenTakeoffState = async (id: number, isTakeoffDone: boolean) => {
+export const editHandwrittenItemTakeoffState = async (id: number, isTakeoffDone: boolean) => {
   try {
     await api.patch('/api/handwrittens/takeoff', { id, isTakeoffDone });
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+export const editHandwrittenChildTakeoffState = async (id: number, isTakeoffDone: boolean) => {
+  try {
+    await api.patch('/api/handwrittens/takeoff-child', { id, isTakeoffDone });
   } catch (err) {
     console.error(err);
   }

@@ -1,7 +1,7 @@
 import Button from "@/components/library/Button";
 import Dialog from "@/components/library/Dialog";
 import Input from "@/components/library/Input";
-import { editHandwrittenTakeoffState, getHandwrittenById } from "@/scripts/services/handwrittensService";
+import { editHandwrittenChildTakeoffState, editHandwrittenItemTakeoffState, getHandwrittenById } from "@/scripts/services/handwrittensService";
 import { addPart, addPartCostIn, addToPartQtyHistory, editPartCostIn, getPartById, getPartCostIn, getPartQty, handlePartTakeoff } from "@/scripts/services/partsService";
 import { getSurplusByCode, zeroAllSurplusItems } from "@/scripts/services/surplusService";
 import { formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
@@ -66,8 +66,16 @@ export default function TakeoffsDialog({ open, setOpen, item, unitPrice, setHand
 
     // Do the takeoff
     await handlePartTakeoff(part.id, Number(qty), handwritten?.billToCompany ?? '', unitPrice, handwritten.id);
-    await editHandwrittenTakeoffState(item.id, true);
     await addToPartQtyHistory(part.id, -Number(qty));
+
+    // Mark takeoff as done
+    const parentId = (item as HandwrittenItemChild).parentId;
+    if (parentId) {
+      await editHandwrittenChildTakeoffState(item.id, true);
+      await editHandwrittenItemTakeoffState(parentId, true);
+    } else {
+      await editHandwrittenItemTakeoffState(item.id, true);
+    }
     
     // Set all connected surplus cost to $0.01
     const surplus: Surplus | null = await getSurplusByCode(part.purchasedFrom ?? '');
@@ -131,7 +139,7 @@ export default function TakeoffsDialog({ open, setOpen, item, unitPrice, setHand
 
     await editEngineStatus(engine.id, 'Sold');
     await newTab([{ name: engine.stockNum.toString(), url: `/engines/${engine.stockNum}` }]);
-    await editHandwrittenTakeoffState(item.id, true);
+    await editHandwrittenItemTakeoffState(item.id, true);
 
     onSubmit();
     takeoffInputRef.current?.focus();

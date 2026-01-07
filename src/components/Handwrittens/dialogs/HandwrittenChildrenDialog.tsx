@@ -53,6 +53,8 @@ export default function HandwrittenChildrenDialog({ open, setOpen, stockNumChild
   };
 
 
+  if (stockNumChildren.length === 0) return null;
+
   return (
     <>
       <PartSelectDialog open={partSelectDialogOpen} setOpen={setPartSelectDialogOpen} onSubmit={onChangePartId} />
@@ -112,8 +114,8 @@ export default function HandwrittenChildrenDialog({ open, setOpen, stockNumChild
                 return (
                   <tr key={item.id}>
                     <td>{ item.qty }</td>
-                    <td>{ item.partNum }</td>
-                    <td>{ item.stockNum }</td>
+                    <td style={item.isTakeoffDone ? { color: 'var(--yellow-2)', fontWeight: 'bold' } : {}}>{ item.partNum }</td>
+                    <td style={item.isTakeoffDone ? { color: 'var(--yellow-2)', fontWeight: 'bold' } : {}}>{ item.stockNum }</td>
                     <td>{ formatCurrency(item.cost) }</td>
                     <td>
                       <div style={{ display: 'flex', gap: '0.2rem' }}>

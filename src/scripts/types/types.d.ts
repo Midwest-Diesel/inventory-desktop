@@ -282,6 +282,7 @@ type HandwrittenItemChild = {
   cost: number | null
   partNum: string | null
   stockNum: string | null
+  isTakeoffDone: boolean
 };
 
 type CustomerHandwritten = {

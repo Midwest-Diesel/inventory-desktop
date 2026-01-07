@@ -38,56 +38,56 @@ describe('Format currency', () => {
 
 describe('Extract status colors', () => {
   test('should return New', () => {
-    const text = '(10.0) New, PERKINS IDLER PULLEY, LOOKS VERY NICE customer told us cat alt part number for this is 2610428 Jack';
-    const result = extractStatusColors(text);
+    const part = {remarks: '(10.0) New, PERKINS IDLER PULLEY, LOOKS VERY NICE customer told us cat alt part number for this is 2610428 Jack'} as Part;
+    const result = extractStatusColors(part);
     expect(result).toEqual('new');
   });
 
   test('should return Rebuilt', () => {
-    const text = '(10.0) Rebuilt, PERKINS IDLER PULLEY, LOOKS VERY NICE customer told us cat alt part number for this is 2610428 Jack';
-    const result = extractStatusColors(text);
+    const part = {remarks: '(10.0) Rebuilt, PERKINS IDLER PULLEY, LOOKS VERY NICE customer told us cat alt part number for this is 2610428 Jack'} as Part;
+    const result = extractStatusColors(part);
     expect(result).toEqual('rebuilt');
   });
 
   test('should return Recon', () => {
-    const text = '(10.0) Recon, PERKINS IDLER PULLEY, LOOKS VERY NICE customer told us cat alt part number for this is 2610428 Jack';
-    const result = extractStatusColors(text);
+    const part = {remarks: '(10.0) Recon, PERKINS IDLER PULLEY, LOOKS VERY NICE customer told us cat alt part number for this is 2610428 Jack'} as Part;
+    const result = extractStatusColors(part);
     expect(result).toEqual('recon');
   });
 
   test('should return NTO', () => {
-    const text = '(10.0) NTO, PERKINS IDLER PULLEY, LOOKS VERY NICE customer told us cat alt part number for this is 2610428 Jack';
-    const result = extractStatusColors(text);
+    const part = {remarks: '(10.0) NTO, PERKINS IDLER PULLEY, LOOKS VERY NICE customer told us cat alt part number for this is 2610428 Jack'} as Part;
+    const result = extractStatusColors(part);
     expect(result).toEqual('NTO');
   });
 
   test('should return Special', () => {
-    const text = '(10.0) Special, PERKINS IDLER PULLEY, LOOKS VERY NICE customer told us cat alt part number for this is 2610428 Jack';
-    const result = extractStatusColors(text);
+    const part = {remarks: '(10.0) Special, PERKINS IDLER PULLEY, LOOKS VERY NICE customer told us cat alt part number for this is 2610428 Jack'} as Part;
+    const result = extractStatusColors(part);
     expect(result).toEqual('special');
   });
 
   test('should return Sold', () => {
-    const text = '(10.0) Sold, PERKINS IDLER PULLEY, LOOKS VERY NICE customer told us cat alt part number for this is 2610428 Jack';
-    const result = extractStatusColors(text);
+    const part = {remarks: '(10.0) Sold, PERKINS IDLER PULLEY, LOOKS VERY NICE customer told us cat alt part number for this is 2610428 Jack'} as Part;
+    const result = extractStatusColors(part);
     expect(result).toEqual('sold');
   });
 
   test('should return Humpy', () => {
-    const text = '(10.0) Humpy, PERKINS IDLER PULLEY, LOOKS VERY NICE customer told us cat alt part number for this is 2610428 Jack';
-    const result = extractStatusColors(text);
+    const part = {remarks: '(10.0) Humpy, PERKINS IDLER PULLEY, LOOKS VERY NICE customer told us cat alt part number for this is 2610428 Jack'} as Part;
+    const result = extractStatusColors(part);
     expect(result).toEqual('humpy');
   });
 
   test('should return Special lower in condition order', () => {
-    const text = '(10.0) Special, PERKINS IDLER PULLEY, NTO customer told us cat alt part number for this is 2610428 Jack';
-    const result = extractStatusColors(text);
+    const part = {remarks: '(10.0) Special, PERKINS IDLER PULLEY, NTO customer told us cat alt part number for this is 2610428 Jack'} as Part;
+    const result = extractStatusColors(part);
     expect(result).toEqual('special');
   });
 
   test('should return empty string', () => {
-    const text = '(10.0) PERKINS IDLER PULLEY customer told us cat alt part number for this is 2610428 Jack';
-    const result = extractStatusColors(text);
+    const part = {remarks: '(10.0) PERKINS IDLER PULLEY customer told us cat alt part number for this is 2610428 Jack'} as Part;
+    const result = extractStatusColors(part);
     expect(result).toEqual('');
   });
 });
