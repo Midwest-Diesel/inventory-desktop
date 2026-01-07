@@ -26,7 +26,7 @@ interface Props {
 const OUT_OF_STOCK_EMAIL_RECEPIENTS = ['terry@midwestdiesel.com', 'jack@midwestdiesel.com', 'matt@midwestdiesel.com', 'jason@midwestdiesel.com', 'jon@midwestdiesel.com', 'ryan@midwestdiesel.com'];
 
 export default function TakeoffsDialog({ open, setOpen, item, unitPrice, setHandwritten, onSubmit, takeoffInputRef, handwrittenId }: Props) {
-  const [qty, setQty] = useState<number>(item.qty ?? 0);
+  const [qty, setQty] = useState<number>(Number(item.qty));
   const [part, setPart] = useState<Part | null>(null);
   const [engine, setEngine] = useState<Engine | null>(null);
   const [loading, setLoading] = useState(false);
@@ -39,6 +39,8 @@ export default function TakeoffsDialog({ open, setOpen, item, unitPrice, setHand
   }, [open]);
 
   useEffect(() => {
+    setQty(Number(item.qty));
+
     const fetchData = async () => {
       const res = await getPartById(item.partId);
       if (res) {
@@ -167,7 +169,7 @@ export default function TakeoffsDialog({ open, setOpen, item, unitPrice, setHand
             variant={['x-small', 'label-bold', 'label-stack', 'label-fit-content']}
             label="Qty"
             value={qty ?? ''}
-            onChange={(e: any) => setQty(Math.max(Math.min(e.target.value, (item.qty ?? 0)), 1))}
+            onChange={(e) => setQty(Math.max(Math.min(Number(e.target.value), (item.qty ?? 0)), 1))}
             type="number"
             data-testid="takeoff-qty-input"
           />

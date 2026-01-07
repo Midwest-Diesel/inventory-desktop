@@ -28,7 +28,7 @@ export default function EditQuoteDialog({ setQuoteEdited, quote, setQuote }: Pro
   const [contact, setContact] = useState<string>(quote.contact ?? '');
   const [part, setPart] = useState<Part | null>(quote.part);
   const [desc, setDesc] = useState<string>(quote.desc ?? '');
-  const [price, setPrice] = useState<number>(Number(quote.price));
+  const [price, setPrice] = useState<number | null>(quote.price || null);
   const [notes, setNotes] = useState<string>(quote.notes ?? '');
   const [partSelectOpen, setPartSelectOpen] = useState(false);
   const inputRef = useRef<HTMLInputElement | null>(null);
@@ -54,7 +54,7 @@ export default function EditQuoteDialog({ setQuoteEdited, quote, setQuote }: Pro
       partNum: part ? part.partNum : quote.partNum,
       stockNum: part ? part.stockNum : quote.stockNum,
       desc,
-      price,
+      price: Number(price),
       notes,
       partId: part ? part.id : null
     } as Quote;
@@ -70,7 +70,7 @@ export default function EditQuoteDialog({ setQuoteEdited, quote, setQuote }: Pro
     setContact(quote.contact ?? '');
     setPart(quote.part);
     setDesc(quote.desc ?? '');
-    setPrice(quote.price ?? 0);
+    setPrice(quote.price);
     setNotes(quote.notes ?? '');
     setQuoteEdited(null);
   };
@@ -98,7 +98,7 @@ export default function EditQuoteDialog({ setQuoteEdited, quote, setQuote }: Pro
             variant={['label-full-width', 'small', 'thin', 'label-bold', 'label-stack']}
             type="date"
             value={parseDateInputValue(date)}
-            onChange={(e: any) => setDate(new Date(e.target.value))}
+            onChange={(e) => setDate(new Date(e.target.value))}
             required
           />
 
@@ -106,7 +106,7 @@ export default function EditQuoteDialog({ setQuoteEdited, quote, setQuote }: Pro
             label="Source"
             variant={['label-bold', 'label-stack']}
             value={source}
-            onChange={(e: any) => setSource(e.target.value)}
+            onChange={(e) => setSource(e.target.value)}
           />
           
           <CustomerDropdown
@@ -121,7 +121,7 @@ export default function EditQuoteDialog({ setQuoteEdited, quote, setQuote }: Pro
             label="Contact"
             variant={['label-full-width', 'label-bold', 'label-stack']}
             value={contact}
-            onChange={(e: any) => setContact(e.target.value)}
+            onChange={(e) => setContact(e.target.value)}
           >
             <option value="">-- SELECT CONTACT --</option>
             {quote.customer && quote.customer.contacts.map((c) => {
@@ -144,14 +144,14 @@ export default function EditQuoteDialog({ setQuoteEdited, quote, setQuote }: Pro
             label="Description"
             variant={['label-full-width', 'small', 'thin', 'label-bold', 'label-stack']}
             value={desc}
-            onChange={(e: any) => setDesc(e.target.value)}
+            onChange={(e) => setDesc(e.target.value)}
           />
 
           <Input
             label="Price"
             variant={['label-full-width', 'small', 'thin', 'label-bold', 'label-stack']}
-            value={price}
-            onChange={(e: any) => setPrice(e.target.value)}
+            value={price ?? ''}
+            onChange={(e) => setPrice(e.target.value ? Number(e.target.value) : null)}
             type="number"
             step="any"
             ref={inputRef}
@@ -164,7 +164,7 @@ export default function EditQuoteDialog({ setQuoteEdited, quote, setQuote }: Pro
             rows={5}
             cols={100}
             value={notes}
-            onChange={(e: any) => setNotes(e.target.value)}
+            onChange={(e) => setNotes(e.target.value)}
           />
 
           <div className="form__footer">
