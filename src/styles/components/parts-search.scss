@@ -47,9 +47,14 @@
   &__remarks {
     width: 100%;
     font-size: var(--font-xsm);
-    max-height: 2.5rem;
+    max-height: 3rem;
     overflow-y: auto;
-    scrollbar-color: #efefef #424242;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
   }
 
   &__left-col {
