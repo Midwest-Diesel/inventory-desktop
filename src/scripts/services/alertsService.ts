@@ -28,10 +28,21 @@ export const getAlerts = async (): Promise<Alert[]> => {
   }
 };
 
+export const searchAlerts = async (partNum: string): Promise<Alert[]> => {
+  try {
+    const params = new URLSearchParams({ partNum });
+    const res = await api.get(`/api/alerts/search?${params.toString()}`);
+    return parseAlertDataRes(res.data);
+  } catch (err) {
+    console.error(err);
+    return [];
+  }
+};
+
 export const detectAlerts = async (partNum: string): Promise<Alert[]> => {
   if (!partNum || partNum === '*') return [];
   try {
-    const res = await api.get(`/api/alerts/${partNum}`);
+    const res = await api.get(`/api/alerts/partNum/${partNum}`);
     return parseAlertDataRes(res.data);
   } catch (err) {
     console.error(err);

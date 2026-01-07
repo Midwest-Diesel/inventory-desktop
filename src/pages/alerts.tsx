@@ -5,18 +5,20 @@ import Button from "@/components/library/Button";
 import Table from "@/components/library/Table";
 import { selectedAlertsAtom } from "@/scripts/atoms/components";
 import { alertsAtom } from "@/scripts/atoms/state";
-import { deleteAlert } from "@/scripts/services/alertsService";
+import { deleteAlert, getAlerts, searchAlerts } from "@/scripts/services/alertsService";
 import { formatDate } from "@/scripts/tools/stringUtils";
 import { ask } from "@/scripts/config/tauri";
 import { useAtom } from "jotai";
-import { useState } from "react";
+import { FormEvent, useState } from "react";
+import Input from "@/components/library/Input";
 
 
 export default function Alerts() {
   const [selectedAlerts, setSelectedAlerts] = useAtom<Alert[]>(selectedAlertsAtom);
-  const [alertsData, setAlertsAtom] = useAtom<Alert[]>(alertsAtom);
+  const [alerts, setAlerts] = useAtom<Alert[]>(alertsAtom);
   const [newAlertOpen, setNewAlertOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+  const [search, setSearch] = useState('');
   const [alertEdited, setAlertEdited] = useState<Alert | null>(null);
 
   const handleEdit = (alert: Alert) => {
@@ -27,17 +29,37 @@ export default function Alerts() {
   const handleDelete = async (id: number) => {
     if (!await ask('Are you sure you want to delete this?')) return;
     await deleteAlert(id);
-    setAlertsAtom(alertsData.filter((alert: Alert) => alert.id !== id));
+    setAlerts(alerts.filter((alert: Alert) => alert.id !== id));
+  };
+
+  const onSubmitSearch = async (e: FormEvent) => {
+    e.preventDefault();
+    if (search) {
+      const res = await searchAlerts(search);
+      setAlerts(res);
+    } else {
+      const res = await getAlerts();
+      setAlerts(res);
+    }
   };
 
 
   return (
     <Layout title="Alerts">
+      <CreateAlertDialog open={newAlertOpen} setOpen={setNewAlertOpen} />
+      { isEditing && <EditAlertDialog open={isEditing} setOpen={setIsEditing} alert={alertEdited} /> }
+
       <div className="alerts-page">
         <h1>Alerts</h1>
-        <Button onClick={() => setNewAlertOpen(!newAlertOpen)} data-testid="new-alert-btn">Create Alert</Button>
-        <CreateAlertDialog open={newAlertOpen} setOpen={setNewAlertOpen} />
-        { isEditing && <EditAlertDialog open={isEditing} setOpen={setIsEditing} alert={alertEdited} /> }
+        <form className="alerts-page__top-buttons" onSubmit={onSubmitSearch}>
+          <Input
+            variant={['label-stack', 'label-bold']}
+            label="Search"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+          <Button onClick={() => setNewAlertOpen(!newAlertOpen)} data-testid="new-alert-btn">Create Alert</Button>
+        </form>
 
         <div className="alerts-page__container">
           <Table>
@@ -52,7 +74,7 @@ export default function Alerts() {
               </tr>
             </thead>
             <tbody>
-              {alertsData && alertsData.map((alert: Alert) => {
+              {alerts && alerts.map((alert: Alert) => {
                 return (
                   <tr key={alert.id}>
                     <td>

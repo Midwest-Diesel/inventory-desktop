@@ -49,6 +49,7 @@ export default function AlertModal({ alerts, setAlerts }: Props) {
           open
           onClose={handleClose}
           className={`alert alert--${getAlertType(alert.type)}`}
+          closeOnOutsideClick
         >
           <h2 className="alert__top-msg">STOP!!!</h2>
           <h2 className="alert__type">{ alert.type }</h2>

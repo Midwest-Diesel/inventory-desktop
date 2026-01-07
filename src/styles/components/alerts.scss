@@ -4,6 +4,16 @@
     overflow-y: auto;
     width: fit-content;
   }
+
+  &__top-buttons {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    
+    button {
+      margin-top: 1.5rem;
+    }
+  }
   
   table {
     margin-top: 0.7rem;
