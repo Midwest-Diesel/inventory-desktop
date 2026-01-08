@@ -8,7 +8,6 @@ import { addAddOn, editAddOnIsPoOpened, editAddOnPrintStatus } from "@/scripts/s
 import { getNextUPStockNum, getPartsByStockNum, getPartInfoByPartNum } from "@/scripts/services/partsService";
 import { useEffect, useRef, useState } from "react";
 import Input from "../library/Input";
-import Link from "../library/Link";
 import { getEngineByStockNum } from "@/scripts/services/enginesService";
 import { formatDate } from "@/scripts/tools/stringUtils";
 import { getPurchaseOrderByPoNum } from "@/scripts/services/purchaseOrderService";
@@ -22,6 +21,7 @@ import { commonPrefixLength, getAddOnDateCode, getNextStockNumberSuffix } from "
 import { useQuery } from "@tanstack/react-query";
 import { getVendors } from "@/scripts/services/vendorsService";
 import { deleteEngineAddOn } from "@/scripts/services/engineAddOnsService";
+import { useNavState } from "@/hooks/useNavState";
 
 interface Props {
   addOn: AddOn
@@ -34,10 +34,12 @@ interface Props {
 export default function ShopPartAddonRow({ addOn, handleDuplicateAddOn, partNumList, onSave }: Props) {
   const [, setSelectedPoData] = useAtom<{ selectedPoAddOn: PO | null, addOn: AddOn | null, receivedItemsDialogOpen: boolean }>(selectedPoAddOnAtom);
   const { addToQue, printQue } = usePrintQue();
+  const { newTab } = useNavState();
   const [addOns, setAddons] = useAtom<AddOn[]>(shopAddOnsAtom);
   const [poLink, setPoLink] = useState<string>(addOn.po ? `${addOn.po}` : '');
   const [partNum, setPartNum] = useState<string>(addOn.partNum ?? '');
   const [engineNum, setEngineNum] = useState<string>(addOn.engineNum?.toString() ?? '');
+  const [engineNumLink, setEngineNumLink] = useState(addOn.engineNum);
   const [purchasedFrom, setPurchasedFrom] = useState<string>(addOn.purchasedFrom?.toString() ?? '');
   const [showPartNumSelect, setShowPartNumSelect] = useState(false);
   const [printQty, setPrintQty] = useState(1);
@@ -46,6 +48,7 @@ export default function ShopPartAddonRow({ addOn, handleDuplicateAddOn, partNumL
   const partNumRef = useRef<HTMLDivElement>(null);
   const prevEngineNum = useRef<string | null>(null);
   const qtyRef = useRef<HTMLInputElement | null>(null);
+  const isEngineNumInvalid = !engineNumLink || engineNumLink <= 1;
   useClickOutside(partNumRef, () => setShowPartNumSelect(false));
 
   const { data: vendors = [] } = useQuery<Vendor[]>({
@@ -293,7 +296,7 @@ export default function ShopPartAddonRow({ addOn, handleDuplicateAddOn, partNumL
     printQue();
   };
 
-  const handleOpenPO = async (e: any) => {
+  const handlePOItemsReceived = async (e: any) => {
     if (!e.target.value || addOn.isPoOpened) return;
     const po = await getPurchaseOrderByPoNum(e.target.value);
     if (!po || po.poItems.length === 0) return;
@@ -314,6 +317,16 @@ export default function ShopPartAddonRow({ addOn, handleDuplicateAddOn, partNumL
     setShowPartNumSelect(false);
   };
 
+  const onClickOpenPO = () => {
+    if (!poLink) return;
+    newTab([{ name: `PO ${poLink}`, url: `/purchase-orders/${poLink}` }]);
+  };
+
+  const onClickOpenEngine = () => {
+    if (isEngineNumInvalid) return;
+    newTab([{ name: `Engine ${engineNumLink}`, url: `/engines/${engineNumLink}` }]);
+  };
+
 
   return (
     <>
@@ -326,7 +339,7 @@ export default function ShopPartAddonRow({ addOn, handleDuplicateAddOn, partNumL
                 <th>Part Number</th>
                 <th>Description</th>
                 <th>Type</th>
-                <th>Engine #</th>
+                <th style={!isEngineNumInvalid ? { textDecoration: 'underline', cursor: 'pointer' } : {}} onClick={onClickOpenEngine}>Engine #</th>
                 <th>Stock Number</th>
                 <th>Location</th>
               </tr>
@@ -404,7 +417,10 @@ export default function ShopPartAddonRow({ addOn, handleDuplicateAddOn, partNumL
                     type="number"
                     autofill={engineNum}
                     value={addOn.engineNum !== null ? addOn.engineNum : ''}
-                    onChange={(e: any) => handleEditAddOn({ ...addOn, engineNum: e.target.value })}
+                    onChange={(e: any) => {
+                      setEngineNumLink(e.target.value);
+                      handleEditAddOn({ ...addOn, engineNum: e.target.value });
+                    }}
                     onBlur={(e) => {
                       const currentVal = e.target.value;
                       if (prevEngineNum.current !== currentVal) {
@@ -443,7 +459,7 @@ export default function ShopPartAddonRow({ addOn, handleDuplicateAddOn, partNumL
                 <th>Horse Power</th>
                 <th>Serial Number</th>
                 <th>Rating</th>
-                <th>PO Number</th>
+                <th style={poLink ? { textDecoration: 'underline', cursor: 'pointer' } : {}} onClick={onClickOpenPO}>PO Number</th>
               </tr>
             </thead>
             <tbody>
@@ -515,11 +531,11 @@ export default function ShopPartAddonRow({ addOn, handleDuplicateAddOn, partNumL
                     variant={['small', 'thin']}
                     type="number"
                     value={addOn.po !== null ? addOn.po : ''}
-                    onChange={(e: any) => {
+                    onChange={(e) => {
                       handleEditAddOn({ ...addOn, po: e.target.value });
                       setPoLink(e.target.value);
                     }}
-                    onBlur={(e: any) => handleOpenPO(e)}
+                    onBlur={(e) => handlePOItemsReceived(e)}
                     data-testid="po"
                   />
                 </td>
@@ -604,7 +620,6 @@ export default function ShopPartAddonRow({ addOn, handleDuplicateAddOn, partNumL
         </div>
 
         <div className="add-ons__list-row-buttons">
-          { poLink && <Link href={`/purchase-orders/${poLink}`}>View PO</Link> }
           <Button type="button" onClick={() => handleDuplicateAddOn({ ...addOn, stockNum: null, engineNum: null })} data-testid="duplicate-btn">Duplicate</Button>
           <Input
             style={{ width: '3rem' }}

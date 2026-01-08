@@ -2,7 +2,6 @@ import { Layout } from "@/components/Layout";
 import Loading from "@/components/library/Loading";
 import EditPurchaseOrderDetails from "@/components/purchaseOrders/EditPurchaseOrderDetails";
 import { getPurchaseOrderByPoNum, togglePurchaseOrderItemReceived, togglePurchaseOrderReceived } from "@/scripts/services/purchaseOrderService";
-import { setTitle } from "@/scripts/tools/utils";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import PurchaseOrderDetails from "@/components/purchaseOrders/PurchaseOrderDetails";
@@ -22,7 +21,6 @@ export default function PurchaseOrder() {
       if (!params) return;
       setLoading(true);
       const res = await getPurchaseOrderByPoNum(params.po?.toString() ?? '');
-      setTitle(`${res?.purchasedFrom} PO`);
       setPoData(res);
       setPoItems(res?.poItems ?? []);
       setPoItemsReceived(res?.poReceivedItems ?? []);
@@ -30,8 +28,6 @@ export default function PurchaseOrder() {
     };
     fetchData();
   }, [params]);
-
-  if (!poData) return null;
 
   const handleReceiveItem = async () => {
     if (!poData?.id || !await ask('Are you sure you want to do this?')) return;
@@ -49,6 +45,17 @@ export default function PurchaseOrder() {
     }));
   };
 
+
+  if (!poData && loading) return <Layout title="PO Details"><Loading /></Layout>;
+
+  if (!poData) {
+    return (
+      <Layout title="PO Details">
+        <h3>Error: Failed to load PO</h3>
+        <p>Verify PO Number</p>
+      </Layout>
+    );
+  }
 
   return (
     <Layout title="PO Details">

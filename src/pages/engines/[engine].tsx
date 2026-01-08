@@ -3,7 +3,6 @@ import EngineProfitDialog from "@/components/engines/dialogs/EngineProfitDialog"
 import EditEngineDetails from "@/components/engines/EditEngineDetails";
 import Loading from "@/components/library/Loading";
 import { getEngineByStockNum } from "@/scripts/services/enginesService";
-import { setTitle } from "@/scripts/tools/utils";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -19,7 +18,6 @@ export default function EngineDetailsPage() {
     queryKey: ['engine', params, isEditing],
     queryFn: async () => {
       const res = await getEngineByStockNum(Number(params.engine));
-      setTitle(`${res?.stockNum} Engine`);
       return res;
     },
     enabled: !!params

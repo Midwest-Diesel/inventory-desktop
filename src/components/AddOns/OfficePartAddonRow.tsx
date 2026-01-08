@@ -13,10 +13,10 @@ import Table from "../library/Table";
 import Select from "../library/select/Select";
 import Input from "../library/Input";
 import Loading from "../library/Loading";
-import Link from "../library/Link";
 import { useQuery } from "@tanstack/react-query";
 import { getVendors } from "@/scripts/services/vendorsService";
 import { deleteEngineAddOn } from "@/scripts/services/engineAddOnsService";
+import { useNavState } from "@/hooks/useNavState";
 
 interface Props {
   addOn: AddOn
@@ -26,6 +26,7 @@ interface Props {
 
 
 export default function OfficePartAddonRow({ addOn, onSave, onModifyAddOnData }: Props) {
+  const { newTab } = useNavState();
   const [addOns, setAddons] = useAtom<AddOn[]>(shopAddOnsAtom);
   const [engineCostRemaining, setEngineCostRemaining] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -35,6 +36,7 @@ export default function OfficePartAddonRow({ addOn, onSave, onModifyAddOnData }:
   const [purchasedFrom, setPurchasedFrom] = useState<string>(addOn.purchasedFrom?.toString() ?? '');
   const [isNewPart, setIsNewPart] = useState(false);
   const ref = useRef<HTMLDivElement | null>(null);
+  const isEngineNumInvalid = !addOn.engineNum || addOn.engineNum <= 1;
 
   const { data: vendors = [] } = useQuery<Vendor[]>({
     queryKey: ['vendors'],
@@ -164,6 +166,16 @@ export default function OfficePartAddonRow({ addOn, onSave, onModifyAddOnData }:
     onModifyAddOnData(res);
   };
 
+  const onClickOpenPO = () => {
+    if (!addOn.po) return;
+    newTab([{ name: `PO ${addOn.po}`, url: `/purchase-orders/${addOn.po}` }]);
+  };
+
+  const onClickOpenEngine = () => {
+    if (isEngineNumInvalid) return;
+    newTab([{ name: `Engine ${addOn.engineNum}`, url: `/engines/${addOn.engineNum}` }]);
+  };
+  
 
   return (
     <div className="add-ons__list-row" ref={ref}>
@@ -177,7 +189,7 @@ export default function OfficePartAddonRow({ addOn, onSave, onModifyAddOnData }:
               {isNewPart && <th>Prefix</th> }
               <th>Cost Remaining</th>
               <th>Type</th>
-              <th>Engine #</th>
+              <th style={!isEngineNumInvalid ? { textDecoration: 'underline', cursor: 'pointer' } : {}} onClick={onClickOpenEngine}>Engine #</th>
               <th>Stock Number</th>
               <th>Location</th>
             </tr>
@@ -275,7 +287,7 @@ export default function OfficePartAddonRow({ addOn, onSave, onModifyAddOnData }:
               <th>Horse Power</th>
               <th>Serial Number</th>
               <th>Rating</th>
-              <th>PO Number</th>
+              <th style={addOn.po ? { textDecoration: 'underline', cursor: 'pointer' } : {}} onClick={onClickOpenPO}>PO Number</th>
             </tr>
           </thead>
           <tbody>
@@ -445,10 +457,7 @@ export default function OfficePartAddonRow({ addOn, onSave, onModifyAddOnData }:
             <Loading />
           </>
           :
-          <>
-            { addOn.po && <Link href={`/purchase-orders/${addOn.po}`}>View PO</Link> }
-            <Button type="button" onClick={handleAddToInventory} data-testid="add-to-inventory-btn">Add to Inventory</Button>
-          </>
+          <Button type="button" onClick={handleAddToInventory} data-testid="add-to-inventory-btn">Add to Inventory</Button>
         }
         <Button type="button" variant={['danger']} onClick={onClickDeleteAddOn}>Delete</Button>
       </div>
