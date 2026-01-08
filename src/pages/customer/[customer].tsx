@@ -182,7 +182,7 @@ export default function Customer() {
                       </tr>
                     </thead>
                     <tbody>
-                      {salesHistory.map((sale: any, i: number) => {
+                      {salesHistory.map((sale: SalesHistory, i: number) => {
                         return (
                           <tr key={i}>
                             <td>{ sale.year }</td>

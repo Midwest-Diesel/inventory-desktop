@@ -17,12 +17,12 @@ export const parseResDate = (date: string): Date | null => {
 };
 
 export const formatTime = (date: Date): string => {
-  let hours = date.getUTCHours();
-  const minutes = date.getUTCMinutes();
-  const ampm = hours >= 12 ? 'PM' : 'AM';
-  hours = hours % 12;
-  hours = hours ? hours : 12;
-  return `${hours}:${minutes.toString().padStart(2, '0')} ${ampm}`;
+  return date.toLocaleTimeString('en-US', {
+    timeZone: 'America/Chicago',
+    hour: 'numeric',
+    minute: '2-digit',
+    hour12: true,
+  });
 };
 
 export const parseDateInputValue = (date: Date | null): string => {
