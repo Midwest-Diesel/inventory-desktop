@@ -21,7 +21,7 @@ export const formatTime = (date: Date): string => {
     timeZone: 'America/Chicago',
     hour: 'numeric',
     minute: '2-digit',
-    hour12: true,
+    hour12: true
   });
 };
 
