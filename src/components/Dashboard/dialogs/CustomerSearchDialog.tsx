@@ -47,7 +47,7 @@ export default function CustomerSearchDialog({ open, setOpen, searchTerm }: Prop
         setPageCount(res.pageCount);
         return res.rows;
       } else {
-        const res = await searchCustomers({ name: name || searchTerm, phone, state, zip, country, customerType, page, limit: LIMIT });
+        const res = await searchCustomers({ name: name || searchTerm, phone: phone.trim().replaceAll('-', '').replaceAll('(', '').replaceAll(')', '').replaceAll(' ', ''), state, zip, country, customerType, page, limit: LIMIT });
         setCustomersData(res.rows);
         setPageCount(res.pageCount);
         return res.rows;
