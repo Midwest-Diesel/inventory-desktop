@@ -32,6 +32,8 @@ export default function Customer() {
   const [isOnMap, setIsOnMap] = useState(true);
   const [addLocDialogOpen, setAddLocDialogOpen] = useState(false);
   const [isVendor, setIsVendor] = useState(false);
+  const parser = new DOMParser();
+  const comments = parser.parseFromString(customer?.comments ?? '', "text/html");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -283,7 +285,7 @@ export default function Customer() {
                   <tbody>
                     <tr>
                       <th>Comments</th>
-                      <td style={{ whiteSpace: 'pre-wrap' }}>{ customer.comments }</td>
+                      <td style={{ whiteSpace: 'pre-wrap' }}>{ comments.querySelector('body')?.innerText }</td>
                     </tr>
                   </tbody>
                 </Table>

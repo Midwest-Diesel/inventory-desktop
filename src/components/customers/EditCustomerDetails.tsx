@@ -24,6 +24,10 @@ interface Props {
 
 
 export default function CustomerDetails({ customer, setCustomer, setIsEditing }: Props) {
+  // The comments from Access used to have html tags inside them
+  // So this is parsing it as html and turning it back to a string
+  const parser = new DOMParser();
+  const commentsDoc = parser.parseFromString(customer?.comments ?? '', "text/html");
   const [company, setCompany] = useState<string>(customer.company ?? '');
   const [phone, setPhone] = useState<string>(customer.phone ?? '');
   const [billToPhone, setBillToPhone] = useState<string>(customer.billToPhone ?? '');
@@ -47,7 +51,7 @@ export default function CustomerDetails({ customer, setCustomer, setIsEditing }:
   const [paymentType, setPaymentType] = useState<string>(customer.paymentType ?? '');
   const [source, setSource] = useState<string>(customer.source ?? '');
   const [isTaxable, setIsTaxable] = useState<boolean>(customer.isTaxable);
-  const [comments, setComments] = useState<string>(customer.comments ?? '');
+  const [comments, setComments] = useState<string>(commentsDoc.querySelector('body')?.innerText ?? '');
   const [editLocDialogOpen, setEditLocDialogOpen] = useState(false);
   const [location, setLocation] = useState<MapLocation | null>(null);
   const [changesSaved, setChangesSaved] = useState(true);

@@ -4,7 +4,7 @@ import Loading from "@/components/library/Loading";
 import Pagination from "@/components/library/Pagination";
 import Table from "@/components/library/Table";
 import { invoke } from "@/scripts/config/tauri";
-import { getEndOfDayHandwrittens, getSomeHandwrittens, getSomeHandwrittensByStatus } from "@/scripts/services/handwrittensService";
+import { getEndOfDayHandwrittens, getSomeHandwrittensByStatus } from "@/scripts/services/handwrittensService";
 import { formatDate } from "@/scripts/tools/stringUtils";
 import Link from "@/components/library/Link";
 import { useState } from "react";
@@ -22,27 +22,17 @@ export default function Karmak() {
 
   const { data: handwrittens, isFetching } = useQuery<HandwrittenRes>({
     queryKey: ['handwrittens', currentPage, currentStatus],
-    queryFn: async () => {
-      if (currentStatus === 'all') {
-        return await getSomeHandwrittens(currentPage, LIMIT);
-      } else {
-        return await getSomeHandwrittensByStatus(currentPage, LIMIT, currentStatus);
-      }
-    }
+    queryFn: () => getSomeHandwrittensByStatus(currentPage, LIMIT, currentStatus)
   });
 
   const handleChangePage = async (_: any, page: number) => {
     setCurrentPage(page);
   };
   
-  const handleFilterStatus = async (status: AccountingStatus, page: number, force = false) => {
-    if (currentStatus === status && currentPage === page && !force) return;
-    setCurrentPage(page);
+  const handleFilterStatus = async (status: AccountingStatus, force = false) => {
+    if (currentStatus === status && currentPage === 1 && !force) return;
+    setCurrentPage(1);
     setCurrentStatus(status);
-  };
-
-  const handleFilterAll = async () => {
-    setCurrentStatus('all');
   };
 
   const handleEndOfDay = async () => {
@@ -74,10 +64,9 @@ export default function Karmak() {
         </div>
         <hr />
         <div className="karmak-page__top-buttons">
-          <Button onClick={handleFilterAll}>All</Button>
-          <Button onClick={() => handleFilterStatus('', 1)}>New</Button>
-          <Button onClick={() => handleFilterStatus('IN PROCESS', 1)}>In Process</Button>
-          <Button onClick={() => handleFilterStatus('COMPLETE', currentPage)}>Completed</Button>
+          <Button onClick={() => handleFilterStatus('all')}>All</Button>
+          <Button onClick={() => handleFilterStatus('')}>New</Button>
+          <Button onClick={() => handleFilterStatus('COMPLETE')}>Completed</Button>
         </div>
 
         { isFetching && <Loading /> }
