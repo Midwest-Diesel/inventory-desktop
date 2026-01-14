@@ -21,6 +21,7 @@
     "test": "run-s test:unit test:integration test:e2e",
     "test:unit": "vitest run --project unit",
     "test:integration": "vitest run --project integration --maxWorkers 1",
+    "test:integration:spec": "node src/tests/integrationTestSpec.mjs",
     "test:e2e": "playwright test --workers 1 && rm -rf playwright-report ./test-results",
     "test:e2e:spec": "rm -rf playwright-report ./test-results && node src/tests/testSpec.mjs",
     "test:e2e:ui": "playwright test --workers 1 --ui && rm -rf playwright-report ./test-results",

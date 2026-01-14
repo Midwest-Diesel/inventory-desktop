@@ -1,5 +1,5 @@
-import { describe, it, expect, beforeEach, beforeAll, afterAll } from 'vitest';
-import { client, resetDb } from '../resetDatabase';
+import { describe, it, expect, beforeEach, beforeAll } from 'vitest';
+import { resetDb } from '../resetDatabase';
 import { setApiBaseUrl } from '@/scripts/config/axios';
 import { loginUser } from '@/scripts/services/userService';
 import { addHandwritten, addHandwrittenItemChild, editHandwritten, editHandwrittenItemTakeoffState, getHandwrittenById, getHandwrittenItemById, searchHandwrittens } from '@/scripts/services/handwrittensService';
@@ -13,49 +13,46 @@ beforeEach(async () => {
   await loginUser({ username: 'bennett', password: 'mwdup' });
 });
 
-afterAll(async () => {
-  await client.end();
-});
-
 
 describe('Handwrittens Integration', () => {
   it('Get handwritten by id', async () => {
     const handwritten = {
       id: 1,
-      invoiceId: 92025,
-      legacyId: 52085,
-      customerId: 5,
-      poNum: '136087',
-      billToCompany: 'MIDWEST INDUSTRIAL SALES',
-      billToAddress: '423 Industry Ave',
+      allTakeoffsCompleted: false,
+      invoiceId: 11,
+      legacyId: null,
+      customerId: 681,
+      salesmanId: null,
+      date: new Date("1996-09-28T05:00:00.000Z"),
+      poNum: "8486",
+      billToCompany: "HEAVY DUTY REBUILDERS",
+      billToAddress: "1250 WEST LIBERTY AVE",
       billToAddress2: null,
-      billToCity: 'GARDNER',
-      billToState: 'IL',
-      billToZip: '60424',
-      billToCountry: 'United States',
+      billToCity: "OZARK",
+      billToState: "MO",
+      billToZip: "65721",
+      billToCountry: null,
       shipToContact: null,
-      billToPhone: null,
+      billToPhone: "8008738783",
       fax: null,
-      shipToCompany: 'DEM-CON',
-      shipToAddress: '13020 DEM-CON DR',
+      shipToCompany: "HEAVY DUTY REBUILDERS",
+      shipToAddress: null,
       shipToAddress2: null,
-      shipToCity: 'SHAKOPEE',
-      shipToState: 'MN',
-      shipToZip: '55379',
-      source: 'RC/Direct Contact',
-      payment: 'Card on File',
-      phone: '(815) 423-5961',
+      shipToCity: null,
+      shipToState: null,
+      shipToZip: null,
+      source: "FAST TRACK/PEED",
+      payment: "NET 30",
+      phone: null,
       cell: null,
-      customerEngineInfo: 'PART#',
-      isBlindShipment: true,
-      isNoPriceInvoice: true,
-      contactName: 'Jill',
-      cardNum: null,
-      expDate: null,
-      cardZip: null,
-      paymentComplete: false,
-      invoiceStatus: 'SENT TO ACCOUNTING',
-      accountingStatus: 'COMPLETE',
+      customerEngineInfo: null,
+      isBlindShipment: null,
+      isNoPriceInvoice: null,
+      contactName: null,
+      cardPrinted: null,
+      paymentComplete: null,
+      invoiceStatus: "SENT TO ACCOUNTING",
+      accountingStatus: "COMPLETE",
       shippingStatus: null,
       orderNotes: null,
       shippingNotes: null,
@@ -63,66 +60,105 @@ describe('Handwrittens Integration', () => {
       cap: 0,
       br: 0,
       fl: 0,
-      isCollect: false,
-      isThirdParty: true,
-      isEndOfDay: false,
-      isTaxable: false,
-      isSetup: false,
-      thirdPartyAccount: '654432',
+      isCollect: null,
+      isThirdParty: null,
+      isEndOfDay: null,
+      isTaxable: null,
+      isSetup: null,
+      thirdPartyAccount: null,
       email: null,
-      cvv: null,
-      cardName: null,
-      shipViaId: 4,
-      salesmanId: 4,
-      createdBy: 'JMF',
-      createdById: 4,
-      soldBy: 'JMF',
-      soldById: 4,
-      cores: [],
+      createdBy: null,
+      soldBy: null,
+      customer: { id: null, company: null, contacts: [] },
       coreReturns: [],
-      customer: { id: 5, company: 'mike', contacts: [] },
+      cores: [],
+      createdById: null,
+      soldById: null,
       handwrittenItems: [
         {
-          HasChildren: false,
-          PendingInvoiceItemsID: 139693,
-          cost: 0,
-          date: null,
-          desc: 'UPS Ground',
-          dimsQty: 0,
+          id: 104,
+          legacyId: 1,
+          legacyInvoiceId: 11,
           handwrittenId: 1,
-          height: 0,
-          id: 1,
-          invoiceItemChildren: [],
-          isInvoiced: false,
-          isQuoteChecked: false,
-          isTakeoffDone: false,
-          legacyId: 139693,
-          length: 0,
-          location: null,
-          partId: 1,
-          partNum: 'FREIGHT',
-          qty: 1,
+          date: new Date("1996-08-05T05:00:00.000Z"),
+          desc: "4N5534 FLYWHEEL HSNG",
+          partNum: null,
           stockNum: null,
-          unitPrice: 0,
+          unitPrice: 500,
+          qty: 1,
+          cost: null,
+          location: null,
+          partId: null,
+          isInvoiced: null,
+          isQuoteChecked: null,
+          dimsQty: 0,
           weight: 0,
-          width: 0
+          length: 0,
+          width: 0,
+          height: 0,
+          invoiceItemChildren: [],
+          isTakeoffDone: false
+        },
+        {
+          id: 103,
+          legacyId: 2,
+          legacyInvoiceId: 11,
+          handwrittenId: 1,
+          date: new Date("1996-08-05T05:00:00.000Z"),
+          desc: "EMERY AIR FREIGHT",
+          partNum: null,
+          stockNum: null,
+          unitPrice: 95,
+          qty: 1,
+          cost: null,
+          location: null,
+          partId: null,
+          isInvoiced: null,
+          isQuoteChecked: null,
+          dimsQty: 0,
+          weight: 0,
+          length: 0,
+          width: 0,
+          height: 0,
+          invoiceItemChildren: [],
+          isTakeoffDone: false
+        },
+        {
+          id: 102,
+          legacyId: 165,
+          legacyInvoiceId: 11,
+          handwrittenId: 1,
+          date: new Date("1996-08-05T05:00:00.000Z"),
+          desc: "PAID CK # 17495 09/13/96",
+          partNum: null,
+          stockNum: null,
+          unitPrice: -595,
+          qty: 1,
+          cost: null,
+          location: null,
+          partId: null,
+          isInvoiced: null,
+          isQuoteChecked: null,
+          dimsQty: 0,
+          weight: 0,
+          length: 0,
+          width: 0,
+          height: 0,
+          invoiceItemChildren: [],
+          isTakeoffDone: false
         }
       ],
-      shipVia: {
-        id: 4,
-        isSkidRateApplied: false,
-        name: 'CONWAY',
-        type: 'Truck Line'
-      },
+      shipViaId: null,
+      shipVia: null,
       trackingNumbers: []
     };
     const res = await getHandwrittenById(1);
-    expect(res).toEqual(expect.objectContaining(handwritten));
+    expect(res).toMatchObject(handwritten);
   });
 
   it('Search handwrittens', async () => {
-    const res = await searchHandwrittens({ billToCompany: 'wesley', limit: 24, offset: 0 });
-    expect(res.rows[0]).toEqual(expect.objectContaining({ billToCompany: 'WESLEY INDUSTRIAL' }));
+    const res = await searchHandwrittens({ billToCompany: 'heavy duty', limit: 24, offset: 0 });
+    expect(res.rows[0]).toMatchObject({ billToCompany: 'HEAVY DUTY REBUILDERS' });
   });
 
   it('Add handwritten', async () => {
@@ -132,7 +168,7 @@ describe('Handwrittens Integration', () => {
       legacyId: null,
       customer: {
         id: 1,
-        company: "LEAVITT MACHINERY - TUKWILA",
+        company: "2 & 92 TRUCK PARTS",
         contacts: []
       },
       customerId: 1,
@@ -171,14 +207,11 @@ describe('Handwrittens Integration', () => {
       isNoPriceInvoice: false,
       shipVia: null,
       shipViaId: null,
-      cardNum: null,
-      expDate: null,
-      cvv: null,
-      cardZip: null,
-      cardName: null,
+      cardPrinted: false,
       orderNotes: null,
       invoiceStatus: 'INVOICE PENDING',
       accountingStatus: null,
+      allTakeoffsCompleted: false,
       shippingStatus: null,
       cores: [],
       coreReturns: [],
@@ -198,35 +231,32 @@ describe('Handwrittens Integration', () => {
     await addHandwritten(newHandwritten as any);
     
     const res = await getHandwrittenById(101);
-    expect(res).toEqual(expect.objectContaining(newHandwritten));
+    expect(res).toMatchObject(newHandwritten);
   });
 
   it('Edit handwritten', async () => {
     await editHandwritten({ id: 1, billToCompany: 'TEST' } as any);
     const res = await getHandwrittenById(1);
-    expect(res).toEqual(expect.objectContaining({ id: 1, billToCompany: 'TEST' }));
+    expect(res).toMatchObject({ id: 1, billToCompany: 'TEST' });
   });
 
   it('Edit takeoff state', async () => {
-    await editHandwrittenItemTakeoffState(1, true);
-    const res = await getHandwrittenItemById(1);
+    await editHandwrittenItemTakeoffState(103, true);
+    const res = await getHandwrittenItemById(103);
     expect(res?.isTakeoffDone).toEqual(true);
   });
 
   it('Add item child', async () => {
     const child = {
-      cost: 100,
+      cost: 1060,
       id: 101,
-      legacyParentId: null,
-      legacyPartId: null,
-      parentId: 2,
+      parentId: 101,
       partId: 1,
-      partNum: '2422411',
       qty: 1,
-      stockNum: 'VC3814'
+      stockNum: 'JB7308'
     };
     await addHandwrittenItemChild(2, { cost: 100, partId: 1, qty: 1 });
     const res = await getHandwrittenById(2);
-    expect(res?.handwrittenItems[0].invoiceItemChildren[0]).toEqual(expect.objectContaining(child));
+    expect(res?.handwrittenItems[0].invoiceItemChildren[0]).toMatchObject(child);
   });
 });

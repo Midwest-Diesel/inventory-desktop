@@ -59,7 +59,7 @@ export const addAltParts = async (partNum: string, altParts: string[], updateLoa
   for (const addOn of addOns) {
     if (altPartsArray.some((a) => addOn.altParts.includes(a))) {
       const newAddOnAlts = Array.from(
-        new Set([...addOn.altParts, ...altPartsArray].filter((a) => a !== addOn.partNum))
+        new Set([...addOn.altParts, ...altPartsArray])
       );
       await editAddOnAltParts(addOn.id, newAddOnAlts.join(', '));
     }

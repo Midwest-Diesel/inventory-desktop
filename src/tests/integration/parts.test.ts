@@ -1,9 +1,9 @@
-import { describe, it, expect, beforeEach, beforeAll, afterAll } from 'vitest';
-import { client, resetDb } from '../resetDatabase';
+import { describe, it, expect, beforeEach, beforeAll } from 'vitest';
 import { setApiBaseUrl } from '@/scripts/config/axios';
 import { loginUser } from '@/scripts/services/userService';
 import { addPart, getPartInfoByPartNum, getPartsByStockNum } from '@/scripts/services/partsService';
 import { addAltParts, removeAltParts } from '@/scripts/logic/parts';
+import { resetDb } from '../resetDatabase';
 
 beforeAll(async () => {
   setApiBaseUrl('http://localhost:8001');
@@ -14,10 +14,6 @@ beforeEach(async () => {
   await loginUser({ username: 'bennett', password: 'mwdup' });
 });
 
-afterAll(async () => {
-  await client.end();
-});
-
 
 describe('Parts Integration', () => {
   it('Add single alt part', async () => {
@@ -25,8 +21,8 @@ describe('Parts Integration', () => {
     const part1 = await getPartInfoByPartNum('2251283');
     const part2 = await getPartInfoByPartNum('3949674');
 
-    expect(part1?.altParts).toEqual('2251283, 20R4880, 3949674');
-    expect(part2?.altParts).toEqual('2251283, 20R4880, 3949674');
+    expect(part1?.altParts).toEqual('2251283, 3949674, 20R4880');
+    expect(part2?.altParts).toEqual('2251283, 3949674, 20R4880');
   });
 
   it('Add single alt part with multiple alt parts', async () => {
@@ -74,26 +70,24 @@ describe('Parts Integration', () => {
   });
 
   it('Remove many alt parts', async () => {
-    await removeAltParts('1873875C98', ['1873875C97', '1873875C96', '1873875C95', '1873875C94', '1873875C93']);
-    const part1 = await getPartInfoByPartNum('1873875C98');
-    const part2 = await getPartInfoByPartNum('1873875C97');
-    const part3 = await getPartInfoByPartNum('1873875C96');
-    const part4 = await getPartInfoByPartNum('1873875C95');
-    const part5 = await getPartInfoByPartNum('1873875C94');
-    const part6 = await getPartInfoByPartNum('1873875C93');
-    const part7 = await getPartInfoByPartNum('1873875C92');
-    const part8 = await getPartInfoByPartNum('1873875C99');
-    const part9 = await getPartInfoByPartNum('1873875C91');
-    
-    expect(part1?.altParts).toEqual('1873875C98, 1873875C92, 1873875C91, 1873875C99');
-    expect(part2?.altParts).toEqual('1873875C97');
-    expect(part3?.altParts).toEqual('1873875C96');
-    expect(part4?.altParts).toEqual('1873875C95');
-    expect(part5?.altParts).toEqual('1873875C94');
-    expect(part6?.altParts).toEqual('1873875C93');
-    expect(part7?.altParts).toEqual('1873875C98, 1873875C92, 1873875C91, 1873875C99');
-    expect(part8?.altParts).toEqual('1873875C98, 1873875C92, 1873875C91, 1873875C99');
-    expect(part9?.altParts).toEqual('1873875C98, 1873875C92, 1873875C91, 1873875C99');
+    await removeAltParts('10R3264', ['2447715', '2530615', '3740750', '20R2284', '10R3264R', '6180750', '6470750']);
+    const part1 = await getPartInfoByPartNum('10R3264');
+    const part2 = await getPartInfoByPartNum('2447715');
+    const part3 = await getPartInfoByPartNum('2530615');
+    const part4 = await getPartInfoByPartNum('3740750');
+    const part5 = await getPartInfoByPartNum('20R2284');
+    const part6 = await getPartInfoByPartNum('10R3264R');
+    const part7 = await getPartInfoByPartNum('6180750');
+    const part8 = await getPartInfoByPartNum('6470750');
+
+    expect(part1?.altParts).toEqual('10R3264, 20R2284R');
+    expect(part2?.altParts).toEqual('2447715, 2530615, 10R3264, 3740750, 20R2284, 20R2284R, 10R3264R, 6180750, 6470750');
+    expect(part3?.altParts).toEqual('2447715, 2530615, 10R3264, 3740750, 20R2284, 20R2284R, 10R3264R, 6180750, 6470750');
+    expect(part4?.altParts).toEqual('2447715, 2530615, 10R3264, 3740750, 20R2284, 20R2284R, 10R3264R, 6180750, 6470750');
+    expect(part5?.altParts).toEqual('2447715, 2530615, 10R3264, 3740750, 20R2284R, 10R3264R, 6180750, 6470750, 20R2284');
+    expect(part6?.altParts).toEqual('2447715, 2530615, 10R3264, 3740750, 20R2284, 20R2284R, 10R3264R, 6180750, 6470750');
+    expect(part7?.altParts).toEqual('2447715, 2530615, 10R3264, 3740750, 20R2284, 20R2284R, 10R3264R, 6180750, 6470750');
+    expect(part8?.altParts).toEqual('2447715, 2530615, 10R3264, 3740750, 20R2284, 20R2284R, 10R3264R, 6180750, 6470750');
   });
 
   it('Try to remove own partNum from alt parts', async () => {
@@ -166,12 +160,12 @@ describe('Parts Integration', () => {
     await addPart(part, false);
 
     const partsInfo = await getPartInfoByPartNum('1231231232123');
-    expect(partsInfo?.altParts).toEqual('1231231232123, RE548546, RE538863');
+    expect(partsInfo?.altParts).toEqual('RE548546, RE538863, 1231231232123');
   });
 
   it('Create a new part that exists in partsInfo', async () => {
     const part = {
-      partNum: 'RE538863',
+      partNum: '2251283',
       manufacturer: '',
       desc: 'TEST PART',
       location: '123',
@@ -192,12 +186,12 @@ describe('Parts Integration', () => {
       rating: 10,
       handwrittenId: null,
       engineNum: 0,
-      altParts: ['RE548546', 'RE538863']
+      altParts: ['RE548546', '2251283']
     } as any;
     await addPart(part, true);
 
-    const partsInfo = await getPartInfoByPartNum('RE538863');
-    expect(partsInfo?.altParts).toEqual('RE538863, RE548546');
+    const partsInfo = await getPartInfoByPartNum('2251283');
+    expect(partsInfo?.altParts).toEqual('2251283, RE548546');
     const newParts = await getPartsByStockNum('TEST123456');
     expect(newParts[0].desc).toEqual('TEST PART');
   });

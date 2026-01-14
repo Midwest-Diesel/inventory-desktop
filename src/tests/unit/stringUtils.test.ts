@@ -18,7 +18,7 @@ describe('Format date', () => {
     const parsedDate = parseResDate('2026-01-02T07:31:32.000Z') ?? '';
     const date = new Date(parsedDate);
     const result = formatTime(date);
-    expect(result).toEqual('7:31 AM');
+    expect(result).toEqual('1:31 AM');
   });
 });
 

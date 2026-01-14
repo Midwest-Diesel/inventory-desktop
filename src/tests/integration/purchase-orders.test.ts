@@ -1,5 +1,5 @@
-import { describe, it, expect, beforeEach, beforeAll, afterAll } from 'vitest';
-import { client, resetDb } from '../resetDatabase';
+import { describe, it, expect, beforeEach, beforeAll } from 'vitest';
+import { resetDb } from '../resetDatabase';
 import { setApiBaseUrl } from '@/scripts/config/axios';
 import { loginUser } from '@/scripts/services/userService';
 import { addBlankPurchaseOrder, getSomePurchaseOrders } from '@/scripts/services/purchaseOrderService';
@@ -11,10 +11,6 @@ beforeAll(async () => {
 beforeEach(async () => {
   await resetDb();
   await loginUser({ username: 'bennett', password: 'mwdup' });
-});
-
-afterAll(async () => {
-  await client.end();
 });
 
 

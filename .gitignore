@@ -15,7 +15,8 @@ publish.staging.sh
 /playwright/.cache/
 /playwright/.auth/
 target
-/src/tests/db/*.sql
+/src/tests/db/data.sql
+/src/tests/db/schema.sql
 
 # Misc
 *.tsbuildinfo
