@@ -30,7 +30,6 @@ export default function OfficePartAddonRow({ addOn, onSave, onModifyAddOnData }:
   const [addOns, setAddons] = useAtom<AddOn[]>(shopAddOnsAtom);
   const [engineCostRemaining, setEngineCostRemaining] = useState(0);
   const [loading, setLoading] = useState(false);
-  const [loadingProgress, setLoadingProgress] = useState('');
   const [isDuplicateStockNum, setIsDuplicateStockNum] = useState(false);
   const [highlightPurchasePrice, setHighlightPurchasePrice] = useState(false);
   const [purchasedFrom, setPurchasedFrom] = useState<string>(addOn.purchasedFrom?.toString() ?? '');
@@ -125,7 +124,7 @@ export default function OfficePartAddonRow({ addOn, onSave, onModifyAddOnData }:
       ...updatedAddOn,
       altParts
     } as any;
-    await addPart(newPart, partsInfo !== null, updateLoading);
+    await addPart(newPart, partsInfo !== null);
 
     // Add purchase price
     if (newPart.purchasePrice > 0) await addPartCostIn(newPart.stockNum, newPart.purchasePrice, null, newPart.purchasedFrom, 'PurchasePrice', '');
@@ -155,10 +154,6 @@ export default function OfficePartAddonRow({ addOn, onSave, onModifyAddOnData }:
     });
     setAddons(updatedAddOns);
     setPurchasedFrom('');
-  };
-
-  const updateLoading = (i: number, total: number) => {
-    setLoadingProgress(`${i}/${total}`);
   };
 
   const loadAddOnAltParts = async () => {
@@ -453,7 +448,6 @@ export default function OfficePartAddonRow({ addOn, onSave, onModifyAddOnData }:
         {loading ?
           <>
             <p>Modifying Alts</p>
-            <p>{ loadingProgress }</p>
             <Loading />
           </>
           :

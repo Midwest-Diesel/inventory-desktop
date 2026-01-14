@@ -255,32 +255,28 @@ export const getPartsQtyHistory = async (partId: number): Promise<PartQtyHistory
 
 // === POST routes === //
 
-export const addPart = async (part: Part, partInfoExists: boolean, updateLoading?: (i: number, total: number) => void): Promise<number | null> => {
+export const addPart = async (part: Part, partInfoExists: boolean): Promise<number | null> => {
   try {
     const partNum = part.partNum;
     const filteredAlts = part ? part.altParts.filter((p) => p !== partNum) : [];
     const includedAlts = [partNum, ...filteredAlts];
 
     // Create new part record
-    const data = { ...part, altParts: filteredAlts.reverse().join(','), partInfoExists };
+    const data = { ...part, altParts: filteredAlts.join(','), partInfoExists };
     const id = await api.post('/api/parts', data);
 
     // Adds this part to all connected part records
     if (filteredAlts.length > 0) {
       const filteredAlts = includedAlts.filter((p) => p && p !== partNum);
-      for (let i = 0; i < filteredAlts.length; i++) {
-        if (updateLoading) updateLoading(i + 1, filteredAlts.length);
-        for (let j = 0; j < includedAlts.length; j++) {
-          await api.put('/api/parts/parts-info/add', { partNum: filteredAlts[i], altParts: includedAlts[j] });
-        }
-      }
+      await api.put('/api/parts/parts-info/add', { partNums: filteredAlts, altParts: includedAlts });
+      
       // Updates alt parts
       let altsToAdd: any[] = [];
       const res = await searchAltParts({ partNum: `*${filteredAlts[0]}`, showSoldParts: true }, 1, 999999999) ?? [];
       res.rows.forEach((part) => {
         altsToAdd.push(...part.altParts);
       });
-      altsToAdd = Array.from(new Set(altsToAdd.reverse()));
+      altsToAdd = Array.from(new Set(altsToAdd));
       await editAltParts(partNum, altsToAdd);
     }
 
