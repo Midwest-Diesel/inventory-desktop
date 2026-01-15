@@ -19,6 +19,7 @@ import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { ask } from "@/scripts/config/tauri";
 import { addVendor, getVendorByName } from "@/scripts/services/vendorsService";
+import EditMapLocDialog from "@/components/customers/dialogs/EditMapLocDialog";
 
 
 export default function Customer() {
@@ -32,25 +33,26 @@ export default function Customer() {
   const [isOnMap, setIsOnMap] = useState(true);
   const [addLocDialogOpen, setAddLocDialogOpen] = useState(false);
   const [isVendor, setIsVendor] = useState(false);
+  const [editLocDialogOpen, setEditLocDialogOpen] = useState(false);
+  const [location, setLocation] = useState<MapLocation | null>(null);
   const parser = new DOMParser();
   const comments = parser.parseFromString(customer?.comments ?? '', "text/html");
 
   useEffect(() => {
     const fetchData = async () => {
       if (!params) return;
-      // Fetch customer data
       const id = Number(params.customer);
       const customerRes = await getCustomerById(id);
       if (!customerRes) return;
       setCustomer(customerRes);
-      // Fetch sales history
       setSalesHistory(await getCustomerSalesHistory(id));
-      setTitle(customerRes.company ?? '');
-      // Detect if customer has map location
-      if (!await getMapLocationFromCustomer(id)) setIsOnMap(false);
-      // Check if vendor
+
       const vendor = await getVendorByName(customerRes.company);
       if (vendor) setIsVendor(true);
+
+      if (!await getMapLocationFromCustomer(id)) setIsOnMap(false);
+      const location = await getMapLocationFromCustomer(customerRes.id);
+      setLocation(location);
     };
     fetchData();
   }, [params]);
@@ -89,6 +91,14 @@ export default function Customer() {
           setOpen={(setAddLocDialogOpen)}
           customer={customer}
           userId={user.id}
+        />
+      }
+
+      {editLocDialogOpen &&
+        <EditMapLocDialog
+          open={editLocDialogOpen}
+          setOpen={setEditLocDialogOpen}
+          location={location}
         />
       }
 
@@ -135,6 +145,7 @@ export default function Customer() {
 
             <div className="customer-details__top-bar">
               { !isVendor && <Button onClick={markAsVendor}>Mark as Vendor</Button> }
+              <Button onClick={() => setEditLocDialogOpen(true)}>Edit Map Location</Button>
             </div>
           
             <Grid rows={1} cols={12} gap={1}>
