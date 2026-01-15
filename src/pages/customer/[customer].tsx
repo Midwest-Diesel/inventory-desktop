@@ -13,7 +13,6 @@ import { selectedCustomerAtom, userAtom } from "@/scripts/atoms/state";
 import { deleteCustomer, getCustomerById, getCustomerSalesHistory } from "@/scripts/services/customerService";
 import { deleteMapLocationByCustomer, getMapLocationFromCustomer } from "@/scripts/services/mapService";
 import { formatCurrency, formatPhone } from "@/scripts/tools/stringUtils";
-import { setTitle } from "@/scripts/tools/utils";
 import { useAtom } from "jotai";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";

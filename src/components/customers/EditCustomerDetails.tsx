@@ -5,8 +5,6 @@ import { FormEvent, useState } from "react";
 import Input from "@/components/library/Input";
 import { editCustomer, getCustomerTypes } from "@/scripts/services/customerService";
 import Table from "../library/Table";
-import { getMapLocationFromCustomer } from "@/scripts/services/mapService";
-import EditMapLocDialog from "./dialogs/EditMapLocDialog";
 import { usePreventNavigation } from "../../hooks/usePreventNavigation";
 import SourceSelect from "../library/select/SourceSelect";
 import CustomerContactsBlock from "./contacts/CustomerContactsBlock";

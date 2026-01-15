@@ -64,10 +64,15 @@
 
   &__part-num {
     font-size: var(--font-lg);
+    margin: 0.8rem 0;
+  }
+
+  &__subtext {
+    font-size: 1.8rem;
   }
 
   &__note {
-    margin: 6rem 0;
+    margin: 5rem 0;
     font-size: var(--font-md);
   }
 }

@@ -54,6 +54,7 @@ export default function AlertModal({ alerts, setAlerts }: Props) {
           <h2 className="alert__top-msg">STOP!!!</h2>
           <h2 className="alert__type">{ alert.type }</h2>
           <h2 className="alert__part-num">{ alert.partNum }</h2>
+          <h2 className="alert__subtext">{ alert.subtext }</h2>
           <p className="alert__note">{ alert.note }</p>
           <h3 className="alert__footer">Marked per { alert.addedBy } on { formatDate(alert.date) }</h3>
         </Modal>
