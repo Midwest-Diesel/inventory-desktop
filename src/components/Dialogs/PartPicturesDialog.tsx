@@ -24,7 +24,7 @@ export default function PartPicturesDialog({ open, setOpen, pictures, partNum }:
 
   useEffect(() => {
     if (!open) return;
-    setSelectedImages(pictures.map((pic) => pic.name));
+    setSelectedImages([]);
   }, [open, partNum]);
 
   const editSelectedImages = (checked: boolean, name: string) => {
@@ -80,7 +80,7 @@ export default function PartPicturesDialog({ open, setOpen, pictures, partNum }:
             />
 
             <Checkbox
-              variant={['label-fit']}
+              variant={['label-fit', 'dark-bg']}
               checked={selectedImages.includes(pic.name)}
               onChange={(e: any) => editSelectedImages(e.target.checked, pic.name)}
             />

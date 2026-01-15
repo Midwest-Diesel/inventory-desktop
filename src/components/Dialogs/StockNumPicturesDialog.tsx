@@ -19,7 +19,7 @@ export default function StockNumPicturesDialog({ open, setOpen, pictures = [], s
 
   useEffect(() => {
     if (!open) return;
-    setSelectedImages(pictures.map((pic) => pic.name));
+    setSelectedImages([]);
   }, [open, stockNum]);
 
   const editSelectedImages = (checked: boolean, name: string) => {
@@ -76,7 +76,7 @@ export default function StockNumPicturesDialog({ open, setOpen, pictures = [], s
             />
 
             <Checkbox
-              variant={['label-fit']}
+              variant={['label-fit', 'dark-bg']}
               checked={selectedImages.includes(pic.name)}
               onChange={(e: any) => editSelectedImages(e.target.checked, pic.name)}
             />
