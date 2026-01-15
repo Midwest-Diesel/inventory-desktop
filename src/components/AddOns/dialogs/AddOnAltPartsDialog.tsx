@@ -34,11 +34,7 @@ export default function AddOnAltPartsDialog({ open, setOpen, addOn, partNumList 
     e.preventDefault();
     if (!addOn || !partNum.trim()) return;
     const res = await getPartInfoByPartNum(partNum);
-    if (!res || alts.some((alt: string) => res.altParts.split(', ').includes(alt))) {
-      alert('Part number does not exist');
-      return;
-    }
-    const updatedAlts = [...alts, ...res.altParts.split(', ')];
+    const updatedAlts = [...alts, ...res?.altParts.split(', ') ?? [], partNum];
     await editAddOnAltParts(addOn.id, updatedAlts.join(', '));
     setAlts(updatedAlts);
     setPartNum('');

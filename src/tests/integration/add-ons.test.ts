@@ -4,6 +4,7 @@ import { loginUser } from '@/scripts/services/userService';
 import { addAltParts, removeAltParts } from '@/scripts/logic/parts';
 import { getAddOnById } from '@/scripts/services/addOnsService';
 import { resetDb } from '../resetDatabase';
+import { addPart, getPartInfoByPartNum } from '@/scripts/services/partsService';
 
 beforeAll(async () => {
   setApiBaseUrl('http://localhost:8001');
@@ -32,5 +33,15 @@ describe('Add Ons Integration', () => {
     await removeAltParts('6057481', ['0323237', '323237', '1W4589', '1336934']);
     const res = await getAddOnById(18);
     expect(res?.altParts).toEqual(['6057481']);
+  });
+
+  it('Add altPart that doesn\'t exist in inventory', async () => {
+    await addAltParts('6057481', ['123456']);
+    const altParts = ['6057481', '123456'];
+    const addOn = await getAddOnById(18);
+    await addPart({ ...addOn, altParts } as Part, true);
+    const res = await getPartInfoByPartNum('6057481');
+
+    expect(res?.altParts).toEqual('6057481, 123456');
   });
 });
