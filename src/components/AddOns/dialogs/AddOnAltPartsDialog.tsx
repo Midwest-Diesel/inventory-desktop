@@ -43,6 +43,7 @@ export default function AddOnAltPartsDialog({ open, setOpen, addOn, partNumList 
   const onClickRemoveAlt = async (alt: string) => {
     if (!addOn) return;
     const altSet: Set<string> = new Set();
+    altSet.add(alt);
     const partsInfo = await getPartInfoByPartNum(alt);
     partsInfo?.altParts.split(',')
       .map((s) => s.trim())

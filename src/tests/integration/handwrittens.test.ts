@@ -259,4 +259,8 @@ describe('Handwrittens Integration', () => {
     const res = await getHandwrittenById(2);
     expect(res?.handwrittenItems[0].invoiceItemChildren[0]).toMatchObject(child);
   });
+
+  it('Add IN/OUT line item', async () => {
+    
+  });
 });
