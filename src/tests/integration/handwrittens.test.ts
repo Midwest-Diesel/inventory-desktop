@@ -260,7 +260,11 @@ describe('Handwrittens Integration', () => {
     expect(res?.handwrittenItems[0].invoiceItemChildren[0]).toMatchObject(child);
   });
 
-  it('Add IN/OUT line item', async () => {
+  it('Add misc line item', async () => {
     
+  });
+
+  it('Add IN/OUT line item', async () => {
+
   });
 });

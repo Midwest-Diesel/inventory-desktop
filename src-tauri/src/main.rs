@@ -21,10 +21,10 @@ const PART_TAG_PRINTER: &str = "D550 Printer";
 use image::{io::Reader as ImageReader, ImageOutputFormat, DynamicImage, imageops::{rotate90, FilterType}};
 use serde::{Deserialize, Serialize};
 use tauri::{Manager, api::shell, AppHandle};
-use std::{fs::remove_file, process::Command, env};
-use std::fs::{write};
-use std::{fs::File, io::copy};
-use std::io::{self, Cursor, Write};
+use std::env;
+use std::fs::{write, File, remove_file};
+use std::io::{self, Cursor, Write, copy};
+use std::process::{Command, Stdio};
 use reqwest::Client;
 use std::path::{Path};
 use zip::read::ZipArchive;
@@ -65,11 +65,6 @@ struct EmailArgs {
   cc_recipients: Option<Vec<String>>,
   bcc_recipients: Option<Vec<String>>,
   attachments: Option<Vec<String>>
-}
-
-#[derive(Deserialize, Serialize)]
-struct Attachments {
-  attachments: Vec<String>
 }
 
 #[derive(Deserialize, Serialize)]
@@ -269,51 +264,83 @@ async fn open_window(app: tauri::AppHandle, window_args: WindowArgs) {
 
 #[tauri::command]
 fn install_update() {
-  println!("Update detected");
-  io::stdout().flush().unwrap();
+    println!("Update detected");
+    io::stdout().flush().unwrap();
 
-  tokio::spawn(async move {
-    if let Err(e) = download_update().await {
-      println!("Error downloading the update: {}", e);
-      io::stdout().flush().unwrap();
-    } else {
-      println!("Update successful, restarting app...");
-      io::stdout().flush().unwrap();
-      let exe_name = env::current_exe()
-        .unwrap()
-        .file_name()
-        .unwrap()
-        .to_string_lossy()
-        .to_string();
+    tokio::spawn(async move {
+        if let Err(e) = download_update().await {
+            println!("Error downloading the update: {}", e);
+            io::stdout().flush().unwrap();
+            return;
+        }
 
-      let product_name = if exe_name.contains("Staging") {"Inventory-Staging"} else {"Inventory"};
-      let install_dir = if product_name.contains("Staging") {r"C:\MWD\staging"} else {r"C:\MWD"};
-      let batch_script = format!(r#"
-      @echo off
-      echo Installing update...
-      "%SystemRoot%\\System32\\timeout.exe" /T 1 /NOBREAK > NUL
-      echo Examining reactor core...
-      "%SystemRoot%\\System32\\timeout.exe" /T 1 /NOBREAK > NUL
-      echo Training AI...
-      "%SystemRoot%\\System32\\timeout.exe" /T 1 /NOBREAK > NUL
-      taskkill /F /IM {product_name}.exe > NUL 2>&1
-      start "" "{install_dir}\{product_name}.exe"
-      del "%~f0" & exit
-      "#);
+        println!("Update downloaded, preparing restart...");
+        io::stdout().flush().unwrap();
 
-      let script_path = "C:\\MWD\\updates\\restart_app.bat";
-      std::fs::write(script_path, batch_script).unwrap();
+        let exe_name = env::current_exe()
+            .unwrap()
+            .file_name()
+            .unwrap()
+            .to_string_lossy()
+            .to_string();
 
-      let _ = Command::new("cmd.exe")
-        .args(["/C", script_path])
-        .spawn();
+        let product_name = if exe_name.contains("Staging") {
+            "Inventory-Staging"
+        } else {
+            "Inventory"
+        };
 
-      std::process::exit(0);
-    }
-  });
-  let _ = std::fs::remove_dir_all("C:/MWD/updates");
-  let _ = std::fs::create_dir("C:/MWD/updates");
+        let install_dir = if product_name.contains("Staging") {
+            r"C:\MWD\staging"
+        } else {
+            r"C:\MWD"
+        };
+
+        // Batch script that waits for the old process to exit
+        let batch_script = format!(
+            r#"
+@echo off
+echo Installing update...
+
+REM Wait until the old process fully exits
+:WAIT
+tasklist /FI "IMAGENAME eq {product_name}.exe" | find /I "{product_name}.exe" > NUL
+if %ERRORLEVEL%==0 (
+    timeout /T 1 /NOBREAK > NUL
+    goto WAIT
+)
+
+echo Old process exited, starting new version...
+start "" "{install_dir}\{product_name}.exe"
+
+REM Optional: run VBScript tasks here if needed
+REM cscript "C:\MWD\scripts\your_script.vbs" //Nologo
+
+REM Clean up batch file
+del "%~f0"
+"#,
+            product_name = product_name,
+            install_dir = install_dir
+        );
+
+        let script_path = r"C:\MWD\updates\restart_app.bat";
+
+        // Reset updates folder
+        let _ = std::fs::remove_dir_all(r"C:\MWD\updates");
+        let _ = std::fs::create_dir(r"C:\MWD\updates");
+
+        std::fs::write(script_path, batch_script).unwrap();
+
+        // Launch batch asynchronously
+        let _ = Command::new("cmd.exe")
+            .args(["/C", script_path])
+            .spawn();
+
+        // Exit old process cleanly
+        std::process::exit(0);
+    });
 }
+
 
 async fn download_update() -> Result<(), Box<dyn std::error::Error>> {
   let exe_name = env::current_exe()
