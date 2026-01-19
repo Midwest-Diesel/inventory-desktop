@@ -303,7 +303,14 @@ fn install_update() {
         .args(["/C", script_path])
         .spawn();
 
-      std::process::exit(0);
+      let start_path = "C:\\MWD\\updates\\restart_app.bat";
+      let start_script = format!(r#"start "" "{install_dir}\{product_name}.exe""#);
+      std::fs::write(start_path, start_script).unwrap();
+      let _ = Command::new("cmd.exe")
+        .args(["/C", start_path])
+        .spawn();
+
+      // std::process::exit(0);
     }
   });
   let _ = std::fs::remove_dir_all("C:/MWD/updates");
