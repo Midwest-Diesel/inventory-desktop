@@ -1,6 +1,6 @@
 import { ask } from "../config/tauri";
 import { addCore } from "../services/coresService";
-import { addHandwrittenItem } from "../services/handwrittensService";
+import { addHandwrittenItem, addHandwrittenItemChild } from "../services/handwrittensService";
 
 interface TakeoffRes {
   item: HandwrittenItem | null
@@ -65,4 +65,31 @@ export const startTakeoff = (input: string, handwritten: Handwritten): TakeoffRe
   const itemChild: HandwrittenItemChild | null = children.find((item) => item.stockNum?.toUpperCase() === stockNum) ?? null;
   const parentItem = itemChild ? handwritten.handwrittenItems.find((i) => i.id === itemChild.parentId) ?? null : null;
   return { item, itemChild, parentItem };
+};
+
+export const addQtyInOut = async (handwrittenId: number, desc: string, partNum: string, qty: number, unitPrice: number, isInOut: boolean) => {
+  const newItem = {
+    handwrittenId,
+    date: new Date(),
+    desc,
+    partNum,
+    stockNum: isInOut ? 'IN/OUT' : '',
+    unitPrice: unitPrice,
+    qty,
+    cost: 0.04,
+    location: isInOut ? 'IN/OUT' : '',
+    partId: null
+  };
+  const id = await addHandwrittenItem(newItem);
+
+  if (isInOut) {
+    const newChild = {
+      partId: null,
+      qty,
+      cost: 0.04,
+      partNum,
+      stockNum: 'In/Out'
+    };
+    await addHandwrittenItemChild(Number(id), newChild);
+  }
 };

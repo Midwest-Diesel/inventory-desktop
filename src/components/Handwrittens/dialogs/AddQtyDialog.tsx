@@ -2,8 +2,9 @@ import Input from "@/components/library/Input";
 import Dialog from "../../library/Dialog";
 import Button from "@/components/library/Button";
 import { FormEvent, useState } from "react";
-import { addHandwrittenItem, addHandwrittenItemChild, getHandwrittenById } from "@/scripts/services/handwrittensService";
+import { getHandwrittenById } from "@/scripts/services/handwrittensService";
 import Checkbox from "@/components/library/Checkbox";
+import { addQtyInOut } from "@/scripts/logic/handwrittens";
 
 interface Props {
   open: boolean
@@ -29,30 +30,7 @@ export default function AddQtyDialog({ open, setOpen, handwritten, setHandwritte
       return;
     }
 
-    const newItem = {
-      handwrittenId: handwritten.id,
-      date: new Date(),
-      desc,
-      partNum,
-      stockNum: isInOut ? 'IN/OUT' : '',
-      unitPrice: Number(unitPrice),
-      qty,
-      cost: 0.04,
-      location: isInOut ? 'IN/OUT' : '',
-      partId: null
-    };
-    const id = await addHandwrittenItem(newItem);
-
-    if (isInOut) {
-      const newChild = {
-        partId: null,
-        qty,
-        cost: 0.04,
-        partNum,
-        stockNum: 'In/Out'
-      };
-      await addHandwrittenItemChild(Number(id), newChild);
-    }
+    await addQtyInOut(handwritten.id, desc, partNum, qty, Number(unitPrice), isInOut);
 
     const res = await getHandwrittenById(handwritten.id);
     if (res) setHandwritten(res);

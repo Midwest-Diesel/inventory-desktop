@@ -3,6 +3,7 @@ import { resetDb } from '../resetDatabase';
 import { setApiBaseUrl } from '@/scripts/config/axios';
 import { loginUser } from '@/scripts/services/userService';
 import { addHandwritten, addHandwrittenItemChild, editHandwritten, editHandwrittenItemTakeoffState, getHandwrittenById, getHandwrittenItemById, searchHandwrittens } from '@/scripts/services/handwrittensService';
+import { addQtyInOut } from '@/scripts/logic/handwrittens';
 
 beforeAll(async () => {
   setApiBaseUrl('http://localhost:8001');
@@ -253,7 +254,7 @@ describe('Handwrittens Integration', () => {
       parentId: 101,
       partId: 1,
       qty: 1,
-      stockNum: 'JB7308'
+      stockNum: 'CA7248'
     };
     await addHandwrittenItemChild(2, { cost: 100, partId: 1, qty: 1 });
     const res = await getHandwrittenById(2);
@@ -261,10 +262,26 @@ describe('Handwrittens Integration', () => {
   });
 
   it('Add misc line item', async () => {
-    
+    await addQtyInOut(2, 'TEST', '123456', 1, 200, false);
+    const res = await getHandwrittenById(2);
+    const { desc, partNum, qty, unitPrice, stockNum, location } = res?.handwrittenItems[0] as HandwrittenItem;
+    expect(desc).toEqual('TEST');
+    expect(partNum).toEqual('123456');
+    expect(qty).toEqual(1);
+    expect(unitPrice).toEqual(200);
+    expect(stockNum).toEqual('');
+    expect(location).toEqual('');
   });
 
   it('Add IN/OUT line item', async () => {
-
+    await addQtyInOut(2, 'TEST', '123456', 1, 200, true);
+    const res = await getHandwrittenById(2);
+    const { desc, partNum, qty, unitPrice, stockNum, location } = res?.handwrittenItems[0] as HandwrittenItem;
+    expect(desc).toEqual('TEST');
+    expect(partNum).toEqual('123456');
+    expect(qty).toEqual(1);
+    expect(unitPrice).toEqual(200);
+    expect(stockNum).toEqual('IN/OUT');
+    expect(location).toEqual('IN/OUT');
   });
 });

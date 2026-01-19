@@ -49,7 +49,7 @@ export const parseHandwrittenRes = (data: any) => {
           date: item.date && parseResDate(item.date),
           invoiceItemChildren: item.invoiceItemChildren ? item.invoiceItemChildren : []
         };
-      }).sort((a: any, b: any) => a.id - b.id).reverse(),
+      }).sort((a: any, b: any) => b.id - a.id),
       coreReturns: handwritten.coreReturns ? handwritten.coreReturns.map((item: any) => {
         return {
           ...item,
