@@ -24,7 +24,7 @@ use tauri::{Manager, api::shell, AppHandle};
 use std::env;
 use std::fs::{write, File, remove_file};
 use std::io::{self, Cursor, Write, copy};
-use std::process::{Command, Stdio};
+use std::process::{Command};
 use reqwest::Client;
 use std::path::{Path};
 use zip::read::ZipArchive;
