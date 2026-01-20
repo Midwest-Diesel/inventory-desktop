@@ -142,9 +142,9 @@ export default function EditHandwrittenDetails({
   const [altShipOpen, setAltShipOpen] = useState(false);
   const [accountingProcessOpen, setAccountingProcessOpen] = useState(false);
   const [accountingProcessInitPage, setAccountingProcessInitPage] = useState(0);
-  const [isSentToAccounting, setIsSentToAccounting] = useState(false);
   const [loading, setLoading] = useState(false);
   const accountNumRef = useRef<HTMLInputElement | null>(null);
+  const isSentToAccounting = invoiceStatus === 'SENT TO ACCOUNTING' && handwritten.invoiceStatus !== 'SENT TO ACCOUNTING';
   usePreventNavigation(!changesSaved, 'Leave without saving changes?');
   
 
@@ -191,8 +191,6 @@ export default function EditHandwrittenDetails({
     e.preventDefault();
     if (!changesSaved && !await ask('Are you sure you want to save these changes?')) return;
     setChangesSaved(true);
-    const isSentToAccounting = invoiceStatus === 'SENT TO ACCOUNTING' && handwritten.invoiceStatus !== 'SENT TO ACCOUNTING';
-    setIsSentToAccounting(isSentToAccounting);
     if (isSentToAccounting && handwrittenItems.some((item) => item.cost === 0.04)) {
       setError('Can\'t save when items have $0.04 cost');
       return;
@@ -641,13 +639,15 @@ export default function EditHandwrittenDetails({
       }
 
       {accountingProcessOpen &&
-        <ModalList onClose={onAccountingProcessClose} initialPage={accountingProcessInitPage}>
+        <ModalList onClose={onAccountingProcessClose}>
           <PromotionalModal
+            open={isSentToAccounting}
             handwritten={handwritten}
             onAddPromotionals={onAddPromotionals}
           />
 
           <ShippingListModal
+            open={isSentToAccounting}
             handwrittenItems={handwrittenItems}
             newShippingListRow={newShippingListRow}
           />

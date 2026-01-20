@@ -131,7 +131,7 @@ export default function ChangeCustomerInfoModal({ open, onNext, onPrev, customer
         <div className="form__footer">
           { onPrev && <Button onClick={onPrev}>Back</Button> }
           <Button onClick={onNext} data-testid="no-changes-btn">No Changes</Button>
-          <Button type="submit">Next</Button>
+          <Button type="submit">Save</Button>
         </div>
       </form>
     </Modal>

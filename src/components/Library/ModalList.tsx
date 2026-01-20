@@ -1,4 +1,4 @@
-import { ReactElement, ReactNode, useState } from "react";
+import { ReactElement, ReactNode, useMemo, useState } from "react";
 
 interface ModalListProps {
   children: ReactNode;
@@ -8,25 +8,34 @@ interface ModalListProps {
 
 
 export default function ModalList({ children, initialPage = 0, onClose }: ModalListProps) {
-  const modals = Array.isArray(children) ? children : [children];
+  const allModals = Array.isArray(children) ? children : [children];
+  const modals = useMemo(() => {
+    return allModals.filter(
+      (child): child is ReactElement =>
+        Boolean(child) && (child as ReactElement).props?.open !== false
+    )
+  }, [allModals]);
+  
   const [page, setPage] = useState(initialPage);
 
   const next = () => {
-    if (page === modals.length - 1) {
+    if (page >= modals.length - 1) {
       close();
     } else {
-      setPage((p) => (p + 1) % modals.length);
+      setPage((p) => p + 1);
     }
   };
 
   const prev = () => {
-    setPage((p) => (p - 1 + modals.length) % modals.length);
+    setPage((p) => Math.max(0, p - 1));
   };
 
   const close = () => {
-    if (onClose) onClose();
+    onClose?.();
   };
 
+
+  if (modals.length === 0) return null;
 
   return (
     <>
