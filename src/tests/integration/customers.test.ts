@@ -68,7 +68,7 @@ describe('Customers Integration', () => {
   it('Merge customer', async () => {
     await customerMerge(2, 4);
     const badCustomer = await getCustomerById(2);
-    const handwritten = await getHandwrittenById(2);
+    const handwritten = await getHandwrittenById(101);
     expect(handwritten?.customer.id).toEqual(4);
     expect(badCustomer).toBeFalsy();
   });

@@ -164,7 +164,7 @@ describe('Handwrittens Integration', () => {
 
   it('Add handwritten', async () => {
     const newHandwritten = {
-      id: 101,
+      id: 102,
       invoiceId: null,
       legacyId: null,
       customer: {
@@ -231,7 +231,7 @@ describe('Handwrittens Integration', () => {
     };
     await addHandwritten(newHandwritten as any);
     
-    const res = await getHandwrittenById(101);
+    const res = await getHandwrittenById(102);
     expect(res).toMatchObject(newHandwritten);
   });
 
