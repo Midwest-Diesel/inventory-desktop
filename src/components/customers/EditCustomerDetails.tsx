@@ -26,6 +26,7 @@ export default function CustomerDetails({ customer, setCustomer, setIsEditing }:
   // So this is parsing it as html and turning it back to a string
   const parser = new DOMParser();
   const commentsDoc = parser.parseFromString(customer?.comments ?? '', "text/html");
+  const fleetNotesDoc = parser.parseFromString(customer?.fleetNotes ?? '', "text/html");
   const [company, setCompany] = useState<string>(customer.company ?? '');
   const [phone, setPhone] = useState<string>(customer.phone ?? '');
   const [billToPhone, setBillToPhone] = useState<string>(customer.billToPhone ?? '');
@@ -50,6 +51,7 @@ export default function CustomerDetails({ customer, setCustomer, setIsEditing }:
   const [source, setSource] = useState<string>(customer.source ?? '');
   const [isTaxable, setIsTaxable] = useState<boolean>(customer.isTaxable);
   const [comments, setComments] = useState<string>(commentsDoc.querySelector('body')?.innerText ?? '');
+  const [fleetNotes, setFleetNotes] = useState<string>(fleetNotesDoc.querySelector('body')?.innerText ?? '');
   const [changesSaved, setChangesSaved] = useState(true);
   usePreventNavigation(!changesSaved, 'Leave without saving changes?');
 
@@ -89,7 +91,8 @@ export default function CustomerDetails({ customer, setCustomer, setIsEditing }:
       serviceManagerEmail,
       paymentType,
       isTaxable,
-      comments
+      comments,
+      fleetNotes
     } as Customer;
     await editCustomer(newCustomer);
     setCustomer(newCustomer);
@@ -391,6 +394,17 @@ export default function CustomerDetails({ customer, setCustomer, setIsEditing }:
                         variant={['auto-size']}
                         value={comments}
                         onChange={(e) => setComments(e.target.value)}
+                      />
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>{ customer.customerType || 'Fleet' } Notes</th>
+                    <td>
+                      <TextArea
+                        style={{ height: '100%' }}
+                        variant={['auto-size']}
+                        value={fleetNotes}
+                        onChange={(e) => setFleetNotes(e.target.value)}
                       />
                     </td>
                   </tr>

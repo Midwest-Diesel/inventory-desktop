@@ -36,6 +36,7 @@ export default function Customer() {
   const [location, setLocation] = useState<MapLocation | null>(null);
   const parser = new DOMParser();
   const comments = parser.parseFromString(customer?.comments ?? '', "text/html");
+  const fleetNotes = parser.parseFromString(customer?.fleetNotes ?? '', "text/html");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -296,6 +297,10 @@ export default function Customer() {
                     <tr>
                       <th>Comments</th>
                       <td style={{ whiteSpace: 'pre-wrap' }}>{ comments.querySelector('body')?.innerText }</td>
+                    </tr>
+                    <tr>
+                      <th>{ customer.customerType || 'Fleet' } Notes</th>
+                      <td style={{ whiteSpace: 'pre-wrap' }}>{ fleetNotes.querySelector('body')?.innerText }</td>
                     </tr>
                   </tbody>
                 </Table>

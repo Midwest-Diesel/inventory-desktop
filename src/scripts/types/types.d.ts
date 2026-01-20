@@ -88,6 +88,7 @@ type Customer = {
   paymentType: string | null
   country: string | null
   isTaxable: boolean
+  fleetNotes: string | null
 };
 
 type Quote = {
