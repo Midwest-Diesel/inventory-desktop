@@ -13,7 +13,7 @@ export default function ModalList({ children, initialPage = 0, onClose }: ModalL
     return allModals.filter(
       (child): child is ReactElement =>
         Boolean(child) && (child as ReactElement).props?.open !== false
-    )
+    );
   }, [allModals]);
   
   const [page, setPage] = useState(initialPage);

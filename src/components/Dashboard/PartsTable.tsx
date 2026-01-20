@@ -1,6 +1,6 @@
 import Table from "../library/Table";
 import Button from "../library/Button";
-import { extractStatusColors, formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
+import { formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
 import Pagination from "../library/Pagination";
 import Link from "../library/Link";
 import { getImagesFromPart, getImagesFromStockNum } from "@/scripts/services/imagesService";
@@ -8,6 +8,7 @@ import { useState } from "react";
 import PartPicturesDialog from "../dialogs/PartPicturesDialog";
 import StockNumPicturesDialog from "../dialogs/StockNumPicturesDialog";
 import { useTooltip } from "@/hooks/useTooltip";
+import { extractStatusColors } from "@/scripts/logic/partSearch";
 
 interface Props {
   parts: Part[]

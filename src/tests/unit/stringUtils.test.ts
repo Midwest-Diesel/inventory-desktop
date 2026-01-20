@@ -1,5 +1,6 @@
 import { describe, expect, test } from 'vitest';
-import { extractStatusColors, formatCurrency, formatDate, formatPhone, formatTime, parsePhone, parseResDate, toAbsolutePath } from "@/scripts/tools/stringUtils";
+import { formatCurrency, formatDate, formatPhone, formatTime, parsePhone, parseResDate, toAbsolutePath } from "@/scripts/tools/stringUtils";
+import { extractStatusColors } from '@/scripts/logic/partSearch';
 
 
 describe('Format date', () => {

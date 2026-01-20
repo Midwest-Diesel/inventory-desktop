@@ -62,7 +62,6 @@ interface Props {
 
 
 const MAX_ROWS = 12;
-const CUSTOMER_INFO_MODAL_PAGE = 2;
 
 export default function EditHandwrittenDetails({
   handwritten,
@@ -141,7 +140,6 @@ export default function EditHandwrittenDetails({
   const [changeCustomerDialogData, setChangeCustomerDialogData] = useState<Handwritten | null>(null);
   const [altShipOpen, setAltShipOpen] = useState(false);
   const [accountingProcessOpen, setAccountingProcessOpen] = useState(false);
-  const [accountingProcessInitPage, setAccountingProcessInitPage] = useState(0);
   const [loading, setLoading] = useState(false);
   const accountNumRef = useRef<HTMLInputElement | null>(null);
   const isSentToAccounting = invoiceStatus === 'SENT TO ACCOUNTING' && handwritten.invoiceStatus !== 'SENT TO ACCOUNTING';
@@ -264,9 +262,7 @@ export default function EditHandwrittenDetails({
     await saveTrackingNumbers();
 
     // Start SEND TO ACCOUNTING process
-    // If the handwritten is not being SENT TO ACCOUNTING then skip to the CustomerInfoModal instead
     setChangeCustomerDialogData(newInvoice);
-    if (!isSentToAccounting) setAccountingProcessInitPage(CUSTOMER_INFO_MODAL_PAGE);
     setAccountingProcessOpen(true);
   };
 
