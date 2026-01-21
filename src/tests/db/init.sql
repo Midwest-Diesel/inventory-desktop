@@ -22,6 +22,7 @@ INSERT INTO public."partsInfo" ("partNum", "desc", "altParts", "weightDims", "pr
 INSERT INTO public."partsInfo" ("partNum", "desc", "altParts", "weightDims", "prefix") VALUES ('5441832', 'TUBE', '11R1251, 5441832, 5865303', NULL, 'TU');
 INSERT INTO public."partsInfo" ("partNum", "desc", "altParts", "weightDims", "prefix") VALUES ('5865303', 'TUBE', '11R1251, 5441832, 5865303', NULL, 'TU');
 INSERT INTO public."partsInfo" ("partNum", "desc", "altParts", "weightDims", "prefix") VALUES ('6057481', 'WATER PUMP C15', '6057481', NULL, 'TU');
+INSERT INTO public."partsInfo" ("partNum", "desc", "altParts", "weightDims", "prefix") VALUES ('4700245', 'INJECTOR C9', '4700245', NULL, 'INJ');
 
 INSERT INTO public."customers" ("legacyId","company","contact","partsManager","partsManagerEmail","serviceManager","serviceManagerEmail","other","phone","billToPhone","fax","email","terms","billToAddress","billToAddress2","billToCity","billToState","billToZip","shipToAddress","shipToAddress2","shipToCity","shipToState","shipToZip","dateContacted","comments","customerType","source","country","isTaxable","paymentType") VALUES (714,'LKQ HEAVY DUTY REBUILDERS','BURK DAY',NULL,NULL,NULL,NULL,NULL,'(800) 873-8783',NULL,'(417) 581-9808',NULL,'NET 30','1250 WEST LIBERTY AVE',NULL,'OZARK','MO',65721,'1250 WEST LIBERTY AVE',NULL,'OZARK','MO',65721,NULL,'Bill''s Address: &nbsp;6050 N Cabinet Drive&nbsp;Ozark, MO 65721','Vendor','RC',NULL,'false',NULL);
 

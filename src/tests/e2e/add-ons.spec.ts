@@ -18,7 +18,7 @@ async function newAddon(page: Page) {
   await page.waitForLoadState('networkidle');
   await page.reload();
   await page.getByTestId('qty').first().fill('1');
-  await page.getByTestId('part-num').first().fill('4563');
+  await page.getByTestId('part-num').first().fill('4700');
   await page.keyboard.down('Tab');
   await page.getByTestId('save-btn').click();
   await page.waitForTimeout(100);
@@ -29,7 +29,7 @@ function formatDateStockNum(suffix: string) {
   const month = date.getMonth() + 1;
   const year = date.getFullYear().toString().slice(2);
   const day = date.getDate();
-  return `IGP${month}${year}-${day}${suffix}`;
+  return `INJ${month}${year}-${day}${suffix}`;
 }
 
 
@@ -44,10 +44,10 @@ test.describe('Create addon and add to inventory', () => {
   });
 
   test('Autofill part number', async ({ page }) => {
-    await page.getByTestId('part-num').first().fill('4563');
+    await page.getByTestId('part-num').first().fill('470');
     await page.keyboard.down('Tab');
     await page.getByTestId('save-btn').click();
-    await expect(page.getByTestId('part-num').first()).toHaveValue('4563509');
+    await expect(page.getByTestId('part-num').first()).toHaveValue('4700245');
     await expect(page.getByTestId('desc').first()).toHaveValue('INJECTOR C9');
   });
 
@@ -63,14 +63,14 @@ test.describe('Create addon and add to inventory', () => {
     await page.getByTestId('engine-num').first().fill('5168');
     await page.keyboard.down('Tab');
     await page.getByTestId('save-btn').click();
-    await expect(page.getByTestId('stock-num').first()).toHaveValue('IGP5168');
+    await expect(page.getByTestId('stock-num').first()).toHaveValue('INJ5168');
   });
 
   test('Autofill stock number with engine number 0', async ({ page }) => {
     await page.getByTestId('engine-num').first().fill('0');
     await page.keyboard.down('Tab');
     await page.getByTestId('save-btn').click();
-    await expect(page.getByTestId('stock-num').first()).toHaveValue('UP20912');
+    await expect(page.getByTestId('stock-num').first()).toHaveValue('UP21372');
   });
 
   test('Autofill stock number with engine number 1', async ({ page }) => {
