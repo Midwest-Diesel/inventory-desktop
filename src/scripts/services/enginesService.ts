@@ -86,12 +86,13 @@ export const getEngineByStockNum = async (stockNum: number | null): Promise<Engi
   }
 };
 
-export const getEnginesByEngineData = async (data: CustomerEngineData) => {
+export const getEnginesByEngineData = async (data: CustomerEngineData): Promise<Engine[]> => {
   try {
     const res = await api.get(`/api/engines/data/${JSON.stringify(data)}`);
     return parseEngineRes(res.data);
   } catch (err) {
     console.error(err);
+    return [];
   }
 };
 

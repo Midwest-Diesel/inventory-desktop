@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 import Table from "../library/Table";
 import Link from "../library/Link";
 import Checkbox from "../library/Checkbox";
@@ -6,36 +6,40 @@ import Button from "../library/Button";
 import Pagination from "../library/Pagination";
 import Loading from "../library/Loading";
 import { formatCurrency } from "@/scripts/tools/stringUtils";
-import { getAllEngines, getEnginesByEngineData } from "@/scripts/services/enginesService";
+import { getEnginesByEngineData } from "@/scripts/services/enginesService";
 
 interface Props {
   openSideBySide: (engine: Engine) => void
-  getEngineData: () => CustomerEngineData
+  engineData: CustomerEngineData
 }
 
 
-export default function CompareEngineTable({ openSideBySide, getEngineData }: Props) {
+export default function CompareEngineTable({ openSideBySide, engineData }: Props) {
   const [engines, setEngines] = useState<Engine[]>([]);
   const [paginatedEngines, setPaginatedEngines] = useState<Engine[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const loadComparableEngines = useCallback(async () => {
-    const engineData = getEngineData();
-    const comparableEngines = await getEnginesByEngineData(engineData);
-    const sortedEngines = comparableEngines.sort((a: Engine, b: Engine) => b.stockNum - a.stockNum);
-    setEngines(sortedEngines);
-    setPaginatedEngines(sortedEngines.slice(0, 35));
-  }, [getEngineData]);
-
   useEffect(() => {
-    const fetchEngines = async () => {
-      const allEngines = (await getAllEngines()).sort((a: Engine, b: Engine) => b.stockNum - a.stockNum);
-      setEngines(allEngines);
+    let cancelled = false;
+    setLoading(true);
+
+    const load = async () => {
+      const comparableEngines = await getEnginesByEngineData(engineData);
+      if (cancelled) return;
+
+      const sorted = comparableEngines.sort((a, b) => b.stockNum - a.stockNum);
+
+      setEngines(sorted);
+      setPaginatedEngines(sorted.slice(0, 35));
       setLoading(false);
-      await loadComparableEngines();
     };
-    fetchEngines();
-  }, [loadComparableEngines]);
+
+    load();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [engineData]);
 
 
   if (loading) return <Loading />;
@@ -70,20 +74,20 @@ export default function CompareEngineTable({ openSideBySide, getEngineData }: Pr
                   Side by Side
                 </Button>
               </td>
-              <td><Link href={`/engines/${engine.stockNum}`}>{engine.stockNum}</Link></td>
+              <td><Link href={`/engines/${engine.stockNum}`}>{ engine.stockNum }</Link></td>
               <td className="cbx-td"><Checkbox checked={engine.ecm} disabled /></td>
               <td className="cbx-td"><Checkbox checked={engine.warranty} disabled /></td>
-              <td>{engine.model}</td>
-              <td>{engine.serialNum}</td>
-              <td>{engine.arrNum}</td>
-              <td>{engine.location}</td>
-              <td>{engine.horsePower}</td>
-              <td>{engine.oilPanNew}</td>
-              <td>{engine.turboHpNew}</td>
-              <td>{engine.turboLpNew}</td>
-              <td>{formatCurrency(engine.costRemaining)}</td>
-              <td>{engine.purchasedFrom}</td>
-              <td>{engine.currentStatus}</td>
+              <td>{ engine.model }</td>
+              <td>{ engine.serialNum }</td>
+              <td>{ engine.arrNum }</td>
+              <td>{ engine.location }</td>
+              <td>{ engine.horsePower }</td>
+              <td>{ engine.oilPanNew }</td>
+              <td>{ engine.turboHpNew }</td>
+              <td>{ engine.turboLpNew }</td>
+              <td>{ formatCurrency(engine.costRemaining) }</td>
+              <td>{ engine.purchasedFrom }</td>
+              <td>{ engine.currentStatus }</td>
             </tr>
           ))}
         </tbody>

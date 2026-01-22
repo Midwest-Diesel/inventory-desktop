@@ -10,10 +10,11 @@ import { addCompareData, getCompareDataById, searchCompareData } from "@/scripts
 import { getCustomerById, getCustomers } from "@/scripts/services/customerService";
 import { useNavState } from "@/hooks/useNavState";
 import { useAtom } from "jotai";
-import { FormEvent, useCallback, useEffect, useState } from "react";
+import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
 import CompareConsistHistoryDialog from "@/components/compareConsist/dialogs/CompareConsistHistoryDialog";
 import CustomerSelect from "@/components/library/select/CustomerSelect";
 import { useToast } from "@/hooks/useToast";
+import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 
 
 const ENGINE_PARTS = [
@@ -88,6 +89,9 @@ export default function CompareConsist() {
       data[`${part}Check`] = !!engineChecks[part]; });
     return data;
   }, [serialNum, arrNum, engineNew, engineReman, engineChecks]);
+
+  const engineData = useMemo(() => getEngineData(), [getEngineData]);
+  const debouncedEngineData = useDebouncedValue(engineData, 400);
 
   const handleChangeCustomer = (value: string) => {
     setCompany(value);
@@ -251,7 +255,7 @@ export default function CompareConsist() {
 
               <CompareEngineTable
                 openSideBySide={openSideBySide}
-                getEngineData={getEngineData}
+                engineData={debouncedEngineData}
               />
             </div>
           </>

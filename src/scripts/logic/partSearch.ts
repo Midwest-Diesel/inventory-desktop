@@ -10,12 +10,13 @@ export const getSearchedPartNum = () => {
 
 export const extractStatusColors = (part: Part): string => {
   if (part.location?.toLowerCase().includes('on engine')) return 'on-engine';
-  if (part.purchasedFrom?.toLowerCase().includes('z')) return 'ziegler'; 
 
   const text = part.remarks;
   if (!text || text === '') return '';
   if (text.toLowerCase().includes('sold')) {
     return 'sold';
+  } else if (part.purchasedFrom?.toLowerCase().includes('z')) {
+    return 'ziegler';
   } else if (text.toLowerCase().includes('new')) {
     return 'new';
   } else if (text.toLowerCase().includes('rebuilt')) {
