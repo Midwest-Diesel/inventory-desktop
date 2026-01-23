@@ -15,7 +15,7 @@ import EditPartDetails from "@/components/parts/EditPartDetails";
 import EngineCostOutTable from "@/components/engines/EngineCostOut";
 import Loading from "@/components/library/Loading";
 import Link from "@/components/library/Link";
-import { getEngineByStockNum, getEngineCostRemaining } from "@/scripts/services/enginesService";
+import { getEngineByStockNum } from "@/scripts/services/enginesService";
 import PartCostIn from "@/components/parts/PartCostIn";
 import StockNumPicturesDialog from "@/components/dialogs/StockNumPicturesDialog";
 import { setTitle } from "@/scripts/tools/utils";
@@ -57,13 +57,6 @@ export default function PartDetails() {
     queryKey: ['engine', part?.engineNum],
     queryFn: () => getEngineByStockNum(part?.engineNum ?? 0),
     enabled: !!part?.engineNum
-  });
-
-  // Engine cost remaining
-  const { data: costRemaining = 0 } = useQuery<number>({
-    queryKey: ['costRemaining', part?.engineNum],
-    queryFn: () => getEngineCostRemaining(part?.engineNum ?? 0),
-    enabled: !!part?.engineNum && !isEditingPart
   });
 
   // Part cost in
@@ -223,7 +216,6 @@ export default function PartDetails() {
                 variant={['blue']}
                 className="part-details__edit-btn"
                 onClick={() => setIsEditingPart(true)}
-                disabled={costRemaining === null}
                 data-testid="edit-btn"
               >
                 Edit
@@ -447,17 +439,8 @@ export default function PartDetails() {
                     <td>{ engine?.horsePower }</td>
                   </tr>
                   <tr>
-                    {costRemaining !== null ?
-                      <>
-                        <th style={costRemaining > 0 ? { color: 'var(--red-2)' } : { color: 'var(--green-light-1)' }}>Engine Cost Remaining</th>
-                        <td>{ formatCurrency(costRemaining) }</td>
-                      </>
-                      :
-                      <>
-                        <th>Engine Cost Remaining</th>
-                        <td><Loading size={20} /></td>
-                      </>
-                    }
+                    <th style={part.engineCostRemaining > 0 ? { color: 'var(--red-2)' } : { color: 'var(--green-light-1)' }}>Engine Cost Remaining</th>
+                    <td>{ formatCurrency(part.engineCostRemaining) }</td>
                   </tr>
                 </tbody>
               </Table>

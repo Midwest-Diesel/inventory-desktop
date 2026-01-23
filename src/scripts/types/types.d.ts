@@ -482,7 +482,7 @@ type Part = {
   coreFam: string | null
   serialNum?: string
   horsePower?: string
-  costRemaining?: number
+  engineCostRemaining: number
   profitMargin: number | null
   profitPercent: number | null
 };

@@ -178,6 +178,7 @@ export default function CompareConsist() {
                 value={company}
                 onChange={(e) => handleChangeCustomer(e.target.value)}
               />
+              <Button onClick={() => handleChangeCustomer('')}>Clear Customer</Button>
               <Input
                 label="Serial Number"
                 variant={['label-stack', 'label-no-margin', 'thin', 'label-bold']}
