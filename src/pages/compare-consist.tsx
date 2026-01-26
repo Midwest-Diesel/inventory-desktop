@@ -10,11 +10,10 @@ import { addCompareData, getCompareDataById, searchCompareData } from "@/scripts
 import { getCustomerById, getCustomers } from "@/scripts/services/customerService";
 import { useNavState } from "@/hooks/useNavState";
 import { useAtom } from "jotai";
-import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
+import { FormEvent, useCallback, useEffect, useState } from "react";
 import CompareConsistHistoryDialog from "@/components/compareConsist/dialogs/CompareConsistHistoryDialog";
 import CustomerSelect from "@/components/library/select/CustomerSelect";
 import { useToast } from "@/hooks/useToast";
-import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 
 
 const ENGINE_PARTS = [
@@ -45,6 +44,7 @@ export default function CompareConsist() {
   const [engineNew, setEngineNew] = useState<Record<string, string>>({});
   const [engineReman, setEngineReman] = useState<Record<string, string>>({});
   const [engineChecks, setEngineChecks] = useState<Record<string, boolean>>({});
+  const [engineData, setEngineData] = useState<CustomerEngineData | null>(null);
   const [customerEngineData, setCustomerEngineData] = useState<CustomerEngineData | null>(null);
   const [mwdEngine, setMwdEngine] = useState<Engine | null>(null);
   const urlSearchParams = new URLSearchParams(window.location.search);
@@ -53,6 +53,10 @@ export default function CompareConsist() {
   const [showSearchHistory, setShowSearchHistory] = useState(false);
   const { push } = useNavState();
   const toast = useToast();
+
+  useEffect(() => {
+    setEngineData(getEngineData());
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -86,12 +90,10 @@ export default function CompareConsist() {
     ENGINE_PARTS.forEach((part) => {
       data[`${part}New`] = (engineChecks[part] || noChecks) ? engineNew[part] || null : null;
       data[`${part}Reman`] = (engineChecks[part] || noChecks) ? engineReman[part] || null : null;
-      data[`${part}Check`] = !!engineChecks[part]; });
+      data[`${part}Check`] = !!engineChecks[part];
+    });
     return data;
   }, [serialNum, arrNum, engineNew, engineReman, engineChecks]);
-
-  const engineData = useMemo(() => getEngineData(), [getEngineData]);
-  const debouncedEngineData = useDebouncedValue(engineData, 400);
 
   const handleChangeCustomer = (value: string) => {
     setCompany(value);
@@ -141,8 +143,6 @@ export default function CompareConsist() {
     setCustomer(null);
     setSerialNum('');
     setArrNum('');
-    setCompany('');
-    push('Compare Consist', `/compare-consist`);
   };
 
   const handleSaveSearch = async () => {
@@ -254,10 +254,17 @@ export default function CompareConsist() {
                 </tbody>
               </Table>
 
-              <CompareEngineTable
-                openSideBySide={openSideBySide}
-                engineData={debouncedEngineData}
-              />
+              <div className="compare-consist__compare-btn-row">
+                <Button onClick={() => setEngineData(getEngineData())}>Find Comparable Engines</Button>
+                <Button>Search Arr Number Only</Button>
+              </div>
+
+              {engineData &&
+                <CompareEngineTable
+                  openSideBySide={openSideBySide}
+                  engineData={engineData}
+                />
+              }
             </div>
           </>
         ) : (

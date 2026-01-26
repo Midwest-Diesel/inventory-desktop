@@ -684,6 +684,7 @@ type Engine = {
 type CompareConsist = {
   id: number
   customerId: number | null
+  customer: Customer | null
   dateCreated: Date | null
   model: string | null
   serialNum: string | null

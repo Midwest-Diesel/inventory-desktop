@@ -27,7 +27,6 @@ export default function CustomerHandwrittenItemsList({ company }: Props) {
       <thead>
         <tr>
           <th>Handwritten</th>
-          <th>Part</th>
           <th>Date</th>
           <th>Qty</th>
           <th>PartNum</th>
@@ -41,10 +40,9 @@ export default function CustomerHandwrittenItemsList({ company }: Props) {
           return (
             <tr key={i}>
               <td><Link href={`/handwrittens/${row.handwrittenId}`}>{ row.handwrittenId }</Link></td>
-              <td><Link href={`/part/${row.partId}`}>{ row.partId }</Link></td>
               <td>{ formatDate(row.date) }</td>
               <td>{ row.qty }</td>
-              <td>{ row.partNum }</td>
+              <td>{ row.partId ? <Link href={`/part/${row.partId}`}>{ row.partNum }</Link> : row.partNum }</td>
               <td>{ row.desc }</td>
               <td>{ formatCurrency(row.unitPrice) }</td>
               <td>{ row.payment }</td>

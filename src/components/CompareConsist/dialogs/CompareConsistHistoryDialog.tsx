@@ -20,6 +20,10 @@ export default function CompareConsistHistoryDialog({ open, setOpen, searchData,
   const { push } = useNavState();
 
   useEffect(() => {
+    if (open) setPage(0);
+  }, [open]);
+
+  useEffect(() => {
     if (searchData.length === 0) setOpen(false);
   }, [searchData]);
 
@@ -71,6 +75,7 @@ export default function CompareConsistHistoryDialog({ open, setOpen, searchData,
       {searchData && searchData[page] &&
         <div className="compare-consist-history-dialog__table-container">
           <div className="compare-consist-history-dialog__top-content">
+            <h3>Company: <span>{ searchData[page].customer?.company }</span></h3>
             <h3>Serial Number: <span>{ searchData[page].serialNum }</span></h3>
             <h3>Arrangement Number: <span>{ searchData[page].arrNum }</span></h3>
           </div>

@@ -40,10 +40,12 @@
       border: none;
       background-color: var(--grey-dark-1);
     }
+  }
 
-    &--compare-btn {
-      margin: 1rem 0 0.4rem;
-    }
+  &__compare-btn-row {
+    margin-top: 0.5rem;
+    display: flex;
+    gap: 0.5rem;
   }
 }
 
