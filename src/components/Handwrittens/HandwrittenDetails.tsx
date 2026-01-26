@@ -330,17 +330,11 @@ export default function HandwrittenDetails({
   };
 
   const handleEmailKarmak = () => {
-    const year = (handwritten.date.getUTCFullYear()).toString();
-    const month = (handwritten.date.getUTCMonth() + 1).toString();
-    const day = (handwritten.date.getUTCDate()).toString();
     const args = {
       id: Number(handwritten.legacyId ?? handwritten.id),
       email: handwritten.email ?? '',
       company: handwritten.customer.company,
       date: formatDate(handwritten.date),
-      year,
-      month,
-      day,
       ship_via: handwritten.shipVia?.name ?? '',
       tracking_numbers: handwritten.trackingNumbers.map((num) => `<li style='margin: 0;'>${num.trackingNumber}</li>`)
     };

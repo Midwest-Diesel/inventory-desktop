@@ -153,9 +153,6 @@ struct EmailEndOfDayArgs {
   email: String,
   company: String,
   date: String,
-  year: String,
-  month: String,
-  day: String,
   ship_via: String,
   tracking_numbers: Vec<String>
 }
@@ -1404,7 +1401,7 @@ fn email_end_of_day(args: EmailEndOfDayArgs) {
     args.date,
     body,
     args.email,
-    format!("\\\\MWD1-SERVER\\Server\\InvoiceScans\\Archives\\{}\\{}\\{}\\{}.pdf", args.year, args.month, args.day, args.id)
+    format!("\\\\MWD1-SERVER\\Server\\InvoiceScans\\Queue\\{}.pdf", args.id)
   );
 
   let vbs_path = "C:/mwd/scripts/email_end_of_day.vbs";

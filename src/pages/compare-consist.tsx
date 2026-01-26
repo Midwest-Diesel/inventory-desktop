@@ -158,6 +158,18 @@ export default function CompareConsist() {
     toast.sendToast('Saved search', 'success');
   };
 
+  const onClickSearchArrOnly = () => {
+    if (!arrNum) {
+      toast.sendToast('Arrangement Number required', 'warning', 1500);
+      return;
+    }
+
+    setEngineData({
+      serialNum: null,
+      arrNum
+    } as CustomerEngineData);
+  };
+
 
   return (
     <Layout title="Compare">
@@ -256,7 +268,7 @@ export default function CompareConsist() {
 
               <div className="compare-consist__compare-btn-row">
                 <Button onClick={() => setEngineData(getEngineData())}>Find Comparable Engines</Button>
-                <Button>Search Arr Number Only</Button>
+                <Button onClick={onClickSearchArrOnly}>Search Arr Number Only</Button>
               </div>
 
               {engineData &&
