@@ -251,6 +251,7 @@ export default function EditHandwrittenDetails({
     } as any;
     setNewShippingListRow(newInvoice);
     await editHandwritten(newInvoice);
+    await handleEditHandwrittenItems();
     await editCoreCustomer(handwritten.id, newCustomer?.id ?? null);
 
     if (newInvoice.billToCompany !== newInvoice.shipToCompany && !newInvoice.isBlindShipment && !newInvoice.isNoPriceInvoice) {
@@ -266,18 +267,7 @@ export default function EditHandwrittenDetails({
     setAccountingProcessOpen(true);
   };
 
-  const saveAltShip = async (newInvoice: Handwritten) => {
-    if (
-      newInvoice.shipToAddress !== handwritten.shipToAddress ||
-      newInvoice.shipToAddress2 !== handwritten.shipToAddress2 ||
-      newInvoice.shipToCity !== handwritten.shipToCity ||
-      newInvoice.shipToState !== handwritten.shipToState ||
-      newInvoice.shipToZip !== handwritten.shipToZip ||
-      newInvoice.shipToCompany !== handwritten.shipToCompany
-    ) {
-      await handleAltShip();
-    }
-
+  const handleEditHandwrittenItems = async () => {
     if (!arrayOfObjectsMatch(handwrittenItems, handwritten.handwrittenItems)) {
       for (let i = 0; i < handwrittenItems.length; i++) {
         const item = handwrittenItems[i];
@@ -286,7 +276,7 @@ export default function EditHandwrittenDetails({
           handwrittenId: Number(handwritten.id),
           stockNum: item.stockNum,
           location: item.location,
-          cost: item.stockNum ? Number(item.cost) : 0,
+          cost: Number(item.cost),
           qty: Number(item.qty),
           partNum: item.partNum,
           desc: item.desc,
@@ -301,6 +291,19 @@ export default function EditHandwrittenDetails({
           if (cores[0]?.charge !== Number(item.unitPrice)) await editCoreCharge(Number(cores[0]?.id), Number(item.unitPrice));
         }
       }
+    }
+  };
+
+  const saveAltShip = async (newInvoice: Handwritten) => {
+    if (
+      newInvoice.shipToAddress !== handwritten.shipToAddress ||
+      newInvoice.shipToAddress2 !== handwritten.shipToAddress2 ||
+      newInvoice.shipToCity !== handwritten.shipToCity ||
+      newInvoice.shipToState !== handwritten.shipToState ||
+      newInvoice.shipToZip !== handwritten.shipToZip ||
+      newInvoice.shipToCompany !== handwritten.shipToCompany
+    ) {
+      await handleAltShip();
     }
   };
 
@@ -442,6 +445,7 @@ export default function EditHandwrittenDetails({
   const handleEditItem = async (item: HandwrittenItem, i: number) => {
     const newItems = [...handwrittenItems];
     newItems[i] = item;
+    console.log(item);
     setHandwrittenItems(newItems);
   };
 
