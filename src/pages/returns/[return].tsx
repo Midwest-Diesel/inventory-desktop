@@ -72,7 +72,7 @@ export default function Return() {
       shipToState: returnData.shipToState,
       shipToZip: returnData.shipToZip,
       salesmanId: returnData.salesman?.id,
-      invoiceStatus: 'INVOICE PENDING'
+      invoiceStatus: 'SENT TO ACCOUNTING'
     } as any;
     const id = await addHandwritten(newHandwritten);
 
