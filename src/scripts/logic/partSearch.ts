@@ -15,6 +15,8 @@ export const extractStatusColors = (part: Part): string => {
   if (!text || text === '') return '';
   if (text.toLowerCase().includes('sold')) {
     return 'sold';
+  } else if (text.toLowerCase().includes('hold')) {
+    return 'hold';
   } else if (part.purchasedFrom?.toLowerCase().includes('z')) {
     return 'ziegler';
   } else if (text.toLowerCase().includes('new')) {
