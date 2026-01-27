@@ -47,6 +47,7 @@ export default function CompareConsistHistoryDialog({ open, setOpen, searchData,
     const url = new URL(location.href);
     url.searchParams.set('r', searchData[page].id.toString());
     push('Compare Consist', `${url.pathname}${url.search}`);
+    setOpen(false);
   };
 
   const handleDelete = async () => {
