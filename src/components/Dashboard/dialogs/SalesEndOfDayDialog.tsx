@@ -34,6 +34,7 @@ export default function SalesEndOfDayDialog({ open, setOpen }: Props) {
       const res = await getSomeUnsoldItems(1, LIMIT, user.id);
       setItemsCount(res.pageCount);
       setItemsData(res.rows);
+      handleChangeItemsPage(null, 1);
     };
     fetchData();
   }, [open]);
@@ -94,7 +95,7 @@ export default function SalesEndOfDayDialog({ open, setOpen }: Props) {
       customer: selectedItem?.customer,
       part: selectedItem?.part,
       salesman: user.initials,
-      sale: false,
+      sale: true,
       followedUp: false,
       followUpDate: null,
       toFollowUp: false,
@@ -105,6 +106,7 @@ export default function SalesEndOfDayDialog({ open, setOpen }: Props) {
       piggybackQuotes: []
     };
     setQuotesDataAtom([newQuote, ...quotesData]);
+    await toggleQuoteSold(newQuote);
   };
 
 
@@ -113,38 +115,40 @@ export default function SalesEndOfDayDialog({ open, setOpen }: Props) {
       open={open}
       setOpen={setOpen}
       title="Sales End of Day"
-      maxHeight="30rem"
       width={800}
       className="sales-end-of-day-dialog"
     >
       {!selectedItem ?
         <>
-          <Table>
-            <thead>
-              <tr>
-                <th>Date</th>
-                <th>Bill to Company</th>
-                <th>Part Number</th>
-                <th>Description</th>
-                <th>Unit Price</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              {items.map((item) => {
-                return (
-                  <tr key={item.id}>
-                    <td>{ formatDate(item.date) }</td>
-                    <td>{ item.billToCompany }</td>
-                    <td>{ item.partNum }</td>
-                    <td>{ item.desc }</td>
-                    <td>{ formatCurrency(item.unitPrice) }</td>
-                    <td><Button onClick={() => setSelectedItem(item)}>Open</Button></td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </Table>
+          <div className="sales-end-of-day-dialog__table-container">
+            <Table>
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Bill to Company</th>
+                  <th>Part Number</th>
+                  <th>Description</th>
+                  <th>Unit Price</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                {items.map((item) => {
+                  return (
+                    <tr key={item.id}>
+                      <td>{ formatDate(item.date) }</td>
+                      <td>{ item.billToCompany }</td>
+                      <td>{ item.partNum }</td>
+                      <td>{ item.desc }</td>
+                      <td>{ formatCurrency(item.unitPrice) }</td>
+                      <td><Button onClick={() => setSelectedItem(item)}>Open</Button></td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </Table>
+          </div>
+
           <Pagination
             data={itemsData}
             setData={handleChangeItemsPage}
