@@ -22,9 +22,10 @@ use image::{io::Reader as ImageReader, ImageOutputFormat, DynamicImage, imageops
 use serde::{Deserialize, Serialize};
 use tauri::{Manager, api::shell, AppHandle};
 use std::env;
-use std::fs::{write, File, remove_file};
+use std::fs::{write, File, remove_file, create_dir_all, remove_dir_all};
 use std::io::{self, Cursor, Write, copy};
 use std::process::{Command};
+use file_operation::{copy_dir_files};
 use reqwest::Client;
 use std::path::{Path};
 use zip::read::ZipArchive;
@@ -153,6 +154,9 @@ struct EmailEndOfDayArgs {
   email: String,
   company: String,
   date: String,
+  year: String,
+  month: String,
+  day: String,
   ship_via: String,
   tracking_numbers: Vec<String>
 }
@@ -352,10 +356,10 @@ async fn download_update() -> Result<(), Box<dyn std::error::Error>> {
     let outpath = Path::new("C:/MWD/updates").join(file.name());
     
     if file.name().ends_with('/') {
-      std::fs::create_dir_all(&outpath)?;
+      create_dir_all(&outpath)?;
     } else {
       if let Some(p) = outpath.parent() {
-        std::fs::create_dir_all(p)?;
+        create_dir_all(p)?;
       }
       let mut out_file = File::create(&outpath)?;
       copy(&mut file, &mut out_file)?;
@@ -714,7 +718,7 @@ fn add_to_shipping_list(new_shipping_list_row: ShippingListRow) {
 #[tauri::command]
 fn upload_file(file_args: FileArgs) -> Result<(), String> {
   if !std::path::Path::new(&file_args.dir).exists() {
-    if let Err(e) = std::fs::create_dir_all(&file_args.dir) {
+    if let Err(e) = create_dir_all(&file_args.dir) {
         return Err(format!("Error creating directory: {}", e));
     }
   }
@@ -1347,6 +1351,9 @@ async fn print_po(image_data: String) -> Result<(), String> {
 
 #[tauri::command]
 fn email_end_of_day(args: EmailEndOfDayArgs) {
+  let queue_dir = "\\\\MWD1-SERVER\\Server\\InvoiceScans\\Queue";
+  let archive_dir = format!("\\\\MWD1-SERVER\\Server\\InvoiceScans\\Archives\\{}\\{}\\{}", args.year, args.month, args.day);
+
   let body = format!(
     "\"<h2>{}</h2>\" & vbCrLf & _\n\
     \"<strong>Invoice Date: </strong> {}<br />\" & vbCrLf & _\n\
@@ -1401,7 +1408,7 @@ fn email_end_of_day(args: EmailEndOfDayArgs) {
     args.date,
     body,
     args.email,
-    format!("\\\\MWD1-SERVER\\Server\\InvoiceScans\\Queue\\{}.pdf", args.id)
+    format!("{}\\{}.pdf", queue_dir, args.id)
   );
 
   let vbs_path = "C:/mwd/scripts/email_end_of_day.vbs";
@@ -1410,6 +1417,16 @@ fn email_end_of_day(args: EmailEndOfDayArgs) {
   let mut cmd = Command::new("wscript.exe");
   cmd.arg(vbs_path);
   cmd.output().unwrap();
+
+  if let Ok(val) = env::var("VITE_NODE_ENV") {
+    if val == "development" { return }
+  }
+
+  // Move the invoices from the Queue to the Archives
+  create_dir_all(&archive_dir).unwrap();
+  copy_dir_files(&queue_dir, &archive_dir).unwrap();
+  remove_dir_all(&queue_dir).unwrap();
+  create_dir_all(&queue_dir).unwrap();
 }
 
 #[tauri::command]
