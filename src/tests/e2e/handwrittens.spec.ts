@@ -6,7 +6,6 @@ test.describe.configure({ mode: 'serial' });
 let page: Page;
 let partNum = '';
 let stockNum = '';
-const stockNum2 = 'UP9014';
 let qty = 0;
 
 test.beforeAll(async ({ browser }) => {
