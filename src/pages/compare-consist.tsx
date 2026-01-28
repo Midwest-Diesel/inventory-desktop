@@ -12,8 +12,8 @@ import { useNavState } from "@/hooks/useNavState";
 import { useAtom } from "jotai";
 import { FormEvent, useCallback, useEffect, useState } from "react";
 import CompareConsistHistoryDialog from "@/components/compareConsist/dialogs/CompareConsistHistoryDialog";
-import CustomerSelect from "@/components/library/select/CustomerSelect";
 import { useToast } from "@/hooks/useToast";
+import CustomerDropdown from "@/components/library/dropdown/CustomerDropdown";
 
 
 const ENGINE_PARTS = [
@@ -40,6 +40,7 @@ export default function CompareConsist() {
   const [customer, setCustomer] = useState<Customer | null>(null);
   const [company, setCompany] = useState('');
   const [serialNum, setSerialNum] = useState('');
+  const [searchArrNum, setSearchArrNum] = useState('');
   const [arrNum, setArrNum] = useState('');
   const [engineNew, setEngineNew] = useState<Record<string, string>>({});
   const [engineReman, setEngineReman] = useState<Record<string, string>>({});
@@ -82,10 +83,7 @@ export default function CompareConsist() {
   };
 
   const getEngineData = useCallback((noChecks = false) => {
-    const data: any = {
-      serialNum,
-      arrNum
-    };
+    const data: any = { arrNum };
 
     ENGINE_PARTS.forEach((part) => {
       data[`${part}New`] = (engineChecks[part] || noChecks) ? engineNew[part] || null : null;
@@ -93,7 +91,7 @@ export default function CompareConsist() {
       data[`${part}Check`] = !!engineChecks[part];
     });
     return data;
-  }, [serialNum, arrNum, engineNew, engineReman, engineChecks]);
+  }, [arrNum, engineNew, engineReman, engineChecks]);
 
   const handleChangeCustomer = (value: string) => {
     setCompany(value);
@@ -116,8 +114,7 @@ export default function CompareConsist() {
       checkVals[part] = (data?.[`${part}Check` as keyof CompareConsist] as boolean) || false;
     });
 
-    setSerialNum(data?.serialNum ?? '');
-    setArrNum(data?.arrNum ?? '');
+    setSearchArrNum(data?.arrNum ?? '');
     setEngineNew(newVals);
     setEngineReman(remanVals);
     setEngineChecks(checkVals);
@@ -125,7 +122,7 @@ export default function CompareConsist() {
 
   const handleSearch = async (e: FormEvent) => {
     e.preventDefault();
-    const res = await searchCompareData(customer?.id ?? 0, serialNum, arrNum);
+    const res = await searchCompareData(customer?.id ?? 0, searchArrNum);
     setSearchData(res);
     if (res.length > 0) {
       setShowSearchHistory(true);
@@ -140,9 +137,9 @@ export default function CompareConsist() {
     setEngineNew({});
     setEngineReman({});
     setEngineChecks({});
-    setCustomer(null);
     setSerialNum('');
-    setArrNum('');
+    setSearchArrNum('');
+    setEngineData({ searchArrNum } as any);
   };
 
   const handleSaveSearch = async () => {
@@ -152,6 +149,7 @@ export default function CompareConsist() {
       model: '',
       notes: '',
       dateCreated: new Date(),
+      serialNum,
       ...getEngineData(true)
     } as CompareConsist;
     await addCompareData(data);
@@ -164,10 +162,7 @@ export default function CompareConsist() {
       return;
     }
 
-    setEngineData({
-      serialNum: null,
-      arrNum
-    } as CustomerEngineData);
+    setEngineData({ arrNum } as CustomerEngineData);
   };
 
 
@@ -184,11 +179,12 @@ export default function CompareConsist() {
             />
 
             <form onSubmit={handleSearch} className="compare-consist__top-bar">
-              <CustomerSelect
+              <CustomerDropdown
                 label="Customer"
                 variant={['label-stack', 'label-bold']}
                 value={company}
-                onChange={(e) => handleChangeCustomer(e.target.value)}
+                onChange={(value) => handleChangeCustomer(value)}
+                maxHeight="20rem"
               />
               <Button onClick={() => handleChangeCustomer('')}>Clear Customer</Button>
               <Input
@@ -198,10 +194,10 @@ export default function CompareConsist() {
                 onChange={(e) => setSerialNum(e.target.value)}
               />
               <Input
-                label="Arrangement Number"
+                label="Search Arr Number"
                 variant={['label-stack', 'label-no-margin', 'thin', 'label-bold']}
-                value={arrNum}
-                onChange={(e) => setArrNum(e.target.value)}
+                value={searchArrNum}
+                onChange={(e) => setSearchArrNum(e.target.value)}
               />
 
               <Button variant={['fit']} type="submit">Search</Button>
@@ -265,6 +261,14 @@ export default function CompareConsist() {
                   </tr>
                 </tbody>
               </Table>
+
+              <Input
+                style={{ color: 'black' }}
+                label="Arr Number"
+                variant={['label-stack', 'thin', 'label-bold', 'small']}
+                value={arrNum}
+                onChange={(e) => setArrNum(e.target.value)}
+              />
 
               <div className="compare-consist__compare-btn-row">
                 <Button onClick={() => setEngineData(getEngineData())}>Find Comparable Engines</Button>

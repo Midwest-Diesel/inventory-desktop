@@ -38,6 +38,7 @@ export default function CustomerDropdown({ variant, label, value, onChange, maxH
       value={value}
       onChange={(c: string) => onChange(c)}
       maxHeight={maxHeight}
+      minWidth={'15rem'}
     >
       <DropdownOption value="">-- SELECT A CUSTOMER --</DropdownOption>
       {customers.length > 0 && customers.sort((a, b) => a.localeCompare(b)).map((customer: string, i) => {

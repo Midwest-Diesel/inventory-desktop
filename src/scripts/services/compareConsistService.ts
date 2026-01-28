@@ -20,9 +20,9 @@ export const getCompareDataByCustomer = async (id: number) => {
   }
 };
 
-export const searchCompareData = async (customerId: number, serialNum: string, arrNum: string) => {
+export const searchCompareData = async (customerId: number, arrNum: string) => {
   try {
-    const res = await api.get(`/api/compare-consist/search/${JSON.stringify({ customerId, serialNum, arrNum })}`);
+    const res = await api.get(`/api/compare-consist/search/${JSON.stringify({ customerId, arrNum })}`);
     return parseCompareDataRes(res.data);
   } catch (err) {
     console.error(err);

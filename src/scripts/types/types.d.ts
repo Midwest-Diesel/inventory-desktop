@@ -974,7 +974,6 @@ interface Email {
 }
 
 interface CustomerEngineData {
-  serialNum: string | null
   arrNum: string | null
   headNew: string | null
   blockNew: string | null

@@ -12,10 +12,11 @@ interface Props {
   onChange?: (value?: any, data?: any) => void
   onBlur?: (value: string) => void
   maxHeight?: string
+  minWidth?: string
 }
 
 
-export default function Dropdown({ children, className = '', variant = [], label = '', value = '', onChange, onBlur, maxHeight = "none" }: Props) {
+export default function Dropdown({ children, className = '', variant = [], label = '', value = '', onChange, onBlur, maxHeight = 'none', minWidth = 'none' }: Props) {
   const classes = generateClasses(className, variant.filter((v) => !["label-stack", "label-space-between", "label-bold"].includes(v)), "dropdown");
   const [isOpen, setIsOpen] = useState(false);
   const [idProp, setIdProp] = useState('');
@@ -106,7 +107,7 @@ export default function Dropdown({ children, className = '', variant = [], label
               }
 
               {/* Dropdown options */}
-              <div style={{ maxHeight, overflowY: "auto", overflowX: 'hidden' }}>
+              <div style={{ maxHeight, minWidth, overflowY: "auto", overflowX: 'hidden' }}>
                 {filteredOptions.length > 0 ? (
                   filteredOptions.map((child: any, i: number) => {
                     const { value, children, data } = child.props;
@@ -123,7 +124,7 @@ export default function Dropdown({ children, className = '', variant = [], label
             </>
           ) : (
             variant.includes("input") ?
-              <div style={{ maxHeight, overflowY: "auto", overflowX: 'hidden' }}>
+              <div style={{ maxHeight, minWidth, overflowY: "auto", overflowX: 'hidden' }}>
                 <Input
                   value={value}
                   onChange={(e: any) => onChange && onChange(e.target.value)}

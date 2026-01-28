@@ -138,7 +138,7 @@ export default function EditHandwrittenItemsTable({ handwritten, handwrittenItem
                 {handwritten.invoiceStatus !== 'SENT TO ACCOUNTING' &&
                   <td>
                     <Button
-                      variant={['red-color']}
+                      variant={['danger']}
                       onClick={() => handleDeleteItem(item)}
                       type="button"
                       data-testid="item-delete-btn"
