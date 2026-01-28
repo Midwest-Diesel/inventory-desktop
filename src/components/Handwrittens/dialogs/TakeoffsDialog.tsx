@@ -23,7 +23,7 @@ interface Props {
 }
 
 
-const OUT_OF_STOCK_EMAIL_RECEPIENTS = ['terry@midwestdiesel.com', 'jack@midwestdiesel.com', 'matt@midwestdiesel.com', 'jason@midwestdiesel.com', 'jon@midwestdiesel.com', 'ryan@midwestdiesel.com'];
+const OUT_OF_STOCK_EMAIL_RECIPIENTS = ['terry@midwestdiesel.com', 'jack@midwestdiesel.com', 'matt@midwestdiesel.com', 'jason@midwestdiesel.com', 'jon@midwestdiesel.com', 'ryan@midwestdiesel.com'];
 
 export default function TakeoffsDialog({ open, setOpen, item, unitPrice, setHandwritten, onSubmit, takeoffInputRef, handwrittenId }: Props) {
   const [qty, setQty] = useState<number>(Number(item.qty));
@@ -88,7 +88,7 @@ export default function TakeoffsDialog({ open, setOpen, item, unitPrice, setHand
       const emailArgs: Email = {
         subject: `Important Part OUT OF STOCK!`,
         body: `The following part is no longer in stock: ${part.partNum} ${part.desc} sold for ${formatCurrency(unitPrice)}`,
-        recipients: OUT_OF_STOCK_EMAIL_RECEPIENTS,
+        recipients: OUT_OF_STOCK_EMAIL_RECIPIENTS,
         attachments: []
       };
       await invoke('new_email_draft', { emailArgs });

@@ -30,6 +30,7 @@ export default function GlobalData({ children }: Props) {
 
   useEffect(() => {
     checkForUpdates();
+    
     const fetchData = async () => {
       await handleGetUser();
       setLoaded(true);
