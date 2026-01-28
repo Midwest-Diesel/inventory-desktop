@@ -24,6 +24,7 @@ test.describe('Basic Functionality', () => {
     await page.getByTestId('po-num-link').first().click();
     await page.waitForLoadState('networkidle');
     await page.getByTestId('edit-btn').click();
+    await page.getByTestId('payment-terms').selectOption('On Account');
     await page.getByTestId('purchased-for').fill('stock');
     await page.getByTestId('save-btn').click();
     await page.waitForLoadState('networkidle');

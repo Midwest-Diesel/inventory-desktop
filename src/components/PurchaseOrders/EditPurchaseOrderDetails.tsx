@@ -304,6 +304,7 @@ export default function EditPoDetails({ poData, setPo, setIsEditing, poItems, po
                     value={paymentTerms}
                     onChange={(e: any) => setPaymentTerms(e.target.value)}
                     required
+                    data-testid="payment-terms"
                   >
                     <option>-- SELECT PAYMENT TERMS --</option>
                     <option>On Account</option>

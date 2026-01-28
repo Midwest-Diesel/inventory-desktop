@@ -54,7 +54,6 @@ export default function Return() {
     await issueReturnCredit(returnData.id);
     setReturnData({ ...returnData, creditIssued: new Date() });
 
-    // Create return handwritten
     const newHandwritten = {
       customer: returnData.customer,
       poNum: returnData.poNum,

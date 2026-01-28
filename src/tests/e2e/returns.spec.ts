@@ -14,7 +14,7 @@ test.beforeEach(async ({ page }) => {
 
 async function createReturn(page: Page) {
   page.on('dialog', (dialog) => dialog.accept('confirm'));
-  await goto(page, '/handwrittens/9');
+  await goto(page, '/handwrittens/2');
   await page.getByTestId('new-return-btn').click();
   await page.waitForLoadState('networkidle');
   await (await page.$$('[data-testid="new-return-dialog"] .checkbox-wrapper-4'))[0].click();
@@ -32,7 +32,7 @@ test.describe('Basic Functionality', () => {
 
   test('Create new return from handwritten', async ({ page }) => {
     await createReturn(page);
-    await expect(page.getByTestId('handwritten-link').first()).toHaveText('9');
+    await expect(page.getByTestId('handwritten-link').first()).toHaveText('2');
   });
 
   test("Can edit return", async ({ page }) => {
@@ -50,7 +50,7 @@ test.describe('Basic Functionality', () => {
     await page.getByTestId('delete-btn').click();
     await page.waitForLoadState('networkidle');
     await goto(page, '/returns');
-    await expect(page.getByTestId('handwritten-link').first()).not.toHaveText('9');
+    await expect(page.getByTestId('handwritten-link').first()).not.toHaveText('2');
   });
 });
 
@@ -63,9 +63,7 @@ test.describe('Return Credits', () => {
     await page.waitForLoadState('networkidle');
     await page.getByTestId('link').first().click();
     await page.waitForLoadState('networkidle');
-    await page.getByTestId('stop-edit-btn').click();
-    await page.waitForLoadState('networkidle');
     await expect(page.getByTestId('item-qty').first()).toHaveText('-1');
-    await expect(page.getByTestId('item-desc').first()).toHaveText('RETURNED PART: G/U ROTARY SOLENOID');
+    await expect(page.getByTestId('item-desc').first()).toHaveText('RETURNED PART: PAID CK # 17495 09/13/96');
   });
 });
