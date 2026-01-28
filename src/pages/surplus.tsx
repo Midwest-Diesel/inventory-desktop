@@ -40,7 +40,7 @@ export default function Surplus() {
       <h1>Surplus Purchases</h1>
       {user.type === 'office' &&
         <div className="surplus__top-bar">
-          <Button onClick={() => setNewSurplusOpen(true)}>New Purchase</Button>
+          <Button onClick={() => setNewSurplusOpen(true)}>New</Button>
         </div>
       }
 

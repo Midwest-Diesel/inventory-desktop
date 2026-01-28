@@ -198,6 +198,7 @@ async fn main() {
       print_packing_slip,
       print_po,
       email_end_of_day,
+      email_karmak_invoice,
       view_file
     ])
     .run(tauri::generate_context!());
@@ -1427,6 +1428,75 @@ fn email_end_of_day(args: EmailEndOfDayArgs) {
   copy_dir_files(&queue_dir, &archive_dir).unwrap();
   remove_dir_all(&queue_dir).unwrap();
   create_dir_all(&queue_dir).unwrap();
+}
+
+#[tauri::command]
+fn email_karmak_invoice(args: EmailEndOfDayArgs) {
+  let archive_dir = format!("\\\\MWD1-SERVER\\Server\\InvoiceScans\\Archives\\{}\\{}\\{}", args.year, args.month, args.day);
+
+  let body = format!(
+    "\"<h2>{}</h2>\" & vbCrLf & _\n\
+    \"<strong>Invoice Date: </strong> {}<br />\" & vbCrLf & _\n\
+    {}\
+    {}\
+    \"<br /><br />\" & vbCrLf & _\n\
+    \"www.midwestdiesel.com<br />\" & vbCrLf & _\n\
+    \"<strong>Phone:</strong> (888) 866-3406<br />\" & vbCrLf & _\n\
+    \"<strong>Fax:</strong> (763) 450-2197\"",
+    args.company.replace("\"", "\"\""),
+    args.date,
+    if !args.ship_via.is_empty() {
+      format!("\"<strong>Ship Via: </strong> {}<br />\" & vbCrLf & _\n", args.ship_via.replace("\"", "\"\""))
+    } else {
+      "".to_string()
+    },
+    if !args.tracking_numbers.is_empty() {
+      if args.tracking_numbers.len() > 1 {
+        format!(
+          "\"<strong>Tracking Numbers:</strong><ul>{}</ul>\" & vbCrLf & _\n",
+          args.tracking_numbers.join("").replace("\"", "\"\"")
+        )
+      } else {
+        format!(
+          "\"<strong>Tracking Number:</strong><ul>{}</ul>\" & vbCrLf & _\n",
+          args.tracking_numbers[0].replace("\"", "\"\"")
+        )
+      }
+    } else {
+      "".to_string()
+    }
+  );
+
+  let vbs_script = format!(
+    r#"
+    Dim OutlookApp
+    Set OutlookApp = CreateObject("Outlook.Application")
+    Dim MailItem
+    Set MailItem = OutlookApp.CreateItem(0)
+    MailItem.Subject = "Midwest Diesel Invoice - {}"
+    MailItem.HTMLBody = {}
+    MailItem.To = "{}"
+    
+    Dim attachmentPath
+    attachmentPath = Trim("{}")
+    If attachmentPath <> "" Then
+      MailItem.Attachments.Add attachmentPath
+    End If
+
+    MailItem.Display
+    "#,
+    args.date,
+    body,
+    args.email,
+    format!("{}\\{}.pdf", archive_dir, args.id)
+  );
+
+  let vbs_path = "C:/mwd/scripts/email_karmak_invoice.vbs";
+  write(&vbs_path, vbs_script).unwrap();
+
+  let mut cmd = Command::new("wscript.exe");
+  cmd.arg(vbs_path);
+  cmd.output().unwrap();
 }
 
 #[tauri::command]

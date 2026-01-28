@@ -344,7 +344,7 @@ export default function HandwrittenDetails({
       ship_via: handwritten.shipVia?.name ?? '',
       tracking_numbers: handwritten.trackingNumbers.map((num) => `<li style='margin: 0;'>${num.trackingNumber}</li>`)
     };
-    invoke('email_end_of_day', { args });
+    invoke('email_karmak_invoice', { args });
   };
 
 
