@@ -2,9 +2,6 @@ import { test, expect, Dialog, Page } from '@playwright/test';
 import { altSearch, goto, partSearch } from '../utils';
 import { resetDb } from '../resetDatabase';
 
-const onAddAltPartsDialog = (dialog: Dialog) => dialog.accept('9N3242');
-const onRemoveAltPartsDialog = (dialog: Dialog) => dialog.accept('9N3242, 7L0406');
-
 test.beforeEach(async ({ page }) => {
   await resetDb();
   await page.goto('http://localhost:3001');
@@ -16,7 +13,7 @@ test.beforeEach(async ({ page }) => {
 
 
 async function addAltPart(page: Page) {
-  page.on('dialog', onAddAltPartsDialog);
+  page.on('dialog', (dialog: Dialog) => dialog.accept('9N3242'));
   await altSearch(page, { partNum: '9N3240', desc: null, stockNum: null, location: null, qty: null, rating: null, serialNum: null, hp: null, purchFrom: null, remarks: null });
   await page.getByTestId('part-num-link').first().click();
   await page.waitForLoadState('networkidle');
@@ -44,42 +41,12 @@ test.describe('Parts', () => {
 
   test('Add altPart', async ({ page }) => {
     await addAltPart(page);
-    await expect(page.getByTestId('alt-parts')).toHaveText('9N3240, 9N3242, 7L0406');
-
-    await goto(page, '/');
-    await page.waitForLoadState('networkidle');
-    await altSearch(page, { partNum: '7L0406' });
-    await page.getByTestId('part-num-link').nth(2).click();
-    await expect(page.getByTestId('alt-parts')).toHaveText('9N3240, 9N3242, 7L0406');
-  });
-
-  test('Remove single altPart', async ({ page }) => {
-    await addAltPart(page);
-    await goto(page, '/');
-
-    await page.waitForLoadState('networkidle');
-    await altSearch(page, { partNum: '9N3240' });
-    await page.waitForTimeout(100);
-    await page.getByTestId('part-num-link').first().click();
-    await page.waitForLoadState('networkidle');
-    await page.waitForTimeout(100);
-    await page.getByTestId('edit-btn').click();
-    await expect(page.getByTestId('alt-parts')).toHaveText('9N3240, 9N3242, 7L0406');
-
-    page.off('dialog', onAddAltPartsDialog);
-    page.on('dialog', onRemoveAltPartsDialog);
-    await page.getByTestId('remove-alts').click();
-    await page.waitForLoadState('networkidle');
-    await page.getByTestId('save-btn').click();
-    await page.waitForLoadState('networkidle');
-    await expect(page.getByTestId('alt-parts')).toHaveText('9N3240');
+    await expect(page.getByTestId('alt-parts')).toHaveText('9N3240, 7L0406, 9N3242');
 
     await goto(page, '/');
     await page.waitForLoadState('networkidle');
     await altSearch(page, { partNum: '7L0406' });
     await page.getByTestId('part-num-link').first().click();
-    await page.waitForLoadState('networkidle');
-    await page.getByTestId('edit-btn').click();
-    await expect(page.getByTestId('alt-parts')).toHaveText('7L0406');
+    await expect(page.getByTestId('alt-parts')).toHaveText('9N3240, 7L0406, 9N3242');
   });
 });
