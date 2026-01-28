@@ -15,7 +15,6 @@ import Input from "../library/Input";
 import Loading from "../library/Loading";
 import { useQuery } from "@tanstack/react-query";
 import { getVendors } from "@/scripts/services/vendorsService";
-import { deleteEngineAddOn } from "@/scripts/services/engineAddOnsService";
 import { useNavState } from "@/hooks/useNavState";
 
 interface Props {
@@ -89,7 +88,7 @@ export default function OfficePartAddonRow({ addOn, onSave, onModifyAddOnData }:
 
   const onClickDeleteAddOn = async () => {
     if (!await ask('Are you sure you want to delete this part?')) return;
-    await deleteEngineAddOn(addOn.id);
+    await deleteAddOn(addOn.id);
     setAddons(addOns.filter((a) => a.id !== addOn.id));
   };
 

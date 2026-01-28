@@ -4,7 +4,7 @@ import Button from "../library/Button";
 import Checkbox from "../library/Checkbox";
 import Table from "../library/Table";
 import Select from "../library/select/Select";
-import { addAddOn, editAddOnIsPoOpened, editAddOnPrintStatus } from "@/scripts/services/addOnsService";
+import { addAddOn, deleteAddOn, editAddOnIsPoOpened, editAddOnPrintStatus } from "@/scripts/services/addOnsService";
 import { getNextUPStockNum, getPartsByStockNum, getPartInfoByPartNum } from "@/scripts/services/partsService";
 import { useEffect, useRef, useState } from "react";
 import Input from "../library/Input";
@@ -20,7 +20,6 @@ import { useClickOutside } from "@/hooks/useClickOutside";
 import { commonPrefixLength, getAddOnDateCode, getNextStockNumberSuffix } from "@/scripts/logic/addOns";
 import { useQuery } from "@tanstack/react-query";
 import { getVendors } from "@/scripts/services/vendorsService";
-import { deleteEngineAddOn } from "@/scripts/services/engineAddOnsService";
 import { useNavState } from "@/hooks/useNavState";
 
 interface Props {
@@ -99,7 +98,7 @@ export default function ShopPartAddonRow({ addOn, handleDuplicateAddOn, partNumL
 
   const onClickDeleteAddOn = async () => {
     if (!await ask('Are you sure you want to delete this part?')) return;
-    await deleteEngineAddOn(addOn.id);
+    await deleteAddOn(addOn.id);
     setAddons(addOns.filter((a) => a.id !== addOn.id));
   };
   
