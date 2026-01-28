@@ -138,7 +138,7 @@ test.describe('Handwritten items', () => {
     await (await page.$$('[data-testid="select-handwritten-dialog"] .checkbox-wrapper-4'))[0].click();
     await (await page.$$('[data-testid="select-handwritten-dialog"] .checkbox-wrapper-4'))[2].click();
     await page.getByTestId('warranty-submit-btn').click();
-    await page.waitForTimeout(3000);
+    await page.waitForTimeout(1000);
     await page.waitForLoadState('networkidle');
     await page.getByTestId('tab').first().click();
     await page.waitForLoadState('networkidle');
