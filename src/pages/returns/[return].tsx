@@ -18,7 +18,8 @@ import { useEffect, useState } from "react";
 import { useNavState } from "@/hooks/useNavState";
 import { ask } from "@/scripts/config/tauri";
 import { usePrintQue } from "@/hooks/usePrintQue";
-import { addHandwritten, addHandwrittenItem } from "@/scripts/services/handwrittensService";
+import { addHandwritten, addHandwrittenItem, getHandwrittenById } from "@/scripts/services/handwrittensService";
+import { deleteCoreByItemId } from "@/scripts/services/coresService";
 
 
 export default function Return() {
@@ -51,8 +52,19 @@ export default function Return() {
 
   const onClickCreditIssued = async () => {
     if (!returnData || returnData.creditIssued || !await ask('Are you sure you want to credit this?')) return;
+
+    const cores = returnData.returnItems.filter((item) => item.partNum?.toLowerCase().includes('core'));
+    if (cores.length > 0 && !await ask('This return has a core deposit. Are you okay proceeding?')) {
+      return;
+    }
+
     await issueReturnCredit(returnData.id);
     setReturnData({ ...returnData, creditIssued: new Date() });
+
+    const handwritten = await getHandwrittenById(Number(returnData.handwrittenId));
+    for (const item of handwritten?.handwrittenItems ?? []) {
+      if (cores.some((c) => c.partNum === item.partNum)) await deleteCoreByItemId(item.id);
+    }
 
     const newHandwritten = {
       customer: returnData.customer,
@@ -71,7 +83,8 @@ export default function Return() {
       shipToState: returnData.shipToState,
       shipToZip: returnData.shipToZip,
       salesmanId: returnData.salesman?.id,
-      invoiceStatus: 'SENT TO ACCOUNTING'
+      invoiceStatus: 'SENT TO ACCOUNTING',
+      accountingStatus: 'COMPLETE'
     } as any;
     const id = await addHandwritten(newHandwritten);
 
@@ -82,7 +95,7 @@ export default function Return() {
         partId: item.part?.id ?? null,
         stockNum: item.part?.stockNum ?? '',
         location: item.part?.location,
-        cost: 0.01,
+        cost: item.cost,
         qty: -Number(item.qty),
         partNum: item.partNum,
         desc: `RETURNED PART: ${item.desc}`,
