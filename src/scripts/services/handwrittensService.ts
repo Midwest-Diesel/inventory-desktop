@@ -316,6 +316,14 @@ export const editHandwrittenPromotionals = async (id: number, mp: number, cap: n
   }
 };
 
+export const editHandwrittenHasPrinted = async (id: number, hasPrinted: boolean) => {
+  try {
+    await api.patch('/api/handwrittens/has-printed', { id, hasPrinted });
+  } catch (err) {
+    console.error(err);
+  }
+};
+
 // === PUT routes === //
 
 export const editHandwritten = async (handwritten: Handwritten) => {

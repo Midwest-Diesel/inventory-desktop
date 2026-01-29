@@ -247,6 +247,7 @@ type Handwritten = {
   trackingNumbers: TrackingNumber[]
   thirdPartyAccount: string | null
   allTakeoffsCompleted: boolean
+  hasPrinted: boolean
 };
 
 type InvoiceStatus = 'INVOICE PENDING' | 'SENT TO ACCOUNTING' | 'CANCELLED' | 'STOP - HOLD' | 'HOLD AS FAVOR';
@@ -974,6 +975,7 @@ interface Email {
 }
 
 interface CustomerEngineData {
+  serialNum: string | null
   arrNum: string | null
   headNew: string | null
   blockNew: string | null

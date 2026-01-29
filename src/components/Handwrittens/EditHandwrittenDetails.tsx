@@ -1,5 +1,5 @@
 import { errorAtom, quickPickItemIdAtom, sourcesAtom } from "@/scripts/atoms/state";
-import { addHandwrittenItem, deleteHandwrittenItem, editHandwritten, editHandwrittenItem, editHandwrittenTaxable, getHandwrittenById, getHandwrittenEmails } from "@/scripts/services/handwrittensService";
+import { addHandwrittenItem, deleteHandwrittenItem, editHandwritten, editHandwrittenHasPrinted, editHandwrittenItem, editHandwrittenTaxable, getHandwrittenById, getHandwrittenEmails } from "@/scripts/services/handwrittensService";
 import { useAtom } from "jotai";
 import { FormEvent, Fragment, useEffect, useRef, useState } from "react";
 import GridItem from "../library/grid/GridItem";
@@ -621,9 +621,10 @@ export default function EditHandwrittenDetails({
   };
 
   const onAccountingProcessClose = async () => {
-    if (isSentToAccounting) {
+    if (isSentToAccounting && (!handwritten.hasPrinted || (handwritten.hasPrinted && await ask('Reprint this handwritten?')))) {
       await onPrintCCLabel();
       await onPrintHandwritten();
+      if (!handwritten.hasPrinted) await editHandwrittenHasPrinted(handwritten.id, true);
     }
     setAccountingProcessOpen(false);
     setIsEditing(false);
