@@ -143,6 +143,7 @@ export default function CompareConsist() {
   };
 
   const handleSaveSearch = async () => {
+    const { arrNum, ...engineData } = getEngineData(true);
     const data = {
       customerId: params.c,
       hp: '',
@@ -150,7 +151,8 @@ export default function CompareConsist() {
       notes: '',
       dateCreated: new Date(),
       serialNum,
-      ...getEngineData(true)
+      arrNum: searchArrNum,
+      ...engineData
     } as CompareConsist;
     await addCompareData(data);
     toast.sendToast('Saved search', 'success');
