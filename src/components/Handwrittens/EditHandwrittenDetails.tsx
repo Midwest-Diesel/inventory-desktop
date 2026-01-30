@@ -404,26 +404,26 @@ export default function EditHandwrittenDetails({
           return {
             stockNum: item.stockNum ?? '',
             location: item.location ?? '',
-            cost: formatCurrency(item.cost).replaceAll(',', '|') ?? '$0.00',
+            cost: formatCurrency(item.cost) ?? '$0.00',
             qty: item.qty,
             partNum: item.partNum ?? '',
             desc: item.desc ?? '',
-            unitPrice: formatCurrency(item.unitPrice).replaceAll(',', '|') ?? '$0.00',
-            total: formatCurrency((item.qty ?? 0) * (item.unitPrice ?? 0)).replaceAll(',', '|') ?? '$0.00',
+            unitPrice: formatCurrency(item.unitPrice) ?? '$0.00',
+            total: formatCurrency((item.qty ?? 0) * (item.unitPrice ?? 0)) ?? '$0.00',
             itemChildren: item.invoiceItemChildren
           };
         }) ?? []
       };
       const itemChildren = chunk.flatMap((item) =>
         (item.invoiceItemChildren ?? []).map((child: HandwrittenItemChild) => ({
-          cost: formatCurrency(child.cost).replaceAll(',', '|') || '$0.00',
+          cost: formatCurrency(child.cost) || '$0.00',
           qty: child.qty,
           partNum: child.partNum,
           desc: child.part?.desc,
           stockNum: child.stockNum,
           location: child.part?.location,
-          unitPrice: formatCurrency((item?.unitPrice ?? 0)).replaceAll(',', '|') || '$0.00',
-          total: formatCurrency((child?.qty ?? 0) * (item?.unitPrice ?? 0)).replaceAll(',', '|') || '$0.00'
+          unitPrice: formatCurrency((item?.unitPrice ?? 0)) || '$0.00',
+          total: formatCurrency((child?.qty ?? 0) * (item?.unitPrice ?? 0)) || '$0.00'
         }))
       );
       const itemsWithChildren = [...args.items.filter((item: any) => item.itemChildren.length === 0), ...(itemChildren ?? [])];
