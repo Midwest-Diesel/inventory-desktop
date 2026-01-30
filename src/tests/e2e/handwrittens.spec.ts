@@ -133,6 +133,7 @@ test.describe('Handwritten items', () => {
     await page.getByTestId('select-handwritten-price').fill('100');
     await page.getByTestId('select-handwritten-submit-btn').click();
     await page.waitForLoadState('networkidle');
+    await page.waitForTimeout(500);
     await page.getByTestId('warranty').fill('TEST WARRANTY');
     await (await page.$$('[data-testid="select-handwritten-dialog"] .checkbox-wrapper-4'))[0].click();
     await (await page.$$('[data-testid="select-handwritten-dialog"] .checkbox-wrapper-4'))[2].click();
@@ -150,6 +151,7 @@ test.describe('Handwritten items', () => {
     await page.getByTestId('select-handwritten-price').fill('80');
     await page.getByTestId('select-handwritten-submit-btn').click();
     await page.waitForLoadState('networkidle');
+    await page.waitForTimeout(500);
     await page.getByTestId('warranty').fill('TEST WARRANTY');
     await (await page.$$('[data-testid="select-handwritten-dialog"] .checkbox-wrapper-4'))[1].click();
     await page.getByTestId('warranty-submit-btn').click();
