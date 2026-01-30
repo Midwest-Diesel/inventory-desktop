@@ -329,8 +329,8 @@ export default function EditEngineDetails({ engine, setIsEditing, refetch }: Pro
         </div>
       </div>
 
-      <Grid rows={1} cols={12} gap={1}>
-        <GridItem colStart={1} colEnd={5} variant={['low-opacity-bg']}>
+      <Grid>
+        <GridItem variant={['low-opacity-bg']}>
           <Table variant={['plain', 'edit-row-details']}>
             <tbody>
               <tr>
@@ -575,8 +575,8 @@ export default function EditEngineDetails({ engine, setIsEditing, refetch }: Pro
           </Table>
         </GridItem>
 
-        <GridItem colStart={5} colEnd={12} rowStart={1} variant={['no-style']}>
-          <GridItem colStart={5} colEnd={12} rowStart={1} variant={['low-opacity-bg']}>
+        <GridItem variant={['no-style']} colSpan={8}>
+          <GridItem variant={['low-opacity-bg']}>
             <Table variant={['plain', 'edit-row-details']}>
               <tbody>
                 <tr>
@@ -608,12 +608,12 @@ export default function EditEngineDetails({ engine, setIsEditing, refetch }: Pro
           </GridItem>
           <br />
 
-          <GridItem colStart={5} colEnd={12} variant={['low-opacity-bg']}>
+          <GridItem variant={['low-opacity-bg']}>
             <EditEnginePartsTable />
           </GridItem>
         </GridItem>
 
-        <GridItem colStart={1} colEnd={6} variant={['no-style']}>
+        <GridItem colSpan={6} variant={['no-style']}>
           <h2>Engine Cost In</h2>
           <Table variant={['plain', 'edit-row-details']}>
             <thead>
@@ -760,7 +760,7 @@ export default function EditEngineDetails({ engine, setIsEditing, refetch }: Pro
           </Table>
         </GridItem>
 
-        <GridItem variant={['no-style']} colStart={7} colEnd={12}>
+        <GridItem variant={['no-style']} colSpan={6}>
           <h2>Engine Cost Out</h2>
           <Table variant={['plain', 'edit-row-details']}>
             <thead>

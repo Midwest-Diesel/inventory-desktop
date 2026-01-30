@@ -124,8 +124,8 @@ export default function EditWarrantyDetails({ warrantyData, setWarranty, setIsEd
         </div>
       </div>
 
-      <Grid rows={1} cols={12} gap={1}>
-        <GridItem colStart={1} colEnd={6} breakpoints={[{ width: 1600, colStart: 1, colEnd: 8 }]} variant={['low-opacity-bg']}>
+      <Grid>
+        <GridItem variant={['low-opacity-bg']} colSpan={6}>
           <Table variant={['plain', 'edit-row-details']}>
             <tbody>
               <tr>
@@ -154,7 +154,7 @@ export default function EditWarrantyDetails({ warrantyData, setWarranty, setIsEd
           </Table>
         </GridItem>
 
-        <GridItem colStart={6} colEnd={11} breakpoints={[{ width: 1600, colStart: 1, colEnd: 6 }]} variant={['low-opacity-bg']}>
+        <GridItem variant={['low-opacity-bg']} colSpan={6}>
           <Table variant={['plain', 'edit-row-details']}>
             <tbody>
               <tr>
@@ -190,7 +190,7 @@ export default function EditWarrantyDetails({ warrantyData, setWarranty, setIsEd
           </Table>
         </GridItem>
 
-        <GridItem colStart={1} colEnd={12} variant={['no-style']} style={{ marginTop: '1rem' }}>
+        <GridItem colSpan={12} variant={['no-style']} style={{ marginTop: '1rem' }}>
           <h3>Warranty Items</h3> 
           <Table>
             <thead>

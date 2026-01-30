@@ -128,8 +128,8 @@ export default function EditReturnDetails({ returnData, setReturn, setIsEditing 
         </div>
       </div>
 
-      <Grid rows={1} cols={12} gap={1}>
-        <GridItem colStart={1} colEnd={6} variant={['low-opacity-bg']}>
+      <Grid>
+        <GridItem colSpan={6} variant={['low-opacity-bg']}>
           <Table variant={['plain', 'edit-row-details']}>
             <tbody>
               <tr>
@@ -187,7 +187,7 @@ export default function EditReturnDetails({ returnData, setReturn, setIsEditing 
           </Table>
         </GridItem>
 
-        <GridItem colStart={6} colEnd={12} variant={['low-opacity-bg']}>
+        <GridItem colSpan={6} variant={['low-opacity-bg']}>
           <Table variant={['plain', 'edit-row-details']}>
             <tbody>
               <tr>
@@ -269,7 +269,7 @@ export default function EditReturnDetails({ returnData, setReturn, setIsEditing 
           </Table>
         </GridItem>
 
-        <GridItem colStart={1} colEnd={6} variant={['low-opacity-bg']}>
+        <GridItem colSpan={6} variant={['low-opacity-bg']}>
           <Table variant={['plain', 'edit-row-details']}>
             <tbody>
               <tr>
@@ -346,7 +346,7 @@ export default function EditReturnDetails({ returnData, setReturn, setIsEditing 
           </Table>
         </GridItem>
 
-        <GridItem colStart={6} colEnd={12} variant={['low-opacity-bg']}>
+        <GridItem colSpan={6} variant={['low-opacity-bg']}>
           <Table variant={['plain', 'edit-row-details']}>
             <tbody>
               <tr>
@@ -403,7 +403,7 @@ export default function EditReturnDetails({ returnData, setReturn, setIsEditing 
           </Table>
         </GridItem>
 
-        <GridItem variant={['no-style']} colStart={1} colEnd={12}>
+        <GridItem variant={['no-style']} colSpan={12}>
           <EditReturnItemsTable
             returnData={returnData}
             returnItems={returnItems}

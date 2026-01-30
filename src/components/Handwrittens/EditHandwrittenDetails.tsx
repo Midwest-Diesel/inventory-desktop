@@ -701,8 +701,8 @@ export default function EditHandwrittenDetails({
               <Button type="button" onClick={() => setAddQtyDialogOpen(true)} disabled={handwritten.invoiceStatus === 'SENT TO ACCOUNTING'} data-testid="add-qty-io-btn">Add Qty | I/O</Button>
             </div>
 
-            <Grid rows={1} cols={11} gap={1}>
-              <GridItem colStart={1} colEnd={5} breakpoints={[{ width: 1600, colStart: 1, colEnd: 6 }]} variant={['low-opacity-bg']}>
+            <Grid>
+              <GridItem variant={['low-opacity-bg']}>
                 <Table variant={['plain', 'edit-row-details']}>
                   <tbody>
                     <tr>
@@ -786,7 +786,7 @@ export default function EditHandwrittenDetails({
                 </Table>
               </GridItem>
               
-              <GridItem colStart={5} colEnd={9} variant={['low-opacity-bg']} className="no-print">
+              <GridItem variant={['low-opacity-bg']} className="no-print">
                 <CreditCardBlock
                   handwritten={handwritten}
                   setPromptLeaveWindow={setPromptLeaveWindow}
@@ -807,7 +807,7 @@ export default function EditHandwrittenDetails({
                 />
               </GridItem>
 
-              <GridItem colStart={9} colEnd={12} breakpoints={[{ width: 1600, colStart: 1, colEnd: 8 }]} variant={['low-opacity-bg']}>
+              <GridItem variant={['low-opacity-bg']}>
                 <Table variant={['plain', 'edit-row-details']}>
                   <tbody>
                     <tr>
@@ -889,7 +889,7 @@ export default function EditHandwrittenDetails({
                 </Table>
               </GridItem>
 
-              <GridItem colStart={1} colEnd={5} breakpoints={[{ width: 1600, colStart: 6, colEnd: 12 }]} variant={['no-style']}>
+              <GridItem variant={['no-style']}>
                 <GridItem variant={['no-style']}>
                   <Button variant={['xx-small']} onClick={handleSameAsBillTo} type="button">Same as Bill To</Button>
                 </GridItem>
@@ -979,7 +979,7 @@ export default function EditHandwrittenDetails({
                 </GridItem>
               </GridItem>
 
-              <GridItem colStart={5} colEnd={9} variant={['low-opacity-bg']}>
+              <GridItem variant={['low-opacity-bg']}>
                 <Table variant={['plain', 'edit-row-details']}>
                   <tbody>
                     <tr>
@@ -1066,7 +1066,7 @@ export default function EditHandwrittenDetails({
                 }
               </GridItem>
 
-              <GridItem colStart={1} colEnd={12} variant={['no-style']}>
+              <GridItem colSpan={12} variant={['no-style']}>
                 <div style={{ display: 'flex', gap: '2rem' }}>
                   <Checkbox
                     variant={['label-bold', 'label-align-center']}
@@ -1104,7 +1104,7 @@ export default function EditHandwrittenDetails({
                 </div>
               </GridItem>
 
-              <GridItem colStart={1} colEnd={12} variant={['low-opacity-bg']}>
+              <GridItem colSpan={12} variant={['low-opacity-bg']}>
                 <div style={{ display: 'flex', gap: '2rem', marginTop: '1rem' }}>
                   <Select
                     label="Sales Status"
@@ -1146,7 +1146,7 @@ export default function EditHandwrittenDetails({
                 </div>
               </GridItem>
 
-              <GridItem colStart={1} colEnd={8} variant={['no-style']} style={{ marginTop: '1rem' }}>
+              <GridItem colSpan={8} variant={['no-style']} style={{ marginTop: '1rem' }}>
                 <EditHandwrittenItemsTable
                   handwritten={handwritten}
                   handwrittenItems={handwrittenItems}
@@ -1158,7 +1158,7 @@ export default function EditHandwrittenDetails({
                 />
               </GridItem>
 
-              <GridItem colStart={9} colEnd={12} variant={['no-style']} style={{ marginTop: '1rem' }}>
+              <GridItem variant={['no-style']} style={{ marginTop: '1rem' }} className="grid__item--tracking">
                 <h3>Tracking Numbers</h3>
                 <div className="edit-handwritten-details__tracking-numbers">
                   {trackingNumbers.map((num, i) => {
@@ -1193,7 +1193,7 @@ export default function EditHandwrittenDetails({
                 </div>
               </GridItem>
 
-              <GridItem variant={['low-opacity-bg']} colStart={1} colEnd={7}>
+              <GridItem variant={['low-opacity-bg']} colSpan={6}>
                 <div className="handwritten-details__shipping-notes">
                   <TextArea
                     style={{ maxWidth: 'none' }}
@@ -1263,7 +1263,7 @@ export default function EditHandwrittenDetails({
                 </div>
               </GridItem>
 
-              <GridItem variant={['low-opacity-bg']} colStart={7} colEnd={12} breakpoints={[{width: 1500, colStart: 1, colEnd: 5}]}>
+              <GridItem variant={['low-opacity-bg']} colSpan={6}>
                 <div>
                   <TextArea
                     style={{ maxWidth: 'none' }}

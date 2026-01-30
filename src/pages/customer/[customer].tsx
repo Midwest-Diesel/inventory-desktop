@@ -148,173 +148,182 @@ export default function Customer() {
               <Button onClick={() => setEditLocDialogOpen(true)}>Edit Map Location</Button>
             </div>
           
-            <Grid rows={1} cols={12} gap={1}>
-              <GridItem colStart={1} colEnd={5} variant={['low-opacity-bg']}>
-                <Table variant={['plain', 'row-details']}>
-                  <tbody>
-                    <tr>
-                      <th>Contact</th>
-                      <td>{ customer.contact }</td>
-                    </tr>
-                    <tr>
-                      <th>Phone</th>
-                      <td>{ formatPhone(customer.phone) }</td>
-                    </tr>
-                    <tr>
-                      <th>Email</th>
-                      <td>{ customer.email }</td>
-                    </tr>
-                    <tr>
-                      <th>Customer Type</th>
-                      <td>{ customer.customerType }</td>
-                    </tr>
-                    <tr>
-                      <th>Source</th>
-                      <td>{ customer.source }</td>
-                    </tr>
-                    <tr>
-                      <th>Fax</th>
-                      <td>{ customer.fax }</td>
-                    </tr>
-                    <tr>
-                      <th>Payment Type</th>
-                      <td>{ customer.paymentType }</td>
-                    </tr>
-                  </tbody>
-                </Table>
-              </GridItem>
-
-              <GridItem variant={['no-style']} colStart={5} colEnd={7} rowStart={1} rowEnd={3} className="customer-details__sales-history">
-                <h3>Sales History</h3>
-                {salesHistory.length > 0 ?
-                  <Table>
-                    <thead>
-                      <tr>
-                        <th>Year</th>
-                        <th>Sales</th>
-                      </tr>
-                    </thead>
+            <Grid>
+              <GridItem colSpan={5} variant={['no-style']}>
+                <GridItem variant={['low-opacity-bg']}>
+                  <Table variant={['plain', 'row-details']}>
                     <tbody>
-                      {salesHistory.map((sale: SalesHistory, i: number) => {
-                        return (
-                          <tr key={i}>
-                            <td>{ sale.year }</td>
-                            <td>{ formatCurrency(sale.totalSales) }</td>
-                          </tr>
-                        );
-                      })}
+                      <tr>
+                        <th>Contact</th>
+                        <td>{ customer.contact }</td>
+                      </tr>
+                      <tr>
+                        <th>Phone</th>
+                        <td>{ formatPhone(customer.phone) }</td>
+                      </tr>
+                      <tr>
+                        <th>Email</th>
+                        <td>{ customer.email }</td>
+                      </tr>
+                      <tr>
+                        <th>Customer Type</th>
+                        <td>{ customer.customerType }</td>
+                      </tr>
+                      <tr>
+                        <th>Source</th>
+                        <td>{ customer.source }</td>
+                      </tr>
+                      <tr>
+                        <th>Fax</th>
+                        <td>{ customer.fax }</td>
+                      </tr>
+                      <tr>
+                        <th>Payment Type</th>
+                        <td>{ customer.paymentType }</td>
+                      </tr>
                     </tbody>
                   </Table>
-                  :
-                  <p>Empty</p>
-                }
+                </GridItem>
+                <br />
+
+                <GridItem variant={['low-opacity-bg']}>
+                  <Table variant={['plain', 'row-details']}>
+                    <tbody>
+                      <tr>
+                        <th>Billing Address</th>
+                        <td>{ customer.billToAddress }</td>
+                      </tr>
+                      <tr>
+                        <th>Billing Address 2</th>
+                        <td>{ customer.billToAddress2 }</td>
+                      </tr>
+                      <tr>
+                        <th>Billing City</th>
+                        <td>{ customer.billToCity }</td>
+                      </tr>
+                      <tr>
+                        <th>Billing State</th>
+                        <td>{ customer.billToState }</td>
+                      </tr>
+                      <tr>
+                        <th>Billing Zip</th>
+                        <td>{ customer.billToZip }</td>
+                      </tr>
+                      <tr>
+                        <th>Billing Phone</th>
+                        <td>{ customer.billToPhone }</td>
+                      </tr>
+                    </tbody>
+                  </Table>
+                </GridItem>
+                <br />
+
+                <GridItem variant={['low-opacity-bg']}>
+                  <Table variant={['plain', 'row-details']}>
+                    <tbody>
+                      <tr>
+                        <th>Shipping Address</th>
+                        <td>{ customer.shipToAddress }</td>
+                      </tr>
+                      <tr>
+                        <th>Shipping Address 2</th>
+                        <td>{ customer.shipToAddress2 }</td>
+                      </tr>
+                      <tr>
+                        <th>Shipping City</th>
+                        <td>{ customer.shipToCity }</td>
+                      </tr>
+                      <tr>
+                        <th>Shipping State</th>
+                        <td>{ customer.shipToState }</td>
+                      </tr>
+                      <tr>
+                        <th>Shipping Zip</th>
+                        <td>{ customer.shipToZip }</td>
+                      </tr>
+                    </tbody>
+                  </Table>
+                </GridItem>
+                <br />
+
+                <GridItem variant={['low-opacity-bg']}>
+                  <Table variant={['plain', 'row-details']}>
+                    <tbody>
+                      <tr>
+                        <th>Comments</th>
+                        <td style={{ whiteSpace: 'pre-wrap' }}>{ comments.querySelector('body')?.innerText }</td>
+                      </tr>
+                      <tr>
+                        <th>{ customer.customerType || 'Fleet' } Notes</th>
+                        <td style={{ whiteSpace: 'pre-wrap' }}>{ fleetNotes.querySelector('body')?.innerText }</td>
+                      </tr>
+                    </tbody>
+                  </Table>
+                </GridItem>
               </GridItem>
 
-              <GridItem colStart={1} colEnd={5} variant={['low-opacity-bg']}>
-                <Table variant={['plain', 'row-details']}>
-                  <tbody>
-                    <tr>
-                      <th>Billing Address 1</th>
-                      <td>{ customer.billToAddress }</td>
-                    </tr>
-                    <tr>
-                      <th>Billing Address 2</th>
-                      <td>{ customer.billToAddress2 }</td>
-                    </tr>
-                    <tr>
-                      <th>Billing City</th>
-                      <td>{ customer.billToCity }</td>
-                    </tr>
-                    <tr>
-                      <th>Billing State</th>
-                      <td>{ customer.billToState }</td>
-                    </tr>
-                    <tr>
-                      <th>Billing Zip</th>
-                      <td>{ customer.billToZip }</td>
-                    </tr>
-                    <tr>
-                      <th>Billing Phone</th>
-                      <td>{ customer.billToPhone }</td>
-                    </tr>
-                  </tbody>
-                </Table>
-              </GridItem>
+              <GridItem colSpan={4} variant={['no-style']}>
+                <GridItem variant={['no-style']} className="customer-details__sales-history" style={{ maxHeight: '15.5rem' }}>
+                  <h3>Sales History</h3>
+                  {salesHistory.length > 0 ?
+                    <Table>
+                      <thead>
+                        <tr>
+                          <th>Year</th>
+                          <th>Sales</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {salesHistory.map((sale: SalesHistory, i: number) => {
+                          return (
+                            <tr key={i}>
+                              <td>{ sale.year }</td>
+                              <td>{ formatCurrency(sale.totalSales) }</td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </Table>
+                    :
+                    <p>Empty</p>
+                  }
+                </GridItem>
+                <br />
 
-              <GridItem colStart={1} colEnd={5} variant={['low-opacity-bg']}>
-                <Table variant={['plain', 'row-details']}>
-                  <tbody>
-                    <tr>
-                      <th>Shipping Address 1</th>
-                      <td>{ customer.shipToAddress }</td>
-                    </tr>
-                    <tr>
-                      <th>Shipping Address 2</th>
-                      <td>{ customer.shipToAddress2 }</td>
-                    </tr>
-                    <tr>
-                      <th>Shipping City</th>
-                      <td>{ customer.shipToCity }</td>
-                    </tr>
-                    <tr>
-                      <th>Shipping State</th>
-                      <td>{ customer.shipToState }</td>
-                    </tr>
-                    <tr>
-                      <th>Shipping Zip</th>
-                      <td>{ customer.shipToZip }</td>
-                    </tr>
-                  </tbody>
-                </Table>
-              </GridItem>
+                <GridItem variant={['no-style']}>
+                  <CustomerContactsBlock customer={customer} setCustomer={setCustomer} />
 
-              <GridItem colStart={5} colEnd={9} variant={['low-opacity-bg']}>
-                <Table variant={['plain', 'row-details']}>
-                  <tbody>
-                    <tr>
-                      <th>Parts Manager</th>
-                      <td>{ customer.partsManager }</td>
-                    </tr>
-                    <tr>
-                      <th>Parts Manager Email</th>
-                      <td>{ customer.partsManagerEmail }</td>
-                    </tr>
-                    <tr>
-                      <th>Service Manager</th>
-                      <td>{ customer.serviceManager }</td>
-                    </tr>
-                    <tr>
-                      <th>Service Manager Email</th>
-                      <td>{ customer.serviceManagerEmail }</td>
-                    </tr>
-                  </tbody>
-                </Table>
-              </GridItem>
+                  <Checkbox
+                    variant={['label-bold', 'label-align-center']}
+                    label="TAXABLE"
+                    checked={customer.isTaxable}
+                    disabled
+                  />
+                </GridItem>
+                <br />
 
-              <GridItem colStart={1} colEnd={5} variant={['low-opacity-bg']}>
-                <Table variant={['plain', 'row-details']}>
-                  <tbody>
-                    <tr>
-                      <th>Comments</th>
-                      <td style={{ whiteSpace: 'pre-wrap' }}>{ comments.querySelector('body')?.innerText }</td>
-                    </tr>
-                    <tr>
-                      <th>{ customer.customerType || 'Fleet' } Notes</th>
-                      <td style={{ whiteSpace: 'pre-wrap' }}>{ fleetNotes.querySelector('body')?.innerText }</td>
-                    </tr>
-                  </tbody>
-                </Table>
-              </GridItem>
-
-              <GridItem variant={['no-style']} colStart={5} colEnd={9} rowStart={2}>
-                <CustomerContactsBlock customer={customer} setCustomer={setCustomer} />
-
-                <Checkbox
-                  variant={['label-bold', 'label-align-center']}
-                  label="TAXABLE"
-                  checked={customer.isTaxable}
-                  disabled
-                />
+                <GridItem variant={['low-opacity-bg']}>
+                  <Table variant={['plain', 'row-details']}>
+                    <tbody>
+                      <tr>
+                        <th>Parts Manager</th>
+                        <td>{ customer.partsManager }</td>
+                      </tr>
+                      <tr>
+                        <th>Parts Manager Email</th>
+                        <td>{ customer.partsManagerEmail }</td>
+                      </tr>
+                      <tr>
+                        <th>Service Manager</th>
+                        <td>{ customer.serviceManager }</td>
+                      </tr>
+                      <tr>
+                        <th>Service Manager Email</th>
+                        <td>{ customer.serviceManagerEmail }</td>
+                      </tr>
+                    </tbody>
+                  </Table>
+                </GridItem>
               </GridItem>
             </Grid>
           </>

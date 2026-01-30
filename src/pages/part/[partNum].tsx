@@ -59,27 +59,23 @@ export default function PartDetails() {
     enabled: !!part?.engineNum
   });
 
-  // Part cost in
   const { data: partCostIn = [] } = useQuery<PartCostIn[]>({
     queryKey: ['partCostIn', part?.stockNum],
     queryFn: () => getPartCostIn(part?.stockNum ?? ''),
     enabled: !!part?.stockNum && !isEditingPart
   });
 
-  // Engine cost out
   const { data: engineCostOut = [] } = useQuery<EngineCostOut[]>({
     queryKey: ['engineCostOut', part?.stockNum],
     queryFn: () => getPartEngineCostOut(part?.stockNum ?? ''),
     enabled: !!part?.stockNum && !isEditingPart
   });
 
-  // Qty history
   const { data: history = [] } = useQuery<PartQtyHistory[]>({
     queryKey: ['partQtyHistory', part?.id, partQtyHistoryOpen],
     queryFn: () => getPartsQtyHistory(part!.id)
   });
 
-  // Pictures
   const { data: pictures = [] } = useQuery<Picture[]>({
     queryKey: ['pictures', part?.partNum],
     queryFn: () => getImagesFromPart(part?.partNum ?? ''),
@@ -92,7 +88,6 @@ export default function PartDetails() {
     enabled: !!part?.stockNum
   });
 
-  // Surplus
   useQuery({
     queryKey: ['surplusCostRemaining', part?.purchasedFrom],
     queryFn: () => getSurplusCostRemaining(part?.purchasedFrom ?? ''),
@@ -267,108 +262,127 @@ export default function PartDetails() {
           { part.imageExists && picturesOpen && <PartPicturesDialog open={picturesOpen} setOpen={setPicturesOpen} pictures={pictures} partNum={part.partNum} /> }        
           { part.snImageExists && snPicturesOpen && <StockNumPicturesDialog open={snPicturesOpen} setOpen={setSnPicturesOpen} pictures={snPictures} stockNum={part.stockNum} /> }
 
-          <Grid rows={1} cols={12} gap={1}>
-            <GridItem colStart={1} colEnd={7} rowStart={1} variant={['low-opacity-bg']}>
-              <Table variant={['plain', 'row-details']}>
-                <tbody>
-                  <tr>
-                    <th>Qty</th>
-                    <td data-testid="qty">{ part.qty }</td>
-                  </tr>
-                  <tr>
-                    <th>Stock Number</th>
-                    <td>
-                      <div className="part-details__stock-pics">
-                        { part.stockNum }
-                        {part.snImageExists &&
-                          <Button
-                            variant={['plain','hover-move']}
-                            onClick={() => setSnPicturesOpen(true)}
-                          >
-                            <img
-                              src="/images/icons/image.svg"
-                              alt="detail"
-                              width={20}
-                              height={20}
-                              style={{ alignSelf: 'center' }}
-                            />
-                          </Button>
-                        }
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <th>Location</th>
-                    <td>{ part.location }</td>
-                  </tr>
-                  <tr>
-                    <th>Manufacturer</th>
-                    <td>{ part.manufacturer }</td>
-                  </tr>
-                  <tr>
-                    <th>Purchased From</th>
-                    <td>{ part.purchasedFrom }</td>
-                  </tr>
-                  <tr>
-                    <th>Condition</th>
-                    <td>{ part.condition }</td>
-                  </tr>
-                  <tr>
-                    <th>Rating</th>
-                    <td>{ part.rating }</td>
-                  </tr>
-                  <tr>
-                    <th>Core Family</th>
-                    <td>{ part.coreFam }</td>
-                  </tr>
-                  <tr>
-                    <th>Entry Date</th>
-                    <td>{ formatDate(part.entryDate) }</td>
-                  </tr>
-                  <tr>
-                    <th>Recon Date</th>
-                    <td>{ formatDate(part.reconDate) }</td>
-                  </tr>
-                  <tr>
-                    <th>Price Last Updated</th>
-                    <td>{ formatDate(part.priceLastUpdated) }</td>
-                  </tr>
-                </tbody>
-              </Table>
+          <Grid>
+            <GridItem colSpan={6} variant={['no-style']}>
+              <GridItem variant={['low-opacity-bg']}>
+                <Table variant={['plain', 'row-details']}>
+                  <tbody>
+                    <tr>
+                      <th>Qty</th>
+                      <td data-testid="qty">{ part.qty }</td>
+                    </tr>
+                    <tr>
+                      <th>Stock Number</th>
+                      <td>
+                        <div className="part-details__stock-pics">
+                          { part.stockNum }
+                          {part.snImageExists &&
+                            <Button
+                              variant={['plain','hover-move']}
+                              onClick={() => setSnPicturesOpen(true)}
+                            >
+                              <img
+                                src="/images/icons/image.svg"
+                                alt="detail"
+                                width={20}
+                                height={20}
+                                style={{ alignSelf: 'center' }}
+                              />
+                            </Button>
+                          }
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>Location</th>
+                      <td>{ part.location }</td>
+                    </tr>
+                    <tr>
+                      <th>Manufacturer</th>
+                      <td>{ part.manufacturer }</td>
+                    </tr>
+                    <tr>
+                      <th>Purchased From</th>
+                      <td>{ part.purchasedFrom }</td>
+                    </tr>
+                    <tr>
+                      <th>Condition</th>
+                      <td>{ part.condition }</td>
+                    </tr>
+                    <tr>
+                      <th>Rating</th>
+                      <td>{ part.rating }</td>
+                    </tr>
+                    <tr>
+                      <th>Core Family</th>
+                      <td>{ part.coreFam }</td>
+                    </tr>
+                    <tr>
+                      <th>Entry Date</th>
+                      <td>{ formatDate(part.entryDate) }</td>
+                    </tr>
+                    <tr>
+                      <th>Recon Date</th>
+                      <td>{ formatDate(part.reconDate) }</td>
+                    </tr>
+                    <tr>
+                      <th>Price Last Updated</th>
+                      <td>{ formatDate(part.priceLastUpdated) }</td>
+                    </tr>
+                  </tbody>
+                </Table>
+              </GridItem>
+              <br />
+
+              <GridItem variant={['low-opacity-bg']}>
+                <Table variant={['plain', 'row-details']}>
+                  <tbody>
+                    <tr>
+                      <th>New List Price</th>
+                      <td>{ formatCurrency(part.listPrice) }</td>
+                    </tr>
+                    <tr>
+                      <th>Dealer Price</th>
+                      <td>{ formatCurrency(part.fleetPrice) }</td>
+                    </tr>
+                    <tr>
+                      <th>Reman List Price</th>
+                      <td>{ formatCurrency(part.remanListPrice) }</td>
+                    </tr>
+                    <tr>
+                      <th>Reman Fleet Price</th>
+                      <td>{ formatCurrency(part.remanFleetPrice) }</td>
+                    </tr>
+                    <tr>
+                      <th>Core Price</th>
+                      <td>{ formatCurrency(part.corePrice) }</td>
+                    </tr>
+                    <tr>
+                      <th>Purchase Price</th>
+                      <td>{ formatCurrency(part.purchasePrice) }</td>
+                    </tr>
+                  </tbody>
+                </Table>
+              </GridItem>
+              <br />
+
+              <GridItem variant={['low-opacity-bg']}>
+                <Table variant={['plain', 'row-details']}>
+                  <tbody>
+                    <tr>
+                      <th>Shipping Weights/Dims</th>
+                      <td>{ part.weightDims }</td>
+                    </tr>
+                    <tr style={{ height: '4rem' }}>
+                      <th>Sales Notes</th>
+                      <td>{ part.specialNotes }</td>
+                    </tr>
+                  </tbody>
+                </Table>
+              </GridItem>
             </GridItem>
 
-            <GridItem colStart={1} colEnd={7} rowStart={2} variant={['low-opacity-bg']}>
-              <Table variant={['plain', 'row-details']}>
-                <tbody>
-                  <tr>
-                    <th>New List Price</th>
-                    <td>{ formatCurrency(part.listPrice) }</td>
-                  </tr>
-                  <tr>
-                    <th>Dealer Price</th>
-                    <td>{ formatCurrency(part.fleetPrice) }</td>
-                  </tr>
-                  <tr>
-                    <th>Reman List Price</th>
-                    <td>{ formatCurrency(part.remanListPrice) }</td>
-                  </tr>
-                  <tr>
-                    <th>Reman Fleet Price</th>
-                    <td>{ formatCurrency(part.remanFleetPrice) }</td>
-                  </tr>
-                  <tr>
-                    <th>Core Price</th>
-                    <td>{ formatCurrency(part.corePrice) }</td>
-                  </tr>
-                  <tr>
-                    <th>Purchase Price</th>
-                    <td>{ formatCurrency(part.purchasePrice) }</td>
-                  </tr>
-                </tbody>
-              </Table>
-            </GridItem>
-
-            <GridItem rowStart={1} colStart={7} colEnd={13} variant={['no-style']}>
+            <GridItem colSpan={6} variant={['no-style']}>
               <GridItem variant={['low-opacity-bg']}>
                 <Table variant={['plain', 'row-details']}>
                   <tbody>
@@ -419,54 +433,40 @@ export default function PartDetails() {
                   </tbody>
                 </Table>
               </GridItem>
-            </GridItem>
+              <br />
 
-            <GridItem colStart={7} colEnd={13} rowStart={2} variant={['low-opacity-bg']}>
-              <Table variant={['plain', 'row-details']}>
-                <tbody>
-                  <tr>
-                    <th>Engine Stock #</th>
-                    <td>
-                      {engine && (part?.engineNum ?? 0) > 1 ?
-                        <Link href={`/engines/${part.engineNum}`}>{ part.engineNum }</Link>
-                        :
-                        <p>{ part.engineNum }</p>
-                      }
-                    </td>
-                  </tr>
-                  <tr>
-                    <th>Serial Number</th>
-                    <td>{ engine?.serialNum }</td>
-                  </tr>
-                  <tr>
-                    <th>Horse Power</th>
-                    <td>{ engine?.horsePower }</td>
-                  </tr>
-                  <tr>
-                    <th style={part.engineCostRemaining > 0 ? { color: 'var(--red-2)' } : { color: 'var(--green-light-1)' }}>Engine Cost Remaining</th>
-                    <td>{ formatCurrency(part.engineCostRemaining) }</td>
-                  </tr>
-                </tbody>
-              </Table>
-            </GridItem>
-
-            <GridItem colStart={1} colEnd={7} rowStart={3} variant={['low-opacity-bg']}>
-              <Table variant={['plain', 'row-details']}>
-                <tbody>
-                  <tr>
-                    <th>Shipping Weights/Dims</th>
-                    <td>{ part.weightDims }</td>
-                  </tr>
-                  <tr style={{ height: '4rem' }}>
-                    <th>Sales Notes</th>
-                    <td>{ part.specialNotes }</td>
-                  </tr>
-                </tbody>
-              </Table>
+              <GridItem variant={['low-opacity-bg']}>
+                <Table variant={['plain', 'row-details']}>
+                  <tbody>
+                    <tr>
+                      <th>Engine Stock #</th>
+                      <td>
+                        {engine && (part?.engineNum ?? 0) > 1 ?
+                          <Link href={`/engines/${part.engineNum}`}>{ part.engineNum }</Link>
+                          :
+                          <p>{ part.engineNum }</p>
+                        }
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>Serial Number</th>
+                      <td>{ engine?.serialNum }</td>
+                    </tr>
+                    <tr>
+                      <th>Horse Power</th>
+                      <td>{ engine?.horsePower }</td>
+                    </tr>
+                    <tr>
+                      <th style={part.engineCostRemaining > 0 ? { color: 'var(--red-2)' } : { color: 'var(--green-light-1)' }}>Engine Cost Remaining</th>
+                      <td>{ formatCurrency(part.engineCostRemaining) }</td>
+                    </tr>
+                  </tbody>
+                </Table>
+              </GridItem>
             </GridItem>
 
             {part.partsCostIn && part.partsCostIn.length > 0 &&
-              <GridItem variant={['no-style']} rowStart={3} colStart={1} colEnd={12}>
+              <GridItem variant={['no-style']} colSpan={6}>
                 <h2>Parts Cost In</h2>
                 <Table>
                   <thead>
@@ -495,7 +495,7 @@ export default function PartDetails() {
               </GridItem>
             }
 
-            <GridItem variant={['no-style']} rowStart={4} colStart={1} colEnd={6}>
+            <GridItem variant={['no-style']} colSpan={6}>
               <h2>Part Cost In</h2>
               {partCostIn.length > 0 ?
                 <PartCostIn partCostInData={partCostIn} />
@@ -504,7 +504,7 @@ export default function PartDetails() {
               }
             </GridItem>
 
-            <GridItem variant={['no-style']} rowStart={4} colStart={7} colEnd={12}>
+            <GridItem variant={['no-style']} colSpan={6}>
               <h2>Engine Cost Out</h2>
               {engineCostOut.length > 0 ?
                 <EngineCostOutTable engineCostOut={engineCostOut} />

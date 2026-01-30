@@ -146,270 +146,278 @@ export default function CustomerDetails({ customer, setCustomer, setIsEditing }:
             </div>
           </div>
         
-          <Grid rows={1} cols={12} gap={1}>
-            <GridItem colStart={1} colEnd={5} variant={['low-opacity-bg']}>
-              <Table variant={['plain', 'row-details', 'edit-row-details']}>
-                <tbody>
-                  <tr>
-                    <th>Phone</th>
-                    <td>
-                      <Input
-                        value={phone}
-                        onChange={(e) => setPhone(e.target.value)}
-                      />
-                    </td>
-                  </tr>
-                  <tr>
-                    <th>Email</th>
-                    <td>
-                      <Input
-                        value={email}
-                        type="email"
-                        onChange={(e) => setEmail(e.target.value)}
-                      />
-                    </td>
-                  </tr>
-                  <tr>
-                    <th>Customer Type</th>
-                    <td>
-                      <Select
-                        onChange={(e) => setCustomerType(e.target.value)}
-                        value={customerType}
-                      >
-                        {customerTypes.map((type, i) => {
-                          return <option key={i} value={type}>{ type }</option>;
-                        })}
-                      </Select>
-                    </td>
-                  </tr>
-                  <tr>
-                    <th>Source</th>
-                    <td>
-                      <SourceSelect
-                        value={source}
-                        onChange={(e) => setSource(e.target.value)}
-                      />
-                    </td>
-                  </tr>
-                  <tr>
-                    <th>Fax</th>
-                    <td>
-                      <Input
-                        value={fax}
-                        onChange={(e) => setFax(e.target.value)}
-                      />
-                    </td>
-                  </tr>
-                  <tr>
-                    <th>Payment Type</th>
-                    <td>
-                      <Input
-                        value={paymentType}
-                        onChange={(e) => setPaymentType(e.target.value)}
-                      />
-                    </td>
-                  </tr>
-                </tbody>
-              </Table>
+          <Grid>
+            <GridItem colSpan={6} variant={['no-style']}>
+              <GridItem variant={['low-opacity-bg']}>
+                <Table variant={['plain', 'row-details', 'edit-row-details']}>
+                  <tbody>
+                    <tr>
+                      <th>Phone</th>
+                      <td>
+                        <Input
+                          value={phone}
+                          onChange={(e) => setPhone(e.target.value)}
+                        />
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>Email</th>
+                      <td>
+                        <Input
+                          value={email}
+                          type="email"
+                          onChange={(e) => setEmail(e.target.value)}
+                        />
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>Customer Type</th>
+                      <td>
+                        <Select
+                          onChange={(e) => setCustomerType(e.target.value)}
+                          value={customerType}
+                        >
+                          {customerTypes.map((type, i) => {
+                            return <option key={i} value={type}>{ type }</option>;
+                          })}
+                        </Select>
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>Source</th>
+                      <td>
+                        <SourceSelect
+                          value={source}
+                          onChange={(e) => setSource(e.target.value)}
+                        />
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>Fax</th>
+                      <td>
+                        <Input
+                          value={fax}
+                          onChange={(e) => setFax(e.target.value)}
+                        />
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>Payment Type</th>
+                      <td>
+                        <Input
+                          value={paymentType}
+                          onChange={(e) => setPaymentType(e.target.value)}
+                        />
+                      </td>
+                    </tr>
+                  </tbody>
+                </Table>
+              </GridItem>
+              <br />
+
+              <GridItem variant={['low-opacity-bg']}>
+                <Table variant={['plain', 'row-details', 'edit-row-details']}>
+                  <tbody>
+                    <tr>
+                      <th>Billing Address</th>
+                      <td>
+                        <Input
+                          value={billToAddress}
+                          onChange={(e) => setBillToAddress(e.target.value)}
+                        />
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>Billing Address 2</th>
+                      <td>
+                        <Input
+                          value={billToAddress2}
+                          onChange={(e) => setBillToAddress2(e.target.value)}
+                        />
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>Billing City</th>
+                      <td>
+                        <Input
+                          value={billToCity}
+                          onChange={(e) => setBillToCity(e.target.value)}
+                        />
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>Billing State</th>
+                      <td>
+                        <Input
+                          value={billToState}
+                          onChange={(e) => setBillToState(e.target.value)}
+                        />
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>Billing Zip</th>
+                      <td>
+                        <Input
+                          value={billToZip}
+                          onChange={(e) => setBillToZip(e.target.value)}
+                        />
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>Billing Phone</th>
+                      <td>
+                        <Input
+                          value={billToPhone}
+                          onChange={(e) => setBillToPhone(e.target.value)}
+                        />
+                      </td>
+                    </tr>
+                  </tbody>
+                </Table>
+              </GridItem>
+              <br />
+
+              <GridItem variant={['low-opacity-bg']}>
+                <Button variant={['xx-small']} onClick={onClickSameAsBillTo} type="button">Same as bill to</Button>
+                <Table variant={['plain', 'row-details', 'edit-row-details']}>
+                  <tbody>
+                    <tr>
+                      <th>Shipping Address</th>
+                      <td>
+                        <Input
+                          value={shipToAddress}
+                          onChange={(e) => setShipToAddress(e.target.value)}
+                        />
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>Shipping Address 2</th>
+                      <td>
+                        <Input
+                          value={shipToAddress2}
+                          onChange={(e) => setShipToAddress2(e.target.value)}
+                        />
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>Shipping City</th>
+                      <td>
+                        <Input
+                          value={shipToCity}
+                          onChange={(e) => setShipToCity(e.target.value)}
+                        />
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>Shipping State</th>
+                      <td>
+                        <Input
+                          value={shipToState}
+                          onChange={(e) => setShipToState(e.target.value)}
+                        />
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>Shipping Zip</th>
+                      <td>
+                        <Input
+                          value={shipToZip}
+                          onChange={(e) => setShipToZip(e.target.value)}
+                        />
+                      </td>
+                    </tr>
+                  </tbody>
+                </Table>
+              </GridItem>
+              <br />
+
+              <GridItem variant={['low-opacity-bg']}>
+                <Table variant={['plain', 'row-details', 'edit-row-details']}>
+                  <tbody>
+                    <tr>
+                      <th>Comments</th>
+                      <td>
+                        <TextArea
+                          style={{ height: '100%' }}
+                          variant={['auto-size']}
+                          value={comments}
+                          onChange={(e) => setComments(e.target.value)}
+                        />
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>{ customer.customerType || 'Fleet' } Notes</th>
+                      <td>
+                        <TextArea
+                          style={{ height: '100%' }}
+                          variant={['auto-size']}
+                          value={fleetNotes}
+                          onChange={(e) => setFleetNotes(e.target.value)}
+                        />
+                      </td>
+                    </tr>
+                  </tbody>
+                </Table>
+              </GridItem>
             </GridItem>
 
-            <GridItem colStart={1} colEnd={5} variant={['low-opacity-bg']}>
-              <Table variant={['plain', 'row-details', 'edit-row-details']}>
-                <tbody>
-                  <tr>
-                    <th>Billing Address 1</th>
-                    <td>
-                      <Input
-                        value={billToAddress}
-                        onChange={(e) => setBillToAddress(e.target.value)}
-                      />
-                    </td>
-                  </tr>
-                  <tr>
-                    <th>Billing Address 2</th>
-                    <td>
-                      <Input
-                        value={billToAddress2}
-                        onChange={(e) => setBillToAddress2(e.target.value)}
-                      />
-                    </td>
-                  </tr>
-                  <tr>
-                    <th>Billing City</th>
-                    <td>
-                      <Input
-                        value={billToCity}
-                        onChange={(e) => setBillToCity(e.target.value)}
-                      />
-                    </td>
-                  </tr>
-                  <tr>
-                    <th>Billing State</th>
-                    <td>
-                      <Input
-                        value={billToState}
-                        onChange={(e) => setBillToState(e.target.value)}
-                      />
-                    </td>
-                  </tr>
-                  <tr>
-                    <th>Billing Zip</th>
-                    <td>
-                      <Input
-                        value={billToZip}
-                        onChange={(e) => setBillToZip(e.target.value)}
-                      />
-                    </td>
-                  </tr>
-                  <tr>
-                    <th>Billing Phone</th>
-                    <td>
-                      <Input
-                        value={billToPhone}
-                        onChange={(e) => setBillToPhone(e.target.value)}
-                      />
-                    </td>
-                  </tr>
-                </tbody>
-              </Table>
-            </GridItem>
+            <GridItem colSpan={4} variant={['no-style']}>
+              <GridItem variant={['no-style']}>
+                <CustomerContactsBlock customer={customer} setCustomer={setCustomer} />
 
-            <GridItem variant={['no-style']} colStart={5} colEnd={9} rowStart={2}>
-              <CustomerContactsBlock customer={customer} setCustomer={setCustomer} />
+                <Checkbox
+                  variant={['label-bold', 'label-align-center']}
+                  label="TAXABLE"
+                  checked={isTaxable}
+                  onChange={(e) => setIsTaxable(e.target.checked)}
+                />
+              </GridItem>
+              <br />
 
-              <Checkbox
-                variant={['label-bold', 'label-align-center']}
-                label="TAXABLE"
-                checked={isTaxable}
-                onChange={(e) => setIsTaxable(e.target.checked)}
-              />
-            </GridItem>
-
-            <GridItem colStart={1} colEnd={5} variant={['low-opacity-bg']}>
-              <Button variant={['xx-small']} onClick={onClickSameAsBillTo} type="button">Same as bill to</Button>
-              <Table variant={['plain', 'row-details', 'edit-row-details']}>
-                <tbody>
-                  <tr>
-                    <th>Shipping Address 1</th>
-                    <td>
-                      <Input
-                        value={shipToAddress}
-                        onChange={(e) => setShipToAddress(e.target.value)}
-                      />
-                    </td>
-                  </tr>
-                  <tr>
-                    <th>Shipping Address 2</th>
-                    <td>
-                      <Input
-                        value={shipToAddress2}
-                        onChange={(e) => setShipToAddress2(e.target.value)}
-                      />
-                    </td>
-                  </tr>
-                  <tr>
-                    <th>Shipping City</th>
-                    <td>
-                      <Input
-                        value={shipToCity}
-                        onChange={(e) => setShipToCity(e.target.value)}
-                      />
-                    </td>
-                  </tr>
-                  <tr>
-                    <th>Shipping State</th>
-                    <td>
-                      <Input
-                        value={shipToState}
-                        onChange={(e) => setShipToState(e.target.value)}
-                      />
-                    </td>
-                  </tr>
-                  <tr>
-                    <th>Shipping Zip</th>
-                    <td>
-                      <Input
-                        value={shipToZip}
-                        onChange={(e) => setShipToZip(e.target.value)}
-                      />
-                    </td>
-                  </tr>
-                </tbody>
-              </Table>
-            </GridItem>
-
-            <GridItem colStart={5} colEnd={10} variant={['low-opacity-bg']}>
-              <Table variant={['plain', 'row-details', 'edit-row-details']}>
-                <tbody>
-                  <tr>
-                    <th>Parts Manager</th>
-                    <td>
-                      <Input
-                        value={partsManager}
-                        onChange={(e) => setPartsManager(e.target.value)}
-                      />
-                    </td>
-                  </tr>
-                  <tr>
-                    <th>Parts Manager Email</th>
-                    <td>
-                      <Input
-                        value={partsManagerEmail}
-                        type="email"
-                        onChange={(e) => setPartsManagerEmail(e.target.value)}
-                      />
-                    </td>
-                  </tr>
-                  <tr>
-                    <th>Service Manager</th>
-                    <td>
-                      <Input
-                        value={serviceManager}
-                        onChange={(e) => setServiceManager(e.target.value)}
-                      />
-                    </td>
-                  </tr>
-                  <tr>
-                    <th>Service Manager Email</th>
-                    <td>
-                      <Input
-                        value={serviceManagerEmail}
-                        type="email"
-                        onChange={(e) => setServiceManagerEmail(e.target.value)}
-                      />
-                    </td>
-                  </tr>
-                </tbody>
-              </Table>
-            </GridItem>
-
-            <GridItem colStart={1} colEnd={5} variant={['low-opacity-bg']}>
-              <Table variant={['plain', 'row-details', 'edit-row-details']}>
-                <tbody>
-                  <tr>
-                    <th>Comments</th>
-                    <td>
-                      <TextArea
-                        style={{ height: '100%' }}
-                        variant={['auto-size']}
-                        value={comments}
-                        onChange={(e) => setComments(e.target.value)}
-                      />
-                    </td>
-                  </tr>
-                  <tr>
-                    <th>{ customer.customerType || 'Fleet' } Notes</th>
-                    <td>
-                      <TextArea
-                        style={{ height: '100%' }}
-                        variant={['auto-size']}
-                        value={fleetNotes}
-                        onChange={(e) => setFleetNotes(e.target.value)}
-                      />
-                    </td>
-                  </tr>
-                </tbody>
-              </Table>
+              <GridItem variant={['low-opacity-bg']}>
+                <Table variant={['plain', 'row-details', 'edit-row-details']}>
+                  <tbody>
+                    <tr>
+                      <th>Parts Manager</th>
+                      <td>
+                        <Input
+                          value={partsManager}
+                          onChange={(e) => setPartsManager(e.target.value)}
+                        />
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>Parts Manager Email</th>
+                      <td>
+                        <Input
+                          value={partsManagerEmail}
+                          type="email"
+                          onChange={(e) => setPartsManagerEmail(e.target.value)}
+                        />
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>Service Manager</th>
+                      <td>
+                        <Input
+                          value={serviceManager}
+                          onChange={(e) => setServiceManager(e.target.value)}
+                        />
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>Service Manager Email</th>
+                      <td>
+                        <Input
+                          value={serviceManagerEmail}
+                          type="email"
+                          onChange={(e) => setServiceManagerEmail(e.target.value)}
+                        />
+                      </td>
+                    </tr>
+                  </tbody>
+                </Table>
+              </GridItem>
             </GridItem>
           </Grid>
         </>

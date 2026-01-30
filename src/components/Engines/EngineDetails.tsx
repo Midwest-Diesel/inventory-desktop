@@ -86,8 +86,8 @@ export default function EngineDetails({ engine, setIsEditing, setEngineProfitOpe
         <Button onClick={() => setEngineProfitOpen(true)}>Check Profit</Button>
       </div>
 
-      <Grid rows={1} cols={12} gap={1}>
-        <GridItem colStart={1} colEnd={5} variant={['low-opacity-bg']}>
+      <Grid>
+        <GridItem variant={['low-opacity-bg']}>
           <Table variant={['plain', 'row-details']}>
             <tbody>
               <tr>
@@ -197,7 +197,7 @@ export default function EngineDetails({ engine, setIsEditing, setEngineProfitOpe
             </tbody>
           </Table>
 
-          <GridItem colStart={1} colEnd={5} rowStart={2} variant={['low-opacity-bg', 'sub-table-item']} style={{ marginTop: '1.2rem' }}>
+          <GridItem variant={['low-opacity-bg', 'sub-table-item']} style={{ marginTop: '1.2rem' }}>
             <Table variant={['plain', 'row-details']}>
               <tbody>
                 <tr>
@@ -229,8 +229,8 @@ export default function EngineDetails({ engine, setIsEditing, setEngineProfitOpe
           </GridItem>
         </GridItem>
 
-        <GridItem colStart={5} colEnd={12} rowStart={1} variant={['no-style']}>
-          <GridItem colStart={5} colEnd={12} rowStart={1} variant={['low-opacity-bg']}>
+        <GridItem variant={['no-style']} colSpan={8}>
+          <GridItem variant={['low-opacity-bg']}>
             <Table variant={['plain', 'row-details']}>
               <tbody>
                 <tr style={{ height: '4rem' }}>
@@ -246,21 +246,17 @@ export default function EngineDetails({ engine, setIsEditing, setEngineProfitOpe
           </GridItem>
           <br />
 
-          <GridItem colStart={5} colEnd={12} variant={['low-opacity-bg']}>
+          <GridItem variant={['low-opacity-bg']}>
             <EnginePartsTable engine={engine} />
           </GridItem>
         </GridItem>
 
-        <GridItem variant={['no-style']} rowStart={2} colStart={1} colEnd={6} breakpoints={[
-          { width: 1520, colStart: 1, colEnd: 12 }
-        ]}>
+        <GridItem variant={['no-style']} colSpan={6}>
           <h2>Engine Cost In</h2>
           {engine.costIn.length > 0 ? <EngineCostInTable EngineCostInData={engine.costIn} /> : <p>Empty</p> }
         </GridItem>
 
-        <GridItem variant={['no-style']} rowStart={2} colStart={6} colEnd={12} breakpoints={[
-          { width: 1520, rowStart: 3, rowEnd: 3, colStart: 1, colEnd: 12 }
-        ]}>
+        <GridItem variant={['no-style']} colSpan={6}>
           <h2>Engine Cost Out</h2>
           {engine.costOut.length > 0 ? <EngineCostOut engineCostOut={engine.costOut} /> : <p>Empty</p> }
         </GridItem>

@@ -1,9 +1,16 @@
 .grid {
   display: grid;
   grid-template-columns: repeat(12, 1fr);
-  grid-template-rows: repeat(1, 1fr);
-  grid-gap: 0;
+  gap: 1rem;
   width: 100%;
+
+  @media (max-width: 1200px) {
+    grid-template-columns: repeat(8, 1fr);
+  }
+
+  @media (max-width: 600px) {
+    grid-template-columns: 1fr;
+  }
 
   &__item {
     border: 2px solid black;
@@ -11,6 +18,7 @@
     padding: 0.5rem;
     border-radius: 0.3rem;
     height: fit-content;
+    grid-column: span 4;
 
     &:last-child {
       border-right-width: 2px;
@@ -29,6 +37,14 @@
     &--sub-table-item {
       border: none;
       padding: 0;
+    }
+
+    @media (max-width: 1200px) {
+      grid-column: span 8;
+    }
+
+    @media (max-width: 600px) {
+      grid-column: 1 / -1;
     }
   }
 }

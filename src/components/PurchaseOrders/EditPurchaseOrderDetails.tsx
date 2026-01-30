@@ -191,8 +191,8 @@ export default function EditPoDetails({ poData, setPo, setIsEditing, poItems, po
         </div>
       </div>
 
-      <Grid rows={1} cols={12} gap={1}>
-        <GridItem colStart={1} colEnd={6} variant={['low-opacity-bg']}>
+      <Grid>
+        <GridItem colSpan={6} variant={['low-opacity-bg']}>
           <Table variant={['plain', 'edit-row-details']}>
             <tbody>
               <tr>
@@ -318,8 +318,8 @@ export default function EditPoDetails({ poData, setPo, setIsEditing, poItems, po
           </Table>
         </GridItem>
 
-        <GridItem colStart={6} colEnd={11} variant={['no-style']}>
-          <GridItem colStart={6} colEnd={11} variant={['low-opacity-bg']}>
+        <GridItem colSpan={6} variant={['no-style']}>
+          <GridItem variant={['low-opacity-bg']}>
             <Table variant={['plain', 'edit-row-details']}>
               <tbody>
                 <tr>
@@ -407,7 +407,7 @@ export default function EditPoDetails({ poData, setPo, setIsEditing, poItems, po
           </GridItem>
 
           <br />
-          <GridItem colStart={6} colEnd={11} variant={['low-opacity-bg']}>
+          <GridItem variant={['low-opacity-bg']}>
             <Table variant={['plain', 'edit-row-details']}>
               <tbody>
                 <tr>
@@ -427,7 +427,7 @@ export default function EditPoDetails({ poData, setPo, setIsEditing, poItems, po
           </GridItem>
         </GridItem>
 
-        <GridItem colStart={1} colEnd={6} variant={['low-opacity-bg']}>
+        <GridItem colSpan={6} variant={['low-opacity-bg']}>
           <Table variant={['plain', 'edit-row-details']}>
             <tbody>
               <tr style={{ height: '4rem' }}>
@@ -458,7 +458,7 @@ export default function EditPoDetails({ poData, setPo, setIsEditing, poItems, po
           </Table>
         </GridItem>
 
-        <GridItem colStart={1} colEnd={12} variant={['no-style']} style={{ marginTop: '1rem' }}>
+        <GridItem colSpan={12} variant={['no-style']} style={{ marginTop: '1rem' }}>
           <h3>PO Items</h3>
           <Table>
             <thead>
@@ -531,7 +531,7 @@ export default function EditPoDetails({ poData, setPo, setIsEditing, poItems, po
           <Button type="button" onClick={handleNewItem}>Add</Button>
         </GridItem>
 
-        <GridItem colStart={1} colEnd={12} variant={['no-style']} style={{ marginTop: '1rem' }}>
+        <GridItem colSpan={12} variant={['no-style']} style={{ marginTop: '1rem' }}>
           <h3>PO Items Received</h3>
           <Table>
             <thead>

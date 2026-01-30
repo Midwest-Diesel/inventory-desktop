@@ -416,8 +416,8 @@ export default function HandwrittenDetails({
           onChangeAltShip={handleAltShip}
         />
 
-        <Grid rows={1} cols={11} gap={1}>
-          <GridItem colStart={1} colEnd={5} variant={['low-opacity-bg']}>
+        <Grid>
+          <GridItem variant={['low-opacity-bg']}>
             <Table variant={['plain', 'row-details']}>
               <tbody>
                 <tr>
@@ -452,7 +452,7 @@ export default function HandwrittenDetails({
             </Table>
           </GridItem>
 
-          <GridItem colStart={5} colEnd={9} variant={['low-opacity-bg']} className="no-print">
+          <GridItem variant={['low-opacity-bg']} className="no-print">
             <CreditCardBlock
               handwritten={handwritten}
               setPromptLeaveWindow={setPromptLeaveWindow}
@@ -473,7 +473,7 @@ export default function HandwrittenDetails({
             />
           </GridItem>
 
-          <GridItem colStart={9} colEnd={12} variant={['low-opacity-bg']}>
+          <GridItem variant={['low-opacity-bg']}>
             <Table variant={['plain', 'row-details']}>
               <tbody>
                 <tr>
@@ -508,7 +508,7 @@ export default function HandwrittenDetails({
             </Table>
           </GridItem>
 
-          <GridItem colStart={1} colEnd={5} variant={['low-opacity-bg']}>
+          <GridItem variant={['low-opacity-bg']}>
             <Table variant={['plain', 'row-details']}>
               <tbody>
                 <tr>
@@ -543,7 +543,7 @@ export default function HandwrittenDetails({
             </Table>
           </GridItem>
 
-          <GridItem colStart={5} colEnd={9} variant={['low-opacity-bg']}>
+          <GridItem variant={['low-opacity-bg']}>
             <Table variant={['plain', 'row-details']}>
               <tbody>
                 <tr>
@@ -584,7 +584,7 @@ export default function HandwrittenDetails({
             }
           </GridItem>
 
-          <GridItem colStart={10} colEnd={12} variant={['low-opacity-bg']} className="no-print">
+          <GridItem colSpan={2} variant={['low-opacity-bg']} className="no-print">
             <div className="handwritten-details__btn-row">
               <Button
                 variant={['x-small']}
@@ -613,7 +613,7 @@ export default function HandwrittenDetails({
             </div>
           </GridItem>
 
-          <GridItem colStart={1} colEnd={12} variant={['no-style']}>
+          <GridItem colSpan={12} variant={['no-style']}>
             <div style={{ display: 'flex', gap: '2rem' }}>
               <Checkbox
                 variant={['label-bold', 'label-align-center']}
@@ -648,7 +648,7 @@ export default function HandwrittenDetails({
             </div>
           </GridItem>
 
-          <GridItem colStart={1} colEnd={12} variant={['low-opacity-bg']}>
+          <GridItem colSpan={12} variant={['low-opacity-bg']}>
             <div style={{ display: 'flex', gap: '2rem' }}>
               <div>
                 <p style={{ fontSize: 'var(--font-md)' }}><strong>Sales Status</strong></p>
@@ -665,7 +665,7 @@ export default function HandwrittenDetails({
             </div>
           </GridItem>
 
-          <GridItem variant={['no-style']} colStart={1} colEnd={8}>
+          <GridItem variant={['no-style']} colSpan={8}>
             <HandwrittenItemsTable
               className="handwritten-items-table--handwrittens-page"
               handwritten={handwritten}
@@ -673,7 +673,7 @@ export default function HandwrittenDetails({
             />
           </GridItem>
 
-          <GridItem variant={['no-style']} colStart={8} colEnd={12}>
+          <GridItem variant={['no-style']}>
             {handwritten.trackingNumbers.length > 0 &&
               <>
                 <h3>Tracking Numbers</h3>
@@ -688,7 +688,7 @@ export default function HandwrittenDetails({
             }
           </GridItem>
 
-          <GridItem variant={['low-opacity-bg']} colStart={1} colEnd={7}>
+          <GridItem variant={['low-opacity-bg']} colSpan={6}>
             <div className="handwritten-details__shipping-notes">
               <div>
                 <h4 style={{ marginBottom: '0.3rem' }}>Shipping Notes</h4>
@@ -720,7 +720,7 @@ export default function HandwrittenDetails({
             </div>
           </GridItem>
 
-          <GridItem style={{ height: '100%' }} variant={['low-opacity-bg']} colStart={7} colEnd={12}>
+          <GridItem style={{ height: '100%' }} variant={['low-opacity-bg']} colSpan={6}>
             <h4 style={{ marginBottom: '0.3rem' }}>Order Notes</h4>
             <p style={{ whiteSpace: 'pre-line' }} data-testid="order-notes">{ handwritten.orderNotes }</p>
           </GridItem>

@@ -124,8 +124,8 @@ export default function WarrantyDetails() {
               </div>
             </div>
 
-            <Grid rows={1} cols={12} gap={1}>
-              <GridItem colStart={1} colEnd={6} variant={['low-opacity-bg']}>
+            <Grid>
+              <GridItem variant={['low-opacity-bg']} colSpan={6}>
                 <Table variant={['plain', 'row-details']}>
                   <tbody>
                     <tr>
@@ -156,7 +156,7 @@ export default function WarrantyDetails() {
                 </Table>
               </GridItem>
 
-              <GridItem colStart={6} colEnd={11} variant={['low-opacity-bg']}>
+              <GridItem variant={['low-opacity-bg']} colSpan={6}>
                 <Table variant={['plain', 'row-details']}>
                   <tbody>
                     <tr>
@@ -185,7 +185,7 @@ export default function WarrantyDetails() {
                 </Table>
               </GridItem>
 
-              <GridItem variant={['no-style']} colStart={1} colEnd={12}>
+              <GridItem variant={['no-style']} colSpan={12}>
                 <WarrantyItemsTableDetails warrantyItems={warrantyData.warrantyItems} />
               </GridItem>
             </Grid>

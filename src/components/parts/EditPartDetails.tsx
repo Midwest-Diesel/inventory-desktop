@@ -297,189 +297,222 @@ export default function EditPartDetails({ part, setPart, setIsEditingPart, partC
         />
       </div>
 
-      <Grid rows={1} cols={12} gap={1}>
-        <GridItem colStart={1} colEnd={7} rowStart={1} variant={['low-opacity-bg']}>
-          <Table variant={['plain', 'edit-row-details']}>
-            <tbody>
-              <tr>
-                <th>Qty</th>
-                <td>
-                  <Input
-                    variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
-                    value={qty}
-                    type="number"
-                    onChange={(e: any) => setQty(e.target.value)}
-                    required
-                    data-testid="qty"
-                  />
-                </td>
-              </tr>
-              <tr>
-                <th>Stock Number</th>
-                <td>
-                  <Input
-                    variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
-                    value={stockNum}
-                    onChange={(e: any) => setStockNum(e.target.value)}
-                    required
-                  />
-                </td>
-              </tr>
-              <tr>
-                <th>Location</th>
-                <td>
-                  <Input
-                    variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
-                    value={location}
-                    onChange={(e: any) => setLocation(e.target.value)}
-                  />
-                </td>
-              </tr>
-              <tr>
-                <th>Manufacturer</th>
-                <td>
-                  <Input
-                    variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
-                    value={manufacturer}
-                    onChange={(e: any) => setManufacturer(e.target.value)}
-                  />
-                </td>
-              </tr>
-              <tr>
-                <th>Purchased From</th>
-                <td>
-                  <Input
-                    variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
-                    value={purchasedFrom}
-                    onChange={(e: any) => setPurchasedFrom(e.target.value)}
-                  />
-                </td>
-              </tr>
-              <tr>
-                <th>Condition</th>
-                <td>
-                  <Input
-                    variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
-                    value={condition}
-                    onChange={(e: any) => setCondition(e.target.value)}
-                  />
-                </td>
-              </tr>
-              <tr>
-                <th>Rating</th>
-                <td>
-                  <Input
-                    variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
-                    value={rating}
-                    type="number"
-                    onChange={(e: any) => setRating(e.target.value)}
-                  />
-                </td>
-              </tr>
-              <tr>
-                <th>Entry Date</th>
-                <td>
-                  <Input
-                    variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
-                    type="date"
-                    value={parseDateInputValue(entryDate)}
-                    onChange={(e: any) => setEntryDate(new Date(e.target.value))}
-                  />
-                </td>
-              </tr>
-              <tr>
-                <th>Recon Date</th>
-                <td>
-                  <Input
-                    variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
-                    type="date"
-                    value={parseDateInputValue(reconDate)}
-                    onChange={(e: any) => setReconDate(new Date(e.target.value))}
-                  />
-                </td>
-              </tr>
-              <tr>
-                <th>Core Family</th>
-                <td>
-                  <Input
-                    variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
-                    value={coreFam ?? ''}
-                    onChange={(e: any) => setCoreFamily(e.target.value)}
-                  />
-                </td>
-              </tr>
-            </tbody>
-          </Table>
+      <Grid>
+        <GridItem colSpan={6} variant={['no-style']}>
+          <GridItem variant={['low-opacity-bg']}>
+            <Table variant={['plain', 'edit-row-details']}>
+              <tbody>
+                <tr>
+                  <th>Qty</th>
+                  <td>
+                    <Input
+                      variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+                      value={qty}
+                      type="number"
+                      onChange={(e: any) => setQty(e.target.value)}
+                      required
+                      data-testid="qty"
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <th>Stock Number</th>
+                  <td>
+                    <Input
+                      variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+                      value={stockNum}
+                      onChange={(e: any) => setStockNum(e.target.value)}
+                      required
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <th>Location</th>
+                  <td>
+                    <Input
+                      variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+                      value={location}
+                      onChange={(e: any) => setLocation(e.target.value)}
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <th>Manufacturer</th>
+                  <td>
+                    <Input
+                      variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+                      value={manufacturer}
+                      onChange={(e: any) => setManufacturer(e.target.value)}
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <th>Purchased From</th>
+                  <td>
+                    <Input
+                      variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+                      value={purchasedFrom}
+                      onChange={(e: any) => setPurchasedFrom(e.target.value)}
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <th>Condition</th>
+                  <td>
+                    <Input
+                      variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+                      value={condition}
+                      onChange={(e: any) => setCondition(e.target.value)}
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <th>Rating</th>
+                  <td>
+                    <Input
+                      variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+                      value={rating}
+                      type="number"
+                      onChange={(e: any) => setRating(e.target.value)}
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <th>Entry Date</th>
+                  <td>
+                    <Input
+                      variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+                      type="date"
+                      value={parseDateInputValue(entryDate)}
+                      onChange={(e: any) => setEntryDate(new Date(e.target.value))}
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <th>Recon Date</th>
+                  <td>
+                    <Input
+                      variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+                      type="date"
+                      value={parseDateInputValue(reconDate)}
+                      onChange={(e: any) => setReconDate(new Date(e.target.value))}
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <th>Core Family</th>
+                  <td>
+                    <Input
+                      variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+                      value={coreFam ?? ''}
+                      onChange={(e: any) => setCoreFamily(e.target.value)}
+                    />
+                  </td>
+                </tr>
+              </tbody>
+            </Table>
+          </GridItem>
+          <br />
+
+          <GridItem variant={['low-opacity-bg']}>
+            <Table variant={['plain', 'edit-row-details']}>
+              <tbody>
+                <tr>
+                  <th>New List Price</th>
+                  <td>
+                    <Input
+                      variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+                      value={listPrice ?? ''}
+                      onChange={(e: any) => setListPrice(e.target.value)}
+                      type="number"
+                      step="any"
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <th>Dealer Price</th>
+                  <td>
+                    <Input
+                      variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+                      value={fleetPrice ?? ''}
+                      onChange={(e: any) => setFleetPrice(e.target.value)}
+                      type="number"
+                      step="any"
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <th>Reman List Price</th>
+                  <td>
+                    <Input
+                      variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+                      value={remanListPrice ?? ''}
+                      onChange={(e: any) => setRemanListPrice(e.target.value)}
+                      type="number"
+                      step="any"
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <th>Reman Fleet Price</th>
+                  <td>
+                    <Input
+                      variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+                      value={remanFleetPrice ?? ''}
+                      onChange={(e: any) => setRemanFleetPrice(e.target.value)}
+                      type="number"
+                      step="any"
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <th>Core Price</th>
+                  <td>
+                    <Input
+                      variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+                      value={corePrice ?? ''}
+                      onChange={(e: any) => setCorePrice(e.target.value)}
+                      type="number"
+                      step="any"
+                    />
+                  </td>
+                </tr>
+              </tbody>
+            </Table>
+          </GridItem>
+          <br />
+
+          <GridItem variant={['low-opacity-bg']}>
+            <Table variant={['plain', 'edit-row-details']}>
+              <tbody>
+                <tr>
+                  <th>Shipping Weights/Dims</th>
+                  <td>
+                    <Input
+                      variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+                      value={weightDims}
+                      onChange={(e: any) => setWeightDims(e.target.value)}
+                    />  
+                  </td>
+                </tr>
+                <tr>
+                  <th>Sales Notes</th>
+                  <td>
+                    <TextArea
+                      variant={['label-stack', 'label-bold']}
+                      rows={5}
+                      cols={100}
+                      value={specialNotes}
+                      onChange={(e: any) => setSpecialNotes(e.target.value)}
+                    />
+                  </td>
+                </tr>
+              </tbody>
+            </Table>
+          </GridItem>
         </GridItem>
 
-        <GridItem colStart={1} colEnd={7} rowStart={2} variant={['low-opacity-bg']}>
-          <Table variant={['plain', 'edit-row-details']}>
-            <tbody>
-              <tr>
-                <th>New List Price</th>
-                <td>
-                  <Input
-                    variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
-                    value={listPrice ?? ''}
-                    onChange={(e: any) => setListPrice(e.target.value)}
-                    type="number"
-                    step="any"
-                  />
-                </td>
-              </tr>
-              <tr>
-                <th>Dealer Price</th>
-                <td>
-                  <Input
-                    variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
-                    value={fleetPrice ?? ''}
-                    onChange={(e: any) => setFleetPrice(e.target.value)}
-                    type="number"
-                    step="any"
-                  />
-                </td>
-              </tr>
-              <tr>
-                <th>Reman List Price</th>
-                <td>
-                  <Input
-                    variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
-                    value={remanListPrice ?? ''}
-                    onChange={(e: any) => setRemanListPrice(e.target.value)}
-                    type="number"
-                    step="any"
-                  />
-                </td>
-              </tr>
-              <tr>
-                <th>Reman Fleet Price</th>
-                <td>
-                  <Input
-                    variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
-                    value={remanFleetPrice ?? ''}
-                    onChange={(e: any) => setRemanFleetPrice(e.target.value)}
-                    type="number"
-                    step="any"
-                  />
-                </td>
-              </tr>
-              <tr>
-                <th>Core Price</th>
-                <td>
-                  <Input
-                    variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
-                    value={corePrice ?? ''}
-                    onChange={(e: any) => setCorePrice(e.target.value)}
-                    type="number"
-                    step="any"
-                  />
-                </td>
-              </tr>
-            </tbody>
-          </Table>
-        </GridItem>
-
-        <GridItem rowStart={1} colStart={7} colEnd={13} variant={['no-style']}>
+        <GridItem colSpan={6} variant={['no-style']}>
           <GridItem variant={['low-opacity-bg']}>
             <Table variant={['plain', 'edit-row-details']}>
               <tbody>
@@ -586,56 +619,28 @@ export default function EditPartDetails({ part, setPart, setIsEditingPart, partC
               </tbody>
             </Table>
           </GridItem>
+          <br />
+
+          <GridItem variant={['low-opacity-bg']}>
+            <Table variant={['plain', 'edit-row-details']}>
+              <tbody>
+                <tr>
+                  <th>Engine Stock #</th>
+                  <td>
+                    <Input
+                      variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+                      value={engineStockNum ?? ''}
+                      onChange={(e: any) => setEngineStockNum(e.target.value)}
+                      type="number"
+                    />
+                  </td>
+                </tr>
+              </tbody>
+            </Table>
+          </GridItem>
         </GridItem>
 
-        <GridItem colStart={7} colEnd={13} rowStart={2} variant={['low-opacity-bg']}>
-          <Table variant={['plain', 'edit-row-details']}>
-            <tbody>
-              <tr>
-                <th>Engine Stock #</th>
-                <td>
-                  <Input
-                    variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
-                    value={engineStockNum ?? ''}
-                    onChange={(e: any) => setEngineStockNum(e.target.value)}
-                    type="number"
-                  />
-                </td>
-              </tr>
-            </tbody>
-          </Table>
-        </GridItem>
-
-        <GridItem colStart={1} colEnd={7} rowStart={3} variant={['low-opacity-bg']}>
-          <Table variant={['plain', 'edit-row-details']}>
-            <tbody>
-              <tr>
-                <th>Shipping Weights/Dims</th>
-                <td>
-                  <Input
-                    variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
-                    value={weightDims}
-                    onChange={(e: any) => setWeightDims(e.target.value)}
-                  />  
-                </td>
-              </tr>
-              <tr>
-                <th>Sales Notes</th>
-                <td>
-                  <TextArea
-                    variant={['label-stack', 'label-bold']}
-                    rows={5}
-                    cols={100}
-                    value={specialNotes}
-                    onChange={(e: any) => setSpecialNotes(e.target.value)}
-                  />
-                </td>
-              </tr>
-            </tbody>
-          </Table>
-        </GridItem>
-
-        <GridItem variant={['no-style']} rowStart={4} colStart={1} colEnd={6}>
+        <GridItem variant={['no-style']} className="edit-part-details__table">
           <h2>Part Cost In</h2>
           <Table variant={['plain', 'edit-row-details']}>
             <thead>
@@ -766,7 +771,7 @@ export default function EditPartDetails({ part, setPart, setIsEditingPart, partC
           </Table>
         </GridItem>
 
-        <GridItem variant={['no-style']} rowStart={4} colStart={8} colEnd={12}>
+        <GridItem variant={['no-style']} className="edit-part-details__table">
           <h2>Engine Cost Out</h2>
           <Table variant={['plain', 'edit-row-details']}>
             <thead>
