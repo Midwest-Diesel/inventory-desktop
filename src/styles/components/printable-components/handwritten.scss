@@ -66,11 +66,6 @@
     }
   }
 
-  &__total {
-    text-align: end;
-    font-size: 15px;
-  }
-
   &__bottom-section {
     display: flex;
     flex-direction: column;
@@ -78,13 +73,25 @@
     margin-top: auto;
     font-size: var(--font-sm);
 
-    p {
+    &--box-value {
       border: 1px solid var(--grey-light-2);
       padding: 1.5rem;
     }
 
     h2 {
       font-size: var(--font-lg);
+    }
+  }
+
+  &__bottom-values {
+    display: flex;
+    font-size: 15px;
+    width: 100%;
+    justify-content: space-between;
+
+    &--marketing {
+      display: flex;
+      gap: 1rem;
     }
   }
 }
