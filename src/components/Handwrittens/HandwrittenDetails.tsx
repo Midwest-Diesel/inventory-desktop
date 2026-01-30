@@ -235,27 +235,27 @@ export default function HandwrittenDetails({
         const shipFromCityStateZip = [handwritten?.billToCity, `${handwritten?.billToState} ${handwritten?.billToZip}`].join(', ');
         const shipToCityStateZip = [handwritten?.shipToCity, `${handwritten?.shipToState} ${handwritten?.shipToZip}`].join(', ');
         const args = {
-          ship_from_company: handwritten?.billToCompany ?? '',
-          ship_from_address: handwritten?.billToAddress ?? '',
-          ship_from_address_2: handwritten?.billToAddress2 ? `${handwritten?.billToAddress2}\n` : '',
-          ship_from_city_state_zip: shipFromCityStateZip ?? '',
-          ship_to_company: handwritten?.shipToCompany ?? '',
-          ship_to_address: handwritten?.shipToAddress ?? '',
-          ship_to_address_2: handwritten?.shipToAddress2 ? `${handwritten?.shipToAddress2}\n` : '',
-          ship_to_city_state_zip: shipToCityStateZip ?? ''
+          shipFromCompany: handwritten?.billToCompany ?? '',
+          shipFromAddress: handwritten?.billToAddress ?? '',
+          shipFromAddress2: handwritten?.billToAddress2 ? `${handwritten?.billToAddress2}\n` : '',
+          shipFromCityStateZip: shipFromCityStateZip ?? '',
+          shipToCompany: handwritten?.shipToCompany ?? '',
+          shipToAddress: handwritten?.shipToAddress ?? '',
+          shipToAddress2: handwritten?.shipToAddress2 ? `${handwritten?.shipToAddress2}\n` : '',
+          shipToCityStateZip: shipToCityStateZip ?? ''
         };
         addToQue('shippingLabel', 'print_shipping_label', args, '576px', '374.4px');
       } else {
         const shipToCityStateZip = [handwritten?.shipToCity, `${handwritten?.shipToState} ${handwritten?.shipToZip}`].join(', ');
         const args = {
-          ship_from_company: 'MIDWEST DIESEL',
-          ship_from_address: '3051 82ND LANE NE',
-          ship_from_address_2: '',
-          ship_from_city_state_zip: 'BLAINE, MN 55449',
-          ship_to_company: handwritten?.shipToCompany ?? '',
-          ship_to_address: handwritten?.shipToAddress ?? '',
-          ship_to_address_2: handwritten?.shipToAddress2 ? `${handwritten?.shipToAddress2}\n` : '',
-          ship_to_city_state_zip: shipToCityStateZip ?? ''
+          shipFromCompany: 'MIDWEST DIESEL',
+          shipFromAddress: '3051 82ND LANE NE',
+          shipFromAddress2: '',
+          shipFromCityStateZip: 'BLAINE, MN 55449',
+          shipToCompany: handwritten?.shipToCompany ?? '',
+          shipToAddress: handwritten?.shipToAddress ?? '',
+          shipToAddress2: handwritten?.shipToAddress2 ? `${handwritten?.shipToAddress2}\n` : '',
+          shipToCityStateZip: shipToCityStateZip ?? ''
         };
         addToQue('shippingLabel', 'print_shipping_label', args, '576px', '374.4px');
       }

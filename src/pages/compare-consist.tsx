@@ -143,6 +143,7 @@ export default function CompareConsist() {
   };
 
   const handleSaveSearch = async () => {
+    // eslint-disable-next-line
     const { arrNum, ...engineData } = getEngineData(true);
     const data = {
       customerId: params.c,
