@@ -326,6 +326,10 @@ export default function PartDetails() {
                     <td>{ formatDate(part.entryDate) }</td>
                   </tr>
                   <tr>
+                    <th>Recon Date</th>
+                    <td>{ formatDate(part.reconDate) }</td>
+                  </tr>
+                  <tr>
                     <th>Price Last Updated</th>
                     <td>{ formatDate(part.priceLastUpdated) }</td>
                   </tr>

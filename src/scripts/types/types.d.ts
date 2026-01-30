@@ -453,6 +453,7 @@ type Part = {
   location: string | null
   remarks: string | null
   entryDate: Date | null
+  reconDate: Date | null
   priceLastUpdated: Date | null
   enteredBy: string | null
   qty: number

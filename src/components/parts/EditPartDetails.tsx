@@ -39,6 +39,7 @@ export default function EditPartDetails({ part, setPart, setIsEditingPart, partC
   const [condition, setCondition] = useState<string>(part.condition ?? '');
   const [rating, setRating] = useState<number>(part.rating ?? 0);
   const [entryDate, setEntryDate] = useState<Date | null>(part.entryDate);
+  const [reconDate, setReconDate] = useState<Date | null>(part.reconDate);
   const [remarks, setRemarks] = useState<string>(part.remarks ?? '');
   const [listPrice, setListPrice] = useState<number | null>(part.listPrice);
   const [fleetPrice, setFleetPrice] = useState<number | null>(part.fleetPrice);
@@ -83,6 +84,7 @@ export default function EditPartDetails({ part, setPart, setIsEditingPart, partC
       condition,
       rating: Number(rating),
       entryDate,
+      reconDate,
       remarks,
       listPrice: Number(listPrice),
       fleetPrice: Number(fleetPrice),
@@ -382,6 +384,17 @@ export default function EditPartDetails({ part, setPart, setIsEditingPart, partC
                     type="date"
                     value={parseDateInputValue(entryDate)}
                     onChange={(e: any) => setEntryDate(new Date(e.target.value))}
+                  />
+                </td>
+              </tr>
+              <tr>
+                <th>Recon Date</th>
+                <td>
+                  <Input
+                    variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+                    type="date"
+                    value={parseDateInputValue(reconDate)}
+                    onChange={(e: any) => setReconDate(new Date(e.target.value))}
                   />
                 </td>
               </tr>

@@ -9,6 +9,7 @@ const parsePartsData = async (parts: any) => {
     return {
       ...part,
       entryDate: new Date(part.entryDate),
+      reconDate: new Date(part.reconDate),
       priceLastUpdated: part.priceLastUpdated && new Date(part.priceLastUpdated),
       soldToDate: part.soldToDate && new Date(part.soldToDate),
       altParts: part.altParts ? part.altParts.split(',').map((p: any) => p.trim()) : [],
