@@ -16,6 +16,8 @@ interface Props {
 }
 
 
+const EXCLUDED_STATUSES = ['sold', 'toredown', 'coreengine'];
+
 export default function NewEnginesList({ engines, setEngine, engineModel, setEngineModel, setNewQuoteDialogOpen }: Props) {
   const tooltip = useTooltip();
   const [filter, setFilter] = useState('all-runner');
@@ -26,7 +28,13 @@ export default function NewEnginesList({ engines, setEngine, engineModel, setEng
   };
 
   const getEngineModels = useMemo(() => {
-    const models = Array.from(new Set(engines.map((e) => e.model ?? ''))).sort((a, b) => {
+    const models = Array.from(
+      new Set(
+        engines
+          .filter((e) => !EXCLUDED_STATUSES.includes(e.currentStatus?.toLowerCase().trim() ?? ''))
+          .map((e) => e.model ?? '')
+      )
+    ).sort((a, b) => {
       const numA = parseFloat(a.match(/[\d]+/)?.[0] || 'Infinity');
       const numB = parseFloat(b.match(/[\d]+/)?.[0] || 'Infinity');
       const textA = a.match(/[a-zA-Z]+/)?.[0] || '';
