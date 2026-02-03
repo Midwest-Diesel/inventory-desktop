@@ -18,6 +18,21 @@ interface QuoteSearchData {
   page: number
 }
 
+export interface EngineQuoteSearchData {
+  date?: string
+  salesmanId?: number | null
+  source?: string
+  customer?: string
+  contact?: string
+  serialNum?: string
+  desc?: string
+  stockNum?: string
+  model?: string
+  sale?: string
+  limit: number
+  page: number
+}
+
 interface NewQuote {
   date: Date
   source: string
@@ -88,23 +103,23 @@ export const getSomeUnsoldQuotesByPartNum = async (page: number, limit: number, 
   }
 };
 
-export const searchQuotes = async (quote: QuoteSearchData, customerId: number) => {
+export const searchQuotes = async (quote: QuoteSearchData, customerId: number): Promise<{ pageCount: number, rows: Quote[] }> => {
   try {
     const res = await api.get(`/api/quotes/search/${encodeURIComponent(JSON.stringify({ ...quote, customerId }))}`);
     return { pageCount: res.data.pageCount, rows: parseQuotesRes(res.data.rows)};
   } catch (err) {
     console.error(err);
+    return { pageCount: 0, rows: [] };
   }
 };
 
-export const getQuotesByEngineModel = async (model: string): Promise<EngineQuote[]> => {
+export const searchEngineQuotes = async (data: EngineQuoteSearchData): Promise<{ pageCount: number, rows: EngineQuote[] }> => {
   try {
-    const res = await api.get(`/api/quotes/engine/${model}`);
-    res.data = parseQuotesRes(res.data);
-    return res.data.reverse();
+    const res = await api.get(`/api/quotes/search-engines/${encodeURIComponent(JSON.stringify(data))}`);
+    return { pageCount: res.data.pageCount, rows: parseQuotesRes(res.data.rows)};
   } catch (err) {
     console.error(err);
-    return [];
+    return { pageCount: 0, rows: [] };
   }
 };
 

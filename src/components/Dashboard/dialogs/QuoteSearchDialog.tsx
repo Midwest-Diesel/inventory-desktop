@@ -134,6 +134,7 @@ export default function QuoteSearchDialog({ open, setOpen, setQuotes, setCount, 
           variant={['label-space-between', 'label-inline']}
           value={salesmanId}
           onChange={(e: any) => setSalesmanId(Number(e.target.value))}
+          userSubtype="sales"
         />
 
         <SourceSelect

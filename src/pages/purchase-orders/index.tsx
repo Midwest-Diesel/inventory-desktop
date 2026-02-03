@@ -21,12 +21,12 @@ const LIMIT = 40;
 export default function PurchaseOrders() { 
   const [searchData] = useAtom(POSearchAtom);
   const [focusedPurchaseOrder, setFocusedPurchaseOrder] = useState<PO | null>(null);
-  const [showIncomming, setShowIncomming] = useState(false);
+  const [showIncoming, setShowIncoming] = useState(false);
   const [showSearchDialog, setShowSearchDialog] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
 
   const { data: purchaseOrders, isFetching, refetch } = useQuery<PORes>({
-    queryKey: ['purchaseOrders', currentPage, searchData, showIncomming],
+    queryKey: ['purchaseOrders', currentPage, searchData, showIncoming],
     queryFn: async () => {
       const hasValidSearchCriteria = (
         searchData.poNum ||
@@ -38,9 +38,9 @@ export default function PurchaseOrders() {
       );
 
       if (hasValidSearchCriteria) {
-        return await searchPurchaseOrders({ ...searchData, offset: (currentPage - 1) * LIMIT, showIncomming });
+        return await searchPurchaseOrders({ ...searchData, offset: (currentPage - 1) * LIMIT, showIncoming });
       } else {
-        return await getSomePurchaseOrders(currentPage, LIMIT, showIncomming);
+        return await getSomePurchaseOrders(currentPage, LIMIT, showIncoming);
       }
     }
   });
@@ -68,7 +68,7 @@ export default function PurchaseOrders() {
           <div className="purchase-orders-page__top-buttons">
             <Button onClick={() => setShowSearchDialog(true)}>Search</Button>
             <Button onClick={handleNewPurchaseOrder} data-testid="new-btn">New</Button>
-            <Button onClick={() => setShowIncomming(!showIncomming)}>{showIncomming ? 'Show All' : 'Show Incomming'}</Button>
+            <Button onClick={() => setShowIncoming(!showIncoming)}>{showIncoming ? 'Show All' : 'Show Incoming'}</Button>
           </div>
           
           { isFetching && <Loading /> }
