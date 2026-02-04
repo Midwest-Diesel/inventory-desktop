@@ -48,7 +48,7 @@ export default function ShopEngineAddOnRow({ addOn, handleDuplicateAddOn, onSave
   };
 
   const onClickDeleteAddOn = async () => {
-    if (!await ask('Are you sure you want to delete this part?')) return;
+    if (!await ask('Are you sure you want to delete this?')) return;
     await deleteEngineAddOn(addOn.id);
     setAddons(addOns.filter((a) => a.id !== addOn.id));
   };
@@ -102,7 +102,6 @@ export default function ShopEngineAddOnRow({ addOn, handleDuplicateAddOn, onSave
         arrNum: addOn.arrNum ?? '',
         horsePower: addOn.hp ?? '',
         comments: addOn.notes ?? '',
-        purchasedFrom: addOn.purchasedFrom ?? '',
         currentStatus: addOn.currentStatus ?? '',
         stockNum: addOn.engineNum.toString()
       };

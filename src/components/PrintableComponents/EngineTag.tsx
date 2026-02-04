@@ -9,7 +9,6 @@ interface Props {
     arrNum: string
     horsePower: string
     comments: string
-    purchasedFrom: string
     currentStatus: string
     stockNum: string
   }
@@ -17,7 +16,7 @@ interface Props {
 
 
 export default function EngineTag({ data }: Props) {
-  const { date, location, serialNum, model, arrNum, horsePower, comments, purchasedFrom, currentStatus, stockNum } = data;
+  const { date, location, serialNum, model, arrNum, horsePower, comments, currentStatus, stockNum } = data;
 
   return (
     <div className="engine-tag">
@@ -67,11 +66,9 @@ export default function EngineTag({ data }: Props) {
       <div className="engine-tag__bottom">
         <div className="engine-tag__row">
           <div className="engine-tag__row--header">
-            <p>Received From</p>
             <p>Condition</p>
           </div>
           <div className="engine-tag__row--content">
-            <p>{ purchasedFrom }</p>
             <p>{ currentStatus }</p>
           </div>
         </div>

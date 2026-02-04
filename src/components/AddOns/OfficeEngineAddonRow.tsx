@@ -53,7 +53,7 @@ export default function OfficeEngineAddOnRow({ addOn, onSave }: Props) {
   };
 
   const onClickDeleteAddOn = async () => {
-    if (!await ask('Are you sure you want to delete this part?')) return;
+    if (!await ask('Are you sure you want to delete this?')) return;
     await deleteEngineAddOn(addOn.id);
     setAddons(addOns.filter((a) => a.id !== addOn.id));
   };
