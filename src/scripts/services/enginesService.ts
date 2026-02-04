@@ -33,7 +33,7 @@ const parseEngineRes = (data: any) => {
       costOut: engine.costOut ? engine.costOut.filter((cost: number) => cost) : [],
       costIn: engine.costOut ? engine.costIn.filter((cost: number) => cost) : []
     };
-  }).sort((a: any, b: any) => b.loginDate - a.loginDate);
+  });
 };
 
 // === GET routes === //
