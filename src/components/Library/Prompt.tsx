@@ -10,7 +10,7 @@ interface Props {
 }
 
 
-export function Prompt({ message = '', defaultValue = '', onClose }: Props) {
+export default function Prompt({ message = '', defaultValue = '', onClose }: Props) {
   const [value, setValue] = useState<string>(defaultValue);
 
   useEffect(() => {
@@ -22,7 +22,7 @@ export function Prompt({ message = '', defaultValue = '', onClose }: Props) {
 
     return () => {
       document.removeEventListener('keydown', handleKey);
-    }
+    };
   }, [value, onClose]);
 
 

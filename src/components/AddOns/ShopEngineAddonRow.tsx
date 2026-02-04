@@ -4,7 +4,7 @@ import Table from "../library/Table";
 import Select from "../library/select/Select";
 import { useRef, useState } from "react";
 import Input from "../library/Input";
-import { getAllEngineModels, getAutofillEngine, getEngineByStockNum } from "@/scripts/services/enginesService";
+import { getAllEngineModels, getAutofillEngine } from "@/scripts/services/enginesService";
 import { deleteEngineAddOn, editEngineAddOnPrintStatus } from "@/scripts/services/engineAddOnsService";
 import { useAtom } from "jotai";
 import { engineAddOnsAtom } from "@/scripts/atoms/state";

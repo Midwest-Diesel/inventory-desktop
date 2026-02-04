@@ -132,7 +132,7 @@ export default function InputDropdown({ children, className = '', variant = [], 
       style={{
         display: 'flex',
         alignItems: 'flex-start',
-        gap: variant.includes('gap') ? '0.5rem' : 0,
+        gap: variant.includes('gap') ? '0.5rem' : 0
       }}
       className={labelClass}
     >
@@ -158,7 +158,7 @@ export default function InputDropdown({ children, className = '', variant = [], 
               minWidth,
               visibility: isOpen ? "visible" : "hidden",
               opacity: isOpen ? 1 : 0,
-              pointerEvents: isOpen ? "auto" : "none",
+              pointerEvents: isOpen ? "auto" : "none"
             }}
           >
             <div className="dropdown-input__menu-scroll" style={{ maxHeight }} tabIndex={-1}>

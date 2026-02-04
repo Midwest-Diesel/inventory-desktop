@@ -1,7 +1,6 @@
 import { generateClasses, generateRandId, parseClasses } from "../../../scripts/tools/utils";
 import React, { Children, useState, useEffect, useRef } from "react";
 import DropdownOption from "./DropdownOption";
-import Input from "../Input";
 
 interface Props {
   children: any
