@@ -10,6 +10,7 @@ import { userAtom } from "@/scripts/atoms/state";
 import { useAtom } from "jotai";
 import { useToast } from "@/hooks/useToast";
 import HandwrittensListModal from "../handwrittens/modals/HandwrittensListModal";
+import { prompt } from "../library/Prompt";
 
 interface Props {
   selectedCustomer: Customer
@@ -34,7 +35,7 @@ export default function CustomerSearch({ selectedCustomer, setSelectedCustomer, 
   };
 
   const handleAddCustomer = async () => {
-    const name = prompt('Enter customer name');
+    const name = await prompt('Enter customer name');
     if (!name) {
       alert('Name cannot be empty');
       return;

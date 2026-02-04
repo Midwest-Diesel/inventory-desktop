@@ -19,6 +19,7 @@ import { useEffect, useState } from "react";
 import { ask } from "@/scripts/config/tauri";
 import { addVendor, getVendorByName } from "@/scripts/services/vendorsService";
 import EditMapLocDialog from "@/components/customers/dialogs/EditMapLocDialog";
+import { prompt } from "@/components/library/Prompt";
 
 
 export default function Customer() {
@@ -58,7 +59,7 @@ export default function Customer() {
   }, [params]);
 
   const handleDelete = async () => {
-    if (!customer?.id || user.accessLevel <= 1 || prompt('Type "confirm" to delete this customer') !== 'confirm') return;
+    if (!customer?.id || user.accessLevel <= 1 || await prompt('Type "confirm" to delete this customer') !== 'confirm') return;
     localStorage.removeItem('customerId');
     setSelectedCustomer({} as Customer);
     await deleteCustomer(customer.id);

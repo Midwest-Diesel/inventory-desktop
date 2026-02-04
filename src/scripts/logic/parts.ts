@@ -1,3 +1,4 @@
+import { prompt } from "@/components/library/Prompt";
 import { ask } from "../config/tauri";
 import { editAddOnAltParts, getOfficeAddOns } from "../services/addOnsService";
 import { editAltParts, getPartInfoByPartNum } from "../services/partsService";
@@ -21,7 +22,7 @@ const getAltPartsToAdd = async (partNum: string, altParts: string[]): Promise<st
 };
 
 export const promptAddAltParts = async (partNum: string, updateLoading?: (i: number, total: number) => void) => {
-  const input = prompt('Enter part numbers separated by a comma');
+  const input = await prompt('Enter part numbers separated by a comma');
   if (!input) return;
   const values = input.toUpperCase().trim().replace(/\s*,\s*/g, ',').split(',');
   const altPartsArray = await getAltPartsToAdd(partNum, values);
@@ -30,7 +31,7 @@ export const promptAddAltParts = async (partNum: string, updateLoading?: (i: num
 };
 
 export const promptRemoveAltParts = async (partNum: string) => {
-  const input = prompt('Enter part numbers seperated by comma');
+  const input = await prompt('Enter part numbers seperated by comma');
   if (!input) return;
   const removedParts = input.toUpperCase().trim().replace(/\s*,\s*/g, ',').split(',');
   const partsInfo = await getPartInfoByPartNum(partNum);

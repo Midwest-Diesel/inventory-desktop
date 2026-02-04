@@ -2,6 +2,7 @@ import Button from "@/components/library/Button";
 import Select from "@/components/library/select/Select";
 import { addCustomerContact, deleteContact, editContact, editCustomer, getCustomerById } from "@/scripts/services/customerService";
 import { ask } from "@/scripts/config/tauri";
+import { prompt } from "@/components/library/Prompt";
 
 interface Props {
   isEditing: boolean
@@ -22,7 +23,7 @@ export default function ContactsControls({ isEditing, setIsEditing, contact, set
   };
 
   const onClickNewContact = async () => {
-    const name = prompt('Enter a contact name');
+    const name = await prompt('Enter a contact name');
     if (!name) return;
     await addCustomerContact(customer.id, name);
     await onSelectChangeContact(name);

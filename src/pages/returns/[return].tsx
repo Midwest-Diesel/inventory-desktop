@@ -20,6 +20,7 @@ import { ask } from "@/scripts/config/tauri";
 import { usePrintQue } from "@/hooks/usePrintQue";
 import { addHandwritten, addHandwrittenItem, getHandwrittenById } from "@/scripts/services/handwrittensService";
 import { deleteCoreByItemId } from "@/scripts/services/coresService";
+import { prompt } from "@/components/library/Prompt";
 
 
 export default function Return() {
@@ -45,7 +46,7 @@ export default function Return() {
   }, [params]);
 
   const onClickDelete = async () => {
-    if (!returnData?.id || prompt('Type "confirm" to delete this return') !== 'confirm') return;
+    if (!returnData?.id || await prompt('Type "confirm" to delete this return') !== 'confirm') return;
     await deleteReturn(returnData.id);
     await closeDetailsBtn();
   };

@@ -11,6 +11,7 @@ import { userAtom } from "@/scripts/atoms/state";
 import { useAtom } from "jotai";
 import { useNavState } from "@/hooks/useNavState";
 import { deleteEngine } from "@/scripts/services/enginesService";
+import { prompt } from "../library/Prompt";
 
 interface Props {
   engine: Engine
@@ -42,7 +43,7 @@ export default function EngineDetails({ engine, setIsEditing, setEngineProfitOpe
   };
 
   const handleDelete = async () => {
-    if (!engine?.id || user.accessLevel <= 1 || prompt('Type "confirm" to delete this engine') !== 'confirm') return;
+    if (!engine?.id || user.accessLevel <= 1 || await prompt('Type "confirm" to delete this engine') !== 'confirm') return;
     await deleteEngine(engine.id);
     await closeDetailsBtn();
   };

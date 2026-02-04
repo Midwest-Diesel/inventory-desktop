@@ -17,6 +17,7 @@ import { useEffect, useState } from "react";
 import { confirm } from "@/scripts/config/tauri";
 import { useNavState } from "@/hooks/useNavState";
 import { usePrintQue } from "@/hooks/usePrintQue";
+import { prompt } from "@/components/library/Prompt";
 
 
 export default function WarrantyDetails() {
@@ -38,7 +39,7 @@ export default function WarrantyDetails() {
   }, [params]);
 
   const handleDelete = async () => {
-    if (user.accessLevel <= 1 || prompt('Type "confirm" to delete this warranty') !== 'confirm' || !warrantyData?.id) return;
+    if (user.accessLevel <= 1 || await prompt('Type "confirm" to delete this warranty') !== 'confirm' || !warrantyData?.id) return;
     await deleteWarranty(warrantyData.id);
     await push('Warranties', '/warranties');
   };

@@ -27,6 +27,7 @@ import { usePrintQue } from "@/hooks/usePrintQue";
 import { getAltShipByCustomerId } from "@/scripts/services/altShipService";
 import { useQuery } from "@tanstack/react-query";
 import { startTakeoff } from "@/scripts/logic/handwrittens";
+import { prompt } from "../library/Prompt";
 
 interface Props {
   handwritten: Handwritten
@@ -126,14 +127,14 @@ export default function HandwrittenDetails({
   };
 
   const handleDelete = async () => {
-    if (user.accessLevel <= 1 || prompt('Type "confirm" to delete this handwritten') !== 'confirm') return;
+    if (user.accessLevel <= 1 || await prompt('Type "confirm" to delete this handwritten') !== 'confirm') return;
     await deleteHandwritten(Number(handwritten?.id));
     await push('Handwrittens', '/handwrittens');
   };
 
   const handlePrintShipDocs = async () => {
     if (handwritten?.shipVia?.type === 'Truck Line') {
-      const copies = Number(prompt('How many shipping labels do you want to print?'));
+      const copies = Number(await prompt('How many shipping labels do you want to print?'));
       if (copies > 0) await handlePrintShippingLabel(copies);
 
       const cityStateZip = `${handwritten?.shipToCity} ${handwritten?.shipToState} ${handwritten?.shipToZip}`;
@@ -159,7 +160,7 @@ export default function HandwrittenDetails({
 
   const handlePrintShipDocsBlind = async () => {
     if (handwritten?.shipVia?.type === 'Truck Line') {
-      const copies = Number(prompt('How many shipping labels do you want to print?'));
+      const copies = Number(await prompt('How many shipping labels do you want to print?'));
       if (copies > 0) await handlePrintShippingLabel(copies);
 
       const cityStateZip = `${handwritten?.shipToCity} ${handwritten?.shipToState} ${handwritten?.shipToZip}`;

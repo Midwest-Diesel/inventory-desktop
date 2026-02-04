@@ -7,6 +7,7 @@ import { useNavState } from "../../hooks/useNavState";
 import ContextMenu from "../library/ContextMenu";
 import { useState } from "react";
 import NavTab from "./NavTab";
+import { prompt } from "../library/Prompt";
 
 
 export default function Navbar() {
@@ -16,7 +17,7 @@ export default function Navbar() {
   const [selectedTab, setSelectedTab] = useState<Tab | null>(null);
 
   const handleRenameTab = async () => {
-    const name = prompt('Name');
+    const name = await prompt('Name');
     setTabs(tabs.map((tab) => {
       if (tab.id === selectedTab?.id) {
         return { ...tab, name };

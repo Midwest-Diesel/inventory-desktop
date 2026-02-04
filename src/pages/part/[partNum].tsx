@@ -26,6 +26,7 @@ import { usePrintQue } from "@/hooks/usePrintQue";
 import { ask } from "@/scripts/config/tauri";
 import PartQtyHistoryDialog from "@/components/parts/dialogs/PartQtyHistoryDialog";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { prompt } from "@/components/library/Prompt";
 
 
 export default function PartDetails() {
@@ -102,14 +103,14 @@ export default function PartDetails() {
   });
 
   const handleDelete = async () => {
-    if (!part?.id || user.accessLevel <= 1 || prompt('Type "confirm" to delete this part') !== 'confirm') return;
+    if (!part?.id || user.accessLevel <= 1 || await prompt('Type "confirm" to delete this part') !== 'confirm') return;
     await deletePart(part.id);
     await queryClient.invalidateQueries({ queryKey: ['part', part.id] });
     await push('Home', '/');
   };
 
   const handleAddToUP = async () => {
-    const qty = Number(prompt('Enter qty to add'));
+    const qty = Number(await prompt('Enter qty to add'));
     if (!qty || !part) return;
     await editPart({ ...part, qty: qty + (part?.qty ?? 0) });
     await addToPartQtyHistory(part.id, qty);
@@ -118,7 +119,7 @@ export default function PartDetails() {
   };
 
   const handlePrint = async () => {
-    const copies = Number(prompt('How many tags do you want to print?', '1'));
+    const copies = Number(await prompt('How many tags do you want to print?', '1'));
     if (copies <= 0) return;
     const pictures = await getImagesFromPart(part?.partNum ?? '') ?? [];
 
