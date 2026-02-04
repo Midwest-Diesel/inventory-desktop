@@ -362,7 +362,6 @@ type EngineAddOn = {
   ecm: boolean
   jakeBrake: boolean
   oilPan: '' | 'FS' | 'RS' | 'CS'
-  engineCostInStockNum: number | null
   engineCostInCost: number | null
   engineCostInInvoiceNum: string | null
   engineCostInCostType: CostType | null

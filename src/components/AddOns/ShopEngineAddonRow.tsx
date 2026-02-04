@@ -209,25 +209,11 @@ export default function ShopEngineAddOnRow({ addOn, handleDuplicateAddOn, onSave
                   </Select>
                 </td>
                 <td>
-                  <div style={{ width: '21rem' }}>
-                    {showVendorSelect ?
-                      <VendorSelect
-                        variant={['label-full-width']}
-                        value={addOn.purchasedFrom ?? ''}
-                        onChange={(e: any) => handleEditAddOn({ ...addOn, purchasedFrom: e.target.value })}
-                        onBlur={() => setShowVendorSelect(false)}
-                      />
-                      :
-                      <Button
-                        type="button"
-                        style={{ marginLeft: '0.3rem', width: '100%', textAlign: 'start' }}
-                        variant={['no-style', 'x-small']}
-                        onFocus={() => setShowVendorSelect(true)}
-                      >
-                        { addOn.purchasedFrom || 'Select Vendor' }
-                      </Button>
-                    }
-                  </div>
+                  <Input
+                    variant={['small', 'thin']}
+                    value={addOn.purchasedFrom ?? ''}
+                    onChange={(e) => handleEditAddOn({ ...addOn, purchasedFrom: e.target.value })}
+                  />
                 </td>
                 <td>
                   <Input

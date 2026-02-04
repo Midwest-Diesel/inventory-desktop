@@ -2,13 +2,12 @@ import Button from "../library/Button";
 import Checkbox from "../library/Checkbox";
 import Table from "../library/Table";
 import Select from "../library/select/Select";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import Input from "../library/Input";
 import { addEngine, addEngineCostIn, getAutofillEngine, getEngineByStockNum } from "@/scripts/services/enginesService";
 import { deleteEngineAddOn } from "@/scripts/services/engineAddOnsService";
 import { useAtom } from "jotai";
 import { engineAddOnsAtom } from "@/scripts/atoms/state";
-import VendorSelect from "../library/select/VendorSelect";
 import { ask } from "@/scripts/config/tauri";
 
 interface Props {
@@ -20,29 +19,7 @@ interface Props {
 export default function OfficeEngineAddOnRow({ addOn, onSave }: Props) {
   const [addOns, setAddons] = useAtom<EngineAddOn[]>(engineAddOnsAtom);
   const [autofillEngineNum, setAutofillEngineNum] = useState('');
-  const [showPurchFromSelect, setShowPurchFromSelect] = useState(false);
-  const [showVendorSelect, setShowVendorSelect] = useState(false);
   const ref = useRef<HTMLDivElement | null>(null);
-
-  // Auto focus purchasedFrom Select element
-  useEffect(() => {
-    if (!showPurchFromSelect) return;
-    setTimeout(() => {
-      if (!ref.current) return;
-      const select = ref.current.querySelectorAll('select');
-      if (select.length > 0) select[select.length - 3].focus();
-    }, 30);
-  }, [showPurchFromSelect]);
-
-  // Auto focus vendor Select element
-  useEffect(() => {
-    if (!showVendorSelect) return;
-    setTimeout(() => {
-      if (!ref.current) return;
-      const select = ref.current.querySelectorAll('select');
-      if (select.length > 0) select[select.length - 2].focus();
-    }, 30);
-  }, [showVendorSelect]);
   
   const handleEditAddOn = (newAddOn: EngineAddOn) => {
     const updatedAddOns = addOns.map((a: EngineAddOn) => {
@@ -99,12 +76,10 @@ export default function OfficeEngineAddOnRow({ addOn, onSave }: Props) {
       return;
     }
 
-    // Create the engine
     await onSave();
     if (!await ask('Are you sure you want to add this engine?')) return;
     await addEngine(addOn);
 
-    // Add engineCostIn
     const { engineCostInCost, engineCostInInvoiceNum, engineCostInVendor, engineCostInCostType, engineCostInNote } = addOn;
     await addEngineCostIn(
       Number(addOn.engineNum),
@@ -118,7 +93,7 @@ export default function OfficeEngineAddOnRow({ addOn, onSave }: Props) {
     await deleteEngineAddOn(addOn.id);
     setAddons(addOns.filter((a) => a.id !== addOn.id));
   };
-  
+
 
   return (
     <div className="add-ons__list-row" ref={ref}>
@@ -216,25 +191,11 @@ export default function OfficeEngineAddOnRow({ addOn, onSave }: Props) {
                 </Select>
               </td>
               <td>
-                <div style={{ width: '21rem' }}>
-                  {showPurchFromSelect ?
-                    <VendorSelect
-                      variant={['label-full-width']}
-                      value={addOn.purchasedFrom ?? ''}
-                      onChange={(e) => handleEditAddOn({ ...addOn, purchasedFrom: e.target.value })}
-                      onBlur={() => setShowPurchFromSelect(false)}
-                    />
-                    :
-                    <Button
-                      type="button"
-                      style={{ marginLeft: '0.3rem', width: '100%', textAlign: 'start' }}
-                      variant={['no-style', 'x-small']}
-                      onFocus={() => setShowPurchFromSelect(true)}
-                    >
-                      { addOn.purchasedFrom || 'Select Vendor' }
-                    </Button>
-                  }
-                </div>
+                <Input
+                  variant={['small', 'thin']}
+                  value={addOn.purchasedFrom ?? ''}
+                  onChange={(e) => handleEditAddOn({ ...addOn, purchasedFrom: e.target.value })}
+                />
               </td>
               <td>
                 <Input
@@ -282,7 +243,6 @@ export default function OfficeEngineAddOnRow({ addOn, onSave }: Props) {
                 <th>Vendor</th>
                 <th>Invoice Number</th>
                 <th>Cost Type</th>
-                <th>Engine Stock Number</th>
                 <th>Note</th>
               </tr>
             </thead>
@@ -291,42 +251,28 @@ export default function OfficeEngineAddOnRow({ addOn, onSave }: Props) {
                 <td>
                   <Input
                     variant={['small', 'thin']}
-                    value={addOn.engineCostInCost !== null ? addOn.engineCostInCost : ''}
+                    value={addOn.engineCostInCost ?? ''}
                     onChange={(e) => handleEditAddOn({ ...addOn, engineCostInCost: e.target.value as any })}
                     type="number"
                   />
                 </td>
                 <td>
-                  <div style={{ width: '21rem' }}>
-                    {showVendorSelect ?
-                      <VendorSelect
-                        variant={['label-full-width']}
-                        value={addOn.engineCostInVendor ?? ''}
-                        onChange={(e: any) => handleEditAddOn({ ...addOn, engineCostInVendor: e.target.value })}
-                        onBlur={() => setShowVendorSelect(false)}
-                      />
-                      :
-                      <Button
-                        type="button"
-                        style={{ marginLeft: '0.3rem', width: '100%', textAlign: 'start' }}
-                        variant={['no-style', 'x-small']}
-                        onFocus={() => setShowVendorSelect(true)}
-                      >
-                        { addOn.engineCostInVendor || 'Select Vendor' }
-                      </Button>
-                    }
-                  </div>
+                  <Input
+                    variant={['small', 'thin']}
+                    value={addOn.engineCostInVendor ?? ''}
+                    onChange={(e) => handleEditAddOn({ ...addOn, engineCostInVendor: e.target.value })}
+                  />
                 </td>
                 <td>
                   <Input
                     variant={['small', 'thin']}
-                    value={addOn.engineCostInInvoiceNum !== null ? addOn.engineCostInInvoiceNum : ''}
+                    value={addOn.engineCostInInvoiceNum ?? ''}
                     onChange={(e) => handleEditAddOn({ ...addOn, engineCostInInvoiceNum: e.target.value })}
                   />
                 </td>
                 <td>
                   <Select
-                    value={addOn.engineCostInCostType !== null ? addOn.engineCostInCostType : ''}
+                    value={addOn.engineCostInCostType ?? ''}
                     onChange={(e) => handleEditAddOn({ ...addOn, engineCostInCostType: e.target.value as any })}
                   >
                     <option>PurchasePrice</option>
@@ -337,15 +283,7 @@ export default function OfficeEngineAddOnRow({ addOn, onSave }: Props) {
                 <td>
                   <Input
                     variant={['small', 'thin']}
-                    value={addOn.engineCostInStockNum !== null ? addOn.engineCostInStockNum : addOn.engineNum ?? ''}
-                    onChange={(e: any) => handleEditAddOn({ ...addOn, engineCostInStockNum: e.target.value })}
-                    type="number"
-                  />
-                </td>
-                <td>
-                  <Input
-                    variant={['small', 'thin']}
-                    value={addOn.engineCostInNote !== null ? addOn.engineCostInNote : ''}
+                    value={addOn.engineCostInNote ?? ''}
                     onChange={(e: any) => handleEditAddOn({ ...addOn, engineCostInNote: e.target.value })}
                   />
                 </td>
