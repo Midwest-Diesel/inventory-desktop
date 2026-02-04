@@ -38,12 +38,23 @@ const parseEngineRes = (data: any) => {
 
 // === GET routes === //
 
-export const getAllEngines = async () => {
+export const getAllEngines = async (): Promise<Engine[]> => {
   try {
     const res = await api.get('/api/engines');
     return parseEngineRes(res.data);
   } catch (err) {
     console.error(err);
+    return [];
+  }
+};
+
+export const getAllEngineModels = async (): Promise<string[]> => {
+  try {
+    const res = await api.get('/api/engines/models');
+    return res.data;
+  } catch (err) {
+    console.error(err);
+    return [];
   }
 };
 

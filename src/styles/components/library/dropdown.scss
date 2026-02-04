@@ -189,6 +189,25 @@
     pointer-events: auto;
   }
 
+  &__menu-scroll {
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #5a5a5a #313131;
+
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: var(--grey-dark-3);
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: #5a5a5a;
+      border-radius: 3px;
+    }
+  }
+
   .dropdown-input__option--highlighted {
     background-color: var(--grey-light-4);
     color: black;

@@ -4,18 +4,16 @@ import Table from "../library/Table";
 import Select from "../library/select/Select";
 import { useRef, useState } from "react";
 import Input from "../library/Input";
-import { getAutofillEngine, getEngineByStockNum } from "@/scripts/services/enginesService";
+import { getAllEngineModels, getAutofillEngine, getEngineByStockNum } from "@/scripts/services/enginesService";
 import { deleteEngineAddOn, editEngineAddOnPrintStatus } from "@/scripts/services/engineAddOnsService";
 import { useAtom } from "jotai";
 import { engineAddOnsAtom } from "@/scripts/atoms/state";
 import { ask } from "@/scripts/config/tauri";
 import { usePrintQue } from "@/hooks/usePrintQue";
 import { formatDate } from "@/scripts/tools/stringUtils";
-import Dropdown from "../library/dropdown/Dropdown";
 import DropdownOption from "../library/dropdown/DropdownOption";
 import { useQuery } from "@tanstack/react-query";
-import { getEngineModels } from "@/scripts/logic/engines";
-import InputDropdown from "../library/dropdown/InputDropdown";
+import InputDropdown from "../library/InputDropdown";
 
 interface Props {
   addOn: EngineAddOn
@@ -33,11 +31,7 @@ export default function ShopEngineAddOnRow({ addOn, handleDuplicateAddOn, onSave
 
   const { data: models = [] } = useQuery<string[]>({
     queryKey: ['models', addOn.engineNum],
-    queryFn: async () => {
-      const engine = await getEngineByStockNum(addOn.engineNum);
-      if (!engine) return [];
-      return getEngineModels([engine]);
-    }
+    queryFn: getAllEngineModels
   });
   
   const handleEditAddOn = (newAddOn: EngineAddOn) => {

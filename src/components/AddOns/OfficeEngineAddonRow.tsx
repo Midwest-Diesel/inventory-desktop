@@ -4,11 +4,14 @@ import Table from "../library/Table";
 import Select from "../library/select/Select";
 import { useRef, useState } from "react";
 import Input from "../library/Input";
-import { addEngine, addEngineCostIn, getAutofillEngine, getEngineByStockNum } from "@/scripts/services/enginesService";
+import { addEngine, addEngineCostIn, getAllEngineModels, getAutofillEngine, getEngineByStockNum } from "@/scripts/services/enginesService";
 import { deleteEngineAddOn } from "@/scripts/services/engineAddOnsService";
 import { useAtom } from "jotai";
 import { engineAddOnsAtom } from "@/scripts/atoms/state";
 import { ask } from "@/scripts/config/tauri";
+import { useQuery } from "@tanstack/react-query";
+import InputDropdown from "../library/InputDropdown";
+import DropdownOption from "../library/dropdown/DropdownOption";
 
 interface Props {
   addOn: EngineAddOn
@@ -21,6 +24,11 @@ export default function OfficeEngineAddOnRow({ addOn, onSave }: Props) {
   const [autofillEngineNum, setAutofillEngineNum] = useState('');
   const ref = useRef<HTMLDivElement | null>(null);
   
+  const { data: models = [] } = useQuery<string[]>({
+    queryKey: ['models', addOn.engineNum],
+    queryFn: getAllEngineModels
+  });
+
   const handleEditAddOn = (newAddOn: EngineAddOn) => {
     const updatedAddOns = addOns.map((a: EngineAddOn) => {
       if (a.id === newAddOn.id) return newAddOn;
@@ -125,11 +133,16 @@ export default function OfficeEngineAddOnRow({ addOn, onSave }: Props) {
                 />
               </td>
               <td>
-                <Input
-                  variant={['small', 'thin']}
+                <InputDropdown
+                  variant={['no-margin', 'fill']}
                   value={addOn.model !== null ? addOn.model.trim() : ''}
-                  onChange={(e) => handleEditAddOn({ ...addOn, model: e.target.value })}
-                />
+                  onChange={(value) => handleEditAddOn({ ...addOn, model: value })}
+                  maxHeight="25rem"
+                >
+                  {models.map((model) => {
+                    return <DropdownOption key={model} value={model}>{ model }</DropdownOption>;
+                  })}
+                </InputDropdown>
               </td>
               <td>
                 <Input

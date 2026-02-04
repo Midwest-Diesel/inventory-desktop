@@ -22,7 +22,6 @@ import FreightCarrierSelect from "../library/select/FreightCarrierSelect";
 import { getFreightCarrierById } from "@/scripts/services/freightCarriersService";
 import { getAllUsers, getUserById } from "@/scripts/services/userService";
 import CreditCardBlock from "./CreditCardBlock";
-import Dropdown from "../library/dropdown/Dropdown";
 import DropdownOption from "../library/dropdown/DropdownOption";
 import { arrayOfObjectsMatch } from "@/scripts/tools/utils";
 import PromotionalModal from "./modals/PromotionalModal";
@@ -36,7 +35,7 @@ import TextArea from "../library/TextArea";
 import { addCoreCharge } from "@/scripts/logic/handwrittens";
 import EditHandwrittenItemsTable from "./EditHandwrittenItemsTable";
 import ModalList from "../library/ModalList";
-import InputDropdown from "../library/dropdown/InputDropdown";
+import InputDropdown from "../library/InputDropdown";
 
 interface Props {
   handwritten: Handwritten

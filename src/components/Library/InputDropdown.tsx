@@ -1,7 +1,7 @@
-import { generateClasses, parseClasses } from "../../../scripts/tools/utils";
+import { generateClasses, parseClasses } from "../../scripts/tools/utils";
 import React, { Children, useState, useEffect, useRef, ReactElement } from "react";
-import DropdownOption from "./DropdownOption";
-import Input from "../Input";
+import Input from "./Input";
+import DropdownOption from "./dropdown/DropdownOption";
 
 interface DropdownOptionProps {
   value: string
@@ -29,7 +29,8 @@ export default function InputDropdown({ children, className = '', variant = [], 
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState('');
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
-  const containerRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const inputRef = useRef<HTMLInputElement | null>(null);
   const dropdownOptions = Children.toArray(children) as ReactElement<DropdownOptionProps>[];
 
   useEffect(() => {
@@ -65,6 +66,7 @@ export default function InputDropdown({ children, className = '', variant = [], 
     setSearch('');
     setIsOpen(false);
     onChange?.(value, data);
+    inputRef.current?.focus();
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -113,11 +115,10 @@ export default function InputDropdown({ children, className = '', variant = [], 
     }
   };
 
-  const filteredOptions = dropdownOptions.filter((option) =>
-    option.props.children
-      .toLowerCase()
-      .includes(search.toLowerCase())
-  );
+  const filteredOptions = dropdownOptions.filter((option) => {
+    const text = option.props.children;
+    return typeof text === 'string' && text.toLowerCase().includes(search.toLowerCase());
+  });
 
   let labelClass = '';
   if (variant.includes('label-space-between')) labelClass += 'input--label-space-between ';
@@ -141,23 +142,26 @@ export default function InputDropdown({ children, className = '', variant = [], 
         <ul {...parseClasses(classes)}>
           <Input
             value={value}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => onChange?.(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+              setSearch(e.target.value);
+              onChange?.(e.target.value);
+            }}
             onFocus={() => setIsOpen(true)}
             onKeyDown={handleKeyDown}
             onBlur={(e: React.FocusEvent<HTMLInputElement>) => onBlur?.(e.target.value)}
+            ref={inputRef}
           />
 
           <div
             className="dropdown-input__menu"
             style={{
-              maxHeight,
               minWidth,
               visibility: isOpen ? "visible" : "hidden",
               opacity: isOpen ? 1 : 0,
               pointerEvents: isOpen ? "auto" : "none",
             }}
           >
-            <div className="dropdown-input__menu-scroll">
+            <div className="dropdown-input__menu-scroll" style={{ maxHeight }} tabIndex={-1}>
               {filteredOptions.length ? (
                 filteredOptions.map((option, i) => (
                   <DropdownOption
