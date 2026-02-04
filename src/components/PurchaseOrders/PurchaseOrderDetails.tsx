@@ -10,6 +10,7 @@ import { useNavState } from "@/hooks/useNavState";
 import { usePrintQue } from "@/hooks/usePrintQue";
 import { useAtom } from "jotai";
 import { userAtom } from "@/scripts/atoms/state";
+import { prompt } from "../library/Prompt";
 
 interface Props {
   poData: PO
@@ -25,7 +26,7 @@ export default function PurchaseOrderDetails({ poData, handleReceiveItem, setIsE
   const [user] = useAtom<User>(userAtom);
 
   const handleDelete = async () => {
-    if (!poData?.id || user.accessLevel <= 1 || prompt('Type "confirm" to adelete this purchase order') !== 'confirm') return;
+    if (!poData?.id || user.accessLevel <= 1 || await prompt('Type "confirm" to delete this purchase order') !== 'confirm') return;
     await deletePurchaseOrder(poData.id);
     await push('Purchase Orders', '/purchase-orders');
   };
