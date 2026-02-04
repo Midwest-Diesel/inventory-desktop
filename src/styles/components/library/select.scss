@@ -44,3 +44,19 @@
     overflow-y: visible;
   }
 }
+
+
+select {
+  background-color: var(--grey-light-1);
+  color: white;
+  border: none;
+  border-radius: 0.3rem;
+  
+  option {
+    border-radius: 0;
+  }
+
+  &::-webkit-scrollbar {
+    width: 5px;
+  }
+}

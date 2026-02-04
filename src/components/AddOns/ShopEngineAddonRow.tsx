@@ -2,16 +2,20 @@ import Button from "../library/Button";
 import Checkbox from "../library/Checkbox";
 import Table from "../library/Table";
 import Select from "../library/select/Select";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import Input from "../library/Input";
-import { getAutofillEngine } from "@/scripts/services/enginesService";
+import { getAutofillEngine, getEngineByStockNum } from "@/scripts/services/enginesService";
 import { deleteEngineAddOn, editEngineAddOnPrintStatus } from "@/scripts/services/engineAddOnsService";
 import { useAtom } from "jotai";
 import { engineAddOnsAtom } from "@/scripts/atoms/state";
-import VendorSelect from "../library/select/VendorSelect";
 import { ask } from "@/scripts/config/tauri";
 import { usePrintQue } from "@/hooks/usePrintQue";
 import { formatDate } from "@/scripts/tools/stringUtils";
+import Dropdown from "../library/dropdown/Dropdown";
+import DropdownOption from "../library/dropdown/DropdownOption";
+import { useQuery } from "@tanstack/react-query";
+import { getEngineModels } from "@/scripts/logic/engines";
+import InputDropdown from "../library/dropdown/InputDropdown";
 
 interface Props {
   addOn: EngineAddOn
@@ -24,18 +28,17 @@ export default function ShopEngineAddOnRow({ addOn, handleDuplicateAddOn, onSave
   const { addToQue, printQue } = usePrintQue();
   const [addOns, setAddons] = useAtom<EngineAddOn[]>(engineAddOnsAtom);
   const [autofillEngineNum, setAutofillEngineNum] = useState('');
-  const [showVendorSelect, setShowVendorSelect] = useState(false);
   const [printQty, setPrintQty] = useState(1);
   const ref = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    if (!showVendorSelect) return;
-    setTimeout(() => {
-      if (!ref.current) return;
-      const select = ref.current.querySelectorAll('select');
-      if (select.length > 0) select[select.length - 2].focus();
-    }, 30);
-  }, [showVendorSelect]);
+  const { data: models = [] } = useQuery<string[]>({
+    queryKey: ['models', addOn.engineNum],
+    queryFn: async () => {
+      const engine = await getEngineByStockNum(addOn.engineNum);
+      if (!engine) return [];
+      return getEngineModels([engine]);
+    }
+  });
   
   const handleEditAddOn = (newAddOn: EngineAddOn) => {
     const updatedAddOns = addOns.map((a: EngineAddOn) => {
@@ -143,11 +146,16 @@ export default function ShopEngineAddOnRow({ addOn, handleDuplicateAddOn, onSave
                   />
                 </td>
                 <td>
-                  <Input
-                    variant={['small', 'thin']}
+                  <InputDropdown
+                    variant={['no-margin', 'fill']}
                     value={addOn.model !== null ? addOn.model.trim() : ''}
-                    onChange={(e: any) => handleEditAddOn({ ...addOn, model: e.target.value })}
-                  />
+                    onChange={(value) => handleEditAddOn({ ...addOn, model: value })}
+                    maxHeight="25rem"
+                  >
+                    {models.map((model) => {
+                      return <DropdownOption key={model} value={model}>{ model }</DropdownOption>;
+                    })}
+                  </InputDropdown>
                 </td>
                 <td>
                   <Input

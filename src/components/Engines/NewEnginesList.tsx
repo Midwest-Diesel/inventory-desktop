@@ -6,6 +6,7 @@ import Link from "../library/Link";
 import { useMemo, useState } from "react";
 import { formatCurrency } from "@/scripts/tools/stringUtils";
 import { useTooltip } from "@/hooks/useTooltip";
+import { getEngineModels } from "@/scripts/logic/engines";
 
 interface Props {
   engines: Engine[]
@@ -16,42 +17,15 @@ interface Props {
 }
 
 
-const EXCLUDED_STATUSES = ['sold', 'toredown', 'coreengine'];
-
 export default function NewEnginesList({ engines, setEngine, engineModel, setEngineModel, setNewQuoteDialogOpen }: Props) {
   const tooltip = useTooltip();
   const [filter, setFilter] = useState('all-runner');
+  const engineModels = useMemo(() => getEngineModels(engines), [engines]);
 
   const isEngineResNotNull = (engine: Engine) => {
     const { turboReman, headNew, headReman, pistonNew, pistonReman, fwhNew, fwhReman, oilPanNew, oilPanReman, oilCoolerNew, oilCoolerReman, frontHsngNew, flywheelNew, ragNew, heuiPumpNew, heuiPumpReman } = engine;
     return ![turboReman, headNew, headReman, pistonNew, pistonReman, fwhNew, fwhReman, oilPanNew, oilPanReman, oilCoolerNew, oilCoolerReman, frontHsngNew, flywheelNew, ragNew, heuiPumpNew, heuiPumpReman].includes(null);
   };
-
-  const getEngineModels = useMemo(() => {
-    const models = Array.from(
-      new Set(
-        engines
-          .filter((e) => !EXCLUDED_STATUSES.includes(e.currentStatus?.toLowerCase().trim() ?? ''))
-          .map((e) => e.model ?? '')
-      )
-    ).sort((a, b) => {
-      const numA = parseFloat(a.match(/[\d]+/)?.[0] || 'Infinity');
-      const numB = parseFloat(b.match(/[\d]+/)?.[0] || 'Infinity');
-      const textA = a.match(/[a-zA-Z]+/)?.[0] || '';
-      const textB = b.match(/[a-zA-Z]+/)?.[0] || '';
-      const startsWithNumberA = /^\d/.test(a);
-      const startsWithNumberB = /^\d/.test(b);
-      if (startsWithNumberA === startsWithNumberB) {
-        if (textA < textB) return -1;
-        if (textA > textB) return 1;
-        if (numA < numB) return -1;
-        if (numA > numB) return 1;
-        return 0;
-      }
-      return startsWithNumberA ? 1 : -1;
-    });
-    return models;
-  }, [engines]);
 
   const filteredEngines = useMemo(() => {
     return engines.filter((e) => {
@@ -69,7 +43,7 @@ export default function NewEnginesList({ engines, setEngine, engineModel, setEng
   return (
     <div className="new-engines-list">
       <div className="new-engines-list__top-bar">
-        {getEngineModels.map((model: string) => {
+        {engineModels.map((model: string) => {
           if (!model) return null;
           return (
             <Button key={model} onClick={() => setEngineModel(model)} data-testid="model-btn">{ model }</Button>

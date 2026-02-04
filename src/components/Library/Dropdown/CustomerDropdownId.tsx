@@ -7,7 +7,7 @@ import { customersMinAtom } from "@/scripts/atoms/state";
 import { getCustomersMin } from "@/scripts/services/customerService";
 
 interface Props {
-  variant?: ('small' | 'input' | 'label-space-between' | 'label-stack' | 'label-inline' | 'label-full-width' | 'large' | 'no-margin' | 'label-full-height' | 'fill' | 'gap' | 'label-bold')[]
+  variant?: ('small' | 'label-space-between' | 'label-stack' | 'label-inline' | 'label-full-width' | 'large' | 'no-margin' | 'label-full-height' | 'fill' | 'gap' | 'label-bold')[]
   label?: string
   value: string | number
   onChange: (id: number) => void

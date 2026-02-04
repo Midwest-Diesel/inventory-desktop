@@ -36,6 +36,7 @@ import TextArea from "../library/TextArea";
 import { addCoreCharge } from "@/scripts/logic/handwrittens";
 import EditHandwrittenItemsTable from "./EditHandwrittenItemsTable";
 import ModalList from "../library/ModalList";
+import InputDropdown from "../library/dropdown/InputDropdown";
 
 interface Props {
   handwritten: Handwritten
@@ -1007,17 +1008,17 @@ export default function EditHandwrittenDetails({
                     <tr>
                       <th>EOD Email</th>
                       <td>
-                        <Dropdown
-                          variant={['input', 'no-margin', 'fill']}
+                        <InputDropdown
+                          variant={['no-margin', 'fill']}
                           value={contactEmail}
-                          onChange={(value: string) => setContactEmail(value)}
+                          onChange={(value) => setContactEmail(value)}
                           maxHeight="25rem"
                           data-testid="eod-email"
                         >
                           {emails.map((email, i) => {
                             return <DropdownOption key={i} value={email}>{ email }</DropdownOption>;
                           })}
-                        </Dropdown>
+                        </InputDropdown>
                       </td>
                     </tr>
                     <tr>

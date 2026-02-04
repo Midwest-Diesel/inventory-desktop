@@ -6,7 +6,7 @@ import Input from "../Input";
 interface Props {
   children: any
   className?: string
-  variant?: ('small' | 'input' | 'label-space-between' | 'label-stack' | 'label-inline' | 'label-full-width' | 'large' | 'no-margin' | 'label-full-height' | 'fill' | 'gap' | 'label-bold')[]
+  variant?: ('small' | 'label-space-between' | 'label-stack' | 'label-inline' | 'label-full-width' | 'large' | 'no-margin' | 'label-full-height' | 'fill' | 'gap' | 'label-bold')[]
   label?: string
   value?: string
   onChange?: (value?: any, data?: any) => void
@@ -88,23 +88,15 @@ export default function Dropdown({ children, className = '', variant = [], label
         <ul {...parseClasses(classes)} style={isOpen ? { position: "absolute", zIndex: 2 } : {}}>
           {isOpen ? (
             <>
-              {variant.includes("input") ?
-                <Input
-                  value={value}
-                  onChange={(e) => onChange && onChange(e.target.value)}
-                  onBlur={(e) => onBlur && onBlur(e.target.value)}
-                />
-                :
-                <input
-                  ref={searchRef}
-                  type="text"
-                  className="dropdown__search"
-                  placeholder="Search..."
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  onBlur={(e) => onBlur && onBlur(e.target.value)}
-                />
-              }
+              <input
+                ref={searchRef}
+                type="text"
+                className="dropdown__search"
+                placeholder="Search..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                onBlur={(e) => onBlur && onBlur(e.target.value)}
+              />
 
               {/* Dropdown options */}
               <div style={{ maxHeight, minWidth, overflowY: "auto", overflowX: 'hidden' }}>
@@ -123,20 +115,10 @@ export default function Dropdown({ children, className = '', variant = [], label
               </div>
             </>
           ) : (
-            variant.includes("input") ?
-              <div style={{ maxHeight, minWidth, overflowY: "auto", overflowX: 'hidden' }}>
-                <Input
-                  value={value}
-                  onChange={(e: any) => onChange && onChange(e.target.value)}
-                  onFocus={() => setIsOpen(true)}
-                  onBlur={(e) => onBlur && onBlur(e.target.value)}
-                />
-              </div>
-              :
-              <DropdownOption className={`dropdown__option--selected drop-id-${idProp}`} value={selectedOption} onClick={() => setIsOpen(true)}>
-                {dropdownOptions.find((child: any) => child.props.value === selectedOption)?.props.children}
-                <img className="dropdown__arrow" src="/images/icons/arrow-down.svg" alt="arrow" width={20} height={20} />
-              </DropdownOption>
+            <DropdownOption className={`dropdown__option--selected drop-id-${idProp}`} value={selectedOption} onClick={() => setIsOpen(true)}>
+              {dropdownOptions.find((child: any) => child.props.value === selectedOption)?.props.children}
+              <img className="dropdown__arrow" src="/images/icons/arrow-down.svg" alt="arrow" width={20} height={20} />
+            </DropdownOption>
           )}
         </ul>
       </div>
