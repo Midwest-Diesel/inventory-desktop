@@ -15,6 +15,11 @@ interface CustomerRes {
   pageCount: number
 }
 
+interface VendorRes {
+  rows: Vendor[]
+  pageCount: number
+}
+
 interface HandwrittenRes {
   rows: Handwritten[]
   pageCount: number

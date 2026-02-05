@@ -22,6 +22,7 @@ export default function OfficeNavbar({ user }: Props) {
       <Link href="/cores" className="navbar__link">Cores</Link>
       <Link href="/surplus" className="navbar__link">Surplus Purchases</Link>
       <Link href="/purchase-orders" className="navbar__link">Purchase Orders</Link>
+      <Link href="/vendors" className="navbar__link">Vendors</Link>
       <NavDropdown label="Add Ons">
         <Link href="/add-ons/office/part">Office Parts</Link>
         <Link href="/add-ons/office/engine">Office Engines</Link>

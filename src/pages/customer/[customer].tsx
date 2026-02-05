@@ -16,8 +16,6 @@ import { formatCurrency, formatPhone } from "@/scripts/tools/stringUtils";
 import { useAtom } from "jotai";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { ask } from "@/scripts/config/tauri";
-import { addVendor, getVendorByName } from "@/scripts/services/vendorsService";
 import EditMapLocDialog from "@/components/customers/dialogs/EditMapLocDialog";
 import { prompt } from "@/components/library/Prompt";
 
@@ -32,7 +30,6 @@ export default function Customer() {
   const [isEditing, setIsEditing] = useState(false);
   const [isOnMap, setIsOnMap] = useState(true);
   const [addLocDialogOpen, setAddLocDialogOpen] = useState(false);
-  const [isVendor, setIsVendor] = useState(false);
   const [editLocDialogOpen, setEditLocDialogOpen] = useState(false);
   const [location, setLocation] = useState<MapLocation | null>(null);
   const parser = new DOMParser();
@@ -48,9 +45,6 @@ export default function Customer() {
       setCustomer(customerRes);
       setSalesHistory(await getCustomerSalesHistory(id));
 
-      const vendor = await getVendorByName(customerRes.company);
-      if (vendor) setIsVendor(true);
-
       if (!await getMapLocationFromCustomer(id)) setIsOnMap(false);
       const location = await getMapLocationFromCustomer(customerRes.id);
       setLocation(location);
@@ -65,22 +59,6 @@ export default function Customer() {
     await deleteCustomer(customer.id);
     await deleteMapLocationByCustomer(customer.id);
     await push('Home', '/');
-  };
-
-  const markAsVendor = async () => {
-    if (!await ask('Turn this customer into a vendor?')) return;
-    const newVendor = {
-      name: customer?.company ?? null,
-      vendorAddress: customer?.billToAddress ?? null,
-      vendorState: customer?.billToState ?? null,
-      vendorZip: customer?.billToZip ?? null,
-      vendorPhone: customer?.billToPhone ?? customer?.phone ?? null,
-      vendorFax: customer?.fax ?? null,
-      vendorTerms: customer?.terms ?? null,
-      vendorContact: customer?.contact ?? null
-    };
-    await addVendor(newVendor);
-    setIsVendor(true);
   };
 
 
@@ -145,7 +123,6 @@ export default function Customer() {
             </div>
 
             <div className="customer-details__top-bar">
-              { !isVendor && <Button onClick={markAsVendor}>Mark as Vendor</Button> }
               <Button onClick={() => setEditLocDialogOpen(true)}>Edit Map Location</Button>
             </div>
           
