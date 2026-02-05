@@ -12,6 +12,7 @@ import { ask } from "@/scripts/config/tauri";
 import TextArea from "../library/TextArea";
 import VendorSelect from "../library/select/VendorSelect";
 import Select from "../library/select/Select";
+import { getVendorByName } from "@/scripts/services/vendorsService";
 
 interface Props {
   poData: PO
@@ -162,6 +163,15 @@ export default function EditPoDetails({ poData, setPo, setIsEditing, poItems, po
 
   const handleChangeVendor = async (vendor: string) => {
     setPurchasedFrom(vendor);
+    const res = await getVendorByName(vendor);
+    if (!res) return;
+    setVendorAddress(res.vendorAddress ?? '');
+    setVendorCity(res.vendorCity ?? '');
+    setVendorState(res.vendorState ?? '');
+    setVendorZip(res.vendorZip ?? '');
+    setVendorPhone(res.vendorPhone ?? '');
+    setVendorFax(res.vendorFax ?? '');
+    setVendorContact(res.vendorContact ?? '');
   };
 
 
@@ -170,7 +180,7 @@ export default function EditPoDetails({ poData, setPo, setIsEditing, poItems, po
   return (
     <form className="edit-purchase-order-details" onSubmit={(e) => saveChanges(e)} onChange={() => setChangesSaved(false)}>
       <div className="edit-purchase-order-details__header">
-        <h2>{ poData.poNum }</h2>
+        <h2>{ poData.poNum } Purchase Order</h2>
       
         <div className="header__btn-container">
           <Button

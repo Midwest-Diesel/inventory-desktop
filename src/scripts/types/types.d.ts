@@ -902,6 +902,7 @@ type Vendor = {
   id: number
   name: string | null
   vendorAddress: string | null
+  vendorCity: string | null
   vendorState: string | null
   vendorZip: string | null
   vendorPhone: string | null
