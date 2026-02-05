@@ -4,7 +4,7 @@ import Loading from "@/components/library/Loading";
 import Pagination from "@/components/library/Pagination";
 import Table from "@/components/library/Table";
 import Link from "@/components/library/Link";
-import { useState } from "react";
+import { FormEvent, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { addVendor, searchVendors, VendorSearch } from "@/scripts/services/vendorsService";
 import Input from "@/components/library/Input";
@@ -16,8 +16,9 @@ const LIMIT = 40;
 export default function Vendors() {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchData, setSearchData] = useState<VendorSearch>({ name: '', offset: 0, limit: LIMIT });
+  const [nameSearch, setNameSearch] = useState('');
 
-  const { data: vendors, isFetching } = useQuery<VendorRes | null>({
+  const { data: vendors, refetch, isFetching } = useQuery<VendorRes | null>({
     queryKey: ['vendors', currentPage, searchData],
     queryFn: async () => {
       return await searchVendors({
@@ -38,6 +39,12 @@ export default function Vendors() {
       return;
     }
     await addVendor(name);
+    refetch();
+  };
+
+  const handleNameSearch = (e: FormEvent) => {
+    e.preventDefault();
+    setSearchData({ ...searchData, name: nameSearch });
   };
 
 
@@ -47,12 +54,14 @@ export default function Vendors() {
         <div className="vendors">
           <h1>Vendors</h1>
           <div className="vendors__top-buttons">
-            <Input
-              variant={['label-stack', 'label-bold']}
-              label="Search Name"
-              value={searchData.name ?? ''}
-              onChange={(e) => setSearchData({ ...searchData, name: e.target.value })}
-            />
+            <form onSubmit={handleNameSearch}>
+              <Input
+                variant={['label-stack', 'label-bold']}
+                label="Search Name"
+                value={nameSearch}
+                onChange={(e) => setNameSearch(e.target.value)}
+              />
+            </form>
             <Button onClick={onClickNewVendor} data-testid="new-btn">New</Button>
           </div>
 
