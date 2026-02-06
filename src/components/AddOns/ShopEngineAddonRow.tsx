@@ -4,7 +4,7 @@ import Table from "../library/Table";
 import Select from "../library/select/Select";
 import { useRef, useState } from "react";
 import Input from "../library/Input";
-import { getAllEngineModels, getAutofillEngine } from "@/scripts/services/enginesService";
+import { getAllEngineModels } from "@/scripts/services/enginesService";
 import { deleteEngineAddOn, editEngineAddOnPrintStatus } from "@/scripts/services/engineAddOnsService";
 import { useAtom } from "jotai";
 import { engineAddOnsAtom } from "@/scripts/atoms/state";
@@ -25,7 +25,6 @@ interface Props {
 export default function ShopEngineAddOnRow({ addOn, handleDuplicateAddOn, onSave }: Props) {
   const { addToQue, printQue } = usePrintQue();
   const [addOns, setAddons] = useAtom<EngineAddOn[]>(engineAddOnsAtom);
-  const [autofillEngineNum, setAutofillEngineNum] = useState('');
   const [printQty, setPrintQty] = useState(1);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -48,38 +47,6 @@ export default function ShopEngineAddOnRow({ addOn, handleDuplicateAddOn, onSave
     if (!await ask('Are you sure you want to delete this?')) return;
     await deleteEngineAddOn(addOn.id);
     setAddons(addOns.filter((a) => a.id !== addOn.id));
-  };
-
-  const autofillFromEngineNum = async (engineNum: number) => {
-    if (!engineNum) {
-      setAutofillEngineNum('');
-      return;
-    }
-    const autofill = await getAutofillEngine(engineNum);
-    setAutofillEngineNum(autofill && autofill.stockNum);
-  };
-
-  const updateAutofillEngineNumData = async (value: number) => {
-    const res = await getAutofillEngine(value);
-    const newAddOn = {
-      ...addOn,
-      engineNum: res.stockNum,
-      hp: res.horsePower,
-      serialNum: res.serialNum,
-      model: res.model,
-      arrNum: res.arrNum,
-      currentStatus: res.currentStatus,
-      location: res.location,
-      notes: res.comments
-    } as EngineAddOn;
-    const updatedAddOns = addOns.map((a: EngineAddOn) => {
-      if (a.id === addOn.id) {
-        return newAddOn;
-      }
-      return a;
-    });
-    setAddons(updatedAddOns);
-    setAutofillEngineNum('');
   };
 
   const handlePrint = async () => {
@@ -128,15 +95,10 @@ export default function ShopEngineAddOnRow({ addOn, handleDuplicateAddOn, onSave
               <tr>
                 <td>
                   <Input
-                    type="number"
-                    variant={['small', 'thin', 'autofill-input']}
+                    variant={['small', 'thin']}
                     value={addOn.engineNum !== null ? addOn.engineNum : ''}
-                    autofill={autofillEngineNum}
-                    onAutofill={(value) => updateAutofillEngineNumData(Number(value))}
-                    onChange={(e: any) => {
-                      handleEditAddOn({ ...addOn, engineNum: e.target.value });
-                      autofillFromEngineNum(Number(e.target.value));
-                    }}
+                    onChange={(e: any) => handleEditAddOn({ ...addOn, engineNum: e.target.value })}
+                    type="number"
                   />
                 </td>
                 <td>

@@ -2,9 +2,9 @@ import Button from "../library/Button";
 import Checkbox from "../library/Checkbox";
 import Table from "../library/Table";
 import Select from "../library/select/Select";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import Input from "../library/Input";
-import { addEngine, addEngineCostIn, getAllEngineModels, getAutofillEngine, getEngineByStockNum } from "@/scripts/services/enginesService";
+import { addEngine, addEngineCostIn, getAllEngineModels, getEngineByStockNum } from "@/scripts/services/enginesService";
 import { deleteEngineAddOn } from "@/scripts/services/engineAddOnsService";
 import { useAtom } from "jotai";
 import { engineAddOnsAtom } from "@/scripts/atoms/state";
@@ -21,7 +21,6 @@ interface Props {
 
 export default function OfficeEngineAddOnRow({ addOn, onSave }: Props) {
   const [addOns, setAddons] = useAtom<EngineAddOn[]>(engineAddOnsAtom);
-  const [autofillEngineNum, setAutofillEngineNum] = useState('');
   const ref = useRef<HTMLDivElement | null>(null);
   
   const { data: models = [] } = useQuery<string[]>({
@@ -41,36 +40,6 @@ export default function OfficeEngineAddOnRow({ addOn, onSave }: Props) {
     if (!await ask('Are you sure you want to delete this?')) return;
     await deleteEngineAddOn(addOn.id);
     setAddons(addOns.filter((a) => a.id !== addOn.id));
-  };
-
-  const autofillFromEngineNum = async (engineNum: number) => {
-    if (!engineNum) {
-      setAutofillEngineNum('');
-      return;
-    }
-    const autofill = await getAutofillEngine(engineNum);
-    setAutofillEngineNum(autofill && autofill.stockNum);
-  };
-
-  const updateAutofillEngineNumData = async (value: number) => {
-    const res = await getAutofillEngine(value);
-    const newAddOn = {
-      ...addOn,
-      engineNum: res.stockNum,
-      hp: res.horsePower,
-      serialNum: res.serialNum,
-      model: res.model,
-      arrNum: res.arrNum,
-      currentStatus: res.currentStatus,
-      location: res.location,
-      notes: res.comments
-    } as EngineAddOn;
-    const updatedAddOns = addOns.map((a: EngineAddOn) => {
-      if (a.id === addOn.id) return newAddOn;
-      return a;
-    });
-    setAddons(updatedAddOns);
-    setAutofillEngineNum('');
   };
 
   const handleAddToInventory = async () => {
@@ -121,15 +90,10 @@ export default function OfficeEngineAddOnRow({ addOn, onSave }: Props) {
             <tr>
               <td>
                 <Input
-                  type="number"
-                  variant={['small', 'thin', 'autofill-input']}
+                  variant={['small', 'thin']}
                   value={addOn.engineNum !== null ? addOn.engineNum : ''}
-                  autofill={autofillEngineNum}
-                  onAutofill={(value) => updateAutofillEngineNumData(Number(value))}
-                  onChange={(e) => {
-                    handleEditAddOn({ ...addOn, engineNum: e.target.value as any });
-                    autofillFromEngineNum(Number(e.target.value));
-                  }}
+                  onChange={(e: any) => handleEditAddOn({ ...addOn, engineNum: e.target.value })}
+                  type="number"
                 />
               </td>
               <td>
