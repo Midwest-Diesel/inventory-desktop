@@ -1,3 +1,8 @@
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
+import { invoke } from '../config/tauri';
+
+
 export const clamp = (num: number, min: number, max: number) => Math.min(Math.max(num, min), max);
 
 export const generateClasses = (className: string, variantList: string[], elmt: string): string => {
@@ -104,3 +109,37 @@ export const getYesterday = (): Date => {
   date.setDate(date.getDate() - 1);
   return date;
 };
+
+export const generatePDF = async (pages: HTMLElement[], name: string, filepath?: string) => {
+  const pdf = new jsPDF();
+  const pxToMm = (px: number) => (px * 25.4) / 96;
+
+  for (let i = 0; i < pages.length; i++) {
+    const page = pages[i];
+    const canvas = await html2canvas(page, {
+      windowWidth: page.scrollWidth,
+      scrollY: -window.scrollY,
+    });
+
+    const imageData = canvas.toDataURL('image/png');
+    const imgWidthPx = canvas.width;
+    const imgHeightPx = canvas.height;
+    const pdfWidth = pxToMm(imgWidthPx);
+    const pdfHeight = pxToMm(imgHeightPx);
+
+    if (i === 0) {
+      pdf.deletePage(1);
+      pdf.addPage([pdfWidth, pdfHeight]);
+    } else {
+      pdf.addPage([pdfWidth, pdfHeight]);
+    }
+    pdf.addImage(imageData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+  }
+  pdf.save(`${name}.pdf`);
+
+  if (filepath) {
+    const currentPath = `Downloads/${name}.pdf`;
+    await invoke('move_file', { current_path: currentPath, new_path: filepath });
+  }
+};
+

@@ -11,6 +11,7 @@ import { usePrintQue } from "@/hooks/usePrintQue";
 import { useAtom } from "jotai";
 import { userAtom } from "@/scripts/atoms/state";
 import { prompt } from "../library/Prompt";
+import { usePdfQue } from "@/hooks/usePdfQue";
 
 interface Props {
   poData: PO
@@ -23,6 +24,7 @@ interface Props {
 export default function PurchaseOrderDetails({ poData, handleReceiveItem, setIsEditing, handleToggleIsItemReceived }: Props) {
   const { closeDetailsBtn, push } = useNavState();
   const { addToQue, printQue } = usePrintQue();
+  const pdfQue = usePdfQue();
   const [user] = useAtom<User>(userAtom);
 
   const handleDelete = async () => {
@@ -61,6 +63,38 @@ export default function PurchaseOrderDetails({ poData, handleReceiveItem, setIsE
     printQue();
   };
 
+  const handleEmail = async () => {
+    if (!await confirm('Email purchase order?')) return;
+    const data = {
+      id: poData?.id,
+      vendor: poData?.purchasedFrom ?? '',
+      address: poData?.vendorAddress ?? '',
+      city: poData?.vendorCity ?? '',
+      state: poData?.vendorState ?? '',
+      zip: poData?.vendorZip?.toString() ?? '',
+      phone: poData?.vendorPhone ?? '',
+      fax: poData?.vendorFax ?? '',
+      paymentTerms: poData?.paymentTerms ?? '',
+      purchasedFor: poData?.purchasedFor ?? '',
+      specialInstructions: poData?.specialInstructions ?? '',
+      comments: poData?.comments ?? '',
+      date: formatDate(poData?.date) ?? '',
+      orderedBy: poData?.orderedBy ?? '',
+      items: poData?.poItems.map((item) => {
+        return {
+          qty: item.qty ?? '',
+          desc: item.desc ?? '',
+          price: formatCurrency(item.unitPrice) || '$0.00',
+          total: formatCurrency((item.unitPrice ?? 0) * (item.qty ?? 0)) || '$0.00'
+        };
+      }) || []
+    };
+    const args = { po_num: poData.poNum };
+
+    pdfQue.addToQue('po', 'email_po', data, args, '816px', '1090px');
+    pdfQue.exportQue();
+  };
+
 
   return (
     <>
@@ -69,6 +103,7 @@ export default function PurchaseOrderDetails({ poData, handleReceiveItem, setIsE
           <h2>{ poData.poNum } Purchase Order</h2>
           <div className="purchase-order-details__top-bar">
             <Button onClick={handlePrint}>Print</Button>
+            <Button onClick={handleEmail}>Email</Button>
             <Button onClick={handleReceiveItem}>{ poData.isItemReceived ? 'Unmark' : 'Mark' } as Closed</Button>
           </div>
         </div>

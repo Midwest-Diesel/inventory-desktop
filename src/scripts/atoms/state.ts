@@ -43,6 +43,7 @@ export const ReturnSearchAtom = atom<any>({});
 export const FreightCarriersAtom = atom<FreightCarrier[]>([]);
 export const errorAtom = atom<string>('');
 export const printQueAtom = atom<{ name: string, printCmd: string, data: any, maxWidth: string, maxHeight: string }[]>([]);
+export const pdfQueAtom = atom<{ name: string, pdfCmd: string, data: any, args: any, maxWidth: string, maxHeight: string }[]>([]);
 export const quickPickItemIdAtom = atom<number>(0);
 export const toastAtom = atom<Toast[]>([]);
 export const tooltipAtom = atom<string>('');

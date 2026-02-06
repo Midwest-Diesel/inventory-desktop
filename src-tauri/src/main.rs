@@ -22,6 +22,7 @@ use image::{io::Reader as ImageReader, ImageOutputFormat, DynamicImage, imageops
 use serde::{Deserialize, Serialize};
 use tauri::{Manager, api::shell, AppHandle};
 use std::env;
+use std::fs;
 use std::fs::{write, File, remove_file, create_dir_all, remove_dir_all};
 use std::io::{self, Cursor, Write, copy};
 use std::process::{Command};
@@ -197,9 +198,11 @@ async fn main() {
       print_warranty,
       print_packing_slip,
       print_po,
+      email_po,
       email_end_of_day,
       email_karmak_invoice,
-      view_file
+      view_file,
+      move_file
     ])
     .run(tauri::generate_context!());
 }
@@ -1641,3 +1644,11 @@ fn view_file(app_handle: AppHandle, filepath: String) -> Result<(), String> {
   shell::open(&app_handle.shell_scope(), filepath, None)
     .map_err(|e| format!("Failed to open: {}", e))
 }
+
+#[tauri::command]
+fn move_file(current_path: String, new_path: String) -> Result<(), String> {
+  fs::copy(&current_path, &new_path).map_err(|e| e.to_string())?;
+  fs::remove_file(&current_path).map_err(|e| e.to_string())?;
+  Ok(())
+}
+
