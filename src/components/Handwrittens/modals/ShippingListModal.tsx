@@ -20,8 +20,8 @@ interface Props {
 }
 
 
-const CURRENT_WEEK_FILENAME = 'shipping_list_current_week.xlsx';
-const NEXT_WEEK_FILENAME = 'shipping_list_next_week.xlsx';
+const CURRENT_WEEK_FILENAME = 'Shipping List (Current Week).xlsx';
+const NEXT_WEEK_FILENAME = 'Shipping List (Next Week).xlsx';
 
 export default function ShippingListModal({ open, onNext, onPrev, handwrittenItems, newShippingListRow }: Props) {
   const [handwritten, setHandwritten] = useState<Handwritten | null>(null);

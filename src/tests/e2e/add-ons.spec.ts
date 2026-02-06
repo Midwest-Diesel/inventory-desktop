@@ -70,7 +70,7 @@ test.describe('Create addon and add to inventory', () => {
     await page.getByTestId('engine-num').first().fill('0');
     await page.keyboard.down('Tab');
     await page.getByTestId('save-btn').click();
-    await expect(page.getByTestId('stock-num').first()).toHaveValue('UP21372');
+    await expect(page.getByTestId('stock-num').first()).toHaveValue('UP21397');
   });
 
   test('Autofill stock number with engine number 1', async ({ page }) => {

@@ -47,8 +47,10 @@ export default function Prompt({ message = '', defaultValue = '', onClose }: Pro
   );
 }
 
-
+/* eslint-disable */
 export function prompt(message: string, defaultValue = ''): Promise<string | null> {
+  if (!window?.__TAURI_IPC__) return prompt(message, defaultValue);
+  
   return new Promise((resolve) => {
     const container = document.createElement('div');
     document.body.appendChild(container);

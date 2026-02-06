@@ -118,7 +118,7 @@ export const generatePDF = async (pages: HTMLElement[], path: string) => {
     const page = pages[i];
     const canvas = await html2canvas(page, {
       windowWidth: page.scrollWidth,
-      scrollY: -window.scrollY,
+      scrollY: -window.scrollY
     });
 
     const imageData = canvas.toDataURL('image/png');
