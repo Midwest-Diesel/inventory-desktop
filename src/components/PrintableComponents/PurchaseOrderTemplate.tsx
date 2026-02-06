@@ -62,7 +62,7 @@ export default function PurchaseOrderTemplate({ data }: Props) {
           <p><strong>Comments:</strong> { data.comments }</p>
         </div>
         <div className="po-template__column">
-          <p><strong>Date:</strong> { data.date } <strong>Ordered By:</strong> { data.orderedBy }</p>
+          <p style={{ display: 'flex', gap: '0.3rem' }}><span><strong>Date:</strong> { data.date }</span> <span><strong>Ordered By:</strong> { data.orderedBy }</span></p>
         </div>
       </div>
 

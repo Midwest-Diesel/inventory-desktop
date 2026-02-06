@@ -22,7 +22,6 @@ use image::{io::Reader as ImageReader, ImageOutputFormat, DynamicImage, imageops
 use serde::{Deserialize, Serialize};
 use tauri::{Manager, api::shell, AppHandle};
 use std::env;
-use std::fs;
 use std::fs::{write, File, remove_file, create_dir_all, remove_dir_all};
 use std::io::{self, Cursor, Write, copy};
 use std::process::{Command};
@@ -162,6 +161,7 @@ struct EmailEndOfDayArgs {
   tracking_numbers: Vec<String>
 }
 
+
 #[tokio::main]
 async fn main() {
   dotenv::from_filename(".env.development").ok();
@@ -202,7 +202,7 @@ async fn main() {
       email_end_of_day,
       email_karmak_invoice,
       view_file,
-      move_file
+      save_pdf
     ])
     .run(tauri::generate_context!());
 }
@@ -1354,6 +1354,42 @@ async fn print_po(image_data: String) -> Result<(), String> {
 }
 
 #[tauri::command]
+fn email_po(po_num: String, path: String) {
+  let body = format!("Hi,<br />Attached to this email is our PO #{}<br /><br />Thanks,<br />Midwest Diesel<br />(888) 866-3406",
+    po_num
+  );
+  let vb_body = body.replace("\"", "\"\"")
+    .lines()
+    .map(|line| format!("\"{}\"", line))
+    .collect::<Vec<_>>()
+    .join(" & _\n");
+
+  let vbs_script = format!(
+    r#"
+    Dim OutlookApp
+    Set OutlookApp = CreateObject("Outlook.Application")
+    Dim MailItem
+    Set MailItem = OutlookApp.CreateItem(0)
+    
+    MailItem.Subject = "Midwest Diesel | PO #{}"
+    MailItem.HTMLBody = {}
+    MailItem.Attachments.Add "{}"
+    MailItem.Display
+    "#,
+    po_num,
+    vb_body,
+    path
+  );
+
+  let vbs_path = "C:/mwd/scripts/email_po.vbs";
+  write(&vbs_path, vbs_script).unwrap();
+
+  let mut cmd = Command::new("wscript.exe");
+  cmd.arg(vbs_path);
+  cmd.output().unwrap();
+}
+
+#[tauri::command]
 fn email_end_of_day(args: EmailEndOfDayArgs) {
   let queue_dir = "\\\\MWD1-SERVER\\Server\\InvoiceScans\\Queue";
   let archive_dir = format!("\\\\MWD1-SERVER\\Server\\InvoiceScans\\Archives\\{}\\{}\\{}", args.year, args.month, args.day);
@@ -1646,9 +1682,6 @@ fn view_file(app_handle: AppHandle, filepath: String) -> Result<(), String> {
 }
 
 #[tauri::command]
-fn move_file(current_path: String, new_path: String) -> Result<(), String> {
-  fs::copy(&current_path, &new_path).map_err(|e| e.to_string())?;
-  fs::remove_file(&current_path).map_err(|e| e.to_string())?;
-  Ok(())
+fn save_pdf(bytes: Vec<u8>, path: String) -> Result<(), String> {
+  std::fs::write(path, bytes).map_err(|e| e.to_string())
 }
-

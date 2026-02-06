@@ -89,7 +89,10 @@ export default function PurchaseOrderDetails({ poData, handleReceiveItem, setIsE
         };
       }) || []
     };
-    const args = { po_num: poData.poNum };
+    const args = {
+      poNum: poData.poNum,
+      path: 'C:\\MWD\\scripts\\attachments\\PurchaseOrder.pdf'
+    };
 
     pdfQue.addToQue('po', 'email_po', data, args, '816px', '1090px');
     pdfQue.exportQue();

@@ -110,7 +110,7 @@ export const getYesterday = (): Date => {
   return date;
 };
 
-export const generatePDF = async (pages: HTMLElement[], name: string, filepath?: string) => {
+export const generatePDF = async (pages: HTMLElement[], path: string) => {
   const pdf = new jsPDF();
   const pxToMm = (px: number) => (px * 25.4) / 96;
 
@@ -135,11 +135,7 @@ export const generatePDF = async (pages: HTMLElement[], name: string, filepath?:
     }
     pdf.addImage(imageData, 'PNG', 0, 0, pdfWidth, pdfHeight);
   }
-  pdf.save(`${name}.pdf`);
 
-  if (filepath) {
-    const currentPath = `Downloads/${name}.pdf`;
-    await invoke('move_file', { current_path: currentPath, new_path: filepath });
-  }
+  const pdfBytes = pdf.output('arraybuffer');
+  await invoke('save_pdf', { bytes: Array.from(new Uint8Array(pdfBytes)), path });
 };
-

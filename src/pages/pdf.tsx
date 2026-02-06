@@ -30,8 +30,8 @@ export default function Print() {
       setMaxHeight(item.maxHeight);
       await waitForDomPaint();
       if (!ref.current) continue;
-      const pdf = await generatePDF([ref.current], 'PurchaseOrder', 'C:/MWD/scripts/attachments');
-      invoke(item.pdfCmd, { pdf });
+      await generatePDF([ref.current], item.args.path);
+      invoke(item.pdfCmd, { ...item.args });
     }
 
     setActiveSheet('');
