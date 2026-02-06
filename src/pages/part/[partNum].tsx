@@ -154,7 +154,7 @@ export default function PartDetails() {
         stockNum: part?.stockNum ?? '',
         partNum: part?.partNum ?? ''
       };
-      addToQue('injPartTag', 'print_part_tag', args, '200px', '135px');
+      addToQue('injPartTag', 'print_inj_part_tag', args, '200px', '135px');
     }
     printQue();
   };

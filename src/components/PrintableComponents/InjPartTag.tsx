@@ -14,7 +14,7 @@ export default function InjPartTag({ data }: Props) {
   return (
     <div className="tiny-part-tag">
       <div className="tiny-part-tag__barcode">
-        <Barcode value={stockNum ?? ''} height={43} width={0.9} />
+        <Barcode value={stockNum ?? ''} height={30} width={0.7} />
       </div>
 
       <h2>{ stockNum }</h2>

@@ -199,6 +199,7 @@ async fn main() {
       print_ci,
       print_coo,
       print_part_tag,
+      print_inj_part_tag,
       print_engine_tag,
       print_engine_checklist,
       print_return,
@@ -1608,6 +1609,44 @@ async fn print_part_tag(image_data: String) -> Result<(), String> {
     {
       let mut file = File::create(file_path).map_err(|e| e.to_string())?;
       upscaled_img.write_to(&mut file, ImageOutputFormat::Png).map_err(|e| e.to_string())?;
+    }
+
+    if let Ok(val) = env::var("DISABLE_PRINTING") {
+      if val == "TRUE" { return Ok(()) }
+    }
+
+    Command::new("mspaint")
+      .current_dir("C:/mwd/scripts/screenshots")
+      .args([file_path, "/pt", &printer])
+      .output()
+      .map_err(|e| e.to_string())?;
+
+    Ok(())
+  }).await;
+  res.unwrap()
+}
+
+#[tauri::command]
+async fn print_inj_part_tag(image_data: String) -> Result<(), String> {
+  let res = tauri::async_runtime::spawn_blocking(move || {
+    let data = BASE64_STANDARD.decode(image_data.split(',').nth(1).unwrap()).map_err(|e| e.to_string())?;
+    let file_path = "C:/mwd/scripts/screenshots/part_tag.png";
+    let printers = get_available_printers();
+    let printer = if printers.contains(&PART_TAG_PRINTER.to_string()) {
+      PART_TAG_PRINTER.to_string()
+    } else {
+      format!("\\\\{}\\{}", PART_TAG_COMPUTER, PART_TAG_PRINTER)
+    };
+
+    let img = ImageReader::new(Cursor::new(&data))
+      .with_guessed_format()
+      .map_err(|e| e.to_string())?
+      .decode()
+      .map_err(|e| e.to_string())?;
+
+    {
+      let mut file = File::create(file_path).map_err(|e| e.to_string())?;
+      img.write_to(&mut file, ImageOutputFormat::Png).map_err(|e| e.to_string())?;
     }
 
     if let Ok(val) = env::var("DISABLE_PRINTING") {
