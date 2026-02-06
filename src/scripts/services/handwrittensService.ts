@@ -358,6 +358,14 @@ export const editHandwrittenOrderNotes = async (id: number, orderNotes: string) 
   }
 };
 
+export const setAllHandwrittenItemDates = async (id: number) => {
+  try {
+    await api.put('/api/handwrittens/item-dates', { id });
+  } catch (err) {
+    console.error(err);
+  }
+};
+
 // === DELETE routes === //
 
 export const deleteHandwritten = async (id: number) => {

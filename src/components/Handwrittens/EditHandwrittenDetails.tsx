@@ -1,5 +1,5 @@
 import { errorAtom, quickPickItemIdAtom, sourcesAtom } from "@/scripts/atoms/state";
-import { addHandwrittenItem, deleteHandwrittenItem, editHandwritten, editHandwrittenHasPrinted, editHandwrittenItem, editHandwrittenTaxable, getHandwrittenById, getHandwrittenEmails } from "@/scripts/services/handwrittensService";
+import { addHandwrittenItem, deleteHandwrittenItem, editHandwritten, editHandwrittenHasPrinted, editHandwrittenItem, editHandwrittenTaxable, getHandwrittenById, getHandwrittenEmails, setAllHandwrittenItemDates } from "@/scripts/services/handwrittensService";
 import { useAtom } from "jotai";
 import { FormEvent, Fragment, useEffect, useRef, useState } from "react";
 import GridItem from "../library/grid/GridItem";
@@ -252,6 +252,7 @@ export default function EditHandwrittenDetails({
     setNewShippingListRow(newInvoice);
     await editHandwritten(newInvoice);
     await handleEditHandwrittenItems();
+    await handleAccountingCompleted();
     await editCoreCustomer(handwritten.id, newCustomer?.id ?? null);
 
     if (newInvoice.billToCompany !== newInvoice.shipToCompany && !newInvoice.isBlindShipment && !newInvoice.isNoPriceInvoice) {
@@ -265,6 +266,12 @@ export default function EditHandwrittenDetails({
     // Start SEND TO ACCOUNTING process
     setChangeCustomerDialogData(newInvoice);
     setAccountingProcessOpen(true);
+  };
+
+  const handleAccountingCompleted = async () => {
+    const isAccountingCompleted = accountingStatus === 'COMPLETE' && handwritten.accountingStatus !== 'COMPLETE';
+    if (!isAccountingCompleted) return;
+    await setAllHandwrittenItemDates(handwritten.id);
   };
 
   const handleEditHandwrittenItems = async () => {
