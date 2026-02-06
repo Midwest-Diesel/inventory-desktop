@@ -15,7 +15,7 @@ export const getUser = async (): Promise<User | null> => {
       headers: { 'Content-Type': 'application/json' }
     };
     const res = await api.get('/api/account', config);
-    return res.data.user;
+    return res.data;
   } catch (error) {
     console.error(`Unrelated Error: ${error}`);
     return null;

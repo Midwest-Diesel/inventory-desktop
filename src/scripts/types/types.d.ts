@@ -8,6 +8,7 @@ interface SelectHTML extends React.InputHTMLAttributes<HTMLSelectElement> {}
 type User = {
   id: number
   username: string
+  email: string
   initials: string
   accessLevel: number
   type: 'office' | 'shop'

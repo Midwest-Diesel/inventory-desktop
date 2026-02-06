@@ -13,6 +13,7 @@ import TextArea from "../library/TextArea";
 import VendorSelect from "../library/select/VendorSelect";
 import Select from "../library/select/Select";
 import { getVendorByName } from "@/scripts/services/vendorsService";
+import { getUserById } from "@/scripts/services/userService";
 
 interface Props {
   poData: PO
@@ -102,7 +103,13 @@ export default function EditPoDetails({ poData, setPo, setIsEditing, poItems, po
         .map((item) => item.desc ?? '');
 
       if (filteredItems.length > 0) {
-        await invoke('email_po_received', { args: { po_num: poData.poNum, purchased_from: poData.purchasedFrom, items: filteredItems }});
+        const user = await getUserById(Number(poData.salesmanId));
+        if (user) await invoke('email_po_received', { args: {
+          po_num: poData.poNum,
+          purchased_from: poData.purchasedFrom,
+          items: filteredItems,
+          email: user.email
+        }});
       }
     }
     // Edit PO received items

@@ -165,7 +165,8 @@ struct EmailEndOfDayArgs {
 struct EmailPOReceivedArgs {
   po_num: String,
   purchased_from: String,
-  items: Vec<String>
+  items: Vec<String>,
+  email: String
 }
 
 
@@ -1413,10 +1414,12 @@ fn email_po_received(args: EmailPOReceivedArgs) {
     Dim MailItem
     Set MailItem = OutlookApp.CreateItem(0)
 
+    MailItem.To = "{}"
     MailItem.Subject = "PO #{} has been received!"
     MailItem.HTMLBody = "PO# {} purchased from {} has received the following items:<br />{}"
     MailItem.Display
     "#,
+    args.email,
     args.po_num,
     args.po_num,
     args.purchased_from,
