@@ -115,10 +115,10 @@ export default function PartDetails() {
     await editPart({ ...part, qty: qty + (part?.qty ?? 0) });
     await addToPartQtyHistory(part.id, qty);
     await queryClient.invalidateQueries({ queryKey: ['part', part.id] });
-    await handlePrint();
+    await onClickPrint();
   };
 
-  const handlePrint = async () => {
+  const onClickPrint = async () => {
     const copies = Number(await prompt('How many tags do you want to print?', '1'));
     if (copies <= 0) return;
     const pictures = await getImagesFromPart(part?.partNum ?? '') ?? [];
@@ -141,6 +141,20 @@ export default function PartDetails() {
       } else {
         addToQue('partTag', 'print_part_tag', args, '1500px', '1000px');
       }
+    }
+    printQue();
+  };
+
+  const onClickPrintInjTag = async () => {
+    const copies = Number(await prompt('How many tags do you want to print?', '1'));
+    if (copies <= 0) return;
+
+    for (let i = 0; i < copies; i++) {
+      const args = {
+        stockNum: part?.stockNum ?? '',
+        partNum: part?.partNum ?? ''
+      };
+      addToQue('injPartTag', 'print_part_tag', args, '200px', '135px');
     }
     printQue();
   };
@@ -254,7 +268,8 @@ export default function PartDetails() {
 
           <div className="part-details__top-bar">
             <Button onClick={handleAddToUP} data-testid="add-to-up-btn">Add to UP</Button>
-            <Button onClick={() => handlePrint()}>Print Tag</Button>
+            <Button onClick={() => onClickPrint()}>Print Tag</Button>
+            <Button onClick={() => onClickPrintInjTag()}>Print Inj Tag</Button>
             <Button onClick={() => handleSetNextUP()}>Set Next UP #</Button>
             <Button onClick={() => setPartQtyHistoryOpen(true)} disabled={history.length === 0}>Qty History</Button>
           </div>

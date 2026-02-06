@@ -1,0 +1,14 @@
+.tiny-part-tag {
+  background-color: white;
+  color: black;
+  padding: 1rem;
+  text-align: center;
+  font-size: 16px;
+  position: relative;
+  height: 100%;
+  width: 100%;
+
+  &__barcode {
+    margin-top: 0.1rem;
+  }
+}

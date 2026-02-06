@@ -16,6 +16,7 @@ import { useEffect, useRef, useState } from "react";
 import PartTagUP from "@/components/printableComponents/PartTagUP";
 import EngineTag from "@/components/printableComponents/EngineTag";
 import EngineChecklist from "@/components/printableComponents/EngineChecklist";
+import InjPartTag from "@/components/printableComponents/InjPartTag";
 
 
 export default function Print() {
@@ -56,6 +57,7 @@ export default function Print() {
   return (
     <div ref={printRef} style={{ height: '100vh', backgroundColor: 'white', color: 'black', maxWidth, maxHeight }}>
       { activeSheet === 'partTag' && <PartTag data={data} /> }
+      { activeSheet === 'injPartTag' && <InjPartTag data={data} /> }
       { activeSheet === 'partTagUP' && <PartTagUP data={data} /> }
       { activeSheet === 'engineTag' && <EngineTag data={data} /> }
       { activeSheet === 'engineChecklist' && <EngineChecklist /> }
