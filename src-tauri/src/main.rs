@@ -161,6 +161,13 @@ struct EmailEndOfDayArgs {
   tracking_numbers: Vec<String>
 }
 
+#[derive(Deserialize, Serialize)]
+struct EmailPOReceivedArgs {
+  po_num: String,
+  purchased_from: String,
+  items: Vec<String>
+}
+
 
 #[tokio::main]
 async fn main() {
@@ -202,7 +209,8 @@ async fn main() {
       email_end_of_day,
       email_karmak_invoice,
       view_file,
-      save_pdf
+      save_pdf,
+      email_po_received
     ])
     .run(tauri::generate_context!());
 }
@@ -1383,6 +1391,39 @@ fn email_po(po_num: String, path: String) {
 
   let vbs_path = "C:/mwd/scripts/email_po.vbs";
   write(&vbs_path, vbs_script).unwrap();
+
+  let mut cmd = Command::new("wscript.exe");
+  cmd.arg(vbs_path);
+  cmd.output().unwrap();
+}
+
+#[tauri::command]
+fn email_po_received(args: EmailPOReceivedArgs) {
+  let body = args
+      .items
+      .iter()
+      .map(|item| format!("<br />     * {}", item))
+      .collect::<String>();
+
+  let vbs_script = format!(
+    r#"
+    Dim OutlookApp
+    Set OutlookApp = CreateObject("Outlook.Application")
+    Dim MailItem
+    Set MailItem = OutlookApp.CreateItem(0)
+
+    MailItem.Subject = "PO #{} has been received!"
+    MailItem.HTMLBody = "PO# {} purchased from {} has received the following items:<br />{}"
+    MailItem.Display
+    "#,
+    args.po_num,
+    args.po_num,
+    args.purchased_from,
+    body.replace("\"", "\"\"")
+  );
+
+  let vbs_path = "C:/mwd/scripts/email_po_received.vbs";
+  write(vbs_path, vbs_script).unwrap();
 
   let mut cmd = Command::new("wscript.exe");
   cmd.arg(vbs_path);

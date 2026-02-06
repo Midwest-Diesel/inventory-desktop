@@ -8,7 +8,7 @@ import { parseDateInputValue } from "@/scripts/tools/stringUtils";
 import { addPurchaseOrderItem, deletePurchaseOrderItem, deletePurchaseOrderReceivedItem, editPurchaseOrder, editPurchaseOrderItem, editPurchaseOrderReceivedItem, getPurchaseOrderById } from "@/scripts/services/purchaseOrderService";
 import { usePreventNavigation } from "../../hooks/usePreventNavigation";
 import Checkbox from "../library/Checkbox";
-import { ask } from "@/scripts/config/tauri";
+import { ask, invoke } from "@/scripts/config/tauri";
 import TextArea from "../library/TextArea";
 import VendorSelect from "../library/select/VendorSelect";
 import Select from "../library/select/Select";
@@ -95,6 +95,14 @@ export default function EditPoDetails({ poData, setPo, setIsEditing, poItems, po
           ...item
         } as POItem;
         await editPurchaseOrderItem(newItem);
+      }
+
+      const filteredItems = poItems
+        .filter((item, i) => item.isReceived && !poData.poItems[i].isReceived)
+        .map((item) => item.desc ?? '');
+
+      if (filteredItems.length > 0) {
+        await invoke('email_po_received', { args: { po_num: poData.poNum, purchased_from: poData.purchasedFrom, items: filteredItems }});
       }
     }
     // Edit PO received items
