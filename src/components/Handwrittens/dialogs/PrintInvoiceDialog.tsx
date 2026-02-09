@@ -81,6 +81,8 @@ export default function PrintInvoiceDialog({ open, setOpen, handwritten }: Props
         npi: handwritten?.isNoPriceInvoice ?? false,
         collect: handwritten?.isCollect ?? false,
         thirdParty: handwritten?.isThirdParty ?? false,
+        contactPhone: handwritten?.phone ?? '',
+        email: handwritten?.email ?? '',
         handwrittenTotal,
         items: chunk.map((item) => ({
           stockNum: item.stockNum ?? '',

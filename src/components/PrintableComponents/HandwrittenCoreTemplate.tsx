@@ -42,6 +42,8 @@ interface Props {
     collect: string
     thirdParty: string
     handwrittenTotal: string
+    email: string
+    contactPhone: string
     items: {
       stockNum: string
       location: string
@@ -113,6 +115,8 @@ export default function HandwrittenCoreTemplate({ data }: Props) {
                 <td>{ data.shipVia || <span className="print-placeholder">SHIP VIA</span> }</td>
                 <td>{ data.paymentType || <span className="print-placeholder">PAYMENT TYPE</span> }</td>
               </tr>
+              <tr><td colSpan={2}>{ data.contactPhone || <span className="print-placeholder">CONTACT PHONE</span> }</td></tr>
+              <tr><td colSpan={2}>{ data.email || <span className="print-placeholder">EMAIL</span> }</td></tr>
             </tbody>
           </table>
         </div>
