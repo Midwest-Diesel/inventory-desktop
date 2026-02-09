@@ -672,12 +672,12 @@ fn add_to_shipping_list(new_shipping_list_row: ShippingListRow) {
     ExcelSheet.Range("A" & LastRow & ":U" & LastRow).Interior.ColorIndex = -4142
 
     If {} Then
-      ExcelSheet.Range("A" & LastRow & ":U" & LastRow).Interior.Color = RGB(255, 213, 171)
-      ExcelSheet.Range("A" & LastRow & ":U" & LastRow).Font.Color = RGB(192, 0, 0)
-    End If
-    If {} Then
       ExcelSheet.Range("A" & LastRow & ":U" & LastRow).Interior.Color = RGB(200, 255, 200)
       ExcelSheet.Range("A" & LastRow & ":U" & LastRow).Font.Color = RGB(0, 100, 0)
+    End If
+    If {} Then
+      ExcelSheet.Range("A" & LastRow & ":U" & LastRow).Interior.Color = RGB(255, 213, 171)
+      ExcelSheet.Range("A" & LastRow & ":U" & LastRow).Font.Color = RGB(192, 0, 0)
     End If
 
     If ExcelSheet.Range("B" & LastRow).Text = "UPS Red" Then
@@ -717,8 +717,8 @@ fn add_to_shipping_list(new_shipping_list_row: ShippingListRow) {
     if new_shipping_list_row.weight > 0 {new_shipping_list_row.weight.to_string()} else {"".to_string()},
     if new_shipping_list_row.dims == "0x0x0" {"".to_string()} else {new_shipping_list_row.dims},
     new_shipping_list_row.handwritten_id,
-    if new_shipping_list_row.is_blind {"True"} else {"False"},
     if new_shipping_list_row.has_pics {"False"} else {"True"},
+    if new_shipping_list_row.is_blind {"True"} else {"False"},
   );
 
   let temp_vbs_path = "C:/mwd/scripts/UpdateShippingList.vbs";

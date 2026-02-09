@@ -26,21 +26,17 @@ export default function OfficeNavbar({ user }: Props) {
       <NavDropdown label="Add Ons">
         <Link href="/add-ons/office/part">Office Parts</Link>
         <Link href="/add-ons/office/engine">Office Engines</Link>
-        {user.accessLevel >= 3 &&
-          <>
-            <Link href="/add-ons/shop/part">Shop Parts</Link>
-            <Link href="/add-ons/shop/engine">Shop Engines</Link>
-          </>
-        }
+        <Link href="/add-ons/shop/part">Shop Parts</Link>
+        <Link href="/add-ons/shop/engine">Shop Engines</Link>
       </NavDropdown>
       <Link href="/karmak" className="navbar__link">Accounting</Link>
       <Link href="/email-stuff" className="navbar__link">Email Stuff</Link>
       <NavDropdown label="Tools">
-        <Link href="/tools/reports">Reports</Link>
-        <Link href="/tools/image-upload" className="navbar__link">Image Upload</Link>
-        <Link href="/tools/customer-merge" className="navbar__link">Customer Merge</Link>
-        <Link href="/tools/performance" className="navbar__link">Performance</Link>
-        <Link href="/tools/map" className="navbar__link">Map</Link>
+        <Link href="/reports">Reports</Link>
+        <Link href="/image-upload" className="navbar__link">Image Upload</Link>
+        <Link href="/customer-merge" className="navbar__link">Customer Merge</Link>
+        <Link href="/performance" className="navbar__link">Performance</Link>
+        <Link href="/map" className="navbar__link">Map</Link>
       </NavDropdown>
       <Link href="/alerts" className="navbar__link">Alerts</Link>
       <Link href="/system" className="navbar__link">System</Link>
