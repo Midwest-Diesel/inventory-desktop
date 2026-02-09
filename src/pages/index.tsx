@@ -70,11 +70,11 @@ export default function Dashboard() {
     const newItem = {
       handwrittenId: id,
       date: new Date(),
-      desc: desc,
+      desc,
       partNum: selectedHandwrittenPart?.partNum ?? null,
       stockNum: selectedHandwrittenPart?.stockNum ?? null,
       unitPrice: price,
-      qty: qty,
+      qty,
       cost,
       location: selectedHandwrittenPart?.location ?? null,
       partId: selectedHandwrittenPart?.id ?? null

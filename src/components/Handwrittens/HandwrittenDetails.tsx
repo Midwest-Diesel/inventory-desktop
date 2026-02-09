@@ -133,6 +133,10 @@ export default function HandwrittenDetails({
   };
 
   const handlePrintShipDocs = async () => {
+    if (await ask('Print packing slip?')) {
+      printPackingSlip(false);
+    }
+
     if (handwritten?.shipVia?.type === 'Truck Line') {
       const copies = Number(await prompt('How many shipping labels do you want to print?'));
       if (copies > 0) await handlePrintShippingLabel(copies);
@@ -153,12 +157,14 @@ export default function HandwrittenDetails({
         third_party: handwritten?.isThirdParty
       };
       await invoke('print_bol', { args });
-    } else if (await ask('Print packing slip?')) {
-      printPackingSlip(false);
     }
   };
 
   const handlePrintShipDocsBlind = async () => {
+    if (await ask('Print packing slip?')) {
+      printPackingSlip(true);
+    }
+
     if (handwritten?.shipVia?.type === 'Truck Line') {
       const copies = Number(await prompt('How many shipping labels do you want to print?'));
       if (copies > 0) await handlePrintShippingLabel(copies);
@@ -179,8 +185,6 @@ export default function HandwrittenDetails({
         third_party: handwritten?.isThirdParty
       };
       await invoke('print_bol', { args });
-    } else if (await ask('Print packing slip?')) {
-      printPackingSlip(true);
     }
   };
 

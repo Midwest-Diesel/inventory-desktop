@@ -60,6 +60,19 @@ export const parseHandwrittenRes = (data: any) => {
   });
 };
 
+// Add "SOLD" to the remarks of the connected part
+const handleRemarksSoldText = async (item: NewHandwrittenItem | NewHandwrittenItemChild, id: number, handwrittenId: number) => {
+  if (item.partId) {
+    const part = await getPartById(item.partId);
+    const handwritten = await getHandwrittenById(handwrittenId);
+    if (!part || !handwritten) return Number(id);
+
+    const qtySold = part.qty > 1 ? item.qty : null;
+    const remarks = formatRemarksSoldText(part.remarks, qtySold, handwritten.soldBy, handwritten.customer.company ?? '');
+    await editPart({ ...part, remarks });
+  }
+};
+
 // === GET routes === //
 
 export const getHandwrittenById = async (id: number): Promise<Handwritten | null> => {
@@ -247,18 +260,7 @@ export const addHandwritten = async (handwritten: Handwritten): Promise<number |
 export const addHandwrittenItem = async (item: NewHandwrittenItem): Promise<number | null> => {
   try {
     const res = await api.post('/api/handwrittens/item', item);
-    
-    // Add "SOLD" to the remarks of the connected part
-    if (item.partId) {
-      const part = await getPartById(item.partId);
-      const handwritten = await getHandwrittenById(item.handwrittenId);
-      if (!part || !handwritten) return Number(res.data.id);
-
-      const qtySold = part.qty > 1 ? item.qty : null;
-      const remarks = formatRemarksSoldText(part.remarks, qtySold, handwritten.soldBy, handwritten.customer.company ?? '');
-      await editPart({ ...part, remarks });
-    }
-
+    await handleRemarksSoldText(item, res.data.id, item.handwrittenId);
     return Number(res.data.id);
   } catch (err) {
     console.error(err);
@@ -268,7 +270,9 @@ export const addHandwrittenItem = async (item: NewHandwrittenItem): Promise<numb
 
 export const addHandwrittenItemChild = async (parentId: number, item: NewHandwrittenItemChild) => {
   try {
-    await api.post('/api/handwrittens/child', { parentId, item });
+    const res = await api.post('/api/handwrittens/child', { parentId, item });
+    const handwrittenItem = await getHandwrittenItemById(parentId);
+    await handleRemarksSoldText(item, res.data.id, Number(handwrittenItem?.handwrittenId));
   } catch (err) {
     console.error(err);
   }
