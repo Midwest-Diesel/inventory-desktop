@@ -32,6 +32,7 @@ export default function EditPartDetails({ part, setPart, setIsEditingPart, partC
   const [user] = useAtom<User>(userAtom);
   const [desc, setDesc] = useState<string>(part.desc ?? '');
   const [qty, setQty] = useState<number>(part.qty);
+  const [partNum, setPartNum] = useState<string>(part.partNum ?? '');
   const [stockNum, setStockNum] = useState<string>(part.stockNum ?? '');
   const [location, setLocation] = useState<string>(part.location ?? '');
   const [manufacturer, setManufacturer] = useState<string>(part.manufacturer ?? '');
@@ -69,12 +70,13 @@ export default function EditPartDetails({ part, setPart, setIsEditingPart, partC
 
   const saveChanges = async (e: FormEvent) => {
     e.preventDefault();
+    if (!part.altParts.includes(partNum) && !await ask('This partNum doesn\'t exist in altParts. Are you sure you want to continue?')) return;
     if (!changesSaved && !await ask('Are you sure you want to save these changes?')) return;
     setChangesSaved(false);
     const profitMargin = Number(sellingPrice) - Number(purchasePrice);
     const newPart = {
       id: part.id,
-      partNum: part.partNum,
+      partNum,
       desc,
       qty: Number(qty),
       stockNum,
@@ -287,12 +289,18 @@ export default function EditPartDetails({ part, setPart, setIsEditingPart, partC
           </Button>
         </div>
 
-        <h2>{ part.partNum }</h2>
+        <Input
+          label="Part Number"
+          variant={['md-text']}
+          value={partNum}
+          onChange={(e) => setPartNum(e.target.value.toUpperCase())}
+          required
+        />
         <Input
           label="Description"
           variant={['md-text']}
           value={desc}
-          onChange={(e: any) => setDesc(e.target.value.toUpperCase())}
+          onChange={(e) => setDesc(e.target.value)}
           required
         />
       </div>
