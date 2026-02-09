@@ -12,6 +12,11 @@ import { useAtom } from "jotai";
 import { useNavState } from "@/hooks/useNavState";
 import { deleteEngine } from "@/scripts/services/enginesService";
 import { prompt } from "../library/Prompt";
+import { useState } from "react";
+import { getEngineImages } from "@/scripts/services/imagesService";
+import { useQuery } from "@tanstack/react-query";
+import Loading from "../library/Loading";
+import EnginePicturesDialog from "../dialogs/EnginePicturesDialog";
 
 interface Props {
   engine: Engine
@@ -23,7 +28,14 @@ interface Props {
 export default function EngineDetails({ engine, setIsEditing, setEngineProfitOpen }: Props) {
   const { closeDetailsBtn } = useNavState();
   const [user] = useAtom<User>(userAtom);
+  const [picturesOpen, setPicturesOpen] = useState(false);
   
+  const { data: pictures = [], isFetching: picturesLoading } = useQuery<Picture[]>({
+    queryKey: ['pictures', engine!.stockNum],
+    queryFn: () => getEngineImages(engine!.stockNum ?? ''),
+    enabled: !!engine?.stockNum
+  });
+
   const getTotalCostIn = () => {
     return engine.costIn
       .filter((row) => row.cost !== 0.04 && row.cost !== 0.01 && !row.engineStockNum?.toString().startsWith('UP'))
@@ -51,9 +63,29 @@ export default function EngineDetails({ engine, setIsEditing, setEngineProfitOpe
 
   return (
     <>
+      { pictures.length > 0 && picturesOpen && <EnginePicturesDialog open={picturesOpen} setOpen={setPicturesOpen} pictures={pictures} stockNum={engine.stockNum} /> }
+
       <div className="engine-details__header">
         <div>
-          <h2>Stock Number: { engine.stockNum }</h2>
+          <div style={{ display: 'flex', gap: '0.5rem' }}>
+            <h2>Stock Number: { engine.stockNum }</h2>
+
+            { picturesLoading && <Loading /> }
+            {pictures.length > 0 &&
+              <Button
+                variant={['plain','hover-move']}
+                onClick={() => setPicturesOpen(true)}
+              >
+                <img
+                  src="/images/icons/image.svg"
+                  alt="detail"
+                  width={20}
+                  height={20}
+                  style={{ alignSelf: 'center' }}
+                />
+              </Button>
+            }
+          </div>
           <h3 data-testid="status">Current Status: { engine.currentStatus }</h3>
         </div>
         

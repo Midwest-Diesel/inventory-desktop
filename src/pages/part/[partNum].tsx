@@ -275,7 +275,7 @@ export default function PartDetails() {
           </div>
 
 
-          { part.imageExists && picturesOpen && <PartPicturesDialog open={picturesOpen} setOpen={setPicturesOpen} pictures={pictures} partNum={part.partNum} /> }        
+          { part.imageExists && picturesOpen && <PartPicturesDialog open={picturesOpen} setOpen={setPicturesOpen} pictures={pictures} partNum={part.partNum} /> }
           { part.snImageExists && snPicturesOpen && <StockNumPicturesDialog open={snPicturesOpen} setOpen={setSnPicturesOpen} pictures={snPictures} stockNum={part.stockNum} /> }
 
           <Grid>
