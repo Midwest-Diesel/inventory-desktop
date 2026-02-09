@@ -7,7 +7,7 @@ import { isDateInCurrentOrNextWeek } from "@/scripts/tools/utils";
 import Button from "@/components/library/Button";
 import Loading from "@/components/library/Loading";
 import { getHandwrittenById } from "@/scripts/services/handwrittensService";
-import { getImagesFromStockNum } from "@/scripts/services/imagesService";
+import { getImagesFromPart } from "@/scripts/services/imagesService";
 import Modal from "@/components/library/Modal";
 
 interface Props {
@@ -51,8 +51,8 @@ export default function ShippingListModal({ open, onNext, onPrev, handwrittenIte
     );
     if (isCondensed) {
       const weight = handwrittenItems.reduce((arr, item) => arr + item.weight, 0);
-      const { length, width, height, stockNum } = handwrittenItems[0];
-      const pics = await getImagesFromStockNum(stockNum ?? '');
+      const { length, width, height, partNum } = handwrittenItems[0];
+      const pics = await getImagesFromPart(partNum ?? '');
       const new_shipping_list_row = {
         handwritten_id: Number(handwritten?.id),
         initials: handwritten?.createdBy ?? '',
@@ -82,9 +82,9 @@ export default function ShippingListModal({ open, onNext, onPrev, handwrittenIte
       await invoke('add_to_shipping_list', { newShippingListRow: new_shipping_list_row });
     } else {
       for (let i = 0; i < handwrittenItems.length; i++) {
-        if (['FREIGHT', 'TAX', 'CORE DEPOSIT'].includes(handwrittenItems[i].partNum ?? '')) continue;
-        const { length, width, height, stockNum } = handwrittenItems[i];
-        const pics = await getImagesFromStockNum(stockNum ?? '');
+        if (['FREIGHT', 'TAX', 'CORE DEPOSIT', 'CORE DEPOSIT PRIORITY', 'FEE'].includes(handwrittenItems[i].partNum ?? '')) continue;
+        const { length, width, height, partNum } = handwrittenItems[i];
+        const pics = await getImagesFromPart(partNum ?? '');
         const new_shipping_list_row = {
           handwritten_id: Number(handwritten?.id),
           initials: handwritten?.createdBy ?? '',
