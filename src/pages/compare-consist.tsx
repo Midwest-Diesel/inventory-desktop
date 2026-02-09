@@ -5,7 +5,7 @@ import Checkbox from "@/components/library/Checkbox";
 import Input from "@/components/library/Input";
 import Table from "@/components/library/Table";
 import Button from "@/components/library/Button";
-import { customersAtom } from "@/scripts/atoms/state";
+import { compareConsistAtom, customersAtom } from "@/scripts/atoms/state";
 import { addCompareData, getCompareDataById, searchCompareData } from "@/scripts/services/compareConsistService";
 import { getCustomerById, getCustomers } from "@/scripts/services/customerService";
 import { useNavState } from "@/hooks/useNavState";
@@ -46,7 +46,7 @@ export default function CompareConsist() {
   const [engineReman, setEngineReman] = useState<Record<string, string>>({});
   const [engineChecks, setEngineChecks] = useState<Record<string, boolean>>({});
   const [engineData, setEngineData] = useState<CustomerEngineData | null>(null);
-  const [customerEngineData, setCustomerEngineData] = useState<CustomerEngineData | null>(null);
+  const [customerEngineData, setCustomerEngineData] = useAtom<CustomerEngineData | null>(compareConsistAtom);
   const [mwdEngine, setMwdEngine] = useState<Engine | null>(null);
   const urlSearchParams = new URLSearchParams(window.location.search);
   const params: any = Object.fromEntries(urlSearchParams.entries());

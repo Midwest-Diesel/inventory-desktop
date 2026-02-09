@@ -50,3 +50,4 @@ export const tooltipAtom = atom<string>('');
 export const accountingPageFilterAtom = atom<'' | 'all' | 'IN PROCESS' | 'COMPLETE'>('all');
 export const customersMinAtom = atom<CustomerMin[]>([]);
 export const tabsAtom = atom<Tab[]>(tabs());
+export const compareConsistAtom = atom<CustomerEngineData | null>(null);
