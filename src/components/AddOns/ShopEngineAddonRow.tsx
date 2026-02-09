@@ -17,12 +17,11 @@ import InputDropdown from "../library/InputDropdown";
 
 interface Props {
   addOn: EngineAddOn
-  handleDuplicateAddOn: (addOn: EngineAddOn) => void
   onSave: () => Promise<void>
 }
 
 
-export default function ShopEngineAddOnRow({ addOn, handleDuplicateAddOn, onSave }: Props) {
+export default function ShopEngineAddOnRow({ addOn, onSave }: Props) {
   const { addToQue, printQue } = usePrintQue();
   const [addOns, setAddons] = useAtom<EngineAddOn[]>(engineAddOnsAtom);
   const [printQty, setPrintQty] = useState(1);
@@ -218,7 +217,6 @@ export default function ShopEngineAddOnRow({ addOn, handleDuplicateAddOn, onSave
         </div>
 
         <div className="add-ons__list-row-buttons">
-          <Button type="button" onClick={() => handleDuplicateAddOn(addOn)}>Duplicate</Button>
           <Input
             style={{ width: '3rem' }}
             variant={['x-small', 'search']}

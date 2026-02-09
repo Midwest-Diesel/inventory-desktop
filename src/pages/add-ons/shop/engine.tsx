@@ -60,11 +60,6 @@ export default function ShopEngineAddOns() {
     setPrevAddons((prev) => prev.filter((row) => row.id !== e.old.id));
   };
 
-  const handleDuplicateAddOn = async (duplicateAddOn: EngineAddOn) => {
-    await handleSave();
-    await addEngineAddOn(duplicateAddOn);
-  };
-
   const handleNewAddOn = async () => {
     await handleSave();
     await addEngineAddOn();
@@ -125,7 +120,7 @@ export default function ShopEngineAddOns() {
             {addOns.map((addOn) => {
               return (
                 <Fragment key={addOn.id}>
-                  <ShopEngineAddOnRow addOn={addOn} handleDuplicateAddOn={handleDuplicateAddOn} onSave={handleSave} />
+                  <ShopEngineAddOnRow addOn={addOn} onSave={handleSave} />
                 </Fragment>
               );
             })}

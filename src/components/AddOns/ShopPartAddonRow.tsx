@@ -24,7 +24,7 @@ import { useNavState } from "@/hooks/useNavState";
 
 interface Props {
   addOn: AddOn
-  handleDuplicateAddOn: (addOn: AddOn) => void
+  handleDuplicateAddOn: (addOn: AddOn, addOns: AddOn[]) => void
   partNumList: string[]
   onSave: () => Promise<void>
 }
@@ -620,7 +620,7 @@ export default function ShopPartAddonRow({ addOn, handleDuplicateAddOn, partNumL
         </div>
 
         <div className="add-ons__list-row-buttons">
-          <Button type="button" onClick={() => handleDuplicateAddOn({ ...addOn, stockNum: null, engineNum: null })} data-testid="duplicate-btn">Duplicate</Button>
+          <Button type="button" onClick={() => handleDuplicateAddOn(addOn, addOns)} data-testid="duplicate-btn">Duplicate</Button>
           <Input
             style={{ width: '3rem' }}
             variant={['x-small', 'search']}

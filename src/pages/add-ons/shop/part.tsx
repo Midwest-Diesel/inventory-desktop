@@ -12,6 +12,7 @@ import { parseResDate } from "@/scripts/tools/stringUtils";
 import { RealtimePostgresDeletePayload, RealtimePostgresInsertPayload, RealtimePostgresUpdatePayload } from "@supabase/supabase-js";
 import { useAtom } from "jotai";
 import { Fragment, useEffect, useState } from "react";
+import { getNextStockNumberSuffix } from "@/scripts/logic/addOns";
 
 
 export default function ShopPartAddOns() {
@@ -75,9 +76,16 @@ export default function ShopPartAddOns() {
     await addAddOn();
   };
 
-  const handleDuplicateAddOn = async (duplicateAddOn: AddOn) => {
+  const handleDuplicateAddOn = async (duplicateAddOn: AddOn, addOns: AddOn[]) => {
     await handleEditAddOns();
-    await addAddOn(duplicateAddOn);
+    if (!duplicateAddOn.stockNum) {
+      alert('Invalid stockNum');
+      return;
+    }
+    const rawStockNum = duplicateAddOn.stockNum.slice(0, -1);
+    const suffix = await getNextStockNumberSuffix(rawStockNum, addOns);
+    const stockNum = `${rawStockNum}${suffix}`;
+    await addAddOn({ ...duplicateAddOn, stockNum });
   };
 
   const handleEditAddOns = async () => {
