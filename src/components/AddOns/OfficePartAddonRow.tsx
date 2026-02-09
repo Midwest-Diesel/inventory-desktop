@@ -301,12 +301,13 @@ export default function OfficePartAddonRow({ addOn, onSave, onModifyAddOnData }:
                   onChange={(e: any) => handleEditAddOn({ ...addOn, manufacturer: e.target.value })}
                 >
                   <option value="">-- SELECT --</option>
-                  <option value="CAT">CAT</option>
+                  <option value="Caterpillar">Caterpillar</option>
                   <option value="Cummins">Cummins</option>
-                  <option value="Detroit Diesel">Detroit Diesel</option>
-                  <option value="New CAT">New CAT</option>
+                  <option value="Detriot Diesel">Detriot Diesel</option>
+                  <option value="New Cat">New Cat</option>
                   <option value="Perkins">Perkins</option>
                   <option value="New">New</option>
+                  <option value="John Deere">John Deere</option>
                 </Select>
               </td>
               <td>
@@ -319,7 +320,7 @@ export default function OfficePartAddonRow({ addOn, onSave, onModifyAddOnData }:
                   <option value="Core">Core</option>
                   <option value="Good Used">Good Used</option>
                   <option value="New">New</option>
-                  <option value="Recon">Recon</option>
+                  <option value="Reconditioned">Reconditioned</option>
                 </Select>
               </td>
               <td>
