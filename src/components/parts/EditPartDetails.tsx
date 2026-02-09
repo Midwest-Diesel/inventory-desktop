@@ -16,6 +16,10 @@ import Select from "@/components/library/select/Select";
 import CustomerDropdown from "@/components/library/dropdown/CustomerDropdown";
 import TextArea from "@/components/library/TextArea";
 import { promptAddAltParts, promptRemoveAltParts } from "@/scripts/logic/parts";
+import InputDropdown from "../library/InputDropdown";
+import { useQuery } from "@tanstack/react-query";
+import { getVendors } from "@/scripts/services/vendorsService";
+import DropdownOption from "../library/dropdown/DropdownOption";
 
 interface Props {
   part: Part
@@ -67,6 +71,11 @@ export default function EditPartDetails({ part, setPart, setIsEditingPart, partC
   const [newPartCostInRow, setNewPartCostInRow] = useState<any>(blankPartCostIn);
   const [newEngineCostOutRow, setNewEngineCostOutRow] = useState<any>(blankEngineCostOut);
   usePreventNavigation(!changesSaved, 'Leave without saving changes?');
+
+  const { data: vendors = [] } = useQuery<Vendor[]>({
+    queryKey: ['vendors'],
+    queryFn: getVendors
+  });
 
   const saveChanges = async (e: FormEvent) => {
     e.preventDefault();
@@ -687,11 +696,16 @@ export default function EditPartDetails({ part, setPart, setIsEditingPart, partC
                       </Select>
                     </td>
                     <td>
-                      <Input
-                        variant={['x-small', 'thin', 'label-bold']}
+                      <InputDropdown
+                        variant={['no-margin', 'fill', 'label-bold']}
                         value={item.vendor ?? ''}
-                        onChange={(e: any) => handleChangePartCostIn({ ...item, vendor: e.target.value }, i)}
-                      />
+                        onChange={(value) => handleChangePartCostIn({ ...item, vendor: value }, i)}
+                        maxHeight="25rem"
+                      >
+                        {vendors.map((vendor) => {
+                          return <DropdownOption key={vendor.id} value={vendor.name ?? ''}>{ vendor.name }</DropdownOption>
+                        })}
+                      </InputDropdown>
                     </td>
                     <td>
                       <Input
@@ -745,11 +759,16 @@ export default function EditPartDetails({ part, setPart, setIsEditingPart, partC
                   </Select>
                 </td>
                 <td>
-                  <Input
-                    variant={['x-small', 'thin', 'label-bold']}
+                  <InputDropdown
+                    variant={['no-margin', 'fill', 'label-bold']}
                     value={newPartCostInRow.vendor}
-                    onChange={(e: any) => handleNewPartCostInRowChange('vendor', e.target.value)}
-                  />
+                    onChange={(value) => handleNewPartCostInRowChange('vendor', value)}
+                    maxHeight="25rem"
+                  >
+                    {vendors.map((vendor) => {
+                      return <DropdownOption key={vendor.id} value={vendor.name ?? ''}>{ vendor.name }</DropdownOption>
+                    })}
+                  </InputDropdown>
                 </td>
                 <td>
                   <Input
