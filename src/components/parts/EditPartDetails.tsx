@@ -356,11 +356,20 @@ export default function EditPartDetails({ part, setPart, setIsEditingPart, partC
                 <tr>
                   <th>Manufacturer</th>
                   <td>
-                    <Input
-                      variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+                    <Select
+                      variant={['label-space-between', 'label-full-width', 'label-bold']}
                       value={manufacturer}
                       onChange={(e: any) => setManufacturer(e.target.value)}
-                    />
+                    >
+                      <option value="">-- SELECT MANUFACTURER --</option>
+                      <option value="Caterpillar">Caterpillar</option>
+                      <option value="Cummins">Cummins</option>
+                      <option value="Detriot Diesel">Detriot Diesel</option>
+                      <option value="New Cat">New Cat</option>
+                      <option value="Perkins">Perkins</option>
+                      <option value="New">New</option>
+                      <option value="John Deere">John Deere</option>
+                    </Select>
                   </td>
                 </tr>
                 <tr>
@@ -376,11 +385,17 @@ export default function EditPartDetails({ part, setPart, setIsEditingPart, partC
                 <tr>
                   <th>Condition</th>
                   <td>
-                    <Input
-                      variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+                    <Select
+                      variant={['label-space-between', 'label-full-width', 'label-bold']}
                       value={condition}
                       onChange={(e: any) => setCondition(e.target.value)}
-                    />
+                    >
+                      <option value="">-- SELECT CONDITION --</option>
+                      <option value="Core">Core</option>
+                      <option value="Good Used">Good Used</option>
+                      <option value="New">New</option>
+                      <option value="Reconditioned">Reconditioned</option>
+                    </Select>
                   </td>
                 </tr>
                 <tr>
