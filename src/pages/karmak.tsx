@@ -37,11 +37,11 @@ export default function Karmak() {
 
   const handleEndOfDay = async () => {
     const res = await getEndOfDayHandwrittens();
+    const year = (res[0].date.getUTCFullYear()).toString();
+    const month = (res[0].date.getUTCMonth() + 1).toString();
+    const day = (res[0].date.getUTCDate()).toString();
     for (let i = 0; i < res.length; i++) {
       const handwritten: Handwritten = res[i];
-      const year = (handwritten.date.getUTCFullYear()).toString();
-      const month = (handwritten.date.getUTCMonth() + 1).toString();
-      const day = (handwritten.date.getUTCDate()).toString();
       const args = {
         id: Number(handwritten.legacyId ?? handwritten.id),
         email: handwritten.email ?? '',
@@ -54,8 +54,8 @@ export default function Karmak() {
         tracking_numbers: handwritten.trackingNumbers.map((num) => `<li style='margin: 0;'>${num.trackingNumber}</li>`)
       };
       await invoke('email_end_of_day', { args });
-      await invoke('move_queue_to_archives', { args: { year, month, day }});
     }
+    await invoke('move_queue_to_archives', { args: { year, month, day }});
   };
 
 
