@@ -7,7 +7,8 @@ interface Props {
     shipToCompany: string,
     shipToAddress: string,
     shipToAddress2: string,
-    shipToCityStateZip: string
+    shipToCityStateZip: string,
+    shipToContact: string
   }
 }
 
@@ -28,6 +29,7 @@ export default function ShippingLabelTemplate({ data }: Props) {
         <p>{ data.shipToAddress }</p>
         <p>{ data.shipToAddress2 }</p>
         <p>{ data.shipToCityStateZip }</p>
+        { data.shipToContact && <p>ATTN: { data.shipToContact }</p> }
       </div>
     </div>
   );
