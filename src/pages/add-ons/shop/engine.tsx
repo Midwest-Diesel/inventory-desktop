@@ -40,13 +40,14 @@ export default function ShopEngineAddOns() {
   }, []);
 
   const refreshAddOnsInsert = (e: RealtimePostgresInsertPayload<EngineAddOn>) => {
+    const newAddOn = { ...e.new, entryDate: new Date() };
     setAddons((prev) => {
-      if (prev.some((a) => a.id === e.new.id)) return prev;
-      return [e.new, ...prev];
+      if (prev.some((a) => a.id === newAddOn.id)) return prev;
+      return [newAddOn, ...prev];
     });
     setPrevAddons((prev) => {
-      if (prev.some((a) => a.id === e.new.id)) return prev;
-      return [e.new, ...prev];
+      if (prev.some((a) => a.id === newAddOn.id)) return prev;
+      return [newAddOn, ...prev];
     });
   };
 

@@ -1,9 +1,11 @@
-export const formatDate = (date: Date | null | undefined): string => {
-  if (!date || isNaN(date.getTime())) return '';
-  const y = date.getUTCFullYear();
-  const m = String(date.getUTCMonth() + 1).padStart(2, '0');
-  const d = String(date.getUTCDate()).padStart(2, '0');
-  return `${m}/${d}/${y}`;
+export const formatDate = (date: Date | string | null | undefined): string => {
+  if (!date) return '';
+  const d = date instanceof Date ? date : new Date(date);
+  if (isNaN(d.getTime())) return '';
+  const y = d.getUTCFullYear();
+  const m = String(d.getUTCMonth() + 1).padStart(2, '0');
+  const day = String(d.getUTCDate()).padStart(2, '0');
+  return `${m}/${day}/${y}`;
 };
 
 export const parseResDate = (date: string): Date | null => {
