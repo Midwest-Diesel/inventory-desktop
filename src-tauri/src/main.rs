@@ -22,10 +22,9 @@ use image::{io::Reader as ImageReader, ImageOutputFormat, DynamicImage, imageops
 use serde::{Deserialize, Serialize};
 use tauri::{Manager, api::shell, AppHandle};
 use std::env;
-use std::fs::{write, File, remove_file, create_dir_all, remove_dir_all};
+use std::fs::{self, write, File, remove_file, create_dir_all};
 use std::io::{self, Cursor, Write, copy};
 use std::process::{Command};
-use file_operation::{copy_dir_files};
 use reqwest::Client;
 use std::path::{Path};
 use zip::read::ZipArchive;
@@ -162,6 +161,13 @@ struct EmailEndOfDayArgs {
 }
 
 #[derive(Deserialize, Serialize)]
+struct DateArgs {
+  year: String,
+  month: String,
+  day: String
+}
+
+#[derive(Deserialize, Serialize)]
 struct EmailPOReceivedArgs {
   po_num: String,
   purchased_from: String,
@@ -209,6 +215,7 @@ async fn main() {
       print_po,
       email_po,
       email_end_of_day,
+      move_queue_to_archives,
       email_karmak_invoice,
       view_file,
       save_pdf,
@@ -1437,7 +1444,6 @@ fn email_po_received(args: EmailPOReceivedArgs) {
 #[tauri::command]
 fn email_end_of_day(args: EmailEndOfDayArgs) {
   let queue_dir = "\\\\MWD1-SERVER\\Server\\InvoiceScans\\Queue";
-  let archive_dir = format!("\\\\MWD1-SERVER\\Server\\InvoiceScans\\Archives\\{}\\{}\\{}", args.year, args.month, args.day);
 
   let body = format!(
     "\"<h2>{}</h2>\" & vbCrLf & _\n\
@@ -1506,12 +1512,55 @@ fn email_end_of_day(args: EmailEndOfDayArgs) {
   if let Ok(val) = env::var("VITE_NODE_ENV") {
     if val == "development" { return }
   }
+}
 
-  // Move the invoices from the Queue to the Archives
-  create_dir_all(&archive_dir).unwrap();
-  copy_dir_files(&queue_dir, &archive_dir).unwrap();
-  remove_dir_all(&queue_dir).unwrap();
-  create_dir_all(&queue_dir).unwrap();
+#[tauri::command]
+fn move_queue_to_archives(args: DateArgs) -> Result<(), String> {
+  let queue_dir = Path::new("\\\\MWD1-SERVER\\Server\\InvoiceScans\\Queue");
+  let archive_path = format!(
+    "\\\\MWD1-SERVER\\Server\\InvoiceScans\\Archives\\{}\\{}\\{}",
+    args.year, args.month, args.day
+  );
+  let archive_dir = Path::new(&archive_path);
+
+  copy_dir_contents(queue_dir, archive_dir)
+    .map_err(|e| format!("Copy failed: {}", e))?;
+
+  for entry in fs::read_dir(queue_dir).map_err(|e| e.to_string())? {
+    let entry = entry.map_err(|e| e.to_string())?;
+    let path = entry.path();
+    if path.is_file() {
+      fs::remove_file(path).map_err(|e| e.to_string())?;
+    }
+  }
+
+  Ok(())
+}
+
+fn copy_dir_contents(src: &Path, dst: &Path, ) -> io::Result<()> {
+  if !src.is_dir() {
+    return Err(io::Error::new(
+      io::ErrorKind::InvalidInput,
+      format!("Source is not a directory: {}", src.display()),
+    ));
+  }
+
+  create_dir_all(dst)?;
+
+  for entry in fs::read_dir(src)? {
+    let entry = entry?;
+    let file_type = entry.file_type()?;
+    let src_path = entry.path();
+    let dst_path = dst.join(entry.file_name());
+
+    if file_type.is_dir() {
+      copy_dir_contents(&src_path, &dst_path)?;
+    } else {
+      fs::copy(&src_path, &dst_path)?;
+    }
+  }
+
+  Ok(())
 }
 
 #[tauri::command]

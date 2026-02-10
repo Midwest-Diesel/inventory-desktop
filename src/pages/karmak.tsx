@@ -54,6 +54,7 @@ export default function Karmak() {
         tracking_numbers: handwritten.trackingNumbers.map((num) => `<li style='margin: 0;'>${num.trackingNumber}</li>`)
       };
       await invoke('email_end_of_day', { args });
+      await invoke('move_queue_to_archives', { args: { year, month, day }});
     }
   };
 
