@@ -14,10 +14,11 @@ interface Props {
   engineModel: string
   setEngineModel: (model: string) => void
   setNewQuoteDialogOpen: (value: boolean) => void
+  setSelectedHandwrittenItem: (value: Engine | null) => void
 }
 
 
-export default function NewEnginesList({ engines, setEngine, engineModel, setEngineModel, setNewQuoteDialogOpen }: Props) {
+export default function NewEnginesList({ engines, setEngine, engineModel, setEngineModel, setNewQuoteDialogOpen, setSelectedHandwrittenItem }: Props) {
   const tooltip = useTooltip();
   const [filter, setFilter] = useState('all-runner');
   const engineModels = useMemo(() => getEngineModels(engines), [engines]);
@@ -93,7 +94,7 @@ export default function NewEnginesList({ engines, setEngine, engineModel, setEng
             {filteredEngines.map((engine: Engine) => {
               return (
                 <tr key={engine.id}>
-                  <td>
+                  <td className="parts-list__left-col table-buttons table-buttons--grid">
                     <Button
                       variant={['x-small', 'fit']}
                       onClick={() => {
@@ -105,6 +106,15 @@ export default function NewEnginesList({ engines, setEngine, engineModel, setEng
                       onMouseLeave={() => tooltip.set('')}
                     >
                       <img alt="Quote Engine" src="/images/icons/clipboard.svg" width={17} height={17} />
+                    </Button>
+
+                    <Button
+                      variant={['x-small', 'fit']}
+                      onClick={() => setSelectedHandwrittenItem(engine)}
+                      onMouseEnter={() => tooltip.set('Add to Handwritten')}
+                      onMouseLeave={() => tooltip.set('')}
+                    >
+                      <img alt="Quote Engine" src="/images/icons/invoice.svg" width={17} height={17} />
                     </Button>
                   </td>
                   <td><Link href={`/engines/${engine.stockNum}`} data-testid="stock-num-link">{ engine.stockNum }</Link></td>

@@ -1,0 +1,347 @@
+import { FormEvent, useEffect, useRef, useState } from "react";
+import Dialog from "../../library/Dialog";
+import { getHandwrittenById, searchSelectHandwrittensDialogData } from "@/scripts/services/handwrittensService";
+import Table from "@/components/library/Table";
+import { formatDate } from "@/scripts/tools/stringUtils";
+import Pagination from "@/components/library/Pagination";
+import Input from "@/components/library/Input";
+import Button from "@/components/library/Button";
+import Checkbox from "@/components/library/Checkbox";
+import { useAtom } from "jotai";
+import { selectedCustomerAtom, selectedHandwrittenIdAtom } from "@/scripts/atoms/state";
+import { useToast } from "@/hooks/useToast";
+import Loading from "@/components/library/Loading";
+import { ask } from "@/scripts/config/tauri";
+import { useQuery } from "@tanstack/react-query";
+import { getEngineCostRemaining } from "@/scripts/services/enginesService";
+import { getCustomerById } from "@/scripts/services/customerService";
+
+interface Props {
+  open: boolean
+  setOpen: (open: boolean) => void
+  engine: Engine
+  onSubmit: (handwritten: Handwritten, warranty: string, qty: number, desc: string, price: number, stockNum: number, cost: number) => void
+}
+
+
+export default function AddEngineToHandwrittenDialog({ open, setOpen, engine, onSubmit }: Props) {
+  const toast = useToast();
+  const [selectedCustomer, setSelectedCustomer] = useAtom<Customer>(selectedCustomerAtom);
+  const [selectedHandwrittenId, setSelectedHandwrittenId] = useAtom(selectedHandwrittenIdAtom);
+  const [handwrittensData, setHandwrittensData] = useState<SelectHandwrittenDialogResult[]>([]);
+  const [handwrittens, setHandwrittens] = useState<SelectHandwrittenDialogResult[]>([]);
+  const [handwrittenCount, setHandwrittenCount] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [desc, setDesc] = useState('');
+  const [qty, setQty] = useState<number | null>(null);
+  const [price, setPrice] = useState<number | null>(null);
+  const [warranty, setWarranty] = useState('');
+  const [noWarranty, setNoWarranty] = useState(false);
+  const [noVerbage, setNoVerbage] = useState(false);
+  const [injectorWar, setInjectorWar] = useState(false);
+  const [customWar, setCustomWar] = useState(false);
+  const [search, setSearch] = useState('');
+  const [showWarranty, setShowWarranty] = useState(false);
+  const [showButons, setShowButtons] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const descRef = useRef<HTMLInputElement | null>(null);
+  const LIMIT = 26;
+
+  useEffect(() => {
+    clearInputs();
+    if (!open) return;
+
+    const fetchData = async () => {
+      setLoading(true);
+      await resetHandwrittensList();
+      setLoading(false);
+    };
+    fetchData();
+
+    setTimeout(() => descRef.current?.focus(), 100);
+  }, [open, selectedCustomer]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const prevCustomer = Number(localStorage.getItem('customerId'));
+      const res = await getCustomerById(prevCustomer);
+      if (!res) return;
+      setSelectedCustomer(prevCustomer ? res : selectedCustomer);
+    };
+    fetchData();
+  }, []);
+
+  const { data: cost } = useQuery<number | null>({
+    queryKey: ['cost', engine],
+    queryFn: () => getEngineCostRemaining(engine.stockNum)
+  });
+
+  const clearInputs = () => {
+    setSearch('');
+    setDesc('');
+    setQty(null);
+    setPrice(null);
+  };
+
+  const resetHandwrittensList = async () => {
+    if (search || selectedCustomer?.id) {
+      const searchData = {
+        billToCompany: search ?? '',
+        limit: LIMIT,
+        offset: (currentPage - 1) * LIMIT,
+        ...((!search && selectedCustomer?.id) && { customerId: selectedCustomer?.id })
+      };
+      const res = await searchSelectHandwrittensDialogData(searchData);
+      if (res.rows.length > 0) {
+        setHandwrittens(res.rows);
+        setHandwrittenCount(res.pageCount);
+        return;
+      }
+    }
+    
+    const res = await searchSelectHandwrittensDialogData({ billToCompany: '', limit: LIMIT, offset: (currentPage - 1) * LIMIT, customerId: 0 });
+    setHandwrittensData(res.rows);
+    setHandwrittens(res.rows);
+    setHandwrittenCount(res.pageCount);
+    setSearch('');
+  };
+  
+  const handleChangePage = async (_: any, page: number) => {
+    if (page === currentPage) return;
+    if (search || selectedCustomer?.id) {
+      const searchData = {
+        billToCompany: search ?? '',
+        limit: LIMIT,
+        offset: (page - 1) * LIMIT,
+        ...((!search && selectedCustomer?.id) && { customerId: selectedCustomer?.id })
+      };
+      const res = await searchSelectHandwrittensDialogData(searchData);
+      if (res.rows.length > 0) {
+        setHandwrittens(res.rows);
+        setHandwrittenCount(res.pageCount);
+        setCurrentPage(page);
+        return;
+      }
+    }
+    
+    const res = await searchSelectHandwrittensDialogData({ billToCompany: '', limit: LIMIT, offset: (page - 1) * LIMIT, customerId: 0 });
+    setHandwrittens(res.rows);
+    setHandwrittenCount(res.pageCount);
+    setCurrentPage(page);
+  };
+
+  const handleSelectRow = (id: number) => {
+    setSelectedHandwrittenId(id);
+  };
+
+  const handleSearch = async () => {
+    if (search) {
+      const searchData = {
+        billToCompany: search,
+        limit: LIMIT,
+        offset: (currentPage - 1) * LIMIT
+      };
+      const res = await searchSelectHandwrittensDialogData(searchData);
+      setHandwrittens(res?.rows);
+      setHandwrittenCount(res?.pageCount);
+    } else {
+      resetHandwrittensList();
+    }
+  };
+
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    if (!selectedHandwrittenId) return;
+    const handwritten = await getHandwrittenById(selectedHandwrittenId);
+    if (!handwritten) return;
+    if (handwritten.invoiceStatus === 'SENT TO ACCOUNTING') {
+      toast.sendToast('Can\'t add items to handwritten when status is SENT TO ACCOUNTING', 'error');
+      return;
+    }
+    setShowButtons(false);
+
+    if (await ask('Add warranty?')) {
+      setShowWarranty(true);
+    } else {
+      setOpen(false);
+      onSubmit(handwritten, '', Number(qty), desc, Number(price), engine.stockNum, Number(cost));
+    }
+    setShowButtons(true);
+  };
+
+  const handleSubmitWarranty = async (e: FormEvent) => {
+    e.preventDefault();
+    setShowButtons(false);
+    const handwritten = await getHandwrittenById(selectedHandwrittenId);
+    if (!handwritten) return;
+
+    let fullWar = [handwritten.orderNotes];
+    if (customWar) fullWar.push(`${warranty}`);
+    if (noWarranty) fullWar.push('Caterpillar warranty is not available on surplus engines and surplus parts.');
+    if (injectorWar) fullWar.push('Rebuilt Injectors come with a 6 month part replacement only warranty through Midwest Diesel, No labor or progressive damage.');
+    if (!fullWar && !warranty && !noVerbage) {
+      console.error('Warranty cannot be blank');
+      return;
+    }
+    if (noVerbage) fullWar = [handwritten.orderNotes];
+    const filteredWar = new Set(fullWar);
+    onSubmit(handwritten, [...Array.from(filteredWar)].join('\n').trim(), Number(qty), desc, Number(price), engine.stockNum, Number(cost));
+    setShowButtons(true);
+    setLoading(true);
+  };
+
+
+  return (
+    <Dialog
+      open={open}
+      setOpen={(value: boolean) => {
+        setShowWarranty(false);
+        setOpen(value);
+      }}
+      title="Select Handwritten"
+      width={600}
+      data-testid="select-handwritten-dialog"
+    >
+      {loading ?
+        <Loading />
+        :
+        <>
+          {showWarranty ?
+            <form onSubmit={handleSubmitWarranty}>
+              <Input
+                variant={['small', 'thin', 'label-bold', 'label-stack', 'label-fit-content']}
+                label="Warranty"
+                value={warranty}
+                onChange={(e: any) => setWarranty(e.target.value)}
+                data-testid="warranty"
+              />
+              <div>
+                <Checkbox
+                  label="No CAT Warranty"
+                  variant={['label-bold', 'dark-bg', 'label-align-center', 'label-fit']}
+                  checked={noWarranty}
+                  onChange={(e: any) => setNoWarranty(e.target.checked)}
+                  data-testid="no-cat-warranty"
+                />
+                <Checkbox
+                  label="Injector Warranty"
+                  variant={['label-bold', 'dark-bg', 'label-align-center', 'label-fit']}
+                  checked={injectorWar}
+                  onChange={(e: any) => setInjectorWar(e.target.checked)}
+                  data-testid="inj-warranty"
+                />
+                <Checkbox
+                  label="Custom Warranty"
+                  variant={['label-bold', 'dark-bg', 'label-align-center', 'label-fit']}
+                  checked={customWar}
+                  onChange={(e: any) => setCustomWar(e.target.checked)}
+                  data-testid="custom-warranty"
+                />
+              </div>
+              {showButons &&
+                <div className="form__footer">
+                  <Button type="submit" data-testid="warranty-submit-btn">Submit</Button>
+                  <Button type="submit" onClick={() => setNoVerbage(true)}>Cancel Warranty</Button>
+                </div>
+              }
+            </form>
+            :
+            <>
+              <form onSubmit={handleSubmit} className="select-handwritten-form">
+                {engine &&
+                  <div style={{ display: 'flex', gap: '1rem', marginBottom: '0.3rem' }}>
+                    <p><strong>Stock Num</strong> { engine.stockNum }</p>
+                  </div>
+                }
+                <div className="select-handwritten-form__inputs">
+                  <Input
+                    variant={['small', 'thin', 'label-bold', 'label-stack', 'label-fit-content']}
+                    label="Description"
+                    value={desc}
+                    onChange={(e: any) => setDesc(e.target.value)}
+                    required
+                    ref={descRef}
+                    data-testid="select-handwritten-desc"
+                  />
+                  <Input
+                    variant={['x-small', 'thin', 'label-bold', 'label-stack', 'label-fit-content']}
+                    label="Qty"
+                    type="number"
+                    value={qty ?? ''}
+                    onChange={(e: any) => setQty(e.target.value)}
+                    required
+                    data-testid="select-handwritten-qty"
+                  />
+                  <Input
+                    variant={['x-small', 'thin', 'label-bold', 'label-stack', 'label-fit-content']}
+                    label="Price"
+                    type="number"
+                    step="any"
+                    value={price ?? ''}
+                    onChange={(e: any) => setPrice(e.target.value)}
+                    required
+                    data-testid="select-handwritten-price"
+                  />
+                </div>
+                { showButons && <Button type="submit" variant={['fit']} data-testid="select-handwritten-submit-btn">Add Item to Handwritten</Button> }
+              </form>
+
+              <form
+                className="search-handwritten-form"
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  handleSearch();
+                }}
+              >
+                <div className="select-handwritten-form__inputs">
+                  <Input
+                    variant={['label-bold', 'label-stack', 'label-fit-content']}
+                    label="Search Company"
+                    value={search}
+                    onChange={(e: any) => setSearch(e.target.value)}
+                  />
+                </div>
+              </form>
+
+              <div className="select-handwritten-dialog">
+                <Table>
+                  <thead>
+                    <tr>
+                      <th></th>
+                      <th>Date</th>
+                      <th>Customer</th>
+                      <th>Bill To Company</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {handwrittens.map((handwritten: SelectHandwrittenDialogResult) => {
+                      return (
+                        <tr
+                          key={handwritten.id}
+                          onClick={() => handleSelectRow(handwritten.id)}
+                          className={handwritten.id === selectedHandwrittenId ? 'select-handwritten-dialog--selected' : ''}
+                          data-testid="select-handwritten-row"
+                        >
+                          <td>{ handwritten.id }</td>
+                          <td>{ formatDate(handwritten.date) }</td>
+                          <td>{ handwritten.customer }</td>
+                          <td>{ handwritten.billToCompany }</td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </Table>
+              </div>
+              <Pagination
+                data={handwrittensData}
+                setData={handleChangePage}
+                pageCount={handwrittenCount}
+                pageSize={LIMIT}
+              />
+            </>
+          }
+        </>
+      }
+    </Dialog>
+  );
+}
