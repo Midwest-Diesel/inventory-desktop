@@ -649,10 +649,17 @@ fn add_to_shipping_list(new_shipping_list_row: ShippingListRow) {
     Set Workbook = ExcelApp.Workbooks.Open("{}")
     Set ExcelSheet = Workbook.Sheets({})
 
-    Dim LastRow
-    LastRow = ExcelSheet.Cells.Find("{}").Offset(-1, 0).End(-4121).Row + 1
+    Dim SectionHeader, StartRow, LastRow, NextSectionRow
+    SectionHeader = "{}"
+    Set FoundCell = ExcelSheet.Cells.Find(SectionHeader)
+    StartRow = FoundCell.Row + 1
 
-    ExcelSheet.Range("A" & LastRow).Insert
+    LastRow = StartRow
+    Do While ExcelSheet.Cells(LastRow, 1).Value <> ""
+      LastRow = LastRow + 1
+    Loop
+
+    ExcelSheet.Rows(LastRow).Insert
     ExcelSheet.Range("A" & LastRow & ":U" & LastRow).Font.Color = RGB(0, 0, 0)
     ExcelSheet.Range("A" & LastRow).Value = "{}"
     ExcelSheet.Range("B" & LastRow).Value = "{}"

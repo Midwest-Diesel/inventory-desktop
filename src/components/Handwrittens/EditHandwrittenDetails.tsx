@@ -199,7 +199,7 @@ export default function EditHandwrittenDetails({
     const user = await getUserById(soldBy);
     const newInvoice = {
       id: handwritten.id,
-      shipViaId,
+      shipViaId: shipViaId || null,
       handwrittenItems,
       customer: newCustomer,
       date,
@@ -513,6 +513,11 @@ export default function EditHandwrittenDetails({
     setShipViaId(id);
     const shipVia = await getFreightCarrierById(id);
     const row = handwrittenItems.find((item) => item.partNum === 'FREIGHT');
+    if (!id) {
+      if (row) await deleteHandwrittenItem(row.id);
+      return;
+    }
+
     const item = {
       id: row && row.id,
       handwrittenId: handwritten.id,

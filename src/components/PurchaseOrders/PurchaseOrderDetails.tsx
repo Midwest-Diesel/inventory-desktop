@@ -36,7 +36,7 @@ export default function PurchaseOrderDetails({ poData, handleReceiveItem, setIsE
   const handlePrint = async () => {
     if (!await confirm('Print purchase order?')) return;
     const args = {
-      id: poData?.id,
+      poNum: `UP${poData?.poNum}`,
       vendor: poData?.purchasedFrom ?? '',
       address: poData?.vendorAddress ?? '',
       city: poData?.vendorCity ?? '',

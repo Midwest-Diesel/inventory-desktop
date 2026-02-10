@@ -1,9 +1,8 @@
-
 import Table from "../library/Table";
 
 interface Props {
   data: {
-    id: string
+    poNum: string
     vendor: string
     address: string
     city: string
@@ -32,7 +31,7 @@ export default function PurchaseOrderTemplate({ data }: Props) {
     <div className="po-template">
       <header>
         <img src="/images/midwest-diesel.jpg" alt="" width={50} height={70} />
-        <h1>Purchase Order { data.id }</h1>
+        <h1>Purchase Order { data.poNum }</h1>
       </header>
       
       <div className="po-template__section">
