@@ -64,9 +64,7 @@ export default function Dashboard() {
     setHandwrittenCustomer(customer);
   }, [customer]);
 
-  const handleAddToHandwritten = async (id: number, desc: string, qty: number, price: number, warranty: string, stockNum: string) => {
-    const partCostIn = await getPartCostIn(stockNum);
-    const cost = partCostIn.reduce((acc, val) => acc + (val.cost ?? 0), 0) || 0.01;
+  const handleAddToHandwritten = async (id: number, desc: string, qty: number, price: number, warranty: string, stockNum: string, cost: number) => {
     const newItem = {
       handwrittenId: id,
       date: new Date(),
@@ -108,10 +106,10 @@ export default function Dashboard() {
         await addHandwrittenItemChild(newItem.id, { partId: part.id, qty, cost });
         await editHandwrittenOrderNotes(handwritten.id, warranty);
       } else {
-        await handleAddToHandwritten(handwritten.id, desc, qty, price, warranty, stockNum);
+        await handleAddToHandwritten(handwritten.id, desc, qty, price, warranty, stockNum, cost);
       }
     } else {
-      await handleAddToHandwritten(handwritten.id, desc, qty, price, warranty, stockNum);
+      await handleAddToHandwritten(handwritten.id, desc, qty, price, warranty, stockNum, cost);
     }
 
     const updatedQuote = { ...handwrittenQuote, sale: true };

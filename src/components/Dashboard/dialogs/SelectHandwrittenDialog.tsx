@@ -52,7 +52,7 @@ export default function SelectHandwrittenDialog({ open, setOpen, part, onSubmit 
     const fetchData = async () => {
       setLoading(true);
       await resetHandwrittensList();
-      const cost = part.partsCostIn.reduce((acc, val) => acc + val.cost, 0) || 0.01;
+      const cost = getNewPartCost();
       if (cost === 0.04) await message('Warning: This part has $0.04 cost!', { type: 'warning' });
       setLoading(false);
     };
@@ -134,6 +134,13 @@ export default function SelectHandwrittenDialog({ open, setOpen, part, onSubmit 
     }
   };
 
+  const getNewPartCost = (): number => {
+    const partCostIn = part.partsCostIn.reduce((acc, val) => acc + val.cost, 0);
+    const engineCostOut = part.engineCostOut.reduce((acc, val) => acc + Number(val.cost), 0);
+    const total = partCostIn + engineCostOut;
+    return total === 0 ? 0.01 : total;
+  };
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (!selectedHandwrittenId) return;
@@ -149,7 +156,7 @@ export default function SelectHandwrittenDialog({ open, setOpen, part, onSubmit 
       setShowWarranty(true);
     } else {
       setOpen(false);
-      const cost = part.partsCostIn.reduce((acc, val) => acc + val.cost, 0) || 0.01;
+      const cost = getNewPartCost();
       onSubmit(handwritten, '', Number(qty), desc, Number(price), part.stockNum ?? '', cost);
     }
     setShowButtons(true);
@@ -171,7 +178,7 @@ export default function SelectHandwrittenDialog({ open, setOpen, part, onSubmit 
     }
     if (noVerbage) fullWar = [handwritten.orderNotes];
     const filteredWar = new Set(fullWar);
-    const cost = part.partsCostIn.reduce((acc, val) => acc + val.cost, 0) || 0.01;
+    const cost = getNewPartCost();
     onSubmit(handwritten, [...Array.from(filteredWar)].join('\n').trim(), Number(qty), desc, Number(price), part.stockNum ?? '', cost);
     setShowButtons(true);
     setLoading(true);
