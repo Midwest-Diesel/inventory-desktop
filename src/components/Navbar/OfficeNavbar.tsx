@@ -26,12 +26,8 @@ export default function OfficeNavbar({ user }: Props) {
       <NavDropdown label="Add Ons">
         <Link href="/add-ons/office/part">Office Parts</Link>
         <Link href="/add-ons/office/engine">Office Engines</Link>
-        {user.accessLevel >= 3 &&
-          <>
-            <Link href="/add-ons/shop/part">Shop Parts</Link>
-            <Link href="/add-ons/shop/engine">Shop Engines</Link>
-          </>
-        }
+        <Link href="/add-ons/shop/part">Shop Parts</Link>
+        <Link href="/add-ons/shop/engine">Shop Engines</Link>
       </NavDropdown>
       <Link href="/karmak" className="navbar__link">Accounting</Link>
       <Link href="/email-stuff" className="navbar__link">Email Stuff</Link>
