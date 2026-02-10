@@ -65,11 +65,12 @@ export default function Dashboard() {
   }, [customer]);
 
   const handleAddToHandwritten = async (id: number, desc: string, qty: number, price: number, warranty: string, stockNum: string, cost: number) => {
+    const newPartNum = desc.toLowerCase().includes('a/m') ? `${selectedHandwrittenPart?.partNum ?? ''}ST` : selectedHandwrittenPart?.partNum;
     const newItem = {
       handwrittenId: id,
       date: new Date(),
       desc,
-      partNum: selectedHandwrittenPart?.partNum ?? null,
+      partNum: newPartNum ?? null,
       stockNum: selectedHandwrittenPart?.stockNum ?? null,
       unitPrice: price,
       qty,
