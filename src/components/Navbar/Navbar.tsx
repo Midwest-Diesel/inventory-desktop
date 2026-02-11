@@ -69,7 +69,7 @@ export default function Navbar() {
         </div>
 
         <nav className="navbar">
-          {user.type === "office" && <OfficeNavbar user={user} />}
+          {user.type === "office" && <OfficeNavbar />}
           {user.type === "shop" && <ShopNavbar />}
         </nav>
       </>

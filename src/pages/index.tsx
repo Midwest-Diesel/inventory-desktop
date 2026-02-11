@@ -11,7 +11,7 @@ import SelectHandwrittenDialog from "@/components/dashboard/dialogs/SelectHandwr
 import { listen } from '@tauri-apps/api/event';
 import { addQuote, getSomeQuotes, toggleQuoteSold } from "@/scripts/services/quotesService";
 import { useNavState } from "@/hooks/useNavState";
-import { getPartById, getPartCostIn } from "@/scripts/services/partsService";
+import { getPartById } from "@/scripts/services/partsService";
 import { ask } from "@/scripts/config/tauri";
 import { useToast } from "@/hooks/useToast";
 import { useQuery } from "@tanstack/react-query";

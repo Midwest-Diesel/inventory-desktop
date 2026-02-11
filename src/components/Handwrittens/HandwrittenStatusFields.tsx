@@ -60,22 +60,22 @@ export default function HandwrittenStatusFields({ invoiceStatus, accountingStatu
             <option value="ORDER COMPLETE">ORDER COMPLETE</option>
           </Select>
         </div>
-      :
+        :
         <div style={{ display: 'flex', gap: '2rem' }}>
-        <div>
-          <p style={{ fontSize: 'var(--font-md)' }}><strong>Sales Status</strong></p>
-          <p style={{ color: 'var(--yellow-1)' }} data-testid="sales-status">{ invoiceStatus }</p>
+          <div>
+            <p style={{ fontSize: 'var(--font-md)' }}><strong>Sales Status</strong></p>
+            <p style={{ color: 'var(--yellow-1)' }} data-testid="sales-status">{ invoiceStatus }</p>
+          </div>
+          <div>
+            <p style={{ fontSize: 'var(--font-md)' }}><strong>Accounting Status</strong></p>
+            <p style={{ color: 'var(--yellow-1)' }}>{ accountingStatus }</p>
+          </div>
+          <div>
+            <p style={{ fontSize: 'var(--font-md)' }}><strong>Shipping Status</strong></p>
+            <p style={{ color: 'var(--yellow-1)' }}>{ shippingStatus }</p>
+          </div>
         </div>
-        <div>
-          <p style={{ fontSize: 'var(--font-md)' }}><strong>Accounting Status</strong></p>
-          <p style={{ color: 'var(--yellow-1)' }}>{ accountingStatus }</p>
-        </div>
-        <div>
-          <p style={{ fontSize: 'var(--font-md)' }}><strong>Shipping Status</strong></p>
-          <p style={{ color: 'var(--yellow-1)' }}>{ shippingStatus }</p>
-        </div>
-      </div>
-    }
+      }
     </GridItem>
   );
 }

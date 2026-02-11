@@ -5,7 +5,6 @@ import { formatDate, formatTime } from "@/scripts/tools/stringUtils";
 import { useEffect } from "react";
 import Tabs from "../library/Tabs";
 import { supabase } from "@/scripts/config/supabase";
-import { RealtimePostgresInsertPayload } from "@supabase/supabase-js";
 import { getRecentPartSearches, getRecentPartSearchesToday } from "@/scripts/services/recentSearchesService";
 import { useQuery } from "@tanstack/react-query";
 
@@ -30,7 +29,7 @@ export default function RecentPartSearches() {
     };
   }, []);
 
-  const refreshRecentSearches = async (e: RealtimePostgresInsertPayload<RecentPartSearch>) => {
+  const refreshRecentSearches = async () => {
     const prevSearch: any = localStorage.getItem('altPartSearches') || localStorage.getItem('partSearches');
     const partNum = JSON.parse(prevSearch).partNum.replace('*', '');
     setRecentPartSearches(await getRecentPartSearches((partNum && partNum !== '') ? partNum : '*'));

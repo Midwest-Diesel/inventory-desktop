@@ -718,7 +718,7 @@ export default function EditPartDetails({ part, setPart, setIsEditingPart, partC
                         maxHeight="25rem"
                       >
                         {vendors.map((vendor) => {
-                          return <DropdownOption key={vendor.id} value={vendor.name ?? ''}>{ vendor.name }</DropdownOption>
+                          return <DropdownOption key={vendor.id} value={vendor.name ?? ''}>{ vendor.name }</DropdownOption>;
                         })}
                       </InputDropdown>
                     </td>
@@ -781,7 +781,7 @@ export default function EditPartDetails({ part, setPart, setIsEditingPart, partC
                     maxHeight="25rem"
                   >
                     {vendors.map((vendor) => {
-                      return <DropdownOption key={vendor.id} value={vendor.name ?? ''}>{ vendor.name }</DropdownOption>
+                      return <DropdownOption key={vendor.id} value={vendor.name ?? ''}>{ vendor.name }</DropdownOption>;
                     })}
                   </InputDropdown>
                 </td>

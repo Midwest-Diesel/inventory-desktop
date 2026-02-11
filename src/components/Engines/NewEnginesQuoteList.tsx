@@ -4,9 +4,7 @@ import Checkbox from "../library/Checkbox";
 import Link from "@/components/library/Link";
 import { useQuery } from "@tanstack/react-query";
 import Button from "../library/Button";
-import { EngineQuoteSearchData, searchEngineQuotes } from "@/scripts/services/quotesService";
-import { useState } from "react";
-import EngineQuoteSearchDialog from "./dialogs/EngineQuoteSearchDialog";
+import { searchEngineQuotes } from "@/scripts/services/quotesService";
 
 interface Props {
   model: string
@@ -16,13 +14,10 @@ interface Props {
 
 
 export default function NewEnginesQuoteList({ model, setEngine, setNewQuoteDialogOpen }: Props) {
-  const [searchOpen, setSearchOpen] = useState(false);
-  const [searchData, setSearchData] = useState<EngineQuoteSearchData>({ page: 1, limit: 99999, model });
-
   const { data: quotes = [] } = useQuery<EngineQuote[]>({
-    queryKey: ['quotes', searchData, model],
+    queryKey: ['quotes', model],
     queryFn: async () => {
-      const res = await searchEngineQuotes({ ...searchData, model });
+      const res = await searchEngineQuotes({ page: 1, limit: 99999, model });
       return res.rows;
     }
   });
@@ -30,12 +25,6 @@ export default function NewEnginesQuoteList({ model, setEngine, setNewQuoteDialo
 
   return (
     <div className="new-engines-quotes-list">
-      <EngineQuoteSearchDialog
-        open={searchOpen}
-        setOpen={setSearchOpen}
-        onSearch={setSearchData}
-      />
-
       <h2>Engine Quotes</h2>
       <div className="new-engines-quotes-list__top-bar">
         <Button
@@ -46,7 +35,6 @@ export default function NewEnginesQuoteList({ model, setEngine, setNewQuoteDialo
         >
           New Quote
         </Button>
-        <Button onClick={() => setSearchOpen(true)}>Search</Button>
       </div>
 
       <div className="new-engines-quotes-list__container">

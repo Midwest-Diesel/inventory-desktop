@@ -252,4 +252,4 @@ describe('Format CCNumber', () => {
   test('Should parse number with incorrect length', () => {
     expect(formatCCNumber('414141415555')).toEqual('XXXXXXXXXXXX5555');
   });
-})
+});

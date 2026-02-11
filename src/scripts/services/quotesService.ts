@@ -19,16 +19,7 @@ interface QuoteSearchData {
 }
 
 export interface EngineQuoteSearchData {
-  date?: string
-  salesmanId?: number | null
-  source?: string
-  customer?: string
-  contact?: string
-  serialNum?: string
-  desc?: string
-  stockNum?: string
-  model?: string
-  sale?: string
+  model: string
   limit: number
   page: number
 }

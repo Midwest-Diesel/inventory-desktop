@@ -111,5 +111,5 @@ export const parsePhone = (value: string) => {
 export const toAbsolutePath = (url: string) => url.startsWith('/') ? url : `/${url}`;
 
 export const formatCCNumber = (cardNum: string): string => {
-  return `XXXXXXXXXXXX${cardNum.slice(cardNum.length - 4)}`
+  return `XXXXXXXXXXXX${cardNum.slice(cardNum.length - 4)}`;
 };

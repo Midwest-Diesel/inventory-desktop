@@ -1,12 +1,8 @@
 import NavDropdown from "../library/dropdown/NavDropdown";
 import Link from "../library/Link";
 
-interface Props {
-  user: User
-}
 
-
-export default function OfficeNavbar({ user }: Props) {
+export default function OfficeNavbar() {
   return (
     <>
       <Link className="navbar__title" href="/">
