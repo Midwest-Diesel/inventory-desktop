@@ -310,7 +310,7 @@ export default function HandwrittenDetails({
       alert('Missing cardNum, expDate, or cvv');
       return;
     }
-    addToQue('ccLabel', 'print_cc_label', { cardNum, expDate, cvv, cardZip, cardName, cardAddress }, '200px', '135px');
+    addToQue('ccLabel', 'print_cc_label', { cardNum, expDate, cvv, cardZip, cardName, cardAddress }, '280px', '135px');
     printQue();
   };
 
