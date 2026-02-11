@@ -209,14 +209,23 @@ export default async function globalSetup() {
 
     const schema = fs.readFileSync('src/tests/db/schema.sql', 'utf-8');
     await testClient.query(`CREATE EXTENSION IF NOT EXISTS pg_trgm;`);
-    await testClient.query(`DO $$
+    await testClient.query(`
+      DO $$
       BEGIN
         IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname='service_role') THEN
           CREATE ROLE service_role;
         END IF;
       END$$;
+
+      DO $$
+      BEGIN
+        IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname='authenticated') THEN
+          CREATE ROLE authenticated;
+        END IF;
+      END$$;
     `);
     await testClient.query(schema);
+
   } else {
     console.log('> Schema already exists, skipping db initialization');
   }

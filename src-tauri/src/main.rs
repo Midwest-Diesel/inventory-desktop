@@ -225,7 +225,7 @@ async fn main() {
 }
 
 fn create_directories() {
-  let directories = vec!["scripts", "scripts/screenshots", "updates"];
+  let directories = vec!["scripts", "scripts/screenshots", "scripts/attachments", "updates"];
   for dir_name in directories {
     if std::fs::read_dir(format!("C:/MWD/{}", dir_name)).is_err() {
       let _ = std::fs::create_dir(format!("C:/MWD/{}", dir_name));
