@@ -249,6 +249,7 @@ type Handwritten = {
   thirdPartyAccount: string | null
   allTakeoffsCompleted: boolean
   hasPrinted: boolean
+  ccNumber: string | null
 };
 
 type InvoiceStatus = 'INVOICE PENDING' | 'SENT TO ACCOUNTING' | 'CANCELLED' | 'STOP - HOLD' | 'HOLD AS FAVOR';

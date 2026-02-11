@@ -83,6 +83,7 @@ export default function PrintInvoiceDialog({ open, setOpen, handwritten }: Props
         thirdParty: handwritten?.isThirdParty ?? false,
         contactPhone: handwritten?.phone ?? '',
         email: handwritten?.email ?? '',
+        ccNumber: handwritten?.ccNumber ?? '',
         handwrittenTotal,
         items: chunk.map((item) => ({
           stockNum: item.stockNum ?? '',

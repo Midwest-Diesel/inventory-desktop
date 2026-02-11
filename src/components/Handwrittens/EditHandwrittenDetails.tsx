@@ -1,12 +1,12 @@
 import { errorAtom, quickPickItemIdAtom, sourcesAtom } from "@/scripts/atoms/state";
-import { addHandwrittenItem, deleteHandwrittenItem, editHandwritten, editHandwrittenHasPrinted, editHandwrittenItem, editHandwrittenTaxable, getHandwrittenById, getHandwrittenEmails, setAllHandwrittenItemDates } from "@/scripts/services/handwrittensService";
+import { addHandwrittenItem, deleteHandwrittenItem, editHandwritten, editHandwrittenCCNumber, editHandwrittenHasPrinted, editHandwrittenItem, editHandwrittenTaxable, getHandwrittenById, getHandwrittenEmails, setAllHandwrittenItemDates } from "@/scripts/services/handwrittensService";
 import { useAtom } from "jotai";
 import { FormEvent, Fragment, useEffect, useRef, useState } from "react";
 import GridItem from "../library/grid/GridItem";
 import Input from "../library/Input";
 import Grid from "../library/grid/Grid";
 import Select from "../library/select/Select";
-import { formatCurrency, formatDate, parseDateInputValue } from "@/scripts/tools/stringUtils";
+import { formatCCNumber, formatCurrency, formatDate, parseDateInputValue } from "@/scripts/tools/stringUtils";
 import Button from "../library/Button";
 import Table from "../library/Table";
 import CustomerDropdown from "../library/dropdown/CustomerDropdown";
@@ -409,6 +409,7 @@ export default function EditHandwrittenDetails({
         thirdParty: handwritten.isThirdParty ?? false,
         contactPhone: handwritten.phone,
         email: handwritten.email,
+        ccNumber: handwritten.ccNumber,
         handwrittenTotal,
         items: chunk.map((item) => {
           return {
@@ -447,7 +448,11 @@ export default function EditHandwrittenDetails({
   };
 
   const handlePrintCCLabel = async () => {
-    if (!cardNum || !expDate || !cvv) return;
+    if (!cardNum || !expDate || !cvv) {
+      alert('Missing cardNum, expDate, or cvv');
+      return;
+    }
+    await editHandwrittenCCNumber(handwritten.id, formatCCNumber(cardNum));
     addToQue('ccLabel', 'print_cc_label', { cardNum, expDate, cvv, cardZip, cardName, cardAddress }, '280px', '135px');
     printQue();
   };

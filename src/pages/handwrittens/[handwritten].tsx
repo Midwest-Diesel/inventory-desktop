@@ -46,6 +46,7 @@ export default function Handwritten() {
       if (!handwritten) return;
       const res = await getHandwrittenById(Number(params.handwritten));
       setHandwritten(res);
+      if (!cardNum) setCardNum(res?.ccNumber ?? '');
     };
     fetchData();
   }, [isEditing]);

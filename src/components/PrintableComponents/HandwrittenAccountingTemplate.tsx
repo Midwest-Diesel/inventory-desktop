@@ -44,6 +44,7 @@ interface Props {
     handwrittenTotal: string
     email: string
     contactPhone: string
+    ccNumber: string
     items: {
       stockNum: string
       location: string
@@ -99,6 +100,15 @@ export default function HandwrittenAccountingTemplate({ data }: Props) {
         </div>
 
         <div className="handwritten-acct-template__column">
+          <table style={{ minWidth: '10rem' }}>
+            <tbody>
+              <tr><td colSpan={2}>{ data.ccNumber || <span className="print-placeholder">XXXXXXXXXXXXXXXX</span> }</td></tr>
+              <tr><td colSpan={2}>{ data.paymentType || <span className="print-placeholder">PAYMENT TYPE</span> }</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div className="handwritten-acct-template__column">
           <div className="handwritten-acct-template__column">
             <div className="handwritten-acct-template__row">
               <p><strong>Created By:</strong> { data.createdBy }</p>
@@ -111,10 +121,7 @@ export default function HandwrittenAccountingTemplate({ data }: Props) {
               <tr><td colSpan={2}>{ data.date || <span className="print-placeholder">DATE</span> }</td></tr>
               <tr><td colSpan={2}>{ data.contactName || <span className="print-placeholder">CONTACT NAME</span> }</td></tr>
               <tr><td colSpan={2}>{ data.poNum || <span className="print-placeholder">PO#</span> }</td></tr>
-              <tr>
-                <td>{ data.shipVia || <span className="print-placeholder">SHIP VIA</span> }</td>
-                <td>{ data.paymentType || <span className="print-placeholder">PAYMENT TYPE</span> }</td>
-              </tr>
+              <td>{ data.shipVia || <span className="print-placeholder">SHIP VIA</span> }</td>
               <tr><td colSpan={2}>{ data.contactPhone || <span className="print-placeholder">CONTACT PHONE</span> }</td></tr>
               <tr><td colSpan={2}>{ data.email || <span className="print-placeholder">EMAIL</span> }</td></tr>
             </tbody>

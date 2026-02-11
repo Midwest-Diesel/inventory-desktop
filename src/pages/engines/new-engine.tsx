@@ -39,7 +39,7 @@ export default function NewEnginesListPage() {
       qty,
       cost,
       location: selectedHandwrittenItem?.location ?? null,
-      partId: selectedHandwrittenItem?.id ?? null
+      partId: null
     };
     await addHandwrittenItem(newItem);
     if (warranty) await editHandwrittenOrderNotes(handwritten.id, warranty);

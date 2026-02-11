@@ -12,8 +12,8 @@ import Input from "@/components/library/Input";
 import Table from "@/components/library/Table";
 import { userAtom } from "@/scripts/atoms/state";
 import { supabase } from "@/scripts/config/supabase";
-import { deleteHandwritten, editHandwritten, getHandwrittenById } from "@/scripts/services/handwrittensService";
-import { formatCurrency, formatDate, formatPhone } from "@/scripts/tools/stringUtils";
+import { deleteHandwritten, editHandwritten, editHandwrittenCCNumber, getHandwrittenById } from "@/scripts/services/handwrittensService";
+import { formatCCNumber, formatCurrency, formatDate, formatPhone } from "@/scripts/tools/stringUtils";
 import { RealtimePostgresUpdatePayload } from "@supabase/supabase-js";
 import { invoke, confirm } from "@/scripts/config/tauri";
 import { useAtom } from "jotai";
@@ -310,6 +310,7 @@ export default function HandwrittenDetails({
       alert('Missing cardNum, expDate, or cvv');
       return;
     }
+    await editHandwrittenCCNumber(handwritten.id, formatCCNumber(cardNum));
     addToQue('ccLabel', 'print_cc_label', { cardNum, expDate, cvv, cardZip, cardName, cardAddress }, '280px', '135px');
     printQue();
   };

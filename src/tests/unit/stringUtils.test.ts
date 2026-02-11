@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { formatCurrency, formatDate, formatPhone, formatTime, parsePhone, parseResDate, toAbsolutePath } from "@/scripts/tools/stringUtils";
+import { formatCCNumber, formatCurrency, formatDate, formatPhone, formatTime, parsePhone, parseResDate, toAbsolutePath } from "@/scripts/tools/stringUtils";
 import { extractStatusColors } from '@/scripts/logic/partSearch';
 
 
@@ -243,3 +243,13 @@ describe('To Abosolute Path', () => {
     expect(toAbsolutePath('/cores')).toEqual('/cores');
   });
 });
+
+describe('Format CCNumber', () => {
+  test('Should parse number with correct length', () => {
+    expect(formatCCNumber('4141414141415555')).toEqual('XXXXXXXXXXXX5555');
+  });
+
+  test('Should parse number with incorrect length', () => {
+    expect(formatCCNumber('414141415555')).toEqual('XXXXXXXXXXXX5555');
+  });
+})
