@@ -2,18 +2,19 @@ import Button from "../library/Button";
 import Checkbox from "../library/Checkbox";
 import Table from "../library/Table";
 import Select from "../library/select/Select";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Input from "../library/Input";
 import { getAllEngineModels } from "@/scripts/services/enginesService";
-import { deleteEngineAddOn, editEngineAddOnPrintStatus } from "@/scripts/services/engineAddOnsService";
+import { deleteEngineAddOn, editEngineAddOnPrintStatus, editEngineAddOnUserEditing } from "@/scripts/services/engineAddOnsService";
 import { useAtom } from "jotai";
-import { engineAddOnsAtom } from "@/scripts/atoms/state";
+import { engineAddOnsAtom, userAtom } from "@/scripts/atoms/state";
 import { ask } from "@/scripts/config/tauri";
 import { usePrintQue } from "@/hooks/usePrintQue";
-import { formatDate } from "@/scripts/tools/stringUtils";
+import { cap, formatDate } from "@/scripts/tools/stringUtils";
 import DropdownOption from "../library/dropdown/DropdownOption";
 import { useQuery } from "@tanstack/react-query";
 import InputDropdown from "../library/InputDropdown";
+import { emitServerEvent, offServerEvent, onServerEvent } from "@/scripts/config/websockets";
 
 interface Props {
   addOn: EngineAddOn
@@ -22,6 +23,7 @@ interface Props {
 
 
 export default function ShopEngineAddOnRow({ addOn, onSave }: Props) {
+  const [user] = useAtom<User>(userAtom);
   const { addToQue, printQue } = usePrintQue();
   const [addOns, setAddons] = useAtom<EngineAddOn[]>(engineAddOnsAtom);
   const [printQty, setPrintQty] = useState(1);
@@ -31,21 +33,42 @@ export default function ShopEngineAddOnRow({ addOn, onSave }: Props) {
     queryKey: ['models', addOn.engineNum],
     queryFn: getAllEngineModels
   });
-  
-  const handleEditAddOn = (newAddOn: EngineAddOn) => {
-    const updatedAddOns = addOns.map((a: EngineAddOn) => {
-      if (a.id === newAddOn.id) {
-        return newAddOn;
+
+  useEffect(() => {
+    const handlePrintEvent = (printedAddOns: EngineAddOn[]) => {
+      const updates = Array.isArray(printedAddOns) ? printedAddOns : [printedAddOns];
+      if (updates.some((a) => a.id === addOn.id)) {
+        setAddons((prev) =>
+          prev.map((a) =>
+            a.id === addOn.id
+              ? { ...a, isPrinted: true }
+              : a
+          )
+        );
       }
-      return a;
-    });
+    };
+
+    onServerEvent('PRINT_ENGINE_ADDON', handlePrintEvent);
+
+    return () => {
+      offServerEvent('PRINT_ENGINE_ADDON', handlePrintEvent);
+    };
+  }, [addOn.id, setAddons]);
+  
+  const handleEditAddOn = async (newAddOn: EngineAddOn) => {
+    if (!addOn.userEditing) {
+      await setUserEditing();
+    }
+    if (addOn.userEditing && addOn.userEditing.id !== user.id) return;
+
+    const updatedAddOns = addOns.map((a: EngineAddOn) => a.id === newAddOn.id ? newAddOn : a);
     setAddons(updatedAddOns);
   };
 
   const onClickDeleteAddOn = async () => {
     if (!await ask('Are you sure you want to delete this?')) return;
     await deleteEngineAddOn(addOn.id);
-    setAddons(addOns.filter((a) => a.id !== addOn.id));
+    emitServerEvent('DELETE_ENGINE_ADDON', [addOn.id]);
   };
 
   const handlePrint = async () => {
@@ -56,6 +79,8 @@ export default function ShopEngineAddOnRow({ addOn, onSave }: Props) {
 
     await onSave();
     await editEngineAddOnPrintStatus(addOn.id, true);
+    emitServerEvent('PRINT_ENGINE_ADDON', [addOn]);
+
     for (let i = 0; i < printQty; i++) {
       const args = {
         date: formatDate(addOn.entryDate),
@@ -74,9 +99,23 @@ export default function ShopEngineAddOnRow({ addOn, onSave }: Props) {
     printQue();
   };
   
+  const setUserEditing = async () => {
+    if (user.id === addOn.userEditing?.id) return;
+    await editEngineAddOnUserEditing(addOn.id, user.id);
+    const userEditing = { id: user.id, username: user.username };
+    emitServerEvent('UPDATE_ENGINE_ADDON_OWNERSHIP', [{ id: addOn.id, userEditing }]);
+  };
+
 
   return (
-    <>
+    <div>
+      {addOn.userEditing &&
+        <h4 style={{ display: 'flex', color: user.id === addOn.userEditing.id ? 'var(--green-light-2)' : 'var(--orange-1)' }}>
+          <img style={{ width: '0.7rem', marginRight: '0.3rem' }} src="/images/icons/lock.svg" alt="Locked" />
+          { cap(addOn.userEditing.username) }
+        </h4>
+      }
+
       <div className={`add-ons__list-row ${addOn.isPrinted ? 'add-ons__list-row--completed' : ''}`} ref={ref}>
         <div className="add-ons__list-row-content">
           <Table variant={['plain', 'edit-row-details']} style={{ width: 'fit-content' }}>
@@ -229,6 +268,6 @@ export default function ShopEngineAddOnRow({ addOn, onSave }: Props) {
           <Button variant={['danger']} type="button" onClick={onClickDeleteAddOn}>Delete</Button>
         </div>
       </div>
-    </>
+    </div>
   );
 }

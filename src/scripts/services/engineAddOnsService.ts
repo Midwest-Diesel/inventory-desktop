@@ -34,7 +34,8 @@ export const getOfficeEngineAddOns = async (): Promise<EngineAddOn[]> => {
 
 export const addEngineAddOn = async (addOn?: EngineAddOn) => {
   try {
-    await api.post('/api/engine-add-ons', addOn);
+    const res = await api.post('/api/engine-add-ons', addOn);
+    return res.data;
   } catch (err) {
     console.error(err);
   }
@@ -50,11 +51,35 @@ export const editEngineAddOn = async (addOn: EngineAddOn) => {
   }
 };
 
+export const editEngineAddOns = async (addOns: EngineAddOn[]) => {
+  try {
+    await api.put('/api/engine-add-ons/list', { addOns });
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+export const engineAddOnClearUserEditing = async (userEditing: number) => {
+  try {
+    await api.put('/api/engine-add-ons/clear-user-editing', { userEditing });
+  } catch (err) {
+    console.error(err);
+  }
+};
+
 // === PATCH routes === //
 
 export const editEngineAddOnPrintStatus = async (id: number, isPrinted: boolean) => {
   try {
     await api.patch('/api/engine-add-ons/is-printed', { id, isPrinted });
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+export const editEngineAddOnUserEditing = async (id: number, userEditing: number) => {
+  try {
+    await api.patch('/api/engine-add-ons/user-editing', { id, userEditing });
   } catch (err) {
     console.error(err);
   }

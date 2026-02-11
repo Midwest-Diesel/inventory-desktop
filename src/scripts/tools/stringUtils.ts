@@ -32,6 +32,7 @@ export const parseDateInputValue = (date: Date | null): string => {
 };
 
 export const cap = (str: string): string => {
+  if (!str) return '';
   return str.charAt(0).toUpperCase() + str.slice(1);
 };
 
