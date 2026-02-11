@@ -448,10 +448,7 @@ export default function EditHandwrittenDetails({
   };
 
   const handlePrintCCLabel = async () => {
-    if (!cardNum || !expDate || !cvv) {
-      alert('Missing cardNum, expDate, or cvv');
-      return;
-    }
+    if (!cardNum || !expDate || !cvv) return;
     await editHandwrittenCCNumber(handwritten.id, formatCCNumber(cardNum));
     addToQue('ccLabel', 'print_cc_label', { cardNum, expDate, cvv, cardZip, cardName, cardAddress }, '280px', '135px');
     printQue();
