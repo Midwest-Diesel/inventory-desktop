@@ -56,7 +56,6 @@ export default function PurchaseOrderTemplate({ data }: Props) {
       <div className="po-template__section">
         <div className="po-template__column">
           <p><strong>Payment Terms:</strong> { data.paymentTerms }</p>
-          <p><strong>Purchased For:</strong> { data.purchasedFor }</p>
           <p><strong>Special Instructions:</strong> { data.specialInstructions }</p>
           <p><strong>Comments:</strong> { data.comments }</p>
         </div>

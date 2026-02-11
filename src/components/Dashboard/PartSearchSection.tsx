@@ -108,6 +108,8 @@ export default function PartSearchSection({ selectHandwrittenOpen, setSelectHand
       const alerts = await detectAlerts(params.partNum);
       setSelectedAlerts([...selectedAlerts, ...alerts]);
     }
+
+    if (isObjectNull({ ...params, partNum: params.partNum.replace('*', ''), isAltSearch: null, page: null })) location.reload();
   };
 
   const onChangePage = (_: any, page: number) => {

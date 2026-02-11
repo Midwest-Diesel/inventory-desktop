@@ -36,6 +36,7 @@ import { addCoreCharge } from "@/scripts/logic/handwrittens";
 import EditHandwrittenItemsTable from "./EditHandwrittenItemsTable";
 import ModalList from "../library/ModalList";
 import InputDropdown from "../library/InputDropdown";
+import HandwrittenStatusFields from "./HandwrittenStatusFields";
 
 interface Props {
   handwritten: Handwritten
@@ -115,8 +116,8 @@ export default function EditHandwrittenDetails({
   const [contactEmail, setContactEmail] = useState<string>(handwritten.email ?? '');
   const [customerEngineInfo, setCustomerEngineInfo] = useState<string>(handwritten.customerEngineInfo ?? '');
   const [invoiceStatus, setInvoiceStatus] = useState<InvoiceStatus>(handwritten.invoiceStatus);
-  const [accountingStatus, setAccountingStatus] = useState<AccountingStatus>(handwritten.accountingStatus ?? '');
-  const [shippingStatus, setShippingStatus] = useState<ShippingStatus>(handwritten.shippingStatus ?? '');
+  const [accountingStatus, setAccountingStatus] = useState<AccountingStatus | null>(handwritten.accountingStatus ?? '');
+  const [shippingStatus, setShippingStatus] = useState<ShippingStatus | null>(handwritten.shippingStatus ?? '');
   const [handwrittenItems, setHandwrittenItems] = useState<HandwrittenItem[]>(handwritten.handwrittenItems);
   const [orderNotes, setOrderNotes] = useState<string>(handwritten.orderNotes ?? '');
   const [shippingNotes, setShippingNotes] = useState<string>(handwritten.shippingNotes ?? '');
@@ -1118,47 +1119,15 @@ export default function EditHandwrittenDetails({
                 </div>
               </GridItem>
 
-              <GridItem colSpan={12} variant={['low-opacity-bg']}>
-                <div style={{ display: 'flex', gap: '2rem', marginTop: '1rem' }}>
-                  <Select
-                    label="Sales Status"
-                    variant={['label-stack']}
-                    value={invoiceStatus}
-                    onChange={(e: any) => setInvoiceStatus(e.target.value)}
-                    data-testid="sales-status"
-                  >
-                    <option value="INVOICE PENDING">INVOICE PENDING</option>
-                    <option value="SENT TO ACCOUNTING">SENT TO ACCOUNTING</option>
-                    <option value="CANCELLED">CANCELLED</option>
-                    <option value="STOP - HOLD">STOP - HOLD</option>
-                    <option value="HOLD AS FAVOR">HOLD AS FAVOR</option>
-                  </Select>
-
-                  <Select
-                    label="Accouting Status"
-                    variant={['label-stack']}
-                    value={accountingStatus}
-                    onChange={(e: any) => setAccountingStatus(e.target.value)}
-                  >
-                    <option value=""></option>
-                    <option value="IN PROCESS">IN PROCESS</option>
-                    <option value="COMPLETE">COMPLETE</option>
-                    <option value="PAYMENT EXCEPTION">PAYMENT EXCEPTION</option>
-                  </Select>
-
-                  <Select
-                    label="Shipping Status"
-                    variant={['label-stack']}
-                    value={shippingStatus}
-                    onChange={(e: any) => setShippingStatus(e.target.value)}
-                  >
-                    <option value=""></option>
-                    <option value="ORDER PICKED">ORDER PICKED</option>
-                    <option value="ORDER PACKED">ORDER PACKED</option>
-                    <option value="ORDER COMPLETE">ORDER COMPLETE</option>
-                  </Select>
-                </div>
-              </GridItem>
+              <HandwrittenStatusFields
+                invoiceStatus={invoiceStatus}
+                accountingStatus={accountingStatus}
+                shippingStatus={shippingStatus}
+                onChangeInvoiceStatus={setInvoiceStatus}
+                onChangeAccountingStatus={setAccountingStatus}
+                onChangeShippingStatus={setShippingStatus}
+                isEditing={true}
+              />
 
               <GridItem colSpan={8} variant={['no-style']} style={{ marginTop: '1rem' }}>
                 <EditHandwrittenItemsTable

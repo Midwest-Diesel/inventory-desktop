@@ -76,7 +76,7 @@ export default function PartsSearchDialog({ open, setOpen, handleSearch }: Props
     localStorage.setItem('partSearches', JSON.stringify({ partNum, stockNum, desc, location, qty, remarks, rating, purchasedFrom, serialNum, hp }));
     localStorage.removeItem('altPartSearches');
     await handleSearch({ partNum, stockNum, desc, location, qty, remarks, rating, purchasedFrom, serialNum, hp, page: 1, isAltSearch: false });
-    if (partNum && user.subtype === 'sales') await addRecentSearch({ partNum: partNum.replace('*', ''), salespersonId: user.id });
+    if (partNum && partNum !== '*' && user.subtype === 'sales') await addRecentSearch({ partNum: partNum.replace('*', ''), salespersonId: user.id });
     setLastSearch(partNum.replace('*', ''));
   };
 

@@ -1,7 +1,7 @@
 import { useAtom } from "jotai";
 import Table from "../library/Table";
 import { recentPartSearchesAtom, userAtom } from "@/scripts/atoms/state";
-import { formatDate, formatTime, parseResDate } from "@/scripts/tools/stringUtils";
+import { formatDate, formatTime } from "@/scripts/tools/stringUtils";
 import { useEffect } from "react";
 import Tabs from "../library/Tabs";
 import { supabase } from "@/scripts/config/supabase";
@@ -31,8 +31,6 @@ export default function RecentPartSearches() {
   }, []);
 
   const refreshRecentSearches = async (e: RealtimePostgresInsertPayload<RecentPartSearch>) => {
-    const newSearchData = e.new = { ...e.new, date: parseResDate(e.new.date as any), salesman: user.initials } as any;
-    setRecentPartSearches([newSearchData, ...recentPartSearches]);
     const prevSearch: any = localStorage.getItem('altPartSearches') || localStorage.getItem('partSearches');
     const partNum = JSON.parse(prevSearch).partNum.replace('*', '');
     setRecentPartSearches(await getRecentPartSearches((partNum && partNum !== '') ? partNum : '*'));

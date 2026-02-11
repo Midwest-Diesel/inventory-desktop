@@ -12,7 +12,7 @@ import Input from "@/components/library/Input";
 import Table from "@/components/library/Table";
 import { userAtom } from "@/scripts/atoms/state";
 import { supabase } from "@/scripts/config/supabase";
-import { deleteHandwritten, getHandwrittenById } from "@/scripts/services/handwrittensService";
+import { deleteHandwritten, editHandwritten, getHandwrittenById } from "@/scripts/services/handwrittensService";
 import { formatCurrency, formatDate, formatPhone } from "@/scripts/tools/stringUtils";
 import { RealtimePostgresUpdatePayload } from "@supabase/supabase-js";
 import { invoke, confirm } from "@/scripts/config/tauri";
@@ -28,6 +28,7 @@ import { getAltShipByCustomerId } from "@/scripts/services/altShipService";
 import { useQuery } from "@tanstack/react-query";
 import { startTakeoff } from "@/scripts/logic/handwrittens";
 import { prompt } from "../library/Prompt";
+import HandwrittenStatusFields from "./HandwrittenStatusFields";
 
 interface Props {
   handwritten: Handwritten
@@ -208,12 +209,12 @@ export default function HandwrittenDetails({
         billToCompany: handwritten?.billToCompany ?? '',
         billToAddress: handwritten?.billToAddress ?? '',
         billToAddress2: handwritten?.billToAddress2 ?? '',
-        bill_to_city_state_zip: billToCityStateZip,
-        ship_to_company: handwritten?.shipToCompany ?? '',
+        billToCityStateZip: billToCityStateZip,
+        shipToCompany: handwritten?.shipToCompany ?? '',
         shipToContact: handwritten?.shipToContact ?? '',
-        ship_to_address: handwritten?.shipToAddress ?? '',
-        ship_to_address_2: handwritten?.shipToAddress2 ?? '',
-        ship_to_city_state_zip: shipToCityStateZip,
+        shipToAddress: handwritten?.shipToAddress ?? '',
+        shipToAddress2: handwritten?.shipToAddress2 ?? '',
+        shipToCityStateZip: shipToCityStateZip,
         blind,
         items: chunk.map((item) => {
           const price = formatCurrency(item.unitPrice) || '$0.00';
@@ -352,6 +353,24 @@ export default function HandwrittenDetails({
       tracking_numbers: handwritten.trackingNumbers.map((num) => `<li style='margin: 0;'>${num.trackingNumber}</li>`)
     };
     invoke('email_karmak_invoice', { args });
+  };
+
+  const onChangeInvoiceStatus = async (invoiceStatus: InvoiceStatus) => {
+    const newHandwritten = { ...handwritten, invoiceStatus };
+    await editHandwritten(newHandwritten);
+    setHandwritten(newHandwritten);
+  };
+
+  const onChangeAccountingStatus = async (accountingStatus: AccountingStatus | null) => {
+    const newHandwritten = { ...handwritten, accountingStatus };
+    await editHandwritten(newHandwritten);
+    setHandwritten(newHandwritten);
+  };
+
+  const onChangeShippingStatus = async (shippingStatus: ShippingStatus | null) => {
+    const newHandwritten = { ...handwritten, shippingStatus };
+    await editHandwritten(newHandwritten);
+    setHandwritten(newHandwritten);
   };
 
 
@@ -655,22 +674,15 @@ export default function HandwrittenDetails({
             </div>
           </GridItem>
 
-          <GridItem colSpan={12} variant={['low-opacity-bg']}>
-            <div style={{ display: 'flex', gap: '2rem' }}>
-              <div>
-                <p style={{ fontSize: 'var(--font-md)' }}><strong>Sales Status</strong></p>
-                <p style={{ color: 'var(--yellow-1)' }} data-testid="sales-status">{ handwritten.invoiceStatus }</p>
-              </div>
-              <div>
-                <p style={{ fontSize: 'var(--font-md)' }}><strong>Accounting Status</strong></p>
-                <p style={{ color: 'var(--yellow-1)' }}>{ handwritten.accountingStatus }</p>
-              </div>
-              <div>
-                <p style={{ fontSize: 'var(--font-md)' }}><strong>Shipping Status</strong></p>
-                <p style={{ color: 'var(--yellow-1)' }}>{ handwritten.shippingStatus }</p>
-              </div>
-            </div>
-          </GridItem>
+          <HandwrittenStatusFields
+            invoiceStatus={handwritten.invoiceStatus}
+            accountingStatus={handwritten.accountingStatus}
+            shippingStatus={handwritten.shippingStatus}
+            onChangeInvoiceStatus={onChangeInvoiceStatus}
+            onChangeAccountingStatus={onChangeAccountingStatus}
+            onChangeShippingStatus={onChangeShippingStatus}
+            isEditing={false}
+          />
 
           <GridItem variant={['no-style']} colSpan={8}>
             <HandwrittenItemsTable
