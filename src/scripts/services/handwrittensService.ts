@@ -130,9 +130,22 @@ export const searchSelectHandwrittensDialogData = async (handwritten: Handwritte
   }
 };
 
-export const getSomeHandwrittensByStatus = async (page: number, limit: number, status: string): Promise<{ pageCount: number, rows: Handwritten[] }> => {
+export const getSomeHandwrittensByInvoiceStatus = async (page: number, limit: number, status: InvoiceStatus): Promise<{ pageCount: number, rows: Handwritten[] }> => {
   try {
-    const res = await api.get(`/api/handwrittens/status/${JSON.stringify({ page: (page - 1) * limit, limit, status })}`);
+    const res = await api.get(`/api/handwrittens/invoice-status/${JSON.stringify({ page: (page - 1) * limit, limit, status })}`);
+    const parsedData = res.data.rows.map((row: any) => {
+      return { ...row, date: parseResDate(row.date) };
+    });
+    return { pageCount: res.data.pageCount, rows: parsedData };
+  } catch (err) {
+    console.error(err);
+    return { pageCount: 0, rows: [] };
+  }
+};
+
+export const getSomeHandwrittensByAccountingStatus = async (page: number, limit: number, status: string): Promise<{ pageCount: number, rows: Handwritten[] }> => {
+  try {
+    const res = await api.get(`/api/handwrittens/accounting-status/${JSON.stringify({ page: (page - 1) * limit, limit, status })}`);
     const parsedData = res.data.rows.map((row: any) => {
       return { ...row, date: parseResDate(row.date) };
     });

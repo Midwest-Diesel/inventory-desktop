@@ -4,7 +4,7 @@ import Loading from "@/components/library/Loading";
 import Pagination from "@/components/library/Pagination";
 import Table from "@/components/library/Table";
 import { invoke } from "@/scripts/config/tauri";
-import { getEndOfDayHandwrittens, getSomeHandwrittensByStatus } from "@/scripts/services/handwrittensService";
+import { getEndOfDayHandwrittens, getSomeHandwrittensByAccountingStatus } from "@/scripts/services/handwrittensService";
 import { formatDate } from "@/scripts/tools/stringUtils";
 import Link from "@/components/library/Link";
 import { useState } from "react";
@@ -22,7 +22,7 @@ export default function Karmak() {
 
   const { data: handwrittens, isFetching } = useQuery<HandwrittenRes>({
     queryKey: ['handwrittens', currentPage, currentStatus],
-    queryFn: () => getSomeHandwrittensByStatus(currentPage, LIMIT, currentStatus)
+    queryFn: () => getSomeHandwrittensByAccountingStatus(currentPage, LIMIT, currentStatus)
   });
 
   const handleChangePage = async (_: any, page: number) => {

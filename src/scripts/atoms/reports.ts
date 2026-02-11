@@ -13,6 +13,7 @@ export const theMachinesReportAtom = atom<TheMachinesReport[]>([]);
 export const arielSalesReportAtom = atom<ArielSalesReport[]>([]);
 export const partsCompanyReportAtom = atom<SingleCompanyParts[]>([]);
 export const enginesCompanyReportAtom = atom<SingleCompanyEngines[]>([]);
+export const pendingHandwrittensReportAtom = atom<Handwritten[]>([]);
 export const handwrittensCompanyReportAtom = atom<HandwrittensCompanyReport[]>([]);
 export const PBBListReportAtom = atom<PBBReport[]>([]);
 export const noLocationPartsReportAtom = atom<NoLocationPartsReport[]>([]);

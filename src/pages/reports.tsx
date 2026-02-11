@@ -35,11 +35,13 @@ import SingleCompanyPartsTable from "@/components/reports/SingleCompanyPartsTabl
 import SingleCompanyTable from "@/components/reports/SingleCompanyTable";
 import TheMachinesTable from "@/components/reports/TheMachinesTable";
 import { useNavState } from "@/hooks/useNavState";
-import { allCompaniesReportAtom, allEnginesReportAtom, allPartsReportAtom, allSalesmenReportAtom, allSourcesReportAtom, arielSalesReportAtom, enginesCompanyReportAtom, handwrittensCompanyReportAtom, noLocationPartsReportAtom, outstandingHighCoresReportAtom, partDescReportAtom, partsCompanyReportAtom, PBBListReportAtom, pricingChangesReportAtom, recentSearchesReportAtom, salesByBillToCompanyReportAtom, singleCompanyReportAtom, theMachinesReportAtom } from "@/scripts/atoms/reports";
+import { allCompaniesReportAtom, allEnginesReportAtom, allPartsReportAtom, allSalesmenReportAtom, allSourcesReportAtom, arielSalesReportAtom, enginesCompanyReportAtom, handwrittensCompanyReportAtom, noLocationPartsReportAtom, outstandingHighCoresReportAtom, partDescReportAtom, partsCompanyReportAtom, PBBListReportAtom, pendingHandwrittensReportAtom, pricingChangesReportAtom, recentSearchesReportAtom, salesByBillToCompanyReportAtom, singleCompanyReportAtom, theMachinesReportAtom } from "@/scripts/atoms/reports";
 import { reportNoLocationParts, reportOutstandingCores, reportPBB } from "@/scripts/services/reportsService";
 import { useAtom } from "jotai";
 import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
+import PendingHandwrittensTable from "@/components/reports/PendingHandwrittensTable";
+import { getSomeHandwrittensByInvoiceStatus } from "@/scripts/services/handwrittensService";
 
 
 export default function Reports() {
@@ -58,6 +60,7 @@ export default function Reports() {
   const [arielSalesData, setArielSalesData] = useAtom<ArielSalesReport[]>(arielSalesReportAtom);
   const [partsCompanyData, setPartsCompanyData] = useAtom<SingleCompanyParts[]>(partsCompanyReportAtom);
   const [enginesCompanyData, setEnginesCompanyData] = useAtom<SingleCompanyEngines[]>(enginesCompanyReportAtom);
+  const [pendingHandwrittensData, setPendingHandwrittensData] = useAtom<Handwritten[]>(pendingHandwrittensReportAtom);
   const [handwrittensCompanyData, setHandwrittensCompanyData] = useAtom<HandwrittensCompanyReport[]>(handwrittensCompanyReportAtom);
   const [PBBListData, setPBBListData] = useAtom<PBBReport[]>(PBBListReportAtom);
   const [noLocationPartsData, setNoLocationPartsData] = useAtom<NoLocationPartsReport[]>(noLocationPartsReportAtom);
@@ -99,6 +102,12 @@ export default function Reports() {
     await openTable('outstanding-high-cores');
   };
 
+  const handlePendingHandwrittens = async () => {
+    const res = await getSomeHandwrittensByInvoiceStatus(1, 9999, 'INVOICE PENDING');
+    setPendingHandwrittensData(res.rows);
+    await openTable('pending-handwrittens');
+  };
+
 
   return (
     <Layout title="Reports">
@@ -133,6 +142,7 @@ export default function Reports() {
             <div className="reports-page-section">
               <h2>Misc Reports</h2>
               <div className="reports-page-section__buttons">
+                <Button onClick={handlePendingHandwrittens}>Pending Handwrittens</Button>
                 <Button onClick={() => toggleOpenedReport('handwrittens-company')}>Handwrittens by Year</Button>
                 <Button onClick={handleSearchPBB}>PBB List</Button>
                 <Button onClick={handleSearchNoLocationParts}>No Location Parts</Button>
@@ -280,6 +290,7 @@ export default function Reports() {
           { isTableOpened('ariel-sales') && <ArielSalesTable closeTable={() => openTable('')} data={arielSalesData} /> }
           { isTableOpened('parts-company') && <SingleCompanyPartsTable closeTable={() => openTable('')} data={partsCompanyData} /> }
           { isTableOpened('engines-company') && <SingleCompanyEnginesTable closeTable={() => openTable('')} data={enginesCompanyData} /> }
+          { isTableOpened('pending-handwrittens') && <PendingHandwrittensTable closeTable={() => openTable('')} data={pendingHandwrittensData} /> }
           { isTableOpened('handwrittens-company') && <HandwrittenCompanyTable closeTable={() => openTable('')} data={handwrittensCompanyData} /> }
           { isTableOpened('pbb') && <PBBTable closeTable={() => openTable('')} data={PBBListData} /> }
           { isTableOpened('no-location-parts') && <NoLocationPartsTable closeTable={() => openTable('')} data={noLocationPartsData} /> }
