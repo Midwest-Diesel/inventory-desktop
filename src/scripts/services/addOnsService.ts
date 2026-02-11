@@ -42,11 +42,15 @@ export const getAddOnById = async (id: number): Promise<AddOn | null> => {
 
 // === POST routes === //
 
-export const addAddOn = async (addOn?: AddOn) => {
+export const addAddOn = async (addOn?: AddOn): Promise<AddOn | null> => {
   try {
-    await api.post('/api/add-ons', addOn);
+    const res = await api.post('/api/add-ons', addOn);
+    console.log({ ...res.data, id: Number(res.data.id) });
+    
+    return { ...res.data, id: Number(res.data.id) };
   } catch (err) {
     console.error(err);
+    return null;
   }
 };
 
@@ -76,11 +80,35 @@ export const editAddOnIsPoOpened = async (id: number, isPoOpened: boolean) => {
   }
 };
 
+export const editAddOnUserEditing = async (id: number, userEditing: number) => {
+  try {
+    await api.patch('/api/add-ons/user-editing', { id, userEditing });
+  } catch (err) {
+    console.error(err);
+  }
+};
+
 // === PUT routes === //
 
 export const editAddOn = async (addOn: AddOn) => {
   try {
     await api.put('/api/add-ons', addOn);
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+export const editAddOns = async (addOns: AddOn[]) => {
+  try {
+    await api.put('/api/add-ons/list', { addOns });
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+export const addOnClearUserEditing = async (userEditing: number) => {
+  try {
+    await api.put('/api/add-ons/clear-user-editing', { userEditing });
   } catch (err) {
     console.error(err);
   }

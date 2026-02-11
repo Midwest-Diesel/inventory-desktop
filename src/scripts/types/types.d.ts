@@ -347,6 +347,7 @@ type AddOn = {
   isPrinted: boolean
   isPoOpened: boolean
   prefix: string | null
+  userEditing: { id: number, username: string } | null
 };
 
 type EngineAddOn = {
@@ -370,6 +371,7 @@ type EngineAddOn = {
   engineCostInVendor: string | null
   engineCostInNote: string | null
   isPrinted: boolean
+  userEditing: { id: number, username: string } | null
 };
 
 type Warranty = {

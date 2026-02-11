@@ -1,15 +1,15 @@
 import { useAtom } from "jotai";
-import { shopAddOnsAtom } from "@/scripts/atoms/state";
+import { shopAddOnsAtom, userAtom } from "@/scripts/atoms/state";
 import Button from "../library/Button";
 import Checkbox from "../library/Checkbox";
 import Table from "../library/Table";
 import Select from "../library/select/Select";
-import { addAddOn, deleteAddOn, editAddOnIsPoOpened, editAddOnPrintStatus } from "@/scripts/services/addOnsService";
+import { addAddOn, deleteAddOn, editAddOnIsPoOpened, editAddOnPrintStatus, editAddOnUserEditing } from "@/scripts/services/addOnsService";
 import { getNextUPStockNum, getPartsByStockNum, getPartInfoByPartNum } from "@/scripts/services/partsService";
 import { useEffect, useRef, useState } from "react";
 import Input from "../library/Input";
 import { getEngineByStockNum } from "@/scripts/services/enginesService";
-import { formatDate } from "@/scripts/tools/stringUtils";
+import { cap, formatDate } from "@/scripts/tools/stringUtils";
 import { getPurchaseOrderByPoNum } from "@/scripts/services/purchaseOrderService";
 import { getRatingFromRemarks } from "@/scripts/tools/utils";
 import { getImagesFromPart } from "@/scripts/services/imagesService";
@@ -21,6 +21,7 @@ import { commonPrefixLength, getAddOnDateCode, getNextStockNumberSuffix } from "
 import { useQuery } from "@tanstack/react-query";
 import { getVendors } from "@/scripts/services/vendorsService";
 import { useNavState } from "@/hooks/useNavState";
+import { emitServerEvent, offServerEvent, onServerEvent } from "@/scripts/config/websockets";
 
 interface Props {
   addOn: AddOn
@@ -31,6 +32,7 @@ interface Props {
 
 
 export default function ShopPartAddonRow({ addOn, handleDuplicateAddOn, partNumList, onSave }: Props) {
+  const [user] = useAtom<User>(userAtom);
   const [, setSelectedPoData] = useAtom<{ selectedPoAddOn: PO | null, addOn: AddOn | null, receivedItemsDialogOpen: boolean }>(selectedPoAddOnAtom);
   const { addToQue, printQue } = usePrintQue();
   const { newTab } = useNavState();
@@ -79,6 +81,27 @@ export default function ShopPartAddonRow({ addOn, handleDuplicateAddOn, partNumL
   }, [showPartNumSelect, addOn.partNum, partNumList]);
 
   useEffect(() => {
+    const handlePrintEvent = (printedAddOns: AddOn[] | AddOn[]) => {
+      const updates = Array.isArray(printedAddOns) ? printedAddOns : [printedAddOns];
+      if (updates.some((a) => a.id === addOn.id)) {
+        setAddons((prev) =>
+          prev.map((a) =>
+            a.id === addOn.id
+              ? { ...a, isPrinted: true }
+              : a
+          )
+        );
+      }
+    };
+
+    onServerEvent('PRINT_ADDON', handlePrintEvent);
+
+    return () => {
+      offServerEvent('PRINT_ADDON', handlePrintEvent);
+    };
+  }, [addOn.id, setAddons]);
+
+  useEffect(() => {
     checkDuplicateStockNum(addOn.stockNum ?? '', false);
   }, [addOn.stockNum]);
 
@@ -87,19 +110,19 @@ export default function ShopPartAddonRow({ addOn, handleDuplicateAddOn, partNumL
   }, []);
 
   const handleEditAddOn = async (newAddOn: AddOn) => {
-    const updatedAddOns = addOns.map((a: AddOn) => {
-      if (a.id === newAddOn.id) {
-        return newAddOn;
-      }
-      return a;
-    });
+    if (!addOn.userEditing) {
+      await setUserEditing();
+    }
+    if (addOn.userEditing && addOn.userEditing.id !== user.id) return;
+
+    const updatedAddOns = addOns.map((a: AddOn) => a.id === newAddOn.id ? newAddOn : a);
     setAddons(updatedAddOns);
   };
 
   const onClickDeleteAddOn = async () => {
     if (!await ask('Are you sure you want to delete this part?')) return;
     await deleteAddOn(addOn.id);
-    setAddons(addOns.filter((a) => a.id !== addOn.id));
+    emitServerEvent('DELETE_ADDON', [addOn.id]);
   };
   
   const autofillFromPartNum = (partNum: string) => {
@@ -268,7 +291,16 @@ export default function ShopPartAddonRow({ addOn, handleDuplicateAddOn, partNumL
       return;
     }
     await onSave();
-    if (!isBlankAddOn(addOns[0])) await addAddOn();
+    if (!isBlankAddOn(addOns[0])) {
+      const newRow = await addAddOn();
+      if (!newRow) {
+        alert('Failed to create new row');
+        return;
+      }
+      emitServerEvent('INSERT_ADDON', [newRow]);
+    }
+    emitServerEvent('PRINT_ADDON', [addOn]);
+
     const engine = await getEngineByStockNum(addOn.engineNum);
     const pictures = await getImagesFromPart(addOn.partNum);
     await editAddOnPrintStatus(addOn.id, true);
@@ -310,6 +342,7 @@ export default function ShopPartAddonRow({ addOn, handleDuplicateAddOn, partNumL
   };
 
   const handlePartNumSelectClick = (num: string) => {
+    if (user.id !== addOn.userEditing?.id) return;
     handleEditAddOn({ ...addOn, partNum: num });
     autofillFromPartNum(num.toUpperCase());
     updateAutofillPartNumData(num);
@@ -326,9 +359,23 @@ export default function ShopPartAddonRow({ addOn, handleDuplicateAddOn, partNumL
     newTab([{ name: `Engine ${engineNumLink}`, url: `/engines/${engineNumLink}` }]);
   };
 
+  const setUserEditing = async () => {
+    if (user.id === addOn.userEditing?.id) return;
+    await editAddOnUserEditing(addOn.id, user.id);
+    const userEditing = { id: user.id, username: user.username };
+    emitServerEvent('UPDATE_ADDON_OWNERSHIP', [{ id: addOn.id, userEditing }]);
+  };
+
 
   return (
-    <>
+    <div>
+      {addOn.userEditing &&
+        <h4 style={{ display: 'flex', color: user.id === addOn.userEditing.id ? 'var(--green-light-2)' : 'var(--orange-1)' }}>
+          <img style={{ width: '0.7rem', marginRight: '0.3rem' }} src="/images/icons/lock.svg" alt="Locked" />
+          { cap(addOn.userEditing.username) }
+        </h4>
+      }
+
       <div className={`add-ons__list-row ${addOn.isPrinted ? 'add-ons__list-row--completed' : ''}`} ref={ref}>
         <div className="add-ons__list-row-content">
           <Table variant={['plain', 'edit-row-details']} style={{ width: 'fit-content' }}>
@@ -633,6 +680,6 @@ export default function ShopPartAddonRow({ addOn, handleDuplicateAddOn, partNumL
           <Button type="button" variant={['danger']} onClick={onClickDeleteAddOn}>Delete</Button>
         </div>
       </div>
-    </>
+    </div>
   );
 }
