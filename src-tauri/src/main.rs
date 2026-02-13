@@ -188,8 +188,14 @@ struct FastTrackItem {
 struct SendEmailArgs {
   body: String,
   subject: String,
+
+  #[serde(default)]
   recipients: Vec<String>,
+
+  #[serde(default)]
   cc: Vec<String>,
+  
+  #[serde(default)]
   attachments: Vec<String>
 }
 
