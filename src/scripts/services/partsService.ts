@@ -254,6 +254,40 @@ export const getPartsQtyHistory = async (partId: number): Promise<PartQtyHistory
   }
 };
 
+export const getFastTrackInventory = async (): Promise<FastTrackItem[]> => {
+  try {
+    const res = await api.get(`/api/parts/fast-track`);
+    const rows: FastTrackItem[] = res.data;
+    const existingPartNums = new Set(rows.map((r) => r.part_num));
+    const additionalRows: FastTrackItem[] = [];
+
+    for (const row of rows) {
+      if (!row.alt_parts) continue;
+      const altParts = row.alt_parts
+        .split(',')
+        .map((p) => p.trim())
+        .filter(Boolean);
+
+      for (const altPart of altParts) {
+        if (!existingPartNums.has(altPart)) {
+          existingPartNums.add(altPart);
+          additionalRows.push({
+            part_num: altPart,
+            manufacturer: '',
+            qty: '',
+            desc: '',
+            alt_parts: altPart
+          });
+        }
+      }
+    }
+
+    return [...rows, ...additionalRows];
+  } catch (err) {
+    console.error(err);
+    return [];
+  }
+};
 
 // === POST routes === //
 

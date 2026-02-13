@@ -21,7 +21,7 @@ const PART_TAG_PRINTER: &str = "D550 Printer";
 use image::{io::Reader as ImageReader, ImageOutputFormat, DynamicImage, imageops::{rotate90, FilterType}};
 use serde::{Deserialize, Serialize};
 use tauri::{Manager, api::shell, AppHandle};
-use std::env;
+use std::{env, io::BufWriter};
 use std::fs::{self, write, File, remove_file, create_dir_all};
 use std::io::{self, Cursor, Write, copy};
 use std::process::{Command};
@@ -175,6 +175,24 @@ struct EmailPOReceivedArgs {
   email: String
 }
 
+#[derive(Deserialize, Serialize)]
+struct FastTrackItem {
+  part_num: String,
+  manufacturer: String,
+  qty: String,
+  desc: String,
+  alt_parts: String
+}
+
+#[derive(Deserialize, Serialize)]
+struct SendEmailArgs {
+  body: String,
+  subject: String,
+  recipients: Vec<String>,
+  cc: Vec<String>,
+  attachments: Vec<String>
+}
+
 
 #[tokio::main]
 async fn main() {
@@ -219,7 +237,8 @@ async fn main() {
       email_karmak_invoice,
       view_file,
       save_pdf,
-      email_po_received
+      email_po_received,
+      email_fast_track_inventory
     ])
     .run(tauri::generate_context!());
 }
@@ -694,7 +713,7 @@ fn add_to_shipping_list(new_shipping_list_row: ShippingListRow) {
       ExcelSheet.Range("A" & LastRow & ":U" & LastRow).Font.Color = RGB(192, 0, 0)
     End If
 
-    If ExcelSheet.Range("B" & LastRow).Text = "UPS Red" Then
+    If InStr(1, ExcelSheet.Range("B" & LastRow).Text, "ups red", vbTextCompare) > 0 Then
       ExcelSheet.Range("B" & LastRow).Font.Color = RGB(255, 0, 0)
     End If
 
@@ -1416,36 +1435,18 @@ fn email_po(po_num: String, path: String) {
 #[tauri::command]
 fn email_po_received(args: EmailPOReceivedArgs) {
   let body = args
-      .items
-      .iter()
-      .map(|item| format!("<br />     * {}", item))
-      .collect::<String>();
+    .items
+    .iter()
+    .map(|item| format!("<br />     * {}", item))
+    .collect::<String>();
 
-  let vbs_script = format!(
-    r#"
-    Dim OutlookApp
-    Set OutlookApp = CreateObject("Outlook.Application")
-    Dim MailItem
-    Set MailItem = OutlookApp.CreateItem(0)
-
-    MailItem.To = "{}"
-    MailItem.Subject = "PO #{} has been received!"
-    MailItem.HTMLBody = "PO# {} purchased from {} has received the following items:<br />{}"
-    MailItem.Display
-    "#,
-    args.email,
-    args.po_num,
-    args.po_num,
-    args.purchased_from,
-    body.replace("\"", "\"\"")
-  );
-
-  let vbs_path = "C:/mwd/scripts/email_po_received.vbs";
-  write(vbs_path, vbs_script).unwrap();
-
-  let mut cmd = Command::new("wscript.exe");
-  cmd.arg(vbs_path);
-  cmd.output().unwrap();
+  send_email(SendEmailArgs {
+    body: format!("PO# {} purchased from {} has received the following items:<br />{}", args.po_num, args.purchased_from, body.replace("\"", "\"\"")),
+    recipients: vec![args.email],
+    cc: vec![],
+    attachments: vec![],
+    subject: format!("PO #{} has been received!", args.po_num)
+  });
 }
 
 #[tauri::command]
@@ -1815,6 +1816,45 @@ async fn print_engine_checklist(image_data: String) -> Result<(), String> {
 }
 
 #[tauri::command]
+async fn email_fast_track_inventory(inventory: Vec<FastTrackItem>) -> Result<(), String> {
+  let file_path = "\\\\MWD1-SERVER\\Server\\FastTrack\\Parts C514.csv";
+  let file = File::create(file_path).map_err(|e| e.to_string())?;
+  let mut writer = BufWriter::new(file);
+
+  writeln!(
+    writer,
+    "PartNumber,Manufacturer_,Quantity_,Description,__,Price,Other,City,State,Country,AlternateParts"
+  )
+  .map_err(|e| e.to_string())?;
+
+  for item in &inventory {
+    writeln!(
+      writer,
+      "\"=\"\"{}\"\"\",\"{}\",\"{}\",\"{}\",\"\",\"\",\"\",\"Blaine\",\"MN\",\"USA\",\"=\"\"{}\"\"\"",
+      item.part_num, item.manufacturer, item.qty, item.desc, item.alt_parts
+    )
+    .map_err(|e| e.to_string())?;
+  }
+
+  writer.flush().map_err(|e| e.to_string())?;
+  drop(writer);
+
+  if let Ok(val) = env::var("VITE_NODE_ENV") {
+    if val == "production" {
+      send_email(SendEmailArgs {
+        body: "".to_string(),
+        recipients: vec!["imports@sandhills.com".to_string()],
+        cc: vec!["matt@midwestdiesel.com".to_string()],
+        attachments: vec![file_path.to_string()],
+        subject: "partsc514".to_string()
+      });
+    }
+  }
+
+  Ok(())
+}
+
+#[tauri::command]
 fn view_file(app_handle: AppHandle, filepath: String) -> Result<(), String> {
   shell::open(&app_handle.shell_scope(), filepath, None)
     .map_err(|e| format!("Failed to open: {}", e))
@@ -1823,4 +1863,43 @@ fn view_file(app_handle: AppHandle, filepath: String) -> Result<(), String> {
 #[tauri::command]
 fn save_pdf(bytes: Vec<u8>, path: String) -> Result<(), String> {
   std::fs::write(path, bytes).map_err(|e| e.to_string())
+}
+
+fn send_email(data: SendEmailArgs) {
+  let recipients = data.recipients.join("; ");
+  let cc_list = data.cc.join("; ");
+  let attachments_vbs = data
+    .attachments
+    .iter()
+    .map(|path| format!("MailItem.Attachments.Add \"{}\"", path))
+    .collect::<Vec<_>>()
+    .join("\n");
+
+  let vbs_script = format!(
+    r#"
+    Dim OutlookApp
+    Set OutlookApp = CreateObject("Outlook.Application")
+    Dim MailItem
+    Set MailItem = OutlookApp.CreateItem(0)
+    MailItem.Subject = "{}"
+    MailItem.HTMLBody = "{}"
+    MailItem.To = "{}"
+    MailItem.CC = "{}"
+
+    {}
+    MailItem.Send
+    "#,
+    data.subject,
+    data.body.replace("\"", "\"\""),
+    recipients,
+    cc_list,
+    attachments_vbs
+  );
+
+  let vbs_path = "C:/mwd/scripts/send_email.vbs";
+  write(&vbs_path, vbs_script).expect("Failed to write VBS script");
+
+  let mut cmd = Command::new("wscript.exe");
+  cmd.arg(vbs_path);
+  cmd.output().expect("Failed to run VBS script");
 }

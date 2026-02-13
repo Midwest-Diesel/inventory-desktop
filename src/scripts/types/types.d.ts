@@ -490,6 +490,15 @@ type Part = {
   engineCostRemaining: number
   profitMargin: number | null
   profitPercent: number | null
+  fastTrackStatus: string | null
+};
+
+type FastTrackItem = {
+  part_num: string
+  manufacturer: string
+  qty: string
+  desc: string
+  alt_parts: string
 };
 
 type PartMin = {
