@@ -80,7 +80,6 @@ export default function EngineDetails({ engine, setIsEditing, setEngineProfitOpe
       };
       addToQue('engineTag', 'print_engine_tag', args, '700px', '1500px');
     }
-    addToQue('engineChecklist', 'print_engine_checklist', null, '1500px', '1000px');
     printQue();
   };
 
