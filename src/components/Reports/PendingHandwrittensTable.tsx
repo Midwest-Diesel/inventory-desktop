@@ -44,23 +44,23 @@ export default function PendingHandwrittensTable({ closeTable, data }: Props) {
       <Table>
         <thead>
           <tr>
-            <th></th>
+            <th>‎</th>
+            <th>Created By</th>
             <th>Date</th>
             <th>Bill To Company</th>
             <th>Ship To Company</th>
             <th>Source</th>
             <th>Payment</th>
             <th>Status</th>
-            <th>Acounting Status</th>
+            <th>Accounting Status</th>
           </tr>
         </thead>
         <tbody>
           {data && data.map((row, i) => {
             return (
               <tr key={i}>
-                <td>
-                  <Link href={`/handwrittens/${row.id}`}>{ row.id }</Link>
-                </td>
+                <td><Link href={`/handwrittens/${row.id}`}>{ row.id }</Link></td>
+                <td>{ row.createdBy }</td>
                 <td>{ formatDate(row.date) }</td>
                 <td>{ row.billToCompany }</td>
                 <td>{ row.shipToCompany }</td>

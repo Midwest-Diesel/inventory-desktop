@@ -120,3 +120,10 @@ export const formatRemarksSoldText = (remarks: string | null, qtySold: number | 
   if (!remarks) return '';
   return `^ ${qtySold ? `${qtySold} ` : ''}SOLD BY ${salesman} ${formatDate(new Date())} ${customer} ^^${remarks}`;
 };
+
+export const removeRemarksSoldText = (remarks: string | null): string => {
+  if (!remarks) return '';
+  const markerIndex = remarks.lastIndexOf('^^');
+  if (markerIndex === -1) return remarks;
+  return remarks.substring(markerIndex + 2).trim();
+};

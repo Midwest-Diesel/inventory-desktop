@@ -37,6 +37,8 @@ import EditHandwrittenItemsTable from "./EditHandwrittenItemsTable";
 import ModalList from "../library/ModalList";
 import InputDropdown from "../library/InputDropdown";
 import HandwrittenStatusFields from "./HandwrittenStatusFields";
+import { editPart, getPartById } from "@/scripts/services/partsService";
+import { removeRemarksSoldText } from "@/scripts/logic/parts";
 
 interface Props {
   handwritten: Handwritten
@@ -457,6 +459,8 @@ export default function EditHandwrittenDetails({
   const handleDeleteItem = async (item: HandwrittenItem) => {
     if (!await ask('Are you sure you want to delete this item?')) return;
     const newItems = handwrittenItems.filter((i: HandwrittenItem) => i.id !== item.id);
+    const part = await getPartById(item.partId);
+    if (part) await editPart({ ...part, remarks: removeRemarksSoldText(part.remarks) });
     await deleteHandwrittenItem(item.id);
     if (item.location && item.location.includes('CORE DEPOSIT')) await deleteCoreByItemId(item.id);
     setHandwrittenItems(newItems);
