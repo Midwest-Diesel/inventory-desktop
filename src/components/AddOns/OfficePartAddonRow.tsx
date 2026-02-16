@@ -3,7 +3,7 @@ import { shopAddOnsAtom, userAtom } from "@/scripts/atoms/state";
 import { deleteAddOn, editAddOnAltParts, editAddOnUserEditing, getAddOnById } from "@/scripts/services/addOnsService";
 import { addPart, addPartCostIn, getPartsByStockNum, getPartInfoByPartNum } from "@/scripts/services/partsService";
 import { useEffect, useRef, useState } from "react";
-import { getEngineCostRemaining } from "@/scripts/services/enginesService";
+import { addEngineCostOut, getEngineCostRemaining } from "@/scripts/services/enginesService";
 import { getRatingFromRemarks } from "@/scripts/tools/utils";
 import { ask } from "@/scripts/config/tauri";
 import { cap, formatCurrency } from "@/scripts/tools/stringUtils";
@@ -135,7 +135,11 @@ export default function OfficePartAddonRow({ addOn, onSave, onModifyAddOnData }:
     await addPart(newPart, partsInfo !== null);
 
     // Add purchase price
-    if (newPart.purchasePrice > 0) await addPartCostIn(newPart.stockNum, newPart.purchasePrice, null, newPart.purchasedFrom, 'PurchasePrice', '');
+    if (newPart.engineNum && newPart.engineNum > 1) {
+      await addEngineCostOut(newPart.stockNum, newPart.engineNum, newPart.purchasePrice, 'Parts', '');
+    } else if (newPart.purchasePrice > 0) {
+      await addPartCostIn(newPart.stockNum, newPart.purchasePrice, null, newPart.purchasedFrom, 'PurchasePrice', '');
+    }
 
     // Clean up
     await deleteAddOn(updatedAddOn.id);
