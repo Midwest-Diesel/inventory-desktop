@@ -52,6 +52,7 @@ export default function CustomerDetails({ customer, setCustomer, setIsEditing }:
   const [isTaxable, setIsTaxable] = useState<boolean>(customer.isTaxable);
   const [comments, setComments] = useState<string>(commentsDoc.querySelector('body')?.innerText ?? '');
   const [fleetNotes, setFleetNotes] = useState<string>(fleetNotesDoc.querySelector('body')?.innerText ?? '');
+  const [country, setCountry] = useState(customer.country ?? '');
   const [changesSaved, setChangesSaved] = useState(true);
   usePreventNavigation(!changesSaved, 'Leave without saving changes?');
 
@@ -92,7 +93,8 @@ export default function CustomerDetails({ customer, setCustomer, setIsEditing }:
       paymentType,
       isTaxable,
       comments,
-      fleetNotes
+      fleetNotes,
+      country
     } as Customer;
     await editCustomer(newCustomer);
     setCustomer(newCustomer);
@@ -269,6 +271,15 @@ export default function CustomerDetails({ customer, setCustomer, setIsEditing }:
                         <Input
                           value={billToPhone}
                           onChange={(e) => setBillToPhone(e.target.value)}
+                        />
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>Country</th>
+                      <td>
+                        <Input
+                          value={country}
+                          onChange={(e) => setCountry(e.target.value)}
                         />
                       </td>
                     </tr>

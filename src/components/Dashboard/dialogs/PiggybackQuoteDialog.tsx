@@ -3,7 +3,7 @@ import Dialog from "../../library/Dialog";
 import Table from "@/components/library/Table";
 import Pagination from "@/components/library/Pagination";
 import { useAtom } from "jotai";
-import { showSoldPartsAtom, userAtom } from "@/scripts/atoms/state";
+import { userAtom } from "@/scripts/atoms/state";
 import Button from "@/components/library/Button";
 import { getCustomerById } from "@/scripts/services/customerService";
 import { getPartById, searchAltParts } from "@/scripts/services/partsService";
@@ -24,7 +24,6 @@ const LIMIT = 26;
 
 export default function PiggybackQuoteDialog({ open, setOpen, quote, handleChangeQuotesPage, quotesPage }: Props) {
   const [user] = useAtom<User>(userAtom);
-  const [showSoldParts] = useAtom<boolean>(showSoldPartsAtom);
   const [currentPage, setCurrentPage] = useState(0);
   const [selectedPartId, setSelectedPartId] = useState<number | null>(null);
   const [showRemarksList, setShowRemarksList] = useState<{ [id: number]: boolean }>({});
@@ -32,7 +31,7 @@ export default function PiggybackQuoteDialog({ open, setOpen, quote, handleChang
   
   useEffect(() => {
     setSearchParams(JSON.parse(localStorage.getItem('altPartSearches') || JSON.parse(localStorage.getItem('partSearches')!)));
-  }, [open, showSoldParts, quote]);
+  }, [open, quote]);
 
   const { data: parts, isFetching: isSearchFetching } = useQuery<PartsRes>({
     queryKey: ['searchParts', searchParams, currentPage],

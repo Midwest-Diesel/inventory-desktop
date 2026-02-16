@@ -6,8 +6,6 @@ import Button from "@/components/library/Button";
 import { getPartById, getSomePartsMin, searchAltParts } from "@/scripts/services/partsService";
 import Loading from "@/components/library/Loading";
 import PiggybackPartSearchDialog from "./PiggybackPartSearchDialog";
-import { useAtom } from "jotai";
-import { showSoldPartsAtom } from "@/scripts/atoms/state";
 
 interface Props {
   open: boolean
@@ -17,7 +15,6 @@ interface Props {
 
 
 export default function PartSelectDialog({ open, setOpen, onSubmit }: Props) {
-  const [showSoldParts] = useAtom<boolean>(showSoldPartsAtom);
   const [partsData, setPartsData] = useState<PartMin[]>([]);
   const [parts, setParts] = useState<PartMin[]>([]);
   const [partCount, setPartCount] = useState<number>(0);
@@ -27,7 +24,7 @@ export default function PartSelectDialog({ open, setOpen, onSubmit }: Props) {
   const [loading, setLoading] = useState(false);
   const [isSearchMode, setIsSearchMode] = useState(false);
   const [showRemarksList, setShowRemarksList] = useState<{ [id: number]: boolean }>({});
-  const [searchData, setSearchData] = useState<PartSearchData>({ showSoldParts: true });
+  const [searchData, setSearchData] = useState<PartSearchData>({ showSoldParts: false });
   const LIMIT = 26;
 
   useEffect(() => {
@@ -47,7 +44,7 @@ export default function PartSelectDialog({ open, setOpen, onSubmit }: Props) {
   };
 
   const resetPartsList = async () => {
-    const res = await getSomePartsMin(1, LIMIT, showSoldParts);
+    const res = await getSomePartsMin(1, LIMIT, false);
     setPartsData(res.rows);
     setParts(res.rows);
     setPartCount(res.pageCount);
@@ -58,7 +55,7 @@ export default function PartSelectDialog({ open, setOpen, onSubmit }: Props) {
     if (isSearchMode) {
       await handleSearch(searchData);
     } else {
-      const res = await getSomePartsMin(page, LIMIT, showSoldParts);
+      const res = await getSomePartsMin(page, LIMIT, false);
       setParts(res.rows);
       setPartCount(res.pageCount);
     }

@@ -191,6 +191,10 @@ export default function Customer() {
                         <th>Billing Phone</th>
                         <td>{ customer.billToPhone }</td>
                       </tr>
+                      <tr>
+                        <th>Country</th>
+                        <td>{ customer.country }</td>
+                      </tr>
                     </tbody>
                   </Table>
                 </GridItem>
