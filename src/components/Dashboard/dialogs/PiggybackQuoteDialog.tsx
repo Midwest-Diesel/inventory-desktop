@@ -6,7 +6,7 @@ import { useAtom } from "jotai";
 import { showSoldPartsAtom, userAtom } from "@/scripts/atoms/state";
 import Button from "@/components/library/Button";
 import { getCustomerById } from "@/scripts/services/customerService";
-import { getPartById, searchAltParts, searchParts } from "@/scripts/services/partsService";
+import { getPartById, searchAltParts } from "@/scripts/services/partsService";
 import Loading from "@/components/library/Loading";
 import { addQuote, piggybackQuote } from "@/scripts/services/quotesService";
 import { useQuery } from "@tanstack/react-query";
@@ -38,9 +38,7 @@ export default function PiggybackQuoteDialog({ open, setOpen, quote, handleChang
     queryKey: ['searchParts', searchParams, currentPage],
     queryFn: () => {
       if (!searchParams) throw new Error('No search params');
-      return searchParams.isAltSearch
-        ? searchAltParts({ ...searchParams, showSoldParts }, currentPage, LIMIT)
-        : searchParts({ ...searchParams, showSoldParts }, currentPage, LIMIT);
+      return searchAltParts({ ...searchParams, showSoldParts: false }, currentPage, LIMIT);
     },
     enabled: !!searchParams
   });
