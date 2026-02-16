@@ -90,7 +90,7 @@ export default function CreditCardBlock({
               <Input
                 variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                 value={cardNum}
-                onChange={(e: any) => {
+                onChange={(e) => {
                   setCardNum(e.target.value);
                   handleChangeCard();
                   if (e.target.value.length === 1 || `${cardNum}`.charAt(0) !== e.target.value.trim().charAt(0)) {
@@ -106,7 +106,7 @@ export default function CreditCardBlock({
               <Input
                 variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                 value={expDate}
-                onChange={(e: any) => {
+                onChange={(e) => {
                   setExpDate(e.target.value);
                   handleChangeCard();
                 }}
@@ -120,7 +120,7 @@ export default function CreditCardBlock({
                 variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                 value={cvv}
                 type="number"
-                onChange={(e: any) => {
+                onChange={(e) => {
                   setCvv(e.target.value);
                   handleChangeCard();
                 }}
@@ -133,7 +133,7 @@ export default function CreditCardBlock({
               <Input
                 variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                 value={cardZip}
-                onChange={(e: any) => setCardZip(e.target.value)}
+                onChange={(e) => setCardZip(e.target.value)}
               />
             </td>
           </tr>
@@ -143,7 +143,7 @@ export default function CreditCardBlock({
               <Input
                 variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold', 'search']}
                 value={cardAddress}
-                onChange={(e: any) => setCardAddress(e.target.value)}
+                onChange={(e) => setCardAddress(e.target.value)}
               >
                 <Button
                   variant={['x-small']}
@@ -165,7 +165,7 @@ export default function CreditCardBlock({
               <Input
                 variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold', 'search']}
                 value={cardName}
-                onChange={(e: any) => setCardName(e.target.value)}
+                onChange={(e) => setCardName(e.target.value)}
               >
                 <Button variant={['x-small']} style={{ width: '10rem' }} onClick={() => setCardName(handwritten.billToCompany ?? '')} type="button">Same as Bill To</Button>
               </Input>
@@ -176,7 +176,7 @@ export default function CreditCardBlock({
             <td>
               <Select
                 value={payment}
-                onChange={(e: any) => handleChangePayment(handwritten.id, e.target.value)}
+                onChange={(e) => handleChangePayment(handwritten.id, e.target.value)}
               >
                 <option value="">-- SELECT PAYMENT TYPE --</option>
                 {paymentTypes.map((type, i) => {

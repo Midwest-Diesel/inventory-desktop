@@ -497,7 +497,7 @@ export default function HandwrittenDetails({
             <CreditCardBlock
               handwritten={handwritten}
               setPromptLeaveWindow={setPromptLeaveWindow}
-              cardNum={cardNum}
+              cardNum={cardNum || (handwritten.ccNumber ?? '')}
               expDate={expDate}
               cvv={cvv}
               cardZip={cardZip}
