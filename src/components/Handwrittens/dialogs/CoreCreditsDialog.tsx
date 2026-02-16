@@ -1,4 +1,4 @@
-import { formatCurrency } from "@/scripts/tools/stringUtils";
+import { formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
 import Dialog from "../../library/Dialog";
 import Table from "../../library/Table";
 import Button from "@/components/library/Button";
@@ -12,6 +12,7 @@ import Input from "@/components/library/Input";
 import { useNavState } from "@/hooks/useNavState";
 import { ask } from "@/scripts/config/tauri";
 import { getYesterday } from "@/scripts/tools/utils";
+import Link from "@/components/library/Link";
 
 interface Props {
   open: boolean
@@ -104,6 +105,8 @@ export default function CoreCreditsDialog({ open, setOpen, cores, handwritten }:
             <th>Part Number</th>
             <th>Description</th>
             <th>Unit Price</th>
+            <th>Handwritten</th>
+            <th>Date</th>
           </tr>
         </thead>
         <tbody>
@@ -138,6 +141,8 @@ export default function CoreCreditsDialog({ open, setOpen, cores, handwritten }:
                 <td>{ core.partNum }</td>
                 <td>{ core.desc }</td>
                 <td>{ formatCurrency(core.charge) }</td>
+                <td><Link href={`/handwrittens/${core.handwrittenId}`}>{ core.handwrittenId }</Link></td>
+                <td>{ formatDate(core.date) }</td>
               </tr>
             );
           })}

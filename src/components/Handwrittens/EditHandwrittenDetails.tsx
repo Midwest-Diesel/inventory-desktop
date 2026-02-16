@@ -457,7 +457,6 @@ export default function EditHandwrittenDetails({
   const handleEditItem = async (item: HandwrittenItem, i: number) => {
     const newItems = [...handwrittenItems];
     newItems[i] = item;
-    console.log(item);
     setHandwrittenItems(newItems);
   };
 
