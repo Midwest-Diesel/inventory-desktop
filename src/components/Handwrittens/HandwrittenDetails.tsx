@@ -29,6 +29,8 @@ import { useQuery } from "@tanstack/react-query";
 import { startTakeoff } from "@/scripts/logic/handwrittens";
 import { prompt } from "../library/Prompt";
 import HandwrittenStatusFields from "./HandwrittenStatusFields";
+import ShippingListModal from "./modals/ShippingListModal";
+import ModalList from "../library/ModalList";
 
 interface Props {
   handwritten: Handwritten
@@ -90,6 +92,7 @@ export default function HandwrittenDetails({
   const [unitPrice, setUnitPrice] = useState(0);
   const [takeoffItem, setTakeoffItem] = useState<HandwrittenItem | HandwrittenItemChild | null>(null);
   const [takeoffsOpen, setTakeoffsOpen] = useState(false);
+  const [shippingListModalOpen, setShippingListModalOpen] = useState(false);
   const takeoffInputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
@@ -391,6 +394,16 @@ export default function HandwrittenDetails({
         />
       }
 
+      {shippingListModalOpen &&
+        <ModalList onClose={() => setShippingListModalOpen(false)}>
+          <ShippingListModal
+            open={shippingListModalOpen}
+            handwrittenItems={handwritten.handwrittenItems}
+            newShippingListRow={handwritten}
+          />
+        </ModalList>
+      }
+
       <div className="handwritten-details">
         <div className="handwritten-details__header">
           <h2>Handwritten <span data-testid="id">{ handwritten.id }</span></h2>
@@ -429,6 +442,7 @@ export default function HandwrittenDetails({
           <Button onClick={() => setAddQtyDialogOpen(true)} disabled={handwritten.invoiceStatus === 'SENT TO ACCOUNTING'} data-testid="add-qty-io-btn">Add Qty | I/O</Button>
           <Button onClick={handleViewKarmak}>View Karmak</Button>
           <Button onClick={handleEmailKarmak}>Email Karmak</Button>
+          <Button onClick={() => setShippingListModalOpen(true)}>Add to Shipping List</Button>
         </div>
 
         <CoreCreditsDialog open={coreCreditsOpen} setOpen={setCoreCreditsOpen} cores={handwritten.cores} handwritten={handwritten} />
