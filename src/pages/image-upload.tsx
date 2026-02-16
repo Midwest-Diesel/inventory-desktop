@@ -17,40 +17,33 @@ export default function ImageUpload() {
   const [isUploadingStockNums, setIsUploadingStockNums] = useState(false);
   const [isUploadingEngineNums, setIsUploadingEngineNums] = useState(false);
 
-  const handleUploadPart = async (e: FormEvent) => {
+  const uploadImages = async (e: FormEvent, images: File[], dir: string, setLoading: (v: boolean) => void, clear: () => void) => {
     e.preventDefault();
-    setIsUploadingParts(true);
-    for (const image of partImages) {
+    setLoading(true);
+
+    for (const image of images) {
       const arrayBuffer = await image.arrayBuffer();
       const content = Array.from(new Uint8Array(arrayBuffer));
-      await invoke('upload_file', { fileArgs: { file: content, dir: `\\\\MWD1-SERVER/Server/Pictures/parts_dir/${partImagesName}`, name: image.name }});
+      await invoke('upload_file', { fileArgs: { file: content, dir, name: image.name }});
     }
+    
+    clear();
+    setLoading(false);
+  };
+
+  const clearPartsInput = () => {
     setPartImages([]);
     setPartImagesName('');
     setIsUploadingParts(false);
   };
 
-  const handleUploadStockNum = async (e: FormEvent) => {
-    e.preventDefault();
-    setIsUploadingStockNums(true);
-    for (const image of stockNumImages) {
-      const arrayBuffer = await image.arrayBuffer();
-      const content = Array.from(new Uint8Array(arrayBuffer));
-      await invoke('upload_file', { fileArgs: { file: content, dir: `\\\\MWD1-SERVER/Server/Pictures/sn_specific/${stockNumImagesName}`, name: image.name }});
-    }
+  const clearStockNumInput = () => {
     setStockNumImages([]);
     setStockNumImagesName('');
     setIsUploadingStockNums(false);
   };
 
-  const handleUploadEngineNum = async (e: FormEvent) => {
-    e.preventDefault();
-    setIsUploadingEngineNums(true);
-    for (const image of engineNumImages) {
-      const arrayBuffer = await image.arrayBuffer();
-      const content = Array.from(new Uint8Array(arrayBuffer));
-      await invoke('upload_file', { fileArgs: { file: content, dir: `\\\\MWD1-SERVER/Server/Engines Pictures/StockPhotos/${engineNumImagesName}`, name: image.name }});
-    }
+  const clearEnginesInput = () => {
     setEngineNumImages([]);
     setEngineNumImagesName('');
     setIsUploadingEngineNums(false);
@@ -63,7 +56,7 @@ export default function ImageUpload() {
         {isUploadingParts ?
           <Loading />
           :
-          <form onSubmit={(e) => handleUploadPart(e)}>
+          <form onSubmit={(e) => uploadImages(e, partImages, `\\\\MWD1-SERVER/Server/Pictures/parts_dir/${partImagesName}`, setIsUploadingParts, clearPartsInput)}>
             <h2>Upload For Part Numbers</h2>
             <Input
               labelClass="image-upload__name-input"
@@ -74,7 +67,7 @@ export default function ImageUpload() {
               required
             />
             <Input
-              onChange={(e: any) => setPartImages(e.target.files)}
+              onChange={(e) => setPartImages(e.target.files ? Array.from(e.target.files) : [])}
               type="file"
               accept="image/*"
               multiple
@@ -87,7 +80,7 @@ export default function ImageUpload() {
         {isUploadingStockNums ?
           <Loading />
           :
-          <form onSubmit={(e) => handleUploadStockNum(e)}>
+          <form onSubmit={(e) => uploadImages(e, stockNumImages, `\\\\MWD1-SERVER/Server/Pictures/sn_specific/${stockNumImagesName}`, setIsUploadingStockNums, clearStockNumInput)}>
             <h2>Upload For Stock Numbers</h2>
             <Input
               labelClass="image-upload__name-input"
@@ -98,7 +91,7 @@ export default function ImageUpload() {
               required
             />
             <Input
-              onChange={(e: any) => setStockNumImages(e.target.files)}
+              onChange={(e) => setStockNumImages(e.target.files ? Array.from(e.target.files) : [])}
               type="file"
               accept="image/*"
               multiple
@@ -111,7 +104,7 @@ export default function ImageUpload() {
         {isUploadingEngineNums ?
           <Loading />
           :
-          <form onSubmit={(e) => handleUploadEngineNum(e)}>
+          <form onSubmit={(e) => uploadImages(e, engineNumImages, `\\\\MWD1-SERVER/Server/Engines Pictures/StockPhotos/${engineNumImagesName}`, setIsUploadingEngineNums, clearEnginesInput)}>
             <h2>Upload For Engine Numbers</h2>
             <Input
               labelClass="image-upload__name-input"
@@ -122,7 +115,7 @@ export default function ImageUpload() {
               required
             />
             <Input
-              onChange={(e: any) => setEngineNumImages(e.target.files)}
+              onChange={(e) => setEngineNumImages(e.target.files ? Array.from(e.target.files) : [])}
               type="file"
               accept="image/*"
               multiple
