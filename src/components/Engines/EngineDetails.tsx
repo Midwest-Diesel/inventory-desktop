@@ -17,6 +17,7 @@ import { getEngineImages } from "@/scripts/services/imagesService";
 import { useQuery } from "@tanstack/react-query";
 import Loading from "../library/Loading";
 import EnginePicturesDialog from "../dialogs/EnginePicturesDialog";
+import { usePrintQue } from "@/hooks/usePrintQue";
 
 interface Props {
   engine: Engine
@@ -27,6 +28,7 @@ interface Props {
 
 export default function EngineDetails({ engine, setIsEditing, setEngineProfitOpen }: Props) {
   const { closeDetailsBtn } = useNavState();
+  const { printQue, addToQue } = usePrintQue();
   const [user] = useAtom<User>(userAtom);
   const [picturesOpen, setPicturesOpen] = useState(false);
   
@@ -58,6 +60,28 @@ export default function EngineDetails({ engine, setIsEditing, setEngineProfitOpe
     if (!engine?.id || user.accessLevel <= 1 || await prompt('Type "confirm" to delete this engine') !== 'confirm') return;
     await deleteEngine(engine.id);
     await closeDetailsBtn();
+  };
+
+  const handlePrint = async () => {
+    const printQty = Number(await prompt('How many tags do you want to print?'));
+    if (printQty <= 0) return;
+
+    for (let i = 0; i < printQty; i++) {
+      const args = {
+        date: formatDate(engine.loginDate),
+        location: engine.location ?? '',
+        serialNum: engine.serialNum ?? '',
+        model: engine.model ?? '',
+        arrNum: engine.arrNum ?? '',
+        horsePower: engine.horsePower ?? '',
+        comments: engine.comments ?? '',
+        currentStatus: engine.currentStatus ?? '',
+        stockNum: engine.stockNum.toString()
+      };
+      addToQue('engineTag', 'print_engine_tag', args, '700px', '1500px');
+    }
+    addToQue('engineChecklist', 'print_engine_checklist', null, '1500px', '1000px');
+    printQue();
   };
 
 
@@ -117,6 +141,7 @@ export default function EngineDetails({ engine, setIsEditing, setEngineProfitOpe
 
       <div className="part-details__top-bar">
         <Button onClick={() => setEngineProfitOpen(true)}>Check Profit</Button>
+        <Button onClick={handlePrint}>Print Tag</Button>
       </div>
 
       <Grid>
