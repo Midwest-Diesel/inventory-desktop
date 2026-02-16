@@ -26,7 +26,7 @@ import { ask } from "@/scripts/config/tauri";
 import { usePrintQue } from "@/hooks/usePrintQue";
 import { getAltShipByCustomerId } from "@/scripts/services/altShipService";
 import { useQuery } from "@tanstack/react-query";
-import { startTakeoff } from "@/scripts/logic/handwrittens";
+import { handleAccountingCompleted, startTakeoff } from "@/scripts/logic/handwrittens";
 import { prompt } from "../library/Prompt";
 import HandwrittenStatusFields from "./HandwrittenStatusFields";
 import ShippingListModal from "./modals/ShippingListModal";
@@ -368,6 +368,7 @@ export default function HandwrittenDetails({
   const onChangeAccountingStatus = async (accountingStatus: AccountingStatus | null) => {
     const newHandwritten = { ...handwritten, accountingStatus };
     await editHandwritten(newHandwritten);
+    await handleAccountingCompleted(handwritten, accountingStatus);
     setHandwritten(newHandwritten);
   };
 

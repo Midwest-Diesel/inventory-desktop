@@ -32,7 +32,7 @@ import AltShipDialog from "./dialogs/AltShipDialog";
 import { usePrintQue } from "@/hooks/usePrintQue";
 import { useQuery } from "@tanstack/react-query";
 import TextArea from "../library/TextArea";
-import { addCoreCharge } from "@/scripts/logic/handwrittens";
+import { addCoreCharge, handleAccountingCompleted } from "@/scripts/logic/handwrittens";
 import EditHandwrittenItemsTable from "./EditHandwrittenItemsTable";
 import ModalList from "../library/ModalList";
 import InputDropdown from "../library/InputDropdown";
@@ -253,7 +253,7 @@ export default function EditHandwrittenDetails({
     setNewShippingListRow(newInvoice);
     await editHandwritten(newInvoice);
     await handleEditHandwrittenItems();
-    await handleAccountingCompleted();
+    await handleAccountingCompleted(handwritten, accountingStatus);
     await editCoreCustomer(handwritten.id, newCustomer?.id ?? null);
 
     if (newInvoice.billToCompany !== newInvoice.shipToCompany && !newInvoice.isBlindShipment && !newInvoice.isNoPriceInvoice) {
@@ -267,12 +267,6 @@ export default function EditHandwrittenDetails({
     // Start SEND TO ACCOUNTING process
     setChangeCustomerDialogData(newInvoice);
     setAccountingProcessOpen(true);
-  };
-
-  const handleAccountingCompleted = async () => {
-    const isAccountingCompleted = accountingStatus === 'COMPLETE' && handwritten.accountingStatus !== 'COMPLETE';
-    if (!isAccountingCompleted) return;
-    await setAllHandwrittenItemDates(handwritten.id);
   };
 
   const handleEditHandwrittenItems = async () => {

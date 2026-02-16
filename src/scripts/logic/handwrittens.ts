@@ -1,6 +1,6 @@
 import { ask } from "../config/tauri";
 import { addCore } from "../services/coresService";
-import { addHandwrittenItem, addHandwrittenItemChild } from "../services/handwrittensService";
+import { addHandwrittenItem, addHandwrittenItemChild, setAllHandwrittenItemDates } from "../services/handwrittensService";
 
 interface TakeoffRes {
   item: HandwrittenItem | null
@@ -92,4 +92,10 @@ export const addQtyInOut = async (handwrittenId: number, desc: string, partNum: 
     };
     await addHandwrittenItemChild(Number(id), newChild);
   }
+};
+
+export const handleAccountingCompleted = async (handwritten: Handwritten, accountingStatus: AccountingStatus | null) => {
+  const isAccountingCompleted = accountingStatus === 'COMPLETE' && handwritten.accountingStatus !== 'COMPLETE';
+  if (!isAccountingCompleted) return;
+  await setAllHandwrittenItemDates(handwritten.id);
 };
