@@ -4,6 +4,7 @@ import { parseResDate } from "../tools/stringUtils";
 interface CustomerSearch {
   name: string
   phone: string
+  city: string
   state: string
   zip: string
   country: string

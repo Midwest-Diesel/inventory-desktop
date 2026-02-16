@@ -28,6 +28,7 @@ export default function CustomerSearchDialog({ open, setOpen, searchTerm }: Prop
   const [pageCount, setPageCount] = useState(1);
   const [name, setName] = useState(searchTerm);
   const [phone, setPhone] = useState('');
+  const [city, setCity] = useState('');
   const [state, setState] = useState('');
   const [zip, setZip] = useState('');
   const [country, setCountry] = useState('');
@@ -41,13 +42,13 @@ export default function CustomerSearchDialog({ open, setOpen, searchTerm }: Prop
   const { data: customers = customersData, refetch } = useQuery<Customer[]>({
     queryKey: ['customers', page, open, searchTerm],
     queryFn: async () => {
-      if (isObjectNull({ name: name || searchTerm, phone, state, zip, country, customerType })) {
+      if (isObjectNull({ name: name || searchTerm, phone, city, state, zip, country, customerType })) {
         const res = await getSomeCustomers(page, LIMIT);
         setCustomersData(res.rows);
         setPageCount(res.pageCount);
         return res.rows;
       } else {
-        const res = await searchCustomers({ name: name || searchTerm, phone: phone.trim().replaceAll('-', '').replaceAll('(', '').replaceAll(')', '').replaceAll(' ', ''), state, zip, country, customerType, page, limit: LIMIT });
+        const res = await searchCustomers({ name: name || searchTerm, phone: phone.trim().replaceAll('-', '').replaceAll('(', '').replaceAll(')', '').replaceAll(' ', ''), city, state, zip, country, customerType, page, limit: LIMIT });
         setCustomersData(res.rows);
         setPageCount(res.pageCount);
         return res.rows;
@@ -86,37 +87,43 @@ export default function CustomerSearchDialog({ open, setOpen, searchTerm }: Prop
         <Input
           label="Name"
           variant={['label-bold', 'label-stack', 'thin', 'small', 'label-fit-content']}
-          onChange={(e: any) => setName(e.target.value)}
+          onChange={(e) => setName(e.target.value)}
           value={name}
         />
         <Input
           label="Phone"
           variant={['label-bold', 'label-stack', 'thin', 'small', 'label-fit-content']}
-          onChange={(e: any) => setPhone(e.target.value)}
+          onChange={(e) => setPhone(e.target.value)}
           value={phone}
+        />
+        <Input
+          label="City"
+          variant={['label-bold', 'label-stack', 'thin', 'small', 'label-fit-content']}
+          onChange={(e) => setCity(e.target.value)}
+          value={city}
         />
         <Input
           label="State"
           variant={['label-bold', 'label-stack', 'thin', 'x-small', 'label-fit-content']}
-          onChange={(e: any) => setState(e.target.value)}
+          onChange={(e) => setState(e.target.value)}
           value={state}
         />
         <Input
           label="Zip"
           variant={['label-bold', 'label-stack', 'thin', 'x-small', 'label-fit-content']}
-          onChange={(e: any) => setZip(e.target.value)}
+          onChange={(e) => setZip(e.target.value)}
           value={zip}
         />
         <Input
           label="Country"
           variant={['label-bold', 'label-stack', 'thin', 'small', 'label-fit-content']}
-          onChange={(e: any) => setCountry(e.target.value)}
+          onChange={(e) => setCountry(e.target.value)}
           value={country}
         />
         <Select
           label="Customer Type"
           variant={['label-bold', 'label-stack']}
-          onChange={(e: any) => setCustomerType(e.target.value)}
+          onChange={(e) => setCustomerType(e.target.value)}
           value={customerType}
         >
           <option value=""></option>
