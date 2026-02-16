@@ -96,7 +96,8 @@ export const getCustomerById = async (id: number) => {
 
 export const getCustomerByName = async (name: string): Promise<Customer | null> => {
   try {
-    const res = await api.get(`/api/customers/name/${name}`);
+    const params = new URLSearchParams({ name });
+    const res = await api.get(`/api/customers/name?${params}`);
     return parseCustomerRes(res.data)[0] ?? null;
   } catch (err) {
     console.error(err);
