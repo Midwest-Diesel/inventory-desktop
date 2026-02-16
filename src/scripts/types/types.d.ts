@@ -297,6 +297,7 @@ type CustomerHandwritten = {
   shipToCompany: string | null
   source: string | null
   payment: string | null
+  hasCore: boolean
   invoiceStatus: InvoiceStatus
   accountingStatus: AccountingStatus
 };

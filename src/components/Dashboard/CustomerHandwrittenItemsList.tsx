@@ -25,7 +25,7 @@ export default function CustomerHandwrittenItemsList({ company }: Props) {
   return (
     <Table>
       <thead>
-        <tr>
+        <tr style={{ cursor: 'default' }}>
           <th>Handwritten</th>
           <th>Date</th>
           <th>Qty</th>
@@ -38,7 +38,7 @@ export default function CustomerHandwrittenItemsList({ company }: Props) {
       <tbody>
         {rows.map((row, i) => {
           return (
-            <tr key={i}>
+            <tr key={i} style={{ cursor: 'default' }}>
               <td><Link href={`/handwrittens/${row.handwrittenId}`}>{ row.handwrittenId }</Link></td>
               <td>{ formatDate(row.date) }</td>
               <td>{ row.qty }</td>
