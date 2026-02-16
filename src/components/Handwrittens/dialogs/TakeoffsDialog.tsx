@@ -2,7 +2,7 @@ import Button from "@/components/library/Button";
 import Dialog from "@/components/library/Dialog";
 import Input from "@/components/library/Input";
 import { editHandwrittenChildTakeoffState, editHandwrittenItemTakeoffState, getHandwrittenById } from "@/scripts/services/handwrittensService";
-import { addPart, addPartCostIn, addToPartQtyHistory, editPartCostIn, getPartById, getPartCostIn, getPartQty, handlePartTakeoff } from "@/scripts/services/partsService";
+import { addPart, addPartCostIn, addToPartQtyHistory, editPartCostIn, editPartStockNum, getPartById, getPartCostIn, getPartQty, handlePartTakeoff } from "@/scripts/services/partsService";
 import { getSurplusByCode, zeroAllSurplusItems } from "@/scripts/services/surplusService";
 import { formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
 import { FormEvent, RefObject, useEffect, useRef, useState } from "react";
@@ -101,6 +101,16 @@ export default function TakeoffsDialog({ open, setOpen, item, unitPrice, setHand
       const res = await getPartCostIn(part.stockNum ?? '');
       const partCostIn: PartCostIn | null = res.find((p: PartCostIn) => p.vendor === part.purchasedFrom) ?? null;
       if (partCostIn) await editPartCostIn({ ...partCostIn, cost: item.cost });
+
+      // Also change stockNum to a date code if this is a UP
+      if (part.stockNum?.startsWith('UP')) {
+        const newStockNum = `${part.stockNum} (${formatDate(new Date())})`;
+        await editPartStockNum(part.id, newStockNum);
+ 
+        for (const row of res) {
+          await editPartCostIn({ ...row, id: Number(row.id), cost: Number(row.cost), stockNum: newStockNum });
+        }
+      }
     } else {
       const newStockNum = `${part.stockNum} (${formatDate(new Date())})`;
       const newId = await addPart({ ...part, qty: 0, qtySold: Number(qty), stockNum: newStockNum, soldTo: handwritten?.billToCompany ?? '', sellingPrice: unitPrice, handwrittenId: handwritten.id }, true);

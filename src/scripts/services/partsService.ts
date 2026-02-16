@@ -357,6 +357,14 @@ export const setPartLastUpdated = async (partId: number) => {
   }
 };
 
+export const editPartStockNum = async (partId: number, stockNum: string) => {
+  try {
+    await api.patch('/api/parts/stock-num', { partId, stockNum });
+  } catch (err) {
+    console.error(err);
+  }
+};
+
 // === PUT routes === //
 
 export const editPart = async (part: Part) => {

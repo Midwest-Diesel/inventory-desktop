@@ -61,7 +61,7 @@ describe('Customers Integration', () => {
   });
 
   it('Search customer', async () => {
-    const res = await searchCustomers({ name: '271 tr', phone: '', state: '', zip: '', country: '', customerType: '', page: 1, limit: 25 });
+    const res = await searchCustomers({ name: '271 tr', phone: '', city: '', state: '', zip: '', country: '', customerType: '', page: 1, limit: 25 });
     expect(res.rows[0]).toMatchObject({ company: '271 TRUCK SERVICE' });
   });
 

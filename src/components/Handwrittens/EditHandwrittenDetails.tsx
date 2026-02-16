@@ -1,5 +1,5 @@
 import { errorAtom, quickPickItemIdAtom, sourcesAtom } from "@/scripts/atoms/state";
-import { addHandwrittenItem, deleteHandwrittenItem, editHandwritten, editHandwrittenCCNumber, editHandwrittenHasPrinted, editHandwrittenItem, editHandwrittenTaxable, getHandwrittenById, getHandwrittenEmails, setAllHandwrittenItemDates } from "@/scripts/services/handwrittensService";
+import { addHandwrittenItem, deleteHandwrittenItem, editHandwritten, editHandwrittenCCNumber, editHandwrittenHasPrinted, editHandwrittenItem, editHandwrittenTaxable, getHandwrittenById, getHandwrittenEmails } from "@/scripts/services/handwrittensService";
 import { useAtom } from "jotai";
 import { FormEvent, Fragment, useEffect, useRef, useState } from "react";
 import GridItem from "../library/grid/GridItem";
