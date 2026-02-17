@@ -131,14 +131,14 @@ export default function OfficePartAddonRow({ addOn, onSave, onModifyAddOnData }:
     const newPart = {
       ...updatedAddOn,
       altParts
-    } as any;
-    await addPart(newPart, partsInfo !== null);
+    } as AddOn;
+    await addPart(newPart as any, partsInfo !== null);
 
     // Add purchase price
     if (newPart.engineNum && newPart.engineNum > 1) {
-      await addEngineCostOut(newPart.stockNum, newPart.engineNum, newPart.purchasePrice, 'Parts', '');
-    } else if (newPart.purchasePrice > 0) {
-      await addPartCostIn(newPart.stockNum, newPart.purchasePrice, null, newPart.purchasedFrom, 'PurchasePrice', '');
+      await addEngineCostOut(newPart.stockNum ?? '', newPart.engineNum, Number(newPart.purchasePrice), 'Parts', '');
+    } else if (Number(newPart.purchasePrice) > 0) {
+      await addPartCostIn(newPart.stockNum ?? '', Number(newPart.purchasePrice), newPart.invoiceNum, newPart.purchasedFrom ?? '', 'PurchasePrice', '');
     }
 
     // Clean up
@@ -394,6 +394,7 @@ export default function OfficePartAddonRow({ addOn, onSave, onModifyAddOnData }:
                 <th>Price Status</th>
                 <th>Purchase Price</th>
                 <th>Purchased From</th>
+                <th>Invoice Number</th>
               </tr>
             </thead>
             <tbody>
@@ -459,6 +460,13 @@ export default function OfficePartAddonRow({ addOn, onSave, onModifyAddOnData }:
                       }}
                     />
                   </div>
+                </td>
+                <td>
+                  <Input
+                    variant={['small', 'thin']}
+                    value={addOn.invoiceNum ?? ''}
+                    onChange={(e) => handleEditAddOn({ ...addOn, invoiceNum: e.target.value })}
+                  />
                 </td>
               </tr>
             </tbody>

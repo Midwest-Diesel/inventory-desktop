@@ -170,7 +170,7 @@ export default function EditPartDetails({ part, setPart, setIsEditingPart, partC
       for (let i = 0; i < partCostIn.length; i++) {
         const item = partCostIn[i];
         if (item.id === 0) {
-          await addPartCostIn(part.stockNum ?? '', Number(item.cost), Number(item.invoiceNum), item.vendor ?? '', item.costType ?? '', item.note ?? '');
+          await addPartCostIn(part.stockNum ?? '', Number(item.cost), item.invoiceNum, item.vendor ?? '', item.costType ?? '', item.note ?? '');
         }
       }
     }
@@ -680,7 +680,7 @@ export default function EditPartDetails({ part, setPart, setIsEditingPart, partC
                 <th>Cost</th>
                 <th>Cost Type</th>
                 <th>Vendor</th>
-                <th>Handwritten ID</th>
+                <th>Invoice Number</th>
                 <th>Note</th>
                 <th></th>
               </tr>
@@ -726,8 +726,7 @@ export default function EditPartDetails({ part, setPart, setIsEditingPart, partC
                       <Input
                         variant={['x-small', 'thin', 'label-bold']}
                         value={item.invoiceNum ?? ''}
-                        onChange={(e: any) => handleChangePartCostIn({ ...item, invoiceNum: e.target.value }, i)}
-                        type="number"
+                        onChange={(e) => handleChangePartCostIn({ ...item, invoiceNum: e.target.value }, i)}
                       />
                     </td>
                     <td>
@@ -789,8 +788,7 @@ export default function EditPartDetails({ part, setPart, setIsEditingPart, partC
                   <Input
                     variant={['x-small', 'thin', 'label-bold']}
                     value={newPartCostInRow.invoiceNum}
-                    onChange={(e: any) => handleNewPartCostInRowChange('invoiceNum', e.target.value)}
-                    type="number"
+                    onChange={(e) => handleNewPartCostInRowChange('invoiceNum', e.target.value)}
                   />
                 </td>
                 <td>
