@@ -97,21 +97,17 @@ export default function TakeoffsDialog({ open, setOpen, item, unitPrice, setHand
     // When the qty remaining after takeoffs is not 0
     // then it will create a new part with a date code, with the qtySold value
     // instead of changing the qtySold for the original part.
-    if (part.qty - Number(qty) === 0) {
+    // Also change stockNum to a date code if this is a UP
+    const isPartUP = part.stockNum?.startsWith('UP');
+    if (part.qty - Number(qty) === 0 && isPartUP) {
       const res = await getPartCostIn(part.stockNum ?? '');
-      const partCostIn: PartCostIn | null = res.find((p: PartCostIn) => p.vendor === part.purchasedFrom) ?? null;
-      if (partCostIn) await editPartCostIn({ ...partCostIn, cost: item.cost });
+      const newStockNum = `${part.stockNum} (${formatDate(new Date())})`;
+      await editPartStockNum(part.id, newStockNum);
 
-      // Also change stockNum to a date code if this is a UP
-      if (part.stockNum?.startsWith('UP')) {
-        const newStockNum = `${part.stockNum} (${formatDate(new Date())})`;
-        await editPartStockNum(part.id, newStockNum);
- 
-        for (const row of res) {
-          await editPartCostIn({ ...row, id: Number(row.id), cost: Number(row.cost), stockNum: newStockNum });
-        }
+      for (const row of res) {
+        await editPartCostIn({ ...row, id: Number(row.id), cost: Number(row.cost), stockNum: newStockNum });
       }
-    } else {
+    } else if (isPartUP) {
       const newStockNum = `${part.stockNum} (${formatDate(new Date())})`;
       const newId = await addPart({ ...part, qty: 0, qtySold: Number(qty), stockNum: newStockNum, soldTo: handwritten?.billToCompany ?? '', sellingPrice: unitPrice, handwrittenId: handwritten.id }, true);
       if (!newStockNum) {

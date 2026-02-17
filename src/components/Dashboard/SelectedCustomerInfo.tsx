@@ -71,7 +71,7 @@ export default function SelectedCustomerInfo({ expandedDetailsOpen }: Props) {
               <Table variant={['plain', 'row-details']}>
                 <tbody>
                   <tr>
-                    <th>Billing Address 1</th>
+                    <th>Billing Address</th>
                     <td>{ customer.billToAddress }</td>
                   </tr>
                   <tr>
@@ -102,7 +102,7 @@ export default function SelectedCustomerInfo({ expandedDetailsOpen }: Props) {
               <Table variant={['plain', 'row-details']}>
                 <tbody>
                   <tr>
-                    <th>Shipping Address 1</th>
+                    <th>Shipping Address</th>
                     <td>{ customer.shipToAddress }</td>
                   </tr>
                   <tr>
