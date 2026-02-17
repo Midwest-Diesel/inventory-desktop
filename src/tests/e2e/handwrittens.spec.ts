@@ -12,7 +12,7 @@ test.beforeAll(async ({ browser }) => {
   page = await browser.newPage();
   page.on('dialog', (dialog) => dialog.accept('confirm'));
   await page.goto('http://localhost:3001/');
-  await page.getByTestId('username').fill('bennett');
+  await page.getByTestId('username').fill('test');
   await page.getByTestId('login-btn').click();
   await page.waitForSelector('.navbar');
   await goto(page, '/handwrittens');

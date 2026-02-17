@@ -11,7 +11,7 @@ beforeAll(async () => {
 
 beforeEach(async () => {
   await resetDb();
-  await loginUser({ username: 'bennett', password: 'mwdup' });
+  await loginUser({ username: 'test', password: 'mwdup' });
 });
 
 
@@ -19,32 +19,32 @@ describe('Customers Integration', () => {
   it('Get customer by id', async () => {
     const customer = {
       id: 1,
-      legacyId: 1,
-      company: '2 & 92 TRUCK PARTS',
-      contact: 'RICK',
+      legacyId: null,
+      company: 'HEAVY DUTY REBUILDERS',
+      contact: 'BURK DAY',
       partsManager: null,
       partsManagerEmail: null,
       serviceManager: null,
       serviceManagerEmail: null,
-      other: 'JMF',
-      phone: '8008244564',
+      other: null,
+      phone: '(800) 873-8783',
       billToPhone: null,
-      fax: '3092929211',
+      fax: '(417) 581-9808',
       email: null,
-      terms: 'COD',
-      billToAddress: '611 158TH ST',
+      terms: 'NET 30',
+      billToAddress: '1250 WEST LIBERTY AVE',
       billToAddress2: null,
-      billToCity: 'EAST MOLINE',
-      billToState: 'IL',
-      billToZip: '61244',
-      shipToAddress: '611 158TH ST',
-      shipToAddress2: 'RM',
-      shipToCity: 'EAST MOLINE',
-      shipToState: 'IL',
-      shipToZip: '61244',
-      comments: null,
-      customerType: 'Salvage Yard',
-      source: 'WOM',
+      billToCity: 'OZARK',
+      billToState: 'MO',
+      billToZip: '65721',
+      shipToAddress: '1250 WEST LIBERTY AVE',
+      shipToAddress2: null,
+      shipToCity: 'OZARK',
+      shipToState: 'MO',
+      shipToZip: '65721',
+      comments: '6050 N Cabinet Drive',
+      customerType: 'Vendor',
+      source: 'RC',
       country: null,
       isTaxable: false,
       paymentType: null,
@@ -61,15 +61,15 @@ describe('Customers Integration', () => {
   });
 
   it('Search customer', async () => {
-    const res = await searchCustomers({ name: '271 tr', phone: '', city: '', state: '', zip: '', country: '', customerType: '', page: 1, limit: 25 });
-    expect(res.rows[0]).toMatchObject({ company: '271 TRUCK SERVICE' });
+    const res = await searchCustomers({ name: 'duty', phone: '', city: '', state: '', zip: '', country: '', customerType: '', page: 1, limit: 25 });
+    expect(res.rows[0]).toMatchObject({ company: 'HEAVY DUTY REBUILDERS' });
   });
 
   it('Merge customer', async () => {
-    await customerMerge(2, 4);
+    await customerMerge(2, 1);
     const badCustomer = await getCustomerById(2);
-    const handwritten = await getHandwrittenById(101);
-    expect(handwritten?.customer.id).toEqual(4);
+    const handwritten = await getHandwrittenById(2);
+    expect(handwritten?.customer.id).toEqual(1);
     expect(badCustomer).toBeFalsy();
   });
 });

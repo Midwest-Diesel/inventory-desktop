@@ -78,9 +78,9 @@ const handleRemarksSoldText = async (item: NewHandwrittenItem | NewHandwrittenIt
 export const getHandwrittenById = async (id: number): Promise<Handwritten | null> => {
   try {
     const res = await api.get(`/api/handwrittens/id/${id}`);
-    const cores = await getCoresByCustomer(res.data[0].customer.id, id);
+    const cores = await getCoresByCustomer(res.data[0].customer.id, id) ?? [];
     res.data[0].cores = cores;
-    const coreReturns = await getCoreReturnsByCustomer(res.data[0].customer.id);
+    const coreReturns = await getCoreReturnsByCustomer(res.data[0].customer.id) ?? [];
     res.data[0].coreReturns = coreReturns;
     return parseHandwrittenRes(res.data)[0];
   } catch (err) {

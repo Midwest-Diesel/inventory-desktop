@@ -10,7 +10,7 @@ beforeAll(async () => {
 
 beforeEach(async () => {
   await resetDb();
-  await loginUser({ username: 'bennett', password: 'mwdup' });
+  await loginUser({ username: 'test', password: 'mwdup' });
 });
 
 
@@ -19,9 +19,9 @@ describe('Alerts Integration', () => {
     const res = await getAlerts();
     const alert = {
       date: new Date('2021-04-13T05:00:00.000Z'),
-      note: '3406E/C15 Gear - Lots of matches!  6I4578 Is for older 5ek, uses a 6I3621 stubshaft, 1304701 uses a 1302979 or 1515966 subshaft',
+      note: '3406E/C15 Gear - Lots of matches! 6I4578 Is for older 5ek, uses a 6I3621 stubshaft, 1304701 uses a 1302979 or 1515966 subshaft',
       partNum: '1304701',
-      salesmanId: 8,
+      salesmanId: 1,
       type: 'ALERT!!!'
     };
     expect(res[0]).toMatchObject(alert);
@@ -31,9 +31,9 @@ describe('Alerts Integration', () => {
     const res = await detectAlerts('1304701');
     const alert = {
       date: new Date('2021-04-13T05:00:00.000Z'),
-      note: '3406E/C15 Gear - Lots of matches!  6I4578 Is for older 5ek, uses a 6I3621 stubshaft, 1304701 uses a 1302979 or 1515966 subshaft',
+      note: '3406E/C15 Gear - Lots of matches! 6I4578 Is for older 5ek, uses a 6I3621 stubshaft, 1304701 uses a 1302979 or 1515966 subshaft',
       partNum: '1304701',
-      salesmanId: 8,
+      salesmanId: 1,
       type: 'ALERT!!!'
     };
     expect(res[0]).toMatchObject(alert);

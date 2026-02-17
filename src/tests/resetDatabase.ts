@@ -31,14 +31,11 @@ export async function resetDb() {
     END $$;
   `);
 
-  const dataPath = 'src/tests/db/data.sql';
   const initPath = 'src/tests/db/init.sql';
-  const dataSql = fs.readFileSync(dataPath, 'utf-8');
   const initSql = fs.readFileSync(initPath, 'utf-8');
   
   await client.query('BEGIN');
   await client.query('SET session_replication_role = replica;');
-  await client.query(dataSql);
   await client.query(initSql);
   await client.query('SET session_replication_role = DEFAULT;');
   await client.query('COMMIT');

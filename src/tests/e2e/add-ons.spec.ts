@@ -5,7 +5,7 @@ import { resetDb } from '../resetDatabase';
 test.beforeEach(async ({ page }) => {
   await resetDb();
   await page.goto('http://localhost:3001/');
-  await page.getByTestId('username').fill('bennett');
+  await page.getByTestId('username').fill('test');
   await page.getByTestId('login-btn').click();
   await page.waitForSelector('.navbar');
   await goto(page, '/add-ons/shop/part');
@@ -15,13 +15,15 @@ test.beforeEach(async ({ page }) => {
 
 async function newAddon(page: Page) {
   await page.getByTestId('new-part-btn').click();
-  await page.waitForLoadState('networkidle');
-  await page.reload();
-  await page.getByTestId('qty').first().fill('1');
+  const qty = page.getByTestId('qty').first();
+  await expect(qty).toBeVisible();
+
+  await qty.fill('1');
   await page.getByTestId('part-num').first().fill('4700');
   await page.keyboard.down('Tab');
+  await expect(page.getByTestId('desc').first()).toHaveValue('INJECTOR C9');
+
   await page.getByTestId('save-btn').click();
-  await page.waitForTimeout(100);
 }
 
 function formatDateStockNum(suffix: string) {
@@ -44,9 +46,9 @@ test.describe('Create addon and add to inventory', () => {
   });
 
   test('Autofill part number', async ({ page }) => {
+    await newAddon(page);
     await page.getByTestId('part-num').first().fill('470');
     await page.keyboard.down('Tab');
-    await page.getByTestId('save-btn').click();
     await expect(page.getByTestId('part-num').first()).toHaveValue('4700245');
     await expect(page.getByTestId('desc').first()).toHaveValue('INJECTOR C9');
   });
@@ -55,29 +57,31 @@ test.describe('Create addon and add to inventory', () => {
     await newAddon(page);
     await page.getByTestId('remarks').first().fill('(9.5) TEST');
     await page.keyboard.down('Tab');
+    await expect(page.getByTestId('desc').first()).toHaveValue('INJECTOR C9');
     await expect(page.getByTestId('rating').first()).toHaveValue('9.5');
   });
 
   test('Autofill stock number', async ({ page }) => {
     await newAddon(page);
-    await page.getByTestId('engine-num').first().fill('5168');
+    await page.getByTestId('engine-num').first().fill('7259');
     await page.keyboard.down('Tab');
-    await page.getByTestId('save-btn').click();
-    await expect(page.getByTestId('stock-num').first()).toHaveValue('INJ5168');
+    await expect(page.getByTestId('desc').first()).toHaveValue('INJECTOR C9');
+    await expect(page.getByTestId('stock-num').first()).toHaveValue('INJ7259');
   });
 
   test('Autofill stock number with engine number 0', async ({ page }) => {
+    await newAddon(page);
     await page.getByTestId('engine-num').first().fill('0');
     await page.keyboard.down('Tab');
-    await page.getByTestId('save-btn').click();
-    await expect(page.getByTestId('stock-num').first()).toHaveValue('UP21397');
+    await expect(page.getByTestId('desc').first()).toHaveValue('INJECTOR C9');
+    await expect(page.getByTestId('stock-num').first()).toHaveValue('UP9433');
   });
 
   test('Autofill stock number with engine number 1', async ({ page }) => {
     await newAddon(page);
     await page.getByTestId('engine-num').first().fill('1');
     await page.keyboard.down('Tab');
-    await page.getByTestId('save-btn').click();
+    await expect(page.getByTestId('desc').first()).toHaveValue('INJECTOR C9');
     await expect(page.getByTestId('stock-num').first()).toHaveValue(formatDateStockNum('A'));
   });
 
@@ -85,7 +89,7 @@ test.describe('Create addon and add to inventory', () => {
     await newAddon(page);
     await page.getByTestId('engine-num').first().fill('1');
     await page.keyboard.down('Tab');
-    await page.getByTestId('save-btn').click();
+    await expect(page.getByTestId('desc').first()).toHaveValue('INJECTOR C9');
     await expect(page.getByTestId('stock-num').first()).toHaveValue(formatDateStockNum('A'));
 
     await page.getByTestId('duplicate-btn').first().click();
@@ -94,7 +98,7 @@ test.describe('Create addon and add to inventory', () => {
     await page.waitForLoadState('networkidle');
     await page.getByTestId('engine-num').first().fill('1');
     await page.keyboard.down('Tab');
-    await page.getByTestId('save-btn').click();
+    await expect(page.getByTestId('desc').first()).toHaveValue('INJECTOR C9');
     await expect(page.getByTestId('stock-num').first()).toHaveValue(formatDateStockNum('B'));
   });
 
@@ -102,6 +106,7 @@ test.describe('Create addon and add to inventory', () => {
     await newAddon(page);
     await page.getByTestId('engine-num').first().fill('1');
     await page.keyboard.down('Tab');
+    await expect(page.getByTestId('desc').first()).toHaveValue('INJECTOR C9');
     await page.getByTestId('print-btn').first().click();
     await page.waitForLoadState('networkidle');
     await goto(page, '/add-ons/office/part');

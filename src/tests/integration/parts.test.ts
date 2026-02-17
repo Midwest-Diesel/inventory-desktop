@@ -11,7 +11,7 @@ beforeAll(async () => {
 
 beforeEach(async () => {
   await resetDb();
-  await loginUser({ username: 'bennett', password: 'mwdup' });
+  await loginUser({ username: 'test', password: 'mwdup' });
 });
 
 
