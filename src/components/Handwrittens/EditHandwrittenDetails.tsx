@@ -190,6 +190,7 @@ export default function EditHandwrittenDetails({
 
   const saveChanges = async (e: FormEvent) => {
     e.preventDefault();
+    setLoading(true);
     if (!changesSaved && !await ask('Are you sure you want to save these changes?')) return;
     setChangesSaved(true);
     if (isSentToAccounting && handwrittenItems.some((item) => item.cost === 0.04)) {
@@ -269,6 +270,7 @@ export default function EditHandwrittenDetails({
     // Start SEND TO ACCOUNTING process
     setChangeCustomerDialogData(newInvoice);
     setAccountingProcessOpen(true);
+    setLoading(false);
   };
 
   const handleEditHandwrittenItems = async () => {

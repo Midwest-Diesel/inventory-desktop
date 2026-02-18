@@ -28,17 +28,17 @@ export default function Handwritten() {
   const [promptLeaveWindow, setPromptLeaveWindow] = useState(false);
   const [addQtyDialogOpen, setAddQtyDialogOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   usePreventNavigation(promptLeaveWindow, 'Leave without printing credit card?');
 
   useEffect(() => {
     const tab = tabs.find((t) => t.selected);
     if (!params || tab?.history[tab.history.length - 2]?.url !== `/handwrittens/${params.handwritten}`) return;
-    fetchData();
+    init();
   }, [tabs]);
 
   useEffect(() => {
-    fetchData();
+    init();
   }, [params]);
 
   useEffect(() => {
@@ -51,7 +51,7 @@ export default function Handwritten() {
     fetchData();
   }, [isEditing]);
 
-  const fetchData = async () => {
+  const init = async () => {
     setLoading(true);
     const res = await getHandwrittenById(Number(params.handwritten));
     setTitle(`${res?.id} Handwritten`);
