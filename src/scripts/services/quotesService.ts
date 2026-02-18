@@ -79,6 +79,26 @@ export const getQuotesByCustomer = async (id: number | null): Promise<any> => {
   }
 };
 
+export const getYesterdaysQuotesBySalesman = async (id: number): Promise<Quote[]> => {
+  try {
+    const res = await api.get(`/api/quotes/salesman-yesterday/${id}`);
+    return parseQuotesRes(res.data);
+  } catch (err) {
+    console.error(err);
+    return [];
+  }
+};
+
+export const getLastWeeksQuotesBySalesman = async (id: number): Promise<Quote[]> => {
+  try {
+    const res = await api.get(`/api/quotes/salesman-last-week/${id}`);
+    return parseQuotesRes(res.data);
+  } catch (err) {
+    console.error(err);
+    return [];
+  }
+};
+
 export const getSomeUnsoldQuotesByPartNum = async (page: number, limit: number, partNum: string, customerId: number, includeAlts: boolean): Promise<{ pageCount: number, rows: Quote[] }> => {
   try {
     const res = await api.get(`/api/quotes/unsold-quotes/part-num/${JSON.stringify({ page: (page - 1) * limit, limit, partNum, customerId, includeAlts })}`);

@@ -67,6 +67,7 @@ export default function PurchaseOrderDetails({ poData, handleReceiveItem, setIsE
     if (!await confirm('Email purchase order?')) return;
     const data = {
       id: poData?.id,
+      poNum: poData?.poNum,
       vendor: poData?.purchasedFrom ?? '',
       address: poData?.vendorAddress ?? '',
       city: poData?.vendorCity ?? '',

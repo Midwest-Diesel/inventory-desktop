@@ -14,6 +14,7 @@ import { isObjectNull } from "@/scripts/tools/utils";
 import { useQuery } from "@tanstack/react-query";
 import { useAtom } from "jotai";
 import { useEffect, useState } from "react";
+import PrintQuotesDialog from "./dialogs/PrintQuotesDialog";
 
 interface Props {
   quotes: Quote[]
@@ -50,6 +51,7 @@ export default function QuotesSection({ quotes, setQuotes, setHandwrittenQuote, 
   const [emailDialogOpen, setEmailDialogOpen] = useState(false);
   const [quoteEmailed, setQuoteEmailed] = useState<Quote | null>(null);
   const [page, setPage] = useState(1);
+  const [printQuotesDialogOpen, setPrintQuotesDialogOpen] = useState(false);
   const partNumSearch = localStorage.getItem('altPartSearches') || localStorage.getItem('partSearches') || null;
   const partNum = partNumSearch ? JSON.parse(partNumSearch).partNum : '';
 
@@ -198,6 +200,13 @@ export default function QuotesSection({ quotes, setQuotes, setHandwrittenQuote, 
             />
           }
 
+          {printQuotesDialogOpen &&
+            <PrintQuotesDialog
+              open={printQuotesDialogOpen}
+              setOpen={setPrintQuotesDialogOpen}
+            />
+          }
+
           <div className="quote-list-top-bar">
             <Button onClick={() => setSearchDialogOpen(true)}>Search</Button>
             <Button
@@ -224,6 +233,7 @@ export default function QuotesSection({ quotes, setQuotes, setHandwrittenQuote, 
               {filterByPart ? 'No Part Filter' : 'Filter by Part'}
             </Button>
             <Button onClick={() => setEndOfDayOpen(true)}>Sales End of Day</Button>
+            <Button onClick={() => setPrintQuotesDialogOpen(true)}>Print</Button>
           </div>
 
           <QuoteList

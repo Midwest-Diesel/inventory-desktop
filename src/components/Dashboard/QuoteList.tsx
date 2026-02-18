@@ -86,7 +86,7 @@ export default function QuoteList({ quotes, setQuotes, onInvoiceQuote, onChangeP
             </tr>
           </thead>
           <tbody>
-            {quotes.length === 0 && <tr><td colSpan={15} style={{ margin: '0.6rem 0' }}>No results...</td></tr>}
+            { quotes.length === 0 && <tr><td colSpan={15} style={{ margin: '0.6rem 0' }}>No results...</td></tr> }
             {quotes.map((quote: Quote, i) => {
               if (!quote) return;
               const isExpanded = expandedQuotes.includes(quote.id);
@@ -205,6 +205,7 @@ export default function QuoteList({ quotes, setQuotes, onInvoiceQuote, onChangeP
           </tbody>
         </Table>
       </div>
+      
       <Pagination
         data={quotesData}
         setData={onChangePage}
