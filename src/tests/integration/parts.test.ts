@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, beforeAll } from 'vitest';
 import { setApiBaseUrl } from '@/scripts/config/axios';
 import { loginUser } from '@/scripts/services/userService';
 import { addPart, getPartInfoByPartNum, getPartsByStockNum } from '@/scripts/services/partsService';
-import { addAltParts, removeAltParts } from '@/scripts/logic/parts';
+import { addAltParts, getNextUP, removeAltParts } from '@/scripts/logic/parts';
 import { resetDb } from '../resetDatabase';
 
 beforeAll(async () => {
@@ -194,5 +194,10 @@ describe('Parts Integration', () => {
     expect(partsInfo?.altParts).toEqual('2251283, RE548546');
     const newParts = await getPartsByStockNum('TEST123456');
     expect(newParts[0].desc).toEqual('TEST PART');
+  });
+
+  it('Get next UP', async () => {
+    const nextUP = await getNextUP();
+    expect(nextUP).toEqual('UP9433');
   });
 });

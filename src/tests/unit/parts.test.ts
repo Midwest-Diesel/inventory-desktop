@@ -1,4 +1,4 @@
-import { formatRemarksSoldText, removeRemarksSoldText } from '@/scripts/logic/parts';
+import { formatRemarksSoldText, removeRemarksSoldText, removeStockNumDateCode } from '@/scripts/logic/parts';
 import { formatDate } from '@/scripts/tools/stringUtils';
 import { describe, expect, test } from 'vitest';
 
@@ -48,5 +48,22 @@ describe('removeRemarksSoldText', () => {
     const remarks = '^ 1 SOLD BY BS 02/12/2026 MIDWEST/NEW PARTS ^^^ 1 SOLD BY TT 2/5/2026 Doug Burdick ^^(10.0) NTO, ELBOW ADAPTER FOR TURBO LINES, LOOKS VERY NICE';
     const expectedRemarks = '(10.0) NTO, ELBOW ADAPTER FOR TURBO LINES, LOOKS VERY NICE';
     expect(removeRemarksSoldText(remarks)).toEqual(expectedRemarks);
+  });
+});
+
+describe('removeStockNumDateCode', () => {
+  test('Normal stockNum input', () => {
+    const stockNum = removeStockNumDateCode('UP9614 (3/18/2015)');
+    expect(stockNum).toEqual('UP9614');
+  });
+
+  test('StockNum with no date code', () => {
+    const stockNum = removeStockNumDateCode('UP9614');
+    expect(stockNum).toEqual('UP9614');
+  });
+
+  test('StockNum is null', () => {
+    const stockNum = removeStockNumDateCode(null);
+    expect(stockNum).toEqual('');
   });
 });

@@ -9,7 +9,7 @@ import Grid from "@/components/library/grid/Grid";
 import GridItem from "@/components/library/grid/GridItem";
 import { useAtom } from "jotai";
 import { userAtom } from "@/scripts/atoms/state";
-import { addToPartQtyHistory, deletePart, editPart, getNextUPStockNum, getPartById, getPartCostIn, getPartEngineCostOut, getPartsQtyHistory } from "@/scripts/services/partsService";
+import { addPart, addPartCostIn, deletePart, editPart, getPartById, getPartsQtyHistory } from "@/scripts/services/partsService";
 import PartPicturesDialog from "@/components/dialogs/PartPicturesDialog";
 import EditPartDetails from "@/components/parts/EditPartDetails";
 import EngineCostOutTable from "@/components/engines/EngineCostOut";
@@ -23,10 +23,11 @@ import Modal from "@/components/library/Modal";
 import { getSurplusCostRemaining } from "@/scripts/services/surplusService";
 import { useNavState } from "@/hooks/useNavState";
 import { usePrintQue } from "@/hooks/usePrintQue";
-import { ask } from "@/scripts/config/tauri";
+import { ask, confirm } from "@/scripts/config/tauri";
 import PartQtyHistoryDialog from "@/components/parts/dialogs/PartQtyHistoryDialog";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { prompt } from "@/components/library/Prompt";
+import { getNextUP, removeRemarksSoldText } from "@/scripts/logic/parts";
 
 
 export default function PartDetails() {
@@ -58,18 +59,6 @@ export default function PartDetails() {
     queryKey: ['engine', part?.engineNum],
     queryFn: () => getEngineByStockNum(part?.engineNum ?? 0),
     enabled: !!part?.engineNum
-  });
-
-  const { data: partCostIn = [] } = useQuery<PartCostIn[]>({
-    queryKey: ['partCostIn', part?.stockNum],
-    queryFn: () => getPartCostIn(part?.stockNum ?? ''),
-    enabled: !!part?.stockNum && !isEditingPart
-  });
-
-  const { data: engineCostOut = [] } = useQuery<EngineCostOut[]>({
-    queryKey: ['engineCostOut', part?.stockNum],
-    queryFn: () => getPartEngineCostOut(part?.stockNum ?? ''),
-    enabled: !!part?.stockNum && !isEditingPart
   });
 
   const { data: history = [] } = useQuery<PartQtyHistory[]>({
@@ -110,15 +99,36 @@ export default function PartDetails() {
   };
 
   const handleAddToUP = async () => {
+    const dateCodeRegex = /\(\d{1,2}\/\d{1,2}\/\d{4}\)/gm;
+    if (!dateCodeRegex.test(part?.stockNum ?? '')) {
+      alert('Stock number must have a date code');
+      return;
+    }
+    if (!part) {
+      alert('Part failed to load');
+      return;
+    }
+
     const qty = Number(await prompt('Enter qty to add'));
-    if (!qty || !part) return;
-    await editPart({ ...part, qty: qty + (part?.qty ?? 0) });
-    await addToPartQtyHistory(part.id, qty);
+    if (!qty) return;
+
+    const stockNum = await getNextUP();
+    if (!stockNum) return;
+    const remarks = removeRemarksSoldText(part.remarks);
+    const newPart = { ...part, stockNum, remarks, qty: qty + Number(part?.qty), soldTo: null, soldToDate: null, qtySold: 0, sellingPrice: 0, handwrittenId: null };
+    await addPart(newPart, true);
+
+    if (part.purchasePrice > 0.01 && await confirm(`This part has cost on it. Do you want to add ${formatCurrency(part.purchasePrice)} to the new UP?`)) {
+      for (const row of part.partCostIn) {
+        await addPartCostIn(stockNum, Number(row.cost), row.invoiceNum, row.vendor ?? '', row.costType ?? '', row.note ?? '');
+      }
+    }
+
     await queryClient.invalidateQueries({ queryKey: ['part', part.id] });
-    await onClickPrint();
+    await onClickPrint(newPart);
   };
 
-  const onClickPrint = async () => {
+  const onClickPrint = async (part: Part) => {
     const copies = Number(await prompt('How many tags do you want to print?', '1'));
     if (copies <= 0) return;
     const pictures = await getImagesFromPart(part?.partNum ?? '') ?? [];
@@ -160,12 +170,7 @@ export default function PartDetails() {
   };
 
   const handleSetNextUP = async () => {
-    const latestUP = await getNextUPStockNum();
-    if (!latestUP) {
-      alert('Failed to fetch latest UP');
-      return;
-    }
-    const nextUP = `UP${parseInt(latestUP.slice(2), 10) + 1}`;
+    const nextUP = await getNextUP();
     if (!nextUP || !part || !await ask(`Change the current stock number to ${nextUP}?`)) return;
     const newPart = { ...part, stockNum: nextUP };
     await editPart(newPart);
@@ -213,8 +218,8 @@ export default function PartDetails() {
           part={part}
           setPart={() => queryClient.invalidateQueries({ queryKey: ['part', part.id] })}
           setIsEditingPart={setIsEditingPart}
-          partCostInData={partCostIn}
-          engineCostOutData={engineCostOut}
+          partCostInData={part.partCostIn}
+          engineCostOutData={part.engineCostOut}
           setPartCostInData={() => queryClient.invalidateQueries({ queryKey: ['partCostIn', part.stockNum] })}
           setEngineCostOutData={() => queryClient.invalidateQueries({ queryKey: ['engineCostOut', part.stockNum] })}
         />
@@ -268,7 +273,7 @@ export default function PartDetails() {
 
           <div className="part-details__top-bar">
             <Button onClick={handleAddToUP} data-testid="add-to-up-btn">Add to UP</Button>
-            <Button onClick={() => onClickPrint()}>Print Tag</Button>
+            <Button onClick={() => onClickPrint(part)}>Print Tag</Button>
             <Button onClick={() => onClickPrintInjTag()}>Print Inj Tag</Button>
             <Button onClick={() => handleSetNextUP()}>Set Next UP #</Button>
             <Button onClick={() => setPartQtyHistoryOpen(true)} disabled={history.length === 0}>Qty History</Button>
@@ -481,40 +486,10 @@ export default function PartDetails() {
               </GridItem>
             </GridItem>
 
-            {part.partsCostIn && part.partsCostIn.length > 0 &&
-              <GridItem variant={['no-style']} colSpan={6}>
-                <h2>Parts Cost In</h2>
-                <Table>
-                  <thead>
-                    <tr>
-                      <th>Invoice Number</th>
-                      <th>Vendor</th>
-                      <th>Cost Type</th>
-                      <th>Cost</th>
-                      <th>Note</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {part.partsCostIn.map((item, i) => {
-                      return (
-                        <tr key={i}>
-                          <td>{ item.invoiceNum }</td>
-                          <td>{ item.vendor }</td>
-                          <td>{ item.costType }</td>
-                          <td>{ item.cost }</td>
-                          <td>{ item.note }</td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </Table>
-              </GridItem>
-            }
-
             <GridItem variant={['no-style']} colSpan={6}>
               <h2>Part Cost In</h2>
-              {partCostIn.length > 0 ?
-                <PartCostIn partCostInData={partCostIn} />
+              {part.partCostIn.length > 0 ?
+                <PartCostIn partCostInData={part.partCostIn} />
                 :
                 <p>Empty</p>
               }
@@ -522,8 +497,8 @@ export default function PartDetails() {
 
             <GridItem variant={['no-style']} colSpan={6}>
               <h2>Engine Cost Out</h2>
-              {engineCostOut.length > 0 ?
-                <EngineCostOutTable engineCostOut={engineCostOut} />
+              {part.engineCostOut.length > 0 ?
+                <EngineCostOutTable engineCostOut={part.engineCostOut} />
                 :
                 <p>Empty</p>
               }

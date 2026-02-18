@@ -130,6 +130,7 @@ export default function OfficePartAddonRow({ addOn, onSave, onModifyAddOnData }:
     // Create part
     const newPart = {
       ...updatedAddOn,
+      soldToDate: new Date(),
       altParts
     } as AddOn;
     await addPart(newPart as any, partsInfo !== null);

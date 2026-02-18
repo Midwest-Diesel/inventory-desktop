@@ -13,11 +13,11 @@ const parsePartsData = async (parts: any) => {
       priceLastUpdated: part.priceLastUpdated && new Date(part.priceLastUpdated),
       soldToDate: part.soldToDate && new Date(part.soldToDate),
       altParts: part.altParts ? part.altParts.split(',').map((p: any) => p.trim()) : [],
-      partsCostIn: part.partsCostIn ? part.partsCostIn.filter((part: any) => !isObjectNull(part)) : [],
+      partCostIn: part.partCostIn ? part.partCostIn.filter((part: any) => !isObjectNull(part)) : [],
       engineCostOut: part.engineCostOut ? part.engineCostOut.filter((part: any) => !isObjectNull(part)) : [],
       imageExists: (window as any).__TAURI_IPC__ && await checkImageExists(part.partNum, 'part'),
       snImageExists: (window as any).__TAURI_IPC__ && await checkImageExists(part.stockNum, 'stock')
-    };
+    } as Part;
   }));
   return partsWithImages;
 };

@@ -2,7 +2,7 @@ import Button from "@/components/library/Button";
 import Dialog from "@/components/library/Dialog";
 import Input from "@/components/library/Input";
 import { editHandwrittenChildTakeoffState, editHandwrittenItemTakeoffState, getHandwrittenById } from "@/scripts/services/handwrittensService";
-import { addPart, addPartCostIn, addToPartQtyHistory, editPartCostIn, editPartStockNum, getPartById, getPartCostIn, getPartQty, handlePartTakeoff } from "@/scripts/services/partsService";
+import { addPart, addPartCostIn, addToPartQtyHistory, editPartCostIn, editPartStockNum, getPartById, getPartQty, handlePartTakeoff } from "@/scripts/services/partsService";
 import { getSurplusByCode, zeroAllSurplusItems } from "@/scripts/services/surplusService";
 import { formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
 import { FormEvent, RefObject, useEffect, useRef, useState } from "react";
@@ -100,16 +100,15 @@ export default function TakeoffsDialog({ open, setOpen, item, unitPrice, setHand
     // Also change stockNum to a date code if this is a UP
     const isPartUP = part.stockNum?.startsWith('UP');
     if (part.qty - Number(qty) === 0 && isPartUP) {
-      const res = await getPartCostIn(part.stockNum ?? '');
       const newStockNum = `${part.stockNum} (${formatDate(new Date())})`;
       await editPartStockNum(part.id, newStockNum);
 
-      for (const row of res) {
-        await editPartCostIn({ ...row, id: Number(row.id), cost: Number(row.cost), stockNum: newStockNum });
+      for (const row of part.partCostIn) {
+        await editPartCostIn({ ...row, stockNum: newStockNum });
       }
     } else if (isPartUP) {
       const newStockNum = `${part.stockNum} (${formatDate(new Date())})`;
-      const newId = await addPart({ ...part, qty: 0, qtySold: Number(qty), stockNum: newStockNum, soldTo: handwritten?.billToCompany ?? '', sellingPrice: unitPrice, handwrittenId: handwritten.id }, true);
+      const newId = await addPart({ ...part, qty: 0, qtySold: Number(qty), stockNum: newStockNum, soldToDate: new Date(), soldTo: handwritten?.billToCompany ?? '', sellingPrice: unitPrice, handwrittenId: handwritten.id }, true);
       if (!newStockNum) {
         alert('Failed to add PartCostIn data: newStockNum is invalid');
         return;

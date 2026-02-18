@@ -135,7 +135,7 @@ export default function SelectHandwrittenDialog({ open, setOpen, part, onSubmit 
   };
 
   const getNewPartCost = (): number => {
-    const partCostIn = part.partsCostIn.reduce((acc, val) => acc + val.cost, 0);
+    const partCostIn = part.partCostIn.reduce((acc, val) => acc + Number(val.cost), 0);
     const engineCostOut = part.engineCostOut.reduce((acc, val) => acc + Number(val.cost), 0);
     const total = partCostIn + engineCostOut;
     return total === 0 ? 0.01 : total;

@@ -479,7 +479,7 @@ type Part = {
   handwrittenId: number | null
   engineNum: number | null
   altParts: string[]
-  partsCostIn: PartsCostIn[]
+  partCostIn: PartCostIn[]
   engineCostOut: EngineCostOut[]
   pictures?: Picture[]
   imageExists: boolean

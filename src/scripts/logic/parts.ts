@@ -1,7 +1,7 @@
 import { prompt } from "@/components/library/Prompt";
 import { ask } from "../config/tauri";
 import { editAddOnAltParts, getOfficeAddOns } from "../services/addOnsService";
-import { editAltParts, getPartInfoByPartNum } from "../services/partsService";
+import { editAltParts, getNextUPStockNum, getPartInfoByPartNum } from "../services/partsService";
 import { formatDate } from "../tools/stringUtils";
 
 
@@ -126,4 +126,19 @@ export const removeRemarksSoldText = (remarks: string | null): string => {
   const markerIndex = remarks.lastIndexOf('^^');
   if (markerIndex === -1) return remarks;
   return remarks.substring(markerIndex + 2).trim();
+};
+
+export const removeStockNumDateCode = (stockNum: string | null): string => {
+  if (!stockNum) return '';
+  const dateCodeRegex = / \(\d{1,2}\/\d{1,2}\/\d{4}\)/gm;
+  return stockNum.replace(dateCodeRegex, ''); 
+};
+
+export const getNextUP = async (): Promise<string | null> => {
+  const latestUP = await getNextUPStockNum();
+  if (!latestUP) {
+    alert('Failed to fetch latest UP');
+    return null;
+  }
+  return `UP${parseInt(latestUP.slice(2), 10) + 1}`;
 };
