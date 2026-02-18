@@ -125,12 +125,23 @@ export default function ShopPartAddonRow({ addOn, handleDuplicateAddOn, partNumL
     emitServerEvent('DELETE_ADDON', [addOn.id]);
   };
   
-  const autofillFromPartNum = (partNum: string) => {
-    if (!partNum) {
+  const autofillFromPartNum = (input: string) => {
+    if (!input) {
       setPartNum('');
-    } else {
-      setPartNum(partNumList.find((p) => p.startsWith(partNum)) ?? '');
+      return;
     }
+
+    const upperInput = input.toUpperCase();
+    const match = partNumList.find((p) => {
+      const upperP = p.toUpperCase();
+      if (!upperP.startsWith(upperInput)) return false;
+
+      const remainder = upperP.slice(upperInput.length);
+      if (remainder.length > 0 && /^[A-Z]+$/.test(remainder)) return false;
+      return true;
+    });
+
+    setPartNum(match ?? '');
   };
 
   const autofillFromPurchasedFrom = (value: string) => {
