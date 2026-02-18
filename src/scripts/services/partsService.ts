@@ -365,6 +365,14 @@ export const editPartStockNum = async (partId: number, stockNum: string) => {
   }
 };
 
+export const editWeightDims = async (partNum: string, weightDims: string) => {
+  try {
+    await api.patch('/api/parts/weight-dims', { partNum, weightDims });
+  } catch (err) {
+    console.error(err);
+  }
+};
+
 // === PUT routes === //
 
 export const editPart = async (part: Part) => {

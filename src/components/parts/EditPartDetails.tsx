@@ -4,7 +4,7 @@ import Grid from "@/components/library/grid/Grid";
 import GridItem from "@/components/library/grid/GridItem";
 import { FormEvent, useState } from "react";
 import Input from "@/components/library/Input";
-import { addPartCostIn, addToPartQtyHistory, deletePartCostIn, editPart, editPartCostIn, getPartInfoByPartNum, setPartLastUpdated, getPartById } from "@/scripts/services/partsService";
+import { addPartCostIn, addToPartQtyHistory, deletePartCostIn, editPart, editPartCostIn, getPartInfoByPartNum, setPartLastUpdated, getPartById, editWeightDims } from "@/scripts/services/partsService";
 import Table from "@/components/library/Table";
 import { addEngineCostOut, deleteEngineCostOut, editEngineCostOut } from "@/scripts/services/enginesService";
 import { userAtom } from "@/scripts/atoms/state";
@@ -105,7 +105,6 @@ export default function EditPartDetails({ part, setPart, setIsEditingPart, partC
       purchasePrice: Number(purchasePrice),
       engineNum: engineStockNum,
       altParts,
-      weightDims,
       specialNotes,
       coreFam,
       soldToDate,
@@ -128,6 +127,7 @@ export default function EditPartDetails({ part, setPart, setIsEditingPart, partC
     if (!isPricingUnchanged) setPartLastUpdated(part.id);
     
     await editPart({ ...newPart, priceLastUpdated: !isPricingUnchanged ? new Date() : null });
+    if (newPart.weightDims !== part.weightDims) await editWeightDims(newPart.partNum, weightDims);
 
     // Handle qty change history
     if (part.qty !== newPart.qty) await addToPartQtyHistory(part.id, newPart.qty - part.qty);
