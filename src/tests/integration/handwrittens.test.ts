@@ -121,7 +121,7 @@ describe('Handwrittens Integration', () => {
           stockNum: null,
           unitPrice: 95,
           weight: 0,
-          width: 0,
+          width: 0
         },
         {
           cost: 1060,
@@ -171,13 +171,13 @@ describe('Handwrittens Integration', () => {
                 soldToDate: null,
                 specialNotes: null,
                 stockNum: 'UP9432',
-                weightDims: null,
+                weightDims: null
               },
               partId: 1,
               partNum: '7E0333',
               qty: 1,
-              stockNum: 'UP9432',
-            },
+              stockNum: 'UP9432'
+            }
           ],
           isInvoiced: null,
           isQuoteChecked: null,
@@ -192,7 +192,7 @@ describe('Handwrittens Integration', () => {
           stockNum: null,
           unitPrice: -595,
           weight: 0,
-          width: 0,
+          width: 0
         }
       ],
       shipViaId: null,
