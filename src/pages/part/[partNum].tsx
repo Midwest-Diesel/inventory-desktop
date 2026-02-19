@@ -23,7 +23,7 @@ import Modal from "@/components/library/Modal";
 import { getSurplusCostRemaining } from "@/scripts/services/surplusService";
 import { useNavState } from "@/hooks/useNavState";
 import { usePrintQue } from "@/hooks/usePrintQue";
-import { ask, confirm } from "@/scripts/config/tauri";
+import { confirm } from "@/scripts/config/tauri";
 import PartQtyHistoryDialog from "@/components/parts/dialogs/PartQtyHistoryDialog";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { prompt } from "@/components/library/Prompt";
