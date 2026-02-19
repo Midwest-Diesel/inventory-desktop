@@ -1711,9 +1711,16 @@ async fn print_inj_part_tag(image_data: String) -> Result<(), String> {
       .decode()
       .map_err(|e| e.to_string())?;
 
+    let upscaled_img = image::imageops::resize(
+      &img,
+      img.width() * 2,
+      img.height() * 2,
+      FilterType::Lanczos3,
+    );
+
     {
       let mut file = File::create(file_path).map_err(|e| e.to_string())?;
-      img.write_to(&mut file, ImageOutputFormat::Png).map_err(|e| e.to_string())?;
+      upscaled_img.write_to(&mut file, ImageOutputFormat::Png).map_err(|e| e.to_string())?;
     }
 
     if let Ok(val) = env::var("DISABLE_PRINTING") {
