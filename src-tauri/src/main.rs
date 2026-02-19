@@ -1856,7 +1856,7 @@ async fn email_fast_track_inventory(inventory: Vec<FastTrackItem>) -> Result<(),
   if let Ok(val) = env::var("VITE_NODE_ENV") {
     if val == "production" {
       send_email(SendEmailArgs {
-        body: "".to_string(),
+        body: "<div></div>".to_string(),
         recipients: vec!["imports@sandhills.com".to_string()],
         cc: vec!["matt@midwestdiesel.com".to_string()],
         attachments: vec![file_path.to_string()],
@@ -1880,12 +1880,12 @@ fn save_pdf(bytes: Vec<u8>, path: String) -> Result<(), String> {
 }
 
 fn send_email(data: SendEmailArgs) {
-  let recipients = data.recipients.join("; ");
-  let cc_list = data.cc.join("; ");
+  let recipients = data.recipients.join(";");
+  let cc_list = data.cc.join(";");
   let attachments_vbs = data
     .attachments
     .iter()
-    .map(|path| format!("MailItem.Attachments.Add \"{}\"", path))
+    .map(|path| format!("MailItem.Attachments.Add \"{}\"", path.replace("\"", "\"\"")))
     .collect::<Vec<_>>()
     .join("\n");
 
