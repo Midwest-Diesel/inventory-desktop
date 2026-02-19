@@ -9,7 +9,7 @@ import Grid from "@/components/library/grid/Grid";
 import GridItem from "@/components/library/grid/GridItem";
 import { useAtom } from "jotai";
 import { userAtom } from "@/scripts/atoms/state";
-import { addPart, addPartCostIn, deletePart, editPart, getPartById, getPartsQtyHistory } from "@/scripts/services/partsService";
+import { addPart, addPartCostIn, addToPartQtyHistory, deletePart, editPart, getPartById, getPartsQtyHistory } from "@/scripts/services/partsService";
 import PartPicturesDialog from "@/components/dialogs/PartPicturesDialog";
 import EditPartDetails from "@/components/parts/EditPartDetails";
 import EngineCostOutTable from "@/components/engines/EngineCostOut";
@@ -98,7 +98,7 @@ export default function PartDetails() {
     await push('Home', '/');
   };
 
-  const handleAddToUP = async () => {
+  const handleNewUP = async () => {
     const dateCodeRegex = /\(\d{1,2}\/\d{1,2}\/\d{4}\)/gm;
     if (!dateCodeRegex.test(part?.stockNum ?? '')) {
       alert('Stock number must have a date code');
@@ -125,6 +125,16 @@ export default function PartDetails() {
     }
 
     await queryClient.invalidateQueries({ queryKey: ['part', part.id] });
+    await onClickPrint(newPart);
+  };
+
+  const handleAddToUP = async () => {
+    const qty = Number(await prompt('Enter qty to add'));
+    if (!qty || !part) return;
+    const newPart = { ...part, qty: qty + (part?.qty ?? 0) };
+    await editPart(newPart);
+    await addToPartQtyHistory(newPart.id, qty);
+    await queryClient.invalidateQueries({ queryKey: ['part', newPart.id] });
     await onClickPrint(newPart);
   };
 
@@ -167,14 +177,6 @@ export default function PartDetails() {
       addToQue('injPartTag', 'print_inj_part_tag', args, '200px', '135px');
     }
     printQue();
-  };
-
-  const handleSetNextUP = async () => {
-    const nextUP = await getNextUP();
-    if (!nextUP || !part || !await ask(`Change the current stock number to ${nextUP}?`)) return;
-    const newPart = { ...part, stockNum: nextUP };
-    await editPart(newPart);
-    await queryClient.invalidateQueries({ queryKey: ['part', part.id] });
   };
 
 
@@ -272,10 +274,10 @@ export default function PartDetails() {
           </div>
 
           <div className="part-details__top-bar">
+            <Button onClick={handleNewUP} data-testid="add-to-up-btn">New UP</Button>
             <Button onClick={handleAddToUP} data-testid="add-to-up-btn">Add to UP</Button>
             <Button onClick={() => onClickPrint(part)}>Print Tag</Button>
             <Button onClick={() => onClickPrintInjTag()}>Print Inj Tag</Button>
-            <Button onClick={() => handleSetNextUP()}>Set Next UP #</Button>
             <Button onClick={() => setPartQtyHistoryOpen(true)} disabled={history.length === 0}>Qty History</Button>
           </div>
 
