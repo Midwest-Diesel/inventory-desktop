@@ -44,7 +44,7 @@
     "html2canvas": "^1.4.1",
     "jotai": "^2.7.0",
     "jsbarcode": "^3.11.6",
-    "jspdf": "^4.1.0",
+    "jspdf": "^4.2.0",
     "node-schedule": "^2.1.1",
     "pg": "^8.16.2",
     "react": "^18.3.1",
