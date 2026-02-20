@@ -139,7 +139,7 @@ export default function PricingChangesDialog({ open, setOpen, openTable, setTabl
       salesModel: row.SALES_MODEL?.toString().replaceAll('*', ';') ?? '',
       classCode: row.MAJOR_CLASS_CODE,
       price: Number(row.DISC_PRICE),
-      percent: Number(row.DISC_PERCENT),
+      percent: Number(row.DISC_PERCENT)
     }));
   };
   
