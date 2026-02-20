@@ -4,9 +4,9 @@ import { recentPartSearchesAtom, userAtom } from "@/scripts/atoms/state";
 import { formatDate, formatTime } from "@/scripts/tools/stringUtils";
 import { useEffect } from "react";
 import Tabs from "../library/Tabs";
-import { supabase } from "@/scripts/config/supabase";
 import { getRecentPartSearches, getRecentPartSearchesToday } from "@/scripts/services/recentSearchesService";
 import { useQuery } from "@tanstack/react-query";
+import { offServerEvent, onServerEvent } from "@/scripts/config/websockets";
 
 
 export default function RecentPartSearches() {
@@ -19,13 +19,10 @@ export default function RecentPartSearches() {
   });
 
   useEffect(() => {
-    const channel = supabase
-      .channel('recentSearches')
-      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'recentSearches' }, refreshRecentSearches);
-    channel.subscribe();
+    onServerEvent('INSERT_RECENT_SEARCH', refreshRecentSearches);
 
     return () => {
-      channel.unsubscribe();
+      offServerEvent('INSERT_RECENT_SEARCH', refreshRecentSearches);
     };
   }, []);
 

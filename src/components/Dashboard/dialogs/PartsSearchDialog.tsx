@@ -6,6 +6,7 @@ import { addRecentSearch } from "@/scripts/services/recentSearchesService";
 import { useAtom } from "jotai";
 import { lastPartSearchAtom, showSoldPartsAtom, userAtom } from "@/scripts/atoms/state";
 import { PartSearchParams } from "@/components/dashboard/PartSearchSection";
+import { emitServerEvent } from "@/scripts/config/websockets";
 
 
 interface Props {
@@ -78,6 +79,7 @@ export default function PartsSearchDialog({ open, setOpen, handleSearch }: Props
     await handleSearch({ partNum, stockNum, desc, location, qty, remarks, rating, purchasedFrom, serialNum, hp, page: 1, isAltSearch: false });
     if (partNum && partNum !== '*' && user.subtype === 'sales') await addRecentSearch({ partNum: partNum.replace('*', ''), salespersonId: user.id });
     setLastSearch(partNum.replace('*', ''));
+    emitServerEvent('INSERT_RECENT_SEARCH', []);
   };
 
 

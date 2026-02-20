@@ -11,10 +11,8 @@ import GridItem from "@/components/library/grid/GridItem";
 import Input from "@/components/library/Input";
 import Table from "@/components/library/Table";
 import { userAtom } from "@/scripts/atoms/state";
-import { supabase } from "@/scripts/config/supabase";
 import { deleteHandwritten, editHandwritten, editHandwrittenCCNumber, getHandwrittenById } from "@/scripts/services/handwrittensService";
 import { formatCCNumber, formatCurrency, formatDate, formatPhone } from "@/scripts/tools/stringUtils";
-import { RealtimePostgresUpdatePayload } from "@supabase/supabase-js";
 import { invoke, confirm } from "@/scripts/config/tauri";
 import { useAtom } from "jotai";
 import Link from "@/components/library/Link";
@@ -31,6 +29,7 @@ import { prompt } from "../library/Prompt";
 import HandwrittenStatusFields from "./HandwrittenStatusFields";
 import ShippingListModal from "./modals/ShippingListModal";
 import ModalList from "../library/ModalList";
+import { offServerEvent, onServerEvent } from "@/scripts/config/websockets";
 
 interface Props {
   handwritten: Handwritten
@@ -100,14 +99,12 @@ export default function HandwrittenDetails({
   }, [handwritten]);
 
   useEffect(() => {
-    const channel = supabase
-      .channel('handwrittenItems')
-      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'handwrittenItems' }, refreshHandwrittenItems)
-      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'handwrittens' }, refreshHandwrittenOrderNotes);
-    channel.subscribe();
+    onServerEvent('REFRESH_HANDWRITTEN_ITEMS', refreshHandwrittenItems);
+    onServerEvent('UPDATE_HANDWRITTEN_WARRANTY', refreshHandwrittenOrderNotes);
 
     return () => {
-      channel.unsubscribe();
+      offServerEvent('REFRESH_HANDWRITTEN_ITEMS', refreshHandwrittenItems);
+      offServerEvent('UPDATE_HANDWRITTEN_WARRANTY', refreshHandwrittenOrderNotes);
     };
   }, []);
 
@@ -116,18 +113,20 @@ export default function HandwrittenDetails({
     queryFn: () => getAltShipByCustomerId(handwritten.customer.id)
   });
 
-  const refreshHandwrittenItems = async () => {
-    const res = await getHandwrittenById(Number(params.handwritten));
+  const refreshHandwrittenItems = async (id: number) => {
+    if (id !== Number(params.handwritten)) return;
+    const res = await getHandwrittenById(id);
     setHandwritten(res);
   };
 
-  const refreshHandwrittenOrderNotes = async (e: RealtimePostgresUpdatePayload<Handwritten>) => {
-    const res = await getHandwrittenById(Number(params.handwritten));
+  const refreshHandwrittenOrderNotes = async (id: number, orderNotes: string) => {
+    if (id !== Number(params.handwritten)) return;
+    const res = await getHandwrittenById(id);
     if (!res) {
-      location.reload();
+      alert('Failed to sync order notes');
       return;
     }
-    setHandwritten({...res, orderNotes: e.new.orderNotes });
+    setHandwritten({...res, orderNotes });
   };
 
   const handleDelete = async () => {

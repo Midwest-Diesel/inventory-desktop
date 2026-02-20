@@ -17,6 +17,7 @@
       "shell": { "all": true },
       "window": { "all": true },
       "http": { "all": true },
+      "fs": { "all": true },
       "dialog": {
         "all": true,
         "ask": true,

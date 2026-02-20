@@ -7,8 +7,8 @@ export const getWatchedPricingRows = async (): Promise<string[]> => {
   try {
     const res = await api.get('/api/pricing-changes');
     return res.data;
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
     return [];
   }
 };
@@ -18,8 +18,8 @@ export const getWatchedPricingRows = async (): Promise<string[]> => {
 export const addWatchedPricingRow = async (partNum: string) => {
   try {
     await api.post('/api/pricing-changes', { partNum });
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
   }
 };
 
@@ -28,7 +28,7 @@ export const addWatchedPricingRow = async (partNum: string) => {
 export const deleteWatchedPricingRow = async (partNum: string) => {
   try {
     await api.delete(`/api/pricing-changes/${partNum}`);
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
   }
 };

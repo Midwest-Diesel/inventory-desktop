@@ -5,7 +5,7 @@ import { windowConfirm } from "../tools/utils";
 
 export const invoke = async (cmd: string, args?: any) => {
   if (!window?.__TAURI_IPC__) return;
-  return await tauriEvent(cmd, args);
+  return await tauriEvent(cmd, args) as any;
 };
 
 export const confirm = async (msg: string): Promise<boolean> => {

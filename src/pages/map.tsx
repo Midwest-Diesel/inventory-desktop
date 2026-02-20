@@ -9,8 +9,6 @@ import { userAtom } from "@/scripts/atoms/state";
 import { formatDate, parseResDate } from "@/scripts/tools/stringUtils";
 import { dateDiffInDays } from "@/scripts/tools/utils";
 import { getAllUsers } from "@/scripts/services/userService";
-import { supabase } from "@/scripts/config/supabase";
-import { RealtimePostgresDeletePayload, RealtimePostgresInsertPayload, RealtimePostgresUpdatePayload } from "@supabase/supabase-js";
 import { getCustomerById } from "@/scripts/services/customerService";
 import Input from "@/components/library/Input";
 import Select from "@/components/library/select/Select";
@@ -87,13 +85,6 @@ export default function ImportantCustomersMap() {
     let closeWindowsEvent: any;
 
     handlePageChange(null, 1);
-
-    supabase
-      .channel('mapLocations')
-      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'mapLocations' }, addRealtimeMapChanges)
-      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'mapLocations' }, editRealtimeMapChanges)
-      .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'mapLocations' }, deleteRealtimeMapChanges)
-      .subscribe();
     
     const loadMarkers = async () => {
       const { AdvancedMarkerElement, PinElement } = await google.maps.importLibrary('marker') as google.maps.MarkerLibrary;
@@ -152,40 +143,6 @@ export default function ImportantCustomersMap() {
       google.maps.event.removeListener(clickEvent);
     };    
   }, [filteredLocations, listOfLocations, mapInstanceRef]);
-
-  const addRealtimeMapChanges = async (e: RealtimePostgresInsertPayload<MapLocation>) => {
-    const payload: any = e.new;
-    const customer = payload.customerId ? await getCustomerById(payload.customerId) : null;
-    const salesman = usersList.find((u) => u.id === payload.salesmanId)?.initials ?? '';
-    const date = parseResDate(e.new.date as any);
-    if (!date) return;
-    const newSearchData: MapLocation = { ...e.new, date, salesman, customer, location: { lat: payload.lat, lng: payload.lng }};
-    const newLocations: MapLocation[] = [newSearchData, ...listOfLocations];
-    setListOfLocations(newLocations);
-    handleFilters(newLocations);
-  };
-
-  const editRealtimeMapChanges = async (e: RealtimePostgresUpdatePayload<MapLocation>) => {
-    const payload: any = e.new;
-    const customer = payload.customerId ? await getCustomerById(payload.customerId) : null;
-    const salesman = usersList.find((u) => u.id === payload.salesmanId)?.initials ?? '';
-    const date = parseResDate(e.new.date as any);
-    if (!date) return;
-    const newSearchData: MapLocation = { ...e.new, date, salesman, customer, location: { lat: payload.lat, lng: payload.lng }};
-    const newLocations: MapLocation[] = listOfLocations.map((loc) => {
-      if (loc.id === newSearchData.id)
-        return newSearchData;
-      else
-        return loc;
-    });
-    setListOfLocations(newLocations);
-    handleFilters(newLocations);
-  };
-
-  const deleteRealtimeMapChanges = (e: RealtimePostgresDeletePayload<MapLocation>) => {
-    setFilteredLocations(filteredLocations.filter((loc) => loc.id !== e.old.id));
-    setListOfLocations(listOfLocations.filter((loc) => loc.id !== e.old.id));
-  };
 
   const handlePageChange = (_: any, page: number) => {
     setListDisplayItems(filteredLocations.slice((page - 1) * LIMIT, page * LIMIT));

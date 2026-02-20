@@ -1,4 +1,5 @@
 import api from "../config/axios";
+import { emitServerEvent } from "../config/websockets";
 import { formatRemarksSoldText } from "../logic/parts";
 import { parseResDate } from "../tools/stringUtils";
 import { filterNullObjValuesArr } from "../tools/utils";
@@ -274,6 +275,7 @@ export const addHandwrittenItem = async (item: NewHandwrittenItem): Promise<numb
   try {
     const res = await api.post('/api/handwrittens/item', item);
     await handleRemarksSoldText(item, res.data.id, item.handwrittenId);
+    emitServerEvent('REFRESH_HANDWRITTEN_ITEMS', [item.handwrittenId]);
     return Number(res.data.id);
   } catch (err) {
     console.error(err);
@@ -362,6 +364,7 @@ export const editHandwritten = async (handwritten: Handwritten) => {
 export const editHandwrittenItem = async (item: HandwrittenItem) => {
   try {
     await api.put('/api/handwrittens/items', item);
+    emitServerEvent('REFRESH_HANDWRITTEN_ITEMS', [item.handwrittenId]);
   } catch (err) {
     console.error(err);
   }
@@ -378,6 +381,7 @@ export const editHandwrittenItemChild = async (item: HandwrittenItemChild) => {
 export const editHandwrittenOrderNotes = async (id: number, orderNotes: string) => {
   try {
     await api.put('/api/handwrittens/order-notes', { id, orderNotes });
+    emitServerEvent('UPDATE_HANDWRITTEN_WARRANTY', [id, orderNotes]);
   } catch (err) {
     console.error(err);
   }

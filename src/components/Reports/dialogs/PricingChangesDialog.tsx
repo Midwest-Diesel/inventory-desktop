@@ -2,7 +2,8 @@ import Error from "@/components/Error";
 import Button from "@/components/library/Button";
 import Dialog from "@/components/library/Dialog";
 import Input from "@/components/library/Input";
-import { getSupabaseFile, uploadSupabaseFile } from "@/scripts/config/supabase";
+import { invoke } from "@/scripts/config/tauri";
+import { fileStoragePath, readJsonFile, uploadFile } from "@/scripts/services/fileService";
 import { FormEvent, useState } from "react";
 import * as XLSX from "xlsx";
 
@@ -22,21 +23,27 @@ export default function PricingChangesDialog({ open, setOpen, openTable, setTabl
   const showPreviousResults = async () => {
     openTable();
     setOpen(false);
-    const url = await getSupabaseFile('files', 'prev_pricing_changes.json');
-    const prevResults = await readJson(url);
+    const prevResults = await readJsonFile<any[]>(`${fileStoragePath}/prev_pricing_changes.json`) ?? [];
     setTableData(prevResults);
   };
 
   const handleResults = async (e: FormEvent) => {
     e.preventDefault();
+    if (!file) {
+      setError("Please upload a file first.");
+      return;
+    }
     openTable();
     setOpen(false);
 
-    const url = await getSupabaseFile('files', 'pricing_changes.xlsx');
-    const oldList = await readFile(url);
-    await uploadSupabaseFile('files', file, 'pricing_changes.xlsx', { upsert: true });
+    const oldList: any = await readFile(`${fileStoragePath}/pricing_changes.xlsx`);
     const filteredList = getModifiedRows(oldList);
-    await uploadSupabaseFile('files', new File([JSON.stringify(filteredList)], { type: 'application/json' } as any), 'prev_pricing_changes.json', { upsert: true });
+    await uploadFile(file, `${fileStoragePath}/pricing_changes.xlsx`);
+    await uploadFile(
+      new File([JSON.stringify(filteredList)], 'prev_pricing_changes.json', { type: 'application/json' }),
+      `${fileStoragePath}/prev_pricing_changes.json`
+    );
+
     setTableData(filteredList);
   };
 
@@ -86,10 +93,7 @@ export default function PricingChangesDialog({ open, setOpen, openTable, setTabl
       };
     }).filter((r) => r.partNum && r.partNum !== 'undefined');
 
-    // Filter out ADDED rows from existing list
-    newList = newList.filter((row) => (
-      !addedRows.some((addedRow) => row.partNum === addedRow.partNum)
-    ));
+    newList = newList.filter((row) => (!addedRows.some((addedRow) => row.partNum === addedRow.partNum)));
     
     return [
       ...deletedRows.map((row) => {
@@ -120,52 +124,26 @@ export default function PricingChangesDialog({ open, setOpen, openTable, setTabl
     ];
   };
 
-  const readFile = async (url: string): Promise<PricingChangesReport[]> => {
-    const res = await fetch(url);
-    const blob = await res.blob();
-    const reader = new FileReader();
-    return new Promise((resolve, reject) => {
-      reader.onload = (e: any) => {
-        try {
-          const data = new Uint8Array(e.target.result);
-          const workbook = XLSX.read(data, { type: 'array' });
-          const sheetName = workbook.SheetNames[0];
-          const worksheet = workbook.Sheets[sheetName];
-          const jsonData = XLSX.utils.sheet_to_json(worksheet).map((row: any) => {
-            return {
-              partNum: `${row.PART_NUMBER}`.trim(),
-              desc: row.PART_DESCRIPTION,
-              qty: Number(row.AVAILABLE_QTY),
-              salesModel: row.SALES_MODEL?.toString().replaceAll('*', ';') ?? '',
-              classCode: row.MAJOR_CLASS_CODE,
-              price: Number(row.DISC_PRICE),
-              percent: Number(row.DISC_PERCENT)
-            };
-          }).filter((row) => row.partNum && row.partNum !== 'undefined');
-          resolve(jsonData);
-        } catch (error) {
-          reject(error);
-        }
-      };
+  const readFile = async (path: string) => {
+    const bytes = await invoke('read_file_bytes', { path });
+    const data = new Uint8Array(bytes);
+    const workbook = XLSX.read(data, { type: 'array' });
+    const sheetName = workbook.SheetNames[0];
+    const worksheet = workbook.Sheets[sheetName];
+
+    const jsonData = XLSX.utils.sheet_to_json(worksheet);
+    return jsonData.map((row: any) => ({
+      partNum: `${row.PART_NUMBER}`.trim(),
+      desc: row.PART_DESCRIPTION,
+      qty: Number(row.AVAILABLE_QTY),
+      salesModel: row.SALES_MODEL?.toString().replaceAll('*', ';') ?? '',
+      classCode: row.MAJOR_CLASS_CODE,
+      price: Number(row.DISC_PRICE),
+      percent: Number(row.DISC_PERCENT),
+    }));
+  };
   
-      reader.onerror = (error) => reject(error);
-      reader.readAsArrayBuffer(blob);
-    });
-  };
-
-  const readJson = async (url: string): Promise<PricingChangesReport[]> => {
-    try {
-      const res = await fetch(url);
-      const json = await res.json();
-      return json;
-    } catch (error) {
-      console.error(error);
-      return [];
-    }
-  };
-
   const formatFile = (jsonData: string[][]): PricingChangesReport[] => {
-    // Parse object structure
     const partNumIdx = jsonData[0].indexOf('PART_NUMBER');
     const descIdx = jsonData[0].indexOf('PART_DESCRIPTION');
     const qtyIdx = jsonData[0].indexOf('AVAILABLE_QTY');
@@ -184,7 +162,6 @@ export default function PricingChangesDialog({ open, setOpen, openTable, setTabl
     if (percentIdx < 0) err.push('DISC_PERCENT');
     if (err.length > 0) setError(`Missing or mispelled columns: ${err.join(', ')}`);
 
-    // Return formatted data
     const formattedData: PricingChangesReport[] = [];
     for (const row of jsonData.slice(1)) {
       const formattedRow = {

@@ -177,6 +177,7 @@ export default function CreditCardBlock({
               <Select
                 value={payment}
                 onChange={(e) => handleChangePayment(handwritten.id, e.target.value)}
+                required
               >
                 <option value="">-- SELECT PAYMENT TYPE --</option>
                 {paymentTypes.map((type, i) => {

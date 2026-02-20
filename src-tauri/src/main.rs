@@ -20,6 +20,7 @@ const PART_TAG_PRINTER: &str = "D550 Printer";
 
 use image::{io::Reader as ImageReader, ImageOutputFormat, DynamicImage, imageops::{rotate90, FilterType}};
 use serde::{Deserialize, Serialize};
+use serde_json::Value;
 use tauri::{Manager, api::shell, AppHandle};
 use std::{env, io::BufWriter};
 use std::fs::{self, write, File, remove_file, create_dir_all};
@@ -245,7 +246,10 @@ async fn main() {
       save_pdf,
       email_po_received,
       email_fast_track_inventory,
-      print_quotes_list
+      print_quotes_list,
+      get_json_file,
+      read_file_bytes,
+      delete_file
     ])
     .run(tauri::generate_context!());
 }
@@ -1957,4 +1961,35 @@ async fn print_quotes_list(image_data: String) -> Result<(), String> {
     Ok(())
   }).await;
   res.unwrap()
+}
+
+#[tauri::command]
+fn get_json_file(path: String) -> Result<Option<Value>, String> {
+  match fs::read_to_string(&path) {
+    Ok(content) => match serde_json::from_str(&content) {
+      Ok(json) => Ok(Some(json)),
+      Err(e) => Err(e.to_string())
+    },
+    Err(e) if e.kind() == std::io::ErrorKind::NotFound => Ok(None),
+    Err(e) => Err(e.to_string())
+  }
+}
+
+#[tauri::command]
+fn read_file_bytes(path: String) -> Result<Vec<u8>, String> {
+  std::fs::read(path).map_err(|e| e.to_string())
+}
+
+#[tauri::command]
+fn delete_file(path: String) -> Result<(), String> {
+  let path = Path::new(&path);
+  if !path.exists() {
+    return Err("File does not exist".into());
+  }
+  if !path.is_file() {
+    return Err("Path is not a file".into());
+  }
+
+  fs::remove_file(path)
+    .map_err(|e| e.to_string())
 }

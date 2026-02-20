@@ -1,8 +1,8 @@
 import Button from "../../library/Button";
-import { getSupabaseFile } from "@/scripts/config/supabase";
 import { useEffect, useState } from "react";
 import PricingChangesTable from "./PricingChangesTable";
 import { addWatchedPricingRow, deleteWatchedPricingRow, getWatchedPricingRows } from "@/scripts/services/pricingChangesService";
+import { downloadFile, fileStoragePath } from "@/scripts/services/fileService";
 
 interface Props {
   closeTable: () => void
@@ -28,8 +28,7 @@ export default function PricingChanges({ closeTable, data }: Props) {
   };
 
   const handleDownload = async () => {
-    const url = await getSupabaseFile('files', 'pricing_changes.xlsx');
-    window.open(url);
+    await downloadFile(`${fileStoragePath}/pricing_changes.xlsx`);
   };
 
   const toggleWatchRow = async (row: PricingChangesReport, isWatched: boolean) => {

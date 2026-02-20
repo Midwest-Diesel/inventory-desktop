@@ -866,6 +866,7 @@ export default function EditHandwrittenDetails({
                           variant={['label-space-between']}
                           value={source}
                           onChange={(e: any) => setSource(e.target.value)}
+                          required
                           data-testid="source"
                         >
                           <option value="">-- SELECT A SOURCE --</option>
@@ -986,6 +987,7 @@ export default function EditHandwrittenDetails({
                             variant={['label-bold']}
                             value={shipViaId ?? ''}
                             onChange={(e: any) => handleEditShipVia(e.target.value)}
+                            required
                             data-testid="ship-via"
                           />
                         </td>
