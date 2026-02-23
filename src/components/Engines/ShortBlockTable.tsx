@@ -21,6 +21,7 @@ export default function ShortBlockTable({ engines, loading }: Props) {
             <th>Login Date</th>
             <th>Model</th>
             <th>Serial Number</th>
+            <th>Arrangement Number</th>
             <th>Engine Cost</th>
             <th>Comments</th>
             <th>HP</th>
@@ -38,6 +39,7 @@ export default function ShortBlockTable({ engines, loading }: Props) {
                 <td>{ formatDate(engine.loginDate) }</td>
                 <td>{ engine.model }</td>
                 <td>{ engine.serialNum }</td>
+                <td>{ engine.arrNum }</td>
                 <td>{ formatCurrency(engine.costRemaining) }</td>
                 <td>{ engine.comments }</td>
                 <td>{ engine.horsePower }</td>

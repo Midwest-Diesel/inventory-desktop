@@ -21,6 +21,7 @@ export default function ToreDownEnginesTable({ engines, loading }: Props) {
             <th>T/D Date</th>
             <th>Model</th>
             <th>Serial Number</th>
+            <th>Arrangement Number</th>
             <th>Location</th>
             <th>HP</th>
             <th>Jake Brake</th>
@@ -37,6 +38,7 @@ export default function ToreDownEnginesTable({ engines, loading }: Props) {
                 <td>{ formatDate(engine.toreDownDate) }</td>
                 <td>{ engine.model }</td>
                 <td>{ engine.serialNum }</td>
+                <td>{ engine.arrNum }</td>
                 <td>{ engine.location }</td>
                 <td>{ engine.horsePower }</td>
                 <td className="cbx-td"><Checkbox checked={engine.jakeBrake} disabled /></td>

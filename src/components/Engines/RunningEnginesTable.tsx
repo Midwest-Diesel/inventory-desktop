@@ -30,6 +30,7 @@ export default function RunningEnginesTable({ engines, loading }: Props) {
             <th>Login Date</th>
             <th>Model</th>
             <th>Serial Number</th>
+            <th>Arrangement Number</th>
             <th>Location</th>
             <th>Comments</th>
             <th>HP</th>
@@ -50,6 +51,7 @@ export default function RunningEnginesTable({ engines, loading }: Props) {
                 <td>{ formatDate(engine.loginDate) }</td>
                 <td>{ engine.model }</td>
                 <td>{ engine.serialNum }</td>
+                <td>{ engine.arrNum }</td>
                 <td>{ engine.location }</td>
                 <td>{ engine.comments }</td>
                 <td>{ engine.horsePower }</td>

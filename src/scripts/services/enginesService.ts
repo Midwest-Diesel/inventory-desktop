@@ -5,6 +5,7 @@ export interface EngineSearch {
   stockNum?: number
   model?: string
   serialNum?: string
+  arrNum?: string
   date?: string
   location?: string
   comments?: string

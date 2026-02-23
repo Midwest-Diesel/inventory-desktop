@@ -20,6 +20,7 @@ export default function EngineSearchDialog({ open, setOpen, onSearch, listOpen, 
   const [stockNum, setStockNum] = useState('');
   const [model, setModel] = useState('');
   const [serialNum, setSerialNum] = useState('');
+  const [arrNum, setArrNum] = useState('');
   const [date, setDate] = useState<Date | null>(null);
   const [location, setLocation] = useState('');
   const [comments, setComments] = useState('');
@@ -39,6 +40,7 @@ export default function EngineSearchDialog({ open, setOpen, onSearch, listOpen, 
     setStockNum('');
     setModel('');
     setSerialNum('');
+    setArrNum('');
     setDate(null);
     setLocation('');
     setComments('');
@@ -56,6 +58,7 @@ export default function EngineSearchDialog({ open, setOpen, onSearch, listOpen, 
       stockNum: Number(stockNum),
       model,
       serialNum,
+      arrNum,
       date: parseDateInputValue(date),
       location,
       comments,
@@ -102,6 +105,13 @@ export default function EngineSearchDialog({ open, setOpen, onSearch, listOpen, 
           variant={['small', 'thin', 'label-no-stack', 'label-space-between']}
           value={serialNum}
           onChange={(e: any) => setSerialNum(e.target.value)}
+        />
+        
+        <Input
+          label="Arrangement Number"
+          variant={['small', 'thin', 'label-no-stack', 'label-space-between']}
+          value={arrNum}
+          onChange={(e) => setArrNum(e.target.value)}
         />
 
         <Input

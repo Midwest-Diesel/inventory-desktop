@@ -22,6 +22,7 @@ export default function SoldEnginesTable({ engines, loading }: Props) {
             <th>Sell Date</th>
             <th>Model</th>
             <th>Serial Number</th>
+            <th>Arrangement Number</th>
             <th>Sold Engine Cost</th>
             <th>Sell Price</th>
             <th>Comments</th>
@@ -43,6 +44,7 @@ export default function SoldEnginesTable({ engines, loading }: Props) {
                 <td>{ formatDate(engine.soldDate) }</td>
                 <td>{ engine.model }</td>
                 <td>{ engine.serialNum }</td>
+                <td>{ engine.arrNum }</td>
                 <td>{ formatCurrency(engine.costRemaining) }</td>
                 <td>{ formatCurrency(engine.sellPrice) }</td>
                 <td>{ engine.comments }</td>
