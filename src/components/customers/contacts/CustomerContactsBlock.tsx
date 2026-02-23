@@ -30,13 +30,15 @@ export default function CustomerContactsBlock({ customer, setCustomer }: Props) 
         setCustomer={setCustomer}
       />
 
-      <div className="contacts-block">
-        {isEditing ?
-          <EditContacts contact={contact} setContact={setContact} />
-          :
-          <ContactInfo contact={contact} />
-        }
-      </div>
+      {contact &&
+        <div className="contacts-block">
+          {isEditing ?
+            <EditContacts contact={contact} setContact={setContact} />
+            :
+            <ContactInfo contact={contact} />
+          }
+        </div>
+      }
     </div>
   );
 };

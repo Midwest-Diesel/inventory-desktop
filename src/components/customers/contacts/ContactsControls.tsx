@@ -55,14 +55,14 @@ export default function ContactsControls({ isEditing, setIsEditing, contact, set
     <div className="contacts-block__header">
       <h3>Contacts</h3>
       <Button type="button" onClick={onClickNewContact}>Add</Button>
-      { !isEditing && <Button type="button" onClick={() => setIsEditing(true)} variant={['blue']}>Edit</Button> }
+      { (!isEditing && contact) && <Button type="button" onClick={() => setIsEditing(true)} variant={['blue']}>Edit</Button> }
       {isEditing &&
         <>
           <Button type="button" onClick={onClickSaveContact} variant={['save']}>Save</Button>
           <Button type="button" onClick={onClickCancelEdit}>Cancel</Button>
         </>
       }
-      <Button type="button" onClick={onClickDeleteContact} variant={['danger']}>Delete</Button>
+      { contact && <Button type="button" onClick={onClickDeleteContact} variant={['danger']}>Delete</Button> }
       <Select
         value={contact?.name ?? ''}
         onChange={(e) => onSelectChangeContact(e.target.value)}
