@@ -1,6 +1,6 @@
 import { prompt } from "@/components/library/Prompt";
 import { ask } from "../config/tauri";
-import { editAddOnAltParts, getOfficeAddOns } from "../services/addOnsService";
+import { editAddOnAltParts, getAllAddOns, getOfficeAddOns } from "../services/addOnsService";
 import { editAltParts, getNextUPStockNum, getPartInfoByPartNum } from "../services/partsService";
 import { formatDate } from "../tools/stringUtils";
 
@@ -140,5 +140,14 @@ export const getNextUP = async (): Promise<string | null> => {
     alert('Failed to fetch latest UP');
     return null;
   }
-  return `UP${parseInt(latestUP.slice(2), 10) + 1}`;
+  const latestNum = parseInt(latestUP.slice(2), 10);
+  
+  const addOns = await getAllAddOns();
+  const queueUPNumbers = addOns
+    .map((a) => a.stockNum)
+    .filter((stockNum): stockNum is string => typeof stockNum === 'string' && /^UP\d+$/.test(stockNum))
+    .map((stockNum) => parseInt(stockNum.slice(2), 10));
+
+  const maxNum = Math.max(latestNum, ...queueUPNumbers);
+  return `UP${maxNum + 1}`;
 };
