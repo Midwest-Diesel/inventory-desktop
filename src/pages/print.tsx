@@ -34,7 +34,7 @@ export default function Print() {
     handlePrint();
   }, []);
 
-  const waitForDomPaint = () => new Promise((resolve) => requestAnimationFrame(() => setTimeout(resolve, 50)));
+  const waitForDom = () => new Promise((resolve) => requestAnimationFrame(() => setTimeout(resolve, 50)));
 
   const handlePrint = async () => {
     for (const item of que) {
@@ -42,10 +42,15 @@ export default function Print() {
       setData(item.data);
       setMaxWidth(item.maxWidth);
       setMaxHeight(item.maxHeight);
-      await waitForDomPaint();
+      await waitForDom();
       if (!printRef.current) continue;
       const imageData = await toPng(printRef.current);
-      invoke(item.printCmd, { imageData });
+      
+      if (item.printArgs) {
+        invoke(item.printCmd, { imageData, printArgs: item.printArgs });
+      } else {
+        invoke(item.printCmd, { imageData });
+      }
     }
 
     setActiveSheet('');

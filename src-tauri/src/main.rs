@@ -1922,11 +1922,16 @@ fn send_email(data: SendEmailArgs) {
   cmd.output().expect("Failed to run VBS script");
 }
 
+#[derive(Deserialize, Serialize)]
+struct QuoteListPrintArgs {
+  salesman: String
+}
+
 #[tauri::command]
-async fn print_quotes_list(image_data: String) -> Result<(), String> {
+async fn print_quotes_list(image_data: String, print_args: QuoteListPrintArgs) -> Result<(), String> {
   let res = tauri::async_runtime::spawn_blocking(move || {
     let data = BASE64_STANDARD.decode(image_data.split(',').nth(1).unwrap()).map_err(|e| e.to_string())?;
-    let file_path = "C:/mwd/scripts/screenshots/quotes_list.png";
+    let file_path = format!("C:/mwd/scripts/screenshots/quotes_list_{}.png", print_args.salesman);
     let printers = get_available_printers();
     let printer = printers.iter().find(|&p| p.contains(&OFFICE_PRINTER.to_string())).cloned().unwrap_or_else(|| "".to_string());
 
@@ -1936,15 +1941,16 @@ async fn print_quotes_list(image_data: String) -> Result<(), String> {
       .decode()
       .map_err(|e| e.to_string())?;
 
+    let rotated_img: DynamicImage = image::DynamicImage::ImageRgba8(rotate90(&img));
     let upscaled_img = image::imageops::resize(
-      &img,
-      img.width() * 2,
-      img.height() * 2,
+      &rotated_img,
+      rotated_img.width() * 2,
+      rotated_img.height() * 2,
       FilterType::Lanczos3,
     );
 
     {
-      let mut file = File::create(file_path).map_err(|e| e.to_string())?;
+      let mut file = File::create(&file_path).map_err(|e| e.to_string())?;
       upscaled_img.write_to(&mut file, ImageOutputFormat::Png).map_err(|e| e.to_string())?;
     }
 
@@ -1954,7 +1960,7 @@ async fn print_quotes_list(image_data: String) -> Result<(), String> {
 
     Command::new("mspaint")
       .current_dir("C:/mwd/scripts/screenshots")
-      .args([file_path, "/pt", &printer])
+      .args([&file_path, "/pt", &printer])
       .output()
       .map_err(|e| e.to_string())?;
 

@@ -5,10 +5,10 @@ import { printQueAtom } from "@/scripts/atoms/state";
 
 export function usePrintQue() {
   const router = useNavState();
-  const [que, setQue] = useAtom<{ name: string, printCmd: string, data: any, maxWidth: string, maxHeight: string }[]>(printQueAtom);
+  const [que, setQue] = useAtom<{ name: string, printCmd: string, data: any, printArgs?: any, maxWidth: string, maxHeight: string }[]>(printQueAtom);
 
-  const addToQue = (name: string, printCmd: string, data: any, maxWidth: string, maxHeight: string) => {
-    setQue((prev) => [...prev, { name, printCmd, data, maxWidth, maxHeight }]);
+  const addToQue = (name: string, printCmd: string, data: any, maxWidth: string, maxHeight: string, printArgs?: any) => {
+    setQue((prev) => [...prev, { name, printCmd, data, printArgs, maxWidth, maxHeight }]);
   };
 
   const clearQue = () => {

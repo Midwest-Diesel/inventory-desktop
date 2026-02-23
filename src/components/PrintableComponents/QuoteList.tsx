@@ -47,7 +47,7 @@ export default function QuoteListTemplate({ data }: Props) {
                 <td>{ quote.stockNum }</td>
                 <td>{ quote.price }</td>
                 <td>{ quote.notes }</td>
-                <td>{ quote.sale }</td>
+                <td>{ quote.sale ? 'Yes' : 'No' }</td>
               </tr>
             );
           })}

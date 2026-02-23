@@ -33,7 +33,7 @@ export default function PrintQuotesDialog({ open, setOpen }: Props) {
         date: formatDate(date),
         quotes
       };
-      addToQue('quotesList', 'print_quotes_list', data, '1100px', '816px');
+      addToQue('quotesList', 'print_quotes_list', data, '1100px', '816px', { salesman: salesman.initials });
     }
 
     printQue();
@@ -56,7 +56,7 @@ export default function PrintQuotesDialog({ open, setOpen }: Props) {
         date: `${formatDate(lastWeekMonday)} - ${formatDate(lastWeekFriday)}`,
         quotes
       };
-      addToQue('quotesList', 'print_quotes_list', data, '1100px', '816px');
+      addToQue('quotesList', 'print_quotes_list', data, '1100px', '816px', { salesman: salesman.initials });
     }
 
     printQue();
