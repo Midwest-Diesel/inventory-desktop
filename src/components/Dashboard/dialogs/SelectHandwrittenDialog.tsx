@@ -80,6 +80,7 @@ export default function SelectHandwrittenDialog({ open, setOpen, part, onSubmit 
       if (res.rows.length > 0) {
         setHandwrittens(res.rows);
         setHandwrittenCount(res.pageCount);
+        setSelectedHandwrittenId(res.rows[0].id);
         return;
       }
     }
@@ -129,6 +130,7 @@ export default function SelectHandwrittenDialog({ open, setOpen, part, onSubmit 
       const res = await searchSelectHandwrittensDialogData(searchData);
       setHandwrittens(res?.rows);
       setHandwrittenCount(res?.pageCount);
+      setSelectedHandwrittenId(res ? res.rows[0].id : 0);
     } else {
       resetHandwrittensList();
     }
