@@ -224,7 +224,7 @@ type Handwritten = {
   isBlindShipment: boolean
   isNoPriceInvoice: boolean
   shipVia: FreightCarrier | null
-  cardNum: number | null
+  cardNum: string | null
   expDate: string | null
   cvv: number | null
   cardZip: string | null

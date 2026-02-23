@@ -1858,15 +1858,17 @@ async fn email_fast_track_inventory(inventory: Vec<FastTrackItem>) -> Result<(),
   drop(writer);
 
   if let Ok(val) = env::var("VITE_NODE_ENV") {
-    if val == "production" {
-      send_email(SendEmailArgs {
-        body: "<div></div>".to_string(),
-        recipients: vec!["imports@sandhills.com".to_string()],
-        cc: vec!["matt@midwestdiesel.com".to_string()],
-        attachments: vec![file_path.to_string()],
-        subject: "partsc514".to_string()
-      });
+    if val == "development" {
+      return Ok(());
     }
+    
+    send_email(SendEmailArgs {
+      body: "<div></div>".to_string(),
+      recipients: vec!["imports@sandhills.com".to_string()],
+      cc: vec!["matt@midwestdiesel.com".to_string()],
+      attachments: vec![file_path.to_string()],
+      subject: "partsc514".to_string()
+    });
   }
 
   Ok(())

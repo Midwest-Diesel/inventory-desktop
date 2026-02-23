@@ -57,6 +57,7 @@ export default function Handwritten() {
     setTitle(`${res?.id} Handwritten`);
     setHandwritten(res);
     setPayment(res?.payment ?? '');
+    setCardNum(res?.ccNumber ?? '');
     if (res?.invoiceStatus === 'INVOICE PENDING') setIsEditing(true);
 
     const itemsWithChildren = res?.handwrittenItems.filter((item) => item.invoiceItemChildren && item.invoiceItemChildren.length > 0) ?? [];
