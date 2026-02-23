@@ -4,6 +4,7 @@ import { usePrintQue } from "@/hooks/usePrintQue";
 import { getLastWeeksQuotesBySalesman, getYesterdaysQuotesBySalesman } from "@/scripts/services/quotesService";
 import { getAllUsers } from "@/scripts/services/userService";
 import { formatDate } from "@/scripts/tools/stringUtils";
+import { chunkArray } from "@/scripts/tools/utils";
 import { useQuery } from "@tanstack/react-query";
 
 interface Props {
@@ -11,6 +12,8 @@ interface Props {
   setOpen: (value: boolean) => void
 }
 
+
+const MAX_ROWS = 17;
 
 export default function PrintQuotesDialog({ open, setOpen }: Props) {
   const { addToQue, printQue } = usePrintQue();
@@ -28,12 +31,7 @@ export default function PrintQuotesDialog({ open, setOpen }: Props) {
       const date = new Date();
       date.setDate(date.getDate() - 1);
       const quotes = await getYesterdaysQuotesBySalesman(salesman.id);
-      const data = {
-        salesman: salesman.initials,
-        date: formatDate(date),
-        quotes
-      };
-      addToQue('quotesList', 'print_quotes_list', data, '1100px', '816px', { salesman: salesman.initials });
+      queueQuotes(salesman.initials, formatDate(date), quotes);
     }
 
     printQue();
@@ -51,16 +49,30 @@ export default function PrintQuotesDialog({ open, setOpen }: Props) {
       lastWeekFriday.setDate(lastWeekMonday.getDate() + 4);
 
       const quotes = await getLastWeeksQuotesBySalesman(salesman.id);
-      const data = {
-        salesman: salesman.initials,
-        date: `${formatDate(lastWeekMonday)} - ${formatDate(lastWeekFriday)}`,
-        quotes
-      };
-      addToQue('quotesList', 'print_quotes_list', data, '1100px', '816px', { salesman: salesman.initials });
+      queueQuotes(salesman.initials, `${formatDate(lastWeekMonday)} - ${formatDate(lastWeekFriday)}`, quotes);
     }
 
     printQue();
     setOpen(false);
+  };
+
+  const queueQuotes = (salesmanInitials: string, dateLabel: string, quotes: Quote[]) => {
+    const chunks = chunkArray(quotes, MAX_ROWS);
+
+    for (const chunk of chunks) {
+      addToQue(
+        'quotesList',
+        'print_quotes_list',
+        {
+          salesman: salesmanInitials,
+          date: dateLabel,
+          quotes: chunk
+        },
+        '1100px',
+        '816px',
+        { salesman: salesmanInitials }
+      );
+    }
   };
 
 

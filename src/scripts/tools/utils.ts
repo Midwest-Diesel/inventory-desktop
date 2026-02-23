@@ -139,3 +139,11 @@ export const generatePDF = async (pages: HTMLElement[], path: string) => {
   const pdfBytes = pdf.output('arraybuffer');
   await invoke('save_pdf', { bytes: Array.from(new Uint8Array(pdfBytes)), path });
 };
+
+export const chunkArray = <T,>(arr: T[], size: number): T[][] => {
+  const chunks: T[][] = [];
+  for (let i = 0; i < arr.length; i += size) {
+    chunks.push(arr.slice(i, i + size));
+  }
+  return chunks;
+};
