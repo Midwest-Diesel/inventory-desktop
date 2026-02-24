@@ -1,3 +1,4 @@
+import ProformaTemplate from "@/components/printableComponents/ProformaTemplate";
 import PurchaseOrderTemplate from "@/components/printableComponents/PurchaseOrderTemplate";
 import { useNavState } from "@/hooks/useNavState";
 import { usePdfQue } from "@/hooks/usePdfQue";
@@ -44,6 +45,7 @@ export default function Print() {
   return (
     <div ref={ref} style={{ height: '100vh', backgroundColor: 'white', color: 'black', maxWidth, maxHeight }}>
       { activeSheet === 'po' && <PurchaseOrderTemplate data={data} /> }
+      { activeSheet === 'proforma' && <ProformaTemplate data={data} /> }
     </div>
   );
 }

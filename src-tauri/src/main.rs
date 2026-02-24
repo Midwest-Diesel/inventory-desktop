@@ -239,6 +239,7 @@ async fn main() {
       print_packing_slip,
       print_po,
       print_proforma,
+      email_proforma,
       email_po,
       email_end_of_day,
       move_queue_to_archives,
@@ -1447,6 +1448,43 @@ async fn print_proforma(image_data: String) -> Result<(), String> {
     Ok(())
   }).await;
   res.unwrap()
+}
+
+#[tauri::command]
+async fn email_proforma(path: String, contact: String, created_by: String) -> Result<(), String> {
+  let body = format!("Hi {},<br />Attached to this email is your Proforma invoice.<br /><br />Thanks,<br />{}<br />Midwest Diesel<br />(888) 866-3406",
+    contact,
+    created_by
+  );
+  let vb_body = body.replace("\"", "\"\"")
+    .lines()
+    .map(|line| format!("\"{}\"", line))
+    .collect::<Vec<_>>()
+    .join(" & _\n");
+
+  let vbs_script = format!(
+    r#"
+    Dim OutlookApp
+    Set OutlookApp = CreateObject("Outlook.Application")
+    Dim MailItem
+    Set MailItem = OutlookApp.CreateItem(0)
+    
+    MailItem.Subject = "Midwest Diesel - Proforma Invoice"
+    MailItem.HTMLBody = {}
+    MailItem.Attachments.Add "{}"
+    MailItem.Display
+    "#,
+    vb_body,
+    path
+  );
+
+  let vbs_path = "C:/mwd/scripts/email_proforma.vbs";
+  write(&vbs_path, vbs_script).unwrap();
+
+  let mut cmd = Command::new("wscript.exe");
+  cmd.arg(vbs_path);
+  cmd.output().unwrap();
+  Ok(())
 }
 
 #[tauri::command]

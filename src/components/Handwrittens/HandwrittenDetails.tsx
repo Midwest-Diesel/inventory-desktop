@@ -12,7 +12,7 @@ import Input from "@/components/library/Input";
 import Table from "@/components/library/Table";
 import { userAtom } from "@/scripts/atoms/state";
 import { deleteHandwritten, editHandwritten, editHandwrittenCCNumber, getHandwrittenById } from "@/scripts/services/handwrittensService";
-import { formatCCNumber, formatCurrency, formatDate, formatPhone } from "@/scripts/tools/stringUtils";
+import { cap, formatCCNumber, formatCurrency, formatDate, formatPhone } from "@/scripts/tools/stringUtils";
 import { invoke, confirm } from "@/scripts/config/tauri";
 import { useAtom } from "jotai";
 import Link from "@/components/library/Link";
@@ -30,8 +30,9 @@ import HandwrittenStatusFields from "./HandwrittenStatusFields";
 import ShippingListModal from "./modals/ShippingListModal";
 import ModalList from "../library/ModalList";
 import { offServerEvent, onServerEvent } from "@/scripts/config/websockets";
-import { chunkArray, formatNow } from "@/scripts/tools/utils";
+import { chunkArray } from "@/scripts/tools/utils";
 import { usePdfQue } from "@/hooks/usePdfQue";
+import { getUserById } from "@/scripts/services/userService";
 
 interface Props {
   handwritten: Handwritten
@@ -385,7 +386,7 @@ export default function HandwrittenDetails({
           desc: item.desc,
           unitPrice: formatCurrency(item.unitPrice),
           total: formatCurrency(Number(item.unitPrice) * (item.qty ?? 1))
-        }
+        };
       })
     };
 
@@ -411,23 +412,29 @@ export default function HandwrittenDetails({
       shipToState: handwritten.shipToState,
       shipToZip: handwritten.shipToZip,
       poNum: handwritten.poNum,
-      billToPhone: handwritten.billToPhone,
-      orderTotal: handwritten.handwrittenItems.reduce((acc, item) => acc + ((item.unitPrice ?? 0) * (item.qty ?? 0)), 0),
+      billToPhone: formatPhone(handwritten.billToPhone),
+      orderTotal: formatCurrency(handwritten.handwrittenItems.reduce((acc, item) => acc + ((item.unitPrice ?? 0) * (item.qty ?? 0)), 0)),
       items: handwritten.handwrittenItems.map((item) => {
         return {
           qty: item.qty,
           partNum: item.partNum,
           desc: item.desc,
-          unitPrice: item.unitPrice,
-          total: Number(item.unitPrice) * (item.qty ?? 1)
-        }
+          unitPrice: formatCurrency(item.unitPrice),
+          total: formatCurrency(Number(item.unitPrice) * (item.qty ?? 1))
+        };
       })
     };
+    const user = await getUserById(handwritten.createdById);
     const args = {
-      path: `\\MWD1-SERVER\\Server\\proforma\\mwd_${formatNow()}.pdf`
+      path: `C:\\MWD\\scripts\\attachments\\invoice_${handwritten.id}.pdf`,
+      contact: handwritten.contactName,
+      createdBy: cap(user?.username ?? '')
     };
 
-    pdfQue.addToQue('proforma', 'email_proforma', data, args, '816px', '1090px');
+    const pages = chunkArray(data.items, 20);
+    pages.forEach((page, i) => {
+      pdfQue.addToQue('proforma', 'email_proforma', { ...data, items: page, pageNum: i + 1 }, args, '816px', '1090px');
+    });
     pdfQue.exportQue();
   };
 
