@@ -23,6 +23,28 @@ type Tab = {
   selected: boolean
 };
 
+type PartSearchTab = {
+  id: number
+  name: string
+  selected: boolean
+  searchData?: PartSearchParams
+};
+
+interface PartSearchParams {
+  partNum: string
+  stockNum: string
+  desc: string
+  location: string
+  qty: number
+  remarks: string
+  rating: number
+  purchasedFrom: string
+  serialNum: string
+  hp: string
+  page: number
+  isAltSearch: boolean
+}
+
 type Picture = {
   id: string
   name: string

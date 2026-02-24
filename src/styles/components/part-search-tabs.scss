@@ -1,0 +1,52 @@
+.part-search-tabs {
+  display: flex;
+  gap: 0.2rem;
+}
+
+.part-search-tab {
+  position: relative;
+  
+  &__container {
+    display: flex;
+    gap: 0.13rem;
+    overflow-x: auto;
+
+    .nav-buttons {
+      display: flex;
+      gap: 0.05rem;
+      margin-right: 0.1rem;
+  
+      button {
+        font-size: 14px;
+        border-bottom-right-radius: 0;
+        border-bottom-left-radius: 0;
+      }
+    }
+  }
+
+  &__content {
+    font-size: 12px;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+    background-color: var(--grey-light-1);
+    padding: 0.1rem 1.2rem;
+    border-bottom: 2px solid transparent;
+
+    &--selected { 
+      border-bottom: 2px solid var(--grey-light-4);
+    }
+  }
+
+  &__new-tab {
+    padding: 0 0.5rem;
+    font-size: 14px;
+    margin-top: 0.35rem;
+  }
+
+  &__close-btn {
+    position: absolute;
+    top: 0.23rem;
+    right: 0.13rem;
+    font-size: 12px;
+  }
+}

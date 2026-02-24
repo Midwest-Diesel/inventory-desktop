@@ -2,23 +2,20 @@ import { FormEvent, useEffect, useRef, useState } from "react";
 import Dialog from "../../library/Dialog";
 import Input from "../../library/Input";
 import Button from "../../library/Button";
-import { addRecentSearch } from "@/scripts/services/recentSearchesService";
 import { useAtom } from "jotai";
-import { lastPartSearchAtom, showSoldPartsAtom, userAtom } from "@/scripts/atoms/state";
-import { PartSearchParams } from "@/components/dashboard/PartSearchSection";
-import { emitServerEvent } from "@/scripts/config/websockets";
+import { partSearchAtom, showSoldPartsAtom } from "@/scripts/atoms/state";
 
 
 interface Props {
   open: boolean
   setOpen: (open: boolean) => void
-  handleSearch: (params: PartSearchParams | null, showAlerts?: boolean) => Promise<void>
+  handleSearch: (params: PartSearchParams, showAlerts?: boolean) => Promise<void>
+  updateSelectedTab: (params: PartSearchParams) => void
 }
 
-export default function PartsSearchDialog({ open, setOpen, handleSearch }: Props) {
-  const [, setLastSearch] = useAtom<string>(lastPartSearchAtom);
-  const [user] = useAtom<User>(userAtom);
+export default function PartsSearchDialog({ open, setOpen, handleSearch, updateSelectedTab }: Props) {
   const [showSoldParts] = useAtom<boolean>(showSoldPartsAtom);
+  const [partSearch] = useAtom<PartSearchParams | null>(partSearchAtom);
   const prevSearches = JSON.parse(localStorage.getItem('partSearches')!);
   const [partNum, setPartNum] = useState('');
   const [stockNum, setStockNum] = useState('');
@@ -54,6 +51,25 @@ export default function PartsSearchDialog({ open, setOpen, handleSearch }: Props
   }, [showSoldParts]);
 
   useEffect(() => {
+    if (!partSearch) {
+      clearInputs();
+      return;
+    }
+
+    const { partNum, stockNum, desc, location, qty, remarks, rating, purchasedFrom, serialNum, hp } = partSearch;
+    setPartNum(partNum);
+    setStockNum(stockNum);
+    setDesc(desc);
+    setLocation(location);
+    setQty(qty);
+    setRemarks(remarks);
+    setRating(rating);
+    setPurchasedFrom(purchasedFrom);
+    setSerialNum(serialNum);
+    setHp(hp);
+  }, [partSearch]);
+
+  useEffect(() => {
     inputRef.current?.focus();
     inputRef.current?.select();
   }, [open]);
@@ -76,10 +92,10 @@ export default function PartsSearchDialog({ open, setOpen, handleSearch }: Props
     setOpen(false);
     localStorage.setItem('partSearches', JSON.stringify({ partNum, stockNum, desc, location, qty, remarks, rating, purchasedFrom, serialNum, hp }));
     localStorage.removeItem('altPartSearches');
-    await handleSearch({ partNum, stockNum, desc, location, qty, remarks, rating, purchasedFrom, serialNum, hp, page: 1, isAltSearch: false });
-    if (partNum && partNum !== '*' && user.subtype === 'sales') await addRecentSearch({ partNum: partNum.replace('*', ''), salespersonId: user.id });
-    setLastSearch(partNum.replace('*', ''));
-    emitServerEvent('INSERT_RECENT_SEARCH', []);
+    
+    const params = { partNum, stockNum, desc, location, qty, remarks, rating, purchasedFrom, serialNum, hp, page: 1, isAltSearch: false };
+    await handleSearch(params);
+    updateSelectedTab(params);
   };
 
 

@@ -51,3 +51,5 @@ export const accountingPageFilterAtom = atom<'' | 'all' | 'IN PROCESS' | 'COMPLE
 export const customersMinAtom = atom<CustomerMin[]>([]);
 export const tabsAtom = atom<Tab[]>(tabs());
 export const compareConsistAtom = atom<CustomerEngineData | null>(null);
+export const partSearchAtom = atom<PartSearchParams | null>(null);
+export const altPartSearchAtom = atom<PartSearchParams | null>(null);

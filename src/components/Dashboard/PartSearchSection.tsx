@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Button from "@/components/library/Button";
 import { useAtom } from "jotai";
-import { quickPickItemIdAtom, recentQuotesAtom, selectedCustomerAtom, showSoldPartsAtom } from "@/scripts/atoms/state";
+import { lastPartSearchAtom, quickPickItemIdAtom, recentQuotesAtom, selectedCustomerAtom, showSoldPartsAtom, userAtom } from "@/scripts/atoms/state";
 import PartsSearchDialog from "@/components/dashboard/dialogs/PartsSearchDialog";
 import AltPartsSearchDialog from "@/components/dashboard/dialogs/AltPartsSearchDialog";
 import { getAltsByPartNum, getSomeParts, searchAltParts, searchParts } from "@/scripts/services/partsService";
@@ -18,29 +18,16 @@ import { addHandwrittenItemChild, deleteHandwrittenItemChild, editHandwrittenIte
 import { useToast } from "@/hooks/useToast";
 import { useQuery } from "@tanstack/react-query";
 import { detectAlerts } from "@/scripts/services/alertsService";
-import { getQuotesByPartNum } from "@/scripts/services/recentSearchesService";
+import { addRecentSearch, getQuotesByPartNum } from "@/scripts/services/recentSearchesService";
 import { getSearchedPartNum } from "@/scripts/logic/partSearch";
+import { emitServerEvent } from "@/scripts/config/websockets";
+import PartSearchTabs from "./PartSearchTabs";
 
 interface Props {
   selectHandwrittenOpen: boolean
   setSelectHandwrittenOpen: (value: boolean) => void
   setSelectedHandwrittenPart: (part: Part) => void
   handleNewQuote: (part?: Part) => Promise<void>
-}
-
-export interface PartSearchParams {
-  partNum: string
-  stockNum: string
-  desc: string
-  location: string
-  qty: number
-  remarks: string
-  rating: number
-  purchasedFrom: string
-  serialNum: string
-  hp: string
-  page: number
-  isAltSearch: boolean
 }
 
 
@@ -59,6 +46,8 @@ const hasSearchInput = () => {
 
 export default function PartSearchSection({ selectHandwrittenOpen, setSelectHandwrittenOpen, setSelectedHandwrittenPart, handleNewQuote }: Props) {
   const toast = useToast();
+  const [, setLastSearch] = useAtom<string>(lastPartSearchAtom);
+  const [user] = useAtom<User>(userAtom);
   const [selectedCustomer] = useAtom<Customer>(selectedCustomerAtom);
   const [selectedAlerts, setSelectedAlerts] = useAtom<Alert[]>(selectedAlertsAtom);
   const [, setRecentQuoteSearches] = useAtom<RecentQuoteSearch[]>(recentQuotesAtom);
@@ -73,6 +62,7 @@ export default function PartSearchSection({ selectHandwrittenOpen, setSelectHand
   const [partsOnEngsOpen, setPartsOnEngsOpen] = useState(false);
   const [partsOnEngs, setPartsOnEngs] = useState<{ partNum: string; engines: Engine[] }[]>([]);
   const [searchParams, setSearchParams] = useState<PartSearchParams | null>(null);
+  const [partSearchTabs, setPartSearchTabs] = useState<PartSearchTab[]>(JSON.parse(localStorage.getItem('partSearchTabs') ?? '[]'));
 
   const { data: parts, isFetching } = useQuery<PartsRes>({
     queryKey: ['parts', currentPage, showSoldParts],
@@ -99,8 +89,7 @@ export default function PartSearchSection({ selectHandwrittenOpen, setSelectHand
     setPartsOnEngsOpen(true);
   };
 
-  const handleSearch = async (params: PartSearchParams | null, showAlerts = true) => {
-    if (!params) return;
+  const handleSearch = async (params: PartSearchParams, showAlerts = true) => {
     setSearchParams(params);
     setRecentQuoteSearches(await getQuotesByPartNum(params.partNum));
     
@@ -110,6 +99,36 @@ export default function PartSearchSection({ selectHandwrittenOpen, setSelectHand
     }
 
     if (isObjectNull({ ...params, partNum: params.partNum.replace('*', ''), isAltSearch: null, page: null })) location.reload();
+
+    if (params.partNum && params.partNum !== '*' && user.subtype === 'sales') {
+      await addRecentSearch({ partNum: params.partNum.replace('*', ''), salespersonId: user.id });
+    }
+    setLastSearch(params.partNum.replace('*', ''));
+    emitServerEvent('INSERT_RECENT_SEARCH', []);
+  };
+
+  const updateSelectedTab = async (params: PartSearchParams) => {
+    if (isObjectNull({ ...params, partNum: params.partNum.replace('*', ''), isAltSearch: null, page: null })) return;
+
+    const selectedTab = partSearchTabs.find((t) => t.selected);
+    if (!selectedTab) return;
+
+    let name = params.stockNum || params.partNum.replace('*', '');
+    if (!name) {
+      const res = params.isAltSearch
+        ? await searchAltParts({ ...params, showSoldParts }, params.page, LIMIT)
+        : await searchParts({ ...params, showSoldParts }, params.page, LIMIT);
+
+      name = res.rows[0].partNum;
+    }
+
+    const updatedTabs = partSearchTabs.map((t) => {
+      if (!t.selected) return t;
+      return { ...t, name: name.replace('*', ''), searchData: params };
+    });
+
+    localStorage.setItem('partSearchTabs', JSON.stringify(updatedTabs));
+    setPartSearchTabs(updatedTabs);
   };
 
   const onChangePage = (_: any, page: number) => {
@@ -135,11 +154,12 @@ export default function PartSearchSection({ selectHandwrittenOpen, setSelectHand
     }
   };
 
+
   return (
     <div className="part-search">
       { hasSearchInput() && <SalesInfoDialog open={salesInfoOpen} setOpen={setSalesInfoOpen} /> }
-      <PartsSearchDialog open={partsSearchOpen} setOpen={setPartsSearchOpen} handleSearch={handleSearch} />
-      <AltPartsSearchDialog open={altPartsSearchOpen} setOpen={setAltPartsSearchOpen} handleSearch={handleSearch} />
+      <PartsSearchDialog open={partsSearchOpen} setOpen={setPartsSearchOpen} handleSearch={handleSearch} updateSelectedTab={updateSelectedTab} />
+      <AltPartsSearchDialog open={altPartsSearchOpen} setOpen={setAltPartsSearchOpen} handleSearch={handleSearch} updateSelectedTab={updateSelectedTab} />
       <PartsOnEnginesDialog open={partsOnEngsOpen} setOpen={setPartsOnEngsOpen} searchResults={partsOnEngs} />
       <CoreFamilySearchDialog open={coreFamilyOpen} setOpen={setCoreFamilyOpen} />
 
@@ -171,6 +191,13 @@ export default function PartSearchSection({ selectHandwrittenOpen, setSelectHand
               Compare / Consist
             </Link>
           </div>
+
+          <PartSearchTabs
+            handleSearch={handleSearch}
+            partSearchTabs={partSearchTabs}
+            setPartSearchTabs={setPartSearchTabs}
+            setSearchParams={setSearchParams}
+          />
 
           <PartsTable
             parts={searchParams ? search?.rows ?? [] : parts?.rows ?? []}
