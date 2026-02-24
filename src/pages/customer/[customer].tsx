@@ -18,6 +18,7 @@ import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import EditMapLocDialog from "@/components/customers/dialogs/EditMapLocDialog";
 import { prompt } from "@/components/library/Prompt";
+import { addVendor } from "@/scripts/services/vendorsService";
 
 
 export default function Customer() {
@@ -33,8 +34,8 @@ export default function Customer() {
   const [editLocDialogOpen, setEditLocDialogOpen] = useState(false);
   const [location, setLocation] = useState<MapLocation | null>(null);
   const parser = new DOMParser();
-  const comments = parser.parseFromString(customer?.comments ?? '', "text/html");
-  const fleetNotes = parser.parseFromString(customer?.fleetNotes ?? '', "text/html");
+  const comments = parser.parseFromString(customer?.comments ?? '', 'text/html');
+  const fleetNotes = parser.parseFromString(customer?.fleetNotes ?? '', 'text/html');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -61,6 +62,11 @@ export default function Customer() {
     await push('Home', '/');
   };
 
+  const onClickAddVendor = async () => {
+    if (!customer) return;
+    await addVendor(customer.company ?? '', customer);
+  };
+
 
   return (
     <Layout title="Customer">
@@ -83,7 +89,12 @@ export default function Customer() {
 
       <div className="customer-details">
         {customer ? isEditing ?
-          <EditCustomerDetails customer={customer} setCustomer={setCustomer} setIsEditing={setIsEditing} />
+          <EditCustomerDetails
+            customer={customer}
+            setCustomer={setCustomer}
+            setIsEditing={setIsEditing}
+            onClickAddVendor={onClickAddVendor}
+          />
           :
           <>
             <div className="customer-details__header">
@@ -124,6 +135,7 @@ export default function Customer() {
 
             <div className="customer-details__top-bar">
               <Button onClick={() => setEditLocDialogOpen(true)}>Edit Map Location</Button>
+              <Button onClick={onClickAddVendor}>Set as Vendor</Button>
             </div>
           
             <Grid>

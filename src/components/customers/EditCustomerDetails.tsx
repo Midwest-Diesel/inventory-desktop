@@ -18,10 +18,11 @@ interface Props {
   customer: Customer
   setCustomer: (customer: Customer) => void
   setIsEditing: (value: boolean) => void
+  onClickAddVendor: () => void
 }
 
 
-export default function CustomerDetails({ customer, setCustomer, setIsEditing }: Props) {
+export default function CustomerDetails({ customer, setCustomer, setIsEditing, onClickAddVendor }: Props) {
   // The comments from Access used to have html tags inside them
   // So this is parsing it as html and turning it back to a string
   const parser = new DOMParser();
@@ -146,6 +147,10 @@ export default function CustomerDetails({ customer, setCustomer, setIsEditing }:
                 Cancel Editing
               </Button>
             </div>
+          </div>
+
+          <div className="customer-details__top-bar">
+            <Button onClick={onClickAddVendor}>Set as Vendor</Button>
           </div>
         
           <Grid>

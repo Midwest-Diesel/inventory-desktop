@@ -6,14 +6,17 @@ import Table from "@/components/library/Table";
 import Link from "@/components/library/Link";
 import { FormEvent, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { addVendor, searchVendors, VendorSearch } from "@/scripts/services/vendorsService";
+import { addVendor, getVendors, searchVendors, VendorSearch } from "@/scripts/services/vendorsService";
 import Input from "@/components/library/Input";
 import { prompt } from "@/components/library/Prompt";
+import { vendorsDataAtom } from "@/scripts/atoms/state";
+import { useAtom } from "jotai";
 
 
 const LIMIT = 40;
 
 export default function Vendors() {
+  const [, setVendorsData] = useAtom<Vendor[]>(vendorsDataAtom);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchData, setSearchData] = useState<VendorSearch>({ name: '', offset: 0, limit: LIMIT });
   const [nameSearch, setNameSearch] = useState('');
@@ -40,6 +43,9 @@ export default function Vendors() {
     }
     await addVendor(name);
     refetch();
+
+    const res = await getVendors();
+    setVendorsData(res);
   };
 
   const handleNameSearch = (e: FormEvent) => {
