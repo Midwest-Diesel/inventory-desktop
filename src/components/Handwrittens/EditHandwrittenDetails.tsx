@@ -1,4 +1,4 @@
-import { errorAtom, quickPickItemIdAtom, sourcesAtom } from "@/scripts/atoms/state";
+import { quickPickItemIdAtom, sourcesAtom } from "@/scripts/atoms/state";
 import { addHandwrittenItem, deleteHandwrittenItem, editHandwritten, editHandwrittenCCNumber, editHandwrittenHasPrinted, editHandwrittenItem, editHandwrittenTaxable, getHandwrittenById, getHandwrittenEmails } from "@/scripts/services/handwrittensService";
 import { useAtom } from "jotai";
 import { FormEvent, Fragment, useEffect, useRef, useState } from "react";
@@ -91,7 +91,6 @@ export default function EditHandwrittenDetails({
   const { addToQue, printQue } = usePrintQue();
   const [sourcesData, setSourcesData] = useAtom<string[]>(sourcesAtom);
   const [quickPickItemId, setQuickPickItemId] = useAtom<number>(quickPickItemIdAtom);
-  const [, setError] = useAtom<string>(errorAtom);
   const [date, setDate] = useState<Date>(handwritten.date);
   const [poNum, setPoNum] = useState<string>(handwritten.poNum ?? '');
   const [company, setCompany] = useState<string>(handwritten.customer?.company ?? '');

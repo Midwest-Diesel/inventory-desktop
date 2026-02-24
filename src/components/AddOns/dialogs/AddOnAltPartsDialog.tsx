@@ -34,7 +34,12 @@ export default function AddOnAltPartsDialog({ open, setOpen, addOn, partNumList 
     e.preventDefault();
     if (!addOn || !partNum.trim()) return;
     const res = await getPartInfoByPartNum(partNum);
-    const updatedAlts = [...alts, ...res?.altParts.split(', ') ?? [], partNum];
+    const updatedAlts = Array.from(
+      new Set(
+        [...alts, ...res?.altParts.split(', ') ?? [], partNum]
+          .map((p) => p?.toString().trim().toUpperCase())
+      )
+    );
     await editAddOnAltParts(addOn.id, updatedAlts.join(', '));
     setAlts(updatedAlts);
     setPartNum('');

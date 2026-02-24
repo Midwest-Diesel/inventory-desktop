@@ -123,7 +123,12 @@ export default function OfficePartAddonRow({ addOn, onSave, onModifyAddOnData }:
 
     const partsInfo = await getPartInfoByPartNum(updatedAddOn.partNum ?? '');
     const currentAlts = partsInfo ? partsInfo.altParts.split(', ') : [updatedAddOn.partNum];
-    const altParts = [...currentAlts, ...updatedAddOn.altParts];
+    const altParts = Array.from(
+      new Set(
+        [...currentAlts, ...updatedAddOn.altParts]
+          .map((p) => p?.toString().trim().toUpperCase())
+      )
+    );
     if (!await ask(`Are you sure you want to add this item?\n\nAlt Parts:\n${altParts.join(', ')}`)) return;
     setLoading(true);
 
