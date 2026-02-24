@@ -190,13 +190,27 @@ export default function EditHandwrittenDetails({
 
   const saveChanges = async (e: FormEvent) => {
     e.preventDefault();
-    setLoading(true);
     if (!changesSaved && !await ask('Are you sure you want to save these changes?')) return;
     setChangesSaved(true);
-    if (isSentToAccounting && handwrittenItems.some((item) => item.cost === 0.04)) {
-      setError('Can\'t save when items have $0.04 cost');
-      return;
+    if (isSentToAccounting) {
+      if (handwrittenItems.some((item) => item.cost === 0.04)) {
+        alert('Can\'t save when items have $0.04 cost');
+        return;
+      }
+      if (!shipViaId) {
+        alert('"Ship Via" must have a value.');
+        return;
+      }
+      if (!payment) {
+        alert('"Payment Type" must have a value.');
+        return;
+      }
+      if (!source) {
+        alert('"Source" must have a value.');
+        return;
+      }
     }
+    setLoading(true);
 
     // Save handwritten data
     const newCustomer = await getCustomerByName(company);
@@ -866,7 +880,6 @@ export default function EditHandwrittenDetails({
                           variant={['label-space-between']}
                           value={source}
                           onChange={(e: any) => setSource(e.target.value)}
-                          required
                           data-testid="source"
                         >
                           <option value="">-- SELECT A SOURCE --</option>
@@ -987,7 +1000,6 @@ export default function EditHandwrittenDetails({
                             variant={['label-bold']}
                             value={shipViaId ?? ''}
                             onChange={(e: any) => handleEditShipVia(e.target.value)}
-                            required
                             data-testid="ship-via"
                           />
                         </td>
