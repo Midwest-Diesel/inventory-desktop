@@ -99,3 +99,12 @@ export const handleAccountingCompleted = async (handwritten: Handwritten, accoun
   if (!isAccountingCompleted) return;
   await setAllHandwrittenItemDates(handwritten.id);
 };
+
+export const getProformaId = (handwrittenDate: Date): string => {
+  const date = new Date(handwrittenDate);
+  const year = date.getFullYear();
+  const month = date.getMonth() + 1;
+  const day = date.getDate();
+  const dateString = `${year}${month}${day}`;
+  return (Number(dateString) * 13) + "PF";
+};

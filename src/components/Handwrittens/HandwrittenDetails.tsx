@@ -24,12 +24,14 @@ import { ask } from "@/scripts/config/tauri";
 import { usePrintQue } from "@/hooks/usePrintQue";
 import { getAltShipByCustomerId } from "@/scripts/services/altShipService";
 import { useQuery } from "@tanstack/react-query";
-import { handleAccountingCompleted, startTakeoff } from "@/scripts/logic/handwrittens";
+import { getProformaId, handleAccountingCompleted, startTakeoff } from "@/scripts/logic/handwrittens";
 import { prompt } from "../library/Prompt";
 import HandwrittenStatusFields from "./HandwrittenStatusFields";
 import ShippingListModal from "./modals/ShippingListModal";
 import ModalList from "../library/ModalList";
 import { offServerEvent, onServerEvent } from "@/scripts/config/websockets";
+import { chunkArray, formatNow } from "@/scripts/tools/utils";
+import { usePdfQue } from "@/hooks/usePdfQue";
 
 interface Props {
   handwritten: Handwritten
@@ -81,6 +83,7 @@ export default function HandwrittenDetails({
 }: Props) {
   const { closeDetailsBtn, push } = useNavState();
   const { addToQue, printQue } = usePrintQue();
+  const pdfQue = usePdfQue();
   const params = useParams();
   const [user] = useAtom<User>(userAtom);
   const [coreCreditsOpen, setCoreCreditsOpen] = useState(false);
@@ -358,6 +361,76 @@ export default function HandwrittenDetails({
     invoke('email_karmak_invoice', { args });
   };
 
+  const onClickPrintProforma = () => {
+    const args = {
+      date: formatDate(handwritten.date),
+      proformaId: getProformaId(handwritten.date),
+      billToCompany: handwritten.billToCompany,
+      billToAddress: handwritten.billToAddress,
+      billToCity: handwritten.billToCity,
+      billToState: handwritten.billToState,
+      billToZip: handwritten.billToZip,
+      shipToCompany: handwritten.shipToCompany,
+      shipToAddress: handwritten.shipToAddress,
+      shipToCity: handwritten.shipToCity,
+      shipToState: handwritten.shipToState,
+      shipToZip: handwritten.shipToZip,
+      poNum: handwritten.poNum,
+      billToPhone: formatPhone(handwritten.billToPhone),
+      orderTotal: formatCurrency(handwritten.handwrittenItems.reduce((acc, item) => acc + ((item.unitPrice ?? 0) * (item.qty ?? 0)), 0)),
+      items: handwritten.handwrittenItems.map((item) => {
+        return {
+          qty: item.qty,
+          partNum: item.partNum,
+          desc: item.desc,
+          unitPrice: formatCurrency(item.unitPrice),
+          total: formatCurrency(Number(item.unitPrice) * (item.qty ?? 1))
+        }
+      })
+    };
+
+    const pages = chunkArray(args.items, 20);
+    pages.forEach((page, i) => {
+      addToQue('proforma', 'print_proforma', { ...args, items: page, pageNum: i + 1 }, '816px', '1090px');
+    });
+    printQue();
+  };
+
+  const onClickEmailProforma = async () => {
+    const data = {
+      date: formatDate(handwritten.date),
+      proformaId: getProformaId(handwritten.date),
+      billToCompany: handwritten.billToCompany,
+      billToAddress: handwritten.billToAddress,
+      billToCity: handwritten.billToCity,
+      billToState: handwritten.billToState,
+      billToZip: handwritten.billToZip,
+      shipToCompany: handwritten.shipToCompany,
+      shipToAddress: handwritten.shipToAddress,
+      shipToCity: handwritten.shipToCity,
+      shipToState: handwritten.shipToState,
+      shipToZip: handwritten.shipToZip,
+      poNum: handwritten.poNum,
+      billToPhone: handwritten.billToPhone,
+      orderTotal: handwritten.handwrittenItems.reduce((acc, item) => acc + ((item.unitPrice ?? 0) * (item.qty ?? 0)), 0),
+      items: handwritten.handwrittenItems.map((item) => {
+        return {
+          qty: item.qty,
+          partNum: item.partNum,
+          desc: item.desc,
+          unitPrice: item.unitPrice,
+          total: Number(item.unitPrice) * (item.qty ?? 1)
+        }
+      })
+    };
+    const args = {
+      path: `\\MWD1-SERVER\\Server\\proforma\\mwd_${formatNow()}.pdf`
+    };
+
+    pdfQue.addToQue('proforma', 'email_proforma', data, args, '816px', '1090px');
+    pdfQue.exportQue();
+  };
+
   const onChangeInvoiceStatus = async (invoiceStatus: InvoiceStatus) => {
     const newHandwritten = { ...handwritten, invoiceStatus };
     await editHandwritten(newHandwritten);
@@ -442,6 +515,8 @@ export default function HandwrittenDetails({
           <Button onClick={() => setAddQtyDialogOpen(true)} disabled={handwritten.invoiceStatus === 'SENT TO ACCOUNTING'} data-testid="add-qty-io-btn">Add Qty | I/O</Button>
           <Button onClick={handleViewKarmak}>View Karmak</Button>
           <Button onClick={handleEmailKarmak}>Email Karmak</Button>
+          <Button onClick={onClickPrintProforma}>Print Proforma</Button>
+          <Button onClick={onClickEmailProforma}>Email Proforma</Button>
           <Button onClick={() => setShippingListModalOpen(true)}>Add to Shipping List</Button>
         </div>
 

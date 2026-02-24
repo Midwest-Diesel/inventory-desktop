@@ -238,6 +238,7 @@ async fn main() {
       print_warranty,
       print_packing_slip,
       print_po,
+      print_proforma,
       email_po,
       email_end_of_day,
       move_queue_to_archives,
@@ -1371,6 +1372,47 @@ async fn print_po(image_data: String) -> Result<(), String> {
   let res = tauri::async_runtime::spawn_blocking(move || {
     let data = BASE64_STANDARD.decode(image_data.split(',').nth(1).unwrap()).map_err(|e| e.to_string())?;
     let file_path = "C:/mwd/scripts/screenshots/po.png";
+    let printers = get_available_printers();
+    let printer = printers.iter().find(|&p| p.contains(&OFFICE_PRINTER.to_string())).cloned().unwrap_or_else(|| "".to_string());
+
+    let img = ImageReader::new(Cursor::new(&data))
+      .with_guessed_format()
+      .map_err(|e| e.to_string())?
+      .decode()
+      .map_err(|e| e.to_string())?;
+
+    let upscaled_img = image::imageops::resize(
+      &img,
+      img.width() * 2,
+      img.height() * 2,
+      FilterType::Lanczos3,
+    );
+
+    {
+      let mut file = File::create(file_path).map_err(|e| e.to_string())?;
+      upscaled_img.write_to(&mut file, ImageOutputFormat::Png).map_err(|e| e.to_string())?;
+    }
+
+    if let Ok(val) = env::var("DISABLE_PRINTING") {
+      if val == "TRUE" { return Ok(()) }
+    }
+
+    Command::new("mspaint")
+      .current_dir("C:/mwd/scripts/screenshots")
+      .args([file_path, "/pt", &printer])
+      .output()
+      .map_err(|e| e.to_string())?;
+
+    Ok(())
+  }).await;
+  res.unwrap()
+}
+
+#[tauri::command]
+async fn print_proforma(image_data: String) -> Result<(), String> {
+  let res = tauri::async_runtime::spawn_blocking(move || {
+    let data = BASE64_STANDARD.decode(image_data.split(',').nth(1).unwrap()).map_err(|e| e.to_string())?;
+    let file_path = "C:/mwd/scripts/screenshots/proforma.png";
     let printers = get_available_printers();
     let printer = printers.iter().find(|&p| p.contains(&OFFICE_PRINTER.to_string())).cloned().unwrap_or_else(|| "".to_string());
 

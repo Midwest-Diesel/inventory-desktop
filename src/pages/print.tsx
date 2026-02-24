@@ -18,6 +18,7 @@ import EngineTag from "@/components/printableComponents/EngineTag";
 import EngineChecklist from "@/components/printableComponents/EngineChecklist";
 import InjPartTag from "@/components/printableComponents/InjPartTag";
 import QuoteListTemplate from "@/components/printableComponents/QuoteList";
+import ProformaTemplate from "@/components/printableComponents/ProformaTemplate";
 
 
 export default function Print() {
@@ -77,6 +78,7 @@ export default function Print() {
       { activeSheet === 'packingSlip' && <PackingSlipTemplate data={data} /> }
       { activeSheet === 'po' && <PurchaseOrderTemplate data={data} /> }
       { activeSheet === 'quotesList' && <QuoteListTemplate data={data} /> }
+      { activeSheet === 'proforma' && <ProformaTemplate data={data} /> }
     </div>
   );
 }

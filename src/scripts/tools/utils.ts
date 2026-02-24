@@ -110,6 +110,17 @@ export const getYesterday = (): Date => {
   return date;
 };
 
+export const formatNow = (): string => {
+  const now = new Date();
+  const yyyy = now.getFullYear();
+  const mm = String(now.getMonth() + 1).padStart(2, '0');
+  const dd = String(now.getDate()).padStart(2, '0');
+  const hh = String(now.getHours()).padStart(2, '0');
+  const nn = String(now.getMinutes()).padStart(2, '0');
+  const ss = String(now.getSeconds()).padStart(2, '0');
+  return `${yyyy}${mm}${dd}-${hh}${nn}${ss}`;
+};
+
 export const generatePDF = async (pages: HTMLElement[], path: string) => {
   const pdf = new jsPDF();
   const pxToMm = (px: number) => (px * 25.4) / 96;
