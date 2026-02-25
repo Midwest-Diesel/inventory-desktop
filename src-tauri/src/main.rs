@@ -248,6 +248,7 @@ async fn main() {
       save_pdf,
       email_po_received,
       email_fast_track_inventory,
+      email_netcom_inventory,
       print_quotes_list,
       get_json_file,
       read_file_bytes,
@@ -1950,6 +1951,47 @@ async fn email_fast_track_inventory(inventory: Vec<FastTrackItem>) -> Result<(),
       subject: "partsc514".to_string()
     });
   }
+
+  Ok(())
+}
+
+#[tauri::command]
+async fn email_netcom_inventory(inventory: Vec<FastTrackItem>) -> Result<(), String> {
+  let file_path = "\\\\MWD1-SERVER\\Server\\netcom_inventory\\netcom.csv";
+  let file = File::create(file_path).map_err(|e| e.to_string())?;
+  let mut writer = BufWriter::new(file);
+
+  writeln!(
+    writer,
+    "PartNumber,Manufacturer_,Quantity_,Description,__,Price,Other,City,State,Country,AlternateParts"
+  )
+  .map_err(|e| e.to_string())?;
+
+  for item in &inventory {
+    writeln!(
+      writer,
+      "\"=\"\"{}\"\"\",\"{}\",\"{}\",\"{}\",\"\",\"\",\"\",\"Blaine\",\"MN\",\"USA\",\"=\"\"{}\"\"\"",
+      item.part_num, item.manufacturer, item.qty, item.desc, item.alt_parts
+    )
+    .map_err(|e| e.to_string())?;
+  }
+
+  writer.flush().map_err(|e| e.to_string())?;
+  drop(writer);
+
+  if let Ok(val) = env::var("VITE_NODE_ENV") {
+    if val == "development" {
+      return Ok(());
+    }
+  }
+
+  send_email(SendEmailArgs {
+    body: "<div></div>".to_string(),
+    recipients: vec!["thepartfinder@yahoo.com".to_string()],
+    cc: vec!["matt@midwestdiesel.com".to_string()],
+    attachments: vec![file_path.to_string()],
+    subject: "Parts M514".to_string()
+  });
 
   Ok(())
 }
