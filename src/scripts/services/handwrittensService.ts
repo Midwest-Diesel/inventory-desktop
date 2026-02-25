@@ -112,7 +112,15 @@ export const getSomeHandwrittens = async (page: number, limit: number, onlyShowR
 
 export const searchHandwrittens = async (handwritten: HandwrittenSearch): Promise<{ pageCount: number, rows: Handwritten[] }> => {
   try {
-    const res = await api.get(`/api/handwrittens/search/${JSON.stringify(handwritten)}`);
+    const params = new URLSearchParams(
+      Object.entries(handwritten).reduce<Record<string, string>>((acc, [key, value]) => {
+        if (value !== undefined && value !== null) {
+          acc[key] = String(value);
+        }
+        return acc;
+      }, {})
+    );
+    const res = await api.get(`/api/handwrittens/search?${params.toString()}`);
     return { pageCount: res.data.pageCount, rows: await parseHandwrittenRes(res.data.rows) };
   } catch (err) {
     console.error(err);
@@ -159,7 +167,8 @@ export const getSomeHandwrittensByAccountingStatus = async (page: number, limit:
 
 export const getCustomerHandwrittens = async (billToCompany: string): Promise<CustomerHandwritten[]> => {
   try {
-    const res = await api.get(`/api/handwrittens/customer/${billToCompany}`);
+    const params = new URLSearchParams({ billToCompany });
+    const res = await api.get(`/api/handwrittens/customer?${params.toString()}`);
     return res.data.map((item: any) => ({ ...item, date: parseResDate(item.date) }));
   } catch (err) {
     console.error(err);
