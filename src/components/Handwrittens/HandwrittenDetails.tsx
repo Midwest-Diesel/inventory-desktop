@@ -24,7 +24,7 @@ import { ask } from "@/scripts/config/tauri";
 import { usePrintQue } from "@/hooks/usePrintQue";
 import { getAltShipByCustomerId } from "@/scripts/services/altShipService";
 import { useQuery } from "@tanstack/react-query";
-import { getProformaId, handleAccountingCompleted, startTakeoff } from "@/scripts/logic/handwrittens";
+import { handleAccountingCompleted, startTakeoff } from "@/scripts/logic/handwrittens";
 import { prompt } from "../library/Prompt";
 import HandwrittenStatusFields from "./HandwrittenStatusFields";
 import ShippingListModal from "./modals/ShippingListModal";
@@ -363,9 +363,10 @@ export default function HandwrittenDetails({
   };
 
   const onClickPrintProforma = () => {
+    const proformaId = `invoice_${handwritten.id}`;
     const args = {
       date: formatDate(handwritten.date),
-      proformaId: getProformaId(handwritten.date),
+      proformaId,
       billToCompany: handwritten.billToCompany,
       billToAddress: handwritten.billToAddress,
       billToCity: handwritten.billToCity,
@@ -398,9 +399,10 @@ export default function HandwrittenDetails({
   };
 
   const onClickEmailProforma = async () => {
+    const proformaId = `invoice_${handwritten.id}`;
     const data = {
       date: formatDate(handwritten.date),
-      proformaId: getProformaId(handwritten.date),
+      proformaId,
       billToCompany: handwritten.billToCompany,
       billToAddress: handwritten.billToAddress,
       billToCity: handwritten.billToCity,
@@ -426,7 +428,7 @@ export default function HandwrittenDetails({
     };
     const user = await getUserById(handwritten.createdById);
     const args = {
-      path: `C:\\MWD\\scripts\\attachments\\invoice_${handwritten.id}.pdf`,
+      path: `C:\\MWD\\scripts\\attachments\\${proformaId}.pdf`,
       contact: handwritten.contactName,
       createdBy: cap(user?.username ?? '')
     };
