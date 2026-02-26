@@ -10,7 +10,7 @@ import Loading from "@/components/library/Loading";
 import Table from "@/components/library/Table";
 import { useNavState } from "@/hooks/useNavState";
 import { selectedCustomerAtom, userAtom, vendorNamesAtom } from "@/scripts/atoms/state";
-import { deleteCustomer, getCustomerById, getCustomerSalesHistory } from "@/scripts/services/customerService";
+import { deleteCustomer, getCustomerById, getCustomerEmails, getCustomerSalesHistory } from "@/scripts/services/customerService";
 import { deleteMapLocationByCustomer, getMapLocationFromCustomer } from "@/scripts/services/mapService";
 import { formatCurrency, formatPhone } from "@/scripts/tools/stringUtils";
 import { useAtom } from "jotai";
@@ -19,6 +19,8 @@ import { useEffect, useState } from "react";
 import EditMapLocDialog from "@/components/customers/dialogs/EditMapLocDialog";
 import { prompt } from "@/components/library/Prompt";
 import { addVendor, getVendorByName, getVendorNames } from "@/scripts/services/vendorsService";
+import CustomerEmails from "@/components/customers/CustomerEmails";
+import { useQuery } from "@tanstack/react-query";
 
 
 export default function Customer() {
@@ -38,6 +40,12 @@ export default function Customer() {
   const parser = new DOMParser();
   const comments = parser.parseFromString(customer?.comments ?? '', 'text/html');
   const fleetNotes = parser.parseFromString(customer?.fleetNotes ?? '', 'text/html');
+
+  const { data: emails = [], isFetching: isFetchingEmails } = useQuery<string[]>({
+    queryKey: ['emails', customer],
+    queryFn: () => getCustomerEmails(customer!.id),
+    enabled: !!customer
+  });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -265,30 +273,49 @@ export default function Customer() {
               </GridItem>
 
               <GridItem colSpan={4} variant={['no-style']}>
-                <GridItem variant={['no-style']} className="customer-details__sales-history" style={{ maxHeight: '15.5rem' }}>
-                  <h3>Sales History</h3>
-                  {salesHistory.length > 0 ?
-                    <Table>
-                      <thead>
-                        <tr>
-                          <th>Year</th>
-                          <th>Sales</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {salesHistory.map((sale: SalesHistory, i: number) => {
-                          return (
-                            <tr key={i}>
-                              <td>{ sale.year }</td>
-                              <td>{ formatCurrency(sale.totalSales) }</td>
+                <GridItem variant={['no-style']}>
+                  <div style={{ display: 'flex', gap: '2rem' }}>
+                    <div className="customer-details__sales-history" style={{ maxHeight: '15.5rem' }}>
+                      <h3>Sales History</h3>
+                      {salesHistory.length > 0 ?
+                        <Table>
+                          <thead>
+                            <tr>
+                              <th>Year</th>
+                              <th>Sales</th>
                             </tr>
-                          );
-                        })}
-                      </tbody>
-                    </Table>
-                    :
-                    <p>Empty</p>
-                  }
+                          </thead>
+                          <tbody>
+                            {salesHistory.map((sale: SalesHistory, i: number) => {
+                              return (
+                                <tr key={i}>
+                                  <td>{ sale.year }</td>
+                                  <td>{ formatCurrency(sale.totalSales) }</td>
+                                </tr>
+                              );
+                            })}
+                          </tbody>
+                        </Table>
+                      :
+                      <p>Empty</p>
+                    }
+                    </div>
+
+                    <div style={{ maxHeight: '15.5rem', overflowY: 'auto' }}>
+                      {isFetchingEmails ?
+                        <Loading />
+                        :
+                        <>
+                          {emails.length > 0 &&
+                            <>
+                              <h3>Invoice Emails</h3>
+                              <CustomerEmails emails={emails} />
+                            </>
+                          }
+                        </>
+                      }
+                    </div>
+                  </div>
                 </GridItem>
                 <br />
 

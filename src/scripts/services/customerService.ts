@@ -75,6 +75,16 @@ export const getCustomerNames = async (): Promise<string[]> => {
   }
 };
 
+export const getCustomerEmails = async (customerId: number): Promise<string[]> => {
+  try {
+    const res = await api.get(`/api/customers/emails/${customerId}`);
+    return res.data.map((row: any) => row.email);
+  } catch (err) {
+    console.error(err);
+    return [];
+  }
+};
+
 export const getCustomersMin = async (): Promise<CustomerMin[]> => {
   try {
     const res = await api.get('/api/customers/min');
