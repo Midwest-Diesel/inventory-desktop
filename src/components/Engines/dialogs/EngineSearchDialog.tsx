@@ -10,7 +10,7 @@ interface Props {
   open: boolean
   setOpen: (open: boolean) => void
   onSearch: (search: EngineSearch) => void
-  listOpen: EngineStatus
+  listOpen: EngineStatus | null
   page: number
   limit: number
 }
@@ -29,7 +29,7 @@ export default function EngineSearchDialog({ open, setOpen, onSearch, listOpen, 
   const [warranty, setWarranty] = useState<'' | 'TRUE' | 'FALSE'>('');
   const [testRun, setTestRun] = useState<'' | 'TRUE' | 'FALSE'>('');
   const [mileage, setMileage] = useState('');
-  const [currentStatus, setCurrentStatus] = useState<EngineStatus>(listOpen);
+  const [currentStatus, setCurrentStatus] = useState<EngineStatus | null>(listOpen);
   const statusList: EngineStatus[] = ['RunnerReady', 'RunnerNotReady', 'HoldSoldRunner', 'ToreDown', 'CoreEngine', 'Sold', 'ShortBlock', 'LongBlock'];
 
   useEffect(() => {
@@ -186,9 +186,10 @@ export default function EngineSearchDialog({ open, setOpen, onSearch, listOpen, 
         <Select
           variant={['label-space-between', 'label-inline']}
           label="Current Status"
-          value={currentStatus ?? 'RunnerReady'}
-          onChange={(e: any) => setCurrentStatus(e.target.value)}
+          value={currentStatus ?? ''}
+          onChange={(e) => setCurrentStatus(e.target.value as EngineStatus || null)}
         >
+          <option value="">All</option>
           {statusList.map((status: EngineStatus, i: number) => {
             return <option key={i}>{ status }</option>;
           })}

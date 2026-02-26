@@ -296,9 +296,9 @@ export default function Customer() {
                             })}
                           </tbody>
                         </Table>
-                      :
-                      <p>Empty</p>
-                    }
+                        :
+                        <p>Empty</p>
+                      }
                     </div>
 
                     <div style={{ maxHeight: '15.5rem', overflowY: 'auto' }}>

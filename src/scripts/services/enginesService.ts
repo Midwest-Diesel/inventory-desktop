@@ -14,7 +14,7 @@ export interface EngineSearch {
   warranty: '' | 'TRUE' | 'FALSE'
   testRun: '' | 'TRUE' | 'FALSE'
   mileage?: string
-  status: EngineStatus
+  status: EngineStatus | null
   limit: number
   page: number
 }
@@ -68,7 +68,7 @@ export const getAutofillEngine = async (engineNum: number) => {
   }
 };
 
-export const getEnginesByStatus = async (status: EngineStatus, page: number, limit: number): Promise<{ pageCount: number, rows: Engine[] }> => {
+export const getEnginesByStatus = async (status: EngineStatus | null, page: number, limit: number): Promise<{ pageCount: number, rows: Engine[] }> => {
   try {
     const res = await api.get(`/api/engines/status/${encodeURI(JSON.stringify({ status, offset: (page - 1) * limit, limit }))}`);
     return { pageCount: res.data.pageCount, rows: parseEngineRes(res.data.rows) };

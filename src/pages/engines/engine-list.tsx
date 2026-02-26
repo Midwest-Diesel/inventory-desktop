@@ -11,11 +11,13 @@ import Pagination from "@/components/library/Pagination";
 import { EngineSearch, getEnginesByStatus, searchEngines } from "@/scripts/services/enginesService";
 import { useQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
+import AllEnginesTable from "@/components/engines/AllEnginesTable";
 
-type EngineListType = 'running' | 'toreDown' | 'core' | 'sold' | 'shortBlock' | 'longBlock';
+type EngineListType = 'all' | 'running' | 'toreDown' | 'core' | 'sold' | 'shortBlock' | 'longBlock';
 
 const LIMIT = 40;
-const STATUS_MAP: Record<EngineListType, EngineStatus[]> = {
+const STATUS_MAP: Record<EngineListType, EngineStatus[] | null> = {
+  all: null,
   running: ['RunnerReady', 'RunnerNotReady', 'HoldSoldRunner'],
   toreDown: ['ToreDown'],
   core: ['CoreEngine'],
@@ -27,7 +29,7 @@ const STATUS_MAP: Record<EngineListType, EngineStatus[]> = {
 
 export default function EngineList() {
   const [openSearch, setOpenSearch] = useState(false);
-  const [listOpen, setListOpen] = useState<EngineListType>('running');
+  const [listOpen, setListOpen] = useState<EngineListType>('all');
   const [currentPage, setCurrentPage] = useState(1);
   const [search, setSearch] = useState<EngineSearch | null>(null);
 
@@ -37,7 +39,8 @@ export default function EngineList() {
       if (search) {
         return await searchEngines({ ...search, page: currentPage, limit: LIMIT });
       }
-      return await getEnginesByStatus(STATUS_MAP[listOpen][0], currentPage, LIMIT);
+
+      return await getEnginesByStatus(STATUS_MAP[listOpen]?.[0] ?? null, currentPage, LIMIT);
     }
   });
 
@@ -61,8 +64,14 @@ export default function EngineList() {
   }, [listOpen]);
 
   const onSearch = (search: EngineSearch) => {
-    const foundKey = Object.entries(STATUS_MAP).find(([_, statuses]) => statuses.includes(search.status))?.[0] as EngineListType;
-    if (foundKey) setListOpen(foundKey);
+    const status = search.status;
+    if (status) {
+      const foundKey = Object.entries(STATUS_MAP)
+        .find(([_, statuses]) => statuses?.includes(status))?.[0] as EngineListType;
+
+      if (foundKey) setListOpen(foundKey);
+    }
+
     setSearch(search);
     setCurrentPage(1);
   };
@@ -81,6 +90,8 @@ export default function EngineList() {
     if (!engines) return null;
     const props = { engines: engines.rows, loading: isFetching };
     switch (listOpen) {
+      case 'all':
+        return <AllEnginesTable {...props} />;
       case 'running':
         return <RunningEnginesTable {...props} />;
       case 'toreDown':
@@ -118,7 +129,7 @@ export default function EngineList() {
           open={openSearch}
           setOpen={setOpenSearch}
           onSearch={onSearch}
-          listOpen={STATUS_MAP[listOpen][0]}
+          listOpen={STATUS_MAP[listOpen]?.[0] ?? null}
           page={currentPage}
           limit={LIMIT}
         />

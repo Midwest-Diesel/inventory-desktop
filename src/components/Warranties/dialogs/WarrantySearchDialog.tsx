@@ -5,7 +5,6 @@ import Button from "@/components/library/Button";
 import Select from "@/components/library/select/Select";
 import { useAtom } from "jotai";
 import { warrantySearchAtom } from "@/scripts/atoms/state";
-import VendorDropdown from "@/components/library/dropdown/VendorDropdown";
 
 interface Props {
   open: boolean
