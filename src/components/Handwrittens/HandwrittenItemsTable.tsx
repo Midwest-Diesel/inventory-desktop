@@ -99,7 +99,7 @@ export default function HandwrittenItemsTable({ className, handwritten, setHandw
                   <tr key={i}>
                     {handwritten.invoiceStatus !== 'SENT TO ACCOUNTING' &&
                       <td>
-                        {item.location && !item.location.includes('CORE DEPOSIT') && item.invoiceItemChildren.length === 0 &&
+                        {item.location && !item.location.includes('CORE DEPOSIT') &&
                           <Button
                             variant={['x-small']}
                             onClick={() => handleCoreCharge(item)}
