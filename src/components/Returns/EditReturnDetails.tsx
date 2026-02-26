@@ -12,8 +12,8 @@ import UserSelect from "../library/select/UserSelect";
 import { getCustomerByName } from "@/scripts/services/customerService";
 import { ask } from "@/scripts/config/tauri";
 import TextArea from "../library/TextArea";
-import CustomerSelect from "../library/select/CustomerSelect";
 import EditReturnItemsTable from "./EditReturnItemsTable";
+import CustomerDropdown from "../library/dropdown/CustomerDropdown";
 
 interface Props {
   returnData: Return
@@ -135,10 +135,10 @@ export default function EditReturnDetails({ returnData, setReturn, setIsEditing 
               <tr>
                 <th>Customer</th>
                 <td>
-                  <CustomerSelect
+                  <CustomerDropdown
                     variant={['label-full-width', 'label-bold', 'label-inline']}
                     value={company}
-                    onChange={(e) => setCompany(e.target.value)}
+                    onChange={(value) => setCompany(value)}
                   />
                 </td>
               </tr>

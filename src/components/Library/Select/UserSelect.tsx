@@ -20,7 +20,7 @@ export default function UserSelect({ variant, label, userSubtype, ...props }: Pr
       if (usersData.length === 0) setUsersData(await getAllUsers());
     };
     fetchData();
-  }, []);
+  }, [usersData]);
   
 
   return (

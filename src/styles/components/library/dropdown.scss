@@ -99,6 +99,16 @@
   &--fill {
     box-shadow: none;
   }
+
+  &--label-space-between {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .dropdown__label {
+      width: 100%;
+    }
+  }
 }
 
 .dropdown--fill li {

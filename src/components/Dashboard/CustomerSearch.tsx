@@ -2,11 +2,11 @@ import { FormEvent, useState } from "react";
 import CustomerSearchDialog from "./dialogs/CustomerSearchDialog";
 import Button from "../library/Button";
 import Input from "../library/Input";
-import { addCustomer, getCustomerByName } from "@/scripts/services/customerService";
+import { addCustomer, getCustomerByName, getCustomerNames } from "@/scripts/services/customerService";
 import { addHandwritten } from "@/scripts/services/handwrittensService";
 import { isObjectNull } from "@/scripts/tools/utils";
 import { useNavState } from "../../hooks/useNavState";
-import { userAtom } from "@/scripts/atoms/state";
+import { customerNamesAtom, userAtom } from "@/scripts/atoms/state";
 import { useAtom } from "jotai";
 import { useToast } from "@/hooks/useToast";
 import HandwrittensListModal from "../handwrittens/modals/HandwrittensListModal";
@@ -25,6 +25,7 @@ export default function CustomerSearch({ selectedCustomer, setSelectedCustomer, 
   const { newTab } = useNavState();
   const toast = useToast();
   const [user] = useAtom<User>(userAtom);
+  const [, setCustomerNames] = useAtom<string[]>(customerNamesAtom);
   const [searchDialogOpen, setSearchDialogOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [handwrittensModalOpen, setHandwrittensModalOpen] = useState(false);
@@ -51,6 +52,9 @@ export default function CustomerSearch({ selectedCustomer, setSelectedCustomer, 
       alert('Failed to create customer');
       return;
     }
+    const names = await getCustomerNames();
+    setCustomerNames(names);
+    
     await newTab([{ name, url: `/customer/${res.id}` }]);
   };
 

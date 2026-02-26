@@ -10,10 +10,10 @@ import { usePreventNavigation } from "../../hooks/usePreventNavigation";
 import Checkbox from "../library/Checkbox";
 import { ask, invoke } from "@/scripts/config/tauri";
 import TextArea from "../library/TextArea";
-import VendorSelect from "../library/select/VendorSelect";
 import Select from "../library/select/Select";
 import { getVendorByName } from "@/scripts/services/vendorsService";
 import { getUserById } from "@/scripts/services/userService";
+import VendorDropdown from "../library/dropdown/VendorDropdown";
 
 interface Props {
   poData: PO
@@ -244,10 +244,10 @@ export default function EditPoDetails({ poData, setPo, setIsEditing, poItems, po
               <tr>
                 <th>Vendor</th>
                 <td>
-                  <VendorSelect
+                  <VendorDropdown
                     variant={['label-full-width']}
                     value={purchasedFrom}
-                    onChange={(e) => handleChangeVendor(e.target.value)}
+                    onChange={(value) => handleChangeVendor(value)}
                   />
                 </td>
               </tr>

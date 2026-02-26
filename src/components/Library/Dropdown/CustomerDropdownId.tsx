@@ -23,7 +23,7 @@ export default function CustomerDropdownId({ variant, label, value, onChange, ma
       if (customers.length === 0) setCustomers(await getCustomersMin());
     };
     fetchData();
-  }, []);
+  }, [customers]);
 
 
   return (

@@ -3,27 +3,27 @@ import Dropdown from "./Dropdown";
 import DropdownOption from "./DropdownOption";
 import React from "react";
 import { useAtom } from "jotai";
-import { customerNamesAtom } from "@/scripts/atoms/state";
-import { getCustomerNames } from "@/scripts/services/customerService";
+import { vendorNamesAtom } from "@/scripts/atoms/state";
+import { getVendorNames } from "@/scripts/services/vendorsService";
 
 interface Props {
   variant?: ('small' | 'label-space-between' | 'label-stack' | 'label-inline' | 'label-full-width' | 'large' | 'no-margin' | 'label-full-height' | 'fill' | 'gap' | 'label-bold')[]
   label?: string
   value: string
-  onChange: (customer: string) => void
+  onChange: (value: string) => void
   maxHeight?: string
 }
 
 
-export default function CustomerDropdown({ variant, label, value, onChange, maxHeight }: Props) {
-  const [customerNames, setCustomerNames] = useAtom<string[]>(customerNamesAtom);
+export default function VendorDropdown({ variant, label, value, onChange, maxHeight }: Props) {
+  const [vendorsNames, setVendorsData] = useAtom<string[]>(vendorNamesAtom);
 
   useEffect(() => {
     const fetchData = async () => {
-      if (customerNames.length === 0) setCustomerNames(await getCustomerNames());
+      if (vendorsNames.length === 0) setVendorsData(await getVendorNames());
     };
     fetchData();
-  }, [customerNames]);
+  }, [vendorsNames]);
 
 
   return (
@@ -35,10 +35,10 @@ export default function CustomerDropdown({ variant, label, value, onChange, maxH
       maxHeight={maxHeight}
       minWidth={'15rem'}
     >
-      <DropdownOption value="">-- SELECT A CUSTOMER --</DropdownOption>
-      {customerNames.length > 0 && customerNames.sort((a, b) => a.localeCompare(b)).map((customer: string, i) => {
+      <DropdownOption value="">-- SELECT VENDOR --</DropdownOption>
+      {vendorsNames.length > 0 && vendorsNames.map((vendor: string, i) => {
         return (
-          <DropdownOption key={i} value={customer}>{ customer }</DropdownOption>
+          <DropdownOption key={i} value={vendor}>{ vendor }</DropdownOption>
         );
       })}
     </Dropdown>

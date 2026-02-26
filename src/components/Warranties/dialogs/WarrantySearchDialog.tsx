@@ -3,9 +3,9 @@ import Dialog from "@/components/library/Dialog";
 import Input from "@/components/library/Input";
 import Button from "@/components/library/Button";
 import Select from "@/components/library/select/Select";
-import VendorSelect from "@/components/library/select/VendorSelect";
 import { useAtom } from "jotai";
 import { warrantySearchAtom } from "@/scripts/atoms/state";
+import VendorDropdown from "@/components/library/dropdown/VendorDropdown";
 
 interface Props {
   open: boolean
@@ -68,11 +68,11 @@ export default function WarrantySearchDialog({ open, setOpen, limit }: Props) {
           onChange={(e: any) => setPartNum(e.target.value)}
         />
 
-        <VendorSelect
-          variant={['label-space-between', 'label-inline']}
+        <Input
+          variant={['small', 'thin', 'label-no-stack', 'label-space-between']}
           label="Vendor"
           value={vendor}
-          onChange={(e: any) => setVendor(e.target.value)}
+          onChange={(e) => setVendor(e.target.value)}
         />
 
         <Select

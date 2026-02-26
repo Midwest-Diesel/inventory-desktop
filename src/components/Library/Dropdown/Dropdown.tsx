@@ -75,7 +75,7 @@ export default function Dropdown({ children, className = '', variant = [], label
   );
 
   let labelClass = "";
-  if (variant.includes("label-space-between")) labelClass += "input--label-space-between ";
+  if (variant.includes("label-space-between")) labelClass += "dropdown--label-space-between ";
   if (variant.includes("label-stack")) labelClass += "dropdown--label-stack ";
   if (variant.includes("label-bold")) labelClass += "dropdown--label-bold ";
 

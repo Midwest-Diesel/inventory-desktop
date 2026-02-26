@@ -19,6 +19,16 @@ export const getVendors = async (): Promise<Vendor[]> => {
   }
 };
 
+export const getVendorNames = async (): Promise<string[]> => {
+  try {
+    const res = await api.get('/api/vendors/names');
+    return res.data.map((row: any) => row.name);
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
+};
+
 export const getVendorById = async (id: number): Promise<Vendor | null> => {
   try {
     const res = await api.get(`/api/vendors/id/${id}`);

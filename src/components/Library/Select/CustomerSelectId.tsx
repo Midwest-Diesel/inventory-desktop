@@ -20,7 +20,7 @@ export default function CustomerSelectId({ variant, label, ...props }: Props) {
       if (customers.length === 0) setCustomers(await getCustomersMin());
     };
     fetchData();
-  }, []);
+  }, [customers]);
 
 
   return (

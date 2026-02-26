@@ -19,7 +19,7 @@ export default function SourceSelect({ variant, label, ...props }: Props) {
       if (sourcesData.length === 0) setSourcesData(await getAllSources());
     };
     fetchData();
-  }, []);
+  }, [sourcesData]);
   
 
   return (

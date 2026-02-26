@@ -9,7 +9,7 @@ import GridItem from "@/components/library/grid/GridItem";
 import Loading from "@/components/library/Loading";
 import Table from "@/components/library/Table";
 import { useNavState } from "@/hooks/useNavState";
-import { selectedCustomerAtom, userAtom } from "@/scripts/atoms/state";
+import { selectedCustomerAtom, userAtom, vendorNamesAtom } from "@/scripts/atoms/state";
 import { deleteCustomer, getCustomerById, getCustomerSalesHistory } from "@/scripts/services/customerService";
 import { deleteMapLocationByCustomer, getMapLocationFromCustomer } from "@/scripts/services/mapService";
 import { formatCurrency, formatPhone } from "@/scripts/tools/stringUtils";
@@ -18,7 +18,7 @@ import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import EditMapLocDialog from "@/components/customers/dialogs/EditMapLocDialog";
 import { prompt } from "@/components/library/Prompt";
-import { addVendor } from "@/scripts/services/vendorsService";
+import { addVendor, getVendorByName, getVendorNames } from "@/scripts/services/vendorsService";
 
 
 export default function Customer() {
@@ -26,7 +26,9 @@ export default function Customer() {
   const params = useParams();
   const [user] = useAtom<User>(userAtom);
   const [, setSelectedCustomer] = useAtom<Customer>(selectedCustomerAtom);
+  const [, setVendorsData] = useAtom<string[]>(vendorNamesAtom);
   const [customer, setCustomer] = useState<Customer | null>(null);
+  const [isVendor, setIsVendor] = useState(false);
   const [salesHistory, setSalesHistory] = useState<SalesHistory[]>([]);
   const [isEditing, setIsEditing] = useState(false);
   const [isOnMap, setIsOnMap] = useState(true);
@@ -45,6 +47,9 @@ export default function Customer() {
       if (!customerRes) return;
       setCustomer(customerRes);
       setSalesHistory(await getCustomerSalesHistory(id));
+
+      const vendor = await getVendorByName(customerRes.company);
+      setIsVendor(!!vendor);
 
       if (!await getMapLocationFromCustomer(id)) setIsOnMap(false);
       const location = await getMapLocationFromCustomer(customerRes.id);
@@ -65,6 +70,9 @@ export default function Customer() {
   const onClickAddVendor = async () => {
     if (!customer) return;
     await addVendor(customer.company ?? '', customer);
+    const res = await getVendorNames();
+    setVendorsData(res);
+    setIsVendor(true);
   };
 
 
@@ -135,7 +143,7 @@ export default function Customer() {
 
             <div className="customer-details__top-bar">
               <Button onClick={() => setEditLocDialogOpen(true)}>Edit Map Location</Button>
-              <Button onClick={onClickAddVendor}>Set as Vendor</Button>
+              { !isVendor && <Button onClick={onClickAddVendor}>Set as Vendor</Button> }
             </div>
           
             <Grid>

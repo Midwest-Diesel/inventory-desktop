@@ -19,7 +19,7 @@ export default function FreightCarrierSelect({ variant, label, ...props }: Props
       if (freightCarriers.length === 0) setFreightCarriers(await getAllFreightCarriers());
     };
     fetchData();
-  }, []);
+  }, [freightCarriers]);
   
 
   return (
