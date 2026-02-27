@@ -41,7 +41,7 @@ export default function PartSearchTabs({ handleSearch, partSearchTabs, setPartSe
 
   const onClickCloseTab = async (id: number) => {
     const deletedTab = partSearchTabs.find((t) => t.id === id);
-    let updatedTabs = partSearchTabs.filter((t) => t.id !== id);
+    const updatedTabs = partSearchTabs.filter((t) => t.id !== id);
 
     if (deletedTab?.selected && updatedTabs.length > 0) {
       const deletedIndex = partSearchTabs.findIndex((t) => t.id === id);
