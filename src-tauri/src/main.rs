@@ -896,10 +896,6 @@ fn print_bol(args: BOLArgs) -> Result<(), String> {
     src = "\\MWD1-SERVER\Server\BOLtemplate.docm"
     dest = "C:\Users\Public\BOLtemplate.docm"
 
-    If fso.FileExists(dest) Then
-      fso.DeleteFile dest, True
-    End If
-
     fso.CopyFile src, dest, True
 
     Set doc = CreateObject("Word.Application")
@@ -1164,10 +1160,6 @@ fn print_ci(args: CIArgs) -> Result<(), String> {
     src = "\\MWD1-SERVER\Server\COMINVtemplate.docm"
     dest = "C:\Users\Public\COMINVtemplate.docm"
 
-    If fso.FileExists(dest) Then
-      fso.DeleteFile dest, True
-    End If
-
     fso.CopyFile src, dest, True
 
     Set doc = CreateObject("Word.Application")
@@ -1222,10 +1214,6 @@ fn print_coo() -> Result<(), String> {
 
     src = "\\MWD1-SERVER\Server\CERTOOtemplate.docm"
     dest = "C:\Users\Public\CERTOOtemplate.docm"
-
-    If fso.FileExists(dest) Then
-      fso.DeleteFile dest, True
-    End If
 
     fso.CopyFile src, dest, True
 
