@@ -27,6 +27,8 @@ export default function EditQuoteDialog({ setQuoteEdited, quote, setQuote }: Pro
   const [company, setCompany] = useState<string>(quote.customer?.company ?? '');
   const [contact, setContact] = useState<string>(quote.contact ?? '');
   const [part, setPart] = useState<Part | null>(quote.part);
+  const [partNum, setPartNum] = useState<string>(quote.partNum ?? '');
+  const [stockNum, setStockNum] = useState<string>(quote.stockNum ?? '');
   const [desc, setDesc] = useState<string>(quote.desc ?? '');
   const [price, setPrice] = useState<number | null>(quote.price || null);
   const [notes, setNotes] = useState<string>(quote.notes ?? '');
@@ -51,8 +53,8 @@ export default function EditQuoteDialog({ setQuoteEdited, quote, setQuote }: Pro
       contact,
       date,
       source,
-      partNum: part ? part.partNum : quote.partNum,
-      stockNum: part ? part.stockNum : quote.stockNum,
+      partNum: part ? part.partNum : (partNum || quote.partNum),
+      stockNum: part ? part.stockNum : (stockNum || quote.stockNum),
       desc,
       price: Number(price),
       notes,
@@ -136,9 +138,28 @@ export default function EditQuoteDialog({ setQuoteEdited, quote, setQuote }: Pro
             </>
           }
 
-          <br />
-          <Button variant={['fit']} type="button" onClick={() => setPartSelectOpen(true)}>Select Part</Button>
-          <br />
+          <div style={{ margin: part ? '0.5rem 0 1rem' : '0.5rem 0 0', display: 'flex', gap: '0.3rem' }}>
+            <Button variant={['fit']} onClick={() => setPartSelectOpen(true)}>Select Part</Button>
+            { part && <Button variant={['fit']} onClick={() => setPart(null)}>Clear Part</Button> }
+          </div>
+
+          {!part &&
+            <div style={{ marginBottom: '1rem' }}>
+              <Input
+                label="Part Number"
+                variant={['label-full-width', 'small', 'thin', 'label-bold', 'label-stack']}
+                value={partNum}
+                onChange={(e) => setPartNum(e.target.value)}
+              />
+
+              <Input
+                label="Stock Number"
+                variant={['label-full-width', 'small', 'thin', 'label-bold', 'label-stack']}
+                value={stockNum}
+                onChange={(e) => setStockNum(e.target.value)}
+              />
+            </div>
+          }
 
           <Input
             label="Description"
