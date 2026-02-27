@@ -1,4 +1,3 @@
-
 import Table from "../library/Table";
 
 interface Props {
