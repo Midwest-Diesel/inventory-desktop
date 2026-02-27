@@ -420,7 +420,7 @@ export default function EditHandwrittenDetails({
         thirdParty: handwritten.isThirdParty ?? false,
         contactPhone: handwritten.phone,
         email: handwritten.email,
-        ccNumber: cardNum,
+        ccNumber: formatCCNumber(cardNum),
         handwrittenTotal,
         items: chunk.map((item) => {
           return {
