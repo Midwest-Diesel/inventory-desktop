@@ -661,8 +661,8 @@ export default function HandwrittenDetails({
                   <td data-testid="ship-to-zip">{ handwritten.shipToZip }</td>
                 </tr>
                 <tr>
-                  <th><strong>Ship Via</strong></th>
-                  <td data-testid="ship-via">{ handwritten.shipVia && handwritten.shipVia.name }</td>
+                  <th><strong>Attn To / Contact</strong></th>
+                  <td data-testid="attn-to">{ handwritten.shipToContact }</td>
                 </tr>
               </tbody>
             </Table>
@@ -672,8 +672,8 @@ export default function HandwrittenDetails({
             <Table variant={['plain', 'row-details']}>
               <tbody>
                 <tr>
-                  <th><strong>Attn To / Contact</strong></th>
-                  <td data-testid="attn-to">{ handwritten.shipToContact }</td>
+                  <th><strong>Ship Via</strong></th>
+                  <td data-testid="ship-via">{ handwritten.shipVia && handwritten.shipVia.name }</td>
                 </tr>
                 <tr>
                   <th><strong>Contact Phone</strong></th>

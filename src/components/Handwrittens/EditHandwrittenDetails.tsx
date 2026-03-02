@@ -993,13 +993,13 @@ export default function EditHandwrittenDetails({
                         </td>
                       </tr>
                       <tr>
-                        <th>Ship Via</th>
+                        <th>Attn To / Contact</th>
                         <td>
-                          <FreightCarrierSelect
-                            variant={['label-bold']}
-                            value={shipViaId ?? ''}
-                            onChange={(e: any) => handleEditShipVia(e.target.value)}
-                            data-testid="ship-via"
+                          <Input
+                            variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+                            value={shipToContact}
+                            onChange={(e: any) => setShipToContact(e.target.value)}
+                            data-testid="attn-to"
                           />
                         </td>
                       </tr>
@@ -1012,13 +1012,13 @@ export default function EditHandwrittenDetails({
                 <Table variant={['plain', 'edit-row-details']}>
                   <tbody>
                     <tr>
-                      <th>Attn To / Contact</th>
+                      <th>Ship Via</th>
                       <td>
-                        <Input
-                          variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
-                          value={shipToContact}
-                          onChange={(e: any) => setShipToContact(e.target.value)}
-                          data-testid="attn-to"
+                        <FreightCarrierSelect
+                          variant={['label-bold']}
+                          value={shipViaId ?? ''}
+                          onChange={(e: any) => handleEditShipVia(e.target.value)}
+                          data-testid="ship-via"
                         />
                       </td>
                     </tr>
