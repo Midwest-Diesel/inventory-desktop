@@ -14,8 +14,8 @@ export const getAllAddOns = async (): Promise<AddOn[]> => {
   try {
     const res = await api.get('/api/add-ons');
     return parseAddOnDataRes(res.data);
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
     return [];
   }
 };
@@ -24,8 +24,8 @@ export const getOfficeAddOns = async (): Promise<AddOn[]> => {
   try {
     const res = await api.get('/api/add-ons/office');
     return parseAddOnDataRes(res.data);
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
     return [];
   }
 };
@@ -34,8 +34,8 @@ export const getAddOnById = async (id: number): Promise<AddOn | null> => {
   try {
     const res = await api.get(`/api/add-ons/id/${id}`);
     return parseAddOnDataRes(res.data)[0];
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
     return null;
   }
 };
@@ -45,11 +45,9 @@ export const getAddOnById = async (id: number): Promise<AddOn | null> => {
 export const addAddOn = async (addOn?: AddOn): Promise<AddOn | null> => {
   try {
     const res = await api.post('/api/add-ons', addOn);
-    console.log({ ...res.data, id: Number(res.data.id) });
-    
     return { ...res.data, id: Number(res.data.id) };
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
     return null;
   }
 };
@@ -59,32 +57,32 @@ export const addAddOn = async (addOn?: AddOn): Promise<AddOn | null> => {
 export const editAddOnAltParts = async (id: number, altParts: string) => {
   try {
     await api.patch('/api/add-ons/alt-parts', { id, altParts });
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
   }
 };
 
 export const editAddOnPrintStatus = async (id: number, isPrinted: boolean) => {
   try {
     await api.patch('/api/add-ons/is-printed', { id, isPrinted });
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
   }
 };
 
 export const editAddOnIsPoOpened = async (id: number, isPoOpened: boolean) => {
   try {
     await api.patch('/api/add-ons/po-opened', { id, isPoOpened });
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
   }
 };
 
 export const editAddOnUserEditing = async (id: number, userEditing: number) => {
   try {
     await api.patch('/api/add-ons/user-editing', { id, userEditing });
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
   }
 };
 
@@ -93,24 +91,26 @@ export const editAddOnUserEditing = async (id: number, userEditing: number) => {
 export const editAddOn = async (addOn: AddOn) => {
   try {
     await api.put('/api/add-ons', addOn);
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    alert('Failed to save addOn');
+    console.error(error);
   }
 };
 
 export const editAddOns = async (addOns: AddOn[]) => {
   try {
     await api.put('/api/add-ons/list', { addOns });
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    alert('Failed to save addOns');
+    console.error(error);
   }
 };
 
 export const addOnClearUserEditing = async (userEditing: number) => {
   try {
     await api.put('/api/add-ons/clear-user-editing', { userEditing });
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
   }
 };
 
@@ -119,7 +119,7 @@ export const addOnClearUserEditing = async (userEditing: number) => {
 export const deleteAddOn = async (id: number) => {
   try {
     await api.delete(`/api/add-ons/${id}`);
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
   }
 };

@@ -7,7 +7,7 @@ import Loading from "@/components/library/Loading";
 import Pagination from "@/components/library/Pagination";
 import Table from "@/components/library/Table";
 import { userAtom } from "@/scripts/atoms/state";
-import { addHandwritten, getSomeHandwrittens, getYeserdayCOGS, getYeserdaySales, HandwrittenSearch, searchHandwrittens } from "@/scripts/services/handwrittensService";
+import { addHandwritten, getSomeHandwrittens, getYeserdayCOGS, getYeserdaySales, searchHandwrittens } from "@/scripts/services/handwrittensService";
 import { formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
 import { useAtom } from "jotai";
 import Link from "@/components/library/Link";
@@ -17,17 +17,17 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import TakeoffsDialog from "@/components/handwrittens/dialogs/TakeoffsDialog";
 import { startTakeoff } from "@/scripts/logic/handwrittens";
 import Input from "@/components/library/Input";
+import { handwrittensPageStateAtom } from "@/scripts/atoms/page-state";
 
 
 const LIMIT = 40;
 
 export default function Handwrittens() {
   const [user] = useAtom<User>(userAtom);
+  const [pageState, setPageState] = useAtom<HandwrittensPageState>(handwrittensPageStateAtom);
   const [focusedHandwritten, setFocusedHandwritten] = useState<Handwritten | null>(null);
   const [openSearch, setOpenSearch] = useState(false);
   const [customerSelectOpen, setCustomerSelectOpen] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [searchData, setSearchData] = useState<HandwrittenSearch>({} as HandwrittenSearch);
   const [quickSearchId, setQuickSearchId] = useState<number | null>(null);
   const [takeoff, setTakeoff] = useState('');
   const [unitPrice, setUnitPrice] = useState(0);
@@ -35,6 +35,8 @@ export default function Handwrittens() {
   const [takeoffsOpen, setTakeoffsOpen] = useState(false);
   const takeoffInputRef = useRef<HTMLInputElement | null>(null);
   const queryClient = useQueryClient();
+  const currentPage = pageState.currentPage;
+  const search = pageState.search;
 
   const { data: totalSales = 0, isFetching: isSalesLoading } = useQuery<number>({
     queryKey: ['yesterdaySales'],
@@ -47,22 +49,19 @@ export default function Handwrittens() {
   });
 
   const { data: handwrittensRes, isFetching, refetch } = useQuery<HandwrittenRes>({
-    queryKey: ['handwrittens', currentPage, searchData],
+    queryKey: ['handwrittens', pageState],
     queryFn: async () => {
       const hasValidSearchCriteria =
-        searchData.id ||
-        searchData.date ||
-        (searchData.poNum && searchData.poNum !== '*') ||
-        (searchData.billToCompany && searchData.billToCompany !== '*') ||
-        (searchData.shipToCompany && searchData.shipToCompany !== '*') ||
-        searchData.source ||
-        searchData.payment;
+        search?.id ||
+        search?.date ||
+        (search?.poNum && search?.poNum !== '*') ||
+        (search?.billToCompany && search?.billToCompany !== '*') ||
+        (search?.shipToCompany && search?.shipToCompany !== '*') ||
+        search?.source ||
+        search?.payment;
 
       if (hasValidSearchCriteria) {
-        return await searchHandwrittens({
-          ...searchData,
-          offset: (currentPage - 1) * LIMIT
-        });
+        return await searchHandwrittens({ ...search, offset: (currentPage - 1) * LIMIT });
       }
       return await getSomeHandwrittens(currentPage, LIMIT);
     }
@@ -71,12 +70,12 @@ export default function Handwrittens() {
   useArrowSelector(handwrittensRes?.rows ?? [], focusedHandwritten, setFocusedHandwritten);
 
   const handleChangePage = (_: any, page: number) => {
-    if (page !== currentPage) setCurrentPage(page);
+    if (page !== currentPage) setPageState((prev) => ({ ...prev, currentPage: page }));
   };
 
   const handleSearch = (results: Handwritten[], pageCount: number, search: HandwrittenSearch) => {
-    setSearchData(search);
-    queryClient.setQueryData(['handwrittens', currentPage, searchData], {
+    setPageState((prev) => ({ ...prev, search, currentPage: 1 }));
+    queryClient.setQueryData(['handwrittens', currentPage, search], {
       rows: results,
       pageCount
     });
@@ -124,7 +123,7 @@ export default function Handwrittens() {
 
     await addHandwritten(newHandwritten);
     queryClient.invalidateQueries({ queryKey: ['handwrittens'] });
-    setCurrentPage(1);
+    setPageState((prev) => ({ ...prev, currentPage: 1 }));
   };
 
   const handleFocusHandwritten = (handwritten: Handwritten) => {
@@ -153,9 +152,11 @@ export default function Handwrittens() {
   const onSubmitQuickSearch = async (e: FormEvent) => {
     e.preventDefault();
     if (quickSearchId) {
-      setSearchData({ id: quickSearchId, limit: 99999, offset: 0 });
+      const searchData = { id: quickSearchId, limit: 99999, offset: 0 };
+      setPageState((prev) => ({ ...prev, search: searchData, currentPage: 1 }));
     } else {
-      setSearchData({ limit: 99999, offset: 0 });
+      const searchData = { limit: 99999, offset: 0 };
+      setPageState((prev) => ({ ...prev, search: searchData, currentPage: 1 }));
     }
   };
 
@@ -285,6 +286,7 @@ export default function Handwrittens() {
                 setData={handleChangePage}
                 pageCount={handwrittensRes.pageCount}
                 pageSize={LIMIT}
+                page={currentPage}
               />
             </>
           }

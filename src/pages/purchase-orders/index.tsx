@@ -6,7 +6,6 @@ import Loading from "@/components/library/Loading";
 import Pagination from "@/components/library/Pagination";
 import Table from "@/components/library/Table";
 import PurchaseOrderItemsTable from "@/components/purchaseOrders/PurchaseOrderItemsTable";
-import { POSearchAtom } from "@/scripts/atoms/state";
 import { addBlankPurchaseOrder, getSomePurchaseOrders, searchPurchaseOrders } from "@/scripts/services/purchaseOrderService";
 import { formatDate } from "@/scripts/tools/stringUtils";
 import { useAtom } from "jotai";
@@ -14,31 +13,33 @@ import Link from "@/components/library/Link";
 import { useState } from "react";
 import { useArrowSelector } from "@/hooks/useArrowSelector";
 import { useQuery } from "@tanstack/react-query";
+import { poPageStateAtom } from "@/scripts/atoms/page-state";
 
 
 const LIMIT = 40;
 
-export default function PurchaseOrders() { 
-  const [searchData] = useAtom(POSearchAtom);
+export default function PurchaseOrders() {
+  const [pageState, setPageState] = useAtom<POPageState>(poPageStateAtom);
   const [focusedPurchaseOrder, setFocusedPurchaseOrder] = useState<PO | null>(null);
-  const [showIncoming, setShowIncoming] = useState(false);
   const [showSearchDialog, setShowSearchDialog] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
+  const currentPage = pageState.currentPage;
+  const showIncoming = pageState.showIncoming;
+  const search = pageState.search;
 
   const { data: purchaseOrders, isFetching, refetch } = useQuery<PORes>({
-    queryKey: ['purchaseOrders', currentPage, searchData, showIncoming],
+    queryKey: ['purchaseOrders', pageState],
     queryFn: async () => {
       const hasValidSearchCriteria = (
-        searchData.poNum ||
-        searchData.date ||
-        (searchData.purchasedFrom && searchData.purchasedFrom !== '*') ||
-        (searchData.purchasedFor && searchData.purchasedFor !== '*') ||
-        searchData.isItemReceived ||
-        (searchData.orderedBy && searchData.orderedBy !== '*')
+        search?.poNum ||
+        search?.date ||
+        (search?.purchasedFrom && search?.purchasedFrom !== '*') ||
+        (search?.purchasedFor && search?.purchasedFor !== '*') ||
+        search?.isItemReceived ||
+        (search?.orderedBy && search?.orderedBy !== '*')
       );
 
       if (hasValidSearchCriteria) {
-        return await searchPurchaseOrders({ ...searchData, offset: (currentPage - 1) * LIMIT, showIncoming });
+        return await searchPurchaseOrders({ ...search, offset: (currentPage - 1) * LIMIT, showIncoming });
       } else {
         return await getSomePurchaseOrders(currentPage, LIMIT, showIncoming);
       }
@@ -49,7 +50,7 @@ export default function PurchaseOrders() {
 
   const handleChangePage = async (_: any, page: number) => {
     if (page === currentPage) return;
-    setCurrentPage(page);
+    setPageState((prev) => ({ ...prev, currentPage: page }));
   };
 
   const handleNewPurchaseOrder = async () => {
@@ -68,7 +69,11 @@ export default function PurchaseOrders() {
           <div className="purchase-orders-page__top-buttons">
             <Button onClick={() => setShowSearchDialog(true)}>Search</Button>
             <Button onClick={handleNewPurchaseOrder} data-testid="new-btn">New</Button>
-            <Button onClick={() => setShowIncoming(!showIncoming)}>{showIncoming ? 'Show All' : 'Show Incoming'}</Button>
+            <Button
+              onClick={() => setPageState((prev) => ({ ...prev, showIncoming: !showIncoming }))}
+            >
+              {showIncoming ? 'Show All' : 'Show Incoming'}
+            </Button>
           </div>
           
           { isFetching && <Loading /> }
@@ -119,6 +124,7 @@ export default function PurchaseOrders() {
                 setData={handleChangePage}
                 pageCount={purchaseOrders.pageCount}
                 pageSize={LIMIT}
+                page={currentPage}
               />
             </>
           }

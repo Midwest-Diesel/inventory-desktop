@@ -1,17 +1,6 @@
 import api from "../config/axios";
 import { parseResDate } from "../tools/stringUtils";
 
-interface POSearch {
-  poNum: number
-  purchasedFrom: string
-  purchasedFor: string
-  isItemReceived: string
-  orderedBy: string
-  limit: number
-  offset: number
-  showIncomming: boolean
-}
-
 
 const parsePoDataRes = (data: any) => {
   return data.map((d: PO) => {
@@ -45,9 +34,9 @@ export const getPurchaseOrderByPoNum = async (poNum: string | null): Promise<PO 
   }
 };
 
-export const getSomePurchaseOrders = async (page: number, limit: number, showIncomming: boolean): Promise<{ pageCount: number, rows: PO[] }> => {
+export const getSomePurchaseOrders = async (page: number, limit: number, showIncoming: boolean): Promise<{ pageCount: number, rows: PO[] }> => {
   try {
-    const res = await api.get(`/api/po/limit/${JSON.stringify({ page: (page - 1) * limit, limit, showIncomming })}`);
+    const res = await api.get(`/api/po/limit/${JSON.stringify({ page: (page - 1) * limit, limit, showIncoming })}`);
     return { pageCount: res.data.pageCount, rows: parsePoDataRes(res.data.rows) };
   } catch (err) {
     console.error(err);

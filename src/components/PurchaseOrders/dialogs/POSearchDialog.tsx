@@ -4,8 +4,8 @@ import Input from "@/components/library/Input";
 import Button from "@/components/library/Button";
 import Select from "@/components/library/select/Select";
 import { useAtom } from "jotai";
-import { POSearchAtom } from "@/scripts/atoms/state";
 import { parseDateInputValue } from "@/scripts/tools/stringUtils";
+import { poPageStateAtom } from "@/scripts/atoms/page-state";
 
 interface Props {
   open: boolean
@@ -16,8 +16,8 @@ interface Props {
 
 
 export default function POSearchDialog({ open, setOpen, limit, page }: Props) {
-  const [, setSearchData] = useAtom(POSearchAtom);
-  const [poNum, setPoNum] = useState<number>('' as any);
+  const [pageState, setPageState] = useAtom<POPageState>(poPageStateAtom);
+  const [poNum, setPoNum] = useState('');
   const [date, setDate] = useState<Date | null>(null);
   const [purchasedFrom, setPurchasedFrom] = useState('');
   const [purchasedFor, setPurchasedFor] = useState('');
@@ -35,17 +35,18 @@ export default function POSearchDialog({ open, setOpen, limit, page }: Props) {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    const searchData = {
+    const search: POSearch = {
       poNum: Number(poNum),
       date: parseDateInputValue(date),
       purchasedFrom,
       purchasedFor,
       isItemReceived,
       orderedBy,
+      showIncoming: pageState.search?.showIncoming ?? false,
       limit,
       offset: (page - 1) * limit
     };
-    setSearchData(searchData);
+    setPageState((prev) => ({ ...prev, search }));
   };
 
 

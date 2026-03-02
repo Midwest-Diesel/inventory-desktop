@@ -12,6 +12,8 @@ import { EngineSearch, getEnginesByStatus, searchEngines } from "@/scripts/servi
 import { useQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import AllEnginesTable from "@/components/engines/AllEnginesTable";
+import { useAtom } from "jotai";
+import { engineListPageStateAtom } from "@/scripts/atoms/page-state";
 
 type EngineListType = 'all' | 'running' | 'toreDown' | 'core' | 'sold' | 'shortBlock' | 'longBlock';
 
@@ -28,18 +30,18 @@ const STATUS_MAP: Record<EngineListType, EngineStatus[] | null> = {
 
 
 export default function EngineList() {
+  const [pageState, setPageState] = useAtom<EngineListPageState>(engineListPageStateAtom);
   const [openSearch, setOpenSearch] = useState(false);
-  const [listOpen, setListOpen] = useState<EngineListType>('all');
-  const [currentPage, setCurrentPage] = useState(1);
-  const [search, setSearch] = useState<EngineSearch | null>(null);
+  const listOpen: EngineListType = pageState.listOpen;
+  const currentPage = pageState.currentPage;
+  const search = pageState.search;
 
   const { data: engines, isFetching } = useQuery<EngineRes>({
-    queryKey: ['engines', listOpen, search, currentPage],
+    queryKey: ['engines', pageState],
     queryFn: async () => {
       if (search) {
         return await searchEngines({ ...search, page: currentPage, limit: LIMIT });
       }
-
       return await getEnginesByStatus(STATUS_MAP[listOpen]?.[0] ?? null, currentPage, LIMIT);
     }
   });
@@ -65,25 +67,23 @@ export default function EngineList() {
 
   const onSearch = (search: EngineSearch) => {
     const status = search.status;
+    let list = listOpen;
     if (status) {
       const foundKey = Object.entries(STATUS_MAP)
         .find(([_, statuses]) => statuses?.includes(status))?.[0] as EngineListType;
 
-      if (foundKey) setListOpen(foundKey);
+      if (foundKey) list = foundKey;
     }
 
-    setSearch(search);
-    setCurrentPage(1);
+    setPageState({ listOpen: list, search, currentPage: 1 });
   };
 
   const handlePageChange = (_: any, page: number) => {
-    setCurrentPage(page);
+    setPageState({ ...pageState, currentPage: page });
   };
 
   const handleOpenList = (key: EngineListType) => {
-    setCurrentPage(1);
-    setSearch(null);
-    setListOpen(key);
+    setPageState({ currentPage: 1, search: null, listOpen: key });
   };
 
   const renderTable = () => {
@@ -140,6 +140,7 @@ export default function EngineList() {
           data={engines?.rows ?? []}
           setData={handlePageChange}
           pageCount={engines?.pageCount}
+          page={currentPage}
           pageSize={LIMIT}
         />
       </div>

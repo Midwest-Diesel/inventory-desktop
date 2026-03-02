@@ -6,19 +6,6 @@ import { filterNullObjValuesArr } from "../tools/utils";
 import { getCoresByCustomer, getCoreReturnsByCustomer } from "./coresService";
 import { editPart, getPartById } from "./partsService";
 
-export interface HandwrittenSearch {
-  id?: number
-  customerId?: number
-  date?: string
-  poNum?: string
-  billToCompany?: string
-  shipToCompany?: string
-  source?: string
-  payment?: string
-  limit: number
-  offset: number
-}
-
 interface NewHandwrittenItem {
   handwrittenId: number
   date: Date
@@ -130,7 +117,15 @@ export const searchHandwrittens = async (handwritten: HandwrittenSearch): Promis
 
 export const searchSelectHandwrittensDialogData = async (handwritten: HandwrittenSearch): Promise<{ pageCount: number, rows: SelectHandwrittenDialogResult[] }> => {
   try {
-    const res = await api.get(`/api/handwrittens/select-handwritten/${JSON.stringify(handwritten)}`);
+    const params = new URLSearchParams(
+      Object.entries(handwritten).reduce<Record<string, string>>((acc, [key, value]) => {
+        if (value !== undefined && value !== null) {
+          acc[key] = String(value);
+        }
+        return acc;
+      }, {})
+    );
+    const res = await api.get(`/api/handwrittens/select-handwritten?${params.toString()}`);
     const rows = res.data.rows.map((row: SelectHandwrittenDialogResult) => ({ ...row, date: parseResDate(row.date as any) }));
     return { pageCount: res.data.pageCount, rows };
   } catch (err) {

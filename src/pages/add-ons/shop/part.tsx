@@ -54,21 +54,17 @@ export default function ShopPartAddOns() {
   const updateAddOnOwnership = (row :{ id: number, userEditing: { id: number, username: string } }) => {
     if (isSavingRef.current) return;
     setAddons(prev =>
-      prev.map(a =>
-        a.id === row.id ? { ...a, userEditing: row.userEditing } : a
-      )
+      prev.map((a) => a.id === row.id ? { ...a, userEditing: row.userEditing } : a)
     );
 
     setPrevAddons(prev =>
-      prev.map(a =>
-        a.id === row.id ? { ...a, userEditing: row.userEditing } : a
-      )
+      prev.map((a) => a.id === row.id ? { ...a, userEditing: row.userEditing } : a)
     );
   };
 
   const clearOwnership = (userId: number) => {
-    setAddons(prev =>
-      prev.map(row =>
+    setAddons((prev) =>
+      prev.map((row) =>
         row.userEditing?.id === userId
           ? { ...row, userEditing: null }
           : row
