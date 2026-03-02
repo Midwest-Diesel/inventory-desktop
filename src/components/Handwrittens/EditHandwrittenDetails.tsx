@@ -659,6 +659,11 @@ export default function EditHandwrittenDetails({
     setIsEditing(false);
   };
 
+  const onChangeEmail = (value: string) => {
+    setContactEmail(value);
+    if (!handwritten.isEndOfDay) setIsEndOfDay(value ? true : false);
+  };
+
 
   return (
     <>
@@ -1039,7 +1044,7 @@ export default function EditHandwrittenDetails({
                         <InputDropdown
                           variant={['no-margin', 'fill']}
                           value={contactEmail}
-                          onChange={(value) => setContactEmail(value)}
+                          onChange={onChangeEmail}
                           maxHeight="25rem"
                           data-testid="eod-email"
                         >
