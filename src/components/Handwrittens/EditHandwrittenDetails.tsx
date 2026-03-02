@@ -39,6 +39,7 @@ import InputDropdown from "../library/InputDropdown";
 import HandwrittenStatusFields from "./HandwrittenStatusFields";
 import { editPart, getPartById } from "@/scripts/services/partsService";
 import { removeRemarksSoldText } from "@/scripts/logic/parts";
+import TableSplitRow from "../library/TableSplitRow";
 
 interface Props {
   handwritten: Handwritten
@@ -927,8 +928,8 @@ export default function EditHandwrittenDetails({
                   <Table variant={['plain', 'edit-row-details']}>
                     <tbody>
                       <tr>
-                        <th>Shipping Company</th>
-                        <td>
+                        <th colSpan={1}>Shipping Company</th>
+                        <td colSpan={4}>
                           <Input
                             variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                             value={shipToCompany}
@@ -938,8 +939,8 @@ export default function EditHandwrittenDetails({
                         </td>
                       </tr>
                       <tr>
-                        <th>Shipping Address</th>
-                        <td>
+                        <th colSpan={1}>Shipping Address</th>
+                        <td colSpan={4}>
                           <Input
                             variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                             value={shipToAddress}
@@ -949,8 +950,8 @@ export default function EditHandwrittenDetails({
                         </td>
                       </tr>
                       <tr>
-                        <th>Shipping Address 2</th>
-                        <td>
+                        <th colSpan={1}>Shipping Address 2</th>
+                        <td colSpan={4}>
                           <Input
                             variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                             value={shipToAddress2}
@@ -960,8 +961,8 @@ export default function EditHandwrittenDetails({
                         </td>
                       </tr>
                       <tr>
-                        <th>Shipping City</th>
-                        <td>
+                        <th colSpan={1}>Shipping City</th>
+                        <td colSpan={4}>
                           <Input
                             variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                             value={shipToCity}
@@ -970,9 +971,9 @@ export default function EditHandwrittenDetails({
                           />
                         </td>
                       </tr>
-                      <tr>
+                      <TableSplitRow>
                         <th>Shipping State</th>
-                        <td>
+                        <td style={{ minWidth: '2rem' }}>
                           <Input
                             variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                             value={shipToState}
@@ -980,21 +981,20 @@ export default function EditHandwrittenDetails({
                             data-testid="ship-to-state"
                           />
                         </td>
-                      </tr>
-                      <tr>
+
                         <th>Shipping Zip</th>
-                        <td>
+                        <td style={{ minWidth: '3rem' }}>
                           <Input
-                            variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+                            variant={['thin', 'label-space-between', 'label-full-width', 'label-bold']}
                             value={shipToZip}
                             onChange={(e: any) => setShipToZip(e.target.value)}
                             data-testid="ship-to-zip"
                           />
                         </td>
-                      </tr>
+                      </TableSplitRow>
                       <tr>
-                        <th>Ship Via</th>
-                        <td>
+                        <th colSpan={1}>Ship Via</th>
+                        <td colSpan={4}>
                           <FreightCarrierSelect
                             variant={['label-bold']}
                             value={shipViaId ?? ''}

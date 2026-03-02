@@ -114,3 +114,23 @@
     }
   }
 }
+
+.table-split-row {
+  display: table-row;
+}
+
+@media (max-width: 700px) {
+  .table-split-row {
+    display: block;
+  }
+
+  .table-split-row th,
+  .table-split-row td {
+    display: block;
+    width: 100%;
+  }
+
+  .table-split-row th {
+    margin-top: 12px;
+  }
+}

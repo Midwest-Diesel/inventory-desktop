@@ -33,6 +33,7 @@ import { offServerEvent, onServerEvent } from "@/scripts/config/websockets";
 import { chunkArray } from "@/scripts/tools/utils";
 import { usePdfQue } from "@/hooks/usePdfQue";
 import { getUserById } from "@/scripts/services/userService";
+import TableSplitRow from "../library/TableSplitRow";
 
 interface Props {
   handwritten: Handwritten
@@ -637,32 +638,31 @@ export default function HandwrittenDetails({
             <Table variant={['plain', 'row-details']}>
               <tbody>
                 <tr>
-                  <th><strong>Shipping Company</strong></th>
-                  <td data-testid="ship-to-company">{ handwritten.shipToCompany }</td>
+                  <th colSpan={1}><strong>Shipping Company</strong></th>
+                  <td data-testid="ship-to-company" colSpan={4}>{ handwritten.shipToCompany }</td>
                 </tr>
                 <tr>
-                  <th><strong>Shipping Address</strong></th>
-                  <td data-testid="ship-to-address">{ handwritten.shipToAddress }</td>
+                  <th colSpan={1}><strong>Shipping Address</strong></th>
+                  <td data-testid="ship-to-address" colSpan={4}>{ handwritten.shipToAddress }</td>
                 </tr>
                 <tr>
-                  <th><strong>Shipping Address 2</strong></th>
-                  <td data-testid="ship-to-address-2">{ handwritten.shipToAddress2 }</td>
+                  <th colSpan={1}><strong>Shipping Address 2</strong></th>
+                  <td data-testid="ship-to-address-2" colSpan={4}>{ handwritten.shipToAddress2 }</td>
                 </tr>
                 <tr>
-                  <th><strong>Shipping City</strong></th>
-                  <td data-testid="ship-to-city">{ handwritten.shipToCity }</td>
+                  <th colSpan={1}><strong>Shipping City</strong></th>
+                  <td data-testid="ship-to-city" colSpan={4}>{ handwritten.shipToCity }</td>
                 </tr>
-                <tr>
+                <TableSplitRow>
                   <th><strong>Shipping State</strong></th>
-                  <td data-testid="ship-to-state">{ handwritten.shipToState }</td>
-                </tr>
-                <tr>
+                  <td data-testid="ship-to-state" style={{ minWidth: '2rem' }}>{ handwritten.shipToState }</td>
+
                   <th><strong>Shipping Zip</strong></th>
-                  <td data-testid="ship-to-zip">{ handwritten.shipToZip }</td>
-                </tr>
+                  <td data-testid="ship-to-zip" style={{ minWidth: '3rem' }}>{ handwritten.shipToZip }</td>
+                </TableSplitRow>
                 <tr>
-                  <th><strong>Ship Via</strong></th>
-                  <td data-testid="ship-via">{ handwritten.shipVia && handwritten.shipVia.name }</td>
+                  <th colSpan={1}><strong>Ship Via</strong></th>
+                  <td data-testid="ship-via" colSpan={4}>{ handwritten.shipVia && handwritten.shipVia.name }</td>
                 </tr>
               </tbody>
             </Table>
