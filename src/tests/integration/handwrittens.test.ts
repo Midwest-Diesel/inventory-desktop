@@ -170,8 +170,7 @@ describe('Handwrittens Integration', () => {
                 soldTo: null,
                 soldToDate: null,
                 specialNotes: null,
-                stockNum: 'UP9432',
-                weightDims: null
+                stockNum: 'UP9432'
               },
               partId: 1,
               partNum: '7E0333',
@@ -294,7 +293,7 @@ describe('Handwrittens Integration', () => {
       qty: 1,
       stockNum: 'UP9432'
     };
-    await addHandwrittenItemChild(1, { cost: 100, partId: 1, qty: 1 });
+    await addHandwrittenItemChild(1, { cost: 1060, partId: 1, qty: 1 });
     const res = await getHandwrittenById(1);
     expect(res?.handwrittenItems[2].invoiceItemChildren[0]).toMatchObject(child);
   });
