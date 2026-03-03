@@ -43,7 +43,7 @@ import { removeRemarksSoldText } from "@/scripts/logic/parts";
 interface Props {
   handwritten: Handwritten
   setHandwritten: (handwritten: Handwritten | null) => void
-  handleAltShip: () => Promise<void>
+  handleAltShip: (handwritten: Handwritten) => Promise<void>
   setIsEditing: (value: boolean) => void
   setPromptLeaveWindow: (value: boolean) => void
   cardNum: string
@@ -322,7 +322,7 @@ export default function EditHandwrittenDetails({
       newInvoice.shipToZip !== handwritten.shipToZip ||
       newInvoice.shipToCompany !== handwritten.shipToCompany
     ) {
-      await handleAltShip();
+      await handleAltShip(newInvoice);
     }
   };
 

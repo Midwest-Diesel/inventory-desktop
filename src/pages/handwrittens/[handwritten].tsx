@@ -70,7 +70,7 @@ export default function Handwritten() {
     setLoading(false);
   };
 
-  const handleAltShip = async () => {
+  const handleAltShip = async (handwritten: Handwritten) => {
     if (!handwritten) return;
     const altShip = await getAltShipByCustomerId(handwritten.customer.id);
     if (altShip.some((a: AltShip) => (
@@ -90,6 +90,7 @@ export default function Handwritten() {
       shipToZip: handwritten.shipToZip ?? '',
       shipToCompany: handwritten.shipToCompany ?? ''
     } as AltShip);
+    console.log(handwritten);
   };
 
 

@@ -37,7 +37,7 @@ import { getUserById } from "@/scripts/services/userService";
 interface Props {
   handwritten: Handwritten
   setHandwritten: (handwritten: Handwritten | null) => void
-  handleAltShip: () => Promise<void>
+  handleAltShip: (handwritten: Handwritten) => Promise<void>
   setIsEditing: (value: boolean) => void
   setPromptLeaveWindow: (value: boolean) => void
   cardNum: string

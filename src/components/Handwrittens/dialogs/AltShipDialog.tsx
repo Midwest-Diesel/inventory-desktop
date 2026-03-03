@@ -13,7 +13,7 @@ interface Props {
   setHandwritten: (handwritten: Handwritten | null) => void
   altShip: AltShip[]
   refetchAltShip: () => void
-  onChangeAltShip: () => void
+  onChangeAltShip: (handwritten: Handwritten) => void
 }
 
 
@@ -40,7 +40,7 @@ export default function AltShipDialog({ open, setOpen, handwritten, setHandwritt
     } as any;
     await editHandwritten(newHandwritten);
     setHandwritten(await getHandwrittenById(handwritten.id));
-    onChangeAltShip();
+    onChangeAltShip(newHandwritten);
   };
 
   const handleDelete = async (id: number) => {
