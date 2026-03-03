@@ -29,8 +29,8 @@ export const getPartById = async (id: number | null): Promise<Part | null> => {
     if (!id) return null;
     const res = await api.get(`/api/parts/part/${id}`);
     return (await parsePartsData(res.data))[0];
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
     return null;
   }
 };
@@ -39,8 +39,8 @@ export const getPartInfoByPartNum = async (partNum: string): Promise<PartInfo | 
   try {
     const res = await api.get(`/api/parts/parts-info/part-num/${partNum}`);
     return res.data ? res.data : null;
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
     return null;
   }
 };
@@ -49,8 +49,8 @@ export const getPartInfoByAltParts = async (partNum: string): Promise<PartInfo[]
   try {
     const res = await api.get(`/api/parts/parts-info/alt-parts/${partNum}`);
     return res.data;
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
     return [];
   }
 };
@@ -59,8 +59,8 @@ export const getPartByEngineNum = async (engineNum: number): Promise<Part | null
   try {
     const res = await api.get(`/api/parts/engine-num/${engineNum}`);
     return (await parsePartsData(res.data))[0];
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
     return null;
   }
 };
@@ -70,8 +70,8 @@ export const getPartsByStockNum = async (stockNum: string): Promise<Part[]> => {
     if (!stockNum) return [];
     const res = await api.get(`/api/parts/stock-num/${stockNum}`);
     return await parsePartsData(res.data);
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
     return [];
   }
 };
@@ -80,8 +80,8 @@ export const getAllPartNums = async () => {
   try {
     const res = await api.get(`/api/parts/all-part-num`);
     return res.data;
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
   }
 };
 
@@ -90,8 +90,8 @@ export const getPartCostIn = async (stockNum: string): Promise<PartCostIn[]> => 
     const encodedParam = encodeURIComponent(stockNum);
     const res = await api.get(`/api/parts/part-cost-in/${encodedParam}`);  
     return res.data;
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
     return [];
   }
 };
@@ -101,8 +101,8 @@ export const getPartEngineCostOut = async (stockNum: string) => {
     const encodedParam = encodeURIComponent(stockNum);
     const res = await api.get(`/api/parts/engine-cost-out/${encodedParam}`);
     return res.data;
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
   }
 };
 
@@ -110,8 +110,8 @@ export const getSomeParts = async (page: number, limit: number, showSoldParts: b
   try {
     const res = await api.get(`/api/parts/limit/${JSON.stringify({ page: (page - 1) * limit, limit, showSoldParts })}`);
     return { pageCount: res.data.pageCount, totalQty: res.data.totalQty, rows: await parsePartsData(res.data.rows), rowsHidden: res.data.rowsHidden };
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
     return { pageCount: 0, totalQty: 0, rows: [], rowsHidden: null };
   }
 };
@@ -120,8 +120,8 @@ export const getSomePartsMin = async (page: number, limit: number, showSoldParts
   try {
     const res = await api.get(`/api/parts/limit-min/${JSON.stringify({ page: (page - 1) * limit, limit, showSoldParts })}`);
     return { pageCount: res.data.pageCount, totalQty: res.data.totalQty, rows: await parsePartsData(res.data.rows), rowsHidden: res.data.rowsHidden };
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
     return { pageCount: 0, totalQty: 0, rows: [], rowsHidden: null };
   }
 };
@@ -130,8 +130,8 @@ export const getPartsQty = async (showSoldParts: boolean): Promise<number> => {
   try {
     const res = await api.get(`/api/parts/qty/${showSoldParts}`);
     return res.data;
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
     return 0;
   }
 };
@@ -141,8 +141,8 @@ export const getPartQty = async (partNum: string): Promise<number | null> => {
     const params = new URLSearchParams({ partNum });
     const res = await api.get(`/api/parts/part-qty?${params.toString()}`);
     return res.data.qty;
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
     return null;
   }
 };
@@ -151,8 +151,8 @@ export const getAltsByPartNum = async (partNum: string) => {
   try {
     const res = await api.get(`/api/parts/alts/${partNum}`);
     return res.data.length > 0 ? res.data[0] : res.data;
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
   }
 };
 
@@ -161,8 +161,8 @@ export const searchParts = async (part: PartSearchData, page: number, limit: num
     if (isObjectNull(part)) return { pageCount: 0, totalQty: 0, rows: [], rowsHidden: null };
     const res = await api.get(`/api/parts/search/${encodeURIComponent(JSON.stringify(part))}?offset=${(page - 1) * limit}&limit=${limit}`);
     return { pageCount: res.data.pageCount, totalQty: res.data.totalQty, rows: await parsePartsData(res.data.rows), rowsHidden: res.data.rowsHidden };
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
     return { pageCount: 0, totalQty: 0, rows: [], rowsHidden: null };
   }
 };
@@ -177,8 +177,8 @@ export const searchAltParts = async (part: PartSearchData, page: number, limit: 
     );
     const res = await api.get(`/api/parts/searchAlt/${encodeURIComponent(JSON.stringify(filteredPart))}?offset=${(page - 1) * limit}&limit=${limit}`);
     return { pageCount: res.data.pageCount, totalQty: res.data.totalQty, rows: await parsePartsData(res.data.rows), rowsHidden: res.data.rowsHidden };
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
     return { pageCount: 0, totalQty: 0, rows: [], rowsHidden: null };
   }
 };
@@ -209,8 +209,8 @@ export const getSalesInfo = async (altParts: string): Promise<SalesInfo> => {
         };
       })
     };
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
     return { sales: [], quotes: [], salesByYearList: [], counters: { new: 0, recon: 0, used: 0, core: 0 }};
   }
 };
@@ -219,8 +219,8 @@ export const checkForNewPartNum = async (partNum: string) => {
   try {
     const res = await api.get(`/api/parts/check-new/${partNum}`);
     return res.data;
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
   }
 };
 
@@ -228,8 +228,8 @@ export const getPartsByCoreFamily = async (coreFamily: string): Promise<Part[]> 
   try {
     const res = await api.get(`/api/parts/core-family?coreFamily=${coreFamily}`);
     return res.data;
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
     return [];
   }
 };
@@ -238,8 +238,8 @@ export const getNextUPStockNum = async (): Promise<string | null> => {
   try {
     const res = await api.get(`/api/parts/latest-up-stock-num`);
     return res.data.stockNum;
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
     return null;
   }
 };
@@ -248,8 +248,8 @@ export const getPartsQtyHistory = async (partId: number): Promise<PartQtyHistory
   try {
     const res = await api.get(`/api/parts/qty-history?partId=${partId}`);
     return res.data.map((r: any) => ({ ...r, dateChanged: new Date(r.dateChanged) }));
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
     return [];
   }
 };
@@ -283,8 +283,8 @@ export const getFastTrackInventory = async (): Promise<FastTrackItem[]> => {
     }
 
     return [...rows, ...additionalRows];
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
     return [];
   }
 };
@@ -317,8 +317,9 @@ export const addPart = async (part: Part, partInfoExists: boolean): Promise<numb
     }
 
     return Number(id.data);
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
+    alert(`Error in [addPart] ${error}`);
     return null;
   }
 };
@@ -326,16 +327,18 @@ export const addPart = async (part: Part, partInfoExists: boolean): Promise<numb
 export const addPartCostIn = async (stockNum: string, cost: number, invoiceNum: string | null, vendor: string, costType: string, note: string) => {
   try {
     await api.post('/api/parts/part-cost-in', { stockNum, cost, invoiceNum, vendor, costType, note });
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
+    alert(`Error in [addPartCostIn] ${error}`);
   }
 };
 
 export const addToPartQtyHistory = async (partId: number, qty: number) => {
   try {
     await api.post('/api/parts/qty-history', { partId, qty, date: new Date() });
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
+    alert(`Error in [addToPartQtyHistory] ${error}`);
   }
 };
 
@@ -344,32 +347,36 @@ export const addToPartQtyHistory = async (partId: number, qty: number) => {
 export const handlePartTakeoff = async (partId: number, qty: number, soldTo: string, sellingPrice: number, handwrittenId: number) => {
   try {
     await api.patch('/api/parts/takeoff', { partId, qty, soldTo, sellingPrice, handwrittenId });
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
+    alert(`Error in [handlePartTakeoff] ${error}`);
   }
 };
 
 export const setPartLastUpdated = async (partId: number) => {
   try {
     await api.patch('/api/parts/last-updated', { partId, date: new Date() });
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
+    alert(`Error in [setPartLastUpdated] ${error}`);
   }
 };
 
 export const editPartStockNum = async (partId: number, stockNum: string) => {
   try {
     await api.patch('/api/parts/stock-num', { partId, stockNum });
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
+    alert(`Error in [editPartStockNum] ${error}`);
   }
 };
 
 export const editWeightDims = async (partNum: string, weightDims: string) => {
   try {
     await api.patch('/api/parts/weight-dims', { partNum, weightDims });
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
+    alert(`Error in [editWeightDims] ${error}`);
   }
 };
 
@@ -378,24 +385,27 @@ export const editWeightDims = async (partNum: string, weightDims: string) => {
 export const editPart = async (part: Part) => {
   try {
     await api.put('/api/parts', part);
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
+    alert(`Error in [editPart] ${error}`);
   }
 };
 
 export const editPartCostIn = async (part: PartCostIn) => {
   try {
     await api.put('/api/parts/cost-in', part);
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
+    alert(`Error in [editPartCostIn] ${error}`);
   }
 };
 
 export const editAltParts = async (partNum: string, altParts: string[]) => {
   try {
     await api.put('/api/parts/parts-info', { partNum, altParts });
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
+    alert(`Error in [editAltParts] ${error}`);
   }
 };
 
@@ -404,15 +414,17 @@ export const editAltParts = async (partNum: string, altParts: string[]) => {
 export const deletePart = async (id: number) => {
   try {
     await api.delete(`/api/parts/${id}`);
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
+    alert(`Error in [deletePart] ${error}`);
   }
 };
 
 export const deletePartCostIn = async (id: number) => {
   try {
     await api.delete(`/api/parts/cost-in/${id}`);
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
+    alert(`Error in [deletePartCostIn] ${error}`);
   }
 };

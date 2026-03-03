@@ -48,6 +48,7 @@ export const addAddOn = async (addOn?: AddOn): Promise<AddOn | null> => {
     return { ...res.data, id: Number(res.data.id) };
   } catch (error) {
     console.error(error);
+    alert(`Error in [addAddOn] ${error}`);
     return null;
   }
 };
@@ -59,6 +60,7 @@ export const editAddOnAltParts = async (id: number, altParts: string) => {
     await api.patch('/api/add-ons/alt-parts', { id, altParts });
   } catch (error) {
     console.error(error);
+    alert(`Error in [editAddOnAltParts] ${error}`);
   }
 };
 
@@ -67,6 +69,7 @@ export const editAddOnPrintStatus = async (id: number, isPrinted: boolean) => {
     await api.patch('/api/add-ons/is-printed', { id, isPrinted });
   } catch (error) {
     console.error(error);
+    alert(`Error in [editAddOnPrintStatus] ${error}`);
   }
 };
 
@@ -75,6 +78,7 @@ export const editAddOnIsPoOpened = async (id: number, isPoOpened: boolean) => {
     await api.patch('/api/add-ons/po-opened', { id, isPoOpened });
   } catch (error) {
     console.error(error);
+    alert(`Error in [editAddOnIsPoOpened] ${error}`);
   }
 };
 
@@ -83,6 +87,7 @@ export const editAddOnUserEditing = async (id: number, userEditing: number) => {
     await api.patch('/api/add-ons/user-editing', { id, userEditing });
   } catch (error) {
     console.error(error);
+    alert(`Error in [editAddOnUserEditing] ${error}`);
   }
 };
 
@@ -94,6 +99,7 @@ export const editAddOn = async (addOn: AddOn) => {
   } catch (error) {
     alert('Failed to save addOn');
     console.error(error);
+    alert(`Error in [editAddOn] ${error}`);
   }
 };
 
@@ -103,6 +109,7 @@ export const editAddOns = async (addOns: AddOn[]) => {
   } catch (error) {
     alert('Failed to save addOns');
     console.error(error);
+    alert(`Error in [editAddOns] ${error}`);
   }
 };
 
@@ -111,6 +118,7 @@ export const addOnClearUserEditing = async (userEditing: number) => {
     await api.put('/api/add-ons/clear-user-editing', { userEditing });
   } catch (error) {
     console.error(error);
+    alert(`Error in [addOnClearUserEditing] ${error}`);
   }
 };
 
@@ -121,5 +129,6 @@ export const deleteAddOn = async (id: number) => {
     await api.delete(`/api/add-ons/${id}`);
   } catch (error) {
     console.error(error);
+    alert(`Error in [deleteAddOn] ${error}`);
   }
 };

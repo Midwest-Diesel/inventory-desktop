@@ -78,7 +78,7 @@ export default function Dashboard() {
       location: selectedHandwrittenPart?.location ?? null,
       partId: selectedHandwrittenPart?.id ?? null
     };
-    await addHandwrittenItem(newItem);
+    await addHandwrittenItem(newItem, { addSoldRemarks: true });
     if (warranty) await editHandwrittenOrderNotes(id, warranty);
   };
 
