@@ -1596,10 +1596,6 @@ fn email_end_of_day(args: EmailEndOfDayArgs) {
   let mut cmd = Command::new("wscript.exe");
   cmd.arg(vbs_path);
   cmd.output().unwrap();
-
-  if let Ok(val) = env::var("VITE_NODE_ENV") {
-    if val == "development" { return }
-  }
 }
 
 #[tauri::command]
@@ -1926,19 +1922,17 @@ async fn email_fast_track_inventory(inventory: Vec<FastTrackItem>) -> Result<(),
   writer.flush().map_err(|e| e.to_string())?;
   drop(writer);
 
-  if let Ok(val) = env::var("VITE_NODE_ENV") {
-    if val == "development" {
-      return Ok(());
-    }
-    
-    send_email(SendEmailArgs {
-      body: "<div></div>".to_string(),
-      recipients: vec!["imports@sandhills.com".to_string()],
-      cc: vec!["matt@midwestdiesel.com".to_string()],
-      attachments: vec![file_path.to_string()],
-      subject: "partsc514".to_string()
-    });
+  if cfg!(debug_assertions) {
+    return Ok(());
   }
+  
+  send_email(SendEmailArgs {
+    body: "<div></div>".to_string(),
+    recipients: vec!["imports@sandhills.com".to_string()],
+    cc: vec!["matt@midwestdiesel.com".to_string()],
+    attachments: vec![file_path.to_string()],
+    subject: "partsc514".to_string()
+  });
 
   Ok(())
 }
@@ -1967,10 +1961,8 @@ async fn email_netcom_inventory(inventory: Vec<FastTrackItem>) -> Result<(), Str
   writer.flush().map_err(|e| e.to_string())?;
   drop(writer);
 
-  if let Ok(val) = env::var("VITE_NODE_ENV") {
-    if val == "development" {
-      return Ok(());
-    }
+  if cfg!(debug_assertions) {
+    return Ok(());
   }
 
   send_email(SendEmailArgs {
