@@ -22,6 +22,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getVendors } from "@/scripts/services/vendorsService";
 import { useNavState } from "@/hooks/useNavState";
 import { emitServerEvent, offServerEvent, onServerEvent } from "@/scripts/config/websockets";
+import { prompt } from "../library/Prompt";
 
 interface Props {
   addOn: AddOn
@@ -120,7 +121,7 @@ export default function ShopPartAddonRow({ addOn, handleDuplicateAddOn, partNumL
   };
 
   const onClickDeleteAddOn = async () => {
-    if (!await ask('Are you sure you want to delete this part?')) return;
+    if (await prompt('Type "confirm" to delete this add on') !== 'confirm') return;
     await deleteAddOn(addOn.id);
     emitServerEvent('DELETE_ADDON', [addOn.id]);
   };

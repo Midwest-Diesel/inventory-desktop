@@ -15,6 +15,7 @@ import DropdownOption from "../library/dropdown/DropdownOption";
 import { useQuery } from "@tanstack/react-query";
 import InputDropdown from "../library/InputDropdown";
 import { emitServerEvent, offServerEvent, onServerEvent } from "@/scripts/config/websockets";
+import { prompt } from "../library/Prompt";
 
 interface Props {
   addOn: EngineAddOn
@@ -66,7 +67,7 @@ export default function ShopEngineAddOnRow({ addOn, onSave }: Props) {
   };
 
   const onClickDeleteAddOn = async () => {
-    if (!await ask('Are you sure you want to delete this?')) return;
+    if (await prompt('Type "confirm" to delete this add on') !== 'confirm') return;
     await deleteEngineAddOn(addOn.id);
     emitServerEvent('DELETE_ENGINE_ADDON', [addOn.id]);
   };
