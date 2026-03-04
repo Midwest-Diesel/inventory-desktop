@@ -527,14 +527,16 @@ export default function EditHandwrittenDetails({
   const handleEditShipVia = async (id: number) => {
     setShipViaId(id);
     const shipVia = await getFreightCarrierById(id);
-    const row = handwrittenItems.find((item) => item.partNum === 'FREIGHT');
+    const res = await getHandwrittenById(handwritten.id);
+    const row = res?.handwrittenItems.find((item) => item.partNum === 'FREIGHT');
+    
     if (!id) {
       if (row) await deleteHandwrittenItem(row.id);
       return;
     }
 
     const item = {
-      id: row && row.id,
+      id: row?.id,
       handwrittenId: handwritten.id,
       date: new Date(),
       desc: shipVia.name,
@@ -551,6 +553,7 @@ export default function EditHandwrittenDetails({
     if (!row) {
       const id = await addHandwrittenItem(item);
       setHandwrittenItems([...handwrittenItems, { id, ...item }]);
+      setHandwritten({ ...handwritten, handwrittenItems: [...handwrittenItems, { id, ...item }] });
     } else {
       await editHandwrittenItem(item);
     }

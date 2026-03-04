@@ -13,7 +13,6 @@ import { cap, formatDate } from "@/scripts/tools/stringUtils";
 import { getPurchaseOrderByPoNum } from "@/scripts/services/purchaseOrderService";
 import { getRatingFromRemarks } from "@/scripts/tools/utils";
 import { getImagesFromPart } from "@/scripts/services/imagesService";
-import { ask } from "@/scripts/config/tauri";
 import { usePrintQue } from "@/hooks/usePrintQue";
 import { selectedPoAddOnAtom } from "@/scripts/atoms/components";
 import { useClickOutside } from "@/hooks/useClickOutside";
