@@ -60,6 +60,7 @@ interface AllSalesmenReport {
 interface TheMachinesReport {
   partNum: string
   desc: string
+  condition: string
   total: number
 }
 

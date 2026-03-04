@@ -8,7 +8,7 @@ interface Props {
 }
 
 
-export default function TheMachinesTable({ closeTable, data }: Props) {
+export default function PartAvailabilityTable({ closeTable, data }: Props) {
   const handleGoBack = () => {
     closeTable();
   };
@@ -33,6 +33,7 @@ export default function TheMachinesTable({ closeTable, data }: Props) {
           <tr>
             <th>PartNum</th>
             <th>Desc</th>
+            <th>Condition</th>
             <th>Total</th>
           </tr>
         </thead>
@@ -42,6 +43,7 @@ export default function TheMachinesTable({ closeTable, data }: Props) {
               <tr key={i}>
                 <td>{ row.partNum }</td>
                 <td>{ row.desc }</td>
+                <td>{ row.condition }</td>
                 <td>{ row.total }</td>
               </tr>
             );

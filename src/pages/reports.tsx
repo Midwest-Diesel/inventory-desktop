@@ -13,7 +13,7 @@ import SalesByBillToCompanyDialog from "@/components/reports/dialogs/SalesByBill
 import SingleCompanyDialog from "@/components/reports/dialogs/SingleCompanyDialog";
 import SingleCompanyEnginesDialog from "@/components/reports/dialogs/SingleCompanyEnginesDialog";
 import SingleCompanyPartsDialog from "@/components/reports/dialogs/SingleCompanyPartsDialog";
-import TheMachinesDialog from "@/components/reports/dialogs/TheMachinesDialog";
+import TheMachinesDialog from "@/components/reports/dialogs/PartAvailabilityDialog";
 import Button from "@/components/library/Button";
 import AllCompaniesTable from "@/components/reports/AllCompaniesTable";
 import AllEnginesTable from "@/components/reports/AllEnginesTable";
@@ -33,7 +33,7 @@ import SalesByBillToCompanyTable from "@/components/reports/SalesByBillToCompany
 import SingleCompanyEnginesTable from "@/components/reports/SingleCompanyEnginesTable";
 import SingleCompanyPartsTable from "@/components/reports/SingleCompanyPartsTable";
 import SingleCompanyTable from "@/components/reports/SingleCompanyTable";
-import TheMachinesTable from "@/components/reports/TheMachinesTable";
+import PartAvailabilityTable from "@/components/reports/PartAvailabilityTable";
 import { useNavState } from "@/hooks/useNavState";
 import { allCompaniesReportAtom, allEnginesReportAtom, allPartsReportAtom, allSalesmenReportAtom, allSourcesReportAtom, arielSalesReportAtom, enginesCompanyReportAtom, handwrittensCompanyReportAtom, noLocationPartsReportAtom, outstandingHighCoresReportAtom, partDescReportAtom, partsCompanyReportAtom, PBBListReportAtom, pendingHandwrittensReportAtom, pricingChangesReportAtom, recentSearchesReportAtom, salesByBillToCompanyReportAtom, singleCompanyReportAtom, theMachinesReportAtom } from "@/scripts/atoms/reports";
 import { reportNoLocationParts, reportOutstandingCores, reportPBB } from "@/scripts/services/reportsService";
@@ -286,7 +286,7 @@ export default function Reports() {
           { isTableOpened('all-engines') && <AllEnginesTable closeTable={() => openTable('')} data={allEnginesData} /> }
           { isTableOpened('all-sources') && <AllSourcesTable closeTable={() => openTable('')} data={allSourcesData} /> }
           { isTableOpened('all-salesmen') && <AllSalesmenTable closeTable={() => openTable('')} data={allSalesmenData} /> }
-          { isTableOpened('the-machines') && <TheMachinesTable closeTable={() => openTable('')} data={theMachinesData} /> }
+          { isTableOpened('the-machines') && <PartAvailabilityTable closeTable={() => openTable('')} data={theMachinesData} /> }
           { isTableOpened('ariel-sales') && <ArielSalesTable closeTable={() => openTable('')} data={arielSalesData} /> }
           { isTableOpened('parts-company') && <SingleCompanyPartsTable closeTable={() => openTable('')} data={partsCompanyData} /> }
           { isTableOpened('engines-company') && <SingleCompanyEnginesTable closeTable={() => openTable('')} data={enginesCompanyData} /> }
