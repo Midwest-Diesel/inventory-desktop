@@ -4,7 +4,7 @@ import Grid from "@/components/library/grid/Grid";
 import GridItem from "@/components/library/grid/GridItem";
 import { FormEvent, useState } from "react";
 import Input from "@/components/library/Input";
-import { addPartCostIn, addToPartQtyHistory, deletePartCostIn, editPart, editPartCostIn, getPartInfoByPartNum, setPartLastUpdated, getPartById, editWeightDims } from "@/scripts/services/partsService";
+import { addPartCostIn, addToPartQtyHistory, deletePartCostIn, editPart, editPartCostIn, getPartInfoByPartNum, setPartLastUpdated, getPartById, editWeightDims, editConnectedPartPricing } from "@/scripts/services/partsService";
 import Table from "@/components/library/Table";
 import { addEngineCostOut, deleteEngineCostOut, editEngineCostOut } from "@/scripts/services/enginesService";
 import { userAtom } from "@/scripts/atoms/state";
@@ -116,23 +116,44 @@ export default function EditPartDetails({ part, setPart, setIsEditingPart, partC
       profitPercent: profitMargin / Number(sellingPrice)
     } as Part;
 
-    const isPricingUnchanged = (
-      part.listPrice === newPart.listPrice &&
-      part.fleetPrice === newPart.fleetPrice &&
-      part.remanListPrice === newPart.remanListPrice &&
-      part.remanFleetPrice === newPart.remanFleetPrice &&
-      part.corePrice === newPart.corePrice &&
-      part.purchasePrice === newPart.purchasePrice
+    if (newPart.weightDims !== part.weightDims) {
+      await editWeightDims(newPart.partNum, weightDims);
+    }
+
+    if (part.qty !== newPart.qty) {
+      await addToPartQtyHistory(part.id, newPart.qty - part.qty);
+    }
+
+    await handlePartPricing(newPart);
+    await editPartCostInRows();
+    await addNewPartCostInRows();
+
+    const res = await getPartById(part.id);
+    if (!res) {
+      alert('Invalid part');
+      return;
+    }
+    setPart(res);
+    setIsEditingPart(false);
+  };
+
+  const handlePartPricing = async (newPart: Part) => {
+    const hasPricingChanged = (
+      part.listPrice !== newPart.listPrice ||
+      part.fleetPrice !== newPart.fleetPrice ||
+      part.remanListPrice !== newPart.remanListPrice ||
+      part.remanFleetPrice !== newPart.remanFleetPrice ||
+      part.corePrice !== newPart.corePrice ||
+      part.purchasePrice !== newPart.purchasePrice
     );
-    if (!isPricingUnchanged) setPartLastUpdated(part.id);
+    if (!hasPricingChanged) return;
     
-    await editPart({ ...newPart, priceLastUpdated: !isPricingUnchanged ? new Date() : null });
-    if (newPart.weightDims !== part.weightDims) await editWeightDims(newPart.partNum, weightDims);
+    setPartLastUpdated(part.id);
+    const { listPrice, fleetPrice, remanListPrice, remanFleetPrice, corePrice } = newPart;
+    await editConnectedPartPricing(altParts, { listPrice, fleetPrice, remanListPrice, remanFleetPrice, corePrice });
+  };
 
-    // Handle qty change history
-    if (part.qty !== newPart.qty) await addToPartQtyHistory(part.id, newPart.qty - part.qty);
-
-    // Edit partCostIn rows
+  const editPartCostInRows = async () => {
     if (JSON.stringify(partCostIn) !== JSON.stringify(partCostInData)) {
       for (let i = 0; i < partCostIn.length; i++) {
         const item = partCostIn[i];
@@ -164,8 +185,9 @@ export default function EditPartDetails({ part, setPart, setIsEditingPart, partC
         setEngineCostOutData(engineCostOut);
       }
     }
+  };
 
-    // Add new partCostIn rows
+  const addNewPartCostInRows = async () => {
     if (partCostInData.length !== partCostIn.length) {
       for (let i = 0; i < partCostIn.length; i++) {
         const item = partCostIn[i];
@@ -182,14 +204,6 @@ export default function EditPartDetails({ part, setPart, setIsEditingPart, partC
         }
       }
     }
-
-    const res = await getPartById(part.id);
-    if (!res) {
-      alert('Invalid part');
-      return;
-    }
-    setPart(res);
-    setIsEditingPart(false);
   };
 
   const stopEditing = async () => {

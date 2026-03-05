@@ -14,8 +14,8 @@ export const getAllEngineAddOns = async (): Promise<EngineAddOn[]> => {
   try {
     const res = await api.get('/api/engine-add-ons');
     return parseAddOnDataRes(res.data);
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
     return [];
   }
 };
@@ -24,8 +24,8 @@ export const getOfficeEngineAddOns = async (): Promise<EngineAddOn[]> => {
   try {
     const res = await api.get('/api/engine-add-ons/office');
     return parseAddOnDataRes(res.data);
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
     return [];
   }
 };
@@ -36,8 +36,9 @@ export const addEngineAddOn = async (addOn?: EngineAddOn) => {
   try {
     const res = await api.post('/api/engine-add-ons', addOn);
     return res.data;
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
+    alert(`Error in [addEngineAddOn] ${error}`);
   }
 };
 
@@ -46,24 +47,27 @@ export const addEngineAddOn = async (addOn?: EngineAddOn) => {
 export const editEngineAddOn = async (addOn: EngineAddOn) => {
   try {
     await api.put('/api/engine-add-ons', addOn);
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
+    alert(`Error in [editEngineAddOn] ${error}`);
   }
 };
 
 export const editEngineAddOns = async (addOns: EngineAddOn[]) => {
   try {
     await api.put('/api/engine-add-ons/list', { addOns });
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
+    alert(`Error in [editEngineAddOns] ${error}`);
   }
 };
 
 export const engineAddOnClearUserEditing = async (userEditing: number) => {
   try {
     await api.put('/api/engine-add-ons/clear-user-editing', { userEditing });
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
+    alert(`Error in [engineAddOnClearUserEditing] ${error}`);
   }
 };
 
@@ -72,16 +76,18 @@ export const engineAddOnClearUserEditing = async (userEditing: number) => {
 export const editEngineAddOnPrintStatus = async (id: number, isPrinted: boolean) => {
   try {
     await api.patch('/api/engine-add-ons/is-printed', { id, isPrinted });
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
+    alert(`Error in [editEngineAddOnPrintStatus] ${error}`);
   }
 };
 
 export const editEngineAddOnUserEditing = async (id: number, userEditing: number) => {
   try {
     await api.patch('/api/engine-add-ons/user-editing', { id, userEditing });
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
+    alert(`Error in [editEngineAddOnUserEditing] ${error}`);
   }
 };
 
@@ -90,7 +96,8 @@ export const editEngineAddOnUserEditing = async (id: number, userEditing: number
 export const deleteEngineAddOn = async (id: number) => {
   try {
     await api.delete(`/api/engine-add-ons/${id}`);
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
+    alert(`Error in [deleteEngineAddOn] ${error}`);
   }
 };

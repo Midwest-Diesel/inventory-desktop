@@ -3,6 +3,14 @@ import { parseResDate } from "../tools/stringUtils";
 import { isObjectNull } from "../tools/utils";
 import { checkImageExists } from "./imagesService";
 
+interface PartPricing {
+  listPrice: number | null
+  fleetPrice: number | null
+  remanListPrice: number | null
+  remanFleetPrice: number | null
+  corePrice: number | null
+}
+
 
 const parsePartsData = async (parts: any) => {
   const partsWithImages = await Promise.all(parts.map(async (part: any) => {
@@ -408,6 +416,16 @@ export const editAltParts = async (partNum: string, altParts: string[]) => {
     alert(`Error in [editAltParts] ${error}`);
   }
 };
+
+export const editConnectedPartPricing = async (altParts: string[], pricing: PartPricing) => {
+  try {
+    await api.put('/api/parts/part-pricing', { altParts, pricing });
+  } catch (error) {
+    console.error(error);
+    alert(`Error in [editConnectedPartPricing] ${error}`);
+  }
+};
+
 
 // === DELETE routes === //
 
