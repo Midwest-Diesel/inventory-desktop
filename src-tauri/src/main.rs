@@ -186,6 +186,16 @@ struct FastTrackItem {
 }
 
 #[derive(Deserialize, Serialize)]
+struct NetcomItem {
+  part_num: String,
+  manufacturer: String,
+  desc: String,
+  qty: String,
+  condition: String,
+  alt_parts: String
+}
+
+#[derive(Deserialize, Serialize)]
 struct SendEmailArgs {
   body: String,
   subject: String,
@@ -1938,22 +1948,22 @@ async fn email_fast_track_inventory(inventory: Vec<FastTrackItem>) -> Result<(),
 }
 
 #[tauri::command]
-async fn email_netcom_inventory(inventory: Vec<FastTrackItem>) -> Result<(), String> {
-  let file_path = "\\\\MWD1-SERVER\\Server\\netcom_inventory\\netcom.csv";
+async fn email_netcom_inventory(inventory: Vec<NetcomItem>) -> Result<(), String> {
+  let file_path = "\\\\MWD1-SERVER\\Server\\netcom_inventory\\PartM514.csv";
   let file = File::create(file_path).map_err(|e| e.to_string())?;
   let mut writer = BufWriter::new(file);
 
   writeln!(
     writer,
-    "PartNumber,Manufacturer_,Quantity_,Description,__,Price,Other,City,State,Country,AlternateParts"
+    "PartNumber,Manufacturer_,Description,Quantity_,Condition,AlternateParts"
   )
   .map_err(|e| e.to_string())?;
 
   for item in &inventory {
     writeln!(
       writer,
-      "\"=\"\"{}\"\"\",\"{}\",\"{}\",\"{}\",\"\",\"\",\"\",\"Blaine\",\"MN\",\"USA\",\"=\"\"{}\"\"\"",
-      item.part_num, item.manufacturer, item.qty, item.desc, item.alt_parts
+      "\"=\"\"{}\"\"\",\"{}\",\"{}\",\"{}\",\"{}\",\"=\"\"{}\"\"\"",
+      item.part_num, item.manufacturer, item.desc, item.qty, item.condition, item.alt_parts
     )
     .map_err(|e| e.to_string())?;
   }
@@ -1970,7 +1980,7 @@ async fn email_netcom_inventory(inventory: Vec<FastTrackItem>) -> Result<(), Str
     recipients: vec!["thepartfinder@yahoo.com".to_string()],
     cc: vec!["matt@midwestdiesel.com".to_string()],
     attachments: vec![file_path.to_string()],
-    subject: "Parts M514".to_string()
+    subject: "PartM514.csv".to_string()
   });
 
   Ok(())

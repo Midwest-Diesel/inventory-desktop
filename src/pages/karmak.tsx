@@ -11,7 +11,7 @@ import { useState } from "react";
 import { useAtom } from "jotai";
 import { accountingPageFilterAtom } from "@/scripts/atoms/state";
 import { useQuery } from "@tanstack/react-query";
-import { getFastTrackInventory } from "@/scripts/services/partsService";
+import { getFastTrackInventory, getNetcomInventory } from "@/scripts/services/partsService";
 
 type AccountingStatus = '' | 'all' | 'IN PROCESS' | 'COMPLETE';
 const LIMIT = 60;
@@ -58,12 +58,18 @@ export default function Karmak() {
     }
     await invoke('move_queue_to_archives', { args: { year, month, day }});
     await handleFastTrack();
+    await handleNetcom();
     alert('End of day complete');
   };
 
   const handleFastTrack = async () => {
     const inventory = await getFastTrackInventory();
     await invoke('email_fast_track_inventory', { inventory });
+  };
+
+  const handleNetcom = async () => {
+    const inventory = await getNetcomInventory();
+    await invoke('email_netcom_inventory', { inventory });
   };
 
 

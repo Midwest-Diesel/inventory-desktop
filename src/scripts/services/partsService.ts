@@ -297,6 +297,42 @@ export const getFastTrackInventory = async (): Promise<FastTrackItem[]> => {
   }
 };
 
+export const getNetcomInventory = async (): Promise<NetcomItem[]> => {
+  try {
+    const res = await api.get(`/api/parts/netcom`);
+    const rows: NetcomItem[] = res.data;
+    const existingPartNums = new Set(rows.map((r) => r.part_num));
+    const additionalRows: NetcomItem[] = [];
+
+    for (const row of rows) {
+      if (!row.alt_parts) continue;
+      const altParts = row.alt_parts
+        .split(',')
+        .map((p) => p.trim())
+        .filter(Boolean);
+
+      for (const altPart of altParts) {
+        if (!existingPartNums.has(altPart)) {
+          existingPartNums.add(altPart);
+          additionalRows.push({
+            part_num: altPart,
+            manufacturer: '',
+            desc: '',
+            qty: '',
+            condition: '',
+            alt_parts: altPart
+          });
+        }
+      }
+    }
+
+    return [...rows, ...additionalRows];
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
+};
+
 // === POST routes === //
 
 export const addPart = async (part: Part, partInfoExists: boolean): Promise<number | null> => {

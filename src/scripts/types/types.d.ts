@@ -525,6 +525,15 @@ type FastTrackItem = {
   alt_parts: string
 };
 
+type NetcomItem = {
+  part_num: string
+  manufacturer: string
+  desc: string
+  qty: string
+  condition: string
+  alt_parts: string
+};
+
 type PartMin = {
   id: number
   qty: number
