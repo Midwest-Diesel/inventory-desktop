@@ -63,7 +63,8 @@ export default function PartDetails() {
 
   const { data: history = [] } = useQuery<PartQtyHistory[]>({
     queryKey: ['partQtyHistory', part?.id, partQtyHistoryOpen],
-    queryFn: () => getPartsQtyHistory(part!.id)
+    queryFn: () => getPartsQtyHistory(part!.id),
+    enabled: !!part?.id
   });
 
   const { data: pictures = [] } = useQuery<Picture[]>({

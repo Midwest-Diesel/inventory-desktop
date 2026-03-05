@@ -202,6 +202,7 @@ export const getEndOfDayHandwrittens = async () => {
     return parseHandwrittenRes(res.data);
   } catch (error) {
     console.error(error);
+    alert(`Error in [getEndOfDayHandwrittens] ${error}`);
   }
 };
 

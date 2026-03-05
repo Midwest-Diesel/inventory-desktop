@@ -4,7 +4,7 @@ import Grid from "@/components/library/grid/Grid";
 import GridItem from "@/components/library/grid/GridItem";
 import { FormEvent, useState } from "react";
 import Input from "@/components/library/Input";
-import { addPartCostIn, addToPartQtyHistory, deletePartCostIn, editPartCostIn, getPartInfoByPartNum, setPartLastUpdated, getPartById, editWeightDims, editConnectedPartPricing } from "@/scripts/services/partsService";
+import { addPartCostIn, addToPartQtyHistory, deletePartCostIn, editPartCostIn, getPartInfoByPartNum, setPartLastUpdated, getPartById, editWeightDims, editConnectedPartPricing, editPart } from "@/scripts/services/partsService";
 import Table from "@/components/library/Table";
 import { addEngineCostOut, deleteEngineCostOut, editEngineCostOut } from "@/scripts/services/enginesService";
 import { userAtom } from "@/scripts/atoms/state";
@@ -124,6 +124,7 @@ export default function EditPartDetails({ part, setPart, setIsEditingPart, partC
       await addToPartQtyHistory(part.id, newPart.qty - part.qty);
     }
 
+    await editPart(newPart);
     await handlePartPricing(newPart);
     await editPartCostInRows();
     await addNewPartCostInRows();
