@@ -177,7 +177,7 @@ export const searchParts = async (part: PartSearchData, page: number, limit: num
 
 export const searchAltParts = async (part: PartSearchData, page: number, limit: number): Promise<{ pageCount: number, totalQty: number, rows: Part[], rowsHidden: number | null }> => {
   try {
-    if (isObjectNull(part)) return { pageCount: 0, totalQty: 0, rows: [], rowsHidden: null };
+    if (isObjectNull(part) || page === 0) return { pageCount: 0, totalQty: 0, rows: [], rowsHidden: null };
     const filteredPart = Object.fromEntries(
       Object.entries(part).filter(
         ([, value]) => value !== '' && value !== null && value !== '*'
