@@ -1,7 +1,7 @@
 import { useAtom } from "jotai";
 import { shopAddOnsAtom, userAtom } from "@/scripts/atoms/state";
 import { deleteAddOn, editAddOnAltParts, editAddOnUserEditing, getAddOnById } from "@/scripts/services/addOnsService";
-import { addPart, addPartCostIn, getPartsByStockNum, getPartInfoByPartNum } from "@/scripts/services/partsService";
+import { addPart, addPartCostIn, getPartsByStockNum, getPartInfoByPartNum, editConnectedPartPricing, searchAltParts } from "@/scripts/services/partsService";
 import { useEffect, useRef, useState } from "react";
 import { addEngineCostOut, getEngineCostRemaining } from "@/scripts/services/enginesService";
 import { getRatingFromRemarks } from "@/scripts/tools/utils";
@@ -117,6 +117,10 @@ export default function OfficePartAddonRow({ addOn, onSave, onModifyAddOnData }:
       alert(`Duplicate stock number ${addOn.stockNum}`);
       return;
     }
+    if (!addOn.partNum) {
+      alert('Empty part number');
+      return;
+    }
     if (!addOn.stockNum) {
       alert('Empty stock number');
       return;
@@ -140,6 +144,17 @@ export default function OfficePartAddonRow({ addOn, onSave, onModifyAddOnData }:
       altParts
     } as AddOn;
     await addPart(newPart as any, partsInfo !== null);
+
+    // Update part pricing
+    const { newPrice, remanPrice, dealerPrice } = newPart;
+    const partSearch = await searchAltParts({ partNum: newPart.partNum ?? '', showSoldParts: true }, 1, 999999);
+    if (partSearch.rows.length > 0) {
+      const search = partSearch.rows[0];
+      const pricing = { listPrice: newPrice, fleetPrice: dealerPrice, remanListPrice: remanPrice, remanFleetPrice: search.remanFleetPrice, corePrice: search.corePrice };
+      await editConnectedPartPricing(newPart.altParts, pricing); 
+    } else if (partsInfo !== null) {
+      alert(`Failed to update "New List Price", "Reman List Price", or "Dealer Price" for ${newPart.partNum}`);
+    }
 
     // Add purchase price
     if (newPart.engineNum && newPart.engineNum > 1) {
