@@ -83,6 +83,7 @@ test.describe('Create addon and add to inventory', () => {
     await newAddon(page, '4700', 1);
     await engineNum.fill('1');
     await engineNum.blur();
+    await page.waitForLoadState('networkidle');
     await expect(stockNum).toHaveValue(formatDateStockNum('INJ', 'A'));
   });
 
@@ -119,9 +120,11 @@ test.describe('Create addon and add to inventory', () => {
     await expect(stockNum).toHaveValue(formatDateStockNum('INJ', 'A'));
 
     await page.getByTestId('add-to-inventory-btn').first().click();
-    await goto(page, '/');
+    await page.waitForLoadState('networkidle');
 
+    await goto(page, '/');
     await altSearch(page, { stockNum: stockNumValue });
-    await expect(page.getByTestId('stock-num').first()).toHaveValue(stockNumValue);
+    const result = page.getByTestId('stock-num').first();
+    await expect(result).toHaveText(stockNumValue);
   });
 });

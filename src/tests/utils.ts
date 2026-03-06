@@ -34,7 +34,9 @@ export const goto = async (page: Page, url: string) => {
 };
 
 export const partSearch = async (page: Page, search: SearchData) => {
+  await page.getByTestId('part-search-btn').waitFor();
   await page.getByTestId('part-search-btn').click();
+
   const { partNum, stockNum, desc, location, qty, remarks, rating, purchFrom, serialNum, hp } = search;
   if (partNum) await page.getByTestId('part-search-part-num').fill(partNum);
   if (stockNum) await page.getByTestId('part-search-stock-num').fill(stockNum);
@@ -52,7 +54,9 @@ export const partSearch = async (page: Page, search: SearchData) => {
 };
 
 export const altSearch = async (page: Page, search: SearchData) => {
+  await page.getByTestId('alt-search-btn').waitFor();
   await page.getByTestId('alt-search-btn').click();
+  
   const { partNum, stockNum, desc, location, qty, remarks, rating, purchFrom, serialNum, hp } = search;
   await page.getByTestId('alt-search-part-num').fill(partNum ?? '');
   await page.getByTestId('alt-search-stock-num').fill(stockNum ?? '');
