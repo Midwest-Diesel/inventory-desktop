@@ -97,7 +97,7 @@ export default function EditHandwrittenItemsTable({ handwritten, handwrittenItem
                     value={item.cost ?? ''}
                     onChange={(e) => handleEditItem({ ...item, cost: e.target.value ? Number(e.target.value) : null }, i)}
                     disabled={isDisabled}
-                    data-testid="item-cost"
+                    data-testid="item-cost-input"
                     type="number"
                     step="any"
                   />
@@ -108,7 +108,7 @@ export default function EditHandwrittenItemsTable({ handwritten, handwrittenItem
                     type="number"
                     onChange={(e) => handleEditItem({ ...item, qty: e.target.value ? Number(e.target.value) : null }, i)}
                     disabled={isDisabled}
-                    data-testid="item-qty"
+                    data-testid="item-qty-input"
                   />
                 </td>
                 <td>
@@ -123,7 +123,7 @@ export default function EditHandwrittenItemsTable({ handwritten, handwrittenItem
                     value={item.desc ?? ''}
                     onChange={(e) => handleEditItem({ ...item, desc: e.target.value }, i)}
                     disabled={isDisabled}
-                    data-testid="item-desc"
+                    data-testid="item-desc-input"
                   />
                 </td>
                 <td>

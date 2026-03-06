@@ -13,9 +13,9 @@ test.beforeEach(async ({ page }) => {
   page.on('dialog', (dialog) => dialog.accept('confirm'));
 });
 
-const addFirstItem = async (page: Page, desc: string, qty: number, price: number) => {
+const addHandwrittenItem = async (page: Page, rowIndex: number, desc: string, qty: number, price: number) => {
   await page.getByTestId('tab').first().click();
-  await page.getByTestId('add-item-btn').first().click();
+  await page.getByTestId('add-item-btn').nth(rowIndex).click();
   await page.getByTestId('select-handwritten-dialog').isVisible();
   await page.getByTestId('select-handwritten-row').first().click();
   await page.getByTestId('select-handwritten-desc').fill(desc);
@@ -25,13 +25,15 @@ const addFirstItem = async (page: Page, desc: string, qty: number, price: number
   await page.waitForLoadState('networkidle');
 };
 
-const addWarranty = async (page: Page, checkboxIndex: number, customWarranty?: string) => {
+const addWarranty = async (page: Page, checkboxIndexes: number[], customWarranty?: string) => {
   await page.waitForSelector('[data-testid="select-handwritten-dialog"] .checkbox-wrapper-4');
-  await (await page.$$('[data-testid="select-handwritten-dialog"] .checkbox-wrapper-4'))[checkboxIndex].click();
+  for (const index of checkboxIndexes) {
+    await (await page.$$('[data-testid="select-handwritten-dialog"] .checkbox-wrapper-4'))[index].click();
+  }
   if (customWarranty) await page.getByTestId('warranty').fill(customWarranty);
 
   await page.getByTestId('warranty-submit-btn').click();
-  await page.waitForLoadState('networkidle');
+  await page.getByTestId('save-btn').waitFor();
 };
 
 
@@ -44,10 +46,10 @@ test.describe('Basic Functionality', () => {
 
   test('Create handwritten from customer', async ({ page }) => {
     await createHandwritten(page, 'ConEquip');
-    await expect(page.getByTestId('bill-to-company')).toHaveValue('ConEquip Parts & Equipment (14196)');
+    await expect(page.getByTestId('bill-to-company-input')).toHaveValue('ConEquip Parts & Equipment (14196)');
     
-    await addFirstItem(page, 'VALVE COVER', 2, 180);
-    await addWarranty(page, 1);
+    await addHandwrittenItem(page, 0, 'VALVE COVER', 2, 180);
+    await addWarranty(page, [1]);
 
     await page.getByTestId('save-btn').click();
     await page.waitForLoadState('networkidle');
@@ -72,30 +74,30 @@ test.describe('Basic Functionality', () => {
     await createHandwritten(page, 'ConEquip');
     await page.getByTestId('save-btn').waitFor();
 
-    await page.getByTestId('po-num').fill('T104B6');
-    await page.getByTestId('source').selectOption('Netcom');
-    await page.getByTestId('contact').fill('Bill');
-    await page.getByTestId('bill-to-company').fill('Rubber Duck Inc');
-    await page.getByTestId('bill-to-address').fill('4495 Lake Ave S');
-    await page.getByTestId('bill-to-address-2').fill('425');
-    await page.getByTestId('bill-to-city').fill('White Bear Lake');
-    await page.getByTestId('bill-to-state').fill('MN');
-    await page.getByTestId('bill-to-zip').fill('55110');
-    await page.getByTestId('bill-to-phone').fill('(651) 272-3618');
-    await page.getByTestId('ship-to-company').fill('Rubber Duck Inc');
-    await page.getByTestId('ship-to-address').fill('4495 Lake Ave S');
-    await page.getByTestId('ship-to-address-2').fill('425');
-    await page.getByTestId('ship-to-city').fill('White Bear Lake');
-    await page.getByTestId('ship-to-state').fill('MN');
-    await page.getByTestId('ship-to-zip').fill('55110');
-    await page.getByTestId('ship-via').selectOption('UPS Ground');
-    await page.getByTestId('attn-to').fill('Bob');
-    await page.getByTestId('contact-phone').fill('(488) 371-9460');
-    await page.getByTestId('shipping-notes').fill('Test');
+    await page.getByTestId('po-num-input').fill('T104B6');
+    await page.getByTestId('source-input').selectOption('Netcom');
+    await page.getByTestId('contact-input').fill('Bill');
+    await page.getByTestId('bill-to-company-input').fill('Rubber Duck Inc');
+    await page.getByTestId('bill-to-address-input').fill('4495 Lake Ave S');
+    await page.getByTestId('bill-to-address-2-input').fill('425');
+    await page.getByTestId('bill-to-city-input').fill('White Bear Lake');
+    await page.getByTestId('bill-to-state-input').fill('MN');
+    await page.getByTestId('bill-to-zip-input').fill('55110');
+    await page.getByTestId('bill-to-phone-input').fill('(651) 272-3618');
+    await page.getByTestId('ship-to-company-input').fill('Rubber Duck Inc');
+    await page.getByTestId('ship-to-address-input').fill('4495 Lake Ave S');
+    await page.getByTestId('ship-to-address-2-input').fill('425');
+    await page.getByTestId('ship-to-city-input').fill('White Bear Lake');
+    await page.getByTestId('ship-to-state-input').fill('MN');
+    await page.getByTestId('ship-to-zip-input').fill('55110');
+    await page.getByTestId('ship-via-input').selectOption('UPS Ground');
+    await page.getByTestId('attn-to-input').fill('Bob');
+    await page.getByTestId('contact-phone-input').fill('(488) 371-9460');
+    await page.getByTestId('shipping-notes-input').fill('Test');
+
     await page.getByTestId('save-btn').click();
     await page.getByTestId('no-changes-btn').click();
-    await page.waitForLoadState('networkidle');
-    await page.getByTestId('edit-btn').waitFor();
+    await page.getByTestId('po-num').waitFor();
 
     expect(await page.getByTestId('po-num').textContent()).toEqual('T104B6');
     expect(await page.getByTestId('source').textContent()).toEqual('Netcom');
@@ -121,76 +123,52 @@ test.describe('Basic Functionality', () => {
   });
 });
 
-// test.describe('Handwritten items', () => {
-//   test('Add handwritten items', async ({ page }) => {
-//     await goto(page, '/');
-//     await page.getByTestId('add-item-btn').nth(1).click();
-//     await page.waitForLoadState('networkidle');
-//     await page.getByTestId('select-handwritten-dialog').isVisible();
-//     await page.getByTestId('select-handwritten-row').first().click();
-//     await page.waitForLoadState('networkidle');
-//     await page.getByTestId('select-handwritten-desc').fill('TEST ITEM');
-//     await page.getByTestId('select-handwritten-qty').fill('6');
-//     await page.getByTestId('select-handwritten-price').fill('100');
-//     await page.getByTestId('select-handwritten-submit-btn').click();
-//     await page.waitForLoadState('networkidle');
-//     await page.waitForTimeout(500);
-//     await page.getByTestId('warranty').fill('TEST WARRANTY');
-//     await (await page.$$('[data-testid="select-handwritten-dialog"] .checkbox-wrapper-4'))[0].click();
-//     await (await page.$$('[data-testid="select-handwritten-dialog"] .checkbox-wrapper-4'))[2].click();
-//     await page.getByTestId('warranty-submit-btn').click();
-//     await page.waitForTimeout(1000);
-//     await page.waitForLoadState('networkidle');
-//     await page.getByTestId('tab').first().click();
-//     await page.waitForLoadState('networkidle');
+test.describe('Handwritten items', () => {
+  test('Add handwritten items', async ({ page }) => {
+    await createHandwritten(page, 'ConEquip');
+    await page.getByTestId('save-btn').waitFor();
 
-//     await page.getByTestId('add-item-btn').nth(3).click();
-//     await page.waitForLoadState('networkidle');
-//     await page.getByTestId('select-handwritten-dialog').isVisible();
-//     await page.getByTestId('select-handwritten-desc').fill('DELETE THIS');
-//     await page.getByTestId('select-handwritten-qty').fill('2');
-//     await page.getByTestId('select-handwritten-price').fill('80');
-//     await page.getByTestId('select-handwritten-submit-btn').click();
-//     await page.waitForLoadState('networkidle');
-//     await page.waitForTimeout(500);
-//     await page.getByTestId('warranty').fill('TEST WARRANTY');
-//     await (await page.$$('[data-testid="select-handwritten-dialog"] .checkbox-wrapper-4'))[1].click();
-//     await page.getByTestId('warranty-submit-btn').click();
-//     await page.waitForLoadState('networkidle');
-    
-//     await page.getByTestId('item-qty').first().fill('4');
-//     await page.getByTestId('save-btn').click();
-//     await page.getByTestId('no-changes-btn').click();
-//     await page.waitForLoadState('networkidle');
+    await addHandwrittenItem(page, 1, 'THERM HSNG', 6, 100);
+    await addWarranty(page, [0, 2], 'TEST WARRANTY');
 
-//     await expect(page.getByTestId('item-qty').first()).toHaveText('4');
-//     await page.getByTestId('edit-btn').click();
-//     await page.getByTestId('item-delete-btn').first().click();
-//     await page.getByTestId('save-btn').click();
-//     await page.getByTestId('no-changes-btn').click();
-//     await page.waitForLoadState('networkidle');
-//     await expect(page.getByTestId('item-desc').first()).toHaveText('TEST ITEM');
-//     expect(await page.getByTestId('order-notes').first().textContent()).toEqual('TEST WARRANTY\nCaterpillar warranty is not available on surplus engines and surplus parts.\nRebuilt Injectors come with a 6 month part replacement only warranty through Midwest Diesel, No labor or progressive damage.');
-//   });
-// });
+    await page.getByTestId('tab').first().click();
+    await addHandwrittenItem(page, 2, 'DELETE THIS', 1, 80);
+    await addWarranty(page, [1], 'TEST WARRANTY');
+
+    await page.getByTestId('item-qty-input').first().fill('4');
+    await page.getByTestId('save-btn').click();
+    await page.waitForLoadState('networkidle');
+
+    await expect(page.getByTestId('item-qty').first()).toHaveText('4');
+    await page.getByTestId('edit-btn').click();
+    await page.getByTestId('item-delete-btn').first().click();
+    await page.getByTestId('save-btn').click();
+    await page.waitForLoadState('networkidle');
+
+    await expect(page.getByTestId('item-desc').first()).toHaveText('THERM HSNG');
+    await expect(page.getByTestId('item-qty').first()).toHaveText('6');
+    await expect(page.getByTestId('item-price').first()).toHaveText('$100.00');
+    expect(await page.getByTestId('order-notes').first().textContent()).toEqual('TEST WARRANTY\nCaterpillar warranty is not available on surplus engines and surplus parts.\nRebuilt Injectors come with a 6 month part replacement only warranty through Midwest Diesel, No labor or progressive damage.');
+  });
+});
 
 // test.describe('Cores', () => {
 //   test('Core charge', async ({ page }) => {
-//     await goto(page, '/handwrittens');
-//     await page.getByTestId('link').first().click();
-//     await page.getByTestId('save-btn').click();
-//     await page.getByTestId('no-changes-btn').click();
+//     await createHandwritten(page, 'ConEquip');
+//     await goto(page, '/');
+//     await altSearch(page, { stockNum: 'UP9432' });
+//     await addHandwrittenItem(page, 0, 'VALVE COVER', 6, 100);
+
 //     await page.getByTestId('core-charge-btn').first().click();
 //     await page.waitForLoadState('networkidle');
 //     await expect(page.getByTestId('item-part-num').first()).toHaveText('CORE DEPOSIT');
-//     await expect(page.getByTestId('item-stock-num').first()).toHaveText(stockNum);
+//     await expect(page.getByTestId('item-stock-num').first()).toHaveText('UP9432');
   
 //     await goto(page, '/cores');
-//     await expect(page.getByTestId('part-num').first()).toHaveText(partNum);
+//     await expect(page.getByTestId('part-num').first()).toHaveText('7E0333');
 //   });
 
 //   test('Core deposit', async ({ page }) => {
-//     await goto(page, '/handwrittens');
 //     await page.getByTestId('link').first().click();
 //     await page.getByTestId('save-btn').click();
 //     await page.getByTestId('no-changes-btn').click();
