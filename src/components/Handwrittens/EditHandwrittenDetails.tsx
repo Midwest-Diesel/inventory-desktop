@@ -279,6 +279,7 @@ export default function EditHandwrittenDetails({
     // Save other data related to handwritten
     await saveAltShip(newInvoice);
     await saveTrackingNumbers();
+    await handleNewShipVia();
 
     // Start SEND TO ACCOUNTING process
     setChangeCustomerDialogData(newInvoice);
@@ -524,6 +525,28 @@ export default function EditHandwrittenDetails({
     }
   };
 
+  const handleNewShipVia = async () => {
+    const row = handwrittenItems.find((item) => item.partNum === 'FREIGHT');
+    if (!row && shipViaId) {
+      const shipVia = await getFreightCarrierById(shipViaId);
+      const item = {
+        handwrittenId: handwritten.id,
+        date: new Date(),
+        desc: shipVia.name,
+        partNum: 'FREIGHT',
+        stockNum: '',
+        unitPrice: 0,
+        qty: 1,
+        cost: 0,
+        location: '',
+        partId: null,
+        invoiceItemChildren: []
+      } as any;
+
+      await addHandwrittenItem(item);
+    }
+  };
+
   const handleEditShipVia = async (id: number) => {
     setShipViaId(id);
     const shipVia = await getFreightCarrierById(id);
@@ -550,13 +573,7 @@ export default function EditHandwrittenDetails({
       invoiceItemChildren: []
     } as any;
 
-    if (!row) {
-      const id = await addHandwrittenItem(item);
-      setHandwrittenItems([...handwrittenItems, { id, ...item }]);
-      setHandwritten({ ...handwritten, handwrittenItems: [...handwrittenItems, { id, ...item }] });
-    } else {
-      await editHandwrittenItem(item);
-    }
+    if (row) await editHandwrittenItem(item);
   };
 
   const handleSameAsBillTo = () => {

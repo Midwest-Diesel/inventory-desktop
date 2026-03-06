@@ -44,6 +44,23 @@ VALUES
   (NULL, 'HEAVY DUTY REBUILDERS', 'BURK DAY', NULL, NULL, NULL, NULL, NULL, '(800) 873-8783', NULL, '(417) 581-9808', NULL, 'NET 30', '1250 WEST LIBERTY AVE', NULL, 'OZARK', 'MO', 65721, '1250 WEST LIBERTY AVE', NULL, 'OZARK', 'MO', 65721, NULL, '6050 N Cabinet Drive', 'Vendor', 'RC', NULL, false, NULL),
   (NULL, 'ConEquip Parts & Equipment (14196)', 'Al', NULL, NULL, NULL, NULL, NULL, '(888) 983-7847', NULL, NULL, NULL, 'NET 30', '5251 Shawnee Rd', NULL, 'Sanborn', 'NY', 14132, '5251 Shawnee Rd', NULL, 'Sanborn', 'NY', 14132, NULL, NULL, 'Broker', NULL, NULL, false, NULL);
 
+-- FREIGHT CARRIERS
+INSERT INTO "freightCarriers" ("name", "type")
+VALUES
+  ('FedEx Express', 'Fedex'),
+  ('FedEx Ground', 'Fedex'),
+  ('T-FORCE', 'Truck Line'),
+  ('UPS Red', 'UPS'),
+  ('UPS Ground', 'UPS');
+
+-- SOURCES
+INSERT INTO "sources" ("source")
+VALUES
+  ('American Trucker'),
+  ('Cold Call'),
+  ('Website - Chat'),
+  ('Netcom');
+
 -- HANDWRITTENS
 INSERT INTO "handwrittens" ("invoiceId", "legacyId", "customerId", "date", "poNum", "billToCompany", "billToAddress", "billToAddress2", "billToCity", "billToState", "billToZip", "billToCountry", "shipToContact", "billToPhone", "fax", "shipToCompany", "shipToAddress", "shipToAddress2", "shipToCity", "shipToState", "shipToZip", "source", "payment", "phone", "cell", "customerEngineInfo", "isBlindShipment", "isNoPriceInvoice", "contactName", "cardPrinted", "paymentComplete", "invoiceStatus", "accountingStatus", "shippingStatus", "orderNotes", "shippingNotes", "mp", "cap", "br", "fl", "isCollect", "isThirdParty", "isEndOfDay", "isTaxable", "isSetup", "thirdPartyAccount", "email", "shipViaId", "createdBy", "soldBy")
 VALUES

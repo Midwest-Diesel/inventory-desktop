@@ -125,7 +125,7 @@ export default function HandwrittenItemsTable({ className, handwritten, setHandw
                       { item.partNum }
                     </td>
                     <td data-testid="item-desc">{ item.desc }</td>
-                    <td>{ formatCurrency(Number(item.unitPrice)) }</td>
+                    <td data-testid="item-price">{ formatCurrency(Number(item.unitPrice)) }</td>
                     <td>{ formatCurrency(Number(item.unitPrice) * Number(item.qty)) }</td>
                   </tr>
                 );

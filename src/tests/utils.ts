@@ -72,3 +72,12 @@ export const altSearch = async (page: Page, search: SearchData) => {
   await page.waitForSelector('.part-search');
   await page.waitForLoadState('networkidle');
 };
+
+export const createHandwritten = async (page: Page, customerSearch: string) => {
+  await goto(page, '/');
+  await page.getByTestId('customer-input').fill(customerSearch);
+  await page.getByTestId('customer-search-btn').click();
+  await page.getByTestId('customer-row').first().click();
+  await page.getByTestId('new-handwritten-btn').click();
+  await page.waitForLoadState('networkidle');
+};
