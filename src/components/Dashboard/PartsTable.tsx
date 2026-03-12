@@ -129,7 +129,7 @@ export default function PartsTable({ parts, partsData, pageCount, partsQty, rows
                   </td>
                   <td>{ formatDate(part.entryDate) }</td>
                   <td style={part.qty > 0 ? {} : { color: 'var(--red-2)', fontWeight: 'bold' }} data-testid="qty">{ part.qty }</td>
-                  <td style={{ width: '16rem' }}>{ part.desc }</td>
+                  <td style={{ width: '16rem' }} data-testid="desc">{ part.desc }</td>
                   <td>
                     <div className="parts-list__left-content">
                       {part.snImageExists &&
@@ -146,7 +146,7 @@ export default function PartsTable({ parts, partsData, pageCount, partsQty, rows
                   </td>
                   <td style={status === 'on-engine' ? { color: 'var(--status-on-engine)', fontWeight: 500 } : {}} >{ part.location }</td>
                   <td style={{ width: '22rem', padding: '0 0 0 0.3rem', backgroundColor:`var(--status-${status})`, color: `${status ? 'black' : 'white'}` }}>
-                    <div className="parts-list__remarks">
+                    <div className="parts-list__remarks" data-testid="remarks">
                       { part.remarks }
                     </div>
                   </td>

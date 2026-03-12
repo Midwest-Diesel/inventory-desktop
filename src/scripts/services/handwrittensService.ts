@@ -50,15 +50,15 @@ export const parseHandwrittenRes = (data: any) => {
 
 // Add "SOLD" to the remarks of the connected part
 const handleRemarksSoldText = async (item: NewHandwrittenItem | NewHandwrittenItemChild, id: number, handwrittenId: number) => {
-  if (item.partId) {
-    const part = await getPartById(item.partId);
-    const handwritten = await getHandwrittenById(handwrittenId);
-    if (!part || !handwritten) return Number(id);
+  if (!item.partId) return;
 
-    const qtySold = part.qty > 1 ? item.qty : null;
-    const remarks = formatRemarksSoldText(part.remarks, qtySold, handwritten.soldBy, handwritten.customer.company ?? '');
-    await editPart({ ...part, remarks });
-  }
+  const part = await getPartById(item.partId);
+  const handwritten = await getHandwrittenById(handwrittenId);
+  if (!part || !handwritten) return Number(id);
+
+  const qtySold = part.qty > 1 ? item.qty : null;
+  const remarks = formatRemarksSoldText(part.remarks, qtySold, handwritten.soldBy, handwritten.customer.company ?? '');
+  await editPart({ ...part, remarks });
 };
 
 // === GET routes === //

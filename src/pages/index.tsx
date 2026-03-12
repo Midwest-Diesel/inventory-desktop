@@ -100,11 +100,11 @@ export default function Dashboard() {
         // Turn the line item into a blank container for item children if it isn't already
         if (newItem.stockNum) {
           const originalItem = handwritten.handwrittenItems[0];
-          await addHandwrittenItemChild(originalItem.id, { partId: originalItem.partId ?? 0, qty: originalItem.qty ?? 0, cost: originalItem.cost ?? 0 });
+          await addHandwrittenItemChild(originalItem.id, { partId: originalItem.partId ?? 0, qty: originalItem.qty ?? 0, cost: originalItem.cost ?? 0 }, { addSoldRemarks: true });
           await editHandwrittenItem({ ...newItem, stockNum: null, qty: 0, cost: 0, handwrittenId: handwritten.id });
         }
         // Add child to item 
-        await addHandwrittenItemChild(newItem.id, { partId: part.id, qty, cost });
+        await addHandwrittenItemChild(newItem.id, { partId: part.id, qty, cost }, { addSoldRemarks: true });
         await editHandwrittenOrderNotes(handwritten.id, warranty);
       } else {
         await handleAddToHandwritten(handwritten.id, desc, qty, price, warranty, stockNum, cost);

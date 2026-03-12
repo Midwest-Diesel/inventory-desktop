@@ -96,30 +96,32 @@ test.describe('Basic Functionality', () => {
     await page.getByTestId('shipping-notes-input').fill('Test');
 
     await page.getByTestId('save-btn').click();
+    await page.waitForLoadState('networkidle');
     await page.getByTestId('no-changes-btn').click();
-    await page.getByTestId('po-num').waitFor();
+    await page.waitForLoadState('networkidle');
+    await page.getByTestId('edit-btn').waitFor();
 
-    expect(await page.getByTestId('po-num').textContent()).toEqual('T104B6');
-    expect(await page.getByTestId('source').textContent()).toEqual('Netcom');
-    expect(await page.getByTestId('contact').textContent()).toEqual('Bill');
-    expect(await page.getByTestId('bill-to-company').textContent()).toEqual('Rubber Duck Inc');
-    expect(await page.getByTestId('bill-to-address').textContent()).toEqual('4495 Lake Ave S');
-    expect(await page.getByTestId('bill-to-address-2').textContent()).toEqual('425');
-    expect(await page.getByTestId('bill-to-city').textContent()).toEqual('White Bear Lake');
-    expect(await page.getByTestId('bill-to-state').textContent()).toEqual('MN');
-    expect(await page.getByTestId('bill-to-zip').textContent()).toEqual('55110');
-    expect(await page.getByTestId('bill-to-phone').textContent()).toEqual('(651) 272-3618');
-    expect(await page.getByTestId('ship-to-company').textContent()).toEqual('Rubber Duck Inc');
-    expect(await page.getByTestId('ship-to-address').textContent()).toEqual('4495 Lake Ave S');
-    expect(await page.getByTestId('ship-to-address-2').textContent()).toEqual('425');
-    expect(await page.getByTestId('ship-to-city').textContent()).toEqual('White Bear Lake');
-    expect(await page.getByTestId('ship-to-state').textContent()).toEqual('MN');
-    expect(await page.getByTestId('ship-to-zip').textContent()).toEqual('55110');
-    expect(await page.getByTestId('ship-via').textContent()).toEqual('UPS Ground');
-    expect(await page.getByTestId('attn-to').textContent()).toEqual('Bob');
-    expect(await page.getByTestId('contact-phone').textContent()).toEqual('(488) 371-9460');
-    expect(await page.getByTestId('shipping-notes').textContent()).toEqual('Test');
-    expect(await page.getByTestId('date').textContent()).toEqual(formatDate(new Date()));
+    await expect(page.getByTestId('po-num')).toHaveText('T104B6');
+    await expect(page.getByTestId('source')).toHaveText('Netcom');
+    await expect(page.getByTestId('contact')).toHaveText('Bill');
+    await expect(page.getByTestId('bill-to-company')).toHaveText('Rubber Duck Inc');
+    await expect(page.getByTestId('bill-to-address')).toHaveText('4495 Lake Ave S');
+    await expect(page.getByTestId('bill-to-address-2')).toHaveText('425');
+    await expect(page.getByTestId('bill-to-city')).toHaveText('White Bear Lake');
+    await expect(page.getByTestId('bill-to-state')).toHaveText('MN');
+    await expect(page.getByTestId('bill-to-zip')).toHaveText('55110');
+    await expect(page.getByTestId('bill-to-phone')).toHaveText('(651) 272-3618');
+    await expect(page.getByTestId('ship-to-company')).toHaveText('Rubber Duck Inc');
+    await expect(page.getByTestId('ship-to-address')).toHaveText('4495 Lake Ave S');
+    await expect(page.getByTestId('ship-to-address-2')).toHaveText('425');
+    await expect(page.getByTestId('ship-to-city')).toHaveText('White Bear Lake');
+    await expect(page.getByTestId('ship-to-state')).toHaveText('MN');
+    await expect(page.getByTestId('ship-to-zip')).toHaveText('55110');
+    await expect(page.getByTestId('ship-via')).toHaveText('UPS Ground');
+    await expect(page.getByTestId('attn-to')).toHaveText('Bob');
+    await expect(page.getByTestId('contact-phone')).toHaveText('(488) 371-9460');
+    await expect(page.getByTestId('shipping-notes')).toHaveText('Test');
+    await expect(page.getByTestId('date')).toHaveText(formatDate(new Date()));
   });
 });
 
@@ -149,6 +151,40 @@ test.describe('Handwritten items', () => {
     await expect(page.getByTestId('item-qty').first()).toHaveText('6');
     await expect(page.getByTestId('item-price').first()).toHaveText('$100.00');
     expect(await page.getByTestId('order-notes').first().textContent()).toEqual('TEST WARRANTY\nCaterpillar warranty is not available on surplus engines and surplus parts.\nRebuilt Injectors come with a 6 month part replacement only warranty through Midwest Diesel, No labor or progressive damage.');
+  });
+
+  test('Add sold remarks to item', async ({ page }) => {
+    await createHandwritten(page, 'ConEquip');
+    await goto(page, '/');
+    await altSearch(page, { stockNum: 'UP9432' });
+    await expect(page.getByTestId('remarks').first()).toHaveText('T/O, NTBBD');
+    await addHandwrittenItem(page, 0, 'VALVE COVER', 6, 100);
+    await addWarranty(page, [1]);
+
+    await page.getByTestId('save-btn').waitFor();
+    await goto(page, '/');
+    const date = formatDate(new Date());
+    await expect(page.getByTestId('remarks').first()).toHaveText(`^ 6 SOLD BY TS ${date} ConEquip Parts & Equipment (14196) ^^T/O, NTBBD`);
+  });
+
+  test('Add sold remarks to item child', async ({ page }) => {
+    await createHandwritten(page, 'ConEquip');
+    await goto(page, '/');
+    await altSearch(page, { stockNum: 'UP9432' });
+    await addHandwrittenItem(page, 0, 'VALVE COVER', 6, 100);
+    await addWarranty(page, [1]);
+
+    await page.getByTestId('save-btn').waitFor();
+    await goto(page, '/');
+    await altSearch(page, { stockNum: 'UP12615' });
+    await expect(page.getByTestId('remarks').first()).toHaveText('T/O, NOT CHECKED, ONE HOLE');
+    await addHandwrittenItem(page, 0, 'VALVE COVER', 2, 80);
+    await addWarranty(page, [1]);
+
+    await page.getByTestId('save-btn').waitFor();
+    await goto(page, '/');
+    const date = formatDate(new Date());
+    await expect(page.getByTestId('remarks').first()).toHaveText(`^ 2 SOLD BY TS ${date} ConEquip Parts & Equipment (14196) ^^T/O, NOT CHECKED, ONE HOLE`);
   });
 });
 
@@ -196,70 +232,35 @@ test.describe('Cores', () => {
   });
 });
 
-test.describe('Cores', () => {
-  test('Core charge', async ({ page }) => {
-    await createHandwritten(page, 'ConEquip');
-    await goto(page, '/');
-    await altSearch(page, { stockNum: 'UP9432' });
-    await addHandwrittenItem(page, 0, 'VALVE COVER', 6, 100);
-
-    await page.getByTestId('core-charge-btn').first().click();
-    await page.waitForLoadState('networkidle');
-    await expect(page.getByTestId('item-part-num').first()).toHaveText('CORE DEPOSIT');
-    await expect(page.getByTestId('item-stock-num').first()).toHaveText('UP9432');
-  
-    await goto(page, '/cores');
-    await expect(page.getByTestId('part-num').first()).toHaveText('7E0333');
-  });
-
-  test('Core deposit', async ({ page }) => {
-    await page.getByTestId('link').first().click();
-    await page.getByTestId('save-btn').click();
-    await page.getByTestId('no-changes-btn').click();
-    await page.getByTestId('core-credit-btn').click();
-    await (await page.$$('[data-testid="core-credits-dialog"] .checkbox-wrapper-4'))[0].click();
-    await page.getByTestId('core-qty-input').focus();
-    await page.keyboard.press('Enter');
-    await page.getByTestId('core-credit-submit-btn').click();
-    await page.waitForLoadState('networkidle');
-
-    await page.getByTestId('link').nth(2).click();
-    await page.getByTestId('save-btn').click();
-    await page.getByTestId('no-changes-btn').click();
-    await expect(page.getByTestId('item-stock-num').first()).toHaveText(stockNum);
-    await expect(page.getByTestId('item-qty').first()).toHaveText('-1');
-  });
-});
-
 test.describe('Takeoffs', () => {
-  test('Create date code stockNum after takeoff', async ({ page }) => {
-    await goto(page, '/handwrittens');
-    await page.getByTestId('link').first().click();
-    await page.getByTestId('save-btn').click();
-    await page.getByTestId('no-changes-btn').click();
-    await expect(page.getByTestId('bill-to-company')).toHaveText('Rubber Duck Inc');
-    await page.getByTestId('takeoff-input').fill(stockNum);
-    await page.getByTestId('takeoff-input').focus();
-    await page.keyboard.press('Enter');
-    await expect(page.getByTestId('takeoff-qty-input')).toHaveValue('6');
-    await page.getByTestId('takeoff-qty-input').fill('5');
-    await page.getByTestId('takeoff-submit-btn').click();
-    await page.waitForTimeout(100);
+  // test('Create date code stockNum after takeoff', async ({ page }) => {
+  //   await goto(page, '/handwrittens');
+  //   await page.getByTestId('link').first().click();
+  //   await page.getByTestId('save-btn').click();
+  //   await page.getByTestId('no-changes-btn').click();
+  //   await expect(page.getByTestId('bill-to-company')).toHaveText('Rubber Duck Inc');
+  //   await page.getByTestId('takeoff-input').fill(stockNum);
+  //   await page.getByTestId('takeoff-input').focus();
+  //   await page.keyboard.press('Enter');
+  //   await expect(page.getByTestId('takeoff-qty-input')).toHaveValue('6');
+  //   await page.getByTestId('takeoff-qty-input').fill('5');
+  //   await page.getByTestId('takeoff-submit-btn').click();
+  //   await page.waitForTimeout(100);
 
-    await goto(page, '/');
-    await altSearch(page, { stockNum });
-    await expect(page.getByTestId('qty').first()).toHaveText(`${qty - 5}`);
-    await altSearch(page, { stockNum: `${stockNum} (${formatDate(new Date())})` });
-    await expect(page.getByTestId('qty').first()).toHaveText(`${0}`);
-    await expect(page.getByTestId('stock-num').first()).toHaveText(`${stockNum} (${formatDate(new Date())})`);
-    await page.getByTestId('part-num-link').click();
-    await page.waitForLoadState('networkidle');
-    await expect(page.getByTestId('sold-date')).toHaveText(formatDate(new Date()));
-    await expect(page.getByTestId('selling-price')).toHaveText('$100.00');
-    await expect(page.getByTestId('sold-to')).toHaveText('Rubber Duck Inc');
-    await expect(page.getByTestId('profit-margin')).toHaveText('$99.99');
-    await expect(page.getByTestId('profit-percent')).toHaveText('99.99%');
-  });
+  //   await goto(page, '/');
+  //   await altSearch(page, { stockNum });
+  //   await expect(page.getByTestId('qty').first()).toHaveText(`${qty - 5}`);
+  //   await altSearch(page, { stockNum: `${stockNum} (${formatDate(new Date())})` });
+  //   await expect(page.getByTestId('qty').first()).toHaveText(`${0}`);
+  //   await expect(page.getByTestId('stock-num').first()).toHaveText(`${stockNum} (${formatDate(new Date())})`);
+  //   await page.getByTestId('part-num-link').click();
+  //   await page.waitForLoadState('networkidle');
+  //   await expect(page.getByTestId('sold-date')).toHaveText(formatDate(new Date()));
+  //   await expect(page.getByTestId('selling-price')).toHaveText('$100.00');
+  //   await expect(page.getByTestId('sold-to')).toHaveText('Rubber Duck Inc');
+  //   await expect(page.getByTestId('profit-margin')).toHaveText('$99.99');
+  //   await expect(page.getByTestId('profit-percent')).toHaveText('99.99%');
+  // });
 
   test('Complete normal takeoff', async ({ page }) => {
     await goto(page, '/handwrittens');

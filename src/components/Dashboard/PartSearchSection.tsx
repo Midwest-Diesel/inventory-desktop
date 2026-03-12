@@ -143,7 +143,7 @@ export default function PartSearchSection({ selectHandwrittenOpen, setSelectHand
       return;
     }
     toast.sendToast('Quick picked item', 'success');
-    await addHandwrittenItemChild(quickPickItemId, { partId: part.id, qty: part.qty, cost: part.purchasePrice });
+    await addHandwrittenItemChild(quickPickItemId, { partId: part.id, qty: part.qty, cost: part.purchasePrice }, { addSoldRemarks: true });
     const item = await getHandwrittenItemById(quickPickItemId);
     const child = item?.invoiceItemChildren.find((i) => i.stockNum === 'In/Out');
     if (!child) return;
