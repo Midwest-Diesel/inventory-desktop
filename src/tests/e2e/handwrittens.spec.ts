@@ -178,6 +178,50 @@ test.describe('Cores', () => {
     await page.keyboard.press('Enter');
     await page.getByTestId('core-credit-submit-btn').click();
     await page.waitForLoadState('networkidle');
+    
+    await page.getByTestId('item-qty-input').first().fill('4');
+    await page.getByTestId('save-btn').click();
+    await page.waitForLoadState('networkidle');
+
+    await expect(page.getByTestId('item-qty').first()).toHaveText('4');
+    await page.getByTestId('edit-btn').click();
+    await page.getByTestId('item-delete-btn').first().click();
+    await page.getByTestId('save-btn').click();
+    await page.waitForLoadState('networkidle');
+
+    await expect(page.getByTestId('item-desc').first()).toHaveText('THERM HSNG');
+    await expect(page.getByTestId('item-qty').first()).toHaveText('6');
+    await expect(page.getByTestId('item-price').first()).toHaveText('$100.00');
+    expect(await page.getByTestId('order-notes').first().textContent()).toEqual('TEST WARRANTY\nCaterpillar warranty is not available on surplus engines and surplus parts.\nRebuilt Injectors come with a 6 month part replacement only warranty through Midwest Diesel, No labor or progressive damage.');
+  });
+});
+
+test.describe('Cores', () => {
+  test('Core charge', async ({ page }) => {
+    await createHandwritten(page, 'ConEquip');
+    await goto(page, '/');
+    await altSearch(page, { stockNum: 'UP9432' });
+    await addHandwrittenItem(page, 0, 'VALVE COVER', 6, 100);
+
+    await page.getByTestId('core-charge-btn').first().click();
+    await page.waitForLoadState('networkidle');
+    await expect(page.getByTestId('item-part-num').first()).toHaveText('CORE DEPOSIT');
+    await expect(page.getByTestId('item-stock-num').first()).toHaveText('UP9432');
+  
+    await goto(page, '/cores');
+    await expect(page.getByTestId('part-num').first()).toHaveText('7E0333');
+  });
+
+  test('Core deposit', async ({ page }) => {
+    await page.getByTestId('link').first().click();
+    await page.getByTestId('save-btn').click();
+    await page.getByTestId('no-changes-btn').click();
+    await page.getByTestId('core-credit-btn').click();
+    await (await page.$$('[data-testid="core-credits-dialog"] .checkbox-wrapper-4'))[0].click();
+    await page.getByTestId('core-qty-input').focus();
+    await page.keyboard.press('Enter');
+    await page.getByTestId('core-credit-submit-btn').click();
+    await page.waitForLoadState('networkidle');
 
     await page.getByTestId('link').nth(2).click();
     await page.getByTestId('save-btn').click();
