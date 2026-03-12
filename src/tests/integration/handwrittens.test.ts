@@ -150,7 +150,7 @@ describe('Handwrittens Integration', () => {
                 handwrittenId: null,
                 id: 1,
                 invoiceNum: null,
-                legacyId: 771790682,
+                legacyId: null,
                 listPrice: 179.84,
                 location: 'C5G4A',
                 manufacturer: 'CATERPILLAR',

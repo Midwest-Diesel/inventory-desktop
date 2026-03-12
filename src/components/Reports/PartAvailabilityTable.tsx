@@ -15,7 +15,7 @@ export default function PartAvailabilityTable({ closeTable, data }: Props) {
 
   const copyToClipboard = () => {
     const rowsText = data.map((row) =>
-      [row.partNum, row.desc, row.total].join('\t')
+      [row.partNum, row.desc, row.condition, row.total].join('\t')
     ).join('\n');
     navigator.clipboard.writeText(rowsText);
   };

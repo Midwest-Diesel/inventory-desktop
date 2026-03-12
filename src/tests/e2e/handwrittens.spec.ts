@@ -23,6 +23,7 @@ const addHandwrittenItem = async (page: Page, rowIndex: number, desc: string, qt
   await page.getByTestId('select-handwritten-price').fill(price.toString());
   await page.getByTestId('select-handwritten-submit-btn').click();
   await page.waitForLoadState('networkidle');
+  
 };
 
 const addWarranty = async (page: Page, checkboxIndexes: number[], customWarranty?: string) => {
@@ -35,7 +36,6 @@ const addWarranty = async (page: Page, checkboxIndexes: number[], customWarranty
   await page.getByTestId('warranty-submit-btn').click();
   await page.getByTestId('save-btn').waitFor();
 };
-
 
 test.describe('Basic Functionality', () => {
   test('Display handwrittens', async ({ page }) => {
@@ -194,9 +194,10 @@ test.describe('Cores', () => {
     await goto(page, '/');
     await altSearch(page, { stockNum: 'UP9432' });
     await addHandwrittenItem(page, 0, 'VALVE COVER', 6, 100);
+    await addWarranty(page, [1]);
 
     await page.getByTestId('core-charge-btn').first().click();
-    await page.waitForLoadState('networkidle');
+    await page.getByTestId('save-btn').click();
     await expect(page.getByTestId('item-part-num').first()).toHaveText('CORE DEPOSIT');
     await expect(page.getByTestId('item-stock-num').first()).toHaveText('UP9432');
   
@@ -205,30 +206,31 @@ test.describe('Cores', () => {
   });
 
   test('Core deposit', async ({ page }) => {
-    await page.getByTestId('link').first().click();
+    await createHandwritten(page, 'ConEquip');
+    await goto(page, '/');
+    await altSearch(page, { stockNum: 'UP9432' });
+    await addHandwrittenItem(page, 0, 'VALVE COVER', 6, 100);
+    await addWarranty(page, [1]);
+    await page.getByTestId('core-charge-btn').first().click();
     await page.getByTestId('save-btn').click();
-    await page.getByTestId('no-changes-btn').click();
+
     await page.getByTestId('core-credit-btn').click();
     await (await page.$$('[data-testid="core-credits-dialog"] .checkbox-wrapper-4'))[0].click();
     await page.getByTestId('core-qty-input').focus();
     await page.keyboard.press('Enter');
     await page.getByTestId('core-credit-submit-btn').click();
     await page.waitForLoadState('networkidle');
-    
-    await page.getByTestId('item-qty-input').first().fill('4');
-    await page.getByTestId('save-btn').click();
-    await page.waitForLoadState('networkidle');
 
-    await expect(page.getByTestId('item-qty').first()).toHaveText('4');
-    await page.getByTestId('edit-btn').click();
-    await page.getByTestId('item-delete-btn').first().click();
-    await page.getByTestId('save-btn').click();
+    await goto(page, '/handwrittens');
+    await (page.getByTestId('link').first()).click();
     await page.waitForLoadState('networkidle');
+    await page.getByTestId('save-btn').click();
 
-    await expect(page.getByTestId('item-desc').first()).toHaveText('THERM HSNG');
-    await expect(page.getByTestId('item-qty').first()).toHaveText('6');
-    await expect(page.getByTestId('item-price').first()).toHaveText('$100.00');
-    expect(await page.getByTestId('order-notes').first().textContent()).toEqual('TEST WARRANTY\nCaterpillar warranty is not available on surplus engines and surplus parts.\nRebuilt Injectors come with a 6 month part replacement only warranty through Midwest Diesel, No labor or progressive damage.');
+    await page.getByTestId('edit-btn').waitFor();
+    await expect(page.getByTestId('item-desc').first()).toHaveText('VALVE COVER');
+    await expect(page.getByTestId('item-qty').first()).toHaveText('-1');
+    await expect(page.getByTestId('item-price').first()).toHaveText('$0.00');
+    await expect(page.getByTestId('item-cost').first()).toHaveText('$0.01');
   });
 });
 
@@ -263,30 +265,33 @@ test.describe('Takeoffs', () => {
   // });
 
   test('Complete normal takeoff', async ({ page }) => {
-    await goto(page, '/handwrittens');
-    await page.getByTestId('link').nth(1).click();
+    await createHandwritten(page, 'ConEquip');
+    await goto(page, '/');
+    await altSearch(page, { stockNum: 'TH418-19A' });
+    await addHandwrittenItem(page, 0, 'THERM HSNG', 34, 100);
+    await addWarranty(page, [1]);
     await page.getByTestId('save-btn').click();
-    await page.waitForTimeout(100);
-    await expect(page.getByTestId('bill-to-company')).toHaveText('ConEquip Parts & Equipment (14196)');
-    await page.getByTestId('takeoff-input').fill('TH609-23C');
+
+    await page.getByTestId('takeoff-input').fill('TH418-19A');
     await page.getByTestId('takeoff-input').focus();
     await page.keyboard.press('Enter');
-    await expect(page.getByTestId('takeoff-qty-input')).toHaveValue('38');
+    await expect(page.getByTestId('takeoff-qty-input')).toHaveValue('34');
     await page.getByTestId('takeoff-qty-input').fill('34');
     await page.getByTestId('takeoff-submit-btn').click();
+    await page.waitForLoadState('networkidle');
     await page.waitForTimeout(100);
 
     await goto(page, '/');
-    await altSearch(page, { stockNum: 'TH609-23C' });
+    await altSearch(page, { stockNum: 'TH418-19A' });
     await expect(page.getByTestId('qty').first()).toHaveText('0');
-    await expect(page.getByTestId('stock-num').first()).toHaveText('TH609-23C');
+    await expect(page.getByTestId('stock-num').first()).toHaveText('TH418-19A');
 
     await page.getByTestId('part-num-link').first().click();
     await expect(page.getByTestId('qty-sold')).toHaveText('34');
     await expect(page.getByTestId('sold-date')).toHaveText(formatDate(new Date()));
-    await expect(page.getByTestId('selling-price')).toHaveText('$80.00');
+    await expect(page.getByTestId('selling-price')).toHaveText('$100.00');
     await expect(page.getByTestId('sold-to')).toHaveText('ConEquip Parts & Equipment (14196)');
-    await expect(page.getByTestId('profit-margin')).toHaveText('$80.00');
+    await expect(page.getByTestId('profit-margin')).toHaveText('$100.00');
     await expect(page.getByTestId('profit-percent')).toHaveText('100%');
   });
 

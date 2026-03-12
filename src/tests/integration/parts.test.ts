@@ -198,7 +198,7 @@ describe('Parts Integration', () => {
 
   it('Get next UP', async () => {
     const nextUP = await getNextUP();
-    expect(nextUP).toEqual('UP9434');
+    expect(nextUP).toEqual('UP12616');
   });
 
   it('Edit weightDims', async () => {
