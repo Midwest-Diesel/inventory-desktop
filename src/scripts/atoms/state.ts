@@ -40,7 +40,6 @@ export const handwrittenSearchAtom = atom<any>({});
 export const warrantySearchAtom = atom<any>({});
 export const ReturnSearchAtom = atom<any>({});
 export const FreightCarriersAtom = atom<FreightCarrier[]>([]);
-export const errorAtom = atom<string>('');
 export const printQueAtom = atom<{ name: string, printCmd: string, data: any, printArgs?: any, maxWidth: string, maxHeight: string }[]>([]);
 export const pdfQueAtom = atom<{ name: string, pdfCmd: string, data: any, args: any, maxWidth: string, maxHeight: string }[]>([]);
 export const quickPickItemIdAtom = atom<number>(0);
