@@ -59,7 +59,7 @@ export default function ShippingListModal({ open, onNext, onPrev, handwrittenIte
         customer: `${handwritten?.customer.company}${handwritten?.billToCompany !== handwritten?.shipToCompany ? ` / ${handwritten?.shipToCompany}` : '' }`,
         attn_to: handwritten?.shipToContact ?? '',
         part_num: 'Multiple',
-        desc: desc,
+        desc,
         stock_num: 'See Yellow',
         location: 'See Yellow',
         mp: handwritten?.isBlindShipment ? 0 : handwritten?.mp,
@@ -82,6 +82,7 @@ export default function ShippingListModal({ open, onNext, onPrev, handwrittenIte
       for (let i = 0; i < handwrittenItems.length; i++) {
         if (['FREIGHT', 'TAX', 'CORE DEPOSIT', 'CORE DEPOSIT PRIORITY', 'FEE'].includes(handwrittenItems[i].partNum ?? '')) continue;
         const { length, width, height, partNum } = handwrittenItems[i];
+        const qty = Number(handwrittenItems[i].qty);
         const pics = await getImagesFromPart(partNum ?? '');
         const new_shipping_list_row = {
           handwritten_id: Number(handwritten?.id),
@@ -91,7 +92,7 @@ export default function ShippingListModal({ open, onNext, onPrev, handwrittenIte
           customer: `${handwritten?.customer.company}${handwritten?.billToCompany !== handwritten?.shipToCompany ? ` / ${handwritten?.shipToCompany}` : '' }`,
           attn_to: handwritten?.shipToContact ?? '',
           part_num: handwrittenItems[i].partNum,
-          desc: handwrittenItems[i].desc,
+          desc: qty > 1 ? `${qty} ${handwrittenItems[i].desc}` : handwrittenItems[i].desc,
           stock_num: handwrittenItems[i].stockNum,
           location: handwrittenItems[i].location,
           mp: handwritten?.isBlindShipment ? 0 : handwritten?.mp,
