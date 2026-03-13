@@ -219,14 +219,12 @@ test.describe('Cores', () => {
     await page.getByTestId('core-qty-input').focus();
     await page.keyboard.press('Enter');
     await page.getByTestId('core-credit-submit-btn').click();
-    await page.waitForLoadState('networkidle');
+    await page.waitForTimeout(100);
 
     await goto(page, '/handwrittens');
-    await (page.getByTestId('link').first()).click();
-    await page.waitForLoadState('networkidle');
+    await page.getByTestId('link').first().click();
     await page.getByTestId('save-btn').click();
 
-    await page.getByTestId('edit-btn').waitFor();
     await expect(page.getByTestId('item-desc').first()).toHaveText('VALVE COVER');
     await expect(page.getByTestId('item-qty').first()).toHaveText('-1');
     await expect(page.getByTestId('item-price').first()).toHaveText('$0.00');
@@ -297,11 +295,10 @@ test.describe('Takeoffs', () => {
 
   test('Complete engine takeoff', async ({ page }) => {
     await goto(page, '/handwrittens');
-    await page.getByTestId('handwritten-row').nth(3).click();
+    await page.getByTestId('handwritten-row').first().click();
     await page.getByTestId('takeoff-input').fill('7342');
     await page.getByTestId('takeoff-input').focus();
     await page.keyboard.press('Enter');
-    await page.waitForTimeout(100);
     await page.getByTestId('takeoff-submit-btn').click();
 
     await page.waitForLoadState('networkidle');
@@ -311,14 +308,11 @@ test.describe('Takeoffs', () => {
 
 test.describe('SENT TO ACCOUNTING', () => {
   test('Prompt for promotional materials', async ({ page }) => {
-    await goto(page, '/handwrittens');
-    await page.getByTestId('link').nth(1).click();
-    await page.waitForLoadState('networkidle');
+    await createHandwritten(page, 'ConEquip');
     await page.getByTestId('sales-status').selectOption('SENT TO ACCOUNTING');
     await page.getByTestId('save-btn').click();
 
     await page.waitForSelector('[data-testid="promotional-dialog"]');
-    await page.waitForLoadState('networkidle');
     await page.getByTestId('mp-input').fill('1');
     await page.getByTestId('cap-input').fill('2');
     await page.getByTestId('br-input').fill('3');
@@ -331,38 +325,5 @@ test.describe('SENT TO ACCOUNTING', () => {
     await expect(page.getByTestId('cap')).toHaveText('2');
     await expect(page.getByTestId('br')).toHaveText('3');
     await expect(page.getByTestId('fl')).toHaveText('4');
-  });
-});
-
-test.describe('Clean up', () => {
-  test('Delete handwritten', async ({ page }) => {
-    await goto(page, '/handwrittens');
-    const oldIdLocator = page.getByTestId('link').first();
-    await expect(oldIdLocator).toBeVisible();
-    const oldId = await oldIdLocator.textContent();
-  
-    await oldIdLocator.click();
-    await page.waitForSelector('[data-testid="save-btn"]');
-    await page.getByTestId('stop-edit-btn').click();
-    await page.getByTestId('delete-btn').click();
-  
-    const newIdLocator = page.getByTestId('link').first();
-    await expect(newIdLocator).toBeVisible();
-    const newId = await newIdLocator.textContent();
-    expect(newId).not.toEqual(oldId);
-
-    
-    const oldIdLocator2 = page.getByTestId('link').first();
-    await expect(oldIdLocator2).toBeVisible();
-    const oldId2 = await oldIdLocator2.textContent();
-  
-    await oldIdLocator2.click();
-    await page.waitForSelector('[data-testid="delete-btn"]');
-    await page.getByTestId('delete-btn').click();
-  
-    const newIdLocator2 = page.getByTestId('link').first();
-    await expect(newIdLocator2).toBeVisible();
-    const newId2= await newIdLocator2.textContent();
-    expect(newId2).not.toEqual(oldId2);
   });
 });

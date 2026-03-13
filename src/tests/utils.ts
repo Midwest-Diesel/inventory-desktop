@@ -79,5 +79,8 @@ export const createHandwritten = async (page: Page, customerSearch: string) => {
   await page.getByTestId('customer-search-btn').click();
   await page.getByTestId('customer-row').first().click();
   await page.getByTestId('new-handwritten-btn').click();
+  await page.getByTestId('payment-type-input').selectOption('Visa');
+  await page.getByTestId('ship-via-input').selectOption('FedEx Ground');
+  await page.getByTestId('source-input').selectOption('Netcom');
   await page.waitForLoadState('networkidle');
 };
