@@ -96,7 +96,7 @@ export default function EditHandwrittenItemsTable({ handwritten, handwrittenItem
                   <Input
                     value={item.cost ?? ''}
                     onChange={(e) => handleEditItem({ ...item, cost: e.target.value ? Number(e.target.value) : null }, i)}
-                    disabled={isDisabled}
+                    disabled={isDisabled || item.invoiceItemChildren.length > 0}
                     data-testid="item-cost-input"
                     type="number"
                     step="any"
