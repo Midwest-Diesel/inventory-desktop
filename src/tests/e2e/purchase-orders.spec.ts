@@ -9,6 +9,7 @@ test.beforeEach(async ({ page }) => {
   await page.getByTestId('login-btn').click();
   await page.waitForSelector('.navbar');
   await goto(page, '/purchase-orders');
+  await page.waitForLoadState('networkidle'); 
 });
 
 
@@ -21,23 +22,29 @@ test.describe('Basic Functionality', () => {
   
   test('Edit purchase order', async ({ page }) => {
     page.on('dialog', (dialog) => dialog.accept());
+    await page.getByTestId('po-num-link').first().waitFor();
     await page.getByTestId('po-num-link').first().click();
-    await page.waitForLoadState('networkidle');
+    
     await page.getByTestId('edit-btn').click();
     await page.getByTestId('payment-terms').selectOption('On Account');
     await page.getByTestId('purchased-for').fill('stock');
     await page.getByTestId('save-btn').click();
     await page.waitForLoadState('networkidle');
+
     await expect(page.getByTestId('purchased-for')).toHaveText('stock');
   });
 
   test('Delete purchase order', async ({ page }) => {
     page.on('dialog', (dialog) => dialog.accept('confirm'));
-    const poNum = await page.getByTestId('po-num-link').nth(1).textContent();
-    await page.getByTestId('po-num-link').first().click();
-    await page.waitForLoadState('networkidle');
-    await page.getByTestId('delete-btn').click();
+    await page.getByTestId('po-num-link').first().waitFor();
+    const poNum = await page.getByTestId('po-num-link').first().textContent();
     expect(poNum).toBeTruthy();
-    await expect(page.getByTestId('po-num-link').first()).toHaveText(poNum!);
+
+    await page.getByTestId('po-num-link').first().click();
+    await page.getByTestId('delete-btn').click();
+    await page.waitForLoadState('networkidle');
+    await page.waitForTimeout(100);
+    
+    await expect(page.getByTestId('po-num-link').first()).not.toBeVisible();
   });
 });

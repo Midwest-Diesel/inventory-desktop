@@ -12,8 +12,8 @@ INSERT INTO "partsInfo" ("partNum", "desc", "altParts", "weightDims", "prefix") 
 INSERT INTO "partsInfo" ("partNum", "desc", "altParts", "weightDims", "prefix") VALUES ('20R4880', 'ELBOW', '3949674, 20R4880', NULL, 'ELB');
 INSERT INTO "partsInfo" ("partNum", "desc", "altParts", "weightDims", "prefix") VALUES ('E23525567', 'VALVE', 'E23525567, R23525567', NULL, 'VA');
 INSERT INTO "partsInfo" ("partNum", "desc", "altParts", "weightDims", "prefix") VALUES ('R23525567', 'VALVE', 'E23525567, R23525567', NULL, 'VA');
-INSERT INTO "partsInfo" ("partNum", "desc", "altParts", "weightDims", "prefix") VALUES ('7L0406', 'VALVE', '7L0406, 9N3242', NULL, 'VA');
-INSERT INTO "partsInfo" ("partNum", "desc", "altParts", "weightDims", "prefix") VALUES ('9N3242', 'VALVE', '7L0406, 9N3242', NULL, 'VA');
+INSERT INTO "partsInfo" ("partNum", "desc", "altParts", "weightDims", "prefix") VALUES ('7L0406', 'VALVE', '7L0406, 9N3242, 9N3240', NULL, 'VA');
+INSERT INTO "partsInfo" ("partNum", "desc", "altParts", "weightDims", "prefix") VALUES ('9N3242', 'VALVE', '7L0406, 9N3242, 9N3240', NULL, 'VA');
 INSERT INTO "partsInfo" ("partNum", "desc", "altParts", "weightDims", "prefix") VALUES ('10R3264', 'INJECTOR C15', '2447715, 2530615, 10R3264, 3740750, 20R2284, 20R2284R, 10R3264R, 6180750, 6470750', 'UPS: 7LBS 12x10x6', 'IGP');
 INSERT INTO "partsInfo" ("partNum", "desc", "altParts", "weightDims", "prefix") VALUES ('10R3264R', 'INJECTOR C27', '2447715, 2530615, 10R3264, 3740750, 20R2284, 20R2284R, 10R3264R, 6180750, 6470750', 'UPS: 7LBS 12x10x6', NULL);
 INSERT INTO "partsInfo" ("partNum", "desc", "altParts", "weightDims", "prefix") VALUES ('2447715', 'INJECTOR C15', '2447715, 2530615, 10R3264, 3740750, 20R2284, 20R2284R, 10R3264R, 6180750, 6470750', NULL, 'IGP');
@@ -29,7 +29,7 @@ INSERT INTO "partsInfo" ("partNum", "desc", "altParts", "weightDims", "prefix") 
 INSERT INTO "partsInfo" ("partNum", "desc", "altParts", "weightDims", "prefix") VALUES ('4700245', 'INJECTOR C9', '4700245', NULL, 'INJ');
 INSERT INTO "partsInfo" ("partNum", "desc", "altParts", "weightDims", "prefix") VALUES ('7E0333', 'VALVE COVER 3406', '7C9667, 4N4536, 4N4537, 7C9261, 7E0330, 7E0331, 7E0333, 7W9179', null, 'VC');
 INSERT INTO "partsInfo" ("partNum", "desc", "altParts", "weightDims", "prefix") VALUES ('7E0331', 'VALVE COVER 3406', '7C9667, 4N4536, 4N4537, 7C9261, 7E0330, 7E0331, 7E0333, 7W9179', null, 'VC');
-INSERT INTO "partsInfo" ("partNum", "desc", "altParts", "weightDims", "prefix") VALUES ('9N3240', 'THERM HSNG 3306', '9N3240', NULL, 'TH');
+INSERT INTO "partsInfo" ("partNum", "desc", "altParts", "weightDims", "prefix") VALUES ('9N3240', 'THERM HSNG 3306', '9N3240, 7L0406, 9N3242', NULL, 'TH');
 INSERT INTO "partsInfo" ("partNum", "desc", "altParts", "weightDims", "prefix") VALUES ('0323237', 'SPACER', '0323237, 323237, 1W4589, 1336934', NULL, 'SP');
 
 -- PARTS
@@ -38,7 +38,7 @@ VALUES
   (null, null, '7E0333', 'CATERPILLAR', 'VALVE COVER 3406', 'C5G4A', 'T/O, NTBBD', '2026-02-17', 2000, 34, 'UP9432', 0.01, 179.84, 0, 161.87, null, 0, null, 'CB1', null, 'Good Used', 0.0, 7259, 0, 0, '2020-06-09', null, null , null),
   (null, null, '7E0331', 'CATERPILLAR', 'VALVE COVER 3406', 'C5G4A', 'T/O, NOT CHECKED, ONE HOLE', '2026-02-17', 2000, 31, 'UP12615', 0.01, 179.84, 0, 161.87, null, 0, null, 'CB1', null, 'Good Used', 0.0, 7259, 0, 0, '2020-06-09', null, null , null),
   (null, null, '9N3240', 'CATERPILLAR', 'THERM HSNG 3306', 'C5G4A', '(8.5) CCBD AND ZD, CAST IRON THERM HSNG, LOOKS GOOD', '2026-02-17', 2000, 34, 'TH609-23C', 0.01, 179.84, 0, 161.87, null, 0, null, 'CB1', null, 'Good Used', 0.0, 7259, 0, 0, '2020-06-09', null, null , null),
-  (null, null, '7L0406', 'CATERPILLAR', 'THERM HSNG 3306', 'C5G4A', '(8.5) CCBD AND ZD, CAST IRON THERM HSNG, LOOKS GOOD', '2026-02-17', 2000, 34, 'TH418-19A', 0.01, 179.84, 0, 161.87, null, 0, null, 'CB1', null, 'Good Used', 0.0, 7259, 0, 0, '2020-06-09', null, null , null);
+  (null, null, '7L0406', 'CATERPILLAR', 'THERM HSNG 3306', 'C5G4A', '(8.5) CCBD AND ZD, CAST IRON THERM HSNG, LOOKS GOOD', '2026-02-17', 2000, 1, 'TH418-19A', 0.01, 179.84, 0, 161.87, null, 0, null, 'CB1', null, 'Good Used', 0.0, 7259, 0, 0, '2020-06-09', null, null , null);
 
 -- CUSTOMERS
 INSERT INTO "customers" ("company", "contact", "partsManager", "partsManagerEmail", "serviceManager", "serviceManagerEmail", "other", "phone", "billToPhone", "fax", "email", "terms", "billToAddress", "billToAddress2", "billToCity", "billToState", "billToZip", "shipToAddress", "shipToAddress2", "shipToCity", "shipToState", "shipToZip", "dateContacted", "comments", "customerType", "source", "country", "isTaxable", "paymentType")
@@ -97,3 +97,8 @@ VALUES
   (3086, 'C-7', '7XC09627', '2006-01-31', '2006-02-05', '1899-12-30', NULL, '0R4697  REF. SER.# 3ZJ36500', '425', 'NC MACHINERY', 2300, NULL, 700, 'B3066 TOROMONT CAT', 550, 'C3066', 250, 'P3066', 300, 'FP3066', 0, NULL, 0, NULL, 'RunnerReady', 2300, NULL, false, 0, NULL, false, NULL, NULL, 0, 0, 0, 0, 0, 0, 1800, ' Purchase Price', 0, NULL, 0, NULL, 0, NULL, 'CoreEngine', 3066, false, NULL, NULL, NULL, NULL, false, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, false, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
   (7342, 'C7.1', '7XC09627', '2006-01-31', '2006-02-05', '1899-12-30', NULL, '0R4697  REF. SER.# 3ZJ36500', '425', 'NC MACHINERY', 2300, NULL, 700, 'B3066 TOROMONT CAT', 550, 'C3066', 250, 'P3066', 300, 'FP3066', 0, NULL, 0, NULL, 'RunnerReady', 2300, NULL, false, 0, NULL, false, NULL, NULL, 0, 0, 0, 0, 0, 0, 1800, ' Purchase Price', 0, NULL, 0, NULL, 0, NULL, 'CoreEngine', 3066, false, NULL, NULL, NULL, NULL, false, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, false, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
   (7259, 'C7.1', '79419143', '2006-01-31', '2006-02-05', '1899-12-30', NULL, '0R4697  REF. SER.# 3ZJ36500', '500', 'NC MACHINERY', 2300, NULL, 700, 'B3066 TOROMONT CAT', 550, 'C3066', 250, 'P3066', 300, 'FP3066', 0, NULL, 0, NULL, 'RunnerReady', 2300, NULL, false, 0, NULL, false, NULL, NULL, 0, 0, 0, 0, 0, 0, 1800, ' Purchase Price', 0, NULL, 0, NULL, 0, NULL, 'CoreEngine', 3066, false, NULL, NULL, NULL, NULL, false, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, false, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+
+-- PURCHASE ORDERS
+INSERT INTO "purchaseOrders" ("date", "salesmanId")
+VALUES
+  (CURRENT_DATE, 1);

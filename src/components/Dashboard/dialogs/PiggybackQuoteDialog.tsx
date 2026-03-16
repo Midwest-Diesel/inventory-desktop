@@ -5,7 +5,6 @@ import Pagination from "@/components/library/Pagination";
 import { useAtom } from "jotai";
 import { userAtom } from "@/scripts/atoms/state";
 import Button from "@/components/library/Button";
-import { getCustomerById } from "@/scripts/services/customerService";
 import { getPartById, searchAltParts } from "@/scripts/services/partsService";
 import Loading from "@/components/library/Loading";
 import { addQuote, piggybackQuote } from "@/scripts/services/quotesService";

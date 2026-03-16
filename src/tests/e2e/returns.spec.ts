@@ -50,7 +50,7 @@ test.describe('Basic Functionality', () => {
     await page.getByTestId('delete-btn').click();
     await page.waitForLoadState('networkidle');
     await goto(page, '/returns');
-    await expect(page.getByTestId('handwritten-link').first()).not.toHaveText('2');
+    await expect(page.getByTestId('return-link').first()).not.toBeVisible();
   });
 });
 
@@ -64,6 +64,6 @@ test.describe('Return Credits', () => {
     await page.getByTestId('link').first().click();
     await page.waitForLoadState('networkidle');
     await expect(page.getByTestId('item-qty').first()).toHaveText('-1');
-    await expect(page.getByTestId('item-desc').first()).toHaveText('RETURNED PART: PAID CK # 17495 09/13/96');
+    await expect(page.getByTestId('item-desc').first()).toHaveText('RETURNED PART: C7.1 Surplus Long Block');
   });
 });

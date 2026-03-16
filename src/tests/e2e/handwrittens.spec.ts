@@ -27,12 +27,17 @@ const addHandwrittenItem = async (page: Page, rowIndex: number, desc: string, qt
 };
 
 const addWarranty = async (page: Page, checkboxIndexes: number[], customWarranty?: string) => {
-  await page.waitForSelector('[data-testid="select-handwritten-dialog"] .checkbox-wrapper-4');
+  const dialog = page.getByTestId('select-handwritten-dialog');
+  await dialog.waitFor();
+  const checkboxes = dialog.locator('.checkbox-wrapper-4');
+
   for (const index of checkboxIndexes) {
-    await (await page.$$('[data-testid="select-handwritten-dialog"] .checkbox-wrapper-4'))[index].click();
+    const checkbox = checkboxes.nth(index);
+    await checkbox.waitFor({ state: 'visible' });
+    await checkbox.click({ force: true });   
   }
   if (customWarranty) await page.getByTestId('warranty').fill(customWarranty);
-
+  
   await page.getByTestId('warranty-submit-btn').click();
   await page.getByTestId('save-btn').waitFor();
 };
@@ -233,48 +238,18 @@ test.describe('Cores', () => {
 });
 
 test.describe('Takeoffs', () => {
-  // test('Create date code stockNum after takeoff', async ({ page }) => {
-  //   await goto(page, '/handwrittens');
-  //   await page.getByTestId('link').first().click();
-  //   await page.getByTestId('save-btn').click();
-  //   await page.getByTestId('no-changes-btn').click();
-  //   await expect(page.getByTestId('bill-to-company')).toHaveText('Rubber Duck Inc');
-  //   await page.getByTestId('takeoff-input').fill(stockNum);
-  //   await page.getByTestId('takeoff-input').focus();
-  //   await page.keyboard.press('Enter');
-  //   await expect(page.getByTestId('takeoff-qty-input')).toHaveValue('6');
-  //   await page.getByTestId('takeoff-qty-input').fill('5');
-  //   await page.getByTestId('takeoff-submit-btn').click();
-  //   await page.waitForTimeout(100);
-
-  //   await goto(page, '/');
-  //   await altSearch(page, { stockNum });
-  //   await expect(page.getByTestId('qty').first()).toHaveText(`${qty - 5}`);
-  //   await altSearch(page, { stockNum: `${stockNum} (${formatDate(new Date())})` });
-  //   await expect(page.getByTestId('qty').first()).toHaveText(`${0}`);
-  //   await expect(page.getByTestId('stock-num').first()).toHaveText(`${stockNum} (${formatDate(new Date())})`);
-  //   await page.getByTestId('part-num-link').click();
-  //   await page.waitForLoadState('networkidle');
-  //   await expect(page.getByTestId('sold-date')).toHaveText(formatDate(new Date()));
-  //   await expect(page.getByTestId('selling-price')).toHaveText('$100.00');
-  //   await expect(page.getByTestId('sold-to')).toHaveText('Rubber Duck Inc');
-  //   await expect(page.getByTestId('profit-margin')).toHaveText('$99.99');
-  //   await expect(page.getByTestId('profit-percent')).toHaveText('99.99%');
-  // });
-
   test('Complete normal takeoff', async ({ page }) => {
     await createHandwritten(page, 'ConEquip');
     await goto(page, '/');
     await altSearch(page, { stockNum: 'TH418-19A' });
-    await addHandwrittenItem(page, 0, 'THERM HSNG', 34, 100);
+    await addHandwrittenItem(page, 0, 'THERM HSNG', 1, 100);
     await addWarranty(page, [1]);
     await page.getByTestId('save-btn').click();
 
     await page.getByTestId('takeoff-input').fill('TH418-19A');
     await page.getByTestId('takeoff-input').focus();
     await page.keyboard.press('Enter');
-    await expect(page.getByTestId('takeoff-qty-input')).toHaveValue('34');
-    await page.getByTestId('takeoff-qty-input').fill('34');
+    await expect(page.getByTestId('takeoff-qty-input')).toHaveValue('1');
     await page.getByTestId('takeoff-submit-btn').click();
     await page.waitForLoadState('networkidle');
     await page.waitForTimeout(100);
@@ -285,7 +260,7 @@ test.describe('Takeoffs', () => {
     await expect(page.getByTestId('stock-num').first()).toHaveText('TH418-19A');
 
     await page.getByTestId('part-num-link').first().click();
-    await expect(page.getByTestId('qty-sold')).toHaveText('34');
+    await expect(page.getByTestId('qty-sold')).toHaveText('1');
     await expect(page.getByTestId('sold-date')).toHaveText(formatDate(new Date()));
     await expect(page.getByTestId('selling-price')).toHaveText('$100.00');
     await expect(page.getByTestId('sold-to')).toHaveText('ConEquip Parts & Equipment (14196)');
@@ -303,6 +278,39 @@ test.describe('Takeoffs', () => {
 
     await page.waitForLoadState('networkidle');
     await expect(page.getByTestId('status')).toHaveText('Current Status: Sold');
+  });
+
+  test('Create date code stockNum after takeoff', async ({ page }) => {
+    await createHandwritten(page, 'ConEquip');
+    await goto(page, '/');
+    await altSearch(page, { stockNum: 'UP9432' });
+    await addHandwrittenItem(page, 0, 'VALVE COVER', 10, 100);
+    await addWarranty(page, [1]);
+    await page.getByTestId('save-btn').click();
+
+    await page.getByTestId('takeoff-input').fill('UP9432');
+    await page.getByTestId('takeoff-input').focus();
+    await page.keyboard.press('Enter');
+    await page.getByTestId('takeoff-submit-btn').click();
+    await page.waitForLoadState('networkidle');
+    await page.waitForTimeout(100);
+
+    await goto(page, '/');
+    await page.waitForLoadState('networkidle');
+    await altSearch(page, { stockNum: 'UP9432' });
+    await expect(page.getByTestId('qty').first()).toHaveText('24');
+
+    await altSearch(page, { stockNum: `UP9432 (${formatDate(new Date())})` });
+    await expect(page.getByTestId('qty').first()).toHaveText('0');
+    await expect(page.getByTestId('stock-num').first()).toHaveText(`UP9432 (${formatDate(new Date())})`);
+
+    await page.getByTestId('part-num-link').click();
+    await page.waitForLoadState('networkidle');
+    await expect(page.getByTestId('sold-date')).toHaveText(formatDate(new Date()));
+    await expect(page.getByTestId('selling-price')).toHaveText('$100.00');
+    await expect(page.getByTestId('sold-to')).toHaveText('ConEquip Parts & Equipment (14196)');
+    await expect(page.getByTestId('profit-margin')).toHaveText('$99.99');
+    await expect(page.getByTestId('profit-percent')).toHaveText('99.99%');
   });
 });
 

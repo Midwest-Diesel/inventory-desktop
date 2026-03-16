@@ -31,9 +31,9 @@ describe('Parts Integration', () => {
     const part2 = await getPartInfoByPartNum('7L0406');
     const part3 = await getPartInfoByPartNum('9N3242');
 
-    expect(part1?.altParts).toEqual('E23525567, R23525567, 7L0406, 9N3242');
-    expect(part2?.altParts).toEqual('E23525567, R23525567, 7L0406, 9N3242');
-    expect(part3?.altParts).toEqual('E23525567, R23525567, 7L0406, 9N3242');
+    expect(part1?.altParts).toEqual('E23525567, R23525567, 7L0406, 9N3242, 9N3240');
+    expect(part2?.altParts).toEqual('E23525567, R23525567, 7L0406, 9N3242, 9N3240');
+    expect(part3?.altParts).toEqual('E23525567, R23525567, 7L0406, 9N3242, 9N3240');
   });
 
   it('Add multiple alt parts', async () => {
@@ -42,9 +42,9 @@ describe('Parts Integration', () => {
     const part2 = await getPartInfoByPartNum('7L0406');
     const part3 = await getPartInfoByPartNum('9N3242');
 
-    expect(part1?.altParts).toEqual('E23525567, R23525567, 7L0406, 9N3242');
-    expect(part2?.altParts).toEqual('E23525567, R23525567, 7L0406, 9N3242');
-    expect(part3?.altParts).toEqual('E23525567, R23525567, 7L0406, 9N3242');
+    expect(part1?.altParts).toEqual('E23525567, R23525567, 7L0406, 9N3242, 9N3240');
+    expect(part2?.altParts).toEqual('E23525567, R23525567, 7L0406, 9N3242, 9N3240');
+    expect(part3?.altParts).toEqual('E23525567, R23525567, 7L0406, 9N3242, 9N3240');
   });
 
   it('Remove single alt part', async () => {

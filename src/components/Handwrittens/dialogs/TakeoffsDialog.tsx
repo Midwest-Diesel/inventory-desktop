@@ -97,38 +97,40 @@ export default function TakeoffsDialog({ open, setOpen, item, unitPrice, setHand
     // When the qty remaining after takeoffs is not 0
     // then it will create a new part with a date code, with the qtySold value
     // instead of changing the qtySold for the original part.
-    // Also change stockNum to a date code if this is a UP
-    const isPartUP = part.stockNum?.startsWith('UP');
-    if (part.qty - Number(qty) === 0 && isPartUP) {
-      const newStockNum = `${part.stockNum} (${formatDate(new Date())})`;
-      await editPartStockNum(part.id, newStockNum);
+    const isPartGroup = part.qty > 1;
 
-      for (const row of part.partCostIn) {
-        await editPartCostIn({ ...row, stockNum: newStockNum });
-      }
-    } else if (isPartUP) {
-      const newStockNum = `${part.stockNum} (${formatDate(new Date())})`;
-      const newId = await addPart({ ...part, qty: 0, qtySold: Number(qty), stockNum: newStockNum, soldToDate: new Date(), soldTo: handwritten?.billToCompany ?? '', sellingPrice: unitPrice, handwrittenId: handwritten.id }, true);
-      if (!newStockNum) {
-        alert('Failed to add PartCostIn data: newStockNum is invalid');
-        return;
-      }
-      await addPartCostIn(newStockNum, Number(item.cost), null, part.purchasedFrom ?? '', 'PurchasePrice', '');
+    if (isPartGroup) {
+      if (part.qty - Number(qty) === 0) {
+        const newStockNum = `${part.stockNum} (${formatDate(new Date())})`;
+        await editPartStockNum(part.id, newStockNum);
 
-      const tabs = [];
-      // When the part cost doesn't match the line item cost,
-      // prompt the user to go to the new part created
-      // This will take the user to the part details, where they can change it manually
-      if (Number(part.purchasePrice) !== item.cost && await ask(`Part cost of ${formatCurrency(part.purchasePrice)} doesn't equal line item cost of ${formatCurrency(item.cost)}. Do you want to open the new part created?\n\nThis will create a new tab.`)) {
-        tabs.push([{ name: part.partNum, url: `/part/${newId}` }]);
-      }
+        for (const row of part.partCostIn) {
+          await editPartCostIn({ ...row, stockNum: newStockNum });
+        }
+      } else {
+        const newStockNum = `${part.stockNum} (${formatDate(new Date())})`;
+        const newId = await addPart({ ...part, qty: 0, qtySold: Number(qty), stockNum: newStockNum, soldToDate: new Date(), soldTo: handwritten?.billToCompany ?? '', sellingPrice: unitPrice, handwrittenId: handwritten.id }, true);
+        if (!newStockNum) {
+          alert('Failed to add PartCostIn data: newStockNum is invalid');
+          return;
+        }
+        await addPartCostIn(newStockNum, Number(item.cost), null, part.purchasedFrom ?? '', 'PurchasePrice', '');
 
-      // Bring the user to the original part details so they can edit the remarks
-      if (await ask('There\'s still qty left over, do you want to edit the part remarks?\n\nThis will create a new tab.')) {
-        tabs.push([{ name: part.stockNum!, url: `/part/${part.id}` }]);
-      }
+        const tabs = [];
+        // When the part cost doesn't match the line item cost,
+        // prompt the user to go to the new part created
+        // This will take the user to the part details, where they can change it manually
+        if (Number(part.purchasePrice) !== item.cost && await ask(`Part cost of ${formatCurrency(part.purchasePrice)} doesn't equal line item cost of ${formatCurrency(item.cost)}. Do you want to open the new part created?\n\nThis will create a new tab.`)) {
+          tabs.push([{ name: part.partNum, url: `/part/${newId}` }]);
+        }
 
-      await newTabs(tabs);
+        // Bring the user to the original part details so they can edit the remarks
+        if (await ask('There\'s still qty left over, do you want to edit the part remarks?\n\nThis will create a new tab.')) {
+          tabs.push([{ name: part.stockNum!, url: `/part/${part.id}` }]);
+        }
+
+        await newTabs(tabs);
+      }
     }
 
     // Finalize takeoff

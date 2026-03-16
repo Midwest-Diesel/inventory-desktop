@@ -48,12 +48,11 @@ test.describe('Create addon and add to inventory', () => {
 
   test('Set rating from remarks', async ({ page }) => {
     const remarks = page.getByTestId('remarks').first();
-    const rating = page.getByTestId('rating').first();
 
     await newAddon(page, '4700', 1);
     await remarks.fill('(9.5) TEST');
     await remarks.blur();
-    await expect(rating).toHaveValue('9.5');
+    await expect(page.getByTestId('rating').first()).toHaveValue('9.5');
   });
 
   test('Autofill stock number', async ({ page }) => {
@@ -73,6 +72,7 @@ test.describe('Create addon and add to inventory', () => {
     await newAddon(page, '4700', 1);
     await engineNum.fill('0');
     await engineNum.blur();
+    await page.waitForLoadState('networkidle');
     await expect(stockNum).toHaveValue('UP12616');
   });
 
