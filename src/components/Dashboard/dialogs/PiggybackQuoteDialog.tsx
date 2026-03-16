@@ -59,16 +59,14 @@ export default function PiggybackQuoteDialog({ open, setOpen, quote, handleChang
 
   const handlePiggybackQuote = async () => {
     if (!selectedPartId) return;
-    const customerId = Number(localStorage.getItem('customerId'));
-    const customer = await getCustomerById(customerId) as Customer;
     const part = await getPartById(selectedPartId);
     const newQuote: any = {
       date: new Date(),
-      source: null,
-      customerId: customer?.id,
-      contact: customer?.contact,
-      phone: customer?.phone,
-      state: customer?.billToState,
+      source: quote.source,
+      customerId: quote.customer?.id,
+      contact: quote.contact,
+      phone: quote.customer?.phone,
+      state: quote.customer?.billToState,
       partNum: part?.partNum,
       desc: part?.desc,
       stockNum: part?.stockNum,
@@ -76,7 +74,7 @@ export default function PiggybackQuoteDialog({ open, setOpen, quote, handleChang
       notes: null,
       salesmanId: user.id,
       rating: part?.rating,
-      email: customer?.email,
+      email: quote.customer?.email,
       partId: part?.id
     };
     const id = await addQuote(newQuote);
