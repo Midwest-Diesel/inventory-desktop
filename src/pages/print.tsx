@@ -31,11 +31,12 @@ export default function Print() {
   const [maxHeight, setMaxHeight] = useState('');
 
   useEffect(() => {
+    if (que.length === 0) return;
     if (tabs.length === 0) push('Home', '/');
     handlePrint();
-  }, []);
+  }, [que]);
 
-  const waitForDom = () => new Promise((resolve) => requestAnimationFrame(() => setTimeout(resolve, 50)));
+  const waitForDom = () => new Promise((resolve) => requestAnimationFrame(() => setTimeout(resolve, que.length > 1 ? 2000 : 50)));
 
   const handlePrint = async () => {
     for (const item of que) {
@@ -43,6 +44,7 @@ export default function Print() {
       setData(item.data);
       setMaxWidth(item.maxWidth);
       setMaxHeight(item.maxHeight);
+
       await waitForDom();
       if (!printRef.current) continue;
       const imageData = await toPng(printRef.current);
