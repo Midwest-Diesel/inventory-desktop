@@ -61,6 +61,14 @@ export default function TakeoffsDialog({ open, setOpen, item, unitPrice, setHand
       return;
     }
 
+    const isPartGroup = part.qty > 1;
+    const costMatches = Number(part.purchasePrice) === item.cost;
+
+    if (!isPartGroup && !costMatches) {
+      alert(`Part cost of ${formatCurrency(part.purchasePrice)} doesn't equal line item cost of ${formatCurrency(item.cost)}`);
+      return;
+    }
+
     // Remove qty and edit surplus when applicable
     const handwritten = await getHandwrittenById(handwrittenId);
     if (!handwritten) return;
@@ -97,8 +105,6 @@ export default function TakeoffsDialog({ open, setOpen, item, unitPrice, setHand
     // When the qty remaining after takeoffs is not 0
     // then it will create a new part with a date code, with the qtySold value
     // instead of changing the qtySold for the original part.
-    const isPartGroup = part.qty > 1;
-
     if (isPartGroup) {
       if (part.qty - Number(qty) === 0) {
         const newStockNum = `${part.stockNum} (${formatDate(new Date())})`;
@@ -120,7 +126,7 @@ export default function TakeoffsDialog({ open, setOpen, item, unitPrice, setHand
         // When the part cost doesn't match the line item cost,
         // prompt the user to go to the new part created
         // This will take the user to the part details, where they can change it manually
-        if (Number(part.purchasePrice) !== item.cost && await ask(`Part cost of ${formatCurrency(part.purchasePrice)} doesn't equal line item cost of ${formatCurrency(item.cost)}. Do you want to open the new part created?\n\nThis will create a new tab.`)) {
+        if (!costMatches && await ask(`Part cost of ${formatCurrency(part.purchasePrice)} doesn't equal line item cost of ${formatCurrency(item.cost)}. Do you want to open the new part created?\n\nThis will create a new tab.`)) {
           tabs.push([{ name: part.partNum, url: `/part/${newId}` }]);
         }
 
