@@ -126,7 +126,7 @@ export default function EditQuoteDialog({ setQuoteEdited, quote, setQuote }: Pro
             onChange={(e) => setContact(e.target.value)}
           >
             <option value="">-- SELECT CONTACT --</option>
-            {quote.customer && quote.customer.contacts.map((c) => {
+            {quote.customer && quote.customer.contacts.sort((a, b) => (a.name ?? '').localeCompare(b.name ?? '')).map((c) => {
               return <option key={c.id}>{ c.name }</option>;
             })}
           </Select>

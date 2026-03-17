@@ -26,7 +26,7 @@ export default function AddQtyDialog({ open, setOpen, handwritten, setHandwritte
     e.preventDefault();
     if (handwritten.invoiceStatus === 'SENT TO ACCOUNTING') return;
     if (!qty || qty < 1) {
-      alert('Qty should be greater than 1');
+      alert('Qty should be greater than 0');
       return;
     }
 

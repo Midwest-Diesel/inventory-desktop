@@ -43,6 +43,7 @@ describe('Alerts Integration', () => {
     const newAlert = {
       date: new Date('2025-09-08T05:00:00.000Z'),
       salesmanId: 1,
+      subtext: '',
       partNum: '123123',
       type: 'HUDDLE UP!!!',
       note: null
