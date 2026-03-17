@@ -116,7 +116,7 @@ export default function PartDetails() {
     const stockNum = await getNextUP();
     if (!stockNum) return;
     const remarks = removeRemarksSoldText(part.remarks);
-    const newPart = { ...part, stockNum, remarks, qty: qty + Number(part?.qty), soldTo: null, soldToDate: null, qtySold: 0, sellingPrice: 0, handwrittenId: null };
+    const newPart = { ...part, stockNum, remarks, qty: qty + Number(part?.qty), soldTo: null, soldToDate: null, qtySold: 0, sellingPrice: 0, handwrittenId: null, entryDate: new Date() };
     await addPart(newPart, true);
 
     if (part.purchasePrice > 0.01 && await confirm(`This part has cost on it. Do you want to add ${formatCurrency(part.purchasePrice)} to the new UP?`)) {
