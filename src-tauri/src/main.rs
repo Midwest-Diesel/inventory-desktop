@@ -1541,7 +1541,13 @@ fn email_po_received(args: EmailPOReceivedArgs) {
 
 #[tauri::command]
 fn email_end_of_day(args: EmailEndOfDayArgs) {
-  let queue_dir = "\\\\MWD1-SERVER\\Server\\InvoiceScans\\Queue";
+  reset_end_of_day_queue(args.day, args.month, args.year);
+
+  let queue_dir = if cfg!(debug_assertions) {
+    "\\\\MWD1-SERVER\\Server\\InvoiceScans\\Testing\\Queue"
+  } else {
+    "\\\\MWD1-SERVER\\Server\\InvoiceScans\\Queue"
+  };
 
   let body = format!(
     "\"<h2>{}</h2>\" & vbCrLf & _\n\
@@ -1610,11 +1616,18 @@ fn email_end_of_day(args: EmailEndOfDayArgs) {
 
 #[tauri::command]
 fn move_queue_to_archives(args: DateArgs) -> Result<(), String> {
-  let queue_dir = Path::new("\\\\MWD1-SERVER\\Server\\InvoiceScans\\Queue");
-  let archive_path = format!(
-    "\\\\MWD1-SERVER\\Server\\InvoiceScans\\Archives\\{}\\{}\\{}",
-    args.year, args.month, args.day
-  );
+  let queue_dir = Path::new(if cfg!(debug_assertions) {
+    "\\\\MWD1-SERVER\\Server\\InvoiceScans\\Testing\\Queue"
+  } else {
+    "\\\\MWD1-SERVER\\Server\\InvoiceScans\\Queue"
+  });
+
+  let archive_base = if cfg!(debug_assertions) {
+    "\\\\MWD1-SERVER\\Server\\InvoiceScans\\Testing\\Archives"
+  } else {
+    "\\\\MWD1-SERVER\\Server\\InvoiceScans\\Archives"
+  };
+  let archive_path = format!("{}\\{}\\{}\\{}", archive_base, args.year, args.month, args.day);
   let archive_dir = Path::new(&archive_path);
 
   copy_dir_contents(queue_dir, archive_dir)
@@ -1631,7 +1644,34 @@ fn move_queue_to_archives(args: DateArgs) -> Result<(), String> {
   Ok(())
 }
 
-fn copy_dir_contents(src: &Path, dst: &Path, ) -> io::Result<()> {
+fn reset_end_of_day_queue(day: String, month: String, year: String) {
+  let queue_dir = Path::new(if cfg!(debug_assertions) {
+    "\\\\MWD1-SERVER\\Server\\InvoiceScans\\Testing\\Queue"
+  } else {
+    "\\\\MWD1-SERVER\\Server\\InvoiceScans\\Queue"
+  });
+
+  let archive_base = if cfg!(debug_assertions) {
+    "\\\\MWD1-SERVER\\Server\\InvoiceScans\\Testing\\Archives"
+  } else {
+    "\\\\MWD1-SERVER\\Server\\InvoiceScans\\Archives"
+  };
+
+  let archive_path = format!("{}\\{}\\{}\\{}", archive_base, year, month, day);
+  let archive_dir = Path::new(&archive_path);
+  if !archive_dir.exists() { return; }
+
+  if let Err(e) = copy_dir_contents(archive_dir, queue_dir) {
+    eprintln!("Failed to restore queue from archives: {}", e);
+    return;
+  }
+
+  if let Err(e) = fs::remove_dir_all(archive_dir) {
+    eprintln!("Failed to delete archive folder: {}", e);
+  }
+}
+
+fn copy_dir_contents(src: &Path, dst: &Path) -> io::Result<()> {
   if !src.is_dir() {
     return Err(io::Error::new(
       io::ErrorKind::InvalidInput,
