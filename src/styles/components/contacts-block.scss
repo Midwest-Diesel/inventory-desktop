@@ -12,7 +12,11 @@
 
   &__row {
     display: flex;
-    justify-content: space-between;
+    gap: 0.5rem;
+    
+    input {
+      margin-left: 0.5rem;
+    }
   }
 
   &__buttons {
