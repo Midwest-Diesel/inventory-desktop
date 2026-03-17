@@ -4,6 +4,7 @@ import { parseResDate } from "../tools/stringUtils";
 interface NewAlert {
   date: Date
   salesmanId: number
+  subtext: string
   partNum: string
   type: string
   note: string | null

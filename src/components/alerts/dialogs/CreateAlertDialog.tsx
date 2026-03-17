@@ -17,6 +17,7 @@ export default function CreateAlertDialog({ open, setOpen }: Props) {
   const [user] = useAtom<User>(userAtom);
   const [, setAlertsAtom] = useAtom<Alert[]>(alertsAtom);
   const [type, setType] = useState('');
+  const [subtext, setSubtext] = useState('');
   const [partNum, setPartNum] = useState('');
   const [note, setNote] = useState('');
 
@@ -24,6 +25,7 @@ export default function CreateAlertDialog({ open, setOpen }: Props) {
     e.preventDefault();
     const newAlert = {
       type,
+      subtext,
       partNum,
       date: new Date(),
       salesmanId: user.id,
@@ -36,6 +38,7 @@ export default function CreateAlertDialog({ open, setOpen }: Props) {
 
   const clearInputs = () => {
     setType('');
+    setSubtext('');
     setPartNum('');
     setNote('');
   };
@@ -55,17 +58,25 @@ export default function CreateAlertDialog({ open, setOpen }: Props) {
           label="Alert Type"
           variant={['label-space-between', 'label-full-width', 'small', 'thin', 'label-bold']}
           value={type}
-          onChange={(e: any) => setType(e.target.value)}
+          onChange={(e) => setType(e.target.value)}
           data-testid="alert-type-input"
           placeholder="ALERT!!!"
           required
         />
 
         <Input
+          label="Subtext"
+          variant={['label-space-between', 'label-full-width', 'small', 'thin', 'label-bold']}
+          value={subtext}
+          onChange={(e) => setSubtext(e.target.value)}
+          data-testid="subtext-input"
+        />
+
+        <Input
           label="Part Number"
           variant={['label-space-between', 'label-full-width', 'small', 'thin', 'label-bold']}
           value={partNum}
-          onChange={(e: any) => setPartNum(e.target.value)}
+          onChange={(e) => setPartNum(e.target.value)}
           data-testid="part-num-input"
           required
         />
@@ -76,7 +87,7 @@ export default function CreateAlertDialog({ open, setOpen }: Props) {
           rows={5}
           cols={100}
           value={note}
-          onChange={(e: any) => setNote(e.target.value)}
+          onChange={(e) => setNote(e.target.value)}
           data-testid="note-input"
         />
 

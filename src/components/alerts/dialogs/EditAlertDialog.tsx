@@ -18,6 +18,7 @@ export default function EditAlertDialog({ open, setOpen, alert }: Props) {
   const [user] = useAtom<User>(userAtom);
   const [, setAlertsAtom] = useAtom<Alert[]>(alertsAtom);
   const [type, setType] = useState(alert?.type ?? '');
+  const [subtext, setSubtext] = useState(alert?.subtext ?? '');
   const [partNum, setPartNum] = useState(alert?.partNum ?? '');
   const [note, setNote] = useState(alert?.note ?? '');
 
@@ -27,6 +28,7 @@ export default function EditAlertDialog({ open, setOpen, alert }: Props) {
     const newAlert = {
       id: alert.id,
       type,
+      subtext,
       partNum,
       date: new Date(),
       salesmanId: user.id,
@@ -39,6 +41,7 @@ export default function EditAlertDialog({ open, setOpen, alert }: Props) {
 
   const handelCancel = () => {
     setType(alert?.type ?? '');
+    setSubtext(alert?.subtext ?? '');
     setPartNum(alert?.partNum ?? '');
     setNote(alert?.note ?? '');
     setOpen(false);
@@ -59,17 +62,25 @@ export default function EditAlertDialog({ open, setOpen, alert }: Props) {
           label="Alert Type"
           variant={['label-space-between', 'label-full-width', 'small', 'thin', 'label-bold']}
           value={type}
-          onChange={(e: any) => setType(e.target.value)}
+          onChange={(e) => setType(e.target.value)}
           data-testid="alert-type-edit-input"
           placeholder="ALERT!!!"
           required
         />
-        
+
+        <Input
+          label="Subtext"
+          variant={['label-space-between', 'label-full-width', 'small', 'thin', 'label-bold']}
+          value={subtext}
+          onChange={(e) => setSubtext(e.target.value)}
+          data-testid="subtext-edit-input"
+        />
+
         <Input
           label="Part Number"
           variant={['label-space-between', 'label-full-width', 'small', 'thin', 'label-bold']}
           value={partNum}
-          onChange={(e: any) => setPartNum(e.target.value)}
+          onChange={(e) => setPartNum(e.target.value)}
           data-testid="part-num-edit-input"
           required
         />
@@ -80,7 +91,7 @@ export default function EditAlertDialog({ open, setOpen, alert }: Props) {
           rows={5}
           cols={100}
           value={note}
-          onChange={(e: any) => setNote(e.target.value)}
+          onChange={(e) => setNote(e.target.value)}
           data-testid="note-edit-input"
         />
 
