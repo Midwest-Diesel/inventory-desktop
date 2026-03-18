@@ -86,11 +86,12 @@ export default function Dashboard() {
     const part = selectedHandwrittenPart;
     let newItem: HandwrittenItem | null = null;
     for (const item of handwritten.handwrittenItems) {
-      if (!item.partId) continue;
+      if (!item.partId || ['CORE DEPOSIT'].includes(item.partNum ?? '')) continue;
       const itemPart = await getPartById(item.partId);
       if (!itemPart) continue;
       if (itemPart.altParts.includes(part?.partNum ?? '')) newItem = item;
     }
+
     if (newItem) {
       if (await ask('Part already exists do you want to add qty?')) {
         if (!part) {
@@ -99,8 +100,7 @@ export default function Dashboard() {
         }
         // Turn the line item into a blank container for item children if it isn't already
         if (newItem.stockNum) {
-          const originalItem = handwritten.handwrittenItems[0];
-          await addHandwrittenItemChild(originalItem.id, { partId: originalItem.partId ?? 0, qty: originalItem.qty ?? 0, cost: originalItem.cost ?? 0 }, { addSoldRemarks: true });
+          await addHandwrittenItemChild(newItem.id, { partId: newItem.partId ?? 0, qty: newItem.qty ?? 0, cost: newItem.cost ?? 0 }, { addSoldRemarks: true });
           await editHandwrittenItem({ ...newItem, stockNum: null, qty: 0, cost: 0, handwrittenId: handwritten.id });
         }
         // Add child to item 
