@@ -4,7 +4,7 @@ import Grid from "../library/grid/Grid";
 import GridItem from "../library/grid/GridItem";
 import Input from "../library/Input";
 import Table from "../library/Table";
-import { parseDateInputValue } from "@/scripts/tools/stringUtils";
+import { formatCurrency, parseDateInputValue } from "@/scripts/tools/stringUtils";
 import { addPurchaseOrderItem, deletePurchaseOrderItem, deletePurchaseOrderReceivedItem, editPurchaseOrder, editPurchaseOrderItem, editPurchaseOrderReceivedItem, getPurchaseOrderById } from "@/scripts/services/purchaseOrderService";
 import { usePreventNavigation } from "../../hooks/usePreventNavigation";
 import Checkbox from "../library/Checkbox";
@@ -524,13 +524,7 @@ export default function EditPoDetails({ poData, setPo, setIsEditing, poItems, po
                       />
                     </td>
                     <td>
-                      <Input
-                        value={item.totalPrice ?? ''}
-                        onChange={(e: any) => handleEditItem({ ...item, totalPrice: e.target.value }, i)}
-                        type="number"
-                        step="any"
-                        required
-                      />
+                      <p>{ formatCurrency(Number(item.qty) * Number(item.unitPrice)) }</p>
                     </td>
                     <td className="cbx-td">
                       <Checkbox

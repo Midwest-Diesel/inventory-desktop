@@ -107,7 +107,7 @@ export const editAddOns = async (addOns: AddOn[]) => {
   try {
     await api.put('/api/add-ons/list', { addOns });
   } catch (error) {
-    alert('Failed to save addOns');
+    alert('Failed to save addOns, try again.');
     console.error(error);
     alert(`Error in [editAddOns] ${error}`);
   }
