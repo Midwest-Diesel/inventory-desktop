@@ -669,12 +669,21 @@ export default function ShopPartAddonRow({ addOn, handleDuplicateAddOn, partNumL
             </tbody>
           </Table>
 
-          <Checkbox
-            variant={['label-align-center', 'label-bold']}
-            label="Is Special Cost"
-            checked={addOn.isSpecialCost}
-            onChange={(e: any) => handleEditAddOn({ ...addOn, isSpecialCost: e.target.checked })}
-          />
+          <div className="add-ons__list-row-checkboxes">
+            <Checkbox
+              variant={['label-align-center', 'label-bold']}
+              label="Special Cost"
+              checked={addOn.isSpecialCost}
+              onChange={(e: any) => handleEditAddOn({ ...addOn, isSpecialCost: e.target.checked })}
+            />
+
+            <Checkbox
+              variant={['label-align-center', 'label-bold']}
+              label="Ebay Listing"
+              checked={addOn.ebayListing}
+              onChange={(e) => handleEditAddOn({ ...addOn, ebayListing: e.target.checked })}
+            />
+          </div>
         </div>
 
         <div className="add-ons__list-row-buttons">

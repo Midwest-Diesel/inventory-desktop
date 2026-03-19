@@ -372,6 +372,7 @@ type AddOn = {
   prefix: string | null
   userEditing: { id: number, username: string } | null
   invoiceNum: string
+  ebayListing: boolean
 };
 
 type EngineAddOn = {

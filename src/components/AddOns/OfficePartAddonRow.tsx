@@ -18,6 +18,7 @@ import { getVendors } from "@/scripts/services/vendorsService";
 import { useNavState } from "@/hooks/useNavState";
 import { emitServerEvent } from "@/scripts/config/websockets";
 import { prompt } from "../library/Prompt";
+import { addEbayItem } from "@/scripts/services/ebayService";
 
 interface Props {
   addOn: AddOn
@@ -144,6 +145,8 @@ export default function OfficePartAddonRow({ addOn, onSave, onModifyAddOnData }:
       altParts
     } as AddOn;
     await addPart(newPart as any, partsInfo !== null);
+
+    if (newPart.ebayListing) await addEbayItem(newPart);
 
     // Update part pricing
     const { newPrice, remanPrice, dealerPrice } = newPart;
@@ -494,12 +497,21 @@ export default function OfficePartAddonRow({ addOn, onSave, onModifyAddOnData }:
             </tbody>
           </Table>
 
-          <Checkbox
-            variant={['label-align-center', 'label-bold']}
-            label="Is Special Cost"
-            checked={addOn.isSpecialCost}
-            onChange={(e: any) => handleEditAddOn({ ...addOn, isSpecialCost: e.target.checked })}
-          />
+          <div className="add-ons__list-row-checkboxes">
+            <Checkbox
+              variant={['label-align-center', 'label-bold']}
+              label="Special Cost"
+              checked={addOn.isSpecialCost}
+              onChange={(e: any) => handleEditAddOn({ ...addOn, isSpecialCost: e.target.checked })}
+            />
+
+            <Checkbox
+              variant={['label-align-center', 'label-bold']}
+              label="Ebay Listing"
+              checked={addOn.ebayListing}
+              onChange={(e) => handleEditAddOn({ ...addOn, ebayListing: e.target.checked })}
+            />
+          </div>
         </div>
 
         <div className="add-ons__list-row-buttons">
