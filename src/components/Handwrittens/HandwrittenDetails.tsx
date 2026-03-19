@@ -145,8 +145,7 @@ export default function HandwrittenDetails({
     }
 
     if (handwritten?.shipVia?.type === 'Truck Line') {
-      const copies = Number(await prompt('How many shipping labels do you want to print?'));
-      if (copies > 0) await handlePrintShippingLabel(copies);
+      await handlePrintShippingLabel();
 
       const cityStateZip = `${handwritten?.shipToCity} ${handwritten?.shipToState} ${handwritten?.shipToZip}`;
       const args = {
@@ -173,8 +172,7 @@ export default function HandwrittenDetails({
     }
 
     if (handwritten?.shipVia?.type === 'Truck Line') {
-      const copies = Number(await prompt('How many shipping labels do you want to print?'));
-      if (copies > 0) await handlePrintShippingLabel(copies);
+      await handlePrintShippingLabel();
 
       const cityStateZip = `${handwritten?.shipToCity} ${handwritten?.shipToState} ${handwritten?.shipToZip}`;
       const args = {
@@ -240,8 +238,10 @@ export default function HandwrittenDetails({
     printQue();
   };
 
-  const handlePrintShippingLabel = async (copies: number) => {
-    if (!await confirm(`Print ${copies} shipping label${copies > 1 ? 's' : ''}?`)) return;
+  const handlePrintShippingLabel = async () => {
+    const copies = Number(await prompt('How many shipping labels do you want to print?'));
+    if (Number(copies) === 0) return;
+
     for (let i = 0; i < copies; i++) {
       if (handwritten?.isBlindShipment) {
         const shipFromCityStateZip = [handwritten?.billToCity, `${handwritten?.billToState} ${handwritten?.billToZip}`].join(', ');
@@ -723,7 +723,7 @@ export default function HandwrittenDetails({
                   Print Ship Docs
               </Button>
               <Button variant={['x-small']} onClick={() => setPrintInvoiceOpen(true)}>Print Invoice</Button>
-              <Button variant={['x-small']} onClick={() => handlePrintShippingLabel(1)}>Print Ship Label</Button>
+              <Button variant={['x-small']} onClick={handlePrintShippingLabel}>Print Ship Label</Button>
               <Button variant={['x-small']} onClick={handlePrintCI}>Print CI and COO</Button>
               <Button variant={['x-small']} onClick={handlePrintReturnBOL}>Print Return BOL</Button>
               <Button
