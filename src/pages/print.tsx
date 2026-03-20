@@ -36,7 +36,13 @@ export default function Print() {
     handlePrint();
   }, [que]);
 
-  const waitForDom = () => new Promise((resolve) => requestAnimationFrame(() => setTimeout(resolve, que.length > 1 ? 2000 : 50)));
+  const getDelay = (): number => {
+    if (que.length > 3) return 5000;
+    if (que.length > 1) return 2000;
+    return 50;
+  };
+
+  const waitForDom = () => new Promise((resolve) => requestAnimationFrame(() => setTimeout(resolve, getDelay())));
 
   const handlePrint = async () => {
     for (const item of que) {
