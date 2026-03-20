@@ -36,13 +36,8 @@ export default function Print() {
     handlePrint();
   }, [que]);
 
-  const getDelay = (): number => {
-    if (que.length > 3) return 5000;
-    if (que.length > 1) return 2000;
-    return 50;
-  };
-
-  const waitForDom = () => new Promise((resolve) => requestAnimationFrame(() => setTimeout(resolve, getDelay())));
+  const delay = que.length > 1 ? 2000 : 50;
+  const waitForDom = () => new Promise((resolve) => requestAnimationFrame(() => setTimeout(resolve, delay)));
 
   const handlePrint = async () => {
     for (const item of que) {
@@ -56,9 +51,17 @@ export default function Print() {
       const imageData = await toPng(printRef.current);
       
       if (item.printArgs) {
-        invoke(item.printCmd, { imageData, printArgs: item.printArgs });
+        if (item.fileName) {
+          invoke(item.printCmd, { imageData, printArgs: item.printArgs, fileName: item.fileName });
+        } else {
+          invoke(item.printCmd, { imageData, printArgs: item.printArgs });
+        }
       } else {
-        invoke(item.printCmd, { imageData });
+        if (item.fileName) {
+          invoke(item.printCmd, { imageData, fileName: item.fileName });
+        } else {
+          invoke(item.printCmd, { imageData });
+        }
       }
     }
 
