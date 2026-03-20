@@ -233,7 +233,7 @@ export default function HandwrittenDetails({
           };
         }) || []
       };
-      addToQue('packingSlip', 'print_packing_slip', args, '816px', '1090px');
+      addToQue('packingSlip', 'print_packing_slip', args, '816px', '1090px', null, `packing_slip_${i}.png`);
     }
     printQue();
   };

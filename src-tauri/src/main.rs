@@ -1327,10 +1327,10 @@ async fn print_warranty(image_data: String) -> Result<(), String> {
 }
 
 #[tauri::command]
-async fn print_packing_slip(image_data: String) -> Result<(), String> {
+async fn print_packing_slip(image_data: String, file_name: String) -> Result<(), String> {
   let res = tauri::async_runtime::spawn_blocking(move || {
     let data = BASE64_STANDARD.decode(image_data.split(',').nth(1).unwrap()).map_err(|e| e.to_string())?;
-    let file_path = "C:/mwd/scripts/screenshots/packing_slip.png";
+    let file_path = &format!("C:/mwd/scripts/screenshots/{}", file_name);
     let printers = get_available_printers();
     let printer = printers.iter().find(|&p| p.contains(&OFFICE_PRINTER.to_string())).cloned().unwrap_or_else(|| "".to_string());
 
@@ -2076,16 +2076,11 @@ fn send_email(data: SendEmailArgs) {
   cmd.output().expect("Failed to run VBS script");
 }
 
-#[derive(Deserialize, Serialize)]
-struct QuoteListPrintArgs {
-  salesman: String
-}
-
 #[tauri::command]
-async fn print_quotes_list(image_data: String, print_args: QuoteListPrintArgs) -> Result<(), String> {
+async fn print_quotes_list(image_data: String, file_name: String) -> Result<(), String> {
   let res = tauri::async_runtime::spawn_blocking(move || {
     let data = BASE64_STANDARD.decode(image_data.split(',').nth(1).unwrap()).map_err(|e| e.to_string())?;
-    let file_path = format!("C:/mwd/scripts/screenshots/quotes_list_{}.png", print_args.salesman);
+    let file_path = format!("C:/mwd/scripts/screenshots/{}", file_name);
     let printers = get_available_printers();
     let printer = printers.iter().find(|&p| p.contains(&OFFICE_PRINTER.to_string())).cloned().unwrap_or_else(|| "".to_string());
 

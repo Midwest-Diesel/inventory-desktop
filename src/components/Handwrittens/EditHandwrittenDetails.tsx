@@ -450,8 +450,8 @@ export default function EditHandwrittenDetails({
         }) ?? []
       };
 
-      addToQue('handwrittenAcct', 'print_accounting_handwritten', { ...args, items: args.items }, '1100px', '816px', null, `accounting_handwritten_${i}`);
-      if (hasCore) addToQue('handwrittenCore', 'print_core_handwritten', args, '1100px', '816px', null, `core_handwritten_${i}`);
+      addToQue('handwrittenAcct', 'print_accounting_handwritten', { ...args, items: args.items }, '1100px', '816px', null, `accounting_handwritten_${i}.png`);
+      if (hasCore) addToQue('handwrittenCore', 'print_core_handwritten', args, '1100px', '816px', null, `core_handwritten_${i}.png`);
     }
     printQue();
     setLoading(false);
@@ -518,7 +518,7 @@ export default function EditHandwrittenDetails({
         }) ?? []
       };
 
-      addToQue('handwrittenShip', 'print_shipping_handwritten', { ...args, items: chunks[i] }, '1100px', '816px', null, `shipping_handwritten_${i}`);
+      addToQue('handwrittenShip', 'print_shipping_handwritten', { ...args, items: chunks[i] }, '1100px', '816px', null, `shipping_handwritten_${i}.png`);
     }
     printQue();
     setLoading(false);
