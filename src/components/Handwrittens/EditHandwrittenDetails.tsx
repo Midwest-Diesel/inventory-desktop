@@ -32,7 +32,7 @@ import AltShipDialog from "./dialogs/AltShipDialog";
 import { usePrintQue } from "@/hooks/usePrintQue";
 import { useQuery } from "@tanstack/react-query";
 import TextArea from "../library/TextArea";
-import { addCoreCharge, handleAccountingCompleted } from "@/scripts/logic/handwrittens";
+import { addCoreCharge, getAllShippingItems, handleAccountingCompleted } from "@/scripts/logic/handwrittens";
 import EditHandwrittenItemsTable from "./EditHandwrittenItemsTable";
 import ModalList from "../library/ModalList";
 import InputDropdown from "../library/InputDropdown";
@@ -383,9 +383,15 @@ export default function EditHandwrittenDetails({
       return chunks;
     };
     const itemChunks = splitItems(handwritten?.handwrittenItems ?? [], MAX_ROWS);
+    const shippingChunks = splitItems(getAllShippingItems(handwritten), MAX_ROWS);
 
-    for (let i = 0; i < itemChunks.length; i++) {
-      const chunk = itemChunks[i];
+    printHandwrittenOnlyItems(itemChunks, shipVia?.name, handwrittenTotal, hasCore);
+    printHandwrittenWithChildren(shippingChunks, shipVia?.name, handwrittenTotal);
+  };
+
+  const printHandwrittenOnlyItems = async (chunks: any[][], shipVia: string | null, handwrittenTotal: string, hasCore: boolean) => {
+    for (let i = 0; i < chunks.length; i++) {
+      const chunk = chunks[i];
       const args = {
         billToCompany: handwritten.billToCompany ?? '',
         billToAddress: handwritten.billToAddress ?? '',
@@ -411,7 +417,7 @@ export default function EditHandwrittenDetails({
         date: formatDate(handwritten.date) ?? '',
         contactName: handwritten.contactName ?? '',
         poNum: handwritten.poNum ?? '',
-        shipVia: shipVia?.name ?? '',
+        shipVia: shipVia ?? '',
         source: handwritten.source ?? '',
         invoiceNotes: handwritten.orderNotes ? handwritten.orderNotes.replace(/[\n\r]/g, '  ').replaceAll('…', '...') : '',
         shippingNotes: handwritten.shippingNotes ? handwritten.shippingNotes.replace(/[\n\r]/g, '  ').replaceAll('…', '...') : '',
@@ -443,23 +449,76 @@ export default function EditHandwrittenDetails({
           };
         }) ?? []
       };
-      const itemChildren = chunk.flatMap((item) =>
-        (item.invoiceItemChildren ?? []).map((child: HandwrittenItemChild) => ({
-          cost: formatCurrency(child.cost) || '$0.00',
-          qty: child.qty,
-          partNum: child.partNum,
-          desc: child.part?.desc,
-          stockNum: child.stockNum,
-          location: child.part?.location,
-          unitPrice: formatCurrency((item?.unitPrice ?? 0)) || '$0.00',
-          total: formatCurrency((child?.qty ?? 0) * (item?.unitPrice ?? 0)) || '$0.00'
-        }))
-      );
-      const itemsWithChildren = [...args.items.filter((item: any) => item.itemChildren.length === 0), ...(itemChildren ?? [])];
 
       addToQue('handwrittenAcct', 'print_accounting_handwritten', { ...args, items: args.items }, '1100px', '816px');
-      addToQue('handwrittenShip', 'print_shipping_handwritten', { ...args, items: itemsWithChildren }, '1100px', '816px');
       if (hasCore) addToQue('handwrittenCore', 'print_core_handwritten', args, '1100px', '816px');
+    }
+    printQue();
+    setLoading(false);
+  };
+
+  const printHandwrittenWithChildren = async (chunks: any[][], shipVia: string | null, handwrittenTotal: string) => {
+    for (let i = 0; i < chunks.length; i++) {
+      const chunk = chunks[i];
+      const args = {
+        billToCompany: handwritten.billToCompany ?? '',
+        billToAddress: handwritten.billToAddress ?? '',
+        billToAddress2: handwritten.billToAddress2 ?? '',
+        billToCity: handwritten.billToCity ?? '',
+        billToState: handwritten.billToState ?? '',
+        billToZip: handwritten.billToZip ?? '',
+        billToCountry: handwritten.billToCountry ?? '',
+        shipToCompany: handwritten.shipToCompany ?? '',
+        shipToAddress: handwritten.shipToAddress ?? '',
+        shipToAddress2: handwritten.shipToAddress2 ?? '',
+        shipToCity: handwritten.shipToCity ?? '',
+        shipToState: handwritten.shipToState ?? '',
+        shipToZip: handwritten.shipToZip ?? '',
+        shipToContact: handwritten.shipToContact ?? '',
+        shipToCountry: '',
+        accountNum: handwritten?.thirdPartyAccount ?? '',
+        paymentType: handwritten.payment ?? '',
+        createdBy: handwritten.createdBy ?? '',
+        soldBy: handwritten.soldBy ?? '',
+        legacyId: handwritten?.legacyId ?? '',
+        handwrittenId: Number(handwritten.id),
+        date: formatDate(handwritten.date) ?? '',
+        contactName: handwritten.contactName ?? '',
+        poNum: handwritten.poNum ?? '',
+        shipVia: shipVia ?? '',
+        source: handwritten.source ?? '',
+        invoiceNotes: handwritten.orderNotes ? handwritten.orderNotes.replace(/[\n\r]/g, '  ').replaceAll('…', '...') : '',
+        shippingNotes: handwritten.shippingNotes ? handwritten.shippingNotes.replace(/[\n\r]/g, '  ').replaceAll('…', '...') : '',
+        mp: `${!handwritten.isBlindShipment ? handwritten.mp ?? 0 : 0}`,
+        cap: `${!handwritten.isBlindShipment ? handwritten.cap ?? 0 : 0}`,
+        br: `${!handwritten.isBlindShipment ? handwritten.br ?? 0 : 0}`,
+        fl: `${!handwritten.isBlindShipment ? handwritten.fl ?? 0 : 0}`,
+        setup: handwritten.isSetup ?? false,
+        taxable: handwritten.isTaxable ?? false,
+        blind: handwritten.isBlindShipment ?? false,
+        npi: handwritten.isNoPriceInvoice ?? false,
+        collect: handwritten.isCollect ?? false,
+        thirdParty: handwritten.isThirdParty ?? false,
+        contactPhone: handwritten.phone,
+        email: handwritten.email,
+        ccNumber: formatCCNumber(cardNum),
+        handwrittenTotal,
+        items: chunk.map((item) => {
+          return {
+            stockNum: item.stockNum ?? '',
+            location: item.location ?? '',
+            cost: formatCurrency(item.cost) ?? '$0.00',
+            qty: item.qty,
+            partNum: item.partNum ?? '',
+            desc: item.desc ?? '',
+            unitPrice: formatCurrency(item.unitPrice) ?? '$0.00',
+            total: formatCurrency((item.qty ?? 0) * (item.unitPrice ?? 0)) ?? '$0.00',
+            itemChildren: item.invoiceItemChildren
+          };
+        }) ?? []
+      };
+
+      addToQue('handwrittenShip', 'print_shipping_handwritten', { ...args, items: chunks[i] }, '1100px', '816px');
     }
     printQue();
     setLoading(false);

@@ -4,6 +4,7 @@ import Checkbox from "@/components/library/Checkbox";
 import Button from "@/components/library/Button";
 import { formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
 import { usePrintQue } from "@/hooks/usePrintQue";
+import { getAllShippingItems } from "@/scripts/logic/handwrittens";
 
 interface Props {
   open: boolean
@@ -38,10 +39,19 @@ export default function PrintInvoiceDialog({ open, setOpen, handwritten }: Props
       }
       return chunks;
     };
-    const itemChunks = splitItems(handwritten?.handwrittenItems ?? [], MAX_ROWS);
+    if (!handwritten) return;
+    const itemChunks = splitItems(handwritten.handwrittenItems ?? [], MAX_ROWS);
+    const shippingChunks = splitItems(getAllShippingItems(handwritten), MAX_ROWS);
 
-    for (let i = 0; i < itemChunks.length; i++) {
-      const chunk = itemChunks[i];
+    if (accounting) printHandwrittenOnlyItems(itemChunks, handwrittenTotal, coreDeposit);
+    if (shipping) printHandwrittenWithChildren(shippingChunks, handwrittenTotal);
+
+    if (accounting || shipping || coreDeposit) printQue();
+  };
+
+  const printHandwrittenOnlyItems = async (chunks: any[][], handwrittenTotal: string, hasCore: boolean) => {
+    for (let i = 0; i < chunks.length; i++) {
+      const chunk = chunks[i];
       const args = {
         billToCompany: handwritten?.billToCompany ?? '',
         billToAddress: handwritten?.billToAddress ?? '',
@@ -98,25 +108,74 @@ export default function PrintInvoiceDialog({ open, setOpen, handwritten }: Props
         })) || []
       };
 
-      const itemChildren = chunk.flatMap((item) =>
-        (item.invoiceItemChildren ?? []).map((child: HandwrittenItemChild) => ({
-          cost: formatCurrency(child.cost) || '$0.00',
-          qty: child.qty,
-          partNum: child.partNum,
-          desc: child.part?.desc,
-          stockNum: child.stockNum,
-          location: child.part?.location,
-          unitPrice: formatCurrency((item?.unitPrice ?? 0)) || '$0.00',
-          total: formatCurrency((child?.qty ?? 0) * (item?.unitPrice ?? 0)) || '$0.00'
-        }))
-      );
-      const itemsWithChildren = [...args.items.filter((item: any) => item.itemChildren.length === 0), ...(itemChildren ?? [])];
-
-      if (accounting) addToQue('handwrittenAcct', 'print_accounting_handwritten', { ...args, items: args.items }, '1100px', '816px');
-      if (shipping) addToQue('handwrittenShip', 'print_shipping_handwritten', { ...args, items: itemsWithChildren }, '1100px', '816px');
-      if (coreDeposit) addToQue('handwrittenCore', 'print_core_handwritten', args, '1100px', '816px');
+      addToQue('handwrittenAcct', 'print_accounting_handwritten', { ...args, items: args.items }, '1100px', '816px');
+      if (hasCore) addToQue('handwrittenCore', 'print_core_handwritten', args, '1100px', '816px');
     }
-    if (accounting || shipping || coreDeposit) printQue();
+    printQue();
+  };
+
+  const printHandwrittenWithChildren = async (chunks: any[][], handwrittenTotal: string) => {
+    for (let i = 0; i < chunks.length; i++) {
+      const chunk = chunks[i];
+      const args = {
+        billToCompany: handwritten?.billToCompany ?? '',
+        billToAddress: handwritten?.billToAddress ?? '',
+        billToAddress2: handwritten?.billToAddress2 ?? '',
+        billToCity: handwritten?.billToCity ?? '',
+        billToState: handwritten?.billToState ?? '',
+        billToZip: handwritten?.billToZip ?? '',
+        billToCountry: handwritten?.billToCountry ?? '',
+        shipToCompany: handwritten?.shipToCompany ?? '',
+        shipToAddress: handwritten?.shipToAddress ?? '',
+        shipToAddress2: handwritten?.shipToAddress2 ?? '',
+        shipToCity: handwritten?.shipToCity ?? '',
+        shipToState: handwritten?.shipToState ?? '',
+        shipToZip: handwritten?.shipToZip ?? '',
+        shipToContact: handwritten?.shipToContact ?? '',
+        shipToCountry: '',
+        accountNum: handwritten?.thirdPartyAccount ?? '',
+        paymentType: handwritten?.payment ?? '',
+        createdBy: handwritten?.createdBy ?? '',
+        soldBy: handwritten?.soldBy ?? '',
+        legacyId: handwritten?.legacyId ?? '',
+        handwrittenId: Number(handwritten?.id),
+        date: formatDate(handwritten?.date) ?? '',
+        contactName: handwritten?.contactName ?? '',
+        poNum: handwritten?.poNum ?? '',
+        shipVia: handwritten?.shipVia?.name ?? '',
+        source: handwritten?.source ?? '',
+        invoiceNotes: handwritten?.orderNotes ? handwritten?.orderNotes.replace(/[\n\r]/g, '  ').replaceAll('…', '...') : '',
+        shippingNotes: handwritten?.shippingNotes ? handwritten?.shippingNotes.replace(/[\n\r]/g, '  ').replaceAll('…', '...') : '',
+        mp: `${!handwritten?.isBlindShipment ? handwritten?.mp ?? 0 : 0}`,
+        cap: `${!handwritten?.isBlindShipment ? handwritten?.cap ?? 0 : 0}`,
+        br: `${!handwritten?.isBlindShipment ? handwritten?.br ?? 0 : 0}`,
+        fl: `${!handwritten?.isBlindShipment ? handwritten?.fl ?? 0 : 0}`,
+        setup: handwritten?.isSetup ?? false,
+        taxable: handwritten?.isTaxable ?? false,
+        blind: handwritten?.isBlindShipment ?? false,
+        npi: handwritten?.isNoPriceInvoice ?? false,
+        collect: handwritten?.isCollect ?? false,
+        thirdParty: handwritten?.isThirdParty ?? false,
+        contactPhone: handwritten?.phone ?? '',
+        email: handwritten?.email ?? '',
+        ccNumber: handwritten?.ccNumber ?? '',
+        handwrittenTotal,
+        items: chunk.map((item) => ({
+          stockNum: item.stockNum ?? '',
+          location: item.location ?? '',
+          cost: formatCurrency(item.cost) ?? '$0.00',
+          qty: item.qty,
+          partNum: item.partNum ?? '',
+          desc: item.desc ?? '',
+          unitPrice: formatCurrency(item.unitPrice ?? 0) ?? '$0.00',
+          total: formatCurrency((item.qty ?? 0) * (item.unitPrice ?? 0)) ?? '$0.00',
+          itemChildren: item.invoiceItemChildren
+        })) || []
+      };
+
+      addToQue('handwrittenShip', 'print_shipping_handwritten', { ...args, items: chunks[i] }, '1100px', '816px');
+    }
+    printQue();
   };
 
 

@@ -1,6 +1,7 @@
 import { ask } from "../config/tauri";
 import { addCore } from "../services/coresService";
 import { addHandwrittenItem, addHandwrittenItemChild, setAllHandwrittenItemDates } from "../services/handwrittensService";
+import { formatCurrency } from "../tools/stringUtils";
 
 interface TakeoffRes {
   item: HandwrittenItem | null
@@ -107,4 +108,32 @@ export const getProformaId = (handwrittenDate: Date): string => {
   const day = date.getDate();
   const dateString = `${year}${month}${day}`;
   return (Number(dateString) * 13) + "PF";
+};
+
+export const getAllShippingItems = (handwritten: Handwritten) => {
+  return (handwritten?.handwrittenItems ?? []).flatMap((item) => {
+    if (!item.invoiceItemChildren || item.invoiceItemChildren.length === 0) {
+      return [{
+        stockNum: item.stockNum ?? '',
+        location: item.location ?? '',
+        cost: formatCurrency(item.cost) ?? '$0.00',
+        qty: item.qty,
+        partNum: item.partNum ?? '',
+        desc: item.desc ?? '',
+        unitPrice: formatCurrency(item.unitPrice) ?? '$0.00',
+        total: formatCurrency((item.qty ?? 0) * (item.unitPrice ?? 0)) ?? '$0.00'
+      }];
+    }
+
+    return item.invoiceItemChildren.map((child: HandwrittenItemChild) => ({
+      cost: formatCurrency(child.cost) || '$0.00',
+      qty: child.qty,
+      partNum: child.partNum,
+      desc: child.part?.desc,
+      stockNum: child.stockNum,
+      location: child.part?.location,
+      unitPrice: formatCurrency(item.unitPrice ?? 0) || '$0.00',
+      total: formatCurrency((child.qty ?? 0) * (item.unitPrice ?? 0)) || '$0.00'
+    }));
+  });
 };
