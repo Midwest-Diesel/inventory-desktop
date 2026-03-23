@@ -6,13 +6,13 @@ const parseItemCondition = (condition: string | null, manufacturer: string | nul
 
   switch (condition) {
     case 'New':
-      return 'New, Other';
-    case 'Good used':
-      return 'Used';
+      return 'NEW_OTHER';
+    case 'Good Used':
+      return 'USED_GOOD';
     case 'Core':
-      return 'For Parts, Not Working';
+      return 'FOR_PARTS_OR_NOT_WORKING';
     case 'Reconditioned':
-      return 'Refurbished';
+      return 'GOOD_REFURBISHED';
     default:
       return '';
   }
@@ -30,7 +30,7 @@ const parseItemManufacturer = (manufacturer: string | null): string | null => {
 };
 
 const getItemTitleFromAddOn = (addOn: AddOn) => {
-  return `${addOn.remarks}, ${addOn.manufacturer}, ${addOn.partNum}, ${addOn.desc}, ${addOn.condition}`;
+  return `${addOn.manufacturer} ${addOn.partNum} ${addOn.desc} ${addOn.condition}`;
 };
 
 // === POST routes === //
