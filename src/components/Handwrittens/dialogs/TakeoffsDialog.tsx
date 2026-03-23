@@ -1,7 +1,7 @@
 import Button from "@/components/library/Button";
 import Dialog from "@/components/library/Dialog";
 import Input from "@/components/library/Input";
-import { editHandwrittenChildTakeoffState, editHandwrittenItemTakeoffState, getHandwrittenById } from "@/scripts/services/handwrittensService";
+import { editHandwrittenChildTakeoffState, editHandwrittenItemTakeoffState, editHandwrittenItemPartId, getHandwrittenById } from "@/scripts/services/handwrittensService";
 import { addPart, addPartCostIn, addToPartQtyHistory, editPartCostIn, editPartStockNum, getPartById, getPartQty, handlePartTakeoff } from "@/scripts/services/partsService";
 import { getSurplusByCode, zeroAllSurplusItems } from "@/scripts/services/surplusService";
 import { formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
@@ -116,6 +116,12 @@ export default function TakeoffsDialog({ open, setOpen, item, unitPrice, setHand
       } else {
         const newStockNum = `${part.stockNum} (${formatDate(new Date())})`;
         const newId = await addPart({ ...part, qty: 0, qtySold: Number(qty), stockNum: newStockNum, soldToDate: new Date(), soldTo: handwritten?.billToCompany ?? '', sellingPrice: unitPrice, handwrittenId: handwritten.id }, true);
+        if (newId) {
+          await editHandwrittenItemPartId(item.id, newId);
+        } else {
+          alert(`Failed to set partId for handwritten item: ${item.id}`);
+        }
+
         if (!newStockNum) {
           alert('Failed to add PartCostIn data: newStockNum is invalid');
           return;

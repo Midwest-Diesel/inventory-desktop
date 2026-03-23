@@ -370,6 +370,15 @@ export const editHandwrittenCCNumber = async (id: number, ccNumber: string) => {
   }
 };
 
+export const editHandwrittenItemPartId = async (id: number, partId: number) => {
+  try {
+    await api.patch('/api/handwrittens/part-id', { id, partId });
+  } catch (error) {
+    console.error(error);
+    alert(`Error in [editHandwrittenItemPartId] ${error}`);
+  }
+};
+
 // === PUT routes === //
 
 export const editHandwritten = async (handwritten: Handwritten) => {
