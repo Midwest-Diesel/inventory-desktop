@@ -6,10 +6,10 @@ export default function useHotkeys() {
   const { newTab, deleteTab, tabs, selectedTab, restoreTab } = useNavState();
 
   useEffect(() => {
-    document.addEventListener('keyup', onKeyUp);
+    window.addEventListener('keyup', onKeyUp);
 
     return () => {
-      document.removeEventListener('keyup', onKeyUp);
+      window.removeEventListener('keyup', onKeyUp);
     };
   }, [tabs]);
 

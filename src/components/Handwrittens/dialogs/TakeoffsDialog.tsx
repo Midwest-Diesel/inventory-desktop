@@ -45,9 +45,11 @@ export default function TakeoffsDialog({ open, setOpen, item, unitPrice, setHand
       const res = await getPartById(item.partId);
       if (res) {
         setPart(res);
+        setEngine(null);
       } else {
         const engineRes = await getEngineByStockNum(Number(item.stockNum));
         setEngine(engineRes);
+        setPart(null);
       }
     };
     fetchData();
