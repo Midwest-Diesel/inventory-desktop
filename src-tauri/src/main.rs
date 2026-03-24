@@ -135,7 +135,9 @@ struct BOLArgs {
   ship_via: String,
   prepaid: bool,
   collect: bool,
-  third_party: bool
+  third_party: bool,
+  third_party_address: String,
+  account_number: String
 }
 
 #[derive(Deserialize, Serialize)]
@@ -988,6 +990,18 @@ fn print_bol(args: BOLArgs) -> Result<(), String> {
       .Wrap = 1
       .Execute , , , , , , , , , , 2
     End With
+    With sheet1.Content.Find
+      .Text = "<THIRD_PARTY_ADDRESS>"
+      .Replacement.Text = "{}"
+      .Wrap = 1
+      .Execute , , , , , , , , , , 2
+    End With
+    With sheet1.Content.Find
+      .Text = "<THIRD_PARTY_ACCOUNT_NUM>"
+      .Replacement.Text = "{}"
+      .Wrap = 1
+      .Execute , , , , , , , , , , 2
+    End With
 
     Dim cc
     For Each cc In sheet1.ContentControls
@@ -995,7 +1009,7 @@ fn print_bol(args: BOLArgs) -> Result<(), String> {
         cc.Checked = {}
       ElseIf cc.Tag = "collect" Then
         cc.Checked = {}
-      ElseIf cc.Tag = "3rdParty" Then
+      ElseIf cc.Tag = "thirdParty" Then
         cc.Checked = {}
       End If
     Next
@@ -1013,6 +1027,8 @@ fn print_bol(args: BOLArgs) -> Result<(), String> {
     args.ship_from_address_2,
     args.ship_from_city_state_zip,
     args.ship_via,
+    args.third_party_address,
+    args.account_number,
     if args.prepaid {"True"} else {"False"},
     if args.collect {"True"} else {"False"},
     if args.third_party {"True"} else {"False"},

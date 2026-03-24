@@ -160,7 +160,9 @@ export default function HandwrittenDetails({
         ship_via: handwritten?.shipVia.name ?? '',
         prepaid: (!handwritten?.isCollect && !handwritten?.isThirdParty),
         collect: handwritten?.isCollect,
-        third_party: handwritten?.isThirdParty
+        third_party: handwritten?.isThirdParty,
+        third_party_address: handwritten?.isThirdParty ? (handwritten.billToAddress ?? '') : '',
+        account_number: handwritten?.thirdPartyAccount ?? ''
       };
       await invoke('print_bol', { args });
     }
@@ -187,7 +189,9 @@ export default function HandwrittenDetails({
         ship_via: handwritten?.shipVia.name ?? '',
         prepaid: (!handwritten?.isCollect && !handwritten?.isThirdParty),
         collect: handwritten?.isCollect,
-        third_party: handwritten?.isThirdParty
+        third_party: handwritten?.isThirdParty,
+        third_party_address: handwritten?.isThirdParty ? (handwritten.billToAddress ?? '') : '',
+        account_number: handwritten?.thirdPartyAccount ?? ''
       };
       await invoke('print_bol', { args });
     }
@@ -305,7 +309,9 @@ export default function HandwrittenDetails({
       ship_via: handwritten?.shipVia?.name ?? '',
       prepaid: (!handwritten?.isCollect && !handwritten?.isThirdParty),
       collect: handwritten?.isCollect,
-      third_party: handwritten?.isThirdParty
+      third_party: handwritten?.isThirdParty,
+      third_party_address: handwritten?.isThirdParty ? (handwritten.billToAddress ?? '') : '',
+      account_number: handwritten?.thirdPartyAccount ?? ''
     };
     await invoke('print_bol', { args });
   };
