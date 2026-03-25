@@ -269,6 +269,7 @@ export const addHandwritten = async (handwritten: Handwritten): Promise<number |
     }
 
     checkForCustomerAlert(handwritten.customer);
+    emitServerEvent('REFRESH_ACCOUNTING_PAGE', []);
     return Number(res.data.id);
   } catch (error) {
     console.error(error);
@@ -384,6 +385,7 @@ export const editHandwrittenItemPartId = async (id: number, partId: number) => {
 export const editHandwritten = async (handwritten: Handwritten) => {
   try {
     await api.put('/api/handwrittens', handwritten);
+    emitServerEvent('REFRESH_ACCOUNTING_PAGE', []);
   } catch (error) {
     console.error(error);
     alert(`Error in [editHandwritten] ${error}`);

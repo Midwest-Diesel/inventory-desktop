@@ -7,11 +7,12 @@ import { invoke } from "@/scripts/config/tauri";
 import { getEndOfDayHandwrittens, getSomeHandwrittensByAccountingStatus } from "@/scripts/services/handwrittensService";
 import { formatDate } from "@/scripts/tools/stringUtils";
 import Link from "@/components/library/Link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAtom } from "jotai";
 import { accountingPageFilterAtom } from "@/scripts/atoms/state";
 import { useQuery } from "@tanstack/react-query";
 import { getFastTrackInventory, getNetcomInventory } from "@/scripts/services/partsService";
+import { offServerEvent, onServerEvent } from "@/scripts/config/websockets";
 
 type AccountingStatus = '' | 'all' | 'IN PROCESS' | 'COMPLETE';
 const LIMIT = 60;
@@ -21,7 +22,16 @@ export default function Karmak() {
   const [currentStatus, setCurrentStatus] = useAtom(accountingPageFilterAtom);
   const [currentPage, setCurrentPage] = useState(1);
 
-  const { data: handwrittens, isFetching } = useQuery<HandwrittenRes>({
+  useEffect(() => {
+    const refreshAccountingPage = () => refetch();
+    onServerEvent('REFRESH_ACCOUNTING_PAGE', refreshAccountingPage);
+
+    return () => {
+      offServerEvent('REFRESH_ACCOUNTING_PAGE', refreshAccountingPage);
+    }
+  }, []);
+
+  const { data: handwrittens, isFetching, refetch } = useQuery<HandwrittenRes>({
     queryKey: ['handwrittens', currentPage, currentStatus],
     queryFn: () => getSomeHandwrittensByAccountingStatus(currentPage, LIMIT, currentStatus)
   });
