@@ -269,7 +269,6 @@ export const addHandwritten = async (handwritten: Handwritten): Promise<number |
     }
 
     checkForCustomerAlert(handwritten.customer);
-    emitServerEvent('REFRESH_ACCOUNTING_PAGE', []);
     return Number(res.data.id);
   } catch (error) {
     console.error(error);
@@ -435,6 +434,7 @@ export const setAllHandwrittenItemDates = async (id: number) => {
 export const deleteHandwritten = async (id: number) => {
   try {
     await api.delete(`/api/handwrittens/${id}`);
+    emitServerEvent('REFRESH_ACCOUNTING_PAGE', []);
   } catch (error) {
     console.error(error);
     alert(`Error in [deleteHandwritten] ${error}`);
