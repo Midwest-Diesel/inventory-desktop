@@ -4,7 +4,7 @@ import Button from "../library/Button";
 import Checkbox from "../library/Checkbox";
 import Table from "../library/Table";
 import Select from "../library/select/Select";
-import { addAddOn, deleteAddOn, editAddOnIsPoOpened, editAddOnPrintStatus, editAddOnUserEditing } from "@/scripts/services/addOnsService";
+import { addAddOn, deleteAddOn, editAddOnIsPoOpened, editAddOnPrintStatus, editAddOnUserEditing, getAllAddOns } from "@/scripts/services/addOnsService";
 import { getNextUPStockNum, getPartsByStockNum, getPartInfoByPartNum } from "@/scripts/services/partsService";
 import { useEffect, useRef, useState } from "react";
 import Input from "../library/Input";
@@ -246,7 +246,8 @@ export default function ShopPartAddonRow({ addOn, handleDuplicateAddOn, partNumL
 
   const checkDuplicateStockNum = async (stockNum: string, clearField = true): Promise<boolean> => {
     const parts = await getPartsByStockNum(stockNum);
-    const addOnStockNums = addOns
+    const res = await getAllAddOns();
+    const addOnStockNums = res
       .filter((a) => a.id !== addOn.id && a.stockNum)
       .map((a) => a.stockNum);
     
@@ -297,10 +298,7 @@ export default function ShopPartAddonRow({ addOn, handleDuplicateAddOn, partNumL
       alert('Missing stock number');
       return;
     }
-    if (await checkDuplicateStockNum(addOn.stockNum)) {
-      alert(`Duplicate stock number: ${addOn.stockNum}`);
-      return;
-    }
+    if (await checkDuplicateStockNum(addOn.stockNum)) return;
     await onSave();
     if (!isBlankAddOn(addOns[0])) {
       const newRow = await addAddOn();
