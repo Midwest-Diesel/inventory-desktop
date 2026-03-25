@@ -21,6 +21,7 @@ export default function EngineSearchDialog({ open, setOpen, onSearch, listOpen, 
   const [model, setModel] = useState('');
   const [serialNum, setSerialNum] = useState('');
   const [arrNum, setArrNum] = useState('');
+  const [soldTo, setSoldTo] = useState('');
   const [date, setDate] = useState<Date | null>(null);
   const [location, setLocation] = useState('');
   const [comments, setComments] = useState('');
@@ -36,11 +37,16 @@ export default function EngineSearchDialog({ open, setOpen, onSearch, listOpen, 
     setCurrentStatus(listOpen);
   }, [listOpen]);
 
+  useEffect(() => {
+    setSoldTo('');
+  }, [currentStatus]);
+
   const clearInputs = () => {
     setStockNum('');
     setModel('');
     setSerialNum('');
     setArrNum('');
+    setSoldTo('');
     setDate(null);
     setLocation('');
     setComments('');
@@ -59,6 +65,7 @@ export default function EngineSearchDialog({ open, setOpen, onSearch, listOpen, 
       model,
       serialNum,
       arrNum,
+      soldTo,
       date: parseDateInputValue(date),
       location,
       comments,
@@ -113,6 +120,15 @@ export default function EngineSearchDialog({ open, setOpen, onSearch, listOpen, 
           value={arrNum}
           onChange={(e) => setArrNum(e.target.value)}
         />
+
+        {currentStatus === 'Sold' &&
+          <Input
+            label="Sold To"
+            variant={['small', 'thin', 'label-no-stack', 'label-space-between']}
+            value={soldTo}
+            onChange={(e) => setSoldTo(e.target.value)}
+          />
+        }
 
         <Input
           label="Date"
