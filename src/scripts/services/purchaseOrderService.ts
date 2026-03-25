@@ -15,12 +15,13 @@ const parsePoDataRes = (data: any) => {
 
 // === GET routes === //
 
-export const getPurchaseOrderById = async (id: number) => {
+export const getPurchaseOrderById = async (id: number): Promise<PO | null> => {
   try {
     const res = await api.get(`/api/po/${id}`);
     return parsePoDataRes(res.data)[0];
   } catch (err) {
     console.error(err);
+    return null;
   }
 };
 
