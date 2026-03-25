@@ -28,7 +28,7 @@ export default function Karmak() {
 
     return () => {
       offServerEvent('REFRESH_ACCOUNTING_PAGE', refreshAccountingPage);
-    }
+    };
   }, []);
 
   const { data: handwrittens, isFetching, refetch } = useQuery<HandwrittenRes>({

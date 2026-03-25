@@ -124,7 +124,8 @@ export default function EditPoDetails({ poData, setPo, setIsEditing, poItems, po
       }
     }
 
-    setPo(await getPurchaseOrderById(poData.id));
+    const res = await getPurchaseOrderById(poData.id);
+    if (res) setPo(res);
     setIsEditing(false);
   };
 
