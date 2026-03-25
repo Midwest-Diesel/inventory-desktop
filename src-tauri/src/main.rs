@@ -31,6 +31,7 @@ use std::path::{Path};
 use zip::read::ZipArchive;
 use base64::{engine::general_purpose::STANDARD as BASE64_STANDARD, Engine};
 use url::Url;
+use uuid::Uuid;
 
 #[derive(Deserialize, Debug)]
 struct LatestVersionInfo {
@@ -219,6 +220,7 @@ async fn main() {
   let _ = tauri::Builder::default()
     .setup(|_| {
       create_directories();
+      cleanup_temp_files();
       Ok(())
     })
     .invoke_handler(tauri::generate_handler![
@@ -280,11 +282,28 @@ fn create_directories() {
   write("C:/mwd/scripts/launch_test.vbs", "test").unwrap();
 }
 
+fn cleanup_temp_files() {
+  let temp_dir = "C:/Users/Public";
+  let prefixes = ["BOL_", "CERTOO_", "COMINV_"];
+
+  if let Ok(entries) = std::fs::read_dir(&temp_dir) {
+    for entry in entries.flatten() {
+      let path = entry.path();
+
+      if let Some(file_name) = path.file_name().and_then(|n| n.to_str()) {
+        if prefixes.iter().any(|p| file_name.starts_with(p)) && file_name.ends_with(".docm") {
+          let _ = std::fs::remove_file(path);
+        }
+      }
+    }
+  }
+}
+
 fn get_available_printers() -> Vec<String> {
   let output = match std::process::Command::new("powershell")
     .args([
-        "-Command",
-        "Get-Printer | Select-Object -ExpandProperty Name"
+      "-Command",
+      "Get-Printer | Select-Object -ExpandProperty Name"
     ])
     .output()
   {
@@ -900,13 +919,18 @@ async fn print_cc_label(image_data: String) -> Result<(), String> {
 fn print_bol(args: BOLArgs) -> Result<(), String> {
   let printers = get_available_printers();
   let printer = printers.iter().find(|&p| p.contains(&FRONT_DESK_PRINTER.to_string())).cloned().unwrap_or_else(|| "".to_string());
+  let temp_file = format!(
+    "C:/Users/Public/BOL_{}.docm",
+    Uuid::new_v4()
+  );
+
   let vbs_script = format!(
     r#"
     Dim fso, src, dest, doc, sheet1
     Set fso = CreateObject("Scripting.FileSystemObject")
 
     src = "\\MWD1-SERVER\Server\BOLtemplate.docm"
-    dest = "C:\Users\Public\BOLtemplate.docm"
+    dest = "{}"
 
     fso.CopyFile src, dest, True
 
@@ -1016,6 +1040,7 @@ fn print_bol(args: BOLArgs) -> Result<(), String> {
 
     doc.ActivePrinter = "{}"
     "#,
+    temp_file,
     args.ship_to_company,
     args.ship_to_address,
     if args.ship_to_address_2 == "" {"True"} else {"False"},
