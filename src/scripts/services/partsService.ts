@@ -191,10 +191,10 @@ export const searchAltParts = async (part: PartSearchData, page: number, limit: 
   }
 };
 
-export const getSalesInfo = async (altParts: string): Promise<SalesInfo> => {
+export const getSalesInfo = async (partNum: string): Promise<SalesInfo> => {
   try {
-    if (!altParts) return { sales: [], quotes: [], salesByYearList: [], counters: { new: 0, recon: 0, used: 0, core: 0 }};
-    const params = new URLSearchParams({ altParts });
+    if (!partNum) return { sales: [], quotes: [], salesByYearList: [], counters: { new: 0, recon: 0, used: 0, core: 0 }};
+    const params = new URLSearchParams({ partNum });
     const res = await api.get(`/api/parts/sales-info?${params.toString()}`);
     return {
       ...res.data,

@@ -2,7 +2,7 @@ import { formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
 import Dialog from "../../library/Dialog";
 import Table from "../../library/Table";
 import Link from "../../library/Link";
-import { getPartInfoByPartNum, getSalesInfo, searchAltParts, searchParts } from "@/scripts/services/partsService";
+import { getSalesInfo, searchAltParts, searchParts } from "@/scripts/services/partsService";
 import { getSalesByYear } from "@/scripts/logic/sales";
 import { useQuery } from "@tanstack/react-query";
 import Loading from "@/components/library/Loading";
@@ -38,20 +38,11 @@ export default function SalesInfo({ open, setOpen }: Props) {
     enabled: open
   });
 
-  const { data: partInfo } = useQuery<PartInfo | null>({
-    queryKey: ['partInfo', open, prevSearch],
-    queryFn: async () => {
-      if (!prevSearch) return null;
-      return await getPartInfoByPartNum(prevSearch.rows[0].partNum);
-    },
-    enabled: open
-  });
-
   const { data: salesInfo, isFetching } = useQuery<SalesInfo>({
-    queryKey: ['salesInfo', open, partInfo],
+    queryKey: ['salesInfo', open, prevSearch],
     queryFn: async () => {
-      if (!partInfo) return { sales: [], quotes: [], salesByYearList: [], counters: { new: 0, recon: 0, used: 0, core: 0 }};
-      return await getSalesInfo(partInfo.altParts);
+      if (!prevSearch) return { sales: [], quotes: [], salesByYearList: [], counters: { new: 0, recon: 0, used: 0, core: 0 }};
+      return await getSalesInfo(prevSearch.rows[0].partNum);
     },
     enabled: open
   });

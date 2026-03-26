@@ -144,6 +144,7 @@ export default function PartSelectDialog({ open, setOpen, onSubmit }: Props) {
               setData={handleChangePage}
               pageCount={partCount}
               pageSize={LIMIT}
+              page={currentPage}
             />
             <Button onClick={handleSubmit} className="piggyback-quote-dialog__submit-btn">Submit</Button>
           </>

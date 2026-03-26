@@ -2,7 +2,7 @@ import Button from "@/components/library/Button";
 import Dialog from "@/components/library/Dialog";
 import Input from "@/components/library/Input";
 import { editHandwrittenChildTakeoffState, editHandwrittenItemTakeoffState, editHandwrittenItemPartId, getHandwrittenById } from "@/scripts/services/handwrittensService";
-import { addPart, addPartCostIn, addToPartQtyHistory, editPartCostIn, editPartStockNum, getPartById, getPartQty, handlePartTakeoff } from "@/scripts/services/partsService";
+import { addPart, addPartCostIn, addToPartQtyHistory, editPartCostIn, editPartStockNum, getPartById, getPartQty, handlePartTakeoff, searchAltParts } from "@/scripts/services/partsService";
 import { getSurplusByCode, zeroAllSurplusItems } from "@/scripts/services/surplusService";
 import { formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
 import { FormEvent, RefObject, useEffect, useRef, useState } from "react";
@@ -10,6 +10,7 @@ import Loading from "@/components/library/Loading";
 import { ask, invoke } from "@/scripts/config/tauri";
 import { useNavState } from "@/hooks/useNavState";
 import { editEngineStatus, getEngineByStockNum } from "@/scripts/services/enginesService";
+import TakeoffPartSelectDialog from "./TakeoffPartSelectDialog";
 
 interface Props {
   open: boolean
@@ -27,6 +28,8 @@ const OUT_OF_STOCK_EMAIL_RECIPIENTS = ['terry@midwestdiesel.com', 'jack@midwestd
 
 export default function TakeoffsDialog({ open, setOpen, item, unitPrice, setHandwritten, onSubmit, takeoffInputRef, handwrittenId }: Props) {
   const [qty, setQty] = useState<number>(Number(item.qty));
+  const [partSelectOpen, setPartSelectOpen] = useState(false);
+  const [partSearch, setPartSearch] = useState<Part[]>([]);
   const [part, setPart] = useState<Part | null>(null);
   const [engine, setEngine] = useState<Engine | null>(null);
   const [loading, setLoading] = useState(false);
@@ -42,12 +45,18 @@ export default function TakeoffsDialog({ open, setOpen, item, unitPrice, setHand
     setQty(Number(item.qty));
 
     const fetchData = async () => {
+      const engineRes = await getEngineByStockNum(Number(item.stockNum));
+      if (!item.partId && !engineRes) {
+        setPartSelectOpen(true);
+        const search = await searchAltParts({ stockNum: item.stockNum ?? '', showSoldParts: false }, 1, 9999);
+        setPartSearch(search.rows);
+      }
+
       const res = await getPartById(item.partId);
       if (res) {
         setPart(res);
         setEngine(null);
       } else {
-        const engineRes = await getEngineByStockNum(Number(item.stockNum));
         setEngine(engineRes);
         setPart(null);
       }
@@ -169,55 +178,70 @@ export default function TakeoffsDialog({ open, setOpen, item, unitPrice, setHand
     setOpen(false);
   };
 
+  const onClickSelectPart = async (part: Part) => {
+    setPart(part);
+    setPartSelectOpen(false);
+    await editHandwrittenItemPartId(item.id, part.id);
+  };
+
 
   return (
-    <Dialog
-      open={open}
-      setOpen={setOpen}
-      title="Takeoff"
-      width={300}
-      y={-200}
-      data-testid="takeoffs-dialog"
-    >
-      {part &&
-        <form onSubmit={handleSubmit}>
-          <p><strong>Part Number:</strong> { part.partNum }</p>
-          <p><strong>Stock Number:</strong> { part.stockNum }</p>
-          <p><strong>Description:</strong> { part.desc }</p>
-          <p><strong>Qty on Hand:</strong> { part.qty }</p>
-          <br />
-          <Input
-            variant={['x-small', 'label-bold', 'label-stack', 'label-fit-content']}
-            label="Qty"
-            value={qty ?? ''}
-            onChange={(e) => setQty(Math.max(Math.min(Number(e.target.value), (item.qty ?? 0)), 1))}
-            type="number"
-            data-testid="takeoff-qty-input"
-          />
+    <>
+      <TakeoffPartSelectDialog
+        open={partSelectOpen}
+        setOpen={setPartSelectOpen}
+        partList={partSearch}
+        onSelect={onClickSelectPart}
+      />
 
-          <div className="form__footer" ref={ref}>
-            {loading ?
-              <Loading />
-              :
-              <Button type="submit" data-testid="takeoff-submit-btn">Submit</Button>
-            }
-          </div>
-        </form>
-      }
+      <Dialog
+        open={open}
+        setOpen={setOpen}
+        title="Takeoff"
+        width={300}
+        y={-200}
+        data-testid="takeoffs-dialog"
+      >
+        {part &&
+          <form onSubmit={handleSubmit}>
+            <p><strong>Part Number:</strong> { part.partNum }</p>
+            <p><strong>Stock Number:</strong> { part.stockNum }</p>
+            <p><strong>Description:</strong> { part.desc }</p>
+            <p><strong>Qty on Hand:</strong> { part.qty }</p>
+            <br />
+            <Input
+              variant={['x-small', 'label-bold', 'label-stack', 'label-fit-content']}
+              label="Qty"
+              value={qty ?? ''}
+              onChange={(e) => setQty(Math.max(Math.min(Number(e.target.value), (item.qty ?? 0)), 1))}
+              type="number"
+              data-testid="takeoff-qty-input"
+            />
 
-      {engine &&
-        <form onSubmit={handleSubmitEngine}>
-          <p><strong>Engine Stock Number:</strong> { engine.stockNum }</p>
+            <div className="form__footer" ref={ref}>
+              {loading ?
+                <Loading />
+                :
+                <Button type="submit" data-testid="takeoff-submit-btn">Submit</Button>
+              }
+            </div>
+          </form>
+        }
 
-          <div className="form__footer" ref={ref}>
-            {loading ?
-              <Loading />
-              :
-              <Button type="submit" data-testid="takeoff-submit-btn">Submit</Button>
-            }
-          </div>
-        </form>
-      }
-    </Dialog>
+        {engine &&
+          <form onSubmit={handleSubmitEngine}>
+            <p><strong>Engine Stock Number:</strong> { engine.stockNum }</p>
+
+            <div className="form__footer" ref={ref}>
+              {loading ?
+                <Loading />
+                :
+                <Button type="submit" data-testid="takeoff-submit-btn">Submit</Button>
+              }
+            </div>
+          </form>
+        }
+      </Dialog>
+    </>
   );
 }
