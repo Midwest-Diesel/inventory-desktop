@@ -385,11 +385,11 @@ export default function EditHandwrittenDetails({
     const itemChunks = splitItems(handwritten?.handwrittenItems ?? [], MAX_ROWS);
     const shippingChunks = splitItems(getAllShippingItems(handwritten), MAX_ROWS);
 
-    printHandwrittenOnlyItems(itemChunks, shipVia?.name, handwrittenTotal, hasCore);
-    printHandwrittenWithChildren(shippingChunks, shipVia?.name, handwrittenTotal);
+    printHandwrittenOnlyItems(handwritten, itemChunks, shipVia?.name, handwrittenTotal, hasCore);
+    printHandwrittenWithChildren(handwritten, shippingChunks, shipVia?.name, handwrittenTotal);
   };
 
-  const printHandwrittenOnlyItems = async (chunks: any[][], shipVia: string | null, handwrittenTotal: string, hasCore: boolean) => {
+  const printHandwrittenOnlyItems = async (handwritten: Handwritten, chunks: any[][], shipVia: string | null, handwrittenTotal: string, hasCore: boolean) => {
     for (let i = 0; i < chunks.length; i++) {
       const chunk = chunks[i];
       const args = {
@@ -457,7 +457,7 @@ export default function EditHandwrittenDetails({
     setLoading(false);
   };
 
-  const printHandwrittenWithChildren = async (chunks: any[][], shipVia: string | null, handwrittenTotal: string) => {
+  const printHandwrittenWithChildren = async (handwritten: Handwritten, chunks: any[][], shipVia: string | null, handwrittenTotal: string) => {
     for (let i = 0; i < chunks.length; i++) {
       const chunk = chunks[i];
       const args = {

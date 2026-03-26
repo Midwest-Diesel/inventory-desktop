@@ -43,13 +43,13 @@ export default function PrintInvoiceDialog({ open, setOpen, handwritten }: Props
     const itemChunks = splitItems(handwritten.handwrittenItems ?? [], MAX_ROWS);
     const shippingChunks = splitItems(getAllShippingItems(handwritten), MAX_ROWS);
 
-    if (accounting) printHandwrittenOnlyItems(itemChunks, handwrittenTotal, coreDeposit);
-    if (shipping) printHandwrittenWithChildren(shippingChunks, handwrittenTotal);
+    if (accounting) printHandwrittenOnlyItems(handwritten, itemChunks, handwrittenTotal, coreDeposit);
+    if (shipping) printHandwrittenWithChildren(handwritten, shippingChunks, handwrittenTotal);
 
     if (accounting || shipping || coreDeposit) printQue();
   };
 
-  const printHandwrittenOnlyItems = async (chunks: any[][], handwrittenTotal: string, hasCore: boolean) => {
+  const printHandwrittenOnlyItems = async (handwritten: Handwritten, chunks: any[][], handwrittenTotal: string, hasCore: boolean) => {
     for (let i = 0; i < chunks.length; i++) {
       const chunk = chunks[i];
       const args = {
@@ -114,7 +114,7 @@ export default function PrintInvoiceDialog({ open, setOpen, handwritten }: Props
     printQue();
   };
 
-  const printHandwrittenWithChildren = async (chunks: any[][], handwrittenTotal: string) => {
+  const printHandwrittenWithChildren = async (handwritten: Handwritten, chunks: any[][], handwrittenTotal: string) => {
     for (let i = 0; i < chunks.length; i++) {
       const chunk = chunks[i];
       const args = {
