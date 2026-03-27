@@ -3,8 +3,6 @@ import Dialog from "@/components/library/Dialog";
 import Input from "@/components/library/Input";
 import Button from "@/components/library/Button";
 import Select from "@/components/library/select/Select";
-import { useAtom } from "jotai";
-import { selectedCustomerAtom } from "@/scripts/atoms/state";
 import { ask } from "@/scripts/config/tauri";
 import { getCustomerById } from "@/scripts/services/customerService";
 
