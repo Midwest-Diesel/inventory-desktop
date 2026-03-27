@@ -1,8 +1,12 @@
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import Dialog from "@/components/library/Dialog";
 import Input from "@/components/library/Input";
 import Button from "@/components/library/Button";
 import Select from "@/components/library/select/Select";
+import { useAtom } from "jotai";
+import { selectedCustomerAtom } from "@/scripts/atoms/state";
+import { ask } from "@/scripts/config/tauri";
+import { getCustomerById } from "@/scripts/services/customerService";
 
 interface Props {
   open: boolean
@@ -12,6 +16,7 @@ interface Props {
 
 export interface CoreSearch {
   partNum: string
+  billToCompany: string
   desc: string
   priority: string
   salesperson: string
@@ -20,12 +25,26 @@ export interface CoreSearch {
 
 export default function CoreSearchDialog({ open, setOpen, onSearch }: Props) {
   const [partNum, setPartNum] = useState('');
+  const [billToCompany, setBillToCompany] = useState('');
   const [desc, setDesc] = useState('');
   const [priority, setPriority] = useState<'' | 'HIGH' | 'LOW'>('');
   const [salesperson, setSalesperson] = useState('');
+  const selectedCustomerId = localStorage.getItem('customerId');
+
+  useEffect(() => {
+    const init = async () => {
+      if (!selectedCustomerId) return;
+      const customer = await getCustomerById(Number(selectedCustomerId));
+      if (customer && await ask(`Filter cores for ${customer.company}`)) {
+        onSearch({ partNum, billToCompany: customer.company ?? '', desc, priority, salesperson });
+      }
+    };
+    init();
+  }, []);
 
   const clearInputs = () => {
     setPartNum('');
+    setBillToCompany('');
     setDesc('');
     setPriority('');
     setSalesperson('');
@@ -33,7 +52,7 @@ export default function CoreSearchDialog({ open, setOpen, onSearch }: Props) {
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    onSearch({ partNum, desc, priority, salesperson });
+    onSearch({ partNum, billToCompany, desc, priority, salesperson });
   };
 
 
@@ -42,8 +61,7 @@ export default function CoreSearchDialog({ open, setOpen, onSearch }: Props) {
       open={open}
       setOpen={setOpen}
       title="Cores Search"
-      width={350}
-      height={280}
+      width={400}
       y={-250}
       className="cores-search-dialog"
     >
@@ -52,14 +70,21 @@ export default function CoreSearchDialog({ open, setOpen, onSearch }: Props) {
           label="Part Number"
           variant={['small', 'thin', 'label-no-stack', 'label-space-between']}
           value={partNum}
-          onChange={(e: any) => setPartNum(e.target.value)}
+          onChange={(e) => setPartNum(e.target.value)}
+        />
+
+        <Input
+          label="Bill To Company"
+          variant={['small', 'thin', 'label-no-stack', 'label-space-between']}
+          value={billToCompany}
+          onChange={(e) => setBillToCompany(e.target.value)}
         />
 
         <Input
           label="Description"
           variant={['small', 'thin', 'label-no-stack', 'label-space-between']}
           value={desc}
-          onChange={(e: any) => setDesc(e.target.value)}
+          onChange={(e) => setDesc(e.target.value)}
         />
 
         <Select
@@ -77,7 +102,7 @@ export default function CoreSearchDialog({ open, setOpen, onSearch }: Props) {
           label="Salesperson"
           variant={['small', 'thin', 'label-no-stack', 'label-space-between']}
           value={salesperson}
-          onChange={(e: any) => setSalesperson(e.target.value)}
+          onChange={(e) => setSalesperson(e.target.value)}
         />
 
         <div className="form__footer">
