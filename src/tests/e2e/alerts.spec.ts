@@ -20,7 +20,7 @@ test.describe('Basic Functionality', () => {
 
   test('Create new alert', async ({ page }) => {
     await page.getByTestId('new-alert-btn').click();
-    await page.getByTestId('alert-type-input').fill('HUDDLE UP!!!');
+    await page.getByTestId('alert-type-input').selectOption('HUDDLE UP!!!');
     await page.getByTestId('part-num-input').fill('123123');
     await page.getByTestId('note-input').fill('Test');
     await page.getByTestId('save').click();
@@ -32,7 +32,7 @@ test.describe('Basic Functionality', () => {
 
   test('Edit alert', async ({ page }) => {
     await page.getByTestId('edit-btn').first().click();
-    await page.getByTestId('alert-type-edit-input').fill('ALERT!!!');
+    await page.getByTestId('alert-type-edit-input').selectOption('ALERT!!!');
     await page.getByTestId('part-num-edit-input').fill('3491522');
     await page.getByTestId('note-edit-input').fill('Potato');
     await page.getByTestId('edit-save-btn').click();

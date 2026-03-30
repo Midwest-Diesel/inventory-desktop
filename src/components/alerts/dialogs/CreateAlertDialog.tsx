@@ -6,6 +6,7 @@ import { useAtom } from "jotai";
 import { alertsAtom, userAtom } from "@/scripts/atoms/state";
 import { addAlert, getAlerts } from "@/scripts/services/alertsService";
 import TextArea from "@/components/library/TextArea";
+import Select from "@/components/library/select/Select";
 
 interface Props {
   open: boolean
@@ -54,15 +55,22 @@ export default function CreateAlertDialog({ open, setOpen }: Props) {
       data-testid="new-alert-dialog"
     >
       <form onSubmit={(e)=> handleSubmit(e)}>
-        <Input
+        <Select
           label="Alert Type"
-          variant={['label-space-between', 'label-full-width', 'small', 'thin', 'label-bold']}
+          variant={['label-space-between', 'label-full-width', 'label-bold']}
           value={type}
           onChange={(e) => setType(e.target.value)}
           data-testid="alert-type-input"
-          placeholder="ALERT!!!"
           required
-        />
+        >
+          <option>ALERT!!!</option>
+          <option>HUDDLE UP!!!</option>
+          <option>CAT IS OUT!!!</option>
+          <option>SYSTEMS CHECK!!!</option>
+          <option>SEE JACK!!!</option>
+          <option>SEE TERRY!!!</option>
+          <option>HUDDLE OR JAIL!!!</option>
+        </Select>
 
         <Input
           label="Subtext"
