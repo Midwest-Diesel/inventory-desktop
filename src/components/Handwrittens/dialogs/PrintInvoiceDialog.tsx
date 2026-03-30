@@ -43,7 +43,7 @@ export default function PrintInvoiceDialog({ open, setOpen, handwritten }: Props
     const itemChunks = splitItems(handwritten.handwrittenItems ?? [], MAX_ROWS);
     const shippingChunks = splitItems(getAllShippingItems(handwritten), MAX_ROWS);
 
-    if (accounting) printHandwrittenOnlyItems(handwritten, itemChunks, handwrittenTotal, coreDeposit);
+    if (accounting || coreDeposit) printHandwrittenOnlyItems(handwritten, itemChunks, handwrittenTotal, coreDeposit);
     if (shipping) printHandwrittenWithChildren(handwritten, shippingChunks, handwrittenTotal);
 
     if (accounting || shipping || coreDeposit) printQue();
