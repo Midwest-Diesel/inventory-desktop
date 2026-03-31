@@ -369,7 +369,7 @@ export default function HandwrittenDetails({
   };
 
   const onClickPrintProforma = () => {
-    const proformaId = `invoice_${handwritten.id}`;
+    const proformaId = `${handwritten.id}`;
     const args = {
       date: formatDate(handwritten.date),
       proformaId,
@@ -405,7 +405,7 @@ export default function HandwrittenDetails({
   };
 
   const onClickEmailProforma = async () => {
-    const proformaId = `invoice_${handwritten.id}`;
+    const proformaId = `${handwritten.id}`;
     const data = {
       date: formatDate(handwritten.date),
       proformaId,
