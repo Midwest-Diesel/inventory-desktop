@@ -1207,13 +1207,18 @@ async fn print_core_handwritten(image_data: String, file_name: String) -> Result
 fn print_ci(args: CIArgs) -> Result<(), String> {
   let printers = get_available_printers();
   let printer = printers.iter().find(|&p| p.contains(&OFFICE_PRINTER.to_string())).cloned().unwrap_or_else(|| "".to_string());
+  let temp_file = format!(
+    "C:/Users/Public/CI_{}.docm",
+    Uuid::new_v4()
+  );
+
   let vbs_script = format!(
     r#"
     Dim fso, src, dest, doc, sheet1
     Set fso = CreateObject("Scripting.FileSystemObject")
 
     src = "\\MWD1-SERVER\Server\COMINVtemplate.docm"
-    dest = "C:\Users\Public\COMINVtemplate.docm"
+    dest = "{}"
 
     fso.CopyFile src, dest, True
 
@@ -1251,6 +1256,7 @@ fn print_ci(args: CIArgs) -> Result<(), String> {
 
     doc.ActivePrinter = "{}"
     "#,
+    temp_file,
     args.company,
     args.address_2,
     args.address,
@@ -1277,13 +1283,18 @@ fn print_ci(args: CIArgs) -> Result<(), String> {
 fn print_coo() -> Result<(), String> {
   let printers = get_available_printers();
   let printer = printers.iter().find(|&p| p.contains(&OFFICE_PRINTER.to_string())).cloned().unwrap_or_else(|| "".to_string());
+  let temp_file = format!(
+    "C:/Users/Public/COO_{}.docm",
+    Uuid::new_v4()
+  );
+
   let vbs_script = format!(
     r#"
     Dim fso, src, dest, doc, sheet1
     Set fso = CreateObject("Scripting.FileSystemObject")
 
     src = "\\MWD1-SERVER\Server\CERTOOtemplate.docm"
-    dest = "C:\Users\Public\CERTOOtemplate.docm"
+    dest = "{}"
 
     fso.CopyFile src, dest, True
 
@@ -1292,6 +1303,7 @@ fn print_coo() -> Result<(), String> {
     Set sheet1 = doc.Documents.Open(dest, False)
     doc.ActivePrinter = "{}"
     "#,
+    temp_file,
     printer,
   );
 
