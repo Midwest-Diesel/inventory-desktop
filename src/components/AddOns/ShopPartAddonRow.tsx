@@ -4,7 +4,7 @@ import Button from "../library/Button";
 import Checkbox from "../library/Checkbox";
 import Table from "../library/Table";
 import Select from "../library/select/Select";
-import { addAddOn, deleteAddOn, editAddOnIsPoOpened, editAddOnPrintStatus, editAddOnUserEditing, getAllAddOns } from "@/scripts/services/addOnsService";
+import { addAddOn, deleteAddOn, editAddOnIsPoOpened, editAddOnPrintStatus, editAddOnUserEditing } from "@/scripts/services/addOnsService";
 import { getNextUPStockNum, getPartsByStockNum, getPartInfoByPartNum } from "@/scripts/services/partsService";
 import { useEffect, useRef, useState } from "react";
 import Input from "../library/Input";
@@ -102,7 +102,7 @@ export default function ShopPartAddonRow({ addOn, handleDuplicateAddOn, partNumL
   }, [addOn.id, setAddons]);
 
   useEffect(() => {
-    checkDuplicateStockNum(addOn.stockNum ?? '', false);
+    if (addOn.stockNum) checkDuplicateStockNum(addOn.stockNum, false, false);
   }, [addOn.stockNum]);
 
   useEffect(() => {
@@ -244,16 +244,15 @@ export default function ShopPartAddonRow({ addOn, handleDuplicateAddOn, partNumL
     setEngineNum('');
   };
 
-  const checkDuplicateStockNum = async (stockNum: string, clearField = true): Promise<boolean> => {
+  const checkDuplicateStockNum = async (stockNum: string, clearField = true, checkInAddOns = true): Promise<boolean> => {
     const parts = await getPartsByStockNum(stockNum);
-    const res = await getAllAddOns();
-    const addOnStockNums = res
+    const addOnStockNums = addOns
       .filter((a) => a.id !== addOn.id && a.stockNum)
       .map((a) => a.stockNum);
     
-    const isDuplicated = parts.length > 0 || addOnStockNums.some((s) => s === stockNum);
+    const isDuplicated = parts.length > 0 || (addOnStockNums.some((s) => s === stockNum) && checkInAddOns);
     if (isDuplicated) {
-      alert(`[ERROR: Duplicate stock number ${stockNum}] located in ${addOnStockNums.some((s) => s === stockNum) ? 'add on list' : ''}${parts.length > 0 ? 'inventory' : ''}`);
+      alert(`[ERROR: Duplicate stock number ${stockNum}] located in ${(addOnStockNums.some((s) => s === stockNum) && checkInAddOns) ? 'add on list' : ''}${parts.length > 0 ? 'inventory' : ''}`);
       if (clearField) clearStockNumber();
       return true;
     }
@@ -274,19 +273,19 @@ export default function ShopPartAddonRow({ addOn, handleDuplicateAddOn, partNumL
     addOn.remarks === null &&
     addOn.rating === null &&
     addOn.engineNum === null &&
-    addOn.condition === "New" &&
+    addOn.condition === 'New' &&
     addOn.purchasePrice === null &&
     addOn.purchasedFrom === null &&
     addOn.po === null &&
     addOn.manufacturer === null &&
     addOn.isSpecialCost === null &&
-    addOn.type === "Truck" &&
+    addOn.type === 'Truck' &&
     addOn.hp === null &&
     addOn.serialNum === null &&
     addOn.newPrice === null &&
     addOn.remanPrice === null &&
     addOn.dealerPrice === null &&
-    addOn.priceStatus === "We have pricing" &&
+    addOn.priceStatus === 'We have pricing' &&
     addOn.altParts.length === 0 &&
     addOn.isPrinted === false &&
     addOn.isPoOpened === false &&
