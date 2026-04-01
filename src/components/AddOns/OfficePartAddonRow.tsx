@@ -1,7 +1,7 @@
 import { useAtom } from "jotai";
 import { shopAddOnsAtom, userAtom } from "@/scripts/atoms/state";
 import { deleteAddOn, editAddOnAltParts, editAddOnUserEditing, getAddOnById } from "@/scripts/services/addOnsService";
-import { addPart, addPartCostIn, getPartsByStockNum, getPartInfoByPartNum, editConnectedPartPricing, searchAltParts } from "@/scripts/services/partsService";
+import { addPart, addPartCostIn, getPartsByStockNum, getPartInfoByPartNum, editConnectedPartPricing, searchAltParts, editPartsInfoPrefix } from "@/scripts/services/partsService";
 import { useEffect, useRef, useState } from "react";
 import { addEngineCostOut, getEngineCostRemaining } from "@/scripts/services/enginesService";
 import { getRatingFromRemarks } from "@/scripts/tools/utils";
@@ -126,7 +126,7 @@ export default function OfficePartAddonRow({ addOn, onSave, onModifyAddOnData }:
       alert('Empty stock number');
       return;
     }
-    if (Boolean(Number(addOn.stockNum))) {
+    if (Number(addOn.stockNum)) {
       alert(`Stock number ${addOn.stockNum} is invalid`);
       return;
     }
@@ -149,6 +149,8 @@ export default function OfficePartAddonRow({ addOn, onSave, onModifyAddOnData }:
       altParts
     } as AddOn;
     await addPart(newPart as any, partsInfo !== null);
+
+    if (updatedAddOn.partNum) await editPartsInfoPrefix(updatedAddOn.partNum, updatedAddOn.prefix);
 
     if (newPart.ebayListing) await addEbayItem(newPart);
 

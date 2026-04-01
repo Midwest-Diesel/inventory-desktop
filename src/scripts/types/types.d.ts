@@ -322,6 +322,8 @@ type CustomerHandwritten = {
   hasCore: boolean
   invoiceStatus: InvoiceStatus
   accountingStatus: AccountingStatus
+  poNum: string | null
+  total: number
 };
 
 type CustomerHandwrittenItem = {

@@ -158,7 +158,8 @@ export default function ShopPartAddonRow({ addOn, handleDuplicateAddOn, partNumL
     const newAddOn = {
       ...addOn,
       partNum: partInfo.partNum,
-      desc: partInfo.desc
+      desc: partInfo.desc,
+      prefix: partInfo.prefix
     } as AddOn;
     const updatedAddOns = addOns.map((a: AddOn) => {
       if (a.id === addOn.id) {
@@ -606,6 +607,7 @@ export default function ShopPartAddonRow({ addOn, handleDuplicateAddOn, partNumL
                 <th>Dealer Price</th>
                 <th>Price Status</th>
                 <th>Purchased From</th>
+                <th>Prefix</th>
               </tr>
             </thead>
             <tbody>
@@ -661,6 +663,13 @@ export default function ShopPartAddonRow({ addOn, handleDuplicateAddOn, partNumL
                       }}
                     />
                   </div>
+                </td>
+                <td>
+                  <Input
+                    variant={['small', 'thin']}
+                    value={addOn.prefix !== null ? addOn.prefix : ''}
+                    onChange={(e) => handleEditAddOn({ ...addOn, prefix: e.target.value })}
+                  />
                 </td>
               </tr>
             </tbody>

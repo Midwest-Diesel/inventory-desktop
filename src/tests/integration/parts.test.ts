@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, beforeAll } from 'vitest';
 import { setApiBaseUrl } from '@/scripts/config/axios';
 import { loginUser } from '@/scripts/services/userService';
-import { addPart, editWeightDims, getPartInfoByPartNum, getPartsByStockNum } from '@/scripts/services/partsService';
+import { addPart, editPartsInfoPrefix, editWeightDims, getPartInfoByPartNum, getPartsByStockNum } from '@/scripts/services/partsService';
 import { addAltParts, getNextUP, removeAltParts } from '@/scripts/logic/parts';
 import { resetDb } from '../resetDatabase';
 
@@ -206,5 +206,14 @@ describe('Parts Integration', () => {
     await editWeightDims('1W4589', weightDims);
     const res = await getPartInfoByPartNum('0323237');
     expect(res?.weightDims).toEqual(weightDims);
+  });
+
+  it('Edit parts info prefix', async () => {
+    const oldInfo = await getPartInfoByPartNum('3740750');
+    expect(oldInfo?.prefix).toBeFalsy();
+
+    await editPartsInfoPrefix('3740750', 'INJ');
+    const newInfo = await getPartInfoByPartNum('3740750');
+    expect(newInfo?.prefix).toEqual('INJ');
   });
 });

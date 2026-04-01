@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import Table from "../library/Table";
 import { getCustomerHandwrittens } from "@/scripts/services/handwrittensService";
-import { formatDate } from "@/scripts/tools/stringUtils";
+import { formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
 import Link from "../library/Link";
 import Loading from "../library/Loading";
 
@@ -32,8 +32,8 @@ export default function CustomerHandwrittensList({ company }: Props) {
           <th>Ship To Company</th>
           <th>Source</th>
           <th>Payment</th>
-          <th>Status</th>
-          <th>Accounting</th>
+          <th>PO Number</th>
+          <th>Total</th>
         </tr>
       </thead>
       <tbody>
@@ -49,8 +49,8 @@ export default function CustomerHandwrittensList({ company }: Props) {
               <td>{ handwritten.shipToCompany }</td>
               <td>{ handwritten.source }</td>
               <td>{ handwritten.payment }</td>
-              <td>{ handwritten.invoiceStatus }</td>
-              <td>{ handwritten.accountingStatus }</td>
+              <td>{ handwritten.poNum }</td>
+              <td>{ formatCurrency(handwritten.total) }</td>
             </tr>
           );
         })}

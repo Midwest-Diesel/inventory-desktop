@@ -162,12 +162,9 @@ export default function ShopPartAddOns() {
     setShouldPreventLeave(false);
 
     const changedAddOns = addOns.filter((a) => {
-      const prev = prevAddons.find(p => p.id === a.id);
-
+      const prev = prevAddons.find((p) => p.id === a.id);
       if (!prev) return true;
-
-      return JSON.stringify(prev) !== JSON.stringify(a)
-        || a.userEditing?.id === user.id;
+      return JSON.stringify(prev) !== JSON.stringify(a) || a.userEditing?.id === user.id;
     });
     if (!changedAddOns.length) return;
 
@@ -175,8 +172,9 @@ export default function ShopPartAddOns() {
     await editAddOns(changedAddOns);
     await addOnClearUserEditing(user.id);
     isSavingRef.current = false;
+
     emitServerEvent('UPDATE_ADDON_OWNERSHIP_CLEAR', [user.id]);
-    const cleaned = changedAddOns.map(a => ({
+    const cleaned = changedAddOns.map((a) => ({
       ...a,
       userEditing: null
     }));
@@ -186,13 +184,14 @@ export default function ShopPartAddOns() {
 
   return (
     <Layout title="Add Ons">
-      { selectedPoAddOn ?
+      {selectedPoAddOn &&
         <MarkPoItemsReceivedDialog
           open={receivedItemsDialogOpen}
           setOpen={(value: boolean) => setSelectedPoData({ ...selectedPoData, receivedItemsDialogOpen: value })}
           purchaseOrder={selectedPoAddOn}
           addOn={addOn}
-        /> : '' }
+        />
+      }
 
       <div className="add-ons">
         <h1>Shop Part Add Ons</h1>

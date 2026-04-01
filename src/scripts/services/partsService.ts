@@ -424,6 +424,24 @@ export const editWeightDims = async (partNum: string, weightDims: string) => {
   }
 };
 
+export const editAltParts = async (partNum: string, altParts: string[]) => {
+  try {
+    await api.patch('/api/parts/parts-info/alt-parts', { partNum, altParts });
+  } catch (error) {
+    console.error(error);
+    alert(`Error in [editAltParts] ${error}`);
+  }
+};
+
+export const editPartsInfoPrefix = async (partNum: string, prefix: string | null) => {
+  try {
+    await api.patch('/api/parts/parts-info/prefix', { partNum, prefix });
+  } catch (error) {
+    console.error(error);
+    alert(`Error in [editPartsInfo] ${error}`);
+  }
+};
+
 // === PUT routes === //
 
 export const editPart = async (part: Part) => {
@@ -444,15 +462,6 @@ export const editPartCostIn = async (part: PartCostIn) => {
   }
 };
 
-export const editAltParts = async (partNum: string, altParts: string[]) => {
-  try {
-    await api.put('/api/parts/parts-info', { partNum, altParts });
-  } catch (error) {
-    console.error(error);
-    alert(`Error in [editAltParts] ${error}`);
-  }
-};
-
 export const editConnectedPartPricing = async (altParts: string[], pricing: PartPricing) => {
   try {
     await api.put('/api/parts/part-pricing', { altParts, pricing });
@@ -461,7 +470,6 @@ export const editConnectedPartPricing = async (altParts: string[], pricing: Part
     alert(`Error in [editConnectedPartPricing] ${error}`);
   }
 };
-
 
 // === DELETE routes === //
 
