@@ -74,11 +74,16 @@ describe('getRatingFromString', () => {
     expect(rating).toEqual('0.0');
   });
 
-  test('should return 0.0 when not at start', () => {
+  test('should return 0.0 when parentheses are present with no rating', () => {
+    const rating = getRatingFromRemarks('FUEL PUMP CORE, RACK BAR (STUCK), HSNG #(7W3906), CAM #7W3103');
+    expect(rating).toEqual('0.0');
+  });
+
+  test('should return rating when not at start', () => {
     const rating1 = getRatingFromRemarks('FUEL PUMP CORE, (6.5) RACK BAR STUCK, HSNG #7W3906, CAM #7W3103');
-    expect(rating1).toEqual('0.0');
+    expect(rating1).toEqual('6.5');
     const rating2 = getRatingFromRemarks('FUEL PUMP CORE, RACK BAR STUCK, HSNG #7W3906, (6.5)CAM #7W3103');
-    expect(rating2).toEqual('0.0');
+    expect(rating2).toEqual('6.5');
   });
 
   test('should return rating from integer', () => {

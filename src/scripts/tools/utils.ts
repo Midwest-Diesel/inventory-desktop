@@ -61,9 +61,12 @@ export const getRatingFromRemarks = (string: string): string => {
   const str = string.trim();
   const start = str.indexOf('(') + 1;
   const end = str.indexOf(')');
-  if (start !== 1 || end < 0) return '0.0';
+  if (start < 0 || end < 0) return '0.0';
   
   const rating = str.slice(start, end);
+  const isNumber = Boolean(Number(rating));
+  if (!isNumber) return '0.0';
+
   if (rating.split('.').length > 1) {
     return rating;
   } else {

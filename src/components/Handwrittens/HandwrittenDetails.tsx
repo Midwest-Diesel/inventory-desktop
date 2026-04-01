@@ -283,13 +283,18 @@ export default function HandwrittenDetails({
 
   const handlePrintCI = async () => {
     const cityStateZip = [handwritten?.shipToCity, `${handwritten?.shipToState} ${handwritten?.shipToZip}`].join(', ');
+    const isCollect = handwritten.isCollect || handwritten.isThirdParty;
     const args = {
       company: handwritten?.shipToCompany ?? '',
       address: handwritten?.shipToAddress ?? '',
       address_2: (handwritten?.shipToAddress2 ? handwritten?.shipToAddress2 : cityStateZip) ?? '',
       city_state_zip: cityStateZip && handwritten?.shipToAddress2 ? cityStateZip : '',
       date: formatDate(handwritten?.date) ?? '',
-      po: handwritten?.poNum ?? ''
+      po: handwritten?.poNum ?? '',
+      ship_via: handwritten.shipVia?.name ?? '',
+      account_number: handwritten.thirdPartyAccount ?? '',
+      prepaid: !isCollect,
+      collect: isCollect
     };
     await invoke('print_ci', { args });
     await invoke('print_coo');

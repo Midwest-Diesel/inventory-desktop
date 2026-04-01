@@ -148,7 +148,11 @@ struct CIArgs {
   address_2: String,
   city_state_zip: String,
   date: String,
-  po: String
+  po: String,
+  ship_via: String,
+  account_number: String,
+  prepaid: bool,
+  collect: bool
 }
 
 #[derive(Deserialize, Serialize)]
@@ -1233,6 +1237,17 @@ fn print_ci(args: CIArgs) -> Result<(), String> {
     Call ReplaceAndSetColor(sheet1, "<CITY_STATE_ZIP>", "{}")
     Call ReplaceAndSetColor(sheet1, "<DATE>", "{}")
     Call ReplaceAndSetColor(sheet1, "<PO>", "{}")
+    Call ReplaceAndSetColor(sheet1, "<SHIP_VIA>", "{}")
+    Call ReplaceAndSetColor(sheet1, "<ACCT_NUM>", "{}")
+
+    Dim cc
+    For Each cc In sheet1.ContentControls
+      If cc.Tag = "prepaid" Then
+        cc.Checked = {}
+      ElseIf cc.Tag = "collect" Then
+        cc.Checked = {}
+      End If
+    Next
 
     doc.ActivePrinter = "{}"
     "#,
@@ -1242,6 +1257,10 @@ fn print_ci(args: CIArgs) -> Result<(), String> {
     args.city_state_zip,
     args.date,
     args.po,
+    args.ship_via,
+    if args.account_number.is_empty() {"".to_string()} else {format!("Acct# {}", args.account_number)},
+    if args.prepaid {"True"} else {"False"},
+    if args.collect {"True"} else {"False"},
     printer
   );
 
