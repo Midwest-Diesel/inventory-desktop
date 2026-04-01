@@ -126,6 +126,10 @@ export default function OfficePartAddonRow({ addOn, onSave, onModifyAddOnData }:
       alert('Empty stock number');
       return;
     }
+    if (Boolean(Number(addOn.stockNum))) {
+      alert(`Stock number ${addOn.stockNum} is invalid`);
+      return;
+    }
 
     const partsInfo = await getPartInfoByPartNum(updatedAddOn.partNum ?? '');
     const currentAlts = partsInfo ? partsInfo.altParts.split(', ') : [updatedAddOn.partNum];
