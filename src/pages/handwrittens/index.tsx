@@ -38,6 +38,16 @@ export default function Handwrittens() {
   const currentPage = pageState.currentPage;
   const search = pageState.search;
 
+  const hasValidSearchCriteria = (
+    search?.id ||
+    search?.date ||
+    (search?.poNum && search?.poNum !== '*') ||
+    (search?.billToCompany && search?.billToCompany !== '*') ||
+    (search?.shipToCompany && search?.shipToCompany !== '*') ||
+    search?.source ||
+    search?.payment
+  );
+
   const { data: totalSales = 0, isFetching: isSalesLoading } = useQuery<number>({
     queryKey: ['yesterdaySales'],
     queryFn: getYeserdaySales
@@ -51,15 +61,6 @@ export default function Handwrittens() {
   const { data: handwrittensRes, isFetching, refetch } = useQuery<HandwrittenRes>({
     queryKey: ['handwrittens', pageState],
     queryFn: async () => {
-      const hasValidSearchCriteria =
-        search?.id ||
-        search?.date ||
-        (search?.poNum && search?.poNum !== '*') ||
-        (search?.billToCompany && search?.billToCompany !== '*') ||
-        (search?.shipToCompany && search?.shipToCompany !== '*') ||
-        search?.source ||
-        search?.payment;
-
       if (hasValidSearchCriteria) {
         return await searchHandwrittens({ ...search, offset: (currentPage - 1) * LIMIT });
       }
@@ -155,9 +156,13 @@ export default function Handwrittens() {
       const searchData = { id: quickSearchId, limit: 99999, offset: 0 };
       setPageState((prev) => ({ ...prev, search: searchData, currentPage: 1 }));
     } else {
-      const searchData = { limit: 99999, offset: 0 };
-      setPageState((prev) => ({ ...prev, search: searchData, currentPage: 1 }));
+      clearSearch();
     }
+  };
+
+  const clearSearch = () => {
+    const searchData = { limit: 99999, offset: 0 };
+    setPageState((prev) => ({ ...prev, search: searchData, currentPage: 1 }));
   };
 
 
@@ -195,6 +200,7 @@ export default function Handwrittens() {
         <div className="handwrittens">
           <h1>Handwrittens</h1>
           <div className="handwrittens__top-buttons">
+            { hasValidSearchCriteria && <Button onClick={clearSearch}>Clear Search</Button> }
             <Button onClick={() => setOpenSearch(true)}>Search</Button>
             { user.type === 'office' && <Button onClick={() => setCustomerSelectOpen(true)} data-testid="new-btn">New</Button> }
           </div>
