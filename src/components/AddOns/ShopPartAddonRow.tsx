@@ -87,8 +87,7 @@ export default function ShopPartAddonRow({ addOn, handleDuplicateAddOn, partNumL
         setAddons((prev) =>
           prev.map((a) =>
             a.id === addOn.id
-              ? { ...a, isPrinted: true }
-              : a
+              ? { ...a, isPrinted: true } : a
           )
         );
       }
@@ -102,7 +101,7 @@ export default function ShopPartAddonRow({ addOn, handleDuplicateAddOn, partNumL
   }, [addOn.id, setAddons]);
 
   useEffect(() => {
-    if (addOn.stockNum) checkDuplicateStockNum(addOn.stockNum, false, false);
+    if (addOn.stockNum) checkDuplicateStockNum(addOn.stockNum, false);
   }, [addOn.stockNum]);
 
   useEffect(() => {
@@ -162,9 +161,7 @@ export default function ShopPartAddonRow({ addOn, handleDuplicateAddOn, partNumL
       prefix: partInfo.prefix
     } as AddOn;
     const updatedAddOns = addOns.map((a: AddOn) => {
-      if (a.id === addOn.id) {
-        return newAddOn;
-      }
+      if (a.id === addOn.id) return newAddOn;
       return a;
     });
     setAddons(updatedAddOns);
@@ -245,15 +242,15 @@ export default function ShopPartAddonRow({ addOn, handleDuplicateAddOn, partNumL
     setEngineNum('');
   };
 
-  const checkDuplicateStockNum = async (stockNum: string, clearField = true, checkInAddOns = true): Promise<boolean> => {
+  const checkDuplicateStockNum = async (stockNum: string, clearField = true): Promise<boolean> => {
     const parts = await getPartsByStockNum(stockNum);
     const addOnStockNums = addOns
       .filter((a) => a.id !== addOn.id && a.stockNum)
       .map((a) => a.stockNum);
     
-    const isDuplicated = parts.length > 0 || (addOnStockNums.some((s) => s === stockNum) && checkInAddOns);
+    const isDuplicated = parts.length > 0 || (addOnStockNums.some((s) => s === stockNum));
     if (isDuplicated) {
-      alert(`[ERROR: Duplicate stock number ${stockNum}] located in ${(addOnStockNums.some((s) => s === stockNum) && checkInAddOns) ? 'add on list' : ''}${parts.length > 0 ? 'inventory' : ''}`);
+      alert(`[ERROR: Duplicate stock number ${stockNum}] located in ${(addOnStockNums.some((s) => s === stockNum)) ? 'add on list' : ''}${parts.length > 0 ? 'inventory' : ''}`);
       if (clearField) clearStockNumber();
       return true;
     }

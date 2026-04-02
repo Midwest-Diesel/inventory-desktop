@@ -52,7 +52,7 @@ export default function ReturnsContainer() {
   const onSearch = async (data: ReturnSearch) => {
     if (isObjectNull(data)) {
       setSearch(null);
-      return
+      return;
     }
 
     setCurrentPage(1);
