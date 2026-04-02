@@ -5,11 +5,13 @@ import Table from "@/components/library/Table";
 import { useState } from "react";
 import Link from "@/components/library/Link";
 import Loading from "@/components/library/Loading";
-import { getSomeCompletedReturns, getSomeReturns } from "@/scripts/services/returnsService";
+import { getSomeCompletedReturns, getSomeReturns, searchReturns } from "@/scripts/services/returnsService";
 import { cap, formatDate } from "@/scripts/tools/stringUtils";
 import { useQuery } from "@tanstack/react-query";
 import { useSearchParams } from "react-router-dom";
 import { useNavState } from "@/hooks/useNavState";
+import SearchReturnsDialog, { ReturnSearch } from "@/components/returns/dialogs/SearchReturnsDialog";
+import { isObjectNull } from "@/scripts/tools/utils";
 
 const LIMIT = 26;
 
@@ -19,14 +21,20 @@ export default function ReturnsContainer() {
   const [params] = useSearchParams();
   const panel = params.get('panel') ?? 'shop';
   const [currentPage, setCurrentPage] = useState(1);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [search, setSearch] = useState<ReturnSearch | null>(null);
 
   const { data: returns, isFetching } = useQuery<ReturnRes>({
-    queryKey: ['returns', currentPage, panel],
+    queryKey: ['returns', currentPage, panel, JSON.stringify(search)],
     queryFn: async () => {
+      if (search) {
+        return await searchReturns(search, currentPage, LIMIT);
+      }
+
       if (panel === 'completed') {
         return await getSomeCompletedReturns(currentPage, LIMIT);
       } else {
-        return await getSomeReturns(currentPage, LIMIT, panel === 'shop' ? true : false);
+        return await getSomeReturns(currentPage, LIMIT, panel === 'shop');
       }
     }
   });
@@ -36,15 +44,37 @@ export default function ReturnsContainer() {
   };
 
   const handleChangeDisplayPanel = async (panel: string) => {
+    if (search) setSearch({ ...search, progress: panel as any });
+    setCurrentPage(1);
     await push('Returns', `${location.pathname}?panel=${panel}`);
+  };
+
+  const onSearch = async (data: ReturnSearch) => {
+    if (isObjectNull(data)) {
+      setSearch(null);
+      return
+    }
+
+    setCurrentPage(1);
+    if (data.progress) await handleChangeDisplayPanel(data.progress);
+    setSearch(data);
+    setSearchOpen(false);  
   };
 
 
   return (
     <Layout>
+      <SearchReturnsDialog
+        open={searchOpen}
+        setOpen={setSearchOpen}
+        onSearch={onSearch}
+      />
+
       <div className="returns">
         <h1>{ `${cap(panel)} Returns` }</h1>
         <div className="returns__top-bar">
+          { search && <Button onClick={() => setSearch(null)}>Clear Search</Button> }
+          <Button onClick={() => setSearchOpen(true)}>Search</Button>
           <Button onClick={() => handleChangeDisplayPanel('shop')} data-testid="shop-btn">Shop Returns</Button>
           <Button onClick={() => handleChangeDisplayPanel('accounting')} data-testid="accounting-btn">Accounting Returns</Button>
           <Button onClick={() => handleChangeDisplayPanel('completed')} data-testid="completed-btn">Completed Returns</Button>

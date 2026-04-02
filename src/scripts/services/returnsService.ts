@@ -1,3 +1,4 @@
+import { ReturnSearch } from "@/components/returns/dialogs/SearchReturnsDialog";
 import api from "../config/axios";
 import { parseResDate } from "../tools/stringUtils";
 
@@ -39,6 +40,17 @@ export const getSomeReturns = async (page: number, limit: number, isShopPanel: b
 export const getSomeCompletedReturns = async (page: number, limit: number): Promise<{ pageCount: number, rows: Return[] }> => {
   try {
     const res = await api.get(`/api/returns/limit/completed/${JSON.stringify({ page: (page - 1) * limit, limit })}`);
+    return { pageCount: res.data.pageCount, rows: parseReturnRes(res.data.rows) };
+  } catch (err) {
+    console.error(err);
+    return { pageCount: 0, rows: [] };
+  }
+};
+
+export const searchReturns = async (search: ReturnSearch, page: number, limit: number): Promise<{ pageCount: number, rows: Return[] }> => {
+  try {
+    const params = { ...search, offset: (page - 1) * limit, limit };
+    const res = await api.get(`/api/returns/search`, { params });
     return { pageCount: res.data.pageCount, rows: parseReturnRes(res.data.rows) };
   } catch (err) {
     console.error(err);
