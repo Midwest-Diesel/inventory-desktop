@@ -4,7 +4,9 @@
   height: 3.5rem;
   display: flex;
   box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
-  position: relative;
+  position: fixed;
+  z-index: 5;
+  top: 1.75rem;
 
   &__title {
     font-size: var(--font-xl);
@@ -57,6 +59,10 @@
     display: flex;
     gap: 0.13rem;
     overflow-x: auto;
+    position: fixed;
+    z-index: 5;
+    background-color: var(--grey-dark-2);
+    width: 100%;
 
     .nav-buttons {
       display: flex;

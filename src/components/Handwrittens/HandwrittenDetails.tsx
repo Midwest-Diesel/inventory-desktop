@@ -470,6 +470,12 @@ export default function HandwrittenDetails({
     setHandwritten(newHandwritten);
   };
 
+  const onClickTrackShipment = (trackingNum: string) => {
+    const isUPS = trackingNum.includes('1Z');
+    const url = isUPS ? 'https://www.ups.com/track?loc=en_US&requester=ST' : `https://www.fedex.com/fedextrack/?trknbr=${trackingNum}&trkqual=12030~${trackingNum}~FDEG`;
+    window.open(url);
+  };
+
 
   return (
     <>
@@ -809,7 +815,10 @@ export default function HandwrittenDetails({
                 <ul>
                   {handwritten.trackingNumbers.map((num: TrackingNumber) => {
                     return (
-                      <li key={num.id}>{ num.trackingNumber }</li>
+                      <li key={num.id}>
+                        { num.trackingNumber }&nbsp;
+                        <Button variant={['x-small']} onClick={() => onClickTrackShipment(num.trackingNumber)}>Track</Button>
+                      </li>
                     );
                   })}
                 </ul>
