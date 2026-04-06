@@ -14,7 +14,7 @@ test.beforeEach(async ({ page }) => {
     try {
       await dialog.accept();
     } catch (error) {
-      console.error('Failed to accept dialog: ', error);
+      console.error('Failed to accept dialog');
     }
   });
 });
@@ -25,7 +25,6 @@ async function newAddon(page: Page, part: string, qtyValue: number) {
   const desc = page.getByTestId('desc').first();
 
   await page.getByTestId('new-part-btn').click();
-  
   await expect(qty).toHaveValue('');
 
   await qty.fill(String(qtyValue));
@@ -81,7 +80,7 @@ test.describe('Create addon and add to inventory', () => {
     await engineNum.fill('0');
     await engineNum.blur();
 
-    await expect(stock).toHaveValue('UP12616');
+    await expect(stock).toHaveValue('UP12616', { timeout: 5000 });
   });
 
   test('Autofill stock number with engine number 1', async ({ page }) => {

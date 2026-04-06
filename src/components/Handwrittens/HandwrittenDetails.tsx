@@ -33,6 +33,7 @@ import { offServerEvent, onServerEvent } from "@/scripts/config/websockets";
 import { chunkArray } from "@/scripts/tools/utils";
 import { usePdfQue } from "@/hooks/usePdfQue";
 import { getUserById } from "@/scripts/services/userService";
+import { useToast } from "@/hooks/useToast";
 
 interface Props {
   handwritten: Handwritten
@@ -84,6 +85,7 @@ export default function HandwrittenDetails({
 }: Props) {
   const { closeDetailsBtn, push } = useNavState();
   const { addToQue, printQue } = usePrintQue();
+  const toast = useToast();
   const pdfQue = usePdfQue();
   const params = useParams();
   const [user] = useAtom<User>(userAtom);
@@ -476,6 +478,11 @@ export default function HandwrittenDetails({
     window.open(url);
   };
 
+  const onClickCopyTrackingNumber = (trackingNum: string) => {
+    navigator.clipboard.writeText(trackingNum);
+    toast.sendToast('Copied text', 'none', 900);
+  };
+
 
   return (
     <>
@@ -816,7 +823,13 @@ export default function HandwrittenDetails({
                   {handwritten.trackingNumbers.map((num: TrackingNumber) => {
                     return (
                       <li key={num.id}>
-                        { num.trackingNumber }&nbsp;
+                        <span
+                          style={{ cursor: 'copy' }}
+                          onClick={() => onClickCopyTrackingNumber(num.trackingNumber)}
+                        >
+                          { num.trackingNumber }
+                        </span>
+                        &nbsp;
                         <Button variant={['x-small']} onClick={() => onClickTrackShipment(num.trackingNumber)}>Track</Button>
                       </li>
                     );
