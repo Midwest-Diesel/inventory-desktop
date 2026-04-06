@@ -114,7 +114,7 @@ export default function Dashboard() {
     }
 
     const updatedQuote = { ...handwrittenQuote, sale: true };
-    await toggleQuoteSold(updatedQuote as any);
+    if (updatedQuote.id) await toggleQuoteSold(updatedQuote.id, true);
     setQuotes(quotes.map((q) => (q.id === handwrittenQuote?.id) && (updatedQuote as any)));
 
     const tab: Tab | null = tabs.find((tab: Tab) => tab.history[tab.history.length - 1].url === `/handwrittens/${handwritten.id}`) ?? null;

@@ -155,15 +155,15 @@ export const editQuote = async (quote: Quote) => {
   }
 };
 
-export const toggleQuoteSold = async (quote: Quote) => {
+// === PATCH routes === //
+
+export const toggleQuoteSold = async (id: number, sale: boolean) => {
   try {
-    await api.put('/api/quotes/toggle', quote);
+    await api.patch('/api/quotes/toggle', { id, sale });
   } catch (err) {
     console.error(err);
   }
 };
-
-// === PATCH routes === //
 
 export const piggybackQuote = async (parentId: number, piggybackId: number) => {
   try {

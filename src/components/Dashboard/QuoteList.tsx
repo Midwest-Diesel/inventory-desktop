@@ -56,7 +56,7 @@ export default function QuoteList({ quotes, setQuotes, onInvoiceQuote, onChangeP
 
   const handleQuoteSale = async (e: any, quote: Quote) => {
     if (!await ask(`Mark quote as ${e.target.checked ? 'Sold' : 'Unsold'}`)) return;
-    await toggleQuoteSold({ ...quote, sale: !e.target.checked });
+    await toggleQuoteSold(quote.id, !e.target.checked);
     setQuotes(quotes.map((q) => q.id === quote.id ? { ...q, sale: !e.target.checked } : q));
     setQuotesData(quotesData.map((q) => q.id === quote.id ? { ...q, sale: !e.target.checked } : q));
   };

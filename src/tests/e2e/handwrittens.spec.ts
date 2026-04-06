@@ -34,7 +34,7 @@ const addWarranty = async (page: Page, checkboxIndexes: number[], customWarranty
   for (const index of checkboxIndexes) {
     const checkbox = checkboxes.nth(index);
     await checkbox.waitFor({ state: 'visible' });
-    await checkbox.click({ force: true });   
+    await checkbox.click({ force: true });
   }
   if (customWarranty) await page.getByTestId('warranty').fill(customWarranty);
   

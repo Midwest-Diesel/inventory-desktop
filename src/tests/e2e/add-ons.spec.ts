@@ -14,7 +14,7 @@ test.beforeEach(async ({ page }) => {
     try {
       await dialog.accept();
     } catch (error) {
-      console.error('Failed to accept dialog');
+      return error;
     }
   });
 });

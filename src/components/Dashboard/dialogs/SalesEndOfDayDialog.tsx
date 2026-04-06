@@ -2,10 +2,12 @@ import Button from "@/components/library/Button";
 import Dialog from "@/components/library/Dialog";
 import Pagination from "@/components/library/Pagination";
 import Table from "@/components/library/Table";
-import { quotesAtom, userAtom } from "@/scripts/atoms/state";
+import { useToast } from "@/hooks/useToast";
+import { userAtom } from "@/scripts/atoms/state";
 import { getSomeUnsoldItems } from "@/scripts/services/handwrittensService";
 import { addQuote, getSomeUnsoldQuotesByPartNum, toggleQuoteSold } from "@/scripts/services/quotesService";
 import { formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
+import { useQuery } from "@tanstack/react-query";
 import { useAtom } from "jotai";
 import { useEffect, useState } from "react";
 
@@ -15,59 +17,46 @@ interface Props {
 }
 
 
+const LIMIT = 80;
+
 export default function SalesEndOfDayDialog({ open, setOpen }: Props) {
+  const toast = useToast();
   const [user] = useAtom<User>(userAtom);
-  const [quotesDataAtom, setQuotesDataAtom] = useAtom<Quote[]>(quotesAtom);
-  const [itemsData, setItemsData] = useState<SalesEndOfDayItem[]>([]);
-  const [items, setItems] = useState<SalesEndOfDayItem[]>([]);
-  const [itemsCount, setItemsCount] = useState(0);
   const [selectedItem, setSelectedItem] = useState<SalesEndOfDayItem | null>(null);
-  const [quotesData, setQuotesData] = useState<Quote[]>([]);
-  const [quotes, setQuotes] = useState<Quote[]>([]);
-  const [quotesCount, setQuotesCount] = useState(0);
   const [showAlts, setShowAlts] = useState(true);
-  const LIMIT = 40;
-  
-  useEffect(() => {
-    const fetchData = async () => {
-      if (!open) return;
-      const res = await getSomeUnsoldItems(1, LIMIT, user.id);
-      setItemsCount(res.pageCount);
-      setItemsData(res.rows);
-      handleChangeItemsPage(null, 1);
-    };
-    fetchData();
-  }, [open]);
+  const [itemsPage, setItemsPage] = useState(1);
+  const [quotesPage, setQuotesPage] = useState(1);
+
+  const { data: items = { pageCount: 0, rows: [] } } = useQuery<{ pageCount: number, rows: SalesEndOfDayItem[] }>({
+    queryKey: ['items', open, itemsPage],
+    queryFn: () => getSomeUnsoldItems(itemsPage, LIMIT, user.id),
+    enabled: !!open
+  });
+
+  const { data: quotes = { pageCount: 0, rows: [] }, refetch: refetchQuotes } = useQuery<{ pageCount: number, rows: Quote[] }>({
+    queryKey: ['quotes', open, selectedItem, showAlts, quotesPage],
+    queryFn: () => getSomeUnsoldQuotesByPartNum(quotesPage, LIMIT, selectedItem!.partNum, selectedItem!.customer.id, showAlts),
+    enabled: !!open && !!selectedItem
+  });
 
   useEffect(() => {
-    const fetchData = async () => {
-      if (!open || !selectedItem) return;
-      const res = await getSomeUnsoldQuotesByPartNum(1, LIMIT, selectedItem.partNum, selectedItem.customer.id, showAlts);
-      setQuotesData(res.rows);
-      setQuotesCount(res.pageCount);
-    };
-    fetchData();
-  }, [open, showAlts]);
+    handleChangeItemsPage(null, 1);
+  }, [open]);
 
   const handleChangeItemsPage = async (_: any, page: number) => {
     if (!open) return;
-    const res = await getSomeUnsoldItems(page, LIMIT, user.id);
-    setItems(res?.rows);
+    setItemsPage(page);
   };
 
   const handleChangeQuotesPage = async (_: any, page: number) => {
     if (!open) return;
-    const res = await getSomeUnsoldQuotesByPartNum(page, LIMIT, selectedItem?.partNum ?? '', selectedItem?.customer.id ?? 0, showAlts);
-    setQuotes(res?.rows);
+    setQuotesPage(page);
   };
 
   const handleMarkQuoteSold = async (quote: Quote) => {
-    await toggleQuoteSold({ ...quote, sale: true });
-    setQuotes(quotes.filter((q) => q.id !== quote.id));
-    setQuotesDataAtom(quotesDataAtom.map((q) => {
-      if (q.id === quote.id) return { ...q, sale: true };
-      return q;
-    }));
+    await toggleQuoteSold(quote.id, true);
+    refetchQuotes();
+    setSelectedItem(null);
   };
 
   const handleNewQuote = async () => {
@@ -89,24 +78,9 @@ export default function SalesEndOfDayDialog({ open, setOpen }: Props) {
       partId: selectedItem?.part?.id
     };
     const id = await addQuote(quote);
-    const newQuote = {
-      ...quote,
-      id,
-      customer: selectedItem?.customer,
-      part: selectedItem?.part,
-      salesman: user.initials,
-      sale: true,
-      followedUp: false,
-      followUpDate: null,
-      toFollowUp: false,
-      followUpNotes: null,
-      invoiceItem: null,
-      createdAfter: null,
-      children: [],
-      piggybackQuotes: []
-    };
-    setQuotesDataAtom([newQuote, ...quotesData]);
-    await toggleQuoteSold(newQuote);
+    await toggleQuoteSold(id, true);
+    refetchQuotes();
+    toast.sendToast('Created quote', 'success');
   };
 
 
@@ -121,6 +95,7 @@ export default function SalesEndOfDayDialog({ open, setOpen }: Props) {
       {!selectedItem ?
         <>
           <div className="sales-end-of-day-dialog__table-container">
+            <h4>Sold Items</h4>
             <Table>
               <thead>
                 <tr>
@@ -133,7 +108,7 @@ export default function SalesEndOfDayDialog({ open, setOpen }: Props) {
                 </tr>
               </thead>
               <tbody>
-                {items.map((item) => {
+                {items.rows.map((item) => {
                   return (
                     <tr key={item.id}>
                       <td>{ formatDate(item.date) }</td>
@@ -150,9 +125,9 @@ export default function SalesEndOfDayDialog({ open, setOpen }: Props) {
           </div>
 
           <Pagination
-            data={itemsData}
+            data={items.rows}
             setData={handleChangeItemsPage}
-            pageCount={itemsCount}
+            pageCount={items.pageCount}
             pageSize={LIMIT}
           />
         </>
@@ -164,6 +139,7 @@ export default function SalesEndOfDayDialog({ open, setOpen }: Props) {
             <Button onClick={handleNewQuote}>New Quote</Button>
           </div>
           <h2>{ selectedItem.billToCompany }</h2>
+          <h4>Quotes</h4>
           <Table>
             <thead>
               <tr>
@@ -177,7 +153,7 @@ export default function SalesEndOfDayDialog({ open, setOpen }: Props) {
               </tr>
             </thead>
             <tbody>
-              {quotes.map((quote) => {
+              {quotes.rows.map((quote) => {
                 return (
                   <tr key={quote.id}>
                     <td>{ formatDate(quote.date) }</td>
@@ -192,10 +168,11 @@ export default function SalesEndOfDayDialog({ open, setOpen }: Props) {
               })}
             </tbody>
           </Table>
+
           <Pagination
-            data={quotesData}
+            data={quotes.rows}
             setData={handleChangeQuotesPage}
-            pageCount={quotesCount}
+            pageCount={quotes.pageCount}
             pageSize={LIMIT}
           />
         </>
