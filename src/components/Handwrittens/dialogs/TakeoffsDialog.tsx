@@ -38,7 +38,7 @@ export default function TakeoffsDialog({ open, setOpen, item, unitPrice, setHand
 
   useEffect(() => {
     if (!open) return;
-    setTimeout(() => ref.current?.querySelector('button')?.focus(), 100);
+    setTimeout(() => ref.current?.querySelector('button')?.focus(), 300);
   }, [open]);
 
   useEffect(() => {

@@ -11,7 +11,7 @@ import { addHandwritten, getSomeHandwrittens, getYeserdayCOGS, getYeserdaySales,
 import { formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
 import { useAtom } from "jotai";
 import Link from "@/components/library/Link";
-import { FormEvent, useRef, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 import { useArrowSelector } from "@/hooks/useArrowSelector";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import TakeoffsDialog from "@/components/handwrittens/dialogs/TakeoffsDialog";
@@ -47,6 +47,10 @@ export default function Handwrittens() {
     search?.source ||
     search?.payment
   );
+
+  useEffect(() => {
+    takeoffInputRef.current?.focus();
+  }, [focusedHandwritten]);
 
   const { data: totalSales = 0, isFetching: isSalesLoading } = useQuery<number>({
     queryKey: ['yesterdaySales'],
