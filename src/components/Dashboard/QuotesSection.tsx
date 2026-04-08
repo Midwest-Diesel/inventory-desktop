@@ -44,7 +44,7 @@ export default function QuotesSection({ quotes, setQuotes, setHandwrittenQuote, 
   const [quotesOpen, setQuotesOpen] = useState(localStorage.getItem('quotesOpen') === 'true' || localStorage.getItem('quotesOpen') === null ? true : false);
   const [searchDialogOpen, setSearchDialogOpen] = useState(false);
   const [searchData, setSearchData] = useState<any>(null);
-  const [selectedCustomer] = useAtom<Customer>(selectedCustomerAtom);
+  const [selectedCustomer] = useAtom<Customer | null>(selectedCustomerAtom);
   const [piggybackQuoteOpen, setPiggybackQuoteOpen] = useState(false);
   const [piggybackQuote, setPiggybackQuote] = useState<Quote | null>(null);
   const [endOfDayOpen, setEndOfDayOpen] = useState(false);
@@ -63,7 +63,7 @@ export default function QuotesSection({ quotes, setQuotes, setHandwrittenQuote, 
         return res ?? { id: 0 };
       } else {
         setFilterByCustomer(true);
-        return selectedCustomer;
+        return selectedCustomer as any;
       }
     },
     enabled: true

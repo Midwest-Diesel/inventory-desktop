@@ -7,7 +7,7 @@ import { getCustomerSalesHistory } from "@/scripts/services/customerService";
 import CustomerContactsBlock from "../customers/contacts/CustomerContactsBlock";
 import { useQuery } from "@tanstack/react-query";
 import { useAtom } from "jotai";
-import { selectedCustomerAtom } from "@/scripts/atoms/state";
+import { selectedCustomerAtom, userAtom } from "@/scripts/atoms/state";
 
 interface Props {
   expandedDetailsOpen: boolean
@@ -15,53 +15,71 @@ interface Props {
 
 
 export default function SelectedCustomerInfo({ expandedDetailsOpen }: Props) {
-  const [customer, setCustomer] = useAtom<Customer>(selectedCustomerAtom);
-  const customerInfo = [formatPhone(customer.phone, true), customer.email, customer.billToState, customer.billToCity].filter((v) => v).join(', ');
+  const [user] = useAtom<User>(userAtom);
+  const [customer, setCustomer] = useAtom<Customer | null>(selectedCustomerAtom);
+  const customerInfo = [formatPhone(customer?.phone, true), customer?.email, customer?.billToState, customer?.billToCity].filter((v) => v).join(', ');
+  const userIsAllowed = ['JS', 'MR', 'JMF', 'BS'].includes(user.initials);
 
   const { data: salesHistory = [] } = useQuery<SalesHistory[]>({
     queryKey: ['salesHistory', customer?.id],
-    queryFn: async () => await getCustomerSalesHistory(customer.id),
+    queryFn: async () => await getCustomerSalesHistory(customer!.id),
     enabled: !!customer?.id
   });
+
+  const hasSimilarContacts = () => {
+    const seen = new Set<string>();
+    if (!customer?.contacts) return false;
+
+    for (const c of customer.contacts) {
+      const n = c.name!.toLowerCase().trim();
+      for (const existing of Array.from(seen)) {
+        if (existing.startsWith(n) || n.startsWith(existing)) {
+          return true;
+        }
+      }
+      seen.add(n);
+    }
+    return false;
+  };
 
 
   return (
     <div className="selected-customer-info" data-testid="selected-customer-info">
       {!expandedDetailsOpen ?
         <div>
-          <p><strong>Selected Customer:</strong> <Link href={`customer/${customer.id}`} style={{ fontSize: 'var(--font-md)' }} data-testid="customer-link">{ customer.company }</Link> <em>{ customerInfo.length > 0 && `(${customerInfo})` }</em></p>
-          <p><strong>Contact:</strong> { customer.contact }</p>
+          <p><strong>Selected Customer:</strong> <Link href={`customer/${customer?.id}`} style={{ fontSize: 'var(--font-md)' }} data-testid="customer-link">{ customer?.company }</Link> <em>{ customerInfo.length > 0 && `(${customerInfo})` }</em></p>
+          <p><strong>Contact:</strong> { customer?.contact }</p>
         </div>
         :
         <div data-testid="customer-details">
-          <p><strong>Selected Customer:</strong> <Link href={`customer/${customer.id}`} style={{ fontSize: 'var(--font-md)' }}>{ customer.company }</Link></p>
+          <p><strong>Selected Customer:</strong> <Link href={`customer/${customer?.id}`} style={{ fontSize: 'var(--font-md)' }}>{ customer?.company }</Link></p>
           <Grid>
             <GridItem variant={['low-opacity-bg']}>
               <Table variant={['plain', 'row-details']}>
                 <tbody>
                   <tr>
                     <th>Contact</th>
-                    <td>{ customer.contact }</td>
+                    <td>{ customer?.contact }</td>
                   </tr>
                   <tr>
                     <th>Phone</th>
-                    <td>{ formatPhone(customer.phone) }</td>
+                    <td>{ formatPhone(customer?.phone) }</td>
                   </tr>
                   <tr>
                     <th>Email</th>
-                    <td>{ customer.email }</td>
+                    <td>{ customer?.email }</td>
                   </tr>
                   <tr>
                     <th>Customer Type</th>
-                    <td>{ customer.customerType }</td>
+                    <td>{ customer?.customerType }</td>
                   </tr>
                   <tr>
                     <th>Source</th>
-                    <td>{ customer.source }</td>
+                    <td>{ customer?.source }</td>
                   </tr>
                   <tr>
                     <th>Fax</th>
-                    <td>{ formatPhone(customer.fax) }</td>
+                    <td>{ formatPhone(customer?.fax) }</td>
                   </tr>
                 </tbody>
               </Table>
@@ -72,27 +90,27 @@ export default function SelectedCustomerInfo({ expandedDetailsOpen }: Props) {
                 <tbody>
                   <tr>
                     <th>Billing Address</th>
-                    <td>{ customer.billToAddress }</td>
+                    <td>{ customer?.billToAddress }</td>
                   </tr>
                   <tr>
                     <th>Billing Address 2</th>
-                    <td>{ customer.billToAddress2 }</td>
+                    <td>{ customer?.billToAddress2 }</td>
                   </tr>
                   <tr>
                     <th>Billing City</th>
-                    <td>{ customer.billToCity }</td>
+                    <td>{ customer?.billToCity }</td>
                   </tr>
                   <tr>
                     <th>Billing State</th>
-                    <td>{ customer.billToState }</td>
+                    <td>{ customer?.billToState }</td>
                   </tr>
                   <tr>
                     <th>Billing Zip</th>
-                    <td>{ customer.billToZip }</td>
+                    <td>{ customer?.billToZip }</td>
                   </tr>
                   <tr>
                     <th>Billing Phone</th>
-                    <td>{ customer.billToPhone }</td>
+                    <td>{ customer?.billToPhone }</td>
                   </tr>
                 </tbody>
               </Table>
@@ -103,23 +121,23 @@ export default function SelectedCustomerInfo({ expandedDetailsOpen }: Props) {
                 <tbody>
                   <tr>
                     <th>Shipping Address</th>
-                    <td>{ customer.shipToAddress }</td>
+                    <td>{ customer?.shipToAddress }</td>
                   </tr>
                   <tr>
                     <th>Shipping Address 2</th>
-                    <td>{ customer.shipToAddress2 }</td>
+                    <td>{ customer?.shipToAddress2 }</td>
                   </tr>
                   <tr>
                     <th>Shipping City</th>
-                    <td>{ customer.shipToCity }</td>
+                    <td>{ customer?.shipToCity }</td>
                   </tr>
                   <tr>
                     <th>Shipping State</th>
-                    <td>{ customer.shipToState }</td>
+                    <td>{ customer?.shipToState }</td>
                   </tr>
                   <tr>
                     <th>Shipping Zip</th>
-                    <td>{ customer.shipToZip }</td>
+                    <td>{ customer?.shipToZip }</td>
                   </tr>
                 </tbody>
               </Table>
@@ -134,19 +152,19 @@ export default function SelectedCustomerInfo({ expandedDetailsOpen }: Props) {
                 <tbody>
                   <tr>
                     <th>Parts Manager</th>
-                    <td>{ customer.partsManager }</td>
+                    <td>{ customer?.partsManager }</td>
                   </tr>
                   <tr>
                     <th>Parts Manager Email</th>
-                    <td>{ customer.partsManagerEmail }</td>
+                    <td>{ customer?.partsManagerEmail }</td>
                   </tr>
                   <tr>
                     <th>Service Manager</th>
-                    <td>{ customer.serviceManager }</td>
+                    <td>{ customer?.serviceManager }</td>
                   </tr>
                   <tr>
                     <th>Service Manager Email</th>
-                    <td>{ customer.serviceManagerEmail }</td>
+                    <td>{ customer?.serviceManagerEmail }</td>
                   </tr>
                 </tbody>
               </Table>
@@ -180,6 +198,8 @@ export default function SelectedCustomerInfo({ expandedDetailsOpen }: Props) {
           </Grid>
         </div>
       }
+
+      { (hasSimilarContacts() && userIsAllowed) && <Link style={{ color: 'var(--red-3)', fontWeight: 'bold' }} href={`/fix-contacts?customer-id=${customer?.id}`}>Similar contacts detected!</Link> }
     </div>
   );
 }

@@ -55,9 +55,9 @@ export default function AddMapLocationDialog({ open, setOpen, onSubmit }: Props)
           type="number"
           value={customerId}
           onChange={async (e: any) => {
-            const customer: Customer = await getCustomerById(e.target.value);
-            setCustomerId(customer.id);
-            setName(customer.company ?? '');
+            const customer = await getCustomerById(e.target.value);
+            setCustomerId(customer?.id);
+            setName(customer?.company ?? '');
             setAddress(`${customer?.billToAddress}, ${customer?.billToCity}`);
           }}
         >

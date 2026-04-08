@@ -16,7 +16,7 @@ import { useQuery } from "@tanstack/react-query";
 
 interface Props {
   customer: Customer
-  setCustomer: (customer: Customer) => void
+  setCustomer: (customer: Customer | null) => void
   setIsEditing: (value: boolean) => void
   onClickAddVendor: () => void
 }

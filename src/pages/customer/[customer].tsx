@@ -52,7 +52,7 @@ export default function Customer() {
       if (!params) return;
       const id = Number(params.customer);
       const customerRes = await getCustomerById(id);
-      if (!customerRes) return;
+      if (!customerRes?.company) return;
       setCustomer(customerRes);
       setSalesHistory(await getCustomerSalesHistory(id));
 

@@ -96,12 +96,13 @@ export const getCustomersMin = async (): Promise<CustomerMin[]> => {
 };
 
 
-export const getCustomerById = async (id: number) => {
+export const getCustomerById = async (id: number): Promise<Customer | null> => {
   try {
     const res = await api.get(`/api/customers/id/${id}`);
     return parseCustomerRes(res.data)[0];
   } catch (error) {
     console.error(error);
+    return null;
   }
 };
 

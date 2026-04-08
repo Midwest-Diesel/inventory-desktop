@@ -11,7 +11,7 @@ interface Props {
   setContact: (contact: Contact | null) => void
   contacts: Contact[]
   customer: Customer
-  setCustomer: (customer: Customer) => void
+  setCustomer: (customer: Customer | null) => void
 }
 
 

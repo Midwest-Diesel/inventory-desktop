@@ -52,8 +52,8 @@ export default function EditMapLocationDialog({ open, setOpen, data, onSubmit }:
           type="number"
           value={customerId}
           onChange={async (e: any) => {
-            const customer: Customer = await getCustomerById(e.target.value);
-            setCustomerId(customer.id);
+            const customer = await getCustomerById(e.target.value);
+            setCustomerId(customer?.id);
             setName(customer?.company ?? '');
             setAddress(`${customer?.billToAddress}, ${customer?.billToCity}`);
           }}

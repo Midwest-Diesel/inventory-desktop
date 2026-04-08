@@ -4,8 +4,8 @@ import EditContacts from "./EditContacts";
 import ContactInfo from "./ContactInfo";
 
 interface Props {
-  customer: Customer
-  setCustomer: (customer: Customer) => void
+  customer: Customer | null
+  setCustomer: (customer: Customer | null) => void
 }
 
 
@@ -14,21 +14,23 @@ export default function CustomerContactsBlock({ customer, setCustomer }: Props) 
   const [isEditing, setIsEditing] = useState(false);
   
   useEffect(() => {
-    setContact(customer.contacts.find((c) => c.name === customer.contact) ?? null);
+    setContact(customer?.contacts.find((c) => c.name === customer.contact) ?? null);
   }, [customer]);
 
 
   return (
     <div>
-      <ContactsControls
-        isEditing={isEditing}
-        setIsEditing={setIsEditing}
-        contact={contact}
-        setContact={setContact}
-        contacts={customer.contacts}
-        customer={customer}
-        setCustomer={setCustomer}
-      />
+      {customer && 
+        <ContactsControls
+          isEditing={isEditing}
+          setIsEditing={setIsEditing}
+          contact={contact}
+          setContact={setContact}
+          contacts={customer?.contacts ?? []}
+          customer={customer}
+          setCustomer={setCustomer}
+        />
+      }
 
       {contact &&
         <div className="contacts-block">
