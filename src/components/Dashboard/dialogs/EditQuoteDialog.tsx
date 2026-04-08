@@ -6,12 +6,13 @@ import { editQuote } from "@/scripts/services/quotesService";
 import SourceSelect from "../../library/select/SourceSelect";
 import CustomerDropdown from "../../library/dropdown/CustomerDropdown";
 import { parseDateInputValue } from "@/scripts/tools/stringUtils";
-import { getCustomerByName, getCustomerNames } from "@/scripts/services/customerService";
+import { addCustomerContact, getCustomerByName, getCustomerNames } from "@/scripts/services/customerService";
 import { useAtom } from "jotai";
 import { customerNamesAtom } from "@/scripts/atoms/state";
 import PartSelectDialog from "./PartSelectDialog";
 import Select from "@/components/library/select/Select";
 import TextArea from "@/components/library/TextArea";
+import { prompt } from "@/components/library/Prompt";
 
 interface Props {
   setQuoteEdited: (quote: Quote | null) => void
@@ -26,6 +27,7 @@ export default function EditQuoteDialog({ setQuoteEdited, quote, setQuote }: Pro
   const [source, setSource] = useState<string>(quote.source ?? '');
   const [company, setCompany] = useState<string>(quote.customer?.company ?? '');
   const [contact, setContact] = useState<string>(quote.contact ?? '');
+  const [contacts, setContacts] = useState<Contact[]>([]);
   const [part, setPart] = useState<Part | null>(quote.part);
   const [partNum, setPartNum] = useState<string>(quote.partNum ?? '');
   const [stockNum, setStockNum] = useState<string>(quote.stockNum ?? '');
@@ -38,6 +40,10 @@ export default function EditQuoteDialog({ setQuoteEdited, quote, setQuote }: Pro
   useEffect(() => {
     const fetchData = async () => {
       if (customerNames.length === 0) setCustomerNames(await getCustomerNames());
+
+      if (quote.customer) {
+        setContacts(quote.customer.contacts.sort((a, b) => (a.name ?? '').localeCompare(b.name ?? '')));
+      }
       
       inputRef.current?.select();
     };
@@ -63,6 +69,25 @@ export default function EditQuoteDialog({ setQuoteEdited, quote, setQuote }: Pro
     await editQuote(newQuote);
     setQuote(newQuote);
     setQuoteEdited(null);
+  };
+
+  const onClickAddContact = async () => {
+    if (!quote.customer) {
+      alert('No customer selected');
+      return;
+    }
+
+    const name = await prompt('Enter a contact name');
+    if (!name) return;
+    const id = await addCustomerContact(quote.customer.id, name);
+    if (!id) {
+      alert('Failed to create contact');
+      return;
+    }
+
+    const newContact: Contact = { id, name, position: null, email: null, ext: null, notes: null };
+    setContacts([...contacts, newContact].sort((a, b) => (a.name ?? '').localeCompare(b.name ?? '')));
+    setContact(newContact.name!);
   };
 
   const handelCancel = () => {
@@ -119,22 +144,24 @@ export default function EditQuoteDialog({ setQuoteEdited, quote, setQuote }: Pro
             maxHeight="15rem"
           />
 
+          <Button variant={['fit', 'x-small']} onClick={onClickAddContact}>Add Contact</Button>
           <Select
-            label="Contact"
+            style={{ marginBottom: '1rem' }}
             variant={['label-full-width', 'label-bold', 'label-stack']}
+            label="Contact"
             value={contact}
             onChange={(e) => setContact(e.target.value)}
           >
             <option value="">-- SELECT CONTACT --</option>
-            {quote.customer && quote.customer.contacts.sort((a, b) => (a.name ?? '').localeCompare(b.name ?? '')).map((c) => {
+            {contacts.map((c) => {
               return <option key={c.id}>{ c.name }</option>;
             })}
           </Select>
 
           {part &&
             <>
-              <p><span style={{ fontWeight: 'bold' }}>PartNum:</span> {part.partNum}</p>
-              <p><span style={{ fontWeight: 'bold' }}>StockNum:</span> {part.stockNum}</p>
+              <p><span style={{ fontWeight: 'bold' }}>PartNum:</span> { part.partNum }</p>
+              <p><span style={{ fontWeight: 'bold' }}>StockNum:</span> { part.stockNum }</p>
             </>
           }
 

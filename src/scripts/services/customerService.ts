@@ -29,8 +29,8 @@ export const getCustomers = async (): Promise<Customer[]> => {
   try {
     const res = await api.get('/api/customers');
     return parseCustomerRes(res.data);
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
     return [];
   }
 };
@@ -39,8 +39,8 @@ export const getSomeCustomers = async (page: number, limit: number): Promise<{ p
   try {
     const res = await api.get(`/api/customers/limit/${JSON.stringify({ page: (page - 1) * limit, limit })}`);
     return { pageCount: res.data.pageCount, rows: parseCustomerRes(res.data.rows) };
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
     return { pageCount: 0, rows: [] };
   }
 };
@@ -59,8 +59,8 @@ export const searchCustomers = async (data: CustomerSearch): Promise<{ pageCount
 
     const res = await api.get(`/api/customers/search?${params.toString()}`);
     return { pageCount: res.data.pageCount, rows: parseCustomerRes(res.data.rows) };
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
     return { pageCount: 0, rows: [] };
   }
 };
@@ -69,8 +69,8 @@ export const getCustomerNames = async (): Promise<string[]> => {
   try {
     const res = await api.get('/api/customers/names');
     return res.data.map((c: Customer) => c.company);
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
     return [];
   }
 };
@@ -79,8 +79,8 @@ export const getCustomerEmails = async (customerId: number): Promise<string[]> =
   try {
     const res = await api.get(`/api/customers/emails/${customerId}`);
     return res.data.map((row: any) => row.email);
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
     return [];
   }
 };
@@ -89,8 +89,8 @@ export const getCustomersMin = async (): Promise<CustomerMin[]> => {
   try {
     const res = await api.get('/api/customers/min');
     return res.data;
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
     return [];
   }
 };
@@ -100,8 +100,8 @@ export const getCustomerById = async (id: number) => {
   try {
     const res = await api.get(`/api/customers/id/${id}`);
     return parseCustomerRes(res.data)[0];
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
   }
 };
 
@@ -110,8 +110,8 @@ export const getCustomerByName = async (name: string): Promise<Customer | null> 
     const params = new URLSearchParams({ name });
     const res = await api.get(`/api/customers/name?${params}`);
     return parseCustomerRes(res.data)[0] ?? null;
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
     return null;
   }
 };
@@ -120,8 +120,8 @@ export const getCustomerSalesHistory = async (id: number): Promise<SalesHistory[
   try {
     const res = await api.get(`/api/customers/sales/${id}`);
     return res.data ?? [];
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
     return [];
   }
 };
@@ -130,8 +130,8 @@ export const getCustomerTypes = async () => {
   try {
     const res = await api.get(`/api/customers/types/all`);
     return res.data;
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
   }
 };
 
@@ -141,16 +141,18 @@ export const getCustomerTypes = async () => {
 export const addCustomer = async (customer: string) => {
   try {
     await api.post('/api/customers', { name: customer });
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
   }
 };
 
-export const addCustomerContact = async (customerId: number, name: string) => {
+export const addCustomerContact = async (customerId: number, name: string): Promise<number | null> => {
   try {
-    await api.post('/api/customers/contact', { customerId, name });
-  } catch (err) {
-    console.error(err);
+    const res = await api.post('/api/customers/contact', { customerId, name });
+    return res.data.id;
+  } catch (error) {
+    console.error(error);
+    return null;
   }
 };
 
@@ -160,24 +162,24 @@ export const addCustomerContact = async (customerId: number, name: string) => {
 export const editCustomer = async (customer: Customer) => {
   try {
     await api.put('/api/customers', customer);
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
   }
 };
 
 export const editContact = async (contact: Contact) => {
   try {
     await api.put('/api/customers/contact', contact);
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
   }
 };
 
 export const customerMerge = async (badId: number, goodId: number) => {
   try {
     await api.put('/api/customers/merge', { badId, goodId });
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
   }
 };
 
@@ -186,15 +188,15 @@ export const customerMerge = async (badId: number, goodId: number) => {
 export const deleteCustomer = async (id: number) => {
   try {
     await api.delete(`/api/customers/${id}`);
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
   }
 };
 
 export const deleteContact = async (id: number) => {
   try {
     await api.delete(`/api/customers/contact/${id}`);
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
   }
 };
