@@ -31,7 +31,7 @@ export default function SelectedCustomerInfo({ expandedDetailsOpen }: Props) {
     if (!customer?.contacts) return false;
 
     for (const c of customer.contacts) {
-      const n = c.name!.toLowerCase().trim();
+      const n = c.name?.toLowerCase().trim() ?? '';
       for (const existing of Array.from(seen)) {
         if (existing.startsWith(n) || n.startsWith(existing)) {
           return true;
