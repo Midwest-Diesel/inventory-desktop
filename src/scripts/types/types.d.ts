@@ -634,6 +634,7 @@ type Surplus = {
   price: number
   costApplied: number | null
   notes: string | null
+  invoiceId: string | null
 };
 
 type EngineStatus = 'ToreDown' | 'RunnerReady' | 'RunnerNotReady' | 'HoldSoldRunner' | 'CoreEngine' | 'Sold' | 'ShortBlock' | 'LongBlock';

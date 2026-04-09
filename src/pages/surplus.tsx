@@ -50,6 +50,7 @@ export default function Surplus() {
         <Table>
           <thead>
             <tr>
+              <th>Invoice ID</th>
               <th>Purchase Code</th>
               <th>Purchase Name</th>
               <th>Date</th>
@@ -64,6 +65,7 @@ export default function Surplus() {
             {surplus.map((s: Surplus) => {
               return (
                 <tr key={s.id}>
+                  <td>{ s.invoiceId }</td>
                   <td>{ s.code }</td>
                   <td>{ s.name }</td>
                   <td>{ formatDate(s.date) }</td>

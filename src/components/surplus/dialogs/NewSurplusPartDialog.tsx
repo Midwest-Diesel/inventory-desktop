@@ -13,6 +13,7 @@ interface Props {
 
 
 export default function NewSurplusPartDialog({ open, setOpen, refetch }: Props) {
+  const [invoiceId, setInvoiceId] = useState('');
   const [code, setCode] = useState('');
   const [name, setName] = useState('');
   const [price, setPrice] = useState('');
@@ -21,6 +22,7 @@ export default function NewSurplusPartDialog({ open, setOpen, refetch }: Props) 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     const newSurplus = {
+      invoiceId,
       code,
       name,
       price: Number(price),
@@ -42,6 +44,13 @@ export default function NewSurplusPartDialog({ open, setOpen, refetch }: Props) 
       className="new-surplus-dialog"
     >
       <form onSubmit={(e) => handleSubmit(e)}>
+        <Input
+          label="Invoice ID"
+          variant={['label-space-between', 'label-full-width', 'small', 'thin']}
+          value={invoiceId}
+          onChange={(e) => setInvoiceId(e.target.value)}
+        />
+
         <Input
           label="Code"
           variant={['label-space-between', 'label-full-width', 'small', 'thin']}
