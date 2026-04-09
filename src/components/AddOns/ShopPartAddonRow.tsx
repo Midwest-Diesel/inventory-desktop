@@ -1,5 +1,5 @@
 import { useAtom } from "jotai";
-import { shopAddOnsAtom, userAtom } from "@/scripts/atoms/state";
+import { userAtom } from "@/scripts/atoms/state";
 import Button from "../library/Button";
 import Checkbox from "../library/Checkbox";
 import Table from "../library/Table";
@@ -25,18 +25,19 @@ import { prompt } from "../library/Prompt";
 
 interface Props {
   addOn: AddOn
+  addOns: AddOn[]
+  setAddons: React.Dispatch<React.SetStateAction<AddOn[]>>
   handleDuplicateAddOn: (addOn: AddOn, addOns: AddOn[]) => void
   partNumList: string[]
   onSave: () => Promise<void>
 }
 
 
-export default function ShopPartAddonRow({ addOn, handleDuplicateAddOn, partNumList, onSave }: Props) {
+export default function ShopPartAddonRow({ addOn, addOns, setAddons, handleDuplicateAddOn, partNumList, onSave }: Props) {
   const [user] = useAtom<User>(userAtom);
   const [, setSelectedPoData] = useAtom<{ selectedPoAddOn: PO | null, addOn: AddOn | null, receivedItemsDialogOpen: boolean }>(selectedPoAddOnAtom);
   const { addToQue, printQue } = usePrintQue();
   const { newTab } = useNavState();
-  const [addOns, setAddons] = useAtom<AddOn[]>(shopAddOnsAtom);
   const [poLink, setPoLink] = useState<string>(addOn.po ? `${addOn.po}` : '');
   const [partNum, setPartNum] = useState<string>(addOn.partNum ?? '');
   const [engineNum, setEngineNum] = useState<string>(addOn.engineNum?.toString() ?? '');

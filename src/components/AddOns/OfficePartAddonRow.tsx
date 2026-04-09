@@ -1,5 +1,5 @@
 import { useAtom } from "jotai";
-import { shopAddOnsAtom, userAtom } from "@/scripts/atoms/state";
+import { userAtom } from "@/scripts/atoms/state";
 import { deleteAddOn, editAddOnAltParts, editAddOnUserEditing, getAddOnById } from "@/scripts/services/addOnsService";
 import { addPart, addPartCostIn, getPartsByStockNum, getPartInfoByPartNum, editConnectedPartPricing, searchAltParts, editPartsInfoPrefix } from "@/scripts/services/partsService";
 import { useEffect, useRef, useState } from "react";
@@ -22,15 +22,16 @@ import { addEbayItem } from "@/scripts/services/ebayService";
 
 interface Props {
   addOn: AddOn
+  addOns: AddOn[]
+  setAddons: React.Dispatch<React.SetStateAction<AddOn[]>>
   onSave: () => Promise<void>
   onModifyAddOnData: (addOn: AddOn | null) => void
 }
 
 
-export default function OfficePartAddonRow({ addOn, onSave, onModifyAddOnData }: Props) {
+export default function OfficePartAddonRow({ addOn, addOns, setAddons, onSave, onModifyAddOnData }: Props) {
   const [user] = useAtom<User>(userAtom);
   const { newTab } = useNavState();
-  const [addOns, setAddons] = useAtom<AddOn[]>(shopAddOnsAtom);
   const [engineCostRemaining, setEngineCostRemaining] = useState(0);
   const [loading, setLoading] = useState(false);
   const [isDuplicateStockNum, setIsDuplicateStockNum] = useState(false);

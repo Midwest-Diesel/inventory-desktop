@@ -4,7 +4,7 @@ import MarkPoItemsReceivedDialog from "@/components/purchaseOrders/dialogs/MarkP
 import Button from "@/components/library/Button";
 import { usePreventNavigation } from "@/hooks/usePreventNavigation";
 import { selectedPoAddOnAtom } from "@/scripts/atoms/components";
-import { shopAddOnsAtom, userAtom } from "@/scripts/atoms/state";
+import { userAtom } from "@/scripts/atoms/state";
 import { addAddOn, addOnClearUserEditing, editAddOns, getAllAddOns } from "@/scripts/services/addOnsService";
 import { getAllPartNums } from "@/scripts/services/partsService";
 import { parseResDate } from "@/scripts/tools/stringUtils";
@@ -19,7 +19,7 @@ export default function ShopPartAddOns() {
   const [selectedPoData, setSelectedPoData] = useAtom<{ selectedPoAddOn: PO | null, addOn: AddOn | null, receivedItemsDialogOpen: boolean }>(selectedPoAddOnAtom);
   const [partNumList, setPartNumList] = useState<string[]>([]);
   const [prevAddons, setPrevAddons] = useState<AddOn[]>([]);
-  const [addOns, setAddons] = useAtom<AddOn[]>(shopAddOnsAtom);
+  const [addOns, setAddons] = useState<AddOn[]>([]);
   const [savedBtnText, setSavedBtnText] = useState('Save');
   const [shouldPreventLeave, setShouldPreventLeave] = useState(false);
   const isSavingRef = useRef(false);
@@ -217,7 +217,14 @@ export default function ShopPartAddOns() {
           {addOns.map((addOn) => {
             return (
               <Fragment key={addOn.id}>
-                <ShopPartAddonRow addOn={addOn} handleDuplicateAddOn={handleDuplicateAddOn} partNumList={partNumList} onSave={handleEditAddOns} />
+                <ShopPartAddonRow
+                  addOn={addOn}
+                  addOns={addOns}
+                  setAddons={setAddons}
+                  handleDuplicateAddOn={handleDuplicateAddOn}
+                  partNumList={partNumList}
+                  onSave={handleEditAddOns}
+                />
               </Fragment>
             );
           })}

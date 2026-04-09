@@ -3,7 +3,7 @@ import OfficePartAddonRow from "@/components/addOns/OfficePartAddonRow";
 import AddOnAltPartsDialog from "@/components/addOns/dialogs/AddOnAltPartsDialog";
 import Button from "@/components/library/Button";
 import { usePreventNavigation } from "@/hooks/usePreventNavigation";
-import { shopAddOnsAtom, userAtom } from "@/scripts/atoms/state";
+import { userAtom } from "@/scripts/atoms/state";
 import { emitServerEvent, offServerEvent, onServerEvent } from "@/scripts/config/websockets";
 import { addOnClearUserEditing, editAddOns, getOfficeAddOns } from "@/scripts/services/addOnsService";
 import { getAllPartNums } from "@/scripts/services/partsService";
@@ -16,7 +16,7 @@ export default function OfficePartAddOns() {
   const [user] = useAtom<User>(userAtom);
   const [partNumList, setPartNumList] = useState<string[]>([]);
   const [prevAddons, setPrevAddons] = useState<AddOn[]>([]);
-  const [addOns, setAddons] = useAtom<AddOn[]>(shopAddOnsAtom);
+  const [addOns, setAddons] = useState<AddOn[]>([]);
   const [selectedAddOnData, setSelectedAddOnData] = useState<AddOn | null>(null);
   const [savedBtnText, setSavedBtnText] = useState('Save');
   const [shouldPreventLeave, setShouldPreventLeave] = useState(false);
@@ -202,7 +202,13 @@ export default function OfficePartAddOns() {
           {addOns.map((addOn) => {
             return (
               <Fragment key={addOn.id}>
-                <OfficePartAddonRow addOn={addOn} onSave={handleEditAddOns} onModifyAddOnData={setSelectedAddOnData} />
+                <OfficePartAddonRow
+                  addOn={addOn}
+                  addOns={addOns}
+                  setAddons={setAddons}
+                  onSave={handleEditAddOns}
+                  onModifyAddOnData={setSelectedAddOnData}
+                />
               </Fragment>
             );
           })}
