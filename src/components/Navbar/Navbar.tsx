@@ -66,6 +66,12 @@ export default function Navbar() {
           >
             +
           </Button>
+
+          {import.meta.env.DEV &&
+            <p style={{ position: 'fixed', right: '0.3rem', top: '0.2rem', backgroundColor: 'var(--purple-1)', padding: '0 0.3rem 0.1rem', borderRadius: '0.3rem' }}>
+              <strong>DEVELOPMENT</strong>
+            </p>
+          }
         </div>
 
         <nav className="navbar">
