@@ -368,7 +368,7 @@ export const addPart = async (part: Part, partInfoExists: boolean): Promise<numb
   }
 };
 
-export const addPartCostIn = async (stockNum: string, cost: number, invoiceNum: string | null, vendor: string, costType: string, note: string) => {
+export const addPartCostIn = async (stockNum: string, cost: number, invoiceNum: string | null, vendor: string | null, costType: string | null, note: string | null) => {
   try {
     await api.post('/api/parts/part-cost-in', { stockNum, cost, invoiceNum, vendor, costType, note });
   } catch (error) {

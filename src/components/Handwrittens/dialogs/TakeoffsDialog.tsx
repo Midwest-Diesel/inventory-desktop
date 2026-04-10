@@ -2,7 +2,7 @@ import Button from "@/components/library/Button";
 import Dialog from "@/components/library/Dialog";
 import Input from "@/components/library/Input";
 import { editHandwrittenChildTakeoffState, editHandwrittenItemTakeoffState, editHandwrittenItemPartId, getHandwrittenById } from "@/scripts/services/handwrittensService";
-import { addPart, addPartCostIn, addToPartQtyHistory, editPartCostIn, editPartStockNum, getPartById, getPartQty, handlePartTakeoff, searchAltParts } from "@/scripts/services/partsService";
+import { addPart, addPartCostIn, addToPartQtyHistory, editPartCostIn, editPartStockNum, getPartById, getPartQty, handlePartTakeoff, searchAltParts, searchParts } from "@/scripts/services/partsService";
 import { getSurplusByCode, zeroAllSurplusItems } from "@/scripts/services/surplusService";
 import { formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
 import { FormEvent, RefObject, useEffect, useRef, useState } from "react";
@@ -24,6 +24,7 @@ interface Props {
 }
 
 
+const letters = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'];
 const OUT_OF_STOCK_EMAIL_RECIPIENTS = ['terry@midwestdiesel.com', 'jack@midwestdiesel.com', 'matt@midwestdiesel.com', 'jason@midwestdiesel.com', 'jon@midwestdiesel.com', 'ryan@midwestdiesel.com'];
 
 export default function TakeoffsDialog({ open, setOpen, item, unitPrice, setHandwritten, onSubmit, takeoffInputRef, handwrittenId }: Props) {
@@ -117,15 +118,18 @@ export default function TakeoffsDialog({ open, setOpen, item, unitPrice, setHand
     // then it will create a new part with a date code, with the qtySold value
     // instead of changing the qtySold for the original part.
     if (isPartGroup) {
+      const baseStockNum = `${part.stockNum} (${formatDate(new Date())})`;
+      const search = await searchParts({ stockNum: baseStockNum, showSoldParts: true }, 1, 999);
+      const suffix = search.rows.length > 0 ? letters[search.rows.length - 1] : '';
+      const newStockNum = `${baseStockNum}${suffix}`;
+
       if (part.qty - Number(qty) === 0) {
-        const newStockNum = `${part.stockNum} (${formatDate(new Date())})`;
         await editPartStockNum(part.id, newStockNum);
 
         for (const row of part.partCostIn) {
           await editPartCostIn({ ...row, stockNum: newStockNum });
         }
       } else {
-        const newStockNum = `${part.stockNum} (${formatDate(new Date())})`;
         const newId = await addPart({ ...part, qty: 0, qtySold: Number(qty), stockNum: newStockNum, soldToDate: new Date(), soldTo: handwritten?.billToCompany ?? '', sellingPrice: unitPrice, handwrittenId: handwritten.id }, true);
         if (newId) {
           await editHandwrittenItemPartId(item.id, newId);
@@ -137,9 +141,18 @@ export default function TakeoffsDialog({ open, setOpen, item, unitPrice, setHand
           alert('Failed to add PartCostIn data: newStockNum is invalid');
           return;
         }
-        await addPartCostIn(newStockNum, Number(item.cost), null, part.purchasedFrom ?? '', 'PurchasePrice', '');
+        
+        for (const row of part.partCostIn) {
+          await addPartCostIn(newStockNum, Number(row.cost), row.invoiceNum, row.vendor, row.costType, row.note);
+        }
 
         const tabs = [];
+
+        if (part.partCostIn.some((p) => p.cost === 0.04)) {
+          alert(`PART COST IN DATA HAS $0.04 COST! ${newStockNum} has been opened in a new tab, please fix manually.`);
+          tabs.push([{ name: newStockNum, url: `/part/${newId}` }]);
+        }
+
         // When the part cost doesn't match the line item cost,
         // prompt the user to go to the new part created
         // This will take the user to the part details, where they can change it manually

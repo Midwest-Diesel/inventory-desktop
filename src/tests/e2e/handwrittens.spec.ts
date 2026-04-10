@@ -309,8 +309,41 @@ test.describe('Takeoffs', () => {
     await expect(page.getByTestId('sold-date')).toHaveText(formatDate(new Date()));
     await expect(page.getByTestId('selling-price')).toHaveText('$100.00');
     await expect(page.getByTestId('sold-to')).toHaveText('ConEquip Parts & Equipment (14196)');
-    await expect(page.getByTestId('profit-margin')).toHaveText('$99.99');
-    await expect(page.getByTestId('profit-percent')).toHaveText('99.99%');
+    await expect(page.getByTestId('profit-margin')).toHaveText('$100.00');
+    await expect(page.getByTestId('profit-percent')).toHaveText('100%');
+
+    // Handle duplicate date code stock numbers during takeoff
+
+    await createHandwritten(page, 'ConEquip');
+    await goto(page, '/');
+    await altSearch(page, { stockNum: 'UP9432' });
+    await addHandwrittenItem(page, 0, 'VALVE COVER', 2, 100);
+    await addWarranty(page, [1]);
+    await page.getByTestId('save-btn').click();
+
+    await page.getByTestId('takeoff-input').fill('UP9432');
+    await page.getByTestId('takeoff-input').focus();
+    await page.keyboard.press('Enter');
+    await page.getByTestId('takeoff-submit-btn').click();
+    await page.waitForLoadState('networkidle');
+    await page.waitForTimeout(100);
+
+    await goto(page, '/');
+    await page.waitForLoadState('networkidle');
+    await altSearch(page, { stockNum: 'UP9432' });
+    await expect(page.getByTestId('qty').first()).toHaveText('22');
+
+    await altSearch(page, { stockNum: `UP9432 (${formatDate(new Date())})A` });
+    await expect(page.getByTestId('qty').first()).toHaveText('0');
+    await expect(page.getByTestId('stock-num').first()).toHaveText(`UP9432 (${formatDate(new Date())})A`);
+
+    await page.getByTestId('part-num-link').click();
+    await page.waitForLoadState('networkidle');
+    await expect(page.getByTestId('sold-date')).toHaveText(formatDate(new Date()));
+    await expect(page.getByTestId('selling-price')).toHaveText('$100.00');
+    await expect(page.getByTestId('sold-to')).toHaveText('ConEquip Parts & Equipment (14196)');
+    await expect(page.getByTestId('profit-margin')).toHaveText('$100.00');
+    await expect(page.getByTestId('profit-percent')).toHaveText('100%');
   });
 });
 
