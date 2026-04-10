@@ -11,7 +11,10 @@ interface Props {
 
 export default function NavTab({ tab, changeTab, handleDeleteTab, setSelectedTab, closeBtnActive }: Props) {
   return (
-    <div className="navbar-tab" style={tab.selected ? { borderBottom: '2px solid var(--yellow-2)' } : {}}>
+    <div
+      className="navbar-tab"
+      style={tab.selected ? { borderBottom: '2px solid var(--yellow-2)' } : {}}
+    >
       <Button
         variant={['no-style']}
         className="navbar-tab__content"

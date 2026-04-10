@@ -1,7 +1,7 @@
 import { Layout } from "@/components/Layout";
 import { useParams } from "react-router-dom";
 import { formatCurrency, formatDate, formatPercent } from "@/scripts/tools/stringUtils";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { getImagesFromPart, getImagesFromStockNum } from "@/scripts/services/imagesService";
 import Table from "@/components/library/Table";
 import Button from "@/components/library/Button";
@@ -19,7 +19,6 @@ import { getEngineByStockNum } from "@/scripts/services/enginesService";
 import PartCostIn from "@/components/parts/PartCostIn";
 import StockNumPicturesDialog from "@/components/dialogs/StockNumPicturesDialog";
 import { setTitle } from "@/scripts/tools/utils";
-import Modal from "@/components/library/Modal";
 import { getSurplusCostRemaining } from "@/scripts/services/surplusService";
 import { useNavState } from "@/hooks/useNavState";
 import { usePrintQue } from "@/hooks/usePrintQue";
@@ -28,6 +27,8 @@ import PartQtyHistoryDialog from "@/components/parts/dialogs/PartQtyHistoryDialo
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { prompt } from "@/components/library/Prompt";
 import { getNextUP, removeRemarksSoldText } from "@/scripts/logic/parts";
+import EngineCostAlertModal from "@/components/parts/modals/EngineCostAlertModal";
+import SurplusCostAlertModal from "@/components/parts/modals/SurplusCostAlertModal";
 
 
 export default function PartDetails() {
@@ -40,6 +41,7 @@ export default function PartDetails() {
   const [costAlertAmount, setCostAlertAmount] = useState('');
   const [costAlertPurchasedFrom, setCostAlertPurchasedFrom] = useState('');
   const [costAlertOpen, setCostAlertOpen] = useState(false);
+  const [engineCostAlertOpen, setEngineCostAlertOpen] = useState(false);
   const [partQtyHistoryOpen, setPartQtyHistoryOpen] = useState(false);
   const queryClient = useQueryClient();
   const params = useParams();
@@ -91,6 +93,10 @@ export default function PartDetails() {
       }
     }
   });
+
+  useEffect(() => {
+    if (Number(part?.engineCostRemaining) > 0) setEngineCostAlertOpen(true);
+  }, [part?.engineCostRemaining]);
 
   const handleDelete = async () => {
     if (!part?.id || user.accessLevel <= 1 || await prompt('Type "confirm" to delete this part') !== 'confirm') return;
@@ -186,28 +192,18 @@ export default function PartDetails() {
 
   return (
     <Layout title="Part">
-      {costAlertOpen &&
-        <Modal
-          style={{ backgroundColor: 'var(--orange-1)' }}
-          open={costAlertOpen}
-          setOpen={setCostAlertOpen}
-          onClose={() => {}}
-          closeOnOutsideClick={true}
-          exitWithEsc={true}
-        >
-          <h2>If you are selling this part</h2>
-          <h1>STOP!!!</h1>
-          <br />
-          {costAlertPurchasedFrom &&
-            <>
-              <h2>This part is from:</h2>
-              <h1>{ costAlertPurchasedFrom }</h1>
-            </>
-          }
-          <h2>Cost Remaining:</h2>
-          <h1>{ costAlertAmount }</h1>
-        </Modal>
-      }
+      <SurplusCostAlertModal
+        open={costAlertOpen}
+        setOpen={setCostAlertOpen}
+        costAlertPurchasedFrom={costAlertPurchasedFrom}
+        costAlertAmount={costAlertAmount}
+      />
+
+      <EngineCostAlertModal
+        open={engineCostAlertOpen}
+        setOpen={setEngineCostAlertOpen}
+        costRemaining={part.engineCostRemaining}
+      />
 
       <PartQtyHistoryDialog
         open={partQtyHistoryOpen}
