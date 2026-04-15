@@ -11,7 +11,7 @@ import { prompt } from "../library/Prompt";
 
 
 export default function Navbar() {
-  const [user] = useAtom(userAtom);
+  const [user] = useAtom<User>(userAtom);
   const { tabs, setTabs, forward, backward, changeTab, newTab, deleteTab } = useNavState();
   const [menuOpen, setMenuOpen] = useState(false);
   const [selectedTab, setSelectedTab] = useState<Tab | null>(null);
