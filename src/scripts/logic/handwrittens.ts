@@ -1,4 +1,5 @@
-import { ask } from "../config/tauri";
+import { CURRENT_WEEK_FILENAME } from "@/components/handwrittens/modals/ShippingListModal";
+import { ask, invoke } from "../config/tauri";
 import { addCore } from "../services/coresService";
 import { addHandwrittenItem, addHandwrittenItemChild, setAllHandwrittenItemDates } from "../services/handwrittensService";
 import { formatCurrency } from "../tools/stringUtils";
@@ -98,7 +99,15 @@ export const addQtyInOut = async (handwrittenId: number, desc: string, partNum: 
 export const handleAccountingCompleted = async (handwritten: Handwritten, accountingStatus: AccountingStatus | null) => {
   const isAccountingCompleted = accountingStatus === 'COMPLETE' && handwritten.accountingStatus !== 'COMPLETE';
   if (!isAccountingCompleted) return;
+
   await setAllHandwrittenItemDates(handwritten.id);
+
+  const args = {
+    path: `\\\\MWD1-SERVER/Server/${CURRENT_WEEK_FILENAME}`,
+    handwritten_id: handwritten.id,
+    action: 'BoldRow'
+  };
+  await invoke('edit_shipping_list_row', { args });
 };
 
 export const getProformaId = (handwrittenDate: Date): string => {

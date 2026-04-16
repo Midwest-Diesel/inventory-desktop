@@ -116,6 +116,18 @@ struct ShippingListRow {
   is_blind: bool
 }
 
+#[derive(Deserialize)]
+enum ShippingListAction {
+  BoldRow
+}
+
+#[derive(Deserialize)]
+struct EditShippingListRowRequest {
+  path: String,
+  handwritten_id: i32,
+  action: ShippingListAction
+}
+
 #[derive(Deserialize, Serialize)]
 struct FileArgs {
   file: Vec<u8>,
@@ -239,6 +251,7 @@ async fn main() {
       convert_img_to_base64,
       upload_email_stuff_files,
       add_to_shipping_list,
+      edit_shipping_list_row,
       upload_file,
       print_shipping_label,
       print_cc_label,
@@ -809,6 +822,62 @@ fn add_to_shipping_list(new_shipping_list_row: ShippingListRow) {
   let mut cmd = Command::new("wscript.exe");
   cmd.arg(temp_vbs_path);
   cmd.output().unwrap();
+}
+
+#[tauri::command]
+fn edit_shipping_list_row(args: EditShippingListRowRequest) {
+  let vbs_script = format!(
+    r#"
+    Dim ExcelApp, Workbook, ExcelSheet
+    Dim r, targetRow, foundSheet, sheetIndex
+
+    Set ExcelApp = CreateObject("Excel.Application")
+    ExcelApp.Visible = False
+    ExcelApp.DisplayAlerts = False
+    Set Workbook = ExcelApp.Workbooks.Open("{}")
+
+    targetRow = 0
+    Set foundSheet = Nothing
+
+    For sheetIndex = 1 To Workbook.Sheets.Count
+      Set ExcelSheet = Workbook.Sheets(sheetIndex)
+      Dim LastRow
+      LastRow = ExcelSheet.Cells(ExcelSheet.Rows.Count, 1).End(-4162).Row ' xlUp
+
+      For r = 1 To LastRow
+        If ExcelSheet.Cells(r, 20).Value = {} Then
+          targetRow = r
+          Set foundSheet = ExcelSheet
+          Exit For
+        End If
+      Next
+      If targetRow <> 0 Then Exit For
+    Next
+
+    If targetRow <> 0 Then
+      Select Case "{}"
+        Case "BoldRow"
+          ExcelSheet.Rows(targetRow).Font.Bold = True
+      End Select
+    End If
+
+    Workbook.Save
+    Workbook.Close
+    ExcelApp.Quit
+    "#,
+    args.path,
+    args.handwritten_id,
+    match args.action {
+      ShippingListAction::BoldRow => "BoldRow",
+    }
+  );
+
+  let temp_vbs_path = "C:/mwd/scripts/EditShippingList.vbs";
+  std::fs::write(&temp_vbs_path, vbs_script).unwrap();
+  std::process::Command::new("wscript.exe")
+    .arg(temp_vbs_path)
+    .output()
+    .unwrap();
 }
 
 #[tauri::command]

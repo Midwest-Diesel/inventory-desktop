@@ -27,7 +27,7 @@ import { useQuery } from "@tanstack/react-query";
 import { handleAccountingCompleted, startTakeoff } from "@/scripts/logic/handwrittens";
 import { prompt } from "../library/Prompt";
 import HandwrittenStatusFields from "./HandwrittenStatusFields";
-import ShippingListModal from "./modals/ShippingListModal";
+import ShippingListModal, { CURRENT_WEEK_FILENAME } from "./modals/ShippingListModal";
 import ModalList from "../library/ModalList";
 import { offServerEvent, onServerEvent } from "@/scripts/config/websockets";
 import { chunkArray } from "@/scripts/tools/utils";
@@ -464,6 +464,13 @@ export default function HandwrittenDetails({
     await editHandwritten(newHandwritten);
     await handleAccountingCompleted(handwritten, accountingStatus);
     setHandwritten(newHandwritten);
+
+    const args = {
+      path: `\\\\MWD1-SERVER/Server/${CURRENT_WEEK_FILENAME}`,
+      handwritten_id: handwritten.id,
+      action: 'BoldRow'
+    };
+    await invoke('edit_shipping_list_row', { args });
   };
 
   const onChangeShippingStatus = async (shippingStatus: ShippingStatus | null) => {

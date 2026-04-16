@@ -20,7 +20,7 @@ interface Props {
 }
 
 
-const CURRENT_WEEK_FILENAME = import.meta.env.PROD ? 'Shipping List (Current Week).xlsx' : 'shipping_list_current_week.xlsx';
+export const CURRENT_WEEK_FILENAME = import.meta.env.PROD ? 'Shipping List (Current Week).xlsx' : 'shipping_list_current_week.xlsx';
 const NEXT_WEEK_FILENAME = import.meta.env.PROD ? 'Shipping List (Next Week).xlsx' : 'shipping_list_next_week.xlsx';
 
 export default function ShippingListModal({ open, onNext, onPrev, handwrittenItems, newShippingListRow }: Props) {
