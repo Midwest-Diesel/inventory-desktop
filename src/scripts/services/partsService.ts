@@ -471,6 +471,16 @@ export const editConnectedPartPricing = async (altParts: string[], pricing: Part
   }
 };
 
+export const massLocationChange = async (oldLocation: string, newLocation: string) => {
+  try {
+    await api.put('/api/parts/mass-location-change', { oldLocation, newLocation });
+  } catch (error) {
+    console.error(error);
+    alert(`Error in [massLocationChange] ${error}`);
+  }
+};
+
+
 // === DELETE routes === //
 
 export const deletePart = async (id: number) => {

@@ -22,6 +22,7 @@ import { addRecentSearch, getQuotesByPartNum } from "@/scripts/services/recentSe
 import { getSearchedPartNum } from "@/scripts/logic/partSearch";
 import { emitServerEvent } from "@/scripts/config/websockets";
 import PartSearchTabs from "./PartSearchTabs";
+import MassLocationChangeDialog from "./dialogs/MassLocationChangeDialog";
 
 interface Props {
   selectHandwrittenOpen: boolean
@@ -60,6 +61,7 @@ export default function PartSearchSection({ selectHandwrittenOpen, setSelectHand
   const [salesInfoOpen, setSalesInfoOpen] = useState(false);
   const [coreFamilyOpen, setCoreFamilyOpen] = useState(false);
   const [partsOnEngsOpen, setPartsOnEngsOpen] = useState(false);
+  const [massLocationChangeOpen, setMassLocationChangeOpen] = useState(false);
   const [partsOnEngs, setPartsOnEngs] = useState<{ partNum: string; engines: Engine[] }[]>([]);
   const [searchParams, setSearchParams] = useState<PartSearchParams | null>(null);
   const [partSearchTabs, setPartSearchTabs] = useState<PartSearchTab[]>(JSON.parse(localStorage.getItem('partSearchTabs') ?? '[]'));
@@ -162,6 +164,7 @@ export default function PartSearchSection({ selectHandwrittenOpen, setSelectHand
       <AltPartsSearchDialog open={altPartsSearchOpen} setOpen={setAltPartsSearchOpen} handleSearch={handleSearch} updateSelectedTab={updateSelectedTab} />
       <PartsOnEnginesDialog open={partsOnEngsOpen} setOpen={setPartsOnEngsOpen} searchResults={partsOnEngs} />
       <CoreFamilySearchDialog open={coreFamilyOpen} setOpen={setCoreFamilyOpen} />
+      <MassLocationChangeDialog open={massLocationChangeOpen} setOpen={setMassLocationChangeOpen} />
 
       <div
         className="parts-search__header no-select"
@@ -190,6 +193,7 @@ export default function PartSearchSection({ selectHandwrittenOpen, setSelectHand
             >
               Compare / Consist
             </Link>
+            { user.type === 'shop' && <Button onClick={() => setMassLocationChangeOpen(true)}>Mass Location Change</Button> }
           </div>
 
           <PartSearchTabs

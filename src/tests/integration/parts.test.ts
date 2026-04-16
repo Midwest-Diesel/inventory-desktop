@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, beforeAll } from 'vitest';
 import { setApiBaseUrl } from '@/scripts/config/axios';
 import { loginUser } from '@/scripts/services/userService';
-import { addPart, editPartsInfoPrefix, editWeightDims, getPartInfoByPartNum, getPartsByStockNum } from '@/scripts/services/partsService';
+import { addPart, editPartsInfoPrefix, editWeightDims, getPartInfoByPartNum, getPartsByStockNum, massLocationChange, searchParts } from '@/scripts/services/partsService';
 import { addAltParts, getNextUP, removeAltParts } from '@/scripts/logic/parts';
 import { resetDb } from '../resetDatabase';
 
@@ -215,5 +215,18 @@ describe('Parts Integration', () => {
     await editPartsInfoPrefix('3740750', 'INJ');
     const newInfo = await getPartInfoByPartNum('3740750');
     expect(newInfo?.prefix).toEqual('INJ');
+  });
+
+  it('Mass location change', async () => {
+    const oldLocation = 'C5G4A';
+    const newLocation = 'C5G4ABB';
+    const searchOriginalLocation = await searchParts({ location: oldLocation, showSoldParts: false }, 1, 999);
+    expect(searchOriginalLocation.rows.length).toBeGreaterThan(0);
+    await massLocationChange(oldLocation, newLocation);
+
+    const searchOldLocation = await searchParts({ location: oldLocation, showSoldParts: false }, 1, 999);
+    const searchNewLocation = await searchParts({ location: newLocation, showSoldParts: false }, 1, 999);
+    expect(searchOldLocation.rows.length).toEqual(0);
+    expect(searchNewLocation.rows.length).toBeGreaterThan(0);
   });
 });
