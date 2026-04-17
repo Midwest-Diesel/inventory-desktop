@@ -142,7 +142,7 @@ export default function Dashboard() {
       partId: part?.id
     };
     await addQuote(newQuote);
-    const res = await getSomeQuotes(1, 26, '', 0, false);
+    const res = await getSomeQuotes(1, 26, '', 0, quoteListType === 'engine');
     setQuotes(res.rows);
     toast.sendToast('Created quote', 'success');
     setFilterByCustomer(false);

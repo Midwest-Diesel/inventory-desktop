@@ -112,6 +112,7 @@ type Customer = {
   country: string | null
   isTaxable: boolean
   fleetNotes: string | null
+  shippingNotes: string | null
 };
 
 type Quote = {

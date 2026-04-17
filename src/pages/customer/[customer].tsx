@@ -260,6 +260,10 @@ export default function Customer() {
                   <Table variant={['plain', 'row-details']}>
                     <tbody>
                       <tr>
+                        <th>Shipping Notes</th>
+                        <td>{ customer.shippingNotes }</td>                        
+                      </tr>
+                      <tr>
                         <th>Comments</th>
                         <td style={{ whiteSpace: 'pre-wrap' }}>{ comments.querySelector('body')?.innerText }</td>
                       </tr>

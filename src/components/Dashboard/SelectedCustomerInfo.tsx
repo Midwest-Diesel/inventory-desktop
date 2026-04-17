@@ -48,7 +48,10 @@ export default function SelectedCustomerInfo({ expandedDetailsOpen }: Props) {
       {!expandedDetailsOpen ?
         <div>
           <p><strong>Selected Customer:</strong> <Link href={`customer/${customer?.id}`} style={{ fontSize: 'var(--font-md)' }} data-testid="customer-link">{ customer?.company }</Link> <em>{ customerInfo.length > 0 && `(${customerInfo})` }</em></p>
-          <p><strong>Contact:</strong> { customer?.contact }</p>
+          <p>
+            <strong>Contact: </strong>
+            { customer?.contact || <em>Not Selected</em> } { (hasSimilarContacts() && userIsAllowed) && <Link style={{ color: 'var(--red-3)', fontWeight: 'bold' }} href={`/fix-contacts?customer-id=${customer?.id}`}>Similar contacts detected!</Link> }
+          </p>
         </div>
         :
         <div data-testid="customer-details">
@@ -196,10 +199,12 @@ export default function SelectedCustomerInfo({ expandedDetailsOpen }: Props) {
               }
             </GridItem>
           </Grid>
+
+          { (hasSimilarContacts() && userIsAllowed) && <Link style={{ color: 'var(--red-3)', fontWeight: 'bold' }} href={`/fix-contacts?customer-id=${customer?.id}`}>Similar contacts detected!</Link> }
         </div>
       }
 
-      { (hasSimilarContacts() && userIsAllowed) && <Link style={{ color: 'var(--red-3)', fontWeight: 'bold' }} href={`/fix-contacts?customer-id=${customer?.id}`}>Similar contacts detected!</Link> }
+      { customer?.shippingNotes && <p><strong>Shipping Notes:</strong> { customer.shippingNotes }</p> }
     </div>
   );
 }

@@ -44,6 +44,7 @@ export default function CustomerDetails({ customer, setCustomer, setIsEditing, o
   const [shipToCity, setShipToCity] = useState<string>(customer.shipToCity ?? '');
   const [shipToState, setShipToState] = useState<string>(customer.shipToState ?? '');
   const [shipToZip, setShipToZip] = useState<string>(customer.shipToZip ?? '');
+  const [shippingNotes, setShippingNotes] = useState<string>(customer.shippingNotes ?? '');
   const [partsManager, setPartsManager] = useState<string>(customer.partsManager ?? '');
   const [partsManagerEmail, setPartsManagerEmail] = useState<string>(customer.partsManagerEmail ?? '');
   const [serviceManager, setServiceManager] = useState<string>(customer.serviceManager ?? '');
@@ -87,6 +88,7 @@ export default function CustomerDetails({ customer, setCustomer, setIsEditing, o
       shipToCity,
       shipToState,
       shipToZip,
+      shippingNotes,
       partsManager,
       partsManagerEmail,
       serviceManager,
@@ -350,6 +352,15 @@ export default function CustomerDetails({ customer, setCustomer, setIsEditing, o
               <GridItem variant={['low-opacity-bg']}>
                 <Table variant={['plain', 'row-details', 'edit-row-details']}>
                   <tbody>
+                    <tr>
+                      <th>Shipping Notes</th>
+                      <td>
+                        <Input
+                          value={shippingNotes}
+                          onChange={(e) => setShippingNotes(e.target.value)}
+                        />
+                      </td>
+                    </tr>
                     <tr>
                       <th>Comments</th>
                       <td>
