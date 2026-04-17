@@ -3,6 +3,7 @@ import Select from "@/components/library/select/Select";
 import { addCustomerContact, deleteContact, editContact, editCustomer, getCustomerById } from "@/scripts/services/customerService";
 import { ask } from "@/scripts/config/tauri";
 import { prompt } from "@/components/library/Prompt";
+import { useState } from "react";
 
 interface Props {
   isEditing: boolean
@@ -16,6 +17,8 @@ interface Props {
 
 
 export default function ContactsControls({ isEditing, setIsEditing, contact, setContact, contacts, customer, setCustomer }: Props) {
+  const [openedContact, setOpenedContact] = useState('');
+
   const onSelectChangeContact = async (contactName: string) => {
     setContact(contacts.find((c) => c.name === contactName) ?? null);
     await editCustomer({ ...customer, contact: contactName });
@@ -54,24 +57,28 @@ export default function ContactsControls({ isEditing, setIsEditing, contact, set
   return (
     <div className="contacts-block__header">
       <h3>Contacts</h3>
-      <Button type="button" onClick={onClickNewContact}>Add</Button>
-      { (!isEditing && contact) && <Button type="button" onClick={() => setIsEditing(true)} variant={['blue']}>Edit</Button> }
-      {isEditing &&
-        <>
-          <Button type="button" onClick={onClickSaveContact} variant={['save']}>Save</Button>
-          <Button type="button" onClick={onClickCancelEdit}>Cancel</Button>
-        </>
-      }
-      { contact && <Button type="button" onClick={onClickDeleteContact} variant={['danger']}>Delete</Button> }
-      <Select
-        value={contact?.name ?? ''}
-        onChange={(e) => onSelectChangeContact(e.target.value)}
-      >
-        <option value="">-- CONTACT NAME --</option>
-        {contacts.map((contact: Contact) => {
-          return <option key={contact.id}>{ contact.name }</option>;
-        })}
-      </Select>
+
+      <div className="contacts-block__inputs">
+        <Button type="button" onClick={() => onSelectChangeContact(openedContact)}>Set Contact</Button>
+        <Button type="button" onClick={onClickNewContact}>Add</Button>
+        { (!isEditing && contact) && <Button type="button" onClick={() => setIsEditing(true)} variant={['blue']}>Edit</Button> }
+        {isEditing &&
+          <>
+            <Button type="button" onClick={onClickSaveContact} variant={['save']}>Save</Button>
+            <Button type="button" onClick={onClickCancelEdit}>Cancel</Button>
+          </>
+        }
+        { contact && <Button type="button" onClick={onClickDeleteContact} variant={['danger']}>Delete</Button> }
+        <Select
+          value={openedContact || (contact?.name ?? '')}
+          onChange={(e) => setOpenedContact(e.target.value)}
+        >
+          <option value="">-- CONTACT NAME --</option>
+          {contacts.map((contact: Contact) => {
+            return <option key={contact.id}>{ contact.name }</option>;
+          })}
+        </Select>
+      </div>
     </div>
   );
 }
