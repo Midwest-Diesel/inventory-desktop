@@ -397,15 +397,6 @@ export const handlePartTakeoff = async (partId: number, qty: number, soldTo: str
   }
 };
 
-export const setPartLastUpdated = async (partId: number) => {
-  try {
-    await api.patch('/api/parts/last-updated', { partId, date: new Date() });
-  } catch (error) {
-    console.error(error);
-    alert(`Error in [setPartLastUpdated] ${error}`);
-  }
-};
-
 export const editPartStockNum = async (partId: number, stockNum: string) => {
   try {
     await api.patch('/api/parts/stock-num', { partId, stockNum });
@@ -442,6 +433,15 @@ export const editPartsInfoPrefix = async (partNum: string, prefix: string | null
   }
 };
 
+export const editPartsInfoPricing = async (altParts: string[], pricing: PartPricing) => {
+  try {
+    await api.patch('/api/parts/part-pricing', { altParts, pricing });
+  } catch (error) {
+    console.error(error);
+    alert(`Error in [editPartsInfoPricing] ${error}`);
+  }
+};
+
 // === PUT routes === //
 
 export const editPart = async (part: Part) => {
@@ -459,15 +459,6 @@ export const editPartCostIn = async (part: PartCostIn) => {
   } catch (error) {
     console.error(error);
     alert(`Error in [editPartCostIn] ${error}`);
-  }
-};
-
-export const editConnectedPartPricing = async (altParts: string[], pricing: PartPricing) => {
-  try {
-    await api.put('/api/parts/part-pricing', { altParts, pricing });
-  } catch (error) {
-    console.error(error);
-    alert(`Error in [editConnectedPartPricing] ${error}`);
   }
 };
 

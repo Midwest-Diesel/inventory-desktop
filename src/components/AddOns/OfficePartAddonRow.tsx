@@ -1,7 +1,7 @@
 import { useAtom } from "jotai";
 import { userAtom } from "@/scripts/atoms/state";
 import { deleteAddOn, editAddOnAltParts, editAddOnUserEditing, getAddOnById } from "@/scripts/services/addOnsService";
-import { addPart, addPartCostIn, getPartsByStockNum, getPartInfoByPartNum, editConnectedPartPricing, searchAltParts, editPartsInfoPrefix } from "@/scripts/services/partsService";
+import { addPart, addPartCostIn, getPartsByStockNum, getPartInfoByPartNum, editPartsInfoPricing, searchAltParts, editPartsInfoPrefix } from "@/scripts/services/partsService";
 import { useEffect, useRef, useState } from "react";
 import { addEngineCostOut, getEngineCostRemaining } from "@/scripts/services/enginesService";
 import { getRatingFromRemarks } from "@/scripts/tools/utils";
@@ -161,7 +161,7 @@ export default function OfficePartAddonRow({ addOn, addOns, setAddons, onSave, o
     if (partSearch.rows.length > 0) {
       const search = partSearch.rows[0];
       const pricing = { listPrice: newPrice, fleetPrice: dealerPrice, remanListPrice: remanPrice, remanFleetPrice: search.remanFleetPrice, corePrice: search.corePrice };
-      await editConnectedPartPricing(newPart.altParts, pricing); 
+      await editPartsInfoPricing(newPart.altParts, pricing); 
     } else if (partsInfo !== null) {
       alert(`Failed to update "New List Price", "Reman List Price", or "Dealer Price" for ${newPart.partNum}`);
     }
