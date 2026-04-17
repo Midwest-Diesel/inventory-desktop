@@ -8,6 +8,8 @@ import Button from "../../library/Button";
 import { useToast } from "@/hooks/useToast";
 import CustomerDropdown from "../../library/dropdown/CustomerDropdown";
 import TextArea from "../../library/TextArea";
+import { selectedCustomerAtom } from "@/scripts/atoms/state";
+import { useAtom } from "jotai";
 
 interface Props {
   open: boolean
@@ -19,8 +21,9 @@ interface Props {
 
 export default function NewEngineQuoteDialog({ open, setOpen, engine, onNewQuote }: Props) {
   const toast = useToast();
+  const [selectedCustomer] = useAtom<Customer | null>(selectedCustomerAtom);
   const [source, setSource] = useState('');
-  const [company, setCompany] = useState('');
+  const [company, setCompany] = useState(selectedCustomer?.company ?? '');
   const [stockNum, setStockNum] = useState<string>(engine?.stockNum.toString() ?? '');
   const [desc, setDesc] = useState('');
   const [price, setPrice] = useState('');
