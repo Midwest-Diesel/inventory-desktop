@@ -23,18 +23,15 @@ const addHandwrittenItem = async (page: Page, rowIndex: number, desc: string, qt
   await page.getByTestId('select-handwritten-price').fill(price.toString());
   await page.getByTestId('select-handwritten-submit-btn').click();
   await page.waitForLoadState('networkidle');
-  
 };
 
 const addWarranty = async (page: Page, checkboxIndexes: number[], customWarranty?: string) => {
   const dialog = page.getByTestId('select-handwritten-dialog');
   await dialog.waitFor();
-  const checkboxes = dialog.locator('.checkbox-wrapper-4');
 
   for (const index of checkboxIndexes) {
-    const checkbox = checkboxes.nth(index);
-    await checkbox.waitFor({ state: 'visible' });
-    await checkbox.click({ force: true });
+    const checkbox = dialog.locator('.checkbox-wrapper-4 .cbx').nth(index);
+    await checkbox.click();
   }
   if (customWarranty) await page.getByTestId('warranty').fill(customWarranty);
   
@@ -204,6 +201,7 @@ test.describe('Cores', () => {
     await page.getByTestId('core-charge-btn').first().click();
     await page.getByTestId('save-btn').click();
     await expect(page.getByTestId('item-part-num').first()).toHaveText('CORE DEPOSIT');
+    await page.waitForLoadState('networkidle');
     await expect(page.getByTestId('item-stock-num').first()).toHaveText('UP9432');
   
     await goto(page, '/cores');
