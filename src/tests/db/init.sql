@@ -7,38 +7,40 @@ INSERT INTO "alerts" ("type", "partNum", "date", "note", "subtext", "salesmanId"
 VALUES ('ALERT!!!', '1304701', '2021-04-13', '3406E/C15 Gear - Lots of matches! 6I4578 Is for older 5ek, uses a 6I3621 stubshaft, 1304701 uses a 1302979 or 1515966 subshaft', '', 1);
 
 -- PARTS INFO
-INSERT INTO "partsInfo" ("partNum", "desc", "altParts", "weightDims", "prefix") VALUES ('2251283', 'ELBOW', '2251283', NULL, 'ELB');
-INSERT INTO "partsInfo" ("partNum", "desc", "altParts", "weightDims", "prefix") VALUES ('3949674', 'ELBOW', '3949674, 20R4880', NULL, 'ELB');
-INSERT INTO "partsInfo" ("partNum", "desc", "altParts", "weightDims", "prefix") VALUES ('20R4880', 'ELBOW', '3949674, 20R4880', NULL, 'ELB');
-INSERT INTO "partsInfo" ("partNum", "desc", "altParts", "weightDims", "prefix") VALUES ('E23525567', 'VALVE', 'E23525567, R23525567', NULL, 'VA');
-INSERT INTO "partsInfo" ("partNum", "desc", "altParts", "weightDims", "prefix") VALUES ('R23525567', 'VALVE', 'E23525567, R23525567', NULL, 'VA');
-INSERT INTO "partsInfo" ("partNum", "desc", "altParts", "weightDims", "prefix") VALUES ('7L0406', 'VALVE', '7L0406, 9N3242, 9N3240', NULL, 'VA');
-INSERT INTO "partsInfo" ("partNum", "desc", "altParts", "weightDims", "prefix") VALUES ('9N3242', 'VALVE', '7L0406, 9N3242, 9N3240', NULL, 'VA');
-INSERT INTO "partsInfo" ("partNum", "desc", "altParts", "weightDims", "prefix") VALUES ('10R3264', 'INJECTOR C15', '2447715, 2530615, 10R3264, 3740750, 20R2284, 20R2284R, 10R3264R, 6180750, 6470750', 'UPS: 7LBS 12x10x6', 'IGP');
-INSERT INTO "partsInfo" ("partNum", "desc", "altParts", "weightDims", "prefix") VALUES ('10R3264R', 'INJECTOR C27', '2447715, 2530615, 10R3264, 3740750, 20R2284, 20R2284R, 10R3264R, 6180750, 6470750', 'UPS: 7LBS 12x10x6', NULL);
-INSERT INTO "partsInfo" ("partNum", "desc", "altParts", "weightDims", "prefix") VALUES ('2447715', 'INJECTOR C15', '2447715, 2530615, 10R3264, 3740750, 20R2284, 20R2284R, 10R3264R, 6180750, 6470750', NULL, 'IGP');
-INSERT INTO "partsInfo" ("partNum", "desc", "altParts", "weightDims", "prefix") VALUES ('2530615', 'INJECTOR C15', '2447715, 2530615, 10R3264, 3740750, 20R2284, 20R2284R, 10R3264R, 6180750, 6470750', 'UPS: 7LBS 12x10x6', 'IGP');
-INSERT INTO "partsInfo" ("partNum", "desc", "altParts", "weightDims", "prefix") VALUES ('3740750', 'INJECTOR C27', '2447715, 2530615, 10R3264, 3740750, 20R2284, 20R2284R, 10R3264R, 6180750, 6470750', 'UPS: 7LBS 12x10x6', NULL);
-INSERT INTO "partsInfo" ("partNum", "desc", "altParts", "weightDims", "prefix") VALUES ('6180750', 'INJECTOR', '2447715, 2530615, 10R3264, 3740750, 20R2284, 20R2284R, 10R3264R, 6180750, 6470750', NULL, NULL);
-INSERT INTO "partsInfo" ("partNum", "desc", "altParts", "weightDims", "prefix") VALUES ('6470750', 'INJECTOR C15', '2447715, 2530615, 10R3264, 3740750, 20R2284, 20R2284R, 10R3264R, 6180750, 6470750', NULL, NULL);
-INSERT INTO "partsInfo" ("partNum", "desc", "altParts", "weightDims", "prefix") VALUES ('20R2284', 'INJECTOR C27', '2447715, 2530615, 10R3264, 3740750, 20R2284R, 10R3264R, 6180750, 6470750, 20R2284', 'UPS: 7LBS 12x10x6', NULL);
-INSERT INTO "partsInfo" ("partNum", "desc", "altParts", "weightDims", "prefix") VALUES ('11R1251', 'TUBE', '11R1251, 5441832, 5865303', NULL, 'TU');
-INSERT INTO "partsInfo" ("partNum", "desc", "altParts", "weightDims", "prefix") VALUES ('5441832', 'TUBE', '11R1251, 5441832, 5865303', NULL, 'TU');
-INSERT INTO "partsInfo" ("partNum", "desc", "altParts", "weightDims", "prefix") VALUES ('5865303', 'TUBE', '11R1251, 5441832, 5865303', NULL, 'TU');
-INSERT INTO "partsInfo" ("partNum", "desc", "altParts", "weightDims", "prefix") VALUES ('6057481', 'WATER PUMP C15', '6057481', NULL, 'TU');
-INSERT INTO "partsInfo" ("partNum", "desc", "altParts", "weightDims", "prefix") VALUES ('4700245', 'INJECTOR C9', '4700245', NULL, 'INJ');
-INSERT INTO "partsInfo" ("partNum", "desc", "altParts", "weightDims", "prefix") VALUES ('7E0333', 'VALVE COVER 3406', '7C9667, 4N4536, 4N4537, 7C9261, 7E0330, 7E0331, 7E0333, 7W9179', null, 'VC');
-INSERT INTO "partsInfo" ("partNum", "desc", "altParts", "weightDims", "prefix") VALUES ('7E0331', 'VALVE COVER 3406', '7C9667, 4N4536, 4N4537, 7C9261, 7E0330, 7E0331, 7E0333, 7W9179', null, 'VC');
-INSERT INTO "partsInfo" ("partNum", "desc", "altParts", "weightDims", "prefix") VALUES ('9N3240', 'THERM HSNG 3306', '9N3240, 7L0406, 9N3242', NULL, 'TH');
-INSERT INTO "partsInfo" ("partNum", "desc", "altParts", "weightDims", "prefix") VALUES ('0323237', 'SPACER', '0323237, 323237, 1W4589, 1336934', NULL, 'SP');
+INSERT INTO "partsInfo"
+("partNum", "desc", "altParts", "weightDims", "prefix", "listPrice", "corePrice", "fleetPrice", "remanListPrice", "remanFleetPrice", "priceLastUpdated") VALUES 
+('2251283', 'ELBOW', '2251283', NULL, 'ELB', NULL, NULL, NULL, NULL, NULL, NULL),
+('3949674', 'ELBOW', '3949674, 20R4880', NULL, 'ELB', NULL, NULL, NULL, NULL, NULL, NULL),
+('20R4880', 'ELBOW', '3949674, 20R4880', NULL, 'ELB', NULL, NULL, NULL, NULL, NULL, NULL),
+('E23525567', 'VALVE', 'E23525567, R23525567', NULL, 'VA', NULL, NULL, NULL, NULL, NULL, NULL),
+('R23525567', 'VALVE', 'E23525567, R23525567', NULL, 'VA', NULL, NULL, NULL, NULL, NULL, NULL),
+('7L0406', 'VALVE', '7L0406, 9N3242, 9N3240', NULL, 'VA', 179.84, 0, 161.87, 0, 0, '2020-06-09'),
+('9N3242', 'VALVE', '7L0406, 9N3242, 9N3240', NULL, 'VA', NULL, NULL, NULL, NULL, NULL, NULL),
+('10R3264', 'INJECTOR C15', '2447715, 2530615, 10R3264, 3740750, 20R2284, 20R2284R, 10R3264R, 6180750, 6470750', 'UPS: 7LBS 12x10x6', 'IGP', NULL, NULL, NULL, NULL, NULL, NULL),
+('10R3264R', 'INJECTOR C27', '2447715, 2530615, 10R3264, 3740750, 20R2284, 20R2284R, 10R3264R, 6180750, 6470750', 'UPS: 7LBS 12x10x6', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+('2447715', 'INJECTOR C15', '2447715, 2530615, 10R3264, 3740750, 20R2284, 20R2284R, 10R3264R, 6180750, 6470750', NULL, 'IGP', NULL, NULL, NULL, NULL, NULL, NULL),
+('2530615', 'INJECTOR C15', '2447715, 2530615, 10R3264, 3740750, 20R2284, 20R2284R, 10R3264R, 6180750, 6470750', 'UPS: 7LBS 12x10x6', 'IGP', NULL, NULL, NULL, NULL, NULL, NULL),
+('3740750', 'INJECTOR C27', '2447715, 2530615, 10R3264, 3740750, 20R2284, 20R2284R, 10R3264R, 6180750, 6470750', 'UPS: 7LBS 12x10x6', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+('6180750', 'INJECTOR', '2447715, 2530615, 10R3264, 3740750, 20R2284, 20R2284R, 10R3264R, 6180750, 6470750', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+('6470750', 'INJECTOR C15', '2447715, 2530615, 10R3264, 3740750, 20R2284, 20R2284R, 10R3264R, 6180750, 6470750', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+('20R2284', 'INJECTOR C27', '2447715, 2530615, 10R3264, 3740750, 20R2284R, 10R3264R, 6180750, 6470750, 20R2284', 'UPS: 7LBS 12x10x6', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+('11R1251', 'TUBE', '11R1251, 5441832, 5865303', NULL, 'TU', NULL, NULL, NULL, NULL, NULL, NULL),
+('5441832', 'TUBE', '11R1251, 5441832, 5865303', NULL, 'TU', NULL, NULL, NULL, NULL, NULL, NULL),
+('5865303', 'TUBE', '11R1251, 5441832, 5865303', NULL, 'TU', NULL, NULL, NULL, NULL, NULL, NULL),
+('6057481', 'WATER PUMP C15', '6057481', NULL, 'TU', NULL, NULL, NULL, NULL, NULL, NULL),
+('4700245', 'INJECTOR C9', '4700245', NULL, 'INJ', NULL, NULL, NULL, NULL, NULL, NULL),
+('7E0333', 'VALVE COVER 3406', '7C9667, 4N4536, 4N4537, 7C9261, 7E0330, 7E0331, 7E0333, 7W9179', NULL, 'VC', 179.84, 0, 161.87, 0, 0, '2020-06-09'),
+('7E0331', 'VALVE COVER 3406', '7C9667, 4N4536, 4N4537, 7C9261, 7E0330, 7E0331, 7E0333, 7W9179', NULL, 'VC', 179.84, 0, 161.87, 0, 0, '2020-06-09'),
+('9N3240', 'THERM HSNG 3306', '9N3240, 7L0406, 9N3242', NULL, 'TH', 179.84, 0, 161.87, 0, 0, '2020-06-09'),
+('0323237', 'SPACER', '0323237, 323237, 1W4589, 1336934', NULL, 'SP', NULL, NULL, NULL, NULL, NULL, NULL);
 
 -- PARTS
-INSERT INTO "parts" ("handwrittenId", "invoiceNum", "partNum", "manufacturer", "desc", "location", "remarks", "entryDate", "enteredBy", "qty", "stockNum", "purchasePrice", "listPrice", "corePrice", "fleetPrice", "soldTo", "qtySold", "sellingPrice", "purchasedFrom", "soldToDate", "condition", "rating", "engineNum", "remanListPrice", "remanFleetPrice", "priceLastUpdated", "coreFam", "pricingNotes", "specialNotes")
+INSERT INTO "parts" ("handwrittenId", "invoiceNum", "partNum", "manufacturer", "desc", "location", "remarks", "entryDate", "enteredBy", "qty", "stockNum", "purchasePrice", "soldTo", "qtySold", "sellingPrice", "purchasedFrom", "soldToDate", "condition", "rating", "engineNum", "coreFam", "pricingNotes", "specialNotes")
 VALUES
-  (null, null, '7E0333', 'CATERPILLAR', 'VALVE COVER 3406', 'C5G4A', 'T/O, NTBBD', '2026-02-17', 2000, 34, 'UP9432', 0.01, 179.84, 0, 161.87, null, 0, null, 'CB1', null, 'Good Used', 0.0, 7259, 0, 0, '2020-06-09', null, null , null),
-  (null, null, '7E0331', 'CATERPILLAR', 'VALVE COVER 3406', 'C5G4A', 'T/O, NOT CHECKED, ONE HOLE', '2026-02-17', 2000, 31, 'UP12615', 0.01, 179.84, 0, 161.87, null, 0, null, 'CB1', null, 'Good Used', 0.0, 7259, 0, 0, '2020-06-09', null, null , null),
-  (null, null, '9N3240', 'CATERPILLAR', 'THERM HSNG 3306', 'C5G4A', '(8.5) CCBD AND ZD, CAST IRON THERM HSNG, LOOKS GOOD', '2026-02-17', 2000, 34, 'TH609-23C', 0.01, 179.84, 0, 161.87, null, 0, null, 'CB1', null, 'Good Used', 0.0, 7259, 0, 0, '2020-06-09', null, null , null),
-  (null, null, '7L0406', 'CATERPILLAR', 'THERM HSNG 3306', 'C5G4A', '(8.5) CCBD AND ZD, CAST IRON THERM HSNG, LOOKS GOOD', '2026-02-17', 2000, 1, 'TH418-19A', 0.01, 179.84, 0, 161.87, null, 0, null, 'CB1', null, 'Good Used', 0.0, 7259, 0, 0, '2020-06-09', null, null , null);
+  (NULL, NULL, '7E0333', 'CATERPILLAR', 'VALVE COVER 3406', 'C5G4A', 'T/O, NTBBD', '2026-02-17', 2000, 34, 'UP9432', 0.01, NULL, 0, NULL, 'CB1', NULL, 'Good Used', 0.0, 7259, NULL, NULL , NULL),
+  (NULL, NULL, '7E0331', 'CATERPILLAR', 'VALVE COVER 3406', 'C5G4A', 'T/O, NOT CHECKED, ONE HOLE', '2026-02-17', 2000, 31, 'UP12615', 0.01, NULL, 0, NULL, 'CB1', NULL, 'Good Used', 0.0, 7259, NULL, NULL , NULL),
+  (NULL, NULL, '9N3240', 'CATERPILLAR', 'THERM HSNG 3306', 'C5G4A', '(8.5) CCBD AND ZD, CAST IRON THERM HSNG, LOOKS GOOD', '2026-02-17', 2000, 34, 'TH609-23C', 0.01, NULL, 0, NULL, 'CB1', NULL, 'Good Used', 0.0, 7259, NULL, NULL , NULL),
+  (NULL, NULL, '7L0406', 'CATERPILLAR', 'THERM HSNG 3306', 'C5G4A', '(8.5) CCBD AND ZD, CAST IRON THERM HSNG, LOOKS GOOD', '2026-02-17', 2000, 1, 'TH418-19A', 0.01, NULL, 0, NULL, 'CB1', NULL, 'Good Used', 0.0, 7259, NULL, NULL , NULL);
 
 -- CUSTOMERS
 INSERT INTO "customers" ("company", "contact", "partsManager", "partsManagerEmail", "serviceManager", "serviceManagerEmail", "other", "phone", "billToPhone", "fax", "email", "terms", "billToAddress", "billToAddress2", "billToCity", "billToState", "billToZip", "shipToAddress", "shipToAddress2", "shipToCity", "shipToState", "shipToZip", "dateContacted", "comments", "customerType", "source", "country", "isTaxable", "paymentType")

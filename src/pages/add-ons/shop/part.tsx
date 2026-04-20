@@ -65,9 +65,7 @@ export default function ShopPartAddOns() {
   const clearOwnership = (userId: number) => {
     setAddons((prev) =>
       prev.map((row) =>
-        row.userEditing?.id === userId
-          ? { ...row, userEditing: null }
-          : row
+        row.userEditing?.id === userId ? { ...row, userEditing: null } : row
       )
     );
   };
@@ -87,7 +85,7 @@ export default function ShopPartAddOns() {
       })
     );
 
-    setPrevAddons(prev =>
+    setPrevAddons((prev) =>
       prev.map((row) => {
         const updated = updatedRows.find(a => a.id === row.id);
         if (updated) {
@@ -160,6 +158,8 @@ export default function ShopPartAddOns() {
 
   const handleEditAddOns = async () => {
     setShouldPreventLeave(false);
+    const blankPrefixAddOn = addOns.find((a) => !a.prefix && a.stockNum && !a.stockNum.startsWith('UP'));
+    if (blankPrefixAddOn) alert(`Prefix for add on ${blankPrefixAddOn.stockNum} cannot be blank.`);
 
     const changedAddOns = addOns.filter((a) => {
       const prev = prevAddons.find((p) => p.id === a.id);
