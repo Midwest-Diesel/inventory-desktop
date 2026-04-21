@@ -393,7 +393,6 @@ export default function ShopPartAddonRow({ addOn, addOns, setAddons, handleDupli
                 <th>Description</th>
                 <th>Type</th>
                 <th style={!isEngineNumInvalid ? { textDecoration: 'underline', cursor: 'pointer' } : {}} onClick={onClickOpenEngine}>Engine #</th>
-                <th>Prefix</th>
                 <th>Stock Number</th>
                 <th>Location</th>
               </tr>
@@ -483,14 +482,6 @@ export default function ShopPartAddonRow({ addOn, addOns, setAddons, handleDupli
                       }
                     }}
                     data-testid="engine-num"
-                  />
-                </td>
-                <td>
-                  <Input
-                    style={(!addOn.prefix && addOn.stockNum && !addOn.stockNum.startsWith('UP')) ? { backgroundColor: 'var(--red-1)' } : {}}
-                    variant={['small', 'thin']}
-                    value={addOn.prefix !== null ? addOn.prefix : ''}
-                    onChange={(e) => handleEditAddOn({ ...addOn, prefix: e.target.value })}
                   />
                 </td>
                 <td>
@@ -614,6 +605,7 @@ export default function ShopPartAddonRow({ addOn, addOns, setAddons, handleDupli
                 <th>Dealer Price</th>
                 <th>Price Status</th>
                 <th>Purchased From</th>
+                <th>Prefix</th>
               </tr>
             </thead>
             <tbody>
@@ -669,6 +661,14 @@ export default function ShopPartAddonRow({ addOn, addOns, setAddons, handleDupli
                       }}
                     />
                   </div>
+                </td>
+                <td>
+                  <Input
+                    style={(!addOn.prefix && addOn.stockNum && !addOn.stockNum.startsWith('UP')) ? { backgroundColor: 'var(--red-1)' } : {}}
+                    variant={['small', 'thin']}
+                    value={addOn.prefix !== null ? addOn.prefix : ''}
+                    onChange={(e) => handleEditAddOn({ ...addOn, prefix: e.target.value })}
+                  />
                 </td>
               </tr>
             </tbody>
