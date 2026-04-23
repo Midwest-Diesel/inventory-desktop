@@ -1,11 +1,13 @@
 import Button from "@/components/library/Button";
 import Dialog from "@/components/library/Dialog";
+import Input from "@/components/library/Input";
 import { usePrintQue } from "@/hooks/usePrintQue";
-import { getLastWeeksQuotesBySalesman, getYesterdaysQuotesBySalesman } from "@/scripts/services/quotesService";
+import { getLastWeeksQuotesBySalesman, getQuotesBySalesmanDateRange, getYesterdaysQuotesBySalesman } from "@/scripts/services/quotesService";
 import { getAllUsers } from "@/scripts/services/userService";
-import { formatDate } from "@/scripts/tools/stringUtils";
+import { formatDate, parseDateInputValue } from "@/scripts/tools/stringUtils";
 import { chunkArray } from "@/scripts/tools/utils";
 import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
 
 interface Props {
   open: boolean
@@ -16,6 +18,8 @@ interface Props {
 const MAX_ROWS = 17;
 
 export default function PrintQuotesDialog({ open, setOpen }: Props) {
+  const [startDate, setStartDate] = useState<Date | null>(null);
+  const [endDate, setEndDate] = useState<Date | null>(null);
   const { addToQue, printQue } = usePrintQue();
 
   const { data: salesmen = [] } = useQuery<User[]>({
@@ -56,6 +60,18 @@ export default function PrintQuotesDialog({ open, setOpen }: Props) {
     setOpen(false);
   };
 
+  const onClickPrintDateRange = async () => {
+    if (!startDate || !endDate) return;
+
+    for (const salesman of salesmen) {
+      const quotes = await getQuotesBySalesmanDateRange(salesman.id, startDate, endDate);
+      queueQuotes(salesman.initials, `${formatDate(new Date(startDate))} - ${formatDate(new Date(endDate))}`, quotes);
+    }
+
+    printQue();
+    setOpen(false);
+  };
+
   const queueQuotes = (salesmanInitials: string, dateLabel: string, quotes: Quote[]) => {
     const chunks = chunkArray(quotes, MAX_ROWS);
 
@@ -84,11 +100,31 @@ export default function PrintQuotesDialog({ open, setOpen }: Props) {
       open={open}
       setOpen={setOpen}
       title="Print Quotes"
-      width={300}
+      width={500}
     >
-      <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem', justifyContent: 'center' }}>
-        <Button onClick={onClickPrintYesterday}>Yesterday</Button>
-        <Button onClick={onClickPrintLastWeek}>Last Week</Button>
+      <div style={{ display: 'flex', flexDirection: 'column' }}>
+        <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem', justifyContent: 'center' }}>
+          <Button onClick={onClickPrintYesterday}>Yesterday</Button>
+          <Button onClick={onClickPrintLastWeek}>Last Week</Button>
+        </div>
+
+        <div style={{ display: 'flex', gap: '0.3rem', marginTop: '1rem', justifyContent: 'center', alignItems: 'center' }}>
+          <Input
+            variant={['label-stack', 'label-bold']}
+            label="Start Date"
+            value={parseDateInputValue(startDate)}
+            onChange={(e) => setStartDate(new Date(e.target.value))}
+            type="date"
+          />
+          <Input
+            variant={['label-stack', 'label-bold']}
+            label="End Date"
+            value={parseDateInputValue(endDate)}
+            onChange={(e) => setEndDate(new Date(e.target.value))}
+            type="date"
+          />
+          <Button style={{ marginTop: '1.4rem' }} onClick={onClickPrintDateRange}>Date Range</Button>
+        </div>
       </div>
     </Dialog>
   );

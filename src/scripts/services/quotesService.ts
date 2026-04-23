@@ -99,6 +99,17 @@ export const getLastWeeksQuotesBySalesman = async (id: number): Promise<Quote[]>
   }
 };
 
+export const getQuotesBySalesmanDateRange = async (id: number, startDate: Date, endDate: Date): Promise<Quote[]> => {
+  try {
+    const params = { startDate, endDate };
+    const res = await api.get(`/api/quotes/salesman-date-range/${id}`, { params });
+    return parseQuotesRes(res.data);
+  } catch (err) {
+    console.error(err);
+    return [];
+  }
+};
+
 export const getSomeUnsoldQuotesByPartNum = async (page: number, limit: number, partNum: string, customerId: number, includeAlts: boolean): Promise<{ pageCount: number, rows: Quote[] }> => {
   try {
     const res = await api.get(`/api/quotes/unsold-quotes/part-num/${JSON.stringify({ page: (page - 1) * limit, limit, partNum, customerId, includeAlts })}`);
