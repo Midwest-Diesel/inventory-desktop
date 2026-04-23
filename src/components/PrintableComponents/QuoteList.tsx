@@ -1,4 +1,4 @@
-import { formatDate } from "@/scripts/tools/stringUtils";
+import { formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
 import Table from "../library/Table";
 
 interface Props {
@@ -6,6 +6,7 @@ interface Props {
     salesman: string
     date: string
     quotes: Quote[]
+    total: number
   }
 }
 
@@ -45,7 +46,7 @@ export default function QuoteListTemplate({ data }: Props) {
                 <td>{ quote.partNum }</td>
                 <td>{ quote.desc }</td>
                 <td>{ quote.stockNum }</td>
-                <td>{ quote.price }</td>
+                <td>{ formatCurrency(quote.price) }</td>
                 <td>{ quote.notes }</td>
                 <td>{ quote.sale ? 'Yes' : 'No' }</td>
               </tr>
@@ -53,6 +54,8 @@ export default function QuoteListTemplate({ data }: Props) {
           })}
         </tbody>
       </Table>
+
+      <p><strong>Total:</strong> { formatCurrency(data.total) }</p>
     </div>
   );
 }

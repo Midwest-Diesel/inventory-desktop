@@ -74,6 +74,7 @@ export default function PrintQuotesDialog({ open, setOpen }: Props) {
 
   const queueQuotes = (salesmanInitials: string, dateLabel: string, quotes: Quote[]) => {
     const chunks = chunkArray(quotes, MAX_ROWS);
+    const total = quotes.reduce((acc, quote) => acc + Number(quote.price), 0);
 
     let i = 0;
     for (const chunk of chunks) {
@@ -83,10 +84,11 @@ export default function PrintQuotesDialog({ open, setOpen }: Props) {
         {
           salesman: salesmanInitials,
           date: dateLabel,
-          quotes: chunk
+          quotes: chunk,
+          total
         },
         '1100px',
-        '816px',
+        '900px',
         null,
         `quotes_list_${salesmanInitials}_${i}.png`
       );
