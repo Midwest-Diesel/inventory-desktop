@@ -1,4 +1,3 @@
-import { CURRENT_WEEK_FILENAME } from "@/components/handwrittens/modals/ShippingListModal";
 import { ask, invoke } from "../config/tauri";
 import { addCore } from "../services/coresService";
 import { addHandwrittenItem, addHandwrittenItemChild, setAllHandwrittenItemDates } from "../services/handwrittensService";
@@ -10,6 +9,9 @@ interface TakeoffRes {
   parentItem: HandwrittenItem | null
 }
 
+
+export const CURRENT_WEEK_FILENAME = import.meta.env.PROD ? 'Shipping List (Current Week).xlsx' : 'shipping_list_current_week.xlsx';
+export const NEXT_WEEK_FILENAME = import.meta.env.PROD ? 'Shipping List (Next Week).xlsx' : 'shipping_list_next_week.xlsx';
 
 export const paymentTypes = ['Net 30', 'Wire Transfer', 'EBPP - Secure', 'Visa', 'Mastercard', 'AMEX', 'Discover', 'Comchek', 'T-Check', 'Check', 'Cash', 'Card on File', 'Net 10', 'No Charge'].sort();
 

@@ -35,6 +35,7 @@ export default function PurchaseOrderDetails({ poData, handleReceiveItem, setIsE
 
   const handlePrint = async () => {
     if (!await confirm('Print purchase order?')) return;
+    const total = poData?.poItems.reduce((acc, item) => acc + ((item.unitPrice ?? 0) * (item.qty ?? 0)), 0);
     const args = {
       poNum: `UP${poData?.poNum}`,
       vendor: poData?.purchasedFrom ?? '',
@@ -57,7 +58,8 @@ export default function PurchaseOrderDetails({ poData, handleReceiveItem, setIsE
           price: formatCurrency(item.unitPrice) || '$0.00',
           total: formatCurrency((item.unitPrice ?? 0) * (item.qty ?? 0)) || '$0.00'
         };
-      }) || []
+      }) || [],
+      total: formatCurrency(total)
     };
     addToQue('po', 'print_po', args, '816px', '1090px');
     printQue();

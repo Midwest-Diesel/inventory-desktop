@@ -66,31 +66,32 @@ test.describe('Create addon and add to inventory', () => {
   test('Autofill stock number', async ({ page }) => {
     await newAddon(page, '4700', 1);
     const engineNum = page.getByTestId('engine-num').first();
-    const stock = page.getByTestId('stock-num').first();
+    const stockNum = page.getByTestId('stock-num').first();
     await engineNum.fill('7259');
     await engineNum.blur();
 
-    await expect(stock).toHaveValue('INJ7259');
+    await expect(stockNum).toHaveValue('INJ7259');
   });
 
   test('Autofill stock number with engine number 0', async ({ page }) => {
     await newAddon(page, '4700', 1);
     const engineNum = page.getByTestId('engine-num').first();
-    const stock = page.getByTestId('stock-num').first();
+    const stockNum = page.getByTestId('stock-num').first();
+    await page.waitForTimeout(1000);
     await engineNum.fill('0');
     await engineNum.blur();
 
-    await expect(stock).toHaveValue('UP12616', { timeout: 5000 });
+    await expect(stockNum).toHaveValue('UP12616', { timeout: 5000 });
   });
 
   test('Autofill stock number with engine number 1', async ({ page }) => {
     await newAddon(page, '4700', 1);
     const engineNum = page.getByTestId('engine-num').first();
-    const stock = page.getByTestId('stock-num').first();
+    const stockNum = page.getByTestId('stock-num').first();
     await engineNum.fill('1');
     await engineNum.blur();
 
-    await expect(stock).toHaveValue(formatDateStockNum('INJ', 'A'));
+    await expect(stockNum).toHaveValue(formatDateStockNum('INJ', 'A'));
   });
 
   test('Get next stock number suffix with engine number 1', async ({ page }) => {

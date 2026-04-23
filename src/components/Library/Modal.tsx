@@ -56,7 +56,7 @@ export default function Modal({ children, className = '', variant = [], title, c
   return (
     <>
       {open &&
-        <div className="modal__bg" ref={ref} style={{ zIndex: '40', position: 'absolute', top: 0, left: 0, height: '100vh' }}>
+        <div className="modal__bg" ref={ref} style={{ zIndex: '40', position: 'fixed', top: 0, left: 0, height: '100%' }}>
           <dialog
             open={open}
             style={{ width, height }}

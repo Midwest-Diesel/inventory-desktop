@@ -29,9 +29,12 @@ const addWarranty = async (page: Page, checkboxIndexes: number[], customWarranty
   const dialog = page.getByTestId('select-handwritten-dialog');
   await dialog.waitFor();
 
+  const warrantySection = dialog.locator('.checkbox-wrapper-4');
+  await expect(warrantySection.first()).toBeVisible();
+  const checkboxes = warrantySection.locator('.cbx');
+
   for (const index of checkboxIndexes) {
-    const checkbox = dialog.locator('.checkbox-wrapper-4 .cbx').nth(index);
-    await checkbox.click();
+    await checkboxes.nth(index).click();
   }
   if (customWarranty) await page.getByTestId('warranty').fill(customWarranty);
   

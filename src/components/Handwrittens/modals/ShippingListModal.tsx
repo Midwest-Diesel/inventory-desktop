@@ -9,6 +9,7 @@ import Loading from "@/components/library/Loading";
 import { getHandwrittenById } from "@/scripts/services/handwrittensService";
 import { getImagesFromPart } from "@/scripts/services/imagesService";
 import Modal from "@/components/library/Modal";
+import { CURRENT_WEEK_FILENAME, NEXT_WEEK_FILENAME } from "@/scripts/logic/handwrittens";
 
 interface Props {
   open?: boolean
@@ -19,9 +20,6 @@ interface Props {
   newShippingListRow: Handwritten | null
 }
 
-
-export const CURRENT_WEEK_FILENAME = import.meta.env.PROD ? 'Shipping List (Current Week).xlsx' : 'shipping_list_current_week.xlsx';
-const NEXT_WEEK_FILENAME = import.meta.env.PROD ? 'Shipping List (Next Week).xlsx' : 'shipping_list_next_week.xlsx';
 
 export default function ShippingListModal({ open, onNext, onPrev, handwrittenItems, newShippingListRow }: Props) {
   const [handwritten, setHandwritten] = useState<Handwritten | null>(null);

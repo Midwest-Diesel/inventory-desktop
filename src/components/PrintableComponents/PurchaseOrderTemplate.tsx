@@ -21,7 +21,8 @@ interface Props {
       desc: string
       price: string
       total: string
-    }[]
+    }[],
+    total: string
   }
 }
 
@@ -86,6 +87,7 @@ export default function PurchaseOrderTemplate({ data }: Props) {
           })}
         </tbody>
       </Table>
+      <p><strong>Total:</strong> { data.total }</p>
     </div>
   );
 }
