@@ -140,6 +140,7 @@ type Quote = {
   children: Quote[]
   piggybackQuotes: PiggybackQuote[]
   part: Part | null
+  handwrittenItemId: number | null
 };
 
 interface EngineQuote extends Quote {

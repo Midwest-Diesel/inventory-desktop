@@ -5,7 +5,7 @@ import Table from "@/components/library/Table";
 import { useToast } from "@/hooks/useToast";
 import { userAtom } from "@/scripts/atoms/state";
 import { getSomeUnsoldItems } from "@/scripts/services/handwrittensService";
-import { addQuote, getSomeUnsoldQuotesByPartNum, toggleQuoteSold } from "@/scripts/services/quotesService";
+import { addQuote, editQuote, getSomeUnsoldQuotesByPartNum, toggleQuoteSold } from "@/scripts/services/quotesService";
 import { formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
 import { useQuery } from "@tanstack/react-query";
 import { useAtom } from "jotai";
@@ -27,7 +27,7 @@ export default function SalesEndOfDayDialog({ open, setOpen }: Props) {
   const [itemsPage, setItemsPage] = useState(1);
   const [quotesPage, setQuotesPage] = useState(1);
 
-  const { data: items = { pageCount: 0, rows: [] } } = useQuery<{ pageCount: number, rows: SalesEndOfDayItem[] }>({
+  const { data: items = { pageCount: 0, rows: [] }, refetch: refetchItems } = useQuery<{ pageCount: number, rows: SalesEndOfDayItem[] }>({
     queryKey: ['items', open, itemsPage],
     queryFn: () => getSomeUnsoldItems(itemsPage, LIMIT, user.id),
     enabled: !!open
@@ -54,8 +54,9 @@ export default function SalesEndOfDayDialog({ open, setOpen }: Props) {
   };
 
   const handleMarkQuoteSold = async (quote: Quote) => {
-    await toggleQuoteSold(quote.id, true);
+    await editQuote({ ...quote, sale: true, handwrittenItemId: selectedItem?.id } as Quote);
     refetchQuotes();
+    refetchItems();
     setSelectedItem(null);
   };
 
@@ -75,11 +76,14 @@ export default function SalesEndOfDayDialog({ open, setOpen }: Props) {
       rating: selectedItem?.part?.rating ?? 0,
       email: selectedItem?.customer.email,
       salesmanId: user.id,
-      partId: selectedItem?.part?.id
+      partId: selectedItem?.part?.id,
+      handwrittenItemId: selectedItem?.id
     };
     const id = await addQuote(quote);
     await toggleQuoteSold(id, true);
     refetchQuotes();
+    refetchItems();
+    setSelectedItem(null);
     toast.sendToast('Created quote', 'success');
   };
 
