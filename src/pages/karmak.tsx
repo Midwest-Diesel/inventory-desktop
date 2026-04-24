@@ -13,14 +13,29 @@ import { accountingPageFilterAtom } from "@/scripts/atoms/state";
 import { useQuery } from "@tanstack/react-query";
 import { getFastTrackInventory, getNetcomInventory } from "@/scripts/services/partsService";
 import { offServerEvent, onServerEvent } from "@/scripts/config/websockets";
+import { usePrintQue } from "@/hooks/usePrintQue";
+import { getYesterdaysQuotesBySalesman } from "@/scripts/services/quotesService";
+import { getAllUsers } from "@/scripts/services/userService";
+import { chunkArray } from "@/scripts/tools/utils";
 
 type AccountingStatus = '' | 'all' | 'IN PROCESS' | 'COMPLETE';
-const LIMIT = 60;
 
+
+const LIMIT = 60;
+const MAX_ROWS = 17;
 
 export default function Karmak() {
   const [currentStatus, setCurrentStatus] = useAtom(accountingPageFilterAtom);
   const [currentPage, setCurrentPage] = useState(1);
+  const { addToQue, printQue } = usePrintQue();
+
+  const { data: salesmen = [] } = useQuery<User[]>({
+    queryKey: ['salesmen'],
+    queryFn: async () => {
+      const res = await getAllUsers();
+      return res.filter((user) => user.subtype === 'sales');
+    }
+  });
 
   useEffect(() => {
     const refreshAccountingPage = () => refetch();
@@ -69,6 +84,7 @@ export default function Karmak() {
     await invoke('move_queue_to_archives', { args: { year, month, day }});
     await handleFastTrack();
     await handleNetcom();
+    await printQuoteList();
     alert('End of day complete');
   };
 
@@ -80,6 +96,40 @@ export default function Karmak() {
   const handleNetcom = async () => {
     const inventory = await getNetcomInventory();
     await invoke('email_netcom_inventory', { inventory });
+  };
+
+  const printQuoteList = async () => {
+    for (const salesman of salesmen) {
+      const date = new Date();
+      date.setDate(date.getDate() - 1);
+      const quotes = await getYesterdaysQuotesBySalesman(salesman.id);
+      queueQuotes(salesman.initials, formatDate(date), quotes);
+    }
+    printQue();
+  };
+
+  const queueQuotes = (salesmanInitials: string, dateLabel: string, quotes: Quote[]) => {
+    const chunks = chunkArray(quotes, MAX_ROWS);
+    const total = quotes.reduce((acc, quote) => acc + Number(quote.price), 0);
+
+    let i = 0;
+    for (const chunk of chunks) {
+      addToQue(
+        'quotesList',
+        'print_quotes_list',
+        {
+          salesman: salesmanInitials,
+          date: dateLabel,
+          quotes: chunk,
+          total
+        },
+        '1100px',
+        '900px',
+        null,
+        `quotes_list_${salesmanInitials}_${i}.png`
+      );
+      i++;
+    }
   };
 
 
