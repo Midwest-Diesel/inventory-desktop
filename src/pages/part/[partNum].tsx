@@ -330,6 +330,10 @@ export default function PartDetails() {
                       <td>{ part.condition }</td>
                     </tr>
                     <tr>
+                      <th>Fast Track Status</th>
+                      <td>{ part.fastTrackStatus }</td>
+                    </tr>
+                    <tr>
                       <th>Rating</th>
                       <td>{ part.rating }</td>
                     </tr>

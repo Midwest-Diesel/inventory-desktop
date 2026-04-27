@@ -42,6 +42,7 @@ export default function EditPartDetails({ part, setPart, setIsEditingPart, partC
   const [manufacturer, setManufacturer] = useState<string>(part.manufacturer ?? '');
   const [purchasedFrom, setPurchasedFrom] = useState<string>(part.purchasedFrom ?? '');
   const [condition, setCondition] = useState<string>(part.condition ?? '');
+  const [fastTrackStatus, setFastTrackStatus] = useState<string>(part.fastTrackStatus ?? '');
   const [rating, setRating] = useState<number>(part.rating ?? 0);
   const [entryDate, setEntryDate] = useState<Date | null>(part.entryDate);
   const [reconDate, setReconDate] = useState<Date | null>(part.reconDate);
@@ -93,6 +94,7 @@ export default function EditPartDetails({ part, setPart, setIsEditingPart, partC
       manufacturer,
       purchasedFrom,
       condition,
+      fastTrackStatus,
       rating: Number(rating),
       entryDate,
       reconDate,
@@ -410,6 +412,16 @@ export default function EditPartDetails({ part, setPart, setIsEditingPart, partC
                       <option value="New">New</option>
                       <option value="Reconditioned">Reconditioned</option>
                     </Select>
+                  </td>
+                </tr>
+                <tr>
+                  <th>Fast Track Status</th>
+                  <td>
+                    <Input
+                      variant={['thin', 'label-space-between', 'label-full-width', 'label-bold']}
+                      value={fastTrackStatus}
+                      onChange={(e) => setFastTrackStatus(e.target.value)}
+                    />
                   </td>
                 </tr>
                 <tr>
