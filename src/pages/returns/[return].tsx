@@ -8,19 +8,20 @@ import Table from "@/components/library/Table";
 import ReturnItemsTable from "@/components/returns/ReturnItemsTable";
 import { userAtom } from "@/scripts/atoms/state";
 import { confirm } from "@/scripts/config/tauri";
-import { deleteReturn, getReturnById, issueReturnCredit } from "@/scripts/services/returnsService";
+import { addReturnItem, deleteReturn, getReturnById, issueReturnCredit } from "@/scripts/services/returnsService";
 import { formatCurrency, formatDate, formatPhone } from "@/scripts/tools/stringUtils";
-import { setTitle } from "@/scripts/tools/utils";
 import { useAtom } from "jotai";
 import Link from "@/components/library/Link";
 import { useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavState } from "@/hooks/useNavState";
 import { ask } from "@/scripts/config/tauri";
 import { usePrintQue } from "@/hooks/usePrintQue";
 import { addHandwritten, addHandwrittenItem, getHandwrittenById } from "@/scripts/services/handwrittensService";
 import { deleteCoreByItemId } from "@/scripts/services/coresService";
 import { prompt } from "@/components/library/Prompt";
+import { useQuery } from "@tanstack/react-query";
+import AddReturnItemDialog from "@/components/returns/dialogs/AddReturnItemDialog";
 
 
 export default function Return() {
@@ -28,22 +29,23 @@ export default function Return() {
   const { addToQue, printQue } = usePrintQue();
   const params = useParams();
   const [user] = useAtom<User>(userAtom);
-  const [returnData, setReturnData] = useState<Return | null>(null);
+  const [addItemDialogOpen, setAddItemDialogOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      if (!params) return;
-      setLoading(true);
-      const res = await getReturnById(Number(params.return));
-      if (!res) return;
-      setTitle(`${res.id} Return`);
-      setReturnData(res);
-      setLoading(false);
-    };
-    fetchData();
-  }, [params]);
+  const { data: returnData, isFetching, refetch } = useQuery<Return | null>({
+    queryKey: ['returnData', params],
+    queryFn: () => getReturnById(Number(params.return))
+  });
+
+  const { data: handwrittenItems = [] } = useQuery<HandwrittenItem[]>({
+    queryKey: ['handwrittenItems', returnData?.handwrittenId],
+    queryFn: async () => {
+      if (!returnData || !returnData.handwrittenId) return [];
+      const res = await getHandwrittenById(returnData.handwrittenId);
+      return res?.handwrittenItems ?? [];
+    },
+    enabled: !!returnData?.handwrittenId
+  });
 
   const onClickDelete = async () => {
     if (!returnData?.id || await prompt('Type "confirm" to delete this return') !== 'confirm') return;
@@ -60,7 +62,7 @@ export default function Return() {
     }
 
     await issueReturnCredit(returnData.id);
-    setReturnData({ ...returnData, creditIssued: new Date() });
+    refetch();
 
     const handwritten = await getHandwrittenById(Number(returnData.handwrittenId));
     for (const item of handwritten?.handwrittenItems ?? []) {
@@ -110,6 +112,33 @@ export default function Return() {
     await push('Handwrittens', `/handwrittens`);
   };
 
+  const onSubmitAddItems = async (items: HandwrittenItem[], qtyList: number[]) => {
+    if (!returnData) return;
+    if (items.length === 0) {
+      alert('No handwritten items');
+      return;
+    }
+    
+    for (let i = 0; i < items.length; i++) {
+      const item: ReturnItem = {
+        returnId: returnData.id,
+        qty: qtyList[i],
+        partNum: items[i].partNum,
+        desc: items[i].desc,
+        cost: items[i].cost,
+        unitPrice: items[i].unitPrice,
+        stockNum: items[i].stockNum,
+        isReturnReceived: false,
+        isReturnAsDescribed: false,
+        isReturnPutAway: false,
+        notes: null
+      } as any;
+      await addReturnItem(item);
+    }
+
+    refetch();
+  };
+
   const onClickPrint = async () => {
     if (!await confirm('Print return?')) return;
     const args = {
@@ -149,14 +178,22 @@ export default function Return() {
   };
 
 
-  if (loading) return <Layout title="Return Details"><Loading /></Layout>;
+  if (isFetching) return <Layout title="Return Details"><Loading /></Layout>;
   if (!returnData) throw new Error('Failed to fetch return data');
   
   return (
     <Layout title="Return Details">
+      <AddReturnItemDialog
+        open={addItemDialogOpen}
+        setOpen={setAddItemDialogOpen}
+        items={handwrittenItems}
+        returnItems={returnData.returnItems}
+        onSubmit={onSubmitAddItems}
+      />
+
       <div className="return-details">
         {isEditing ?
-          <EditReturnDetails returnData={returnData} setReturn={setReturnData} setIsEditing={setIsEditing} />
+          <EditReturnDetails returnData={returnData} refetch={refetch} setIsEditing={setIsEditing} />
           :
           <>
             <div className="return-details__header">
@@ -189,6 +226,7 @@ export default function Return() {
 
             <div className="return-details__top-bar">
               <Button onClick={onClickCreditIssued} disabled={Boolean(returnData.creditIssued)} data-testid="credit-issued-btn">Credit Issued</Button>
+              <Button onClick={() => setAddItemDialogOpen(true)}>Add Items</Button>
               <Button onClick={() => push('Warranty', `/warranties/${returnData.warrantyId}`)} disabled={!returnData.warrantyId}>Warranty</Button>
               <Button onClick={onClickPrint}>Print</Button>
             </div>
@@ -325,7 +363,7 @@ export default function Return() {
               </GridItem>
 
               <GridItem variant={['no-style']} colSpan={12}>
-                <ReturnItemsTable returnItems={returnData.returnItems} returnData={returnData} setReturnData={setReturnData}  />
+                <ReturnItemsTable returnItems={returnData.returnItems} returnData={returnData} refetch={refetch}  />
               </GridItem>
             </Grid>
           </>

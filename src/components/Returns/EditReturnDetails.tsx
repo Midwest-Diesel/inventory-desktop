@@ -1,4 +1,4 @@
-import { editReturn, editReturnItem, getReturnById } from "@/scripts/services/returnsService";
+import { editReturn, editReturnItem } from "@/scripts/services/returnsService";
 import { FormEvent, useState } from "react";
 import Input from "../library/Input";
 import Button from "../library/Button";
@@ -17,12 +17,12 @@ import CustomerDropdown from "../library/dropdown/CustomerDropdown";
 
 interface Props {
   returnData: Return
-  setReturn: (returnData: Return) => void
+  refetch: () => void
   setIsEditing: (value: boolean) => void
 }
 
 
-export default function EditReturnDetails({ returnData, setReturn, setIsEditing }: Props) {
+export default function EditReturnDetails({ returnData, refetch, setIsEditing }: Props) {
   const [company, setCompany] = useState<string>(returnData.customer?.company ?? '');
   const [poNum, setPoNum] = useState<string>(returnData.poNum ?? '');
   const [payment, setPayment] = useState<string>(returnData.payment ?? '');
@@ -89,9 +89,7 @@ export default function EditReturnDetails({ returnData, setReturn, setIsEditing 
       await editReturnItem(item);
     }
 
-    const res = await getReturnById(returnData.id);
-    if (!res) return;
-    setReturn(res);
+    refetch();
     setIsEditing(false);
   };
 

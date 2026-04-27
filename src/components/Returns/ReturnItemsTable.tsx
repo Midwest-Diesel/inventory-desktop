@@ -13,11 +13,11 @@ interface Props {
   className?: string
   returnItems: ReturnItem[]
   returnData: Return
-  setReturnData: (returns: Return) => void
+  refetch: () => void
 }
 
 
-export default function ReturnItemsTable({ className, returnItems, returnData, setReturnData }: Props) {
+export default function ReturnItemsTable({ className, returnItems, returnData, refetch }: Props) {
   const { push } = useNavState();
   const [stockNumDialogOpen, setStockNumDialogOpen] = useState(false);
   const [returnItemChildren, setReturnItemChildren] = useState<ReturnItemChild[]>([]);
@@ -25,26 +25,17 @@ export default function ReturnItemsTable({ className, returnItems, returnData, s
 
   const handleToggleIsReceived = async (part: ReturnItem, value: boolean) => {
     await editReturnItem({ ...part, isReturnReceived: value });
-    setReturnData({ ...returnData, returnItems: returnData.returnItems.map((item) => {
-      if (item.id === part.id) return { ...item, isReturnReceived: value };
-      return item;
-    })});
+    refetch();
   };
 
   const handleToggleAsDescribed = async (part: ReturnItem, value: boolean) => {
     await editReturnItem({ ...part, isReturnAsDescribed: value });
-    setReturnData({ ...returnData, returnItems: returnData.returnItems.map((item) => {
-      if (item.id === part.id) return { ...item, isReturnAsDescribed: value };
-      return item;
-    })});
+    refetch();
   };
 
   const handleTogglePutAway = async (part: ReturnItem, value: boolean) => {
     await editReturnItem({ ...part, isReturnPutAway: value });
-    setReturnData({ ...returnData, returnItems: returnData.returnItems.map((item) => {
-      if (item.id === part.id) return { ...item, isReturnPutAway: value };
-      return item;
-    })});
+    refetch();
   };
 
   const handleOpenPart = async (item: ReturnItem) => {
