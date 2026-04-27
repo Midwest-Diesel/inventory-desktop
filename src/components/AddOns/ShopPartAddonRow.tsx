@@ -292,11 +292,16 @@ export default function ShopPartAddonRow({ addOn, addOns, setAddons, handleDupli
   );
 
   const handlePrint = async () => {
+    if (Number(addOn.qty) <= 0) {
+      alert('Missing qty');
+      return;
+    }
     if (!addOn.stockNum) {
       alert('Missing stock number');
       return;
     }
     if (await checkDuplicateStockNum(addOn.stockNum)) return;
+    
     await onSave();
     if (!isBlankAddOn(addOns[0])) {
       const newRow = await addAddOn();
