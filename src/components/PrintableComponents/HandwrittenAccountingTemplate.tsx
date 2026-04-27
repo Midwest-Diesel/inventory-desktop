@@ -128,15 +128,21 @@ export default function HandwrittenAccountingTemplate({ data }: Props) {
         </div>
       </div>
 
-      <div className="handwritten-acct-template__checkboxes">
-        <strong>BLIND <img src={data.blind ? '/images/icons/cbx-filled.png' : '/images/icons/cbx-empty.png'} alt="" width={10} height={10} /></strong>
-        <strong>NPI <img src={data.npi ? '/images/icons/cbx-filled.png' : '/images/icons/cbx-empty.png'} alt="" width={10} height={10} /></strong>
-        <strong>SETUP <img src={data.setup ? '/images/icons/cbx-filled.png' : '/images/icons/cbx-empty.png'} alt="" width={10} height={10} /></strong>
-      </div>
-      <div className="handwritten-acct-template__checkboxes">
-        <strong>COLLECT <img src={data.collect ? '/images/icons/cbx-filled.png' : '/images/icons/cbx-empty.png'} alt="" width={10} height={10} /></strong>
-        <strong>3RD PARTY BILL <img src={data.thirdParty ? '/images/icons/cbx-filled.png' : '/images/icons/cbx-empty.png'} alt="" width={10} height={10} /></strong>
-        <><strong>ACCOUNT #</strong> { data.accountNum }</>
+      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <div>
+          <div className="handwritten-acct-template__checkboxes">
+            <strong>BLIND <img src={data.blind ? '/images/icons/cbx-filled.png' : '/images/icons/cbx-empty.png'} alt="" width={10} height={10} /></strong>
+            <strong>NPI <img src={data.npi ? '/images/icons/cbx-filled.png' : '/images/icons/cbx-empty.png'} alt="" width={10} height={10} /></strong>
+            <strong>SETUP <img src={data.setup ? '/images/icons/cbx-filled.png' : '/images/icons/cbx-empty.png'} alt="" width={10} height={10} /></strong>
+          </div>
+          <div className="handwritten-acct-template__checkboxes">
+            <strong>COLLECT <img src={data.collect ? '/images/icons/cbx-filled.png' : '/images/icons/cbx-empty.png'} alt="" width={10} height={10} /></strong>
+            <strong>3RD PARTY BILL <img src={data.thirdParty ? '/images/icons/cbx-filled.png' : '/images/icons/cbx-empty.png'} alt="" width={10} height={10} /></strong>
+            <><strong>ACCOUNT #</strong> { data.accountNum }</>
+          </div>
+        </div>
+        
+        { (data.blind || data.npi) && <h1 style={{ fontSize: 'var(--font-xxl)', margin: '-2rem 1rem 0 0' }}>BLIND</h1> }
       </div>
 
       <Table style={{ marginTop: '0.3rem' }} variant={['plain']}>

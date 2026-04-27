@@ -658,10 +658,16 @@ export default function EditHandwrittenDetails({
   };
 
   const onPrintHandwritten = async () => {
+    const res = await getHandwrittenById(handwritten.id);
+    if (!res) {
+      alert('Failed to fetch handwritten during printing.');
+      return;
+    }
+
     const newCustomer = await getCustomerByName(company);
     const user = await getUserById(soldBy);
     const newInvoice = {
-      id: handwritten.id,
+      id: res.id,
       shipViaId,
       handwrittenItems,
       customer: newCustomer,
@@ -691,8 +697,8 @@ export default function EditHandwrittenDetails({
       invoiceStatus,
       accountingStatus,
       shippingStatus,
-      cores: handwritten.cores,
-      coreReturns: handwritten.coreReturns,
+      cores: res.cores,
+      coreReturns: res.coreReturns,
       orderNotes,
       shippingNotes,
       mp: Number(mp),
@@ -700,8 +706,8 @@ export default function EditHandwrittenDetails({
       br: Number(br),
       fl: Number(fl),
       isTaxable,
-      isBlindShipment,
-      isNoPriceInvoice,
+      isBlindShipment: res.isBlindShipment,
+      isNoPriceInvoice: res.isNoPriceInvoice,
       isThirdParty,
       isCollect,
       isSetup,
@@ -709,7 +715,7 @@ export default function EditHandwrittenDetails({
       thirdPartyAccount,
       soldById: soldBy,
       soldBy: user?.initials,
-      createdBy: handwritten.createdBy
+      createdBy: res.createdBy
     } as any;
     const hasCore = handwrittenItems.some((item) => item.location === 'CORE DEPOSIT');
     await printHandwritten(hasCore, newInvoice);
