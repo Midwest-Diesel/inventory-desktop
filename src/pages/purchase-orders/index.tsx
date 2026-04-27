@@ -58,6 +58,10 @@ export default function PurchaseOrders() {
     await refetch();
   };
 
+  const clearSearch = () => {
+    setPageState((prev) => ({ ...prev, search: null, currentPage: 1 }));
+  };
+
 
   return (
     <Layout title="Purchase Orders">
@@ -67,6 +71,7 @@ export default function PurchaseOrders() {
         <div className="purchase-orders-page">
           <h1>Purchase Orders</h1>
           <div className="purchase-orders-page__top-buttons">
+            { search && <Button onClick={clearSearch}>Clear Search</Button> }
             <Button onClick={() => setShowSearchDialog(true)}>Search</Button>
             <Button onClick={handleNewPurchaseOrder} data-testid="new-btn">New</Button>
             <Button
