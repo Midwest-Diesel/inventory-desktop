@@ -33,7 +33,6 @@
 @use 'components/handwritten-details';
 @use 'components/handwrittens';
 @use 'components/image-upload';
-@use 'components/index';
 @use 'components/invoice-details';
 @use 'components/invoices';
 @use 'components/karmak';
@@ -80,3 +79,5 @@
 @use 'components/printable-components/quotes-list';
 @use 'components/printable-components/proforma';
 @use 'components/part-search-tabs';
+@use 'components/dashboard';
+@use 'globals';
