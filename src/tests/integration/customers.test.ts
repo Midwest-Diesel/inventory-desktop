@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, beforeAll } from 'vitest';
 import { resetDb } from '../resetDatabase';
 import { setApiBaseUrl } from '@/scripts/config/axios';
-import { loginUser } from '@/scripts/services/userService';
+import { loginUser } from '@/scripts/services/accountService';
 import { addCustomer, customerMerge, getCustomerById, getCustomerByName, searchCustomers } from '@/scripts/services/customerService';
 import { getHandwrittenById } from '@/scripts/services/handwrittensService';
 

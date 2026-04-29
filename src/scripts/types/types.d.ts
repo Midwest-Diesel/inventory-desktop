@@ -375,7 +375,7 @@ type AddOn = {
   isPoOpened: boolean
   prefix: string | null
   userEditing: { id: number, username: string } | null
-  invoiceNum: string
+  invoiceNum: string | null
   ebayListing: boolean
 };
 

@@ -20,7 +20,7 @@ import ChangeCustomerInfoModal from "./modals/ChangeCustomerInfoModal";
 import { addTrackingNumber, deleteTrackingNumber, editTrackingNumber } from "@/scripts/services/trackingNumbersService";
 import FreightCarrierSelect from "../library/select/FreightCarrierSelect";
 import { getFreightCarrierById } from "@/scripts/services/freightCarriersService";
-import { getAllUsers, getUserById } from "@/scripts/services/userService";
+import { getAllUsers, getUserById } from "@/scripts/services/accountService";
 import CreditCardBlock from "./CreditCardBlock";
 import DropdownOption from "../library/dropdown/DropdownOption";
 import { arrayOfObjectsMatch } from "@/scripts/tools/utils";

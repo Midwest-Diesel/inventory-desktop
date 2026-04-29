@@ -32,7 +32,7 @@ import ModalList from "../library/ModalList";
 import { offServerEvent, onServerEvent } from "@/scripts/config/websockets";
 import { chunkArray } from "@/scripts/tools/utils";
 import { usePdfQue } from "@/hooks/usePdfQue";
-import { getUserById } from "@/scripts/services/userService";
+import { getUserById } from "@/scripts/services/accountService";
 import { useToast } from "@/hooks/useToast";
 
 interface Props {

@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, beforeAll } from 'vitest';
 import { resetDb } from '../resetDatabase';
 import { setApiBaseUrl } from '@/scripts/config/axios';
-import { loginUser } from '@/scripts/services/userService';
+import { loginUser } from '@/scripts/services/accountService';
 import { addBlankPurchaseOrder, addPurchaseOrderItem, getPurchaseOrderById, getSomePurchaseOrders } from '@/scripts/services/purchaseOrderService';
 
 beforeAll(async () => {

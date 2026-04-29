@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, beforeAll } from 'vitest';
 import { resetDb } from '../resetDatabase';
 import { addAlert, detectAlerts, getAlerts } from '@/scripts/services/alertsService';
 import { setApiBaseUrl } from '@/scripts/config/axios';
-import { loginUser } from '@/scripts/services/userService';
+import { loginUser } from '@/scripts/services/accountService';
 
 beforeAll(async () => {
   setApiBaseUrl('http://localhost:8001');

@@ -15,7 +15,7 @@ import { getFastTrackInventory, getNetcomInventory } from "@/scripts/services/pa
 import { offServerEvent, onServerEvent } from "@/scripts/config/websockets";
 import { usePrintQue } from "@/hooks/usePrintQue";
 import { getYesterdaysQuotesBySalesman } from "@/scripts/services/quotesService";
-import { getAllUsers } from "@/scripts/services/userService";
+import { getAllUsers } from "@/scripts/services/accountService";
 import { chunkArray } from "@/scripts/tools/utils";
 
 type AccountingStatus = '' | 'all' | 'IN PROCESS' | 'COMPLETE';

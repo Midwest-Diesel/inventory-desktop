@@ -12,7 +12,7 @@ import { ask, invoke } from "@/scripts/config/tauri";
 import TextArea from "../library/TextArea";
 import Select from "../library/select/Select";
 import { getVendorByName } from "@/scripts/services/vendorsService";
-import { getUserById } from "@/scripts/services/userService";
+import { getUserById } from "@/scripts/services/accountService";
 import VendorDropdown from "../library/dropdown/VendorDropdown";
 
 interface Props {

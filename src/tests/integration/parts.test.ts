@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, beforeAll } from 'vitest';
 import { setApiBaseUrl } from '@/scripts/config/axios';
-import { loginUser } from '@/scripts/services/userService';
+import { loginUser } from '@/scripts/services/accountService';
 import { addPart, editPartsInfoPrefix, editWeightDims, getPartInfoByPartNum, getPartsByStockNum, massLocationChange, searchParts } from '@/scripts/services/partsService';
 import { addAltParts, getNextUP, removeAltParts } from '@/scripts/logic/parts';
 import { resetDb } from '../resetDatabase';

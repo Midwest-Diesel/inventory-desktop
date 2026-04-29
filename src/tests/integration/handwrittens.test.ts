@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, beforeAll } from 'vitest';
 import { resetDb } from '../resetDatabase';
 import { setApiBaseUrl } from '@/scripts/config/axios';
-import { loginUser } from '@/scripts/services/userService';
+import { loginUser } from '@/scripts/services/accountService';
 import { addHandwritten, addHandwrittenItemChild, editHandwritten, editHandwrittenItemTakeoffState, getHandwrittenById, getHandwrittenItemById, getSomeHandwrittens, searchHandwrittens } from '@/scripts/services/handwrittensService';
 import { addQtyInOut } from '@/scripts/logic/handwrittens';
 

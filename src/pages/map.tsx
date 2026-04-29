@@ -8,7 +8,7 @@ import { useAtom } from "jotai";
 import { userAtom } from "@/scripts/atoms/state";
 import { formatDate } from "@/scripts/tools/stringUtils";
 import { dateDiffInDays } from "@/scripts/tools/utils";
-import { getAllUsers } from "@/scripts/services/userService";
+import { getAllUsers } from "@/scripts/services/accountService";
 import Input from "@/components/library/Input";
 import Select from "@/components/library/select/Select";
 import Pagination from "@/components/library/Pagination";

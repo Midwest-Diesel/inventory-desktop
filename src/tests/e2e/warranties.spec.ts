@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, Page } from '@playwright/test';
 import { resetDb } from '../resetDatabase';
 import { goto } from '../utils';
 
@@ -13,9 +13,13 @@ test.beforeEach(async ({ page }) => {
 
 
 test.describe('Warranties', () => {
-  test('Display warranties', async ({ page }) => {
-    await page.waitForSelector('table tr');
-    const tableLength = (await page.$$('table tr')).length;
-    expect(tableLength).toBeGreaterThan(0);
+  test('Create warranty', async ({ page }) => {
+    const oldWarranty = Number(await page.getByTestId('warranty-link').first().textContent());
+    await page.getByTestId('new-btn').click();
+    await page.waitForLoadState('networkidle');
+    await page.getByTestId('warranty-link').first().click();
+
+    const newWarranty = Number(await page.getByTestId('warranty-link').first().textContent());    
+    expect(newWarranty).toEqual(oldWarranty + 1);
   });
 });

@@ -104,3 +104,8 @@ VALUES
 INSERT INTO "purchaseOrders" ("date", "salesmanId", "poNum")
 VALUES
   (CURRENT_DATE, 1, 123456);
+
+-- WARRANTIES
+INSERT INTO "warranties" ("completed", "completedDate", "customerId", "date", "handwrittenId", "invoiceDate", "invoiceId", "legacyId", "salesmanId", "vendor", "vendorWarrantyNum")
+VALUES
+  (true, '2012-07-12', 12795, NULL, 30290, '2012-05-08', 31199, 28, 8, 'Diesel Controls Inc', NULL);

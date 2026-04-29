@@ -83,7 +83,7 @@ export default function Warranties() {
           <h1>Warranties</h1>
           <div className="warranties__top-buttons">
             <Button onClick={() => setWarrantySearchOpen(true)}>Search</Button>
-            <Button onClick={handleNewWarranty}>New</Button>
+            <Button onClick={handleNewWarranty} data-testid="new-btn">New</Button>
           </div>
 
           { isFetching && <Loading /> }
@@ -106,7 +106,11 @@ export default function Warranties() {
                   <tbody>
                     {warranties.rows.map((war) => {
                       return (
-                        <tr key={war.id} onClick={() => setFocusedWarranty(war)} style={ focusedWarranty && war.id === focusedWarranty.id ? { border: 'solid 3px var(--yellow-2)' } : {} }>
+                        <tr
+                          style={ focusedWarranty && war.id === focusedWarranty.id ? { border: 'solid 3px var(--yellow-2)' } : {} }
+                          key={war.id}
+                          onClick={() => setFocusedWarranty(war)}
+                        >
                           <td><Link href={`/warranties/${war.id}`} data-testid="warranty-link">{ war.id }</Link></td>
                           <td>{ formatDate(war.date) }</td>
                           <td>{ war.customer && war.customer.company }</td>
@@ -115,7 +119,7 @@ export default function Warranties() {
                           <td className="cbx-td">
                             <Checkbox
                               checked={war.completed}
-                              onChange={(e: any) => handleChangeStatus(war, e.target.checked)}
+                              onChange={(e) => handleChangeStatus(war, e.target.checked)}
                             />
                           </td>
                         </tr>

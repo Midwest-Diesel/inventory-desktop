@@ -2,7 +2,7 @@ import { userAtom, alertsAtom, tabsAtom, tooltipAtom } from "@/scripts/atoms/sta
 import { useAtom } from "jotai";
 import { useEffect, useState } from "react";
 import Login from "./Login";
-import { getUser } from "@/scripts/services/userService";
+import { getUser } from "@/scripts/services/accountService";
 import { getAlerts } from "@/scripts/services/alertsService";
 import { checkUpdate } from '@tauri-apps/api/updater';
 import UpdateModal from "./modals/UpdateModal";

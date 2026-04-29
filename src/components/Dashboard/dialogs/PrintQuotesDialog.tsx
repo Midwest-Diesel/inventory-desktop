@@ -3,7 +3,7 @@ import Dialog from "@/components/library/Dialog";
 import Input from "@/components/library/Input";
 import { usePrintQue } from "@/hooks/usePrintQue";
 import { getLastWeeksQuotesBySalesman, getQuotesBySalesmanDateRange, getYesterdaysQuotesBySalesman } from "@/scripts/services/quotesService";
-import { getAllUsers } from "@/scripts/services/userService";
+import { getAllUsers } from "@/scripts/services/accountService";
 import { formatDate, parseDateInputValue } from "@/scripts/tools/stringUtils";
 import { chunkArray } from "@/scripts/tools/utils";
 import { useQuery } from "@tanstack/react-query";
