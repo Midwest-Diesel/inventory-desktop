@@ -284,6 +284,7 @@ test.describe('Takeoffs', () => {
   test('Create date code stockNum after takeoff', async ({ page }) => {
     await createHandwritten(page, 'ConEquip');
     await goto(page, '/');
+    await page.getByTestId('alt-search-btn').waitFor();
     await altSearch(page, { stockNum: 'UP9432' });
     await addHandwrittenItem(page, 0, 'VALVE COVER', 10, 100);
     await addWarranty(page, [1]);
@@ -293,8 +294,9 @@ test.describe('Takeoffs', () => {
     await page.getByTestId('takeoff-input').focus();
     await page.keyboard.press('Enter');
     await page.getByTestId('takeoff-submit-btn').click();
+    await expect(page.getByTestId('takeoff-submit-btn')).toBeHidden();
     await page.waitForLoadState('networkidle');
-    await page.waitForTimeout(100);
+    await page.waitForTimeout(500);
 
     await goto(page, '/');
     await page.waitForLoadState('networkidle');
@@ -326,8 +328,9 @@ test.describe('Takeoffs', () => {
     await page.getByTestId('takeoff-input').focus();
     await page.keyboard.press('Enter');
     await page.getByTestId('takeoff-submit-btn').click();
+    await expect(page.getByTestId('takeoff-submit-btn')).toBeHidden();
     await page.waitForLoadState('networkidle');
-    await page.waitForTimeout(100);
+    await page.waitForTimeout(500);
 
     await goto(page, '/');
     await page.waitForLoadState('networkidle');

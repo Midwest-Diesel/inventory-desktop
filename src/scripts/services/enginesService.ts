@@ -91,6 +91,7 @@ export const searchEngines = async (search: EngineSearch): Promise<{ pageCount: 
 
 export const getEngineByStockNum = async (stockNum: number | null): Promise<Engine | null> => {
   try {
+    if (!stockNum || Number(stockNum) === 0) return null;
     const res = await api.get(`/api/engines/stock-num/${stockNum}`);
     return parseEngineRes(res.data)[0];
   } catch (err) {
