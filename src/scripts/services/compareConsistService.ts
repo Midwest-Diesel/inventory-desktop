@@ -11,34 +11,27 @@ const parseCompareDataRes = (data: any) => {
 
 // === GET routes === //
 
-export const getCompareDataByCustomer = async (id: number) => {
-  try {
-    const res = await api.get(`/api/compare-consist/customer/${id}`);
-    return parseCompareDataRes(res.data);
-  } catch (err) {
-    console.error(err);
-  }
-};
-
-export const searchCompareData = async (customerId: number, arrNum: string) => {
+export const searchCompareData = async (customerId: number, arrNum: string): Promise<CompareConsist[]> => {
   try {
     const res = await api.get(`/api/compare-consist/search/${JSON.stringify({ customerId, arrNum })}`);
     return parseCompareDataRes(res.data);
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
+    return [];
   }
 };
 
-export const getCompareDataById = async (id: number) => {
+export const getCompareDataById = async (id: number): Promise<CompareConsist | null> => {
   try {
     const res = await api.get(`/api/compare-consist/id/${id}`);
     return parseCompareDataRes(res.data)[0];
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
+    return null;
   }
 };
 
-export const getPartsOnEngines = async (partNum: string) => {
+export const getPartsOnEngines = async (partNum: string): Promise<{ partNum: string, engines: Engine[] }> => {
   try {
     const res = await api.get(`/api/compare-consist/on-engines/${partNum}`);
     const parsedDataPromises = res.data.map(async (eng: any) => {
@@ -46,9 +39,10 @@ export const getPartsOnEngines = async (partNum: string) => {
       return { ...eng, loginDate: parseResDate(eng.loginDate), costRemaining  };
     });
     const parsedData = await Promise.all(parsedDataPromises);
-    return { partNum: partNum, engines: parsedData };
-  } catch (err) {
-    console.error(err);
+    return { partNum, engines: parsedData };
+  } catch (error) {
+    console.error(error);
+    return { partNum, engines: [] };
   }
 };
 
@@ -57,8 +51,8 @@ export const getPartsOnEngines = async (partNum: string) => {
 export const addCompareData = async (data: CompareConsist) => {
   try {
     await api.post('/api/compare-consist', data);
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
   }
 };
 
@@ -67,7 +61,7 @@ export const addCompareData = async (data: CompareConsist) => {
 export const deleteCompareData = async (id: number) => {
   try {
     await api.delete(`/api/compare-consist/${id}`);
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
   }
 };

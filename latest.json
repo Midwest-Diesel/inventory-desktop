@@ -1,11 +1,11 @@
 {
-  "version": "v1.8.4",
-  "pub_date": "2026-04-30T21:31:34Z",
+  "version": "v1.8.5",
+  "pub_date": "2026-05-04T21:32:56Z",
   "notes": "",
   "platforms": {
     "windows-x86_64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVSYXQxaWtWaFNYeDBYdGJEYWdvQ2p3Nm1iOGl4QXhwWjBVZENTWTZNeFJrNldCcXBuM1lBTFEvdXRqNGNRN3BscytpRXpLR012b0tnbjdhWmNzaFJSTnFOSXkxOW5wZGc0PQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzc3NTg0NjkzCWZpbGU6SW52ZW50b3J5XzEuOC40X3g2NC1zZXR1cC5uc2lzLnppcApPOGNMWFF1ZnAxWkJKUlFiaHFDRUxuUGNnU0N1S0dUUzA1d0lmR3FFVENvWWc5Z0RYMkxmNTNZYzBINEZkVjIvMmoxRDlmREdxYW9IdVR5U1dRR0dEQT09Cg==",
-      "url": "https://github.com/Midwest-Diesel/inventory-desktop/releases/download/v1.8.4/Inventory_1.8.4_x64-setup.nsis.zip"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVSYXQxaWtWaFNYeDduYlVEYWxlODdyQ3hzQyswSjdrRWFPMGFGS0tINzF4U01xNTZkVkNFQm9iUjZyK3RjZXBVNjVmdjg0U2c1QXR2NzJ2MDlPbm1rSUNzL2NPdW5UeWdvPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzc3OTMwMzc1CWZpbGU6SW52ZW50b3J5XzEuOC41X3g2NC1zZXR1cC5uc2lzLnppcApjeEZ1SUJmV0k1SHMvcFVFcWhKdzAvMVJVK0tWVnlCbk03TWFLNW92S2JHaVhBcTlhcGRIQzRLWTNTWFNjSmFvcmV0RmJma3Z4YnBOS3F4QktKcGJEdz09Cg==",
+      "url": "https://github.com/Midwest-Diesel/inventory-desktop/releases/download/v1.8.5/Inventory_1.8.5_x64-setup.nsis.zip"
     }
   }
 }

@@ -26,6 +26,7 @@ const addHandwrittenItem = async (page: Page, rowIndex: number, desc: string, qt
 };
 
 const addWarranty = async (page: Page, checkboxIndexes: number[], customWarranty?: string) => {
+  await expect(page.getByTestId('select-handwritten-dialog')).toBeVisible();
   const dialog = page.getByTestId('select-handwritten-dialog');
   await dialog.waitFor();
 
@@ -39,6 +40,7 @@ const addWarranty = async (page: Page, checkboxIndexes: number[], customWarranty
   if (customWarranty) await page.getByTestId('warranty').fill(customWarranty);
   
   await page.getByTestId('warranty-submit-btn').click();
+  await page.waitForLoadState('networkidle');
   await page.getByTestId('save-btn').waitFor();
 };
 
@@ -261,6 +263,7 @@ test.describe('Takeoffs', () => {
     await expect(page.getByTestId('stock-num').first()).toHaveText('TH418-19A');
 
     await page.getByTestId('part-num-link').first().click();
+    await expect(page.getByTestId('qty-sold')).toBeVisible();
     await expect(page.getByTestId('qty-sold')).toHaveText('1');
     await expect(page.getByTestId('sold-date')).toHaveText(formatDate(new Date()));
     await expect(page.getByTestId('selling-price')).toHaveText('$100.00');
