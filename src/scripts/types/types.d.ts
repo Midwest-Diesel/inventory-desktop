@@ -654,7 +654,6 @@ type Engine = {
   soldTo: string | null
   comments: string | null
   partsPulled: string | null
-  totalCostApplied: number | null
   sellPrice: number | null
   askingPrice: number | null
   purchasePrice: number | null

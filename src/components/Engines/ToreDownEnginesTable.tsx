@@ -3,6 +3,7 @@ import Loading from "@/components/library/Loading";
 import Table from "@/components/library/Table";
 import { formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
 import Link from "@/components/library/Link";
+import { getTotalEngineCostIn } from "@/scripts/logic/engines";
 
 interface Props {
   engines: Engine[];
@@ -44,7 +45,7 @@ export default function ToreDownEnginesTable({ engines, loading }: Props) {
                 <td className="cbx-td"><Checkbox checked={engine.jakeBrake} disabled /></td>
                 <td>{ engine.purchasedFrom }</td>
                 <td>{ engine.comments }</td>
-                <td>{ formatCurrency(engine.totalCostApplied) }</td>
+                <td>{ formatCurrency(getTotalEngineCostIn(engine)) }</td>
               </tr>
             );
           })}

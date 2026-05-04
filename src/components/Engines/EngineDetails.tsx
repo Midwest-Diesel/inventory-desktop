@@ -18,6 +18,7 @@ import { useQuery } from "@tanstack/react-query";
 import Loading from "../library/Loading";
 import EnginePicturesDialog from "../dialogs/EnginePicturesDialog";
 import { usePrintQue } from "@/hooks/usePrintQue";
+import { getEnginePurchaseCost, getTotalEngineCostIn, getTotalEngineCostOut } from "@/scripts/logic/engines";
 
 interface Props {
   engine: Engine
@@ -37,24 +38,6 @@ export default function EngineDetails({ engine, setIsEditing, setEngineProfitOpe
     queryFn: () => getEngineImages(engine!.stockNum ?? ''),
     enabled: !!engine?.stockNum
   });
-
-  const getTotalCostIn = () => {
-    return engine.costIn
-      .filter((row) => row.cost !== 0.04 && row.cost !== 0.01 && !row.engineStockNum?.toString().startsWith('UP'))
-      .reduce((acc, val) => acc + Number(val.cost), 0);
-  };
-
-  const getTotalCostOut = () => {
-    return engine.costOut
-      .filter((row) => row.cost !== 0.04 && row.cost !== 0.01 && !row.engineStockNum?.toString().startsWith('UP'))
-      .reduce((acc, val) => acc + Number(val.cost), 0);
-  };
-
-  const getPurchaseCost = () => {
-    return engine.costIn
-      .filter((row) => row.costType === 'PurchasePrice' && row.cost !== 0.01 && !row.engineStockNum?.toString().startsWith('UP'))
-      .reduce((acc, val) => acc + (val?.cost ?? 0), 0);
-  };
 
   const handleDelete = async () => {
     if (!engine?.id || user.accessLevel <= 1 || await prompt('Type "confirm" to delete this engine') !== 'confirm') return;
@@ -267,15 +250,15 @@ export default function EngineDetails({ engine, setIsEditing, setEngineProfitOpe
                 </tr>
                 <tr>
                   <th>Purchase Cost</th>
-                  <td>{ formatCurrency(getPurchaseCost()) }</td>
+                  <td>{ formatCurrency(getEnginePurchaseCost(engine)) }</td>
                 </tr>
                 <tr>
                   <th>Total Cost In</th>
-                  <td>{ formatCurrency(getTotalCostIn()) }</td>
+                  <td>{ formatCurrency(getTotalEngineCostIn(engine)) }</td>
                 </tr>
                 <tr>
                   <th>Total Cost Out</th>
-                  <td>{ formatCurrency(getTotalCostOut()) }</td>
+                  <td>{ formatCurrency(getTotalEngineCostOut(engine)) }</td>
                 </tr>
                 <tr>
                   <th style={(engine.costRemaining ?? 0) > 0 ? { color: 'var(--red-2)' } : { color: 'var(--green-light-1)' }}>Cost Remaining</th>

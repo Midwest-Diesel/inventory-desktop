@@ -6,7 +6,7 @@ import Link from "../library/Link";
 import { useMemo, useState } from "react";
 import { formatCurrency } from "@/scripts/tools/stringUtils";
 import { useTooltip } from "@/hooks/useTooltip";
-import { getEngineModels } from "@/scripts/logic/engines";
+import { getEngineModels, getTotalEngineCostIn } from "@/scripts/logic/engines";
 
 interface Props {
   engines: Engine[]
@@ -132,7 +132,7 @@ export default function NewEnginesList({ engines, setEngine, engineModel, setEng
                   <td>{ engine.turboHpNew }</td>
                   <td>{ engine.turboLpNew }</td>
                   <td>{ engine.application }</td>
-                  <td>{ formatCurrency(engine.totalCostApplied) }</td>
+                  <td>{ formatCurrency(getTotalEngineCostIn(engine)) }</td>
                   <td>{ engine.purchasedFrom }</td>
                   <td>{ engine.currentStatus }</td>
                   <td>{ engine.fwhNumber }</td>
