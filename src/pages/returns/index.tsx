@@ -93,11 +93,16 @@ export default function ReturnsContainer() {
                   <th>Date</th>
                   <th>By</th>
                   <th>Bill to Company</th>
+                  <th>Part Numbers</th>
                   <th>Return Notes</th>
                 </tr>
               </thead>
               <tbody>
                 {returns.rows.map((ret: Return) => {
+                  const items = Array.from(new Set(ret.returnItems.map((r) => r.partNum)))
+                    .filter(Boolean)
+                    .join(', ');
+
                   return (
                     <tr key={ret.id}>
                       <td><Link href={`/returns/${ret.id}`} data-testid="return-link">{ ret.id }</Link></td>
@@ -105,6 +110,7 @@ export default function ReturnsContainer() {
                       <td>{ formatDate(ret.dateCalled) }</td>
                       <td>{ ret.salesman?.initials }</td>
                       <td>{ ret.billToCompany }</td>
+                      <td>{ items }</td>
                       <td>{ ret.returnNotes }</td>
                     </tr>
                   );

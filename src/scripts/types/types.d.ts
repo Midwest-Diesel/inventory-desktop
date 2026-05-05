@@ -207,7 +207,7 @@ type Core = {
   priority: string
   salesmanId: number
   initials: string
-  part?: Part
+  part: Part | null
 };
 
 type Handwritten = {

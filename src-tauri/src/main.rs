@@ -1665,6 +1665,8 @@ fn email_po(po_num: String, path: String) {
 
 #[tauri::command]
 fn email_po_received(args: EmailPOReceivedArgs) {
+  if cfg!(debug_assertions) { return; }
+
   let body = args
     .items
     .iter()
