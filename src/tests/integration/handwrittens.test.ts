@@ -46,11 +46,11 @@ describe('Handwrittens Integration', () => {
       phone: null,
       cell: null,
       customerEngineInfo: null,
-      isBlindShipment: null,
-      isNoPriceInvoice: null,
+      isBlindShipment: false,
+      isNoPriceInvoice: false,
       contactName: null,
-      cardPrinted: null,
-      paymentComplete: null,
+      cardPrinted: false,
+      paymentComplete: false,
       invoiceStatus: "SENT TO ACCOUNTING",
       accountingStatus: "COMPLETE",
       shippingStatus: null,
@@ -60,17 +60,16 @@ describe('Handwrittens Integration', () => {
       cap: 0,
       br: 0,
       fl: 0,
-      isCollect: null,
-      isThirdParty: null,
-      isEndOfDay: null,
-      isTaxable: null,
-      isSetup: null,
+      isCollect: false,
+      isThirdParty: false,
+      isEndOfDay: false,
+      isTaxable: false,
+      isSetup: false,
       thirdPartyAccount: null,
       email: null,
       createdBy: null,
       soldBy: null,
       customer: { id: 1, company: 'HEAVY DUTY REBUILDERS', contacts: [] },
-      coreReturns: [],
       cores: [],
       createdById: null,
       soldById: null,
@@ -89,8 +88,8 @@ describe('Handwrittens Integration', () => {
           cost: null,
           location: null,
           partId: null,
-          isInvoiced: null,
-          isQuoteChecked: null,
+          isInvoiced: false,
+          isQuoteChecked: false,
           dimsQty: 0,
           weight: 0,
           length: 0,
@@ -108,8 +107,8 @@ describe('Handwrittens Integration', () => {
           height: 0,
           id: 2,
           invoiceItemChildren: [],
-          isInvoiced: null,
-          isQuoteChecked: null,
+          isInvoiced: false,
+          isQuoteChecked: false,
           isTakeoffDone: false,
           legacyId: null,
           legacyInvoiceId: null,
@@ -172,8 +171,8 @@ describe('Handwrittens Integration', () => {
               stockNum: 'UP9432'
             }
           ],
-          isInvoiced: null,
-          isQuoteChecked: null,
+          isInvoiced: false,
+          isQuoteChecked: false,
           isTakeoffDone: false,
           legacyId: null,
           legacyInvoiceId: null,
@@ -248,7 +247,6 @@ describe('Handwrittens Integration', () => {
       accountingStatus: 'COMPLETE',
       allTakeoffsCompleted: false,
       shippingStatus: null,
-      coreReturns: [],
       shippingNotes: null,
       mp: 0,
       br: 0,
@@ -268,7 +266,8 @@ describe('Handwrittens Integration', () => {
   });
 
   it('Edit handwritten', async () => {
-    await editHandwritten({ id: 1, billToCompany: 'TEST' } as any);
+    const initalData = await getHandwrittenById(1);
+    await editHandwritten({ ...initalData, billToCompany: 'TEST' } as any);
     const res = await getHandwrittenById(1);
     expect(res).toMatchObject({ id: 1, billToCompany: 'TEST' });
   });

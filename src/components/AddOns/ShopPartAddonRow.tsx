@@ -159,7 +159,10 @@ export default function ShopPartAddonRow({ addOn, addOns, setAddons, handleDupli
       ...addOn,
       partNum: partInfo.partNum,
       desc: partInfo.desc,
-      prefix: partInfo.prefix
+      prefix: partInfo.prefix,
+      newPrice: partInfo.listPrice,
+      dealerPrice: partInfo.fleetPrice,
+      remanPrice: partInfo.remanListPrice
     } as AddOn;
     const updatedAddOns = addOns.map((a: AddOn) => {
       if (a.id === addOn.id) return newAddOn;

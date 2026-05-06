@@ -104,11 +104,11 @@ export default function Warranties() {
                     </tr>
                   </thead>
                   <tbody>
-                    {warranties.rows.map((war) => {
+                    {warranties.rows.map((war, i) => {
                       return (
                         <tr
                           style={ focusedWarranty && war.id === focusedWarranty.id ? { border: 'solid 3px var(--yellow-2)' } : {} }
-                          key={war.id}
+                          key={i}
                           onClick={() => setFocusedWarranty(war)}
                         >
                           <td><Link href={`/warranties/${war.id}`} data-testid="warranty-link">{ war.id }</Link></td>

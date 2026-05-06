@@ -130,20 +130,20 @@ export default function EditReturnItemsTable({ className, returnData, returnItem
                     </td>
                     <td className="cbx-td">
                       <Checkbox
-                        checked={item.isReturnReceived}
-                        onChange={(e) => handleEditItem({ ...item, isReturnReceived: e.target.checked })}
+                        checked={item.isReceived}
+                        onChange={(e) => handleEditItem({ ...item, isReceived: e.target.checked })}
                       />
                     </td>
                     <td className="cbx-td">
                       <Checkbox
-                        checked={item.isReturnAsDescribed}
-                        onChange={(e) => handleEditItem({ ...item, isReturnAsDescribed: e.target.checked })}
+                        checked={item.isAsDescribed}
+                        onChange={(e) => handleEditItem({ ...item, isAsDescribed: e.target.checked })}
                       />
                     </td>
                     <td className="cbx-td">
                       <Checkbox
-                        checked={item.isReturnPutAway}
-                        onChange={(e) => handleEditItem({ ...item, isReturnPutAway: e.target.checked })}
+                        checked={item.isPutAway}
+                        onChange={(e) => handleEditItem({ ...item, isPutAway: e.target.checked })}
                       />
                     </td>
                     <td>

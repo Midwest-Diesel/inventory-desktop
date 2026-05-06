@@ -46,7 +46,7 @@ export default function ContactsControls({ isEditing, setIsEditing, contact, set
   };
 
   const onClickDeleteContact = async () => {
-    if (!contact?.id || !await ask('Are you sure you want to delete this contact?')) return;
+    if (!contact?.id || !await ask(`Are you sure you want to delete ${customer.contact}?`)) return;
     await deleteContact(contact.id);
     await editCustomer({ ...customer, contact: null });
     const filteredContacts = contacts.filter((c) => c.id !== contact.id);

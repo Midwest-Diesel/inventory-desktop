@@ -42,17 +42,6 @@ export const getCoresByCustomer = async (customerId: number, handwrittenId: numb
   }
 };
 
-export const getCoreReturnsByCustomer = async (id: number): Promise<Core[]> => {
-  try {
-    if (!id) return [];
-    const res = await api.get(`/api/cores/return/customer/${id}`);
-    return parseCoreDataRes(res.data) ?? [];
-  } catch (err) {
-    console.error(err);
-    return [];
-  }
-};
-
 export const getCoresByHandwrittenItem = async (id: number): Promise<Core[]> => {
   try {
     if (!id) return [];

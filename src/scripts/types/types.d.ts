@@ -95,17 +95,8 @@ type Customer = {
   shipToCity: string | null
   shipToState: string | null
   shipToZip: string | null
-  companyType: string | null
   dateContacted: Date
   comments: string | null
-  emailList: boolean
-  mailList: boolean
-  propsectList: boolean
-  creditApp: boolean
-  taxExempt: boolean
-  apConact: string | null
-  apPhone: string | null
-  paymentHistory: string | null
   customerType: string | null
   source: string | null
   paymentType: string | null
@@ -131,13 +122,11 @@ type Quote = {
   salesman: string | null
   sale: boolean
   followedUp: boolean
-  followUpDate: Date | null
   toFollowUp: boolean
   followUpNotes: string | null
   email: string | null
   invoiceItem: number | null
   createdAfter: boolean
-  children: Quote[]
   piggybackQuotes: PiggybackQuote[]
   part: Part | null
   handwrittenItemId: number | null
@@ -166,7 +155,6 @@ type PiggybackQuote = {
   salesman: string
   sale: boolean
   followedUp: boolean
-  followUpDate: Date
   rating: number
   toFollowUp: boolean
   followUpNotes: string
@@ -195,7 +183,7 @@ type Core = {
   date: Date
   qty: number
   partNum: string
-  desc: string
+  desc: string | null
   unitPrice: number
   customerId: number
   partInvoiceId: number
@@ -206,7 +194,7 @@ type Core = {
   charge: number
   priority: string
   salesmanId: number
-  initials: string
+  initials: string | null
   part: Part | null
 };
 
@@ -258,7 +246,6 @@ type Handwritten = {
   accountingStatus: AccountingStatus | null
   shippingStatus: ShippingStatus | null
   cores: Core[]
-  coreReturns: Core[]
   shippingNotes: string | null
   mp: number
   br: number
@@ -475,6 +462,11 @@ type PartInfo = {
   altParts: string
   weightDims: string | null
   prefix: string | null
+  listPrice: number | null
+  remanListPrice: number | null
+  fleetPrice: number | null
+  remanFleetPrice: number | null
+  corePrice: number | null
 };
 
 type Part = {
@@ -713,8 +705,8 @@ type Engine = {
   oilCoolerNew: string | null
   oilCoolerReman: string | null
   oilCoolerActual: string | null
-  frontHsngNew: string | null
-  frontHsngActual: string | null
+  frontHousingNew: string | null
+  frontHousingActual: string | null
   flywheelNew: string | null
   flywheelActual: string | null
   ragNew: string | null
@@ -722,9 +714,9 @@ type Engine = {
   heuiPumpNew: string | null
   heuiPumpReman: string | null
   heuiPumpActual: string | null
-  exhMnfldNew: string | null
-  exhMnfldReman: string | null
-  exhMnfldActual: string | null
+  exhManifoldNew: string | null
+  exhManifoldReman: string | null
+  exhManifoldActual: string | null
   oilPumpNew: string | null
   oilPumpReman: string | null
   oilPumpActual: string | null
@@ -758,8 +750,8 @@ type CompareConsist = {
   turboReman: string | null
   fwhNew: string | null
   fwhReman: string | null
-  frontHsngNew: string | null
-  frontHsngReman: string | null
+  frontHousingNew: string | null
+  frontHousingReman: string | null
   oilPanNew: string | null
   oilPanReman: string | null
   turboHpNew: string | null
@@ -768,29 +760,29 @@ type CompareConsist = {
   turboLpReman: string | null
   heuiPumpNew: string | null
   heuiPumpReman: string | null
-  exhMnfldNew: string | null
-  exhMnfldReman: string | null
+  exhManifoldNew: string | null
+  exhManifoldReman: string | null
   oilPumpNew: string | null
   oilPumpReman: string | null
   waterPumpNew: string | null
   waterPumpReman: string | null
   notes: string | null
-  headCheck: boolean
-  blockCheck: boolean
-  crankCheck: boolean
-  pistonCheck: boolean
-  camCheck: boolean
-  injCheck: boolean
-  turboCheck: boolean
-  fwhCheck: boolean
-  frontHsngCheck: boolean
-  oilPanCheck: boolean
-  turboHpCheck: boolean
-  turboLpCheck: boolean
-  heuiPumpCheck: boolean
-  exhMnfldCheck: boolean
-  oilPumpCheck: boolean
-  waterPumpCheck: boolean
+  headChecked: boolean
+  blockChecked: boolean
+  crankChecked: boolean
+  pistonChecked: boolean
+  camChecked: boolean
+  injChecked: boolean
+  turboChecked: boolean
+  fwhChecked: boolean
+  frontHousingChecked: boolean
+  oilPanChecked: boolean
+  turboHpChecked: boolean
+  turboLpChecked: boolean
+  heuiPumpChecked: boolean
+  exhManifoldChecked: boolean
+  oilPumpChecked: boolean
+  waterPumpChecked: boolean
 };
 
 type Return = {
@@ -825,7 +817,6 @@ type Return = {
   payment: string | null
   source: string | null
   returnItems: ReturnItem[]
-  returnPart: ReturnPart | null
   returnTotal: number
 };
 
@@ -838,9 +829,9 @@ type ReturnItem = {
   cost: number | null
   unitPrice: number | null
   stockNum: string | null
-  isReturnReceived: boolean
-  isReturnAsDescribed: boolean
-  isReturnPutAway: boolean
+  isReceived: boolean
+  isAsDescribed: boolean
+  isPutAway: boolean
   notes: string | null
   part: Part | null
   returnItemChildren: ReturnItemChild[]
@@ -1037,12 +1028,12 @@ interface CustomerEngineData {
   injNew: string | null
   turboNew: string | null
   fwhNew: string | null
-  frontHsngNew: string | null
+  frontHousingNew: string | null
   oilPanNew: string | null
   turboHpNew: string | null
   turboLpNew: string | null
   heuiPumpNew: string | null
-  exhMnfldNew: string | null
+  exhManifoldNew: string | null
   oilPumpNew: string | null
   waterPumpNew: string | null
   headReman: string | null
@@ -1053,12 +1044,12 @@ interface CustomerEngineData {
   injReman: string | null
   turboReman: string | null
   fwhReman: string | null
-  frontHsngReman: string | null
+  frontHousingReman: string | null
   oilPanReman: string | null
   turboHpReman: string | null
   turboLpReman: string | null
   heuiPumpReman: string | null
-  exhMnfldReman: string | null
+  exhManifoldReman: string | null
   oilPumpReman: string | null
   waterPumpReman: string | null
 }
@@ -1105,8 +1096,8 @@ interface EnginePartsTable {
   oilCoolerReman: string | null
   oilCoolerNew: string | null
   oilCoolerActual: string | null
-  frontHsngNew: string | null
-  frontHsngActual: string | null
+  frontHousingNew: string | null
+  frontHousingActual: string | null
   heuiPumpReman: string | null
   heuiPumpNew: string | null
   heuiPumpActual: string | null
@@ -1116,7 +1107,7 @@ interface EnginePartsTable {
   waterPumpReman: string | null
   waterPump: string | null
   waterPumpActual: string | null
-  exhMnfldNew: string | null
-  exhMnfldActual: string | null
-  exhMnfldReman: string | null
+  exhManifoldNew: string | null
+  exhManifoldActual: string | null
+  exhManifoldReman: string | null
 }

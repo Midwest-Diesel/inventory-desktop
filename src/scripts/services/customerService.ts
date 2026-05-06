@@ -95,7 +95,6 @@ export const getCustomersMin = async (): Promise<CustomerMin[]> => {
   }
 };
 
-
 export const getCustomerById = async (id: number): Promise<Customer | null> => {
   try {
     const res = await api.get(`/api/customers/id/${id}`);

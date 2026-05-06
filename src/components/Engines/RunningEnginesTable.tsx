@@ -12,8 +12,8 @@ interface Props {
 
 export default function RunningEnginesTable({ engines, loading }: Props) {  
   const isResearched = (engine: Engine) => {
-    const { blockNew, blockReman, crankNew, crankReman, headNew, headReman, camNew, camReman, injNew, injReman, turboNew, turboReman, pistonNew, pistonReman, cylPacksNew, cylPacksReman, fwhNew, fwhReman, oilPanNew, oilPanReman, oilCoolerNew, oilCoolerReman, frontHsngNew, flywheelNew, ragNew, heuiPumpNew, heuiPumpReman } = engine;
-    if (blockNew || blockReman || crankNew || crankReman || headNew || headReman || camNew || camReman || injNew || injReman || turboNew || turboReman || pistonNew || pistonReman || cylPacksNew || cylPacksReman || fwhNew || fwhReman || oilPanNew || oilPanReman || oilCoolerNew || oilCoolerReman || frontHsngNew || flywheelNew || ragNew || heuiPumpNew || heuiPumpReman) {
+    const { blockNew, blockReman, crankNew, crankReman, headNew, headReman, camNew, camReman, injNew, injReman, turboNew, turboReman, pistonNew, pistonReman, cylPacksNew, cylPacksReman, fwhNew, fwhReman, oilPanNew, oilPanReman, oilCoolerNew, oilCoolerReman, frontHousingNew, flywheelNew, ragNew, heuiPumpNew, heuiPumpReman } = engine;
+    if (blockNew || blockReman || crankNew || crankReman || headNew || headReman || camNew || camReman || injNew || injReman || turboNew || turboReman || pistonNew || pistonReman || cylPacksNew || cylPacksReman || fwhNew || fwhReman || oilPanNew || oilPanReman || oilCoolerNew || oilCoolerReman || frontHousingNew || flywheelNew || ragNew || heuiPumpNew || heuiPumpReman) {
       return true;
     }
     return false;

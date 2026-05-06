@@ -51,8 +51,8 @@ export default function SideBySideTable({ customer, customerEngineData, mwdEngin
       arr.push(`Turbo`);
     if ((customerEngineData?.fwhNew && customerEngineData?.fwhNew === mwdEngine.fwhNew) || (customerEngineData?.fwhReman && customerEngineData?.fwhReman === mwdEngine.fwhReman))
       arr.push(`Fwh`);
-    if ((customerEngineData?.frontHsngNew && customerEngineData?.frontHsngNew === mwdEngine.frontHsngNew) || (customerEngineData?.frontHsngReman && customerEngineData?.frontHsngReman === mwdEngine.frontHsngNew))
-      arr.push(`FrontHsng`);
+    if ((customerEngineData?.frontHousingNew && customerEngineData?.frontHousingNew === mwdEngine.frontHousingNew) || (customerEngineData?.frontHousingReman && customerEngineData?.frontHousingReman === mwdEngine.frontHousingNew))
+      arr.push(`FrontHousing`);
     if ((customerEngineData?.oilPanNew && customerEngineData?.oilPanNew === mwdEngine.oilPanNew) || (customerEngineData?.oilPanReman && customerEngineData?.oilPanReman === mwdEngine.oilPanReman))
       arr.push(`OilPan`);
     if ((customerEngineData?.turboHpNew && customerEngineData?.turboHpNew === mwdEngine.turboHpNew) || (customerEngineData?.turboHpReman && customerEngineData?.turboHpReman === mwdEngine.turboHpReman))
@@ -61,8 +61,8 @@ export default function SideBySideTable({ customer, customerEngineData, mwdEngin
       arr.push(`TurboLp`);
     if ((customerEngineData?.heuiPumpNew && customerEngineData?.heuiPumpNew === mwdEngine.heuiPumpNew) || (customerEngineData?.heuiPumpReman && customerEngineData?.heuiPumpReman === mwdEngine.heuiPumpReman))
       arr.push(`HeuiPump`);
-    if ((customerEngineData?.exhMnfldNew && customerEngineData?.exhMnfldNew === mwdEngine.exhMnfldNew) || (customerEngineData?.exhMnfldReman && customerEngineData?.exhMnfldReman === mwdEngine.exhMnfldReman))
-      arr.push(`ExhMnfld`);
+    if ((customerEngineData?.exhManifoldNew && customerEngineData?.exhManifoldNew === mwdEngine.exhManifoldNew) || (customerEngineData?.exhManifoldReman && customerEngineData?.exhManifoldReman === mwdEngine.exhManifoldReman))
+      arr.push(`ExhManifold`);
     if ((customerEngineData?.oilPumpNew && customerEngineData?.oilPumpNew === mwdEngine.oilPumpNew) || (customerEngineData?.oilPumpReman && customerEngineData?.oilPumpReman === mwdEngine.oilPumpReman))
       arr.push(`OilPump`);
     if ((customerEngineData?.waterPumpNew && customerEngineData?.waterPumpNew === mwdEngine.waterPumpNew) || (customerEngineData?.waterPumpReman && customerEngineData?.waterPumpReman === mwdEngine.waterPumpReman))
@@ -198,9 +198,9 @@ export default function SideBySideTable({ customer, customerEngineData, mwdEngin
               <td>{ customerEngineData?.fwhNew }</td>
             </tr>
             <tr>
-              <th style={{ backgroundColor: `${isMatchingValues('FrontHsng') ? 'var(--blue-1)' : ''}` }}>Front Housing</th>
-              <td>{ customerEngineData?.frontHsngReman }</td>
-              <td>{ customerEngineData?.frontHsngNew }</td>
+              <th style={{ backgroundColor: `${isMatchingValues('FrontHousing') ? 'var(--blue-1)' : ''}` }}>Front Housing</th>
+              <td>{ customerEngineData?.frontHousingReman }</td>
+              <td>{ customerEngineData?.frontHousingNew }</td>
             </tr>
             <tr>
               <th style={{ backgroundColor: `${isMatchingValues('OilPan') ? 'var(--blue-1)' : ''}` }}>Oil Pan</th>
@@ -223,9 +223,9 @@ export default function SideBySideTable({ customer, customerEngineData, mwdEngin
               <td>{ customerEngineData?.heuiPumpNew }</td>
             </tr>
             <tr>
-              <th style={{ backgroundColor: `${isMatchingValues('ExhMnfld') ? 'var(--blue-1)' : ''}` }}>ExhManfld</th>
-              <td>{ customerEngineData?.exhMnfldReman }</td>
-              <td>{ customerEngineData?.exhMnfldNew }</td>
+              <th style={{ backgroundColor: `${isMatchingValues('ExhManifold') ? 'var(--blue-1)' : ''}` }}>ExhManfld</th>
+              <td>{ customerEngineData?.exhManifoldReman }</td>
+              <td>{ customerEngineData?.exhManifoldNew }</td>
             </tr>
             <tr>
               <th style={{ backgroundColor: `${isMatchingValues('OilPump') ? 'var(--blue-1)' : ''}` }}>Oil Pump</th>
@@ -290,9 +290,9 @@ export default function SideBySideTable({ customer, customerEngineData, mwdEngin
               <td>{ mwdEngine.fwhNew }</td>
             </tr>
             <tr>
-              <th style={{ backgroundColor: `${isMatchingValues('FrontHsng') ? 'var(--blue-1)' : ''}` }}>Front Housing</th>
+              <th style={{ backgroundColor: `${isMatchingValues('FrontHousing') ? 'var(--blue-1)' : ''}` }}>Front Housing</th>
               <td></td>
-              <td>{ mwdEngine.frontHsngNew }</td>
+              <td>{ mwdEngine.frontHousingNew }</td>
             </tr>
             <tr>
               <th style={{ backgroundColor: `${isMatchingValues('OilPan') ? 'var(--blue-1)' : ''}` }}>Oil Pan</th>
@@ -315,9 +315,9 @@ export default function SideBySideTable({ customer, customerEngineData, mwdEngin
               <td>{ mwdEngine.heuiPumpNew }</td>
             </tr>
             <tr>
-              <th style={{ backgroundColor: `${isMatchingValues('ExhMnfld') ? 'var(--blue-1)' : ''}` }}>ExhManfld</th>
-              <td>{ mwdEngine.exhMnfldReman }</td>
-              <td>{ mwdEngine.exhMnfldNew }</td>
+              <th style={{ backgroundColor: `${isMatchingValues('ExhManifold') ? 'var(--blue-1)' : ''}` }}>ExhManfld</th>
+              <td>{ mwdEngine.exhManifoldReman }</td>
+              <td>{ mwdEngine.exhManifoldNew }</td>
             </tr>
             <tr>
               <th style={{ backgroundColor: `${isMatchingValues('OilPump') ? 'var(--blue-1)' : ''}` }}>Oil Pump</th>

@@ -101,8 +101,8 @@ export default function EditEngineDetails({ engine, setIsEditing, refetch }: Pro
     oilCoolerReman: engine.oilCoolerReman,
     oilCoolerNew: engine.oilCoolerNew,
     oilCoolerActual: engine.oilCoolerActual,
-    frontHsngNew: engine.frontHsngNew,
-    frontHsngActual: engine.frontHsngActual,
+    frontHousingNew: engine.frontHousingNew,
+    frontHousingActual: engine.frontHousingActual,
     heuiPumpReman: engine.heuiPumpReman,
     heuiPumpNew: engine.heuiPumpNew,
     heuiPumpActual: engine.heuiPumpActual,
@@ -112,9 +112,9 @@ export default function EditEngineDetails({ engine, setIsEditing, refetch }: Pro
     waterPumpReman: engine.waterPumpReman,
     waterPump: engine.waterPumpNew,
     waterPumpActual: engine.waterPumpActual,
-    exhMnfldNew: engine.exhMnfldNew,
-    exhMnfldActual: engine.exhMnfldActual,
-    exhMnfldReman: engine.exhMnfldReman
+    exhManifoldNew: engine.exhManifoldNew,
+    exhManifoldActual: engine.exhManifoldActual,
+    exhManifoldReman: engine.exhManifoldReman
   };
 
   useEffect(() => {

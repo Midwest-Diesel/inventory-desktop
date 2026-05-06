@@ -82,7 +82,7 @@ export default function EnginePartsTable({ engine }: Props) {
           <td>{ engine.pistonActual }</td>
         </tr>
         <tr>
-          <th>Flywheel Hsng</th>
+          <th>Flywheel Housing</th>
           <td>{ engine.fwhNew }</td>
           <td>{ engine.fwhReman }</td>
           <td></td>
@@ -111,10 +111,10 @@ export default function EnginePartsTable({ engine }: Props) {
         </tr>
         <tr>
           <th>Front Housing</th>
-          <td>{ engine.frontHsngNew }</td>
+          <td>{ engine.frontHousingNew }</td>
           <td></td>
           <td></td>
-          <td>{ engine.frontHsngActual }</td>
+          <td>{ engine.frontHousingActual }</td>
         </tr>
         <tr>
           <th>RA Group</th>
@@ -146,10 +146,10 @@ export default function EnginePartsTable({ engine }: Props) {
         </tr>
         <tr>
           <th>Exh Manifold</th>
-          <td>{ engine.exhMnfldReman }</td>
-          <td>{ engine.exhMnfldNew }</td>
+          <td>{ engine.exhManifoldReman }</td>
+          <td>{ engine.exhManifoldNew }</td>
           <td></td>
-          <td>{ engine.exhMnfldActual }</td>
+          <td>{ engine.exhManifoldActual }</td>
         </tr>
       </tbody>
     </Table>

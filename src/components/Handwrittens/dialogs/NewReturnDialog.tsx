@@ -85,9 +85,9 @@ export default function NewReturnDialog({ open, setOpen, handwritten }: Props) {
           cost: item.cost,
           unitPrice: item.unitPrice,
           stockNum: item.stockNum,
-          isReturnReceived: false,
-          isReturnAsDescribed: false,
-          isReturnPutAway: false,
+          isReceived: false,
+          isAsDescribed: false,
+          isPutAway: false,
           notes: ''
         } as any;
       }

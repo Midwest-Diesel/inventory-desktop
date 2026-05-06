@@ -25,12 +25,12 @@ const ENGINE_PARTS = [
   'inj',
   'turbo',
   'fwh',
-  'frontHsng',
+  'frontHousing',
   'oilPan',
   'turboHp',
   'turboLp',
   'heuiPump',
-  'exhMnfld',
+  'exhManifold',
   'oilPump',
   'waterPump'
 ];
@@ -88,7 +88,7 @@ export default function CompareConsist() {
     ENGINE_PARTS.forEach((part) => {
       data[`${part}New`] = (engineChecks[part] || noChecks) ? engineNew[part] || null : null;
       data[`${part}Reman`] = (engineChecks[part] || noChecks) ? engineReman[part] || null : null;
-      data[`${part}Check`] = !!engineChecks[part];
+      data[`${part}Checked`] = !!engineChecks[part];
     });
     return data;
   }, [arrNum, engineNew, engineReman, engineChecks]);

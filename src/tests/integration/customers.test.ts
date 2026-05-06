@@ -19,7 +19,6 @@ describe('Customers Integration', () => {
   it('Get customer by id', async () => {
     const customer = {
       id: 1,
-      legacyId: null,
       company: 'HEAVY DUTY REBUILDERS',
       contact: 'BURK DAY',
       partsManager: null,

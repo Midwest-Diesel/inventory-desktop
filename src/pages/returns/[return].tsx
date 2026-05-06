@@ -87,7 +87,10 @@ export default function Return() {
       shipToZip: returnData.shipToZip,
       salesmanId: returnData.salesman?.id,
       invoiceStatus: 'SENT TO ACCOUNTING',
-      accountingStatus: 'COMPLETE'
+      accountingStatus: 'COMPLETE',
+      isBlindShipment: false,
+      isNoPriceInvoice: false,
+      isTaxable: false
     } as any;
     const id = await addHandwritten(newHandwritten);
 
@@ -128,9 +131,9 @@ export default function Return() {
         cost: items[i].cost,
         unitPrice: items[i].unitPrice,
         stockNum: items[i].stockNum,
-        isReturnReceived: false,
-        isReturnAsDescribed: false,
-        isReturnPutAway: false,
+        isReceived: false,
+        isAsDescribed: false,
+        isPutAway: false,
         notes: null
       } as any;
       await addReturnItem(item);

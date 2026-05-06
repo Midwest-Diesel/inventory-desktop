@@ -21,7 +21,7 @@ describe('Alerts Integration', () => {
       date: new Date('2021-04-13T05:00:00.000Z'),
       note: '3406E/C15 Gear - Lots of matches! 6I4578 Is for older 5ek, uses a 6I3621 stubshaft, 1304701 uses a 1302979 or 1515966 subshaft',
       partNum: '1304701',
-      salesmanId: 1,
+      addedBy: 'TS',
       type: 'ALERT!!!'
     };
     expect(res[0]).toMatchObject(alert);
@@ -33,7 +33,7 @@ describe('Alerts Integration', () => {
       date: new Date('2021-04-13T05:00:00.000Z'),
       note: '3406E/C15 Gear - Lots of matches! 6I4578 Is for older 5ek, uses a 6I3621 stubshaft, 1304701 uses a 1302979 or 1515966 subshaft',
       partNum: '1304701',
-      salesmanId: 1,
+      addedBy: 'TS',
       type: 'ALERT!!!'
     };
     expect(res[0]).toMatchObject(alert);
@@ -54,7 +54,7 @@ describe('Alerts Integration', () => {
       type: 'HUDDLE UP!!!',
       partNum: '123123',
       date: new Date('2025-09-08T05:00:00.000Z'),
-      salesmanId: 1,
+      addedBy: 'TS',
       note: null
     };
     const res = await getAlerts();

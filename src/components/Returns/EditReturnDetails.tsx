@@ -281,7 +281,7 @@ export default function EditReturnDetails({ returnData, refetch, setIsEditing }:
                 </td>
               </tr>
               <tr>
-                <th>Billing Address</th>
+                <th>Billing Address 2</th>
                 <td>
                   <Input
                     variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}

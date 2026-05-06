@@ -134,10 +134,10 @@ export default function CompareConsistHistoryDialog({ open, setOpen, searchData,
                   <td>{ searchData[page].fwhReman }</td>
                 </tr>
                 <tr>
-                  <th>Front Hsng</th>
-                  <td>{ searchData[page].frontHsngNew }</td>
-                  <th>Front Hsng Reman</th>
-                  <td>{ searchData[page].frontHsngReman }</td>
+                  <th>Front Housing</th>
+                  <td>{ searchData[page].frontHousingNew }</td>
+                  <th>Front Housing Reman</th>
+                  <td>{ searchData[page].frontHousingReman }</td>
                 </tr>
                 <tr>
                   <th>Oil Pan</th>
@@ -164,10 +164,10 @@ export default function CompareConsistHistoryDialog({ open, setOpen, searchData,
                   <td>{ searchData[page].heuiPumpReman }</td>
                 </tr>
                 <tr>
-                  <th>ExhMnfld</th>
-                  <td>{ searchData[page].exhMnfldNew }</td>
-                  <th>ExhMnfld Reman</th>
-                  <td>{ searchData[page].exhMnfldReman }</td>
+                  <th>ExhManifold</th>
+                  <td>{ searchData[page].exhManifoldNew }</td>
+                  <th>ExhManifold Reman</th>
+                  <td>{ searchData[page].exhManifoldReman }</td>
                 </tr>
                 <tr>
                   <th>Oil Pump</th>

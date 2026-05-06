@@ -53,26 +53,6 @@ export const getPartInfoByPartNum = async (partNum: string): Promise<PartInfo | 
   }
 };
 
-export const getPartInfoByAltParts = async (partNum: string): Promise<PartInfo[]> => {
-  try {
-    const res = await api.get(`/api/parts/parts-info/alt-parts/${partNum}`);
-    return res.data;
-  } catch (error) {
-    console.error(error);
-    return [];
-  }
-};
-
-export const getPartByEngineNum = async (engineNum: number): Promise<Part | null> => {
-  try {
-    const res = await api.get(`/api/parts/engine-num/${engineNum}`);
-    return (await parsePartsData(res.data))[0];
-  } catch (error) {
-    console.error(error);
-    return null;
-  }
-};
-
 export const getPartsByStockNum = async (stockNum: string): Promise<Part[]> => {
   try {
     if (!stockNum) return [];
@@ -87,27 +67,6 @@ export const getPartsByStockNum = async (stockNum: string): Promise<Part[]> => {
 export const getAllPartNums = async () => {
   try {
     const res = await api.get(`/api/parts/all-part-num`);
-    return res.data;
-  } catch (error) {
-    console.error(error);
-  }
-};
-
-export const getPartCostIn = async (stockNum: string): Promise<PartCostIn[]> => {
-  try {
-    const encodedParam = encodeURIComponent(stockNum);
-    const res = await api.get(`/api/parts/part-cost-in/${encodedParam}`);  
-    return res.data;
-  } catch (error) {
-    console.error(error);
-    return [];
-  }
-};
-
-export const getPartEngineCostOut = async (stockNum: string) => {
-  try {
-    const encodedParam = encodeURIComponent(stockNum);
-    const res = await api.get(`/api/parts/engine-cost-out/${encodedParam}`);
     return res.data;
   } catch (error) {
     console.error(error);
@@ -220,15 +179,6 @@ export const getSalesInfo = async (partNum: string): Promise<SalesInfo> => {
   } catch (error) {
     console.error(error);
     return { sales: [], quotes: [], salesByYearList: [], counters: { new: 0, recon: 0, used: 0, core: 0 }};
-  }
-};
-
-export const checkForNewPartNum = async (partNum: string) => {
-  try {
-    const res = await api.get(`/api/parts/check-new/${partNum}`);
-    return res.data;
-  } catch (error) {
-    console.error(error);
   }
 };
 

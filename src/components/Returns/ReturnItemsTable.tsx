@@ -24,17 +24,17 @@ export default function ReturnItemsTable({ className, returnItems, returnData, r
   const [returnItemId, setReturnItemId] = useState<number>(0);
 
   const handleToggleIsReceived = async (part: ReturnItem, value: boolean) => {
-    await editReturnItem({ ...part, isReturnReceived: value });
+    await editReturnItem({ ...part, isReceived: value });
     refetch();
   };
 
   const handleToggleAsDescribed = async (part: ReturnItem, value: boolean) => {
-    await editReturnItem({ ...part, isReturnAsDescribed: value });
+    await editReturnItem({ ...part, isAsDescribed: value });
     refetch();
   };
 
   const handleTogglePutAway = async (part: ReturnItem, value: boolean) => {
-    await editReturnItem({ ...part, isReturnPutAway: value });
+    await editReturnItem({ ...part, isPutAway: value });
     refetch();
   };
 
@@ -99,19 +99,19 @@ export default function ReturnItemsTable({ className, returnItems, returnData, r
                       <td>{ formatCurrency(ret.unitPrice) }</td>
                       <td className="cbx-td">
                         <Checkbox
-                          checked={ret.isReturnReceived}
+                          checked={ret.isReceived}
                           onChange={(e: any) => handleToggleIsReceived(ret, e.target.checked)}
                         />
                       </td>
                       <td className="cbx-td">
                         <Checkbox
-                          checked={ret.isReturnAsDescribed}
+                          checked={ret.isAsDescribed}
                           onChange={(e: any) => handleToggleAsDescribed(ret, e.target.checked)}
                         />
                       </td>
                       <td className="cbx-td">
                         <Checkbox
-                          checked={ret.isReturnPutAway}
+                          checked={ret.isPutAway}
                           onChange={(e: any) => handleTogglePutAway(ret, e.target.checked)}
                         />
                       </td>

@@ -113,7 +113,7 @@ export const getEnginesByEngineData = async (data: CustomerEngineData): Promise<
 export const getEngineCostRemaining = async (stockNum: number): Promise<number> => {
   try {
     const res = await api.get(`/api/engines/cost-remaining/${stockNum}`);
-    return res.data[0].costRemaining || 0;
+    return res.data.costRemaining || 0;
   } catch (err) {
     console.error(err);
     return 0;

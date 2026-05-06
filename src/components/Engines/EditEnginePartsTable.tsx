@@ -289,7 +289,7 @@ export default function EditEnginePartsTable() {
           </td>
         </tr>
         <tr>
-          <th>Flywheel Hsng</th>
+          <th>Flywheel Housing</th>
           <td>
             <Input
               variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
@@ -394,12 +394,12 @@ export default function EditEnginePartsTable() {
           </td>
         </tr>
         <tr>
-          <th>Front Hsng</th>
+          <th>Front Housing</th>
           <td>
             <Input
               variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
-              name="frontHsngNew"
-              value={engineParts.frontHsngNew ?? ''}
+              name="frontHousingNew"
+              value={engineParts.frontHousingNew ?? ''}
               onChange={handleChange}
             />
           </td>
@@ -408,8 +408,8 @@ export default function EditEnginePartsTable() {
           <td>
             <Input
               variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
-              name="frontHsngActual"
-              value={engineParts.frontHsngActual ?? ''}
+              name="frontHousingActual"
+              value={engineParts.frontHousingActual ?? ''}
               onChange={handleChange}
             />
           </td>
@@ -524,16 +524,16 @@ export default function EditEnginePartsTable() {
           <td>
             <Input
               variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
-              name="exhMnfldNew"
-              value={engineParts.exhMnfldNew ?? ''}
+              name="exhManifoldNew"
+              value={engineParts.exhManifoldNew ?? ''}
               onChange={handleChange}
             />
           </td>
           <td>
             <Input
               variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
-              name="exhMnfldReman"
-              value={engineParts.exhMnfldReman ?? ''}
+              name="exhManifoldReman"
+              value={engineParts.exhManifoldReman ?? ''}
               onChange={handleChange}
             />
           </td>
@@ -541,8 +541,8 @@ export default function EditEnginePartsTable() {
           <td>
             <Input
               variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
-              name="exhMnfldActual"
-              value={engineParts.exhMnfldActual ?? ''}
+              name="exhManifoldActual"
+              value={engineParts.exhManifoldActual ?? ''}
               onChange={handleChange}
             />
           </td>

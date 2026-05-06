@@ -24,8 +24,8 @@ export default function NewEnginesList({ engines, setEngine, engineModel, setEng
   const engineModels = useMemo(() => getEngineModels(engines), [engines]);
 
   const isEngineResNotNull = (engine: Engine) => {
-    const { turboReman, headNew, headReman, pistonNew, pistonReman, fwhNew, fwhReman, oilPanNew, oilPanReman, oilCoolerNew, oilCoolerReman, frontHsngNew, flywheelNew, ragNew, heuiPumpNew, heuiPumpReman } = engine;
-    return ![turboReman, headNew, headReman, pistonNew, pistonReman, fwhNew, fwhReman, oilPanNew, oilPanReman, oilCoolerNew, oilCoolerReman, frontHsngNew, flywheelNew, ragNew, heuiPumpNew, heuiPumpReman].includes(null);
+    const { turboReman, headNew, headReman, pistonNew, pistonReman, fwhNew, fwhReman, oilPanNew, oilPanReman, oilCoolerNew, oilCoolerReman, frontHousingNew, flywheelNew, ragNew, heuiPumpNew, heuiPumpReman } = engine;
+    return ![turboReman, headNew, headReman, pistonNew, pistonReman, fwhNew, fwhReman, oilPanNew, oilPanReman, oilCoolerNew, oilCoolerReman, frontHousingNew, flywheelNew, ragNew, heuiPumpNew, heuiPumpReman].includes(null);
   };
 
   const filteredEngines = useMemo(() => {

@@ -3,7 +3,7 @@ import { emitServerEvent } from "../config/websockets";
 import { formatRemarksSoldText } from "../logic/parts";
 import { parseResDate } from "../tools/stringUtils";
 import { filterNullObjValuesArr } from "../tools/utils";
-import { getCoresByCustomer, getCoreReturnsByCustomer } from "./coresService";
+import { getCoresByCustomer } from "./coresService";
 import { editPart, getPartById } from "./partsService";
 
 interface NewHandwrittenItem {
@@ -37,13 +37,7 @@ export const parseHandwrittenRes = (data: any) => {
           date: item.date && parseResDate(item.date),
           invoiceItemChildren: item.invoiceItemChildren ? item.invoiceItemChildren : []
         };
-      }).sort((a: any, b: any) => b.id - a.id),
-      coreReturns: handwritten.coreReturns ? handwritten.coreReturns.map((item: any) => {
-        return {
-          ...item,
-          date: item.date && parseResDate(item.date)
-        };
-      }) : []
+      }).sort((a: any, b: any) => b.id - a.id)
     };
   });
 };
@@ -68,8 +62,6 @@ export const getHandwrittenById = async (id: number): Promise<Handwritten | null
     const res = await api.get(`/api/handwrittens/id/${id}`);
     const cores = await getCoresByCustomer(res.data[0].customer.id, id) ?? [];
     res.data[0].cores = cores;
-    const coreReturns = await getCoreReturnsByCustomer(res.data[0].customer.id) ?? [];
-    res.data[0].coreReturns = coreReturns;
     return parseHandwrittenRes(res.data)[0];
   } catch (error) {
     console.error(error);
