@@ -26,13 +26,12 @@ describe('Returns Integration', async () => {
       customer: { id: 1 },
       handwrittenId: 1,
       invoiceDate: date(),
-      salesmanId: 1,
       dateReceived: date(),
       creditIssued: date(),
       returnNotes: 'notes',
       returnReason: 'reason',
       returnPaymentTerms: 'terms',
-      restockFee: 100,
+      restockFee: 'None',
       billToCompany: 'McDonalds',
       billToAddress: '3051 82nd Lane NE',
       billToAddress2: null,
@@ -51,10 +50,9 @@ describe('Returns Integration', async () => {
       payment: null,
       source: null
     } as any;
-    const id = await addReturn(returnData);
+    const id = await addReturn({ ...returnData, salesmanId: 1 });
     const res = await getReturnById(Number(id));
 
-    const { salesmanId, ...data } = returnData;
-    expect(res).toMatchObject(data);
+    expect(res).toMatchObject(returnData);
   });
 });

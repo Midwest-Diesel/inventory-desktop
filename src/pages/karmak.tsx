@@ -63,6 +63,10 @@ export default function Karmak() {
 
   const handleEndOfDay = async () => {
     const res = await getEndOfDayHandwrittens();
+    if (res.length === 0) {
+      return alert('Could not find any handwrittens marked of EOD.');
+    }
+
     const year = (res[0].date.getUTCFullYear()).toString();
     const month = (res[0].date.getUTCMonth() + 1).toString();
     const day = (res[0].date.getUTCDate()).toString();
