@@ -37,10 +37,10 @@ INSERT INTO parts_info
 -- PARTS
 INSERT INTO parts (handwritten_id, invoice_num, part_num, manufacturer, "desc", location, remarks, entry_date, entered_by, qty, stock_num, purchase_price, sold_to, qty_sold, selling_price, purchased_from, sold_to_date, condition, rating, engine_num, core_fam, pricing_notes, special_notes)
 VALUES
-  (NULL, NULL, '7E0333', 'CATERPILLAR', 'VALVE COVER 3406', 'C5G4A', 'T/O, NTBBD', '2026-02-17', 2000, 34, 'UP9432', 0.01, NULL, 0, NULL, 'CB1', NULL, 'Good Used', 0.0, 7259, NULL, NULL , NULL),
-  (NULL, NULL, '7E0331', 'CATERPILLAR', 'VALVE COVER 3406', 'C5G4A', 'T/O, NOT CHECKED, ONE HOLE', '2026-02-17', 2000, 31, 'UP12615', 0.01, NULL, 0, NULL, 'CB1', NULL, 'Good Used', 0.0, 7259, NULL, NULL , NULL),
-  (NULL, NULL, '9N3240', 'CATERPILLAR', 'THERM HSNG 3306', 'C5G4A', '(8.5) CCBD AND ZD, CAST IRON THERM HSNG, LOOKS GOOD', '2026-02-17', 2000, 34, 'TH609-23C', 0.01, NULL, 0, NULL, 'CB1', NULL, 'Good Used', 0.0, 7259, NULL, NULL , NULL),
-  (NULL, NULL, '7L0406', 'CATERPILLAR', 'THERM HSNG 3306', 'C5G4A', '(8.5) CCBD AND ZD, CAST IRON THERM HSNG, LOOKS GOOD', '2026-02-17', 2000, 1, 'TH418-19A', 0.01, NULL, 0, NULL, 'CB1', NULL, 'Good Used', 0.0, 7259, NULL, NULL , NULL);
+  (NULL, NULL, '7E0333', 'CATERPILLAR', 'VALVE COVER 3406', 'C5G4A', 'T/O, NTBBD', '2026-02-17', 2000, 34, 'UP9432', 0.01, NULL, 0, NULL, 'CB1', NULL, 'Good Used', 0.0, 7259, NULL, NULL, NULL),
+  (1, NULL, '7E0331', 'CATERPILLAR', 'VALVE COVER 3406', 'C5G4A', 'T/O, NOT CHECKED, ONE HOLE', '2026-02-17', 2000, 31, 'UP12615', 0.01, NULL, 1, 100, 'CB1', '05/18/2026', 'Good Used', 0.0, 7259, NULL, NULL, NULL),
+  (NULL, NULL, '9N3240', 'CATERPILLAR', 'THERM HSNG 3306', 'C5G4A', '(8.5) CCBD AND ZD, CAST IRON THERM HSNG, LOOKS GOOD', '2026-02-17', 2000, 34, 'TH609-23C', 0.01, NULL, 0, NULL, 'CB1', NULL, 'Good Used', 0.0, 7259, NULL, NULL, NULL),
+  (NULL, NULL, '7L0406', 'CATERPILLAR', 'THERM HSNG 3306', 'C5G4A', '(8.5) CCBD AND ZD, CAST IRON THERM HSNG, LOOKS GOOD', '2026-02-17', 2000, 1, 'TH418-19A', 0.01, NULL, 0, NULL, 'CB1', NULL, 'Good Used', 0.0, 7259, NULL, NULL, NULL);
 
 -- CUSTOMERS
 INSERT INTO customers (company, contact, parts_manager, parts_manager_email, service_manager, service_manager_email, other, phone, bill_to_phone, fax, email, terms, bill_to_address, bill_to_address_2, bill_to_city, bill_to_state, bill_to_zip, ship_to_address, ship_to_address_2, ship_to_city, ship_to_state, ship_to_zip, date_contacted, comments, customer_type, source, country, is_taxable, payment_type)
