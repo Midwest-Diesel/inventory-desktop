@@ -1,7 +1,7 @@
 import { prompt } from "@/components/library/Prompt";
 import { ask } from "../config/tauri";
 import { editAddOnAltParts, getAllAddOns, getOfficeAddOns } from "../services/addOnsService";
-import { editAltParts, getNextUPStockNum, getPartInfoByPartNum } from "../services/partsService";
+import { addPart, editAltParts, editPart, getNextUPStockNum, getPartInfoByPartNum, searchParts } from "../services/partsService";
 import { formatDate } from "../tools/stringUtils";
 
 
@@ -150,4 +150,41 @@ export const getNextUP = async (): Promise<string | null> => {
 
   const maxNum = Math.max(latestNum, ...queueUPNumbers);
   return `UP${maxNum + 1}`;
+};
+
+/**
+  Removes a specified qty from the qtySold and appends -R1 to the end of the stockNum.
+  Then it duplicates the part without the sold info.
+*/
+export const manualPartReturn = async (part: Part, qty: number) => {
+  const qtySold = Number(part.qtySold) - qty;
+  if (qtySold < 0) {
+    alert(`Cannot remove ${qty} from qtySold of ${Number(part.qtySold)}.`);
+    return;
+  }
+
+  const newPart: Part = {
+    ...part,
+    qty,
+    soldToDate: null,
+    qtySold: 0,
+    sellingPrice: 0,
+    soldTo: null,
+    handwrittenId: null
+  };
+  await addPart(newPart, true);
+
+  const matchingParts = await searchParts({ stockNum: part.stockNum?.replace(/-R\d+$/, ''), showSoldParts: true }, 1, 99999);
+  const maxReturnNum = matchingParts.rows.reduce((max, p) => {
+    const match = p.stockNum?.match(/-R(\d+)$/);
+    if (!match) return max;
+    return Math.max(max, Number(match[1]));
+  }, 0);
+
+  const updatePart: Part = {
+    ...part,
+    qtySold,
+    stockNum: `${part.stockNum?.replace(/-R\d+$/, '')}-R${maxReturnNum + 1}`
+  };
+  await editPart(updatePart);
 };

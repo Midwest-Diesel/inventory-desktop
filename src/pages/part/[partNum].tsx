@@ -9,7 +9,7 @@ import Grid from "@/components/library/grid/Grid";
 import GridItem from "@/components/library/grid/GridItem";
 import { useAtom } from "jotai";
 import { userAtom } from "@/scripts/atoms/state";
-import { addPart, addPartCostIn, addToPartQtyHistory, deletePart, editPart, getPartById, getPartsQtyHistory } from "@/scripts/services/partsService";
+import { addPart, addPartCostIn, addToPartQtyHistory, deletePart, editPart, getPartById, getPartsQtyHistory, searchParts } from "@/scripts/services/partsService";
 import PartPicturesDialog from "@/components/dialogs/PartPicturesDialog";
 import EditPartDetails from "@/components/parts/EditPartDetails";
 import EngineCostOutTable from "@/components/engines/EngineCostOut";
@@ -26,7 +26,7 @@ import { confirm } from "@/scripts/config/tauri";
 import PartQtyHistoryDialog from "@/components/parts/dialogs/PartQtyHistoryDialog";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { prompt } from "@/components/library/Prompt";
-import { getNextUP, removeRemarksSoldText } from "@/scripts/logic/parts";
+import { getNextUP, manualPartReturn, removeRemarksSoldText } from "@/scripts/logic/parts";
 import EngineCostAlertModal from "@/components/parts/modals/EngineCostAlertModal";
 import SurplusCostAlertModal from "@/components/parts/modals/SurplusCostAlertModal";
 
@@ -47,7 +47,7 @@ export default function PartDetails() {
   const params = useParams();
   const partId = Number(params.partNum);
 
-  const { data: part, isFetching } = useQuery<Part | null>({
+  const { data: part, isFetching, refetch: refetchPart } = useQuery<Part | null>({
     queryKey: ['part', partId],
     queryFn: async () => {
       const res = await getPartById(partId);
@@ -186,6 +186,15 @@ export default function PartDetails() {
     printQue();
   };
 
+  const onClickManualReturn = async (part: Part) => {
+    const qty = Number(await prompt('Enter qty returned'));
+    if (qty === 0) return;
+
+    await manualPartReturn(part, qty);
+
+    refetchPart();
+  };
+
 
   if (isFetching) return <Loading />;
   if (!part) throw new Error('Part not found');
@@ -276,6 +285,7 @@ export default function PartDetails() {
             <Button onClick={() => onClickPrint(part)}>Print Tag</Button>
             <Button onClick={() => onClickPrintInjTag()}>Print Inj Tag</Button>
             <Button onClick={() => setPartQtyHistoryOpen(true)} disabled={history.length === 0}>Qty History</Button>
+            <Button onClick={() => onClickManualReturn(part)}>Manual Return</Button>
           </div>
 
 

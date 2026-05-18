@@ -1,8 +1,8 @@
 import { describe, it, expect, beforeEach, beforeAll } from 'vitest';
 import { setApiBaseUrl } from '@/scripts/config/axios';
 import { loginUser } from '@/scripts/services/accountService';
-import { addPart, editPartsInfoPrefix, editWeightDims, getPartInfoByPartNum, getPartsByStockNum, massLocationChange, searchParts } from '@/scripts/services/partsService';
-import { addAltParts, getNextUP, removeAltParts } from '@/scripts/logic/parts';
+import { addPart, editPartsInfoPrefix, editWeightDims, getPartById, getPartInfoByPartNum, getPartsByStockNum, massLocationChange, searchParts } from '@/scripts/services/partsService';
+import { addAltParts, getNextUP, manualPartReturn, removeAltParts } from '@/scripts/logic/parts';
 import { resetDb } from '../resetDatabase';
 
 beforeAll(async () => {
@@ -228,5 +228,22 @@ describe('Parts Integration', () => {
     const searchNewLocation = await searchParts({ location: newLocation, showSoldParts: false }, 1, 999);
     expect(searchOldLocation.rows.length).toEqual(0);
     expect(searchNewLocation.rows.length).toBeGreaterThan(0);
+  });
+
+  it('Manual part return', async () => {
+    const part = await getPartById(2);
+    expect(part).not.toBeNull();
+
+    await manualPartReturn(part!, 1);
+    const originalPart = await getPartById(2);
+    expect(originalPart?.stockNum).toEqual('UP12615-R1');
+    expect(originalPart?.qtySold).toEqual(0);
+    expect(originalPart?.sellingPrice).toEqual(100);
+
+    const newPart = (await getPartsByStockNum('UP12615'))[0];
+    expect(newPart?.stockNum).toEqual('UP12615');
+    expect(newPart?.qty).toEqual(1);
+    expect(newPart?.qtySold).toEqual(0);
+    expect(newPart?.sellingPrice).toEqual(0);
   });
 });
