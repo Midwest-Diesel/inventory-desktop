@@ -95,6 +95,8 @@ export default function HandwrittenItemsTable({ className, handwritten, setHandw
             </thead>
             <tbody>
               {handwritten.handwrittenItems.map((item: HandwrittenItem, i: number) => {
+                const canQuickPick = !['FREIGHT', 'TAX', 'CORE DEPOSIT', 'CORE DEPOSIT PRIORITY', 'FEE'].includes(item.partNum ?? '');
+
                 return (
                   <tr key={i}>
                     {handwritten.invoiceStatus !== 'SENT TO ACCOUNTING' &&
@@ -108,7 +110,7 @@ export default function HandwrittenItemsTable({ className, handwritten, setHandw
                             Core Charge
                           </Button>
                         }
-                        {item.invoiceItemChildren.some((i) => i.stockNum === 'In/Out') &&
+                        {canQuickPick &&
                           <Button variant={['x-small']} onClick={() => toggleQuickPick(item)}>{ quickPickItemId > 0 ? 'Disable' : 'Enable' } Quick Pick</Button>
                         }
                       </td>

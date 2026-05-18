@@ -22,7 +22,7 @@ interface Props {
 
 
 export default function ShippingListModal({ open, onNext, onPrev, handwrittenItems, newShippingListRow }: Props) {
-  const checkIsCondensed = handwrittenItems.filter((i) => ['FREIGHT', 'TAX', 'CORE DEPOSIT'].includes(i.partNum ?? '')).length > 2;
+  const checkIsCondensed = handwrittenItems.filter((i) => ['FREIGHT', 'TAX', 'CORE DEPOSIT', 'CORE DEPOSIT PRIORITY', 'FEE'].includes(i.partNum ?? '')).length > 2;
   const [handwritten, setHandwritten] = useState<Handwritten | null>(null);
   const [date, setDate] = useState<Date>(new Date());
   const [isCondensed, setIsCondensed] = useState(checkIsCondensed);
