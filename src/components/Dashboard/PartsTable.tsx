@@ -80,10 +80,10 @@ export default function PartsTable({ parts, partsData, pageCount, partsQty, rows
             </tr>
           </thead>
           <tbody className="parts-list">
-            {parts && parts.map((part: Part, i) => {
+            {parts && parts.map((part: Part) => {
               const status = extractStatusColors(part);
               return (
-                <tr key={i}>
+                <tr key={part.id}>
                   <td className="parts-list__left-col table-buttons table-buttons--grid">
                     <Button
                       variant={['x-small', 'fit']}

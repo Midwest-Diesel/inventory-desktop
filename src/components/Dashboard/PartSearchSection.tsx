@@ -46,7 +46,6 @@ const hasSearchInput = () => {
 };
 
 export default function PartSearchSection({ selectHandwrittenOpen, setSelectHandwrittenOpen, setSelectedHandwrittenPart, handleNewQuote }: Props) {
-  const toast = useToast();
   const [, setLastSearch] = useAtom<string>(lastPartSearchAtom);
   const [user] = useAtom<User>(userAtom);
   const [selectedCustomer] = useAtom<Customer>(selectedCustomerAtom);
@@ -65,6 +64,7 @@ export default function PartSearchSection({ selectHandwrittenOpen, setSelectHand
   const [partsOnEngs, setPartsOnEngs] = useState<{ partNum: string; engines: Engine[] }[]>([]);
   const [searchParams, setSearchParams] = useState<PartSearchParams | null>(null);
   const [partSearchTabs, setPartSearchTabs] = useState<PartSearchTab[]>(JSON.parse(localStorage.getItem('partSearchTabs') ?? '[]'));
+  const toast = useToast();
 
   const { data: parts, isFetching } = useQuery<PartsRes>({
     queryKey: ['parts', currentPage, showSoldParts],
@@ -72,7 +72,7 @@ export default function PartSearchSection({ selectHandwrittenOpen, setSelectHand
     enabled: !hasSearchInput()
   });
 
-  const { data: search, isFetching: isSearchFetching } = useQuery<PartsRes>({
+  const { data: search, isFetching: isSearchFetching, refetch: refetchSearch } = useQuery<PartsRes>({
     queryKey: ['searchParts', searchParams, showSoldParts],
     queryFn: () => {
       if (!searchParams) throw new Error('No search params');
@@ -148,6 +148,9 @@ export default function PartSearchSection({ selectHandwrittenOpen, setSelectHand
     await addHandwrittenItemChild(quickPickItemId, { partId: part.id, qty: part.qty, cost: part.purchasePrice }, { addSoldRemarks: true });
     const item = await getHandwrittenItemById(quickPickItemId);
     const child = item?.invoiceItemChildren.find((i) => i.stockNum === 'In/Out');
+
+    refetchSearch();
+
     if (!child) return;
     if (child.qty! - part.qty <= 0) {
       await deleteHandwrittenItemChild(child.id);

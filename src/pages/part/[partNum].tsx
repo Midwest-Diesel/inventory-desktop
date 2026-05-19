@@ -9,7 +9,7 @@ import Grid from "@/components/library/grid/Grid";
 import GridItem from "@/components/library/grid/GridItem";
 import { useAtom } from "jotai";
 import { userAtom } from "@/scripts/atoms/state";
-import { addPart, addPartCostIn, addToPartQtyHistory, deletePart, editPart, getPartById, getPartsQtyHistory, searchParts } from "@/scripts/services/partsService";
+import { addPart, addPartCostIn, addToPartQtyHistory, deletePart, editPart, getPartById, getPartsQtyHistory } from "@/scripts/services/partsService";
 import PartPicturesDialog from "@/components/dialogs/PartPicturesDialog";
 import EditPartDetails from "@/components/parts/EditPartDetails";
 import EngineCostOutTable from "@/components/engines/EngineCostOut";
