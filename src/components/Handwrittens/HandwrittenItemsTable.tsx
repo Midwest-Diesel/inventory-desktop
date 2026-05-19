@@ -60,7 +60,8 @@ export default function HandwrittenItemsTable({ className, handwritten, setHandw
   };
 
   const toggleQuickPick = (item: HandwrittenItem) => {
-    setQuickPickItemId(quickPickItemId ? 0 : item.id);
+    const id = quickPickItemId === item.id ? 0 : item.id;
+    setQuickPickItemId(id);
   };
   
 
@@ -100,7 +101,7 @@ export default function HandwrittenItemsTable({ className, handwritten, setHandw
                 return (
                   <tr key={i}>
                     {handwritten.invoiceStatus !== 'SENT TO ACCOUNTING' &&
-                      <td>
+                      <td className="table-buttons table-buttons--grid">
                         {item.location && !item.location.includes('CORE DEPOSIT') &&
                           <Button
                             variant={['x-small']}
@@ -111,7 +112,7 @@ export default function HandwrittenItemsTable({ className, handwritten, setHandw
                           </Button>
                         }
                         {canQuickPick &&
-                          <Button variant={['x-small']} onClick={() => toggleQuickPick(item)}>{ quickPickItemId > 0 ? 'Disable' : 'Enable' } Quick Pick</Button>
+                          <Button variant={['x-small']} onClick={() => toggleQuickPick(item)}>{ quickPickItemId === item.id ? 'Disable' : 'Enable' } Quick Pick</Button>
                         }
                       </td>
                     }
