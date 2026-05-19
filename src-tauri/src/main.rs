@@ -22,7 +22,7 @@ use image::{io::Reader as ImageReader, ImageOutputFormat, DynamicImage, imageops
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use tauri::{Manager, api::shell, AppHandle};
-use std::{env, io::BufWriter};
+use std::{env, ffi::OsStr, io::BufWriter, iter::once, os::windows::ffi::OsStrExt};
 use std::fs::{self, write, File, remove_file, create_dir_all};
 use std::io::{self, Cursor, Write, copy};
 use std::process::{Command};
@@ -32,6 +32,31 @@ use zip::read::ZipArchive;
 use base64::{engine::general_purpose::STANDARD as BASE64_STANDARD, Engine};
 use url::Url;
 use uuid::Uuid;
+use windows_sys::Win32::{Foundation::HANDLE, Graphics::{Gdi::RGBQUAD, Printing::PRINTER_HANDLE}};
+use windows_sys::Win32::Graphics::Gdi::{
+  CreateDCW,
+  DeleteDC,
+  GetDeviceCaps,
+  StretchDIBits,
+  BITMAPINFO,
+  BITMAPINFOHEADER,
+  BI_RGB,
+  DIB_RGB_COLORS,
+  HORZRES,
+  SRCCOPY,
+  VERTRES
+};
+use windows_sys::Win32::Storage::Xps::{
+  EndDoc,
+  EndPage,
+  StartDocW,
+  StartPage,
+  DOCINFOW
+};
+use windows_sys::Win32::Graphics::Printing::{
+  ClosePrinter,
+  OpenPrinterW
+};
 
 #[derive(Deserialize, Debug)]
 struct LatestVersionInfo {
@@ -2045,12 +2070,130 @@ async fn print_engine_tag(image_data: String) -> Result<(), String> {
   res.unwrap()
 }
 
+fn to_wide(s: &str) -> Vec<u16> {
+  OsStr::new(s)
+    .encode_wide()
+    .chain(once(0))
+    .collect()
+}
+
+unsafe fn print_image(printer_name: &str, img: &DynamicImage) -> Result<(), String> {
+  let mut printer_handle = PRINTER_HANDLE {
+    Value: std::ptr::null_mut()
+  };
+  let printer_wide = to_wide(printer_name);
+
+  if OpenPrinterW(
+    printer_wide.as_ptr() as _,
+    &mut printer_handle,
+    std::ptr::null_mut(),
+  ) == 0
+  {
+    return Err("OpenPrinterW failed".into());
+  }
+
+  let hdc = CreateDCW(
+    std::ptr::null(),
+    printer_wide.as_ptr(),
+    std::ptr::null(),
+    std::ptr::null(),
+  );
+
+  if hdc == std::ptr::null_mut() {
+    ClosePrinter(printer_handle);
+    return Err("CreateDCW failed".into());
+  }
+
+  let doc_name = to_wide("Engine Checklist");
+
+  let mut doc_info = DOCINFOW {
+    cbSize: std::mem::size_of::<DOCINFOW>() as i32,
+    lpszDocName: doc_name.as_ptr(),
+    lpszOutput: std::ptr::null(),
+    lpszDatatype: std::ptr::null(),
+    fwType: 0,
+  };
+
+  if StartDocW(hdc, &doc_info) <= 0 {
+    DeleteDC(hdc);
+    ClosePrinter(printer_handle);
+    return Err("StartDocW failed".into());
+  }
+
+  if StartPage(hdc) <= 0 {
+    EndDoc(hdc);
+    DeleteDC(hdc);
+    ClosePrinter(printer_handle);
+    return Err("StartPage failed".into());
+  }
+
+  let rgba = img.to_rgba8();
+  let width = rgba.width() as i32;
+  let height = rgba.height() as i32;
+
+  let mut bmi = BITMAPINFO {
+    bmiHeader: BITMAPINFOHEADER {
+      biSize: std::mem::size_of::<BITMAPINFOHEADER>() as u32,
+      biWidth: width,
+      biHeight: -height,
+      biPlanes: 1,
+      biBitCount: 32,
+      biCompression: BI_RGB,
+      ..Default::default()
+    },
+    bmiColors: [RGBQUAD {
+      rgbBlue: 0,
+      rgbGreen: 0,
+      rgbRed: 0,
+      rgbReserved: 0,
+    }],
+  };
+
+  let printer_width = GetDeviceCaps(hdc, HORZRES.try_into().unwrap());
+  let printer_height = GetDeviceCaps(hdc, VERTRES.try_into().unwrap());
+
+  StretchDIBits(
+    hdc,
+    0,
+    0,
+    printer_width,
+    printer_height,
+    0,
+    0,
+    width,
+    height,
+    rgba.as_ptr() as _,
+    &mut bmi,
+    DIB_RGB_COLORS,
+    SRCCOPY,
+  );
+
+  EndPage(hdc);
+  EndDoc(hdc);
+
+  DeleteDC(hdc);
+  ClosePrinter(printer_handle);
+
+  Ok(())
+}
+
 #[tauri::command]
-async fn print_engine_checklist(image_data: String) -> Result<(), String> {
+async fn print_engine_checklist(
+  image_data: String,
+) -> Result<(), String> {
   let res = tauri::async_runtime::spawn_blocking(move || {
-    let data = BASE64_STANDARD.decode(image_data.split(',').nth(1).unwrap()).map_err(|e| e.to_string())?;
-    let file_path = "C:/mwd/scripts/screenshots/engine_checklist.png";
+    if let Ok(val) = env::var("DISABLE_PRINTING") {
+      if val == "TRUE" {
+        return Ok(());
+      }
+    }
+
+    let data = BASE64_STANDARD
+      .decode(image_data.split(',').nth(1).unwrap())
+      .map_err(|e| e.to_string())?;
+
     let printers = get_available_printers();
+
     let printer = if printers.contains(&PART_TAG_PRINTER.to_string()) {
       PART_TAG_PRINTER.to_string()
     } else {
@@ -2063,7 +2206,9 @@ async fn print_engine_checklist(image_data: String) -> Result<(), String> {
       .decode()
       .map_err(|e| e.to_string())?;
 
-    let rotated_img: DynamicImage = image::DynamicImage::ImageRgba8(rotate90(&img));
+    let rotated_img =
+      image::DynamicImage::ImageRgba8(rotate90(&img));
+
     let upscaled_img = image::imageops::resize(
       &rotated_img,
       rotated_img.width() * 2,
@@ -2071,23 +2216,17 @@ async fn print_engine_checklist(image_data: String) -> Result<(), String> {
       FilterType::Lanczos3,
     );
 
-    {
-      let mut file = File::create(file_path).map_err(|e| e.to_string())?;
-      upscaled_img.write_to(&mut file, ImageOutputFormat::Png).map_err(|e| e.to_string())?;
+    unsafe {
+      print_image(
+        &printer,
+        &DynamicImage::ImageRgba8(upscaled_img),
+      )?;
     }
-
-    if let Ok(val) = env::var("DISABLE_PRINTING") {
-      if val == "TRUE" { return Ok(()) }
-    }
-
-    Command::new("mspaint")
-      .current_dir("C:/mwd/scripts/screenshots")
-      .args([file_path, "/pt", &printer])
-      .output()
-      .map_err(|e| e.to_string())?;
 
     Ok(())
-  }).await;
+  })
+  .await;
+
   res.unwrap()
 }
 
