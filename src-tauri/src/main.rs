@@ -949,9 +949,20 @@ unsafe fn print_image(printer_name: &str, img: &DynamicImage) -> Result<(), Stri
     return Err("StartPage failed".into());
   }
 
-  let rgba = img.to_rgba8();
+  let mut rgba = img.to_rgba8();
   let width = rgba.width() as i32;
   let height = rgba.height() as i32;
+
+  for pixel in rgba.pixels_mut() {
+    let gray =
+      (0.299 * pixel[0] as f32 +
+      0.587 * pixel[1] as f32 +
+      0.114 * pixel[2] as f32) as u8;
+
+    pixel[0] = gray;
+    pixel[1] = gray;
+    pixel[2] = gray;
+  }
 
   let mut bmi = BITMAPINFO {
     bmiHeader: BITMAPINFOHEADER {
@@ -1291,11 +1302,9 @@ async fn print_accounting_handwritten(image_data: String, file_name: String) -> 
       if val == "TRUE" { return Ok(()) }
     }
 
-    Command::new("mspaint")
-      .current_dir("C:/mwd/scripts/screenshots")
-      .args([file_path, "/pt", &printer])
-      .output()
-      .map_err(|e| e.to_string())?;
+    unsafe {
+      print_image(&printer, &DynamicImage::ImageRgba8(upscaled_img))?;
+    }
 
     Ok(())
   }).await;
@@ -1533,11 +1542,9 @@ async fn print_return(image_data: String) -> Result<(), String> {
       if val == "TRUE" { return Ok(()) }
     }
 
-    Command::new("mspaint")
-      .current_dir("C:/mwd/scripts/screenshots")
-      .args([file_path, "/pt", &printer])
-      .output()
-      .map_err(|e| e.to_string())?;
+    unsafe {
+      print_image(&printer, &DynamicImage::ImageRgba8(upscaled_img))?;
+    }
 
     Ok(())
   }).await;

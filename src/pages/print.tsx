@@ -73,7 +73,7 @@ export default function Print() {
 
 
   return (
-    <div ref={printRef} style={{ height: '100vh', backgroundColor: 'white', color: 'black', maxWidth, maxHeight }}>
+    <div ref={printRef} style={{ backgroundColor: 'white', color: 'black', width: maxWidth, height: maxHeight, overflow: 'hidden' }}>
       { activeSheet === 'partTag' && <PartTag data={data} /> }
       { activeSheet === 'injPartTag' && <InjPartTag data={data} /> }
       { activeSheet === 'partTagUP' && <PartTagUP data={data} /> }
