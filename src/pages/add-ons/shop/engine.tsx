@@ -153,7 +153,7 @@ export default function ShopEngineAddOns() {
   };
 
   const handlePrintChecklist = () => {
-    addToQue('engineChecklist', 'print_engine_checklist', null, '1500px', '1000px');
+    addToQue('engineChecklist', 'print_engine_checklist', null, '1500px', '1200px');
     printQue();
   };
 

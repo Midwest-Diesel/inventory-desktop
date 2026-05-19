@@ -165,7 +165,7 @@ export default function PartDetails() {
       if (args.stockNum.toString().toUpperCase().includes('UP')) {
         addToQue('partTagUP', 'print_part_tag', args, '1500px', '1000px');
       } else {
-        addToQue('partTag', 'print_part_tag', args, '1500px', '1000px');
+        addToQue('partTag', 'print_part_tag', args, '1300px', '1000px');
       }
     }
     printQue();

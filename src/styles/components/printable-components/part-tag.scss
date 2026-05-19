@@ -1,7 +1,7 @@
 .part-tag {
   background-color: white;
   color: black;
-  padding: 1rem;
+  padding: 7rem 2rem 10rem 3rem;
   text-align: center;
   font-size: 60px;
   position: relative;
@@ -75,7 +75,7 @@
     align-items: baseline;
     width: 1380px;
     position: absolute;
-    bottom: 0;
+    bottom: 7.5rem;
     left: 3rem;
   }
 
@@ -92,7 +92,7 @@
 .part-tag-up {
   background-color: white;
   color: black;
-  padding: 10rem 1rem 1rem;
+  padding: 10rem 8.5rem 1rem;
   text-align: center;
   font-size: 60px;
   position: relative;
@@ -131,7 +131,7 @@
 
   &__barcode {
     position: absolute;
-    right: 11.5rem;
+    right: 25rem;
     top: 50%;
     width: fit-content;
     height: fit-content;

@@ -129,8 +129,8 @@ export default function Karmak() {
           quotes: chunk,
           total
         },
-        '1100px',
-        '900px',
+        '956.5px',
+        '782.6px',
         null,
         `quotes_list_${salesmanInitials}_${i}.png`
       );

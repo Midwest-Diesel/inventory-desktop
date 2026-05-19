@@ -546,6 +546,7 @@ type FastTrackItem = {
   manufacturer: string
   qty: string
   desc: string
+  condition: string
   alt_parts: string
 };
 

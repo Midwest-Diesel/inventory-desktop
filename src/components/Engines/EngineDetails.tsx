@@ -61,7 +61,7 @@ export default function EngineDetails({ engine, setIsEditing, setEngineProfitOpe
         currentStatus: engine.currentStatus ?? '',
         stockNum: engine.stockNum.toString()
       };
-      addToQue('engineTag', 'print_engine_tag', args, '700px', '1500px');
+      addToQue('engineTag', 'print_engine_tag', args, '700px', '1000px');
     }
     printQue();
   };

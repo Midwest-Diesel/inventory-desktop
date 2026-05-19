@@ -61,7 +61,7 @@ export default function PurchaseOrderDetails({ poData, handleReceiveItem, setIsE
       }) || [],
       total: formatCurrency(total)
     };
-    addToQue('po', 'print_po', args, '816px', '1090px');
+    addToQue('po', 'print_po', args, '709.6px', '947.8px');
     printQue();
   };
 
@@ -97,7 +97,7 @@ export default function PurchaseOrderDetails({ poData, handleReceiveItem, setIsE
       path: 'C:\\MWD\\scripts\\attachments\\PurchaseOrder.pdf'
     };
 
-    pdfQue.addToQue('po', 'email_po', data, args, '816px', '1090px');
+    pdfQue.addToQue('po', 'email_po', data, args, '709.6px', '947.8px');
     pdfQue.exportQue();
   };
 

@@ -241,7 +241,7 @@ export default function HandwrittenDetails({
           };
         }) || []
       };
-      addToQue('packingSlip', 'print_packing_slip', args, '816px', '1090px', null, `packing_slip_${i}.png`);
+      addToQue('packingSlip', 'print_packing_slip', args, '709.6px', '947.8px', null);
     }
     printQue();
   };
@@ -333,7 +333,7 @@ export default function HandwrittenDetails({
       return;
     }
     await editHandwrittenCCNumber(handwritten.id, formatCCNumber(cardNum));
-    addToQue('ccLabel', 'print_cc_label', { cardNum, expDate, cvv, cardZip, cardName, cardAddress }, '280px', '135px');
+    addToQue('ccLabel', 'print_cc_label', { cardNum, expDate, cvv, cardZip, cardName, cardAddress }, '243.5px', '117.4px');
     printQue();
   };
 
@@ -409,7 +409,7 @@ export default function HandwrittenDetails({
 
     const pages = chunkArray(args.items, 20);
     pages.forEach((page, i) => {
-      addToQue('proforma', 'print_proforma', { ...args, items: page, pageNum: i + 1 }, '816px', '1090px');
+      addToQue('proforma', 'print_proforma', { ...args, items: page, pageNum: i + 1 }, '709.6px', '947.8px');
     });
     printQue();
   };
@@ -451,7 +451,7 @@ export default function HandwrittenDetails({
 
     const pages = chunkArray(data.items, 20);
     pages.forEach((page, i) => {
-      pdfQue.addToQue('proforma', 'email_proforma', { ...data, items: page, pageNum: i + 1 }, args, '816px', '1090px');
+      pdfQue.addToQue('proforma', 'email_proforma', { ...data, items: page, pageNum: i + 1 }, args, '709.6px', '947.8px');
     });
     pdfQue.exportQue();
   };

@@ -235,6 +235,7 @@ export const getFastTrackInventory = async (): Promise<FastTrackItem[]> => {
             manufacturer: '',
             qty: '',
             desc: '',
+            condition: '',
             alt_parts: altPart
           });
         }

@@ -108,8 +108,8 @@ export default function PrintInvoiceDialog({ open, setOpen, handwritten }: Props
         })) || []
       };
 
-      addToQue('handwrittenAcct', 'print_accounting_handwritten', { ...args, items: args.items }, '1100px', '816px', null, `accounting_handwritten_${i}.png`);
-      if (hasCore) addToQue('handwrittenCore', 'print_core_handwritten', args, '1100px', '816px', null, `core_handwritten_${i}.png`);
+      addToQue('handwrittenAcct', 'print_accounting_handwritten', { ...args, items: args.items }, '956.53px', '709.6px', null);
+      if (hasCore) addToQue('handwrittenCore', 'print_core_handwritten', args, '956.53px', '709.6px', null);
     }
     printQue();
   };
@@ -173,7 +173,7 @@ export default function PrintInvoiceDialog({ open, setOpen, handwritten }: Props
         })) || []
       };
 
-      addToQue('handwrittenShip', 'print_shipping_handwritten', { ...args, items: chunks[i] }, '1100px', '816px', null, `shipping_handwritten_${i}.png`);
+      addToQue('handwrittenShip', 'print_shipping_handwritten', { ...args, items: chunks[i] }, '956.53px', '709.6px', null);
     }
     printQue();
   };

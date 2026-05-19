@@ -93,9 +93,9 @@ export default function ShopEngineAddOnRow({ addOn, onSave }: Props) {
         currentStatus: addOn.currentStatus ?? '',
         stockNum: addOn.engineNum.toString()
       };
-      addToQue('engineTag', 'print_engine_tag', args, '700px', '1500px');
+      addToQue('engineTag', 'print_engine_tag', args, '700px', '1000px');
     }
-    addToQue('engineChecklist', 'print_engine_checklist', null, '1500px', '1000px');
+    addToQue('engineChecklist', 'print_engine_checklist', null, '1500px', '1200px');
     printQue();
   };
   

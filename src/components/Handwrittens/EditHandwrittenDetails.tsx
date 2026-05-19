@@ -455,8 +455,8 @@ export default function EditHandwrittenDetails({
         }) ?? []
       };
 
-      addToQue('handwrittenAcct', 'print_accounting_handwritten', { ...args, items: args.items }, '1100px', '816px', null, `accounting_handwritten_${i}.png`);
-      if (hasCore) addToQue('handwrittenCore', 'print_core_handwritten', args, '1100px', '816px', null, `core_handwritten_${i}.png`);
+      addToQue('handwrittenAcct', 'print_accounting_handwritten', { ...args, items: args.items }, '956.53px', '709.6px', null);
+      if (hasCore) addToQue('handwrittenCore', 'print_core_handwritten', args, '956.53px', '709.6px', null);
     }
     printQue();
     setLoading(false);
@@ -523,7 +523,7 @@ export default function EditHandwrittenDetails({
         }) ?? []
       };
 
-      addToQue('handwrittenShip', 'print_shipping_handwritten', { ...args, items: chunks[i] }, '1100px', '816px', null, `shipping_handwritten_${i}.png`);
+      addToQue('handwrittenShip', 'print_shipping_handwritten', { ...args, items: chunks[i] }, '956.53px', '709.6px', null);
     }
     printQue();
     setLoading(false);
@@ -532,7 +532,7 @@ export default function EditHandwrittenDetails({
   const handlePrintCCLabel = async () => {
     if (!cardNum || !expDate || !cvv) return;
     await editHandwrittenCCNumber(handwritten.id, formatCCNumber(cardNum));
-    addToQue('ccLabel', 'print_cc_label', { cardNum, expDate, cvv, cardZip, cardName, cardAddress }, '280px', '135px');
+    addToQue('ccLabel', 'print_cc_label', { cardNum, expDate, cvv, cardZip, cardName, cardAddress }, '243.5px', '117.4px');
     printQue();
   };
 

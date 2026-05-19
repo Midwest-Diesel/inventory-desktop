@@ -176,7 +176,7 @@ export default function Return() {
         };
       }) || []
     };
-    addToQue('return', 'print_return', args, '816px', '1090px');
+    addToQue('return', 'print_return', args, '709.6px', '947.8px');
     printQue();
   };
 

@@ -81,7 +81,7 @@ export default function WarrantyDetails() {
         };
       }) || []
     };
-    addToQue('warranty', 'print_warranty', { ...args, claimReason, vendorReport }, '816px', '1090px');
+    addToQue('warranty', 'print_warranty', { ...args, claimReason, vendorReport }, '709.6px', '947.8px');
     printQue();
   };
 
