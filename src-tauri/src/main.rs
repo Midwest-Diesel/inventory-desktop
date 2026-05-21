@@ -150,7 +150,8 @@ struct BOLArgs {
   collect: bool,
   third_party: bool,
   third_party_address: String,
-  account_number: String
+  account_number: String,
+  attn_to: String
 }
 
 #[derive(Deserialize, Serialize)]
@@ -1099,6 +1100,12 @@ fn print_bol(args: BOLArgs) -> Result<(), String> {
       .Wrap = 1
       .Execute , , , , , , , , , , 2
     End With
+    With sheet1.Content.Find
+      .Text = "<ATTN_TO>"
+      .Replacement.Text = "{}"
+      .Wrap = 1
+      .Execute , , , , , , , , , , 2
+    End With
 
     Dim cc
     For Each cc In sheet1.ContentControls
@@ -1127,6 +1134,7 @@ fn print_bol(args: BOLArgs) -> Result<(), String> {
     args.ship_via,
     args.third_party_address,
     args.account_number,
+    args.attn_to,
     if args.prepaid {"True"} else {"False"},
     if args.collect {"True"} else {"False"},
     if args.third_party {"True"} else {"False"},
