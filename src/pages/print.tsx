@@ -29,10 +29,17 @@ export default function Print() {
   const [data, setData] = useState<any>(null);
   const [maxWidth, setMaxWidth] = useState('');
   const [maxHeight, setMaxHeight] = useState('');
+  const [isPrinted, setIsPrinted] = useState(false);
 
   useEffect(() => {
-    if (que.length === 0) return;
+    setIsPrinted(false);
+    if (isPrinted) return;
+    if (que.length === 0) {
+      alert('Nothing to print');
+      push('Home', '/');
+    }
     if (tabs.length === 0) push('Home', '/');
+    setIsPrinted(true);
     handlePrint();
   }, [que]);
 

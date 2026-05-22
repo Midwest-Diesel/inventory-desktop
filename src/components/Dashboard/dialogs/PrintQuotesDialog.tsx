@@ -32,9 +32,8 @@ export default function PrintQuotesDialog({ open, setOpen }: Props) {
 
   const onClickPrintYesterday = async () => {
     for (const salesman of salesmen) {
-      const date = new Date();
-      date.setDate(date.getDate() - 1);
       const quotes = await getYesterdaysQuotesBySalesman(salesman.id);
+      const date = quotes.find((q) => q.date)?.date;
       queueQuotes(salesman.initials, formatDate(date), quotes);
     }
 
