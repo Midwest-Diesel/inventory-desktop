@@ -161,6 +161,10 @@ export default function CustomerDetails({ customer, setCustomer, setIsEditing, o
                 <Table variant={['plain', 'row-details', 'edit-row-details']}>
                   <tbody>
                     <tr>
+                      <th>Contact</th>
+                      <td><Input value={customer.contact ?? ''} /></td>
+                    </tr>
+                    <tr>
                       <th>Phone</th>
                       <td>
                         <Input

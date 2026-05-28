@@ -512,6 +512,7 @@ type Part = {
   profitMargin: number | null
   profitPercent: number | null
   fastTrackStatus: string | null
+  listingId: number | null
 };
 
 type FastTrackItem = {
