@@ -1,4 +1,6 @@
 import api from "../config/axios";
+import { getPartTypeFromDesc } from "../logic/addOns";
+import { getEngineByStockNum } from "./enginesService";
 
 
 const parseItemCondition = (condition: string | null, manufacturer: string | null): string => {
@@ -29,8 +31,11 @@ const parseItemManufacturer = (manufacturer: string | null): string | null => {
   }
 };
 
-const getItemTitleFromAddOn = (addOn: AddOn) => {
-  return `${addOn.manufacturer} ${addOn.partNum} ${addOn.desc} ${addOn.condition}`;
+const getItemTitleFromAddOn = async (addOn: AddOn) => {
+  const engine = await getEngineByStockNum(addOn.engineNum);
+  const engineType = engine?.model ? ` ${engine.model}` : '';
+  const partType = addOn.desc ? ` ${getPartTypeFromDesc(addOn.desc)}` : '';
+  return `${addOn.manufacturer} ${addOn.partNum} ${addOn.desc}${engineType} ${addOn.condition}${partType}`;
 };
 
 // === POST routes === //
