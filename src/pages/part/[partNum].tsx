@@ -123,7 +123,7 @@ export default function PartDetails() {
     if (!stockNum) return;
     const remarks = removeRemarksSoldText(part.remarks);
     const newPart = { ...part, stockNum, remarks, qty: qty + Number(part?.qty), soldTo: null, soldToDate: null, qtySold: 0, sellingPrice: 0, handwrittenId: null, entryDate: new Date() };
-    await addPart(newPart, true);
+    const id = await addPart(newPart, true);
 
     if (part.purchasePrice > 0.01 && await confirm(`This part has cost on it. Do you want to add ${formatCurrency(part.purchasePrice)} to the new UP?`)) {
       for (const row of part.partCostIn) {
@@ -131,8 +131,8 @@ export default function PartDetails() {
       }
     }
 
-    await queryClient.invalidateQueries({ queryKey: ['part', part.id] });
     await onClickPrint(newPart);
+    await push(stockNum, `/part/${id}`);
   };
 
   const handleAddToUP = async () => {
