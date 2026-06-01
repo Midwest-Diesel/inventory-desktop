@@ -105,6 +105,7 @@ type Customer = {
   fleetNotes: string | null
   shippingNotes: string | null
   rating: number
+  createdBy: string | null
 };
 
 type Quote = {

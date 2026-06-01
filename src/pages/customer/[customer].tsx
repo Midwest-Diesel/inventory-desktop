@@ -191,6 +191,10 @@ export default function Customer() {
                         <th>Payment Type</th>
                         <td>{ customer.paymentType }</td>
                       </tr>
+                      <tr>
+                        <th>Created By</th>
+                        <td>{ customer.createdBy }</td>
+                      </tr>
                     </tbody>
                   </Table>
                 </GridItem>
