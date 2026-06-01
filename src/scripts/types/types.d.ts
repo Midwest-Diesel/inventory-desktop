@@ -104,6 +104,7 @@ type Customer = {
   isTaxable: boolean
   fleetNotes: string | null
   shippingNotes: string | null
+  rating: number
 };
 
 type Quote = {

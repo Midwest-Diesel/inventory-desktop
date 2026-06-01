@@ -13,6 +13,7 @@ import Checkbox from "../library/Checkbox";
 import { ask } from "@/scripts/config/tauri";
 import TextArea from "../library/TextArea";
 import { useQuery } from "@tanstack/react-query";
+import Rating from "../library/Rating";
 
 interface Props {
   customer: Customer
@@ -55,6 +56,7 @@ export default function CustomerDetails({ customer, setCustomer, setIsEditing, o
   const [comments, setComments] = useState<string>(commentsDoc.querySelector('body')?.innerText ?? '');
   const [fleetNotes, setFleetNotes] = useState<string>(fleetNotesDoc.querySelector('body')?.innerText ?? '');
   const [country, setCountry] = useState(customer.country ?? '');
+  const [rating, setRating] = useState(customer.rating);
   const [changesSaved, setChangesSaved] = useState(true);
   usePreventNavigation(!changesSaved, 'Leave without saving changes?');
 
@@ -97,7 +99,8 @@ export default function CustomerDetails({ customer, setCustomer, setIsEditing, o
       isTaxable,
       comments,
       fleetNotes,
-      country
+      country,
+      rating
     } as Customer;
     await editCustomer(newCustomer);
     setCustomer(newCustomer);
@@ -126,12 +129,22 @@ export default function CustomerDetails({ customer, setCustomer, setIsEditing, o
       {customer &&
         <>
           <div className="edit-customer-details__header">
-            <Input
-              variant={['md-text']}
-              value={company}
-              onChange={(e) => setCompany(e.target.value)}
-              required
-            />
+            <div style={{ display: 'flex', gap: '0.3rem' }}>
+              <Input
+                variant={['md-text']}
+                value={company}
+                onChange={(e) => setCompany(e.target.value)}
+                required
+              />
+
+              <Rating
+                value={rating}
+                onChange={(position) => {
+                  setRating(position);
+                  setChangesSaved(false);
+                }}
+              />
+            </div>
           
             <div className="header__btn-container">
               <Button

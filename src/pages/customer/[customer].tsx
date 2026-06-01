@@ -21,6 +21,7 @@ import { prompt } from "@/components/library/Prompt";
 import { addVendor, getVendorByName, getVendorNames } from "@/scripts/services/vendorsService";
 import CustomerEmails from "@/components/customers/CustomerEmails";
 import { useQuery } from "@tanstack/react-query";
+import Rating from "@/components/library/Rating";
 
 
 export default function Customer() {
@@ -114,7 +115,10 @@ export default function Customer() {
           :
           <>
             <div className="customer-details__header">
-              <h2>{ customer.company }</h2>
+              <div style={{ display: 'flex', gap: '0.3rem' }}>
+                <h2>{ customer.company }</h2>
+                <Rating style={{ marginBottom: '0.2rem' }} value={customer.rating} disabled />
+              </div>
 
               <div className="header__btn-container">
                 <Button

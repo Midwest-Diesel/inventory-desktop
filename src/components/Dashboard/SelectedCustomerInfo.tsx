@@ -8,6 +8,7 @@ import CustomerContactsBlock from "../customers/contacts/CustomerContactsBlock";
 import { useQuery } from "@tanstack/react-query";
 import { useAtom } from "jotai";
 import { selectedCustomerAtom, userAtom } from "@/scripts/atoms/state";
+import Rating from "../library/Rating";
 
 interface Props {
   expandedDetailsOpen: boolean
@@ -47,7 +48,11 @@ export default function SelectedCustomerInfo({ expandedDetailsOpen }: Props) {
     <div className="selected-customer-info" data-testid="selected-customer-info">
       {!expandedDetailsOpen ?
         <div>
-          <p><strong>Selected Customer:</strong> <Link href={`customer/${customer?.id}`} style={{ fontSize: 'var(--font-md)' }} data-testid="customer-link">{ customer?.company }</Link> <em>{ customerInfo.length > 0 && `(${customerInfo})` }</em></p>
+          <div style={{ display: 'flex', gap: '0.3rem', flexWrap: 'wrap' }}>
+            <p><strong>Selected Customer:</strong> <Link href={`customer/${customer?.id}`} style={{ fontSize: 'var(--font-md)' }} data-testid="customer-link">{ customer?.company }</Link> <em>{ customerInfo.length > 0 && `(${customerInfo})` }</em></p>
+            <Rating style={{ marginTop: '0.2rem' }} value={customer?.rating} disabled />
+          </div>
+
           <p>
             <strong>Contact: </strong>
             { customer?.contact || <em>Not Selected</em> } { (hasSimilarContacts() && userIsAllowed) && <Link style={{ color: 'var(--red-3)', fontWeight: 'bold' }} href={`/fix-contacts?customer-id=${customer?.id}`}>Similar contacts detected!</Link> }
