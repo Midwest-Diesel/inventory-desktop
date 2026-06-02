@@ -3,6 +3,7 @@ import { parseResDate } from "../tools/stringUtils";
 
 interface Search {
   customerId?: number
+  salesmanId?: number
 }
 
 

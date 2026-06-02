@@ -4,6 +4,7 @@ import { setApiBaseUrl } from '@/scripts/config/axios';
 import { loginUser } from '@/scripts/services/accountService';
 import { addCustomer, customerMerge, getCustomerById, getCustomerByName, searchCustomers } from '@/scripts/services/customerService';
 import { getHandwrittenById } from '@/scripts/services/handwrittensService';
+import { addPersonalContact, getPersonalContactsList } from '@/scripts/services/personalContactsListService';
 
 beforeAll(async () => {
   setApiBaseUrl('http://localhost:8001');
@@ -70,5 +71,11 @@ describe('Customers Integration', () => {
     const handwritten = await getHandwrittenById(2);
     expect(handwritten?.customer.id).toEqual(1);
     expect(badCustomer).toBeFalsy();
+  });
+
+  it('Add to personal constacts list', async () => {
+    await addPersonalContact(1);
+    const res = await getPersonalContactsList({ customerId: 1 });
+    expect(res[0]).toMatchObject({ company: 'HEAVY DUTY REBUILDERS', "salesman": "TS" });
   });
 });

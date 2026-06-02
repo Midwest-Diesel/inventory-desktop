@@ -2,15 +2,27 @@ import { formatDate } from "@/scripts/tools/stringUtils";
 import Button from "../library/Button";
 import Table from "../library/Table";
 import { ask } from "@/scripts/config/tauri";
-import { deletePersonalContact } from "@/scripts/services/personalContactsListService";
+import { deletePersonalContact, getPersonalContactsList } from "@/scripts/services/personalContactsListService";
+import UserSelect from "../library/select/UserSelect";
+import { useState } from "react";
+import { useAtom } from "jotai";
+import { userAtom } from "@/scripts/atoms/state";
+import { useQuery } from "@tanstack/react-query";
 
 interface Props {
   closeTable: () => void
-  data: PersonalContact[]
 }
 
 
-export default function PersonalContactsListTable({ closeTable, data }: Props) {
+export default function PersonalContactsListTable({ closeTable }: Props) {
+  const [user] = useAtom<User>(userAtom);
+  const [salesmanId, setSalesmanId] = useState<number | null>(user.id);
+
+  const { data = [], refetch } = useQuery<PersonalContact[]>({
+    queryKey: ['personalContactsList', salesmanId],
+    queryFn: () => getPersonalContactsList({ salesmanId: Number(salesmanId) })
+  });
+
   const handleGoBack = () => {
     closeTable();
   };
@@ -18,12 +30,23 @@ export default function PersonalContactsListTable({ closeTable, data }: Props) {
   const onClickDelete = async (id: number) => {
     if (!await ask('Are you sure you want to delete this contact?')) return;
     await deletePersonalContact(id);
+    refetch();
   };
 
 
   return (
     <div className="reports-table">
       <Button onClick={handleGoBack}>Back</Button>
+      
+      {(user.accessLevel >= 3 || user.id === 7) &&
+        <div style={{ display: 'flex', gap: '0.3rem', margin: '0.5rem 0' }}>
+          <UserSelect
+            value={salesmanId?.toString()}
+            onChange={(e) => setSalesmanId(Number(e.target.value))}
+            userSubtype="sales"
+          />
+        </div>
+      }
 
       <Table>
         <thead>

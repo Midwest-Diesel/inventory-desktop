@@ -42,7 +42,6 @@ import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import PendingHandwrittensTable from "@/components/reports/PendingHandwrittensTable";
 import { getSomeHandwrittensByInvoiceStatus } from "@/scripts/services/handwrittensService";
-import { getPersonalContactsList } from "@/scripts/services/personalContactsListService";
 import PersonalContactsListTable from "@/components/reports/PersonalContactsListTable";
 
 
@@ -63,7 +62,6 @@ export default function Reports() {
   const [partsCompanyData, setPartsCompanyData] = useAtom<SingleCompanyParts[]>(partsCompanyReportAtom);
   const [enginesCompanyData, setEnginesCompanyData] = useAtom<SingleCompanyEngines[]>(enginesCompanyReportAtom);
   const [pendingHandwrittensData, setPendingHandwrittensData] = useAtom<Handwritten[]>(pendingHandwrittensReportAtom);
-  const [personalContactsListData, setPersonalContactsListData] = useAtom<PersonalContact[]>(personalContactsListReportAtom);
   const [handwrittensCompanyData, setHandwrittensCompanyData] = useAtom<HandwrittensCompanyReport[]>(handwrittensCompanyReportAtom);
   const [PBBListData, setPBBListData] = useAtom<PBBReport[]>(PBBListReportAtom);
   const [noLocationPartsData, setNoLocationPartsData] = useAtom<NoLocationPartsReport[]>(noLocationPartsReportAtom);
@@ -112,8 +110,6 @@ export default function Reports() {
   };
 
   const handlePersonalContactsList = async () => {
-    const res = await getPersonalContactsList({});
-    setPersonalContactsListData(res);
     await openTable('personal-contacts-list');
   };
 
@@ -301,7 +297,7 @@ export default function Reports() {
           { isTableOpened('parts-company') && <SingleCompanyPartsTable closeTable={() => openTable('')} data={partsCompanyData} /> }
           { isTableOpened('engines-company') && <SingleCompanyEnginesTable closeTable={() => openTable('')} data={enginesCompanyData} /> }
           { isTableOpened('pending-handwrittens') && <PendingHandwrittensTable closeTable={() => openTable('')} data={pendingHandwrittensData} /> }
-          { isTableOpened('personal-contacts-list') && <PersonalContactsListTable closeTable={() => openTable('')} data={personalContactsListData} /> }
+          { isTableOpened('personal-contacts-list') && <PersonalContactsListTable closeTable={() => openTable('')} /> }
           { isTableOpened('handwrittens-company') && <HandwrittenCompanyTable closeTable={() => openTable('')} data={handwrittensCompanyData} /> }
           { isTableOpened('pbb') && <PBBTable closeTable={() => openTable('')} data={PBBListData} /> }
           { isTableOpened('no-location-parts') && <NoLocationPartsTable closeTable={() => openTable('')} data={noLocationPartsData} /> }
