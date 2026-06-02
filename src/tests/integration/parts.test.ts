@@ -231,17 +231,18 @@ describe('Parts Integration', () => {
   });
 
   it('Manual part return', async () => {
-    const part = await getPartById(2);
+    const part = await getPartById(3);
     expect(part).not.toBeNull();
 
     await manualPartReturn(part!, 1);
-    const originalPart = await getPartById(2);
-    expect(originalPart?.stockNum).toEqual('UP12615-R1');
+    const originalPart = await getPartById(3);
+    expect(originalPart?.stockNum).toEqual('TH609-23C');
     expect(originalPart?.qtySold).toEqual(0);
     expect(originalPart?.sellingPrice).toEqual(100);
 
-    const newPart = (await getPartsByStockNum('UP12615'))[0];
-    expect(newPart?.stockNum).toEqual('UP12615');
+    const newPart = (await getPartsByStockNum('TH609-23C-1'))[0];
+    expect(newPart).not.toBeNull();
+    expect(newPart?.stockNum).toEqual('TH609-23C-1');
     expect(newPart?.qty).toEqual(1);
     expect(newPart?.qtySold).toEqual(0);
     expect(newPart?.sellingPrice).toEqual(0);

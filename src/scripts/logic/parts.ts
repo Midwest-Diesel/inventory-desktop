@@ -153,7 +153,7 @@ export const getNextUP = async (): Promise<string | null> => {
 };
 
 /**
-  Removes a specified qty from the qtySold and appends -R1 to the end of the stockNum.
+  Removes a specified qty from the qtySold and appends a number to the end of the stockNum.
   Then it duplicates the part without the sold info.
 */
 export const manualPartReturn = async (part: Part, qty: number) => {
@@ -163,6 +163,13 @@ export const manualPartReturn = async (part: Part, qty: number) => {
     return;
   }
 
+  const matchingParts = await searchParts({ stockNum: part.stockNum?.replace(/-\d+$/, ''), showSoldParts: true }, 1, 99999);
+  const maxReturnNum = matchingParts.rows.reduce((max, p) => {
+    const match = p.stockNum?.match(/-(\d+)$/);
+    if (!match) return max;
+    return Math.max(max, Number(match[1]));
+  }, 0);
+
   const newPart: Part = {
     ...part,
     qty,
@@ -170,21 +177,11 @@ export const manualPartReturn = async (part: Part, qty: number) => {
     qtySold: 0,
     sellingPrice: 0,
     soldTo: null,
-    handwrittenId: null
+    handwrittenId: null,
+    remarks: removeRemarksSoldText(part.remarks),
+    stockNum: `${part.stockNum?.replace(/-\d+$/, '')}-${maxReturnNum + 1}`
   };
   await addPart(newPart, true);
 
-  const matchingParts = await searchParts({ stockNum: part.stockNum?.replace(/-R\d+$/, ''), showSoldParts: true }, 1, 99999);
-  const maxReturnNum = matchingParts.rows.reduce((max, p) => {
-    const match = p.stockNum?.match(/-R(\d+)$/);
-    if (!match) return max;
-    return Math.max(max, Number(match[1]));
-  }, 0);
-
-  const updatePart: Part = {
-    ...part,
-    qtySold,
-    stockNum: `${part.stockNum?.replace(/-R\d+$/, '')}-R${maxReturnNum + 1}`
-  };
-  await editPart(updatePart);
+  await editPart({ ...part, qtySold });
 };
