@@ -22,6 +22,8 @@ import { addVendor, getVendorByName, getVendorNames } from "@/scripts/services/v
 import CustomerEmails from "@/components/customers/CustomerEmails";
 import { useQuery } from "@tanstack/react-query";
 import Rating from "@/components/library/Rating";
+import { ask } from "@/scripts/config/tauri";
+import { addPersonalContact, getPersonalContactsList } from "@/scripts/services/personalContactsListService";
 
 
 export default function Customer() {
@@ -45,6 +47,12 @@ export default function Customer() {
   const { data: emails = [], isFetching: isFetchingEmails } = useQuery<string[]>({
     queryKey: ['emails', customer],
     queryFn: () => getCustomerEmails(customer!.id),
+    enabled: !!customer
+  });
+
+  const { data: personalContactsList = [], isFetching: isFetchingContactList, refetch: refetchContactList } = useQuery<PersonalContact[]>({
+    queryKey: ['personalContactsList', customer],
+    queryFn: () => getPersonalContactsList({ customerId: customer!.id }),
     enabled: !!customer
   });
 
@@ -77,11 +85,17 @@ export default function Customer() {
   };
 
   const onClickAddVendor = async () => {
-    if (!customer) return;
+    if (!customer || !await ask('Set this customer as a vendor?')) return;
     await addVendor(customer.company ?? '', customer);
     const res = await getVendorNames();
     setVendorsData(res);
     setIsVendor(true);
+  };
+
+  const onClickAddToContactList = async () => {
+    if (!customer || !await ask('Add to contact list?')) return;
+    await addPersonalContact(customer.id);
+    refetchContactList();
   };
 
 
@@ -156,6 +170,9 @@ export default function Customer() {
             <div className="customer-details__top-bar">
               <Button onClick={() => setEditLocDialogOpen(true)}>Edit Map Location</Button>
               { !isVendor && <Button onClick={onClickAddVendor}>Set as Vendor</Button> }
+              {(personalContactsList.length === 0 && !isFetchingContactList) &&
+                <Button onClick={onClickAddToContactList}>Add to Contact List</Button>
+              }
             </div>
           
             <Grid>

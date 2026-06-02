@@ -60,6 +60,16 @@ type Contact = {
   notes: string | null
 };
 
+type PersonalContact = {
+  id: number
+  customerId: number
+  salesman: string
+  company: string
+  phone: string | null
+  contact: string | null
+  dateAdded: Date
+};
+
 type SalesHistory = {
   year: number
   totalSales: number
