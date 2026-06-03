@@ -24,6 +24,8 @@ import { useQuery } from "@tanstack/react-query";
 import Rating from "@/components/library/Rating";
 import { ask } from "@/scripts/config/tauri";
 import { addPersonalContact, getPersonalContactsList } from "@/scripts/services/personalContactsListService";
+import Tag from "@/components/library/Tag";
+import { addTagToCustomer } from "@/scripts/services/tagsService";
 
 
 export default function Customer() {
@@ -57,23 +59,24 @@ export default function Customer() {
   });
 
   useEffect(() => {
-    const fetchData = async () => {
-      if (!params) return;
-      const id = Number(params.customer);
-      const customerRes = await getCustomerById(id);
-      if (!customerRes?.company) return;
-      setCustomer(customerRes);
-      setSalesHistory(await getCustomerSalesHistory(id));
-
-      const vendor = await getVendorByName(customerRes.company);
-      setIsVendor(!!vendor);
-
-      if (!await getMapLocationFromCustomer(id)) setIsOnMap(false);
-      const location = await getMapLocationFromCustomer(customerRes.id);
-      setLocation(location);
-    };
     fetchData();
   }, [params]);
+
+  const fetchData = async () => {
+    if (!params) return;
+    const id = Number(params.customer);
+    const customerRes = await getCustomerById(id);
+    if (!customerRes?.company) return;
+    setCustomer(customerRes);
+    setSalesHistory(await getCustomerSalesHistory(id));
+
+    const vendor = await getVendorByName(customerRes.company);
+    setIsVendor(!!vendor);
+
+    if (!await getMapLocationFromCustomer(id)) setIsOnMap(false);
+    const location = await getMapLocationFromCustomer(customerRes.id);
+    setLocation(location);
+  };
 
   const handleDelete = async () => {
     if (!customer?.id || user.accessLevel <= 1 || await prompt('Type "confirm" to delete this customer') !== 'confirm') return;
@@ -95,6 +98,8 @@ export default function Customer() {
   const onClickAddToContactList = async () => {
     if (!customer || !await ask('Add to contact list?')) return;
     await addPersonalContact(customer.id);
+    await addTagToCustomer(customer.id, 1);
+    await fetchData();
     refetchContactList();
   };
 
@@ -129,9 +134,16 @@ export default function Customer() {
           :
           <>
             <div className="customer-details__header">
-              <div style={{ display: 'flex', gap: '0.3rem' }}>
+              <div style={{ display: 'flex', gap: '0.3rem', alignItems: 'center' }}>
                 <h2>{ customer.company }</h2>
+
                 <Rating style={{ marginBottom: '0.2rem' }} value={customer.rating} disabled />
+                
+                {customer.tags.map((tag) => {
+                  return (
+                    <Tag key={tag.id} text={tag.name} />
+                  );
+                })}
               </div>
 
               <div className="header__btn-container">

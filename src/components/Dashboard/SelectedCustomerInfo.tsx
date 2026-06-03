@@ -9,6 +9,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useAtom } from "jotai";
 import { selectedCustomerAtom, userAtom } from "@/scripts/atoms/state";
 import Rating from "../library/Rating";
+import Tag from "../library/Tag";
 
 interface Props {
   expandedDetailsOpen: boolean
@@ -48,9 +49,15 @@ export default function SelectedCustomerInfo({ expandedDetailsOpen }: Props) {
     <div className="selected-customer-info" data-testid="selected-customer-info">
       {!expandedDetailsOpen ?
         <div>
-          <div style={{ display: 'flex', gap: '0.3rem', flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', gap: '0.3rem', flexWrap: 'wrap', alignItems: 'flex-end' }}>
             <p><strong>Selected Customer:</strong> <Link href={`customer/${customer?.id}`} style={{ fontSize: 'var(--font-md)' }} data-testid="customer-link">{ customer?.company }</Link> <em>{ customerInfo.length > 0 && `(${customerInfo})` }</em></p>
             <Rating style={{ marginTop: '0.2rem' }} value={customer?.rating} disabled />
+       
+            {customer?.tags.map((tag) => {
+              return (
+                <Tag key={tag.id} text={tag.name} />
+              );
+            })}
           </div>
 
           <p>
@@ -60,7 +67,17 @@ export default function SelectedCustomerInfo({ expandedDetailsOpen }: Props) {
         </div>
         :
         <div data-testid="customer-details">
-          <p><strong>Selected Customer:</strong> <Link href={`customer/${customer?.id}`} style={{ fontSize: 'var(--font-md)' }}>{ customer?.company }</Link></p>
+          <div style={{ display: 'flex', gap: '0.3rem', flexWrap: 'wrap', alignItems: 'flex-end' }}>
+            <p><strong>Selected Customer:</strong> <Link href={`customer/${customer?.id}`} style={{ fontSize: 'var(--font-md)' }}>{ customer?.company }</Link></p>
+            <Rating style={{ marginTop: '0.2rem' }} value={customer?.rating} disabled />
+       
+            {customer?.tags.map((tag) => {
+              return (
+                <Tag key={tag.id} text={tag.name} />
+              );
+            })}
+          </div>
+
           <Grid>
             <GridItem variant={['low-opacity-bg']}>
               <Table variant={['plain', 'row-details']}>

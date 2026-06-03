@@ -67,6 +67,7 @@ type PersonalContact = {
   company: string
   phone: string | null
   contact: string | null
+  email: string | null
   dateAdded: Date
 };
 
@@ -116,6 +117,7 @@ type Customer = {
   shippingNotes: string | null
   rating: number
   createdBy: string | null
+  tags: Tag[]
 };
 
 type Quote = {
@@ -1015,6 +1017,13 @@ type FreightCarrier = {
   name: string
   type: string
   isSkidRateApplied: boolean
+};
+
+type TagType = 'customer';
+
+type Tag = {
+  id: number
+  name: string
 };
 
 interface Perf {

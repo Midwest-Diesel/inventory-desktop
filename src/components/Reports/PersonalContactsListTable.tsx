@@ -8,6 +8,7 @@ import { useState } from "react";
 import { useAtom } from "jotai";
 import { userAtom } from "@/scripts/atoms/state";
 import { useQuery } from "@tanstack/react-query";
+import { deleteTagFromCustomer } from "@/scripts/services/tagsService";
 
 interface Props {
   closeTable: () => void
@@ -27,9 +28,10 @@ export default function PersonalContactsListTable({ closeTable }: Props) {
     closeTable();
   };
 
-  const onClickDelete = async (id: number) => {
+  const onClickDelete = async (contact: PersonalContact) => {
     if (!await ask('Are you sure you want to delete this contact?')) return;
-    await deletePersonalContact(id);
+    await deletePersonalContact(contact.id);
+    await deleteTagFromCustomer(contact.customerId, 1);
     refetch();
   };
 
@@ -56,6 +58,7 @@ export default function PersonalContactsListTable({ closeTable }: Props) {
             <th>Customer</th>
             <th>Phone</th>
             <th>Contact</th>
+            <th>Email</th>
             <th></th>
           </tr>
         </thead>
@@ -68,8 +71,9 @@ export default function PersonalContactsListTable({ closeTable }: Props) {
                 <td>{ row.company }</td>
                 <td>{ row.phone }</td>
                 <td>{ row.contact }</td>
+                <td>{ row.email }</td>
                 <td className="table-buttons table-buttons--grid">
-                  <Button variant={['danger']} onClick={() => onClickDelete(row.id)}>Delete</Button>
+                  <Button variant={['danger']} onClick={() => onClickDelete(row)}>Delete</Button>
                 </td>
               </tr>
             );

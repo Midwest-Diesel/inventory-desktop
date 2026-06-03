@@ -14,6 +14,8 @@ import { ask } from "@/scripts/config/tauri";
 import TextArea from "../library/TextArea";
 import { useQuery } from "@tanstack/react-query";
 import Rating from "../library/Rating";
+import { addTagToCustomer, deleteTagFromCustomer, getTags } from "@/scripts/services/tagsService";
+import Tag from "../library/Tag";
 
 interface Props {
   customer: Customer
@@ -57,12 +59,18 @@ export default function CustomerDetails({ customer, setCustomer, setIsEditing, o
   const [fleetNotes, setFleetNotes] = useState<string>(fleetNotesDoc.querySelector('body')?.innerText ?? '');
   const [country, setCountry] = useState(customer.country ?? '');
   const [rating, setRating] = useState(customer.rating);
+  const [customerTags, setCustomerTags] = useState(customer.tags ?? []);
   const [changesSaved, setChangesSaved] = useState(true);
   usePreventNavigation(!changesSaved, 'Leave without saving changes?');
 
   const { data: customerTypes = [] } = useQuery<string[]>({
     queryKey: ['customerTypes'],
     queryFn: getCustomerTypes
+  });
+
+  const { data: tags = [] } = useQuery<Tag[]>({
+    queryKey: ['tags'],
+    queryFn: () => getTags('customer')
   });
 
   const onSubmitSaveChanges = async (e: FormEvent) => {
@@ -103,6 +111,19 @@ export default function CustomerDetails({ customer, setCustomer, setIsEditing, o
       rating
     } as Customer;
     await editCustomer(newCustomer);
+
+    const originalTags = customer.tags ?? [];
+    const tagsToAdd = customerTags.filter((tag) => !originalTags.some((t) => t.id === tag.id));
+    const tagsToDelete = originalTags.filter((tag) => !customerTags.some((t) => t.id === tag.id));
+
+    for (const tag of tagsToAdd) {
+      await addTagToCustomer(customer.id, tag.id);
+    }
+
+    for (const tag of tagsToDelete) {
+      await deleteTagFromCustomer(customer.id, tag.id);
+    }
+
     setCustomer(newCustomer);
     setIsEditing(false);
   };
@@ -129,7 +150,7 @@ export default function CustomerDetails({ customer, setCustomer, setIsEditing, o
       {customer &&
         <>
           <div className="edit-customer-details__header">
-            <div style={{ display: 'flex', gap: '0.3rem' }}>
+            <div style={{ display: 'flex', gap: '0.3rem', alignItems: 'center' }}>
               <Input
                 variant={['md-text']}
                 value={company}
@@ -144,6 +165,12 @@ export default function CustomerDetails({ customer, setCustomer, setIsEditing, o
                   setChangesSaved(false);
                 }}
               />
+
+              {customer.tags.map((tag) => {
+                return (
+                  <Tag key={tag.id} text={tag.name} />
+                );
+              })}
             </div>
           
             <div className="header__btn-container">
