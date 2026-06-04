@@ -35,7 +35,7 @@
     max-height: 9rem;
     overflow-y: auto;
     overflow-x: hidden;
-    width: fit-content;
+    min-width: fit-content;
   }
 }
 

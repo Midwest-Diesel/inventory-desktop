@@ -313,7 +313,7 @@ export default function Customer() {
                 </GridItem>
               </GridItem>
 
-              <GridItem colSpan={4} variant={['no-style']}>
+              <GridItem colSpan={5} variant={['no-style']}>
                 <GridItem variant={['no-style']}>
                   <div style={{ display: 'flex', gap: '2rem' }}>
                     <div className="customer-details__sales-history" style={{ maxHeight: '15.5rem' }}>

@@ -143,7 +143,6 @@ export default function OfficePartAddonRow({ addOn, addOns, setAddons, onSave, o
     if (!await ask(`Are you sure you want to add this item?\n\nAlt Parts:\n${altParts.join(', ')}`)) return;
     setLoading(true);
 
-    // Create part
     const newPart = {
       ...updatedAddOn,
       soldToDate: new Date(),
@@ -173,7 +172,6 @@ export default function OfficePartAddonRow({ addOn, addOns, setAddons, onSave, o
       await addPartCostIn(newPart.stockNum ?? '', Number(newPart.purchasePrice), newPart.invoiceNum, newPart.purchasedFrom ?? '', 'PurchasePrice', '');
     }
 
-    // Clean up
     await deleteAddOn(updatedAddOn.id);
     setAddons(addOns.filter((a) => a.id !== updatedAddOn.id));
     setLoading(false);
