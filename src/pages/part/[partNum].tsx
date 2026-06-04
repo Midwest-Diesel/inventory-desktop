@@ -286,6 +286,11 @@ export default function PartDetails() {
             <Button onClick={() => onClickPrintInjTag()}>Print Inj Tag</Button>
             <Button onClick={() => setPartQtyHistoryOpen(true)} disabled={history.length === 0}>Qty History</Button>
             <Button onClick={() => onClickManualReturn(part)}>Manual Return</Button>
+            {part.listingId &&
+              <a href={`https://www.ebay.com/itm/${part.listingId}`} target="_blank" rel="noopener noreferrer">
+                Ebay Listing
+              </a>
+            }
           </div>
 
 

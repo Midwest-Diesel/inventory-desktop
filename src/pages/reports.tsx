@@ -35,7 +35,27 @@ import SingleCompanyPartsTable from "@/components/reports/SingleCompanyPartsTabl
 import SingleCompanyTable from "@/components/reports/SingleCompanyTable";
 import PartAvailabilityTable from "@/components/reports/PartAvailabilityTable";
 import { useNavState } from "@/hooks/useNavState";
-import { allCompaniesReportAtom, allEnginesReportAtom, allPartsReportAtom, allSalesmenReportAtom, allSourcesReportAtom, arielSalesReportAtom, enginesCompanyReportAtom, handwrittensCompanyReportAtom, noLocationPartsReportAtom, outstandingHighCoresReportAtom, partDescReportAtom, partsCompanyReportAtom, PBBListReportAtom, pendingHandwrittensReportAtom, personalContactsListReportAtom, pricingChangesReportAtom, recentSearchesReportAtom, salesByBillToCompanyReportAtom, singleCompanyReportAtom, theMachinesReportAtom } from "@/scripts/atoms/reports";
+import {
+  allCompaniesReportAtom,
+  allEnginesReportAtom,
+  allPartsReportAtom,
+  allSalesmenReportAtom,
+  allSourcesReportAtom,
+  arielSalesReportAtom,
+  enginesCompanyReportAtom,
+  handwrittensCompanyReportAtom,
+  noLocationPartsReportAtom,
+  outstandingHighCoresReportAtom,
+  partDescReportAtom,
+  partsCompanyReportAtom,
+  PBBListReportAtom,
+  pendingHandwrittensReportAtom,
+  pricingChangesReportAtom,
+  recentSearchesReportAtom,
+  salesByBillToCompanyReportAtom,
+  singleCompanyReportAtom,
+  theMachinesReportAtom
+} from "@/scripts/atoms/reports";
 import { reportNoLocationParts, reportOutstandingCores, reportPBB } from "@/scripts/services/reportsService";
 import { useAtom } from "jotai";
 import { useState } from "react";

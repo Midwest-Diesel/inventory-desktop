@@ -14,7 +14,7 @@ import { ask } from "@/scripts/config/tauri";
 import TextArea from "../library/TextArea";
 import { useQuery } from "@tanstack/react-query";
 import Rating from "../library/Rating";
-import { addTagToCustomer, deleteTagFromCustomer, getTags } from "@/scripts/services/tagsService";
+import { addTagToCustomer, deleteTagFromCustomer } from "@/scripts/services/tagsService";
 import Tag from "../library/Tag";
 
 interface Props {
@@ -59,18 +59,13 @@ export default function CustomerDetails({ customer, setCustomer, setIsEditing, o
   const [fleetNotes, setFleetNotes] = useState<string>(fleetNotesDoc.querySelector('body')?.innerText ?? '');
   const [country, setCountry] = useState(customer.country ?? '');
   const [rating, setRating] = useState(customer.rating);
-  const [customerTags, setCustomerTags] = useState(customer.tags ?? []);
+  const [customerTags] = useState(customer.tags ?? []);
   const [changesSaved, setChangesSaved] = useState(true);
   usePreventNavigation(!changesSaved, 'Leave without saving changes?');
 
   const { data: customerTypes = [] } = useQuery<string[]>({
     queryKey: ['customerTypes'],
     queryFn: getCustomerTypes
-  });
-
-  const { data: tags = [] } = useQuery<Tag[]>({
-    queryKey: ['tags'],
-    queryFn: () => getTags('customer')
   });
 
   const onSubmitSaveChanges = async (e: FormEvent) => {
