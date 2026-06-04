@@ -34,22 +34,23 @@ const parseItemManufacturer = (manufacturer: string | null): string | null => {
 const getItemTitleFromAddOn = async (addOn: AddOn) => {
   const engine = await getEngineByStockNum(addOn.engineNum);
   const engineType = engine?.model ? ` ${engine.model}` : '';
-  const partType = addOn.desc ? ` ${getPartTypeFromDesc(addOn.desc)}` : '';
-  return `${addOn.manufacturer} ${addOn.partNum} ${addOn.desc}${engineType} ${addOn.condition}${partType}`;
+  const partType = addOn.desc ? ` ${getPartTypeFromDesc(addOn.desc) ?? ''}` : '';
+  return `${addOn.manufacturer} ${addOn.partNum} ${addOn.desc}(${engineType}) ${addOn.condition}${partType}`;
 };
 
 // === POST routes === //
 
 export const addEbayItem = async (addOn: AddOn) => {
   try {
+    const desc = await getItemTitleFromAddOn(addOn);
     const item = {
       addOnQty: addOn.qty,
       partNum: addOn.partNum,
       stockNum: addOn.stockNum,
       condition: parseItemCondition(addOn.condition, addOn.manufacturer),
       manufacturer: parseItemManufacturer(addOn.manufacturer),
-      title: getItemTitleFromAddOn(addOn),
-      desc: getItemTitleFromAddOn(addOn)
+      title: desc,
+      desc
     };
     await api.post('/api/ebay/item', item);
   } catch (error) {
