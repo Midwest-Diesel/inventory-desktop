@@ -168,7 +168,7 @@ export default function ShopEngineAddOnRow({ addOn, onSave }: Props) {
                 <td>
                   <Input
                     variant={['small', 'thin']}
-                    value={addOn.location !== null ? addOn.location.trim() : ''}
+                    value={addOn.location !== null ? addOn.location : ''}
                     onChange={(e: any) => handleEditAddOn({ ...addOn, location: e.target.value })}
                   />
                 </td>

@@ -169,7 +169,7 @@ export default function OfficeEngineAddOnRow({ addOn, onSave }: Props) {
                 <td>
                   <Input
                     variant={['small', 'thin']}
-                    value={addOn.location !== null ? addOn.location?.trim() : ''}
+                    value={addOn.location !== null ? addOn.location : ''}
                     onChange={(e) => handleEditAddOn({ ...addOn, location: e.target.value })}
                   />
                 </td>
