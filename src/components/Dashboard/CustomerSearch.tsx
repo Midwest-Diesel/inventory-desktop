@@ -114,7 +114,7 @@ export default function CustomerSearch({ selectedCustomer, setSelectedCustomer, 
       <HandwrittensListModal
         open={handwrittensModalOpen}
         setOpen={setHandwrittensModalOpen}
-        company={selectedCustomer.company ?? ''}
+        customerId={selectedCustomer.id}
       />
 
       <h2 className="no-select">Customer Search</h2>

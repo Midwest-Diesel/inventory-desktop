@@ -152,10 +152,9 @@ export const getSomeHandwrittensByAccountingStatus = async (page: number, limit:
   }
 };
 
-export const getCustomerHandwrittens = async (billToCompany: string): Promise<CustomerHandwritten[]> => {
+export const getCustomerHandwrittens = async (customerId: number): Promise<CustomerHandwritten[]> => {
   try {
-    const params = new URLSearchParams({ billToCompany });
-    const res = await api.get(`/api/handwrittens/customer?${params.toString()}`);
+    const res = await api.get(`/api/handwrittens/customer`, { params: { customerId } });
     return res.data.map((item: any) => ({ ...item, date: parseResDate(item.date) }));
   } catch (error) {
     console.error(error);
@@ -163,9 +162,9 @@ export const getCustomerHandwrittens = async (billToCompany: string): Promise<Cu
   }
 };
 
-export const getCustomerHandwrittenItems = async (billToCompany: string): Promise<CustomerHandwrittenItem[]> => {
+export const getCustomerHandwrittenItems = async (customerId: number): Promise<CustomerHandwrittenItem[]> => {
   try {
-    const res = await api.get(`/api/handwrittens/item/customer/${billToCompany}`);
+    const res = await api.get(`/api/handwrittens/item/customer/${customerId}`);
     return res.data.map((item: any) => ({ ...item, date: parseResDate(item.date) }));
   } catch (error) {
     console.error(error);

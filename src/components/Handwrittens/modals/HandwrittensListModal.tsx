@@ -7,11 +7,11 @@ import CustomerHandwrittensList from "@/components/dashboard/CustomerHandwritten
 interface Props {
   open: boolean
   setOpen: (value: boolean) => void
-  company: string
+  customerId: number
 }
 
 
-export default function HandwrittensListModal({ open, setOpen, company }: Props) {
+export default function HandwrittensListModal({ open, setOpen, customerId }: Props) {
   const [showItems, setShowItems] = useState(false);
 
   useEffect(() => {
@@ -31,9 +31,9 @@ export default function HandwrittensListModal({ open, setOpen, company }: Props)
       </div>
 
       {showItems ?
-        <CustomerHandwrittenItemsList company={company} />
+        <CustomerHandwrittenItemsList customerId={customerId} />
         :
-        <CustomerHandwrittensList company={company} />
+        <CustomerHandwrittensList customerId={customerId} />
       }
     </Modal>
   );

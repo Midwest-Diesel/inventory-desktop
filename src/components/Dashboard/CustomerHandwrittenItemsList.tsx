@@ -6,15 +6,15 @@ import Link from "../library/Link";
 import Loading from "../library/Loading";
 
 interface Props {
-  company: string
+  customerId: number
 }
 
 
-export default function CustomerHandwrittenItemsList({ company }: Props) {
+export default function CustomerHandwrittenItemsList({ customerId }: Props) {
   const { data: rows = [], isFetching } = useQuery<CustomerHandwrittenItem[]>({
     queryKey: ['rows', open],
     queryFn: async () => {
-      const res = await getCustomerHandwrittenItems(company);
+      const res = await getCustomerHandwrittenItems(customerId);
       return res;
     }
   });
