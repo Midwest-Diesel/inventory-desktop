@@ -45,7 +45,6 @@ export default function PersonalContactsListTable({ closeTable }: Props) {
           <UserSelect
             value={salesmanId?.toString()}
             onChange={(e) => setSalesmanId(Number(e.target.value))}
-            userSubtype="sales"
           />
         </div>
       }

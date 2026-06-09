@@ -1,6 +1,7 @@
 import api from "../config/axios";
 import { parseResDate } from "../tools/stringUtils";
 import { isObjectNull } from "../tools/utils";
+import { editEbayItemQty, getOfferBySku } from "./ebayService";
 import { checkImageExists } from "./imagesService";
 
 interface PartPricing {
@@ -330,6 +331,12 @@ export const addPartCostIn = async (stockNum: string, cost: number, invoiceNum: 
 export const addToPartQtyHistory = async (partId: number, qty: number) => {
   try {
     await api.post('/api/parts/qty-history', { partId, qty, date: new Date() });
+    
+    const part = await getPartById(partId);
+    if (part?.listingId && part.stockNum) {
+      const offer = await getOfferBySku(part.stockNum);
+      await editEbayItemQty({ offerId: offer?.offerId ?? null, sku: part.stockNum, qty: part.qty + qty });
+    }
   } catch (error) {
     console.error(error);
     alert(`Error in [addToPartQtyHistory] ${error}`);
