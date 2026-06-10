@@ -20,7 +20,8 @@ interface AllCompaniesReport {
   billToState: string
   billToZip: string
   country: string
-  total: number
+  sales: number
+  invoices: number
 }
 
 interface AllPartsReport {
