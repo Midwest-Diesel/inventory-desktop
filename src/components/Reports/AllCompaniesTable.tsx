@@ -14,7 +14,7 @@ export default function AllCompaniesTable({ closeTable, data }: Props) {
   const [total, setTotal] = useState(0);
 
   useEffect(() => {
-    setTotal(data.reduce((acc, cur) => acc + cur.total, 0));
+    setTotal(data.reduce((acc, cur) => acc + cur.sales, 0));
   }, [data]);
 
   const handleGoBack = () => {
@@ -38,7 +38,8 @@ export default function AllCompaniesTable({ closeTable, data }: Props) {
             <th>BillToState</th>
             <th>BillToZip</th>
             <th>Country</th>
-            <th>Total</th>
+            <th>Sales</th>
+            <th>Invoices</th>
           </tr>
         </thead>
         <tbody>
@@ -51,7 +52,8 @@ export default function AllCompaniesTable({ closeTable, data }: Props) {
                 <td>{ row.billToState }</td>
                 <td>{ row.billToZip }</td>
                 <td>{ row.country }</td>
-                <td>{ formatCurrency(row.total) }</td>
+                <td>{ formatCurrency(row.sales) }</td>
+                <td>{ row.invoices }</td>
               </tr>
             );
           })}
