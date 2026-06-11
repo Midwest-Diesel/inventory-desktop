@@ -187,9 +187,9 @@ export const getSomeUnsoldItems = async (page: number, limit: number, salesmanId
   }
 };
 
-export const getEndOfDayHandwrittens = async () => {
+export const getEndOfDayHandwrittens = async (date: Date) => {
   try {
-    const res = await api.get(`/api/handwrittens/end-of-day`);
+    const res = await api.get(`/api/handwrittens/end-of-day`, { params: { date } });
     return parseHandwrittenRes(res.data);
   } catch (error) {
     console.error(error);
