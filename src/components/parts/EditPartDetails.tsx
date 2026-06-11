@@ -375,16 +375,17 @@ export default function EditPartDetails({ part, setPart, setIsEditingPart, partC
                     <Select
                       variant={['label-space-between', 'label-full-width', 'label-bold']}
                       value={manufacturer}
-                      onChange={(e: any) => setManufacturer(e.target.value)}
+                      onChange={(e) => setManufacturer(e.target.value)}
                     >
                       <option value="">-- SELECT MANUFACTURER --</option>
-                      <option value="Caterpillar">Caterpillar</option>
-                      <option value="Cummins">Cummins</option>
-                      <option value="Detriot Diesel">Detriot Diesel</option>
-                      <option value="New Cat">New Cat</option>
-                      <option value="Perkins">Perkins</option>
-                      <option value="New">New</option>
-                      <option value="John Deere">John Deere</option>
+                      <option>Caterpillar</option>
+                      <option>Cummins</option>
+                      <option>Detriot Diesel</option>
+                      <option>New Cat</option>
+                      <option>New Genuine Caterpillar</option>
+                      <option>Perkins</option>
+                      <option>New</option>
+                      <option>John Deere</option>
                     </Select>
                   </td>
                 </tr>
