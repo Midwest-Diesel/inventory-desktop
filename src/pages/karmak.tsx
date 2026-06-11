@@ -5,7 +5,7 @@ import Pagination from "@/components/library/Pagination";
 import Table from "@/components/library/Table";
 import { invoke } from "@/scripts/config/tauri";
 import { getEndOfDayHandwrittens, getSomeHandwrittensByAccountingStatus } from "@/scripts/services/handwrittensService";
-import { formatDate } from "@/scripts/tools/stringUtils";
+import { formatDate, parseDateInputValue } from "@/scripts/tools/stringUtils";
 import Link from "@/components/library/Link";
 import { useEffect, useState } from "react";
 import { useAtom } from "jotai";
@@ -17,6 +17,7 @@ import { usePrintQue } from "@/hooks/usePrintQue";
 import { getYesterdaysQuotesBySalesman } from "@/scripts/services/quotesService";
 import { getAllUsers } from "@/scripts/services/accountService";
 import { chunkArray } from "@/scripts/tools/utils";
+import Input from "@/components/library/Input";
 
 type AccountingStatus = '' | 'all' | 'IN PROCESS' | 'COMPLETE';
 
@@ -27,6 +28,7 @@ const MAX_ROWS = 17;
 export default function Karmak() {
   const [currentStatus, setCurrentStatus] = useAtom(accountingPageFilterAtom);
   const [currentPage, setCurrentPage] = useState(1);
+  const [date, setDate] = useState<Date>(new Date());
   const { addToQue, printQue } = usePrintQue();
 
   const { data: salesmen = [] } = useQuery<User[]>({
@@ -62,7 +64,7 @@ export default function Karmak() {
   };
 
   const handleEndOfDay = async () => {
-    const res = await getEndOfDayHandwrittens();
+    const res = await getEndOfDayHandwrittens(date);
     if (res.length === 0) {
       return alert('Could not find any handwrittens marked of EOD.');
     }
@@ -142,7 +144,19 @@ export default function Karmak() {
       <div className="karmak-page">
         <h1>Accounting</h1>
         <div className="karmak-page__top-buttons">
-          <Button onClick={handleEndOfDay}>End of Day</Button>
+          <Button
+            style={{ whiteSpace: 'nowrap', height: 'fit-content', alignSelf: 'center' }}
+            onClick={handleEndOfDay}
+          >
+            End of Day
+          </Button>
+
+          <Input
+            variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+            value={parseDateInputValue(date)}
+            onChange={(e: any) => setDate(new Date(e.target.value))}
+            type="date"
+          />
         </div>
         <hr />
         <div className="karmak-page__top-buttons">
