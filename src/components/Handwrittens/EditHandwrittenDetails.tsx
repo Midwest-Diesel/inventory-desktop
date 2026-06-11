@@ -1,4 +1,4 @@
-import { quickPickItemIdAtom, sourcesAtom } from "@/scripts/atoms/state";
+import { quickPickItemIdAtom, sourcesAtom, userAtom } from "@/scripts/atoms/state";
 import { addHandwrittenItem, deleteHandwrittenItem, editHandwritten, editHandwrittenCCNumber, editHandwrittenHasPrinted, editHandwrittenItem, editHandwrittenTaxable, getHandwrittenById, getHandwrittenEmails } from "@/scripts/services/handwrittensService";
 import { useAtom } from "jotai";
 import { FormEvent, Fragment, useEffect, useRef, useState } from "react";
@@ -89,6 +89,7 @@ export default function EditHandwrittenDetails({
   setAddQtyDialogOpen
 }: Props) {
   const { addToQue, printQue } = usePrintQue();
+  const [currentUser] = useAtom<User>(userAtom);
   const [sourcesData, setSourcesData] = useAtom<string[]>(sourcesAtom);
   const [quickPickItemId, setQuickPickItemId] = useAtom<number>(quickPickItemIdAtom);
   const [date, setDate] = useState<Date>(handwritten.date);
@@ -288,7 +289,12 @@ export default function EditHandwrittenDetails({
 
     // Start SEND TO ACCOUNTING process
     setChangeCustomerDialogData(newInvoice);
-    setAccountingProcessOpen(true);
+    if (currentUser.subtype !== 'frontDesk') {
+      setAccountingProcessOpen(true);
+    } else {
+      setIsEditing(false);
+    }
+    
     setLoading(false);
   };
 
