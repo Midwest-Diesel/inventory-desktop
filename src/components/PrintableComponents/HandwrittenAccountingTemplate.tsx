@@ -142,7 +142,13 @@ export default function HandwrittenAccountingTemplate({ data }: Props) {
           </div>
         </div>
         
-        { (data.blind || data.npi) && <h1 style={{ fontSize: 'var(--font-xxl)', margin: '-2rem 1rem 0 0' }}>BLIND</h1> }
+        {(data.blind || data.npi) &&
+          <h1 style={{ fontSize: 'var(--font-xxl)', margin: '-2rem 1rem 0 0' }}>
+            { data.blind && 'BLIND' }
+            { (data.blind && data.npi) && ' / ' }
+            { data.npi && 'NPI' }
+          </h1>
+        }
       </div>
 
       <Table style={{ marginTop: '0.3rem' }} variant={['plain']}>
