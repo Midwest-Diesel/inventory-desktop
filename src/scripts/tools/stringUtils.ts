@@ -1,3 +1,11 @@
+export const formatWeightDims = (weightDims: WeightDims[]): string => {
+  const rows: string[] = [];
+  weightDims.forEach((row) => {
+    rows.push(`${(row.shipmentQty > 1 || weightDims.length > 1) ? `(QTY ${row.shipmentQty}) ` : ''}${row.shipmentType} - ${row.lbs} lbs, L: ${row.length} x W: ${row.width} x H: ${row.height}`);
+  });
+  return rows.join('\n');
+};
+
 export const formatDate = (date: Date | string | null | undefined): string => {
   if (!date) return '';
   const d = date instanceof Date ? date : new Date(date);

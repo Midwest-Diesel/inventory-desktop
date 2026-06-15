@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { formatCCNumber, formatCurrency, formatDate, formatPhone, formatTime, parsePhone, parseResDate, toAbsolutePath } from "@/scripts/tools/stringUtils";
+import { formatCCNumber, formatCurrency, formatDate, formatPhone, formatTime, formatWeightDims, parsePhone, parseResDate, toAbsolutePath } from "@/scripts/tools/stringUtils";
 import { extractStatusColors } from '@/scripts/logic/partSearch';
 
 
@@ -251,5 +251,22 @@ describe('Format CCNumber', () => {
 
   test('Should parse number with incorrect length', () => {
     expect(formatCCNumber('414141415555')).toEqual('XXXXXXXXXXXX5555');
+  });
+});
+
+describe('formatWeightDims', () => {
+  test('Format single row', () => {
+    const weightDims: WeightDims[] = [
+      { lbs: 12, width: 12, height: 6, length: 16, shipmentQty: 1, shipmentType: 'Small Pack' }
+    ];
+    expect(formatWeightDims(weightDims)).toEqual('Small Pack - 12 lbs, L: 16 x W: 12 x H: 6');
+  });
+
+  test('Format multiple rows', () => {
+    const weightDims: WeightDims[] = [
+      { lbs: 12, width: 12, height: 6, length: 16, shipmentQty: 1, shipmentType: 'Small Pack' },
+      { lbs: 63, width: 14, height: 12, length: 14, shipmentQty: 6, shipmentType: 'Small Pack' }
+    ];
+    expect(formatWeightDims(weightDims)).toEqual('(QTY 1) Small Pack - 12 lbs, L: 16 x W: 12 x H: 6\n(QTY 6) Small Pack - 63 lbs, L: 14 x W: 14 x H: 12');
   });
 });

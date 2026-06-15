@@ -378,6 +378,10 @@ type AddOn = {
   userEditing: { id: number, username: string } | null
   invoiceNum: string | null
   ebayListing: boolean
+  length: number | null
+  width: number | null
+  height: number | null
+  lbs: number | null
 };
 
 type EngineAddOn = {
@@ -469,12 +473,22 @@ type SalesInfo = {
   }
 };
 
+type WeightDimsType = 'Small Pack' | 'LTL';
+type WeightDims = {
+  length: number
+  width: number
+  height: number
+  lbs: number
+  shipmentType: WeightDimsType
+  shipmentQty: number
+};
+
 type PartInfo = {
   id: number
   partNum: string
   desc: string
   altParts: string
-  weightDims: string | null
+  weightDims: WeightDims[]
   prefix: string | null
   listPrice: number | null
   remanListPrice: number | null
@@ -517,7 +531,7 @@ type Part = {
   pictures?: Picture[]
   imageExists: boolean
   snImageExists: boolean
-  weightDims: string | null
+  weightDims: WeightDims[]
   specialNotes: string | null
   coreFam: string | null
   serialNum?: string

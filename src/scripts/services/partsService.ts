@@ -363,9 +363,18 @@ export const editPartStockNum = async (partId: number, stockNum: string) => {
   }
 };
 
-export const editWeightDims = async (partNum: string, weightDims: string) => {
+export const editWeightDims = async (partNum: string, weightDims: WeightDims[]) => {
   try {
     await api.patch('/api/parts/weight-dims', { partNum, weightDims });
+  } catch (error) {
+    console.error(error);
+    alert(`Error in [editWeightDims] ${error}`);
+  }
+};
+
+export const editMinimalWeightDims = async (partNum: string, weightDims: { length: number, width: number, height: number, lbs: number }[]) => {
+  try {
+    await api.patch('/api/parts/min-weight-dims', { partNum, weightDims });
   } catch (error) {
     console.error(error);
     alert(`Error in [editWeightDims] ${error}`);

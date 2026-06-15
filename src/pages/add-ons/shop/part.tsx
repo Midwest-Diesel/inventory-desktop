@@ -174,10 +174,7 @@ export default function ShopPartAddOns() {
     isSavingRef.current = false;
 
     emitServerEvent('UPDATE_ADDON_OWNERSHIP_CLEAR', [user.id]);
-    const cleaned = changedAddOns.map((a) => ({
-      ...a,
-      userEditing: null
-    }));
+    const cleaned = changedAddOns.map((a) => ({ ...a, userEditing: null }));
     emitServerEvent('UPDATE_ADDONS', [cleaned, user.id]);
   };
   

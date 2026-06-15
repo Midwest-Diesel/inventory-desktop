@@ -34,6 +34,9 @@ INSERT INTO parts_info
 ('9N3240', 'THERM HSNG 3306', '9N3240, 7L0406, 9N3242', NULL, 'TH', 179.84, 0, 161.87, 0, 0, '2020-06-09'),
 ('0323237', 'SPACER', '0323237, 323237, 1W4589, 1336934', NULL, 'SP', NULL, NULL, NULL, NULL, NULL, NULL);
 
+-- PARTS INFO WEIGHT DIMS
+INSERT INTO parts_info_weight_dims (part_num) VALUES ('1W4589');
+
 -- PARTS
 INSERT INTO parts (handwritten_id, invoice_num, part_num, manufacturer, "desc", location, remarks, entry_date, entered_by, qty, stock_num, purchase_price, sold_to, qty_sold, selling_price, purchased_from, sold_to_date, condition, rating, engine_num, core_fam, pricing_notes, special_notes)
 VALUES

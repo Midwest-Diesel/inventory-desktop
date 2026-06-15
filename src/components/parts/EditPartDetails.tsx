@@ -55,7 +55,7 @@ export default function EditPartDetails({ part, setPart, setIsEditingPart, partC
   const [engineStockNum, setEngineStockNum] = useState<number | null>(part.engineNum);
   const [purchasePrice] = useState<number | null>(part.purchasePrice);
   const [altParts, setAltParts] = useState<string[]>(part.altParts);
-  const [weightDims, setWeightDims] = useState<string>(part.weightDims ?? '');
+  const [weightDims, setWeightDims] = useState<WeightDims[]>(part.weightDims);
   const [specialNotes, setSpecialNotes] = useState<string>(part.specialNotes ?? '');
   const [coreFam, setCoreFamily] = useState<string>(part.coreFam ?? '');
   const [soldToDate, setSoldToDate] = useState<Date | null>(part.soldToDate);
@@ -118,7 +118,7 @@ export default function EditPartDetails({ part, setPart, setIsEditingPart, partC
       profitPercent: profitMargin / Number(sellingPrice)
     } as Part;
 
-    if (newPart.weightDims !== part.weightDims) {
+    if (JSON.stringify(weightDims) !== JSON.stringify(part.weightDims)) {
       await editWeightDims(newPart.partNum, weightDims);
     }
 
@@ -545,16 +545,6 @@ export default function EditPartDetails({ part, setPart, setIsEditingPart, partC
             <Table variant={['plain', 'edit-row-details']}>
               <tbody>
                 <tr>
-                  <th>Shipping Weights/Dims</th>
-                  <td>
-                    <Input
-                      variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
-                      value={weightDims}
-                      onChange={(e: any) => setWeightDims(e.target.value)}
-                    />  
-                  </td>
-                </tr>
-                <tr>
                   <th>Sales Notes</th>
                   <td>
                     <TextArea
@@ -694,6 +684,106 @@ export default function EditPartDetails({ part, setPart, setIsEditingPart, partC
                     />
                   </td>
                 </tr>
+              </tbody>
+            </Table>
+          </GridItem>
+          <br />
+
+          <GridItem variant={['low-opacity-bg']} className="part-details__weight-dims">
+            <Table variant={['plain', 'edit-row-details']}>
+              <tbody>
+                {weightDims.map((item, i) => (
+                  <tr key={i}>
+                    {weightDims.length > 1 &&
+                      <>
+                        <th>Qty</th>
+                        <td>
+                          <Input
+                            value={item.shipmentQty ?? ''}
+                            onChange={(e) => {
+                              const newWeightDims = [...weightDims];
+                              newWeightDims[i] = { ...item, shipmentQty: Number(e.target.value)};
+                              setWeightDims(newWeightDims);
+                            }}
+                            type="number"
+                            step="any"
+                          />
+                        </td>
+                      </>
+                    }
+
+                    <th>Type</th>
+                    <td>
+                      <Select
+                        value={item.shipmentType}
+                        onChange={(e) => {
+                          const newWeightDims = [...weightDims];
+                          newWeightDims[i] = { ...item, shipmentType: e.target.value as WeightDimsType };
+                          setWeightDims(newWeightDims);
+                        }}
+                      >
+                        <option>Small Pack</option>
+                        <option>LTL</option>
+                      </Select>
+                    </td>
+
+                    <th>Lbs</th>
+                    <td>
+                      <Input
+                        value={item.lbs ?? ''}
+                        onChange={(e) => {
+                          const newWeightDims = [...weightDims];
+                          newWeightDims[i] = { ...item, lbs: Number(e.target.value) };
+                          setWeightDims(newWeightDims);
+                        }}
+                        type="number"
+                        step="any"
+                      />
+                    </td>
+
+                    <th>L</th>
+                    <td>
+                      <Input
+                        value={item.length ?? ''}
+                        onChange={(e) => {
+                          const newWeightDims = [...weightDims];
+                          newWeightDims[i] = { ...item, length: Number(e.target.value) };
+                          setWeightDims(newWeightDims);
+                        }}
+                        type="number"
+                        step="any"
+                      />
+                    </td>
+
+                    <th>W</th>
+                    <td>
+                      <Input
+                        value={item.width ?? ''}
+                        onChange={(e) => {
+                          const newWeightDims = [...weightDims];
+                          newWeightDims[i] = { ...item, width: Number(e.target.value) };
+                          setWeightDims(newWeightDims);
+                        }}
+                        type="number"
+                        step="any"
+                      />
+                    </td>
+
+                    <th>H</th>
+                    <td>
+                      <Input
+                        value={item.height ?? ''}
+                        onChange={(e) => {
+                          const newWeightDims = [...weightDims];
+                          newWeightDims[i] = { ...item, height: Number(e.target.value) };
+                          setWeightDims(newWeightDims);
+                        }}
+                        type="number"
+                        step="any"
+                      />
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </Table>
           </GridItem>

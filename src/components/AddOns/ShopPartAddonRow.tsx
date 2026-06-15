@@ -87,8 +87,7 @@ export default function ShopPartAddonRow({ addOn, addOns, setAddons, handleDupli
       if (updates.some((a) => a.id === addOn.id)) {
         setAddons((prev) =>
           prev.map((a) =>
-            a.id === addOn.id
-              ? { ...a, isPrinted: true } : a
+            a.id === addOn.id ? { ...a, isPrinted: true } : a
           )
         );
       }
@@ -677,6 +676,57 @@ export default function ShopPartAddonRow({ addOn, addOns, setAddons, handleDupli
                     variant={['small', 'thin']}
                     value={addOn.prefix !== null ? addOn.prefix : ''}
                     onChange={(e) => handleEditAddOn({ ...addOn, prefix: e.target.value })}
+                  />
+                </td>
+              </tr>
+            </tbody>
+          </Table>
+
+          <Table variant={['plain', 'edit-row-details']} style={{ width: 'fit-content' }}>
+            <thead>
+              <tr>
+                <th>Length</th>
+                <th>Width</th>
+                <th>Height</th>
+                <th>Lbs</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style={{ width: '7rem' }}>
+                  <Input
+                    variant={['x-small', 'thin']}
+                    value={addOn.length ?? ''}
+                    onChange={(e) => handleEditAddOn({ ...addOn, length: e.target.value ? Number(e.target.value) : null })}
+                    type="number"
+                    step="any"
+                  />
+                </td>
+                <td style={{ width: '7rem' }}>
+                  <Input
+                    variant={['x-small', 'thin']}
+                    value={addOn.width ?? ''}
+                    onChange={(e) => handleEditAddOn({ ...addOn, width: e.target.value ? Number(e.target.value) : null })}
+                    type="number"
+                    step="any"
+                  />
+                </td>
+                <td style={{ width: '7rem' }}>
+                  <Input
+                    variant={['x-small', 'thin']}
+                    value={addOn.height ?? ''}
+                    onChange={(e) => handleEditAddOn({ ...addOn, height: e.target.value ? Number(e.target.value) : null })}
+                    type="number"
+                    step="any"
+                  />
+                </td>
+                <td style={{ width: '7rem' }}>
+                  <Input
+                    variant={['x-small', 'thin']}
+                    value={addOn.lbs ?? ''}
+                    onChange={(e) => handleEditAddOn({ ...addOn, lbs: e.target.value ? Number(e.target.value) : null })}
+                    type="number"
+                    step="any"
                   />
                 </td>
               </tr>

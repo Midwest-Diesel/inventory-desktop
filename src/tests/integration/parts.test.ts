@@ -1,9 +1,10 @@
 import { describe, it, expect, beforeEach, beforeAll } from 'vitest';
 import { setApiBaseUrl } from '@/scripts/config/axios';
 import { loginUser } from '@/scripts/services/accountService';
-import { addPart, editPartsInfoPrefix, editWeightDims, getPartById, getPartInfoByPartNum, getPartsByStockNum, massLocationChange, searchParts } from '@/scripts/services/partsService';
+import { addPart, editPartsInfoPrefix, editMinimalWeightDims, getPartById, getPartInfoByPartNum, getPartsByStockNum, massLocationChange, searchParts } from '@/scripts/services/partsService';
 import { addAltParts, getNextUP, manualPartReturn, removeAltParts } from '@/scripts/logic/parts';
 import { resetDb } from '../resetDatabase';
+import { formatWeightDims } from '@/scripts/tools/stringUtils';
 
 beforeAll(async () => {
   setApiBaseUrl('http://localhost:8001');
@@ -202,10 +203,11 @@ describe('Parts Integration', () => {
   });
 
   it('Edit weightDims', async () => {
-    const weightDims = 'UPS: 6LBS 6x6x68';
-    await editWeightDims('1W4589', weightDims);
+    await editMinimalWeightDims('1W4589', [{ length: 6, width: 6, height: 68, lbs: 6 }]);
     const res = await getPartInfoByPartNum('0323237');
-    expect(res?.weightDims).toEqual(weightDims);
+
+    expect(res).not.toBeNull();
+    expect(formatWeightDims(res!.weightDims)).toEqual('Small Pack - 6 lbs, L: 6 x W: 6 x H: 68');
   });
 
   it('Edit parts info prefix', async () => {

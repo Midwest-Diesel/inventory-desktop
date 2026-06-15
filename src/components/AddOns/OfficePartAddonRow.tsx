@@ -1,7 +1,7 @@
 import { useAtom } from "jotai";
 import { userAtom } from "@/scripts/atoms/state";
 import { deleteAddOn, editAddOnAltParts, editAddOnUserEditing, getAddOnById } from "@/scripts/services/addOnsService";
-import { addPart, addPartCostIn, getPartsByStockNum, getPartInfoByPartNum, editPartsInfoPricing, searchAltParts, editPartsInfoPrefix } from "@/scripts/services/partsService";
+import { addPart, addPartCostIn, getPartsByStockNum, getPartInfoByPartNum, editPartsInfoPricing, searchAltParts, editPartsInfoPrefix, editMinimalWeightDims } from "@/scripts/services/partsService";
 import { useEffect, useRef, useState } from "react";
 import { addEngineCostOut, getEngineCostRemaining } from "@/scripts/services/enginesService";
 import { getRatingFromRemarks } from "@/scripts/tools/utils";
@@ -163,6 +163,18 @@ export default function OfficePartAddonRow({ addOn, addOns, setAddons, onSave, o
       await editPartsInfoPricing(newPart.altParts, pricing); 
     } else if (partsInfo !== null) {
       alert(`Failed to update "New List Price", "Reman List Price", or "Dealer Price" for ${newPart.partNum}`);
+    }
+
+    // Update part weight/dimensions
+    const { length, width, height, lbs } = addOn;
+    if (length || width || height || lbs) {
+      const weightDims = [{
+        length: Number(length),
+        width: Number(width),
+        height: Number(height),
+        lbs: Number(lbs)
+      }];
+      await editMinimalWeightDims(addOn.partNum, weightDims);
     }
 
     // Add purchase price

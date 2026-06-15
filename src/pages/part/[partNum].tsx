@@ -1,6 +1,6 @@
 import { Layout } from "@/components/Layout";
 import { useParams } from "react-router-dom";
-import { formatCurrency, formatDate, formatPercent } from "@/scripts/tools/stringUtils";
+import { formatCurrency, formatDate, formatPercent, formatWeightDims } from "@/scripts/tools/stringUtils";
 import { useEffect, useState } from "react";
 import { getImagesFromPart, getImagesFromStockNum } from "@/scripts/services/imagesService";
 import Table from "@/components/library/Table";
@@ -412,10 +412,6 @@ export default function PartDetails() {
               <GridItem variant={['low-opacity-bg']}>
                 <Table variant={['plain', 'row-details']}>
                   <tbody>
-                    <tr>
-                      <th>Shipping Weights/Dims</th>
-                      <td>{ part.weightDims }</td>
-                    </tr>
                     <tr style={{ height: '4rem' }}>
                       <th>Sales Notes</th>
                       <td>{ part.specialNotes }</td>
@@ -502,6 +498,18 @@ export default function PartDetails() {
                     <tr>
                       <th style={part.engineCostRemaining > 0 ? { color: 'var(--red-2)' } : { color: 'var(--green-light-1)' }}>Engine Cost Remaining</th>
                       <td>{ formatCurrency(part.engineCostRemaining) }</td>
+                    </tr>
+                  </tbody>
+                </Table>
+              </GridItem>
+              <br />
+
+              <GridItem variant={['low-opacity-bg']}>
+                <Table variant={['plain', 'row-details']}>
+                  <tbody>
+                    <tr>
+                      <th>Shipping Weights/Dims</th>
+                      <td style={{ whiteSpace: 'pre-line' }}>{ formatWeightDims(part.weightDims) }</td>
                     </tr>
                   </tbody>
                 </Table>
