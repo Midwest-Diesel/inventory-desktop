@@ -93,16 +93,6 @@ export const editAddOnUserEditing = async (id: number, userEditing: number) => {
 
 // === PUT routes === //
 
-export const editAddOn = async (addOn: AddOn) => {
-  try {
-    await api.put('/api/add-ons', addOn);
-  } catch (error) {
-    alert('Failed to save addOn');
-    console.error(error);
-    alert(`Error in [editAddOn] ${error}`);
-  }
-};
-
 export const editAddOns = async (addOns: AddOn[]) => {
   try {
     await api.put('/api/add-ons/list', { addOns });

@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { formatCCNumber, formatCurrency, formatDate, formatPhone, formatTime, parsePhone, parseResDate, toAbsolutePath } from "@/scripts/tools/stringUtils";
+import { formatCCNumber, formatCurrency, formatDate, formatPhone, formatTime, parsePhone, parseResDate, parseWeightDims, toAbsolutePath } from "@/scripts/tools/stringUtils";
 import { extractStatusColors } from '@/scripts/logic/partSearch';
 
 
@@ -251,5 +251,43 @@ describe('Format CCNumber', () => {
 
   test('Should parse number with incorrect length', () => {
     expect(formatCCNumber('414141415555')).toEqual('XXXXXXXXXXXX5555');
+  });
+});
+
+describe('parseWeightDims', () => {
+  test('Normal weight dims', () => {
+    expect(parseWeightDims('FEDEX INTL 12 - 32x36x5')).toEqual([{ qty: 1, type: 'Small Pack', lbs: 12, length: 32, width: 36, height: 5 }]);
+    expect(parseWeightDims('FEDEX INTL  12 - 32 x 36 x 5')).toEqual([{ qty: 1, type: 'Small Pack', lbs: 12, length: 32, width: 36, height: 5 }]);
+    expect(parseWeightDims('12 -  32x36x5')).toEqual([{ qty: 1, type: 'Small Pack', lbs: 12, length: 32, width: 36, height: 5 }]);
+    expect(parseWeightDims(' FEDEX INTL 12-32x36x5 ')).toEqual([{ qty: 1, type: 'Small Pack', lbs: 12, length: 32, width: 36, height: 5 }]);
+    expect(parseWeightDims('Small Pack: 8lbs - L: 1, W: 2, H: 3')).toEqual([{ qty: 1, type: 'Small Pack', lbs: 8, length: 1, width: 2, height: 3 }]);
+    expect(parseWeightDims('LTL: 8lbs - L: 1, W: 2, H: 3')).toEqual([{ qty: 1, type: 'LTL', lbs: 8, length: 1, width: 2, height: 3 }]);
+    expect(parseWeightDims('GRD: 12LBS 12x10x6')).toEqual([{ qty: 1, type: 'Small Pack', lbs: 12, length: 12, width: 10, height: 6 }]);
+  });
+
+  test('Weight dims with qty', () => {
+    expect(parseWeightDims('(QTY 1) 12LBS 16x12x6, (QTY 6) 63LBS 14x14x12')).toEqual([
+      { qty: 1, type: 'Small Pack', lbs: 12, length: 16, width: 12, height: 6 },
+      { qty: 6, type: 'Small Pack', lbs: 63, length: 14, width: 14, height: 12 }
+    ]);
+    expect(parseWeightDims(' (QTY 1) 12LBS 16x12x6,   (QTY 6) 63LBS 14x14x12 ')).toEqual([
+      { qty: 1, type: 'Small Pack', lbs: 12, length: 16, width: 12, height: 6 },
+      { qty: 6, type: 'Small Pack', lbs: 63, length: 14, width: 14, height: 12 }
+    ]);
+    expect(parseWeightDims('(qty 1) 12LBS 16x12x6,(qty 6) 63LbS 14x14x12')).toEqual([
+      { qty: 1, type: 'Small Pack', lbs: 12, length: 16, width: 12, height: 6 },
+      { qty: 6, type: 'Small Pack', lbs: 63, length: 14, width: 14, height: 12 }
+    ]);
+    expect(parseWeightDims('(QTY 1) Small Pack: 0lbs - L: 0, W: 0, H: 0\n(QTY 2) LTL: 4lbs - L: 5, W: 16, H: 7')).toEqual([
+      { qty: 1, type: 'Small Pack', lbs: 0, length: 0, width: 0, height: 0 },
+      { qty: 2, type: 'LTL', lbs: 4, length: 5, width: 16, height: 7 }
+    ]);
+  });
+
+  test('Parse formated strings', () => {
+    expect(parseWeightDims('(QTY 2) Small Pack: 12lbs - L: 16, W: 12, H: 6\n(QTY 6) Small Pack: 63lbs - L: 16, W: 14, H: 12')).toEqual([
+      { qty: 2, type: 'Small Pack', lbs: 12, length: 16, width: 12, height: 6 },
+      { qty: 6, type: 'Small Pack', lbs: 63, length: 16, width: 14, height: 12 }
+    ]);
   });
 });

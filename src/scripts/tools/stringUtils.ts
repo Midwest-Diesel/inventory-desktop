@@ -114,3 +114,74 @@ export const toAbsolutePath = (url: string) => url.startsWith('/') ? url : `/${u
 export const formatCCNumber = (cardNum: string): string => {
   return `XXXXXXXXXXXX${cardNum.slice(cardNum.length - 4)}`;
 };
+
+export const parseWeightDims = (weightDims: string | null): WeightDims[] => {
+  if (!weightDims) return [{ qty: 1, type: 'Small Pack', lbs: 0, length: 0, width: 0, height: 0 }];
+
+  const value = weightDims.toUpperCase();
+  const results: WeightDims[] = [];
+  const defaultType: WeightDims['type'] = /\b(FREIGHT|XPO|TRUCKLINE|LTL)\b/.test(value) ? 'LTL' : 'Small Pack';
+  const normalRegex = /\(QTY\s*(\d+)\)\s*(\d+)\s*(?:LBS)?\s*(\d+)\s*[Xx]\s*(\d+)\s*[Xx]\s*(\d+)/g;
+  const formattedRegex = /\(QTY\s*(\d+)\)\s*(SMALL PACK|LTL)?\s*:?\s*(\d+)\s*LBS\s*-\s*L:\s*(\d+)\s*,\s*W:\s*(\d+)\s*,\s*H:\s*(\d+)/g;
+  let match: RegExpExecArray | null;
+
+  while ((match = normalRegex.exec(value)) !== null) {
+    results.push({
+      qty: Number(match[1]),
+      type: defaultType,
+      lbs: Number(match[2]),
+      length: Number(match[3]),
+      width: Number(match[4]),
+      height: Number(match[5])
+    });
+  }
+
+  while ((match = formattedRegex.exec(value)) !== null) {
+    results.push({
+      qty: Number(match[1]),
+      type: match[2] === 'LTL' ? 'LTL' : 'Small Pack',
+      lbs: Number(match[3]),
+      length: Number(match[4]),
+      width: Number(match[5]),
+      height: Number(match[6])
+    });
+  }
+
+  if (!value.includes('(QTY')) {
+    const formattedMatch = value.match(/(\d+)\s*LBS\s*-\s*L:\s*(\d+)\s*,\s*W:\s*(\d+)\s*,\s*H:\s*(\d+)/);
+
+    if (formattedMatch) {
+      results.push({
+        type: defaultType,
+        qty: 1,
+        lbs: Number(formattedMatch[1]),
+        length: Number(formattedMatch[2]),
+        width: Number(formattedMatch[3]),
+        height: Number(formattedMatch[4])
+      });
+    } else {
+      const lbs = Number(value.match(/(\d+)\s*(?:LBS)?\s*(?:-|(?=\d+\s*[Xx]))/)?.[1] ?? 0);
+      const length = Number(value.match(/(\d+)\s*[Xx]\s*\d+\s*[Xx]\s*\d+/)?.[1] ?? 0);
+      const width = Number(value.match(/\d+\s*[Xx]\s*(\d+)\s*[Xx]\s*\d+/)?.[1] ?? 0);
+      const height = Number(value.match(/\d+\s*[Xx]\s*\d+\s*[Xx]\s*(\d+)/)?.[1] ?? 0);
+
+      results.push({ type: defaultType, qty: 1, lbs, length, width, height });
+    }
+  }
+
+  return results;
+};
+
+export const formatWeightDims = (weightDims: WeightDims[]): string => {
+  const results: string[] = [];
+  weightDims.forEach((row) => {
+    const { qty, type, lbs, length, width, height } = row;
+    results.push(`${weightDims.length > 1 ? `(QTY ${qty}) ` : ''}${type}: ${lbs}lbs - L: ${length}, W: ${width}, H: ${height}`);
+  });
+  return results.join('\n');
+};
+
+export const serializeWeightDims = (weightDims: string | null): string => {
+  if (!weightDims) return '';
+  return formatWeightDims(parseWeightDims(weightDims));
+};

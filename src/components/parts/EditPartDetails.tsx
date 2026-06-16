@@ -1,5 +1,5 @@
 import Button from "@/components/library/Button";
-import { parseDateInputValue } from "@/scripts/tools/stringUtils";
+import { formatWeightDims, parseDateInputValue, parseWeightDims } from "@/scripts/tools/stringUtils";
 import Grid from "@/components/library/grid/Grid";
 import GridItem from "@/components/library/grid/GridItem";
 import { FormEvent, useState } from "react";
@@ -20,6 +20,7 @@ import InputDropdown from "../library/InputDropdown";
 import { useQuery } from "@tanstack/react-query";
 import { getVendors } from "@/scripts/services/vendorsService";
 import DropdownOption from "../library/dropdown/DropdownOption";
+import EditWeightDims from "./EditWeightDims";
 
 interface Props {
   part: Part
@@ -55,7 +56,7 @@ export default function EditPartDetails({ part, setPart, setIsEditingPart, partC
   const [engineStockNum, setEngineStockNum] = useState<number | null>(part.engineNum);
   const [purchasePrice] = useState<number | null>(part.purchasePrice);
   const [altParts, setAltParts] = useState<string[]>(part.altParts);
-  const [weightDims, setWeightDims] = useState<string>(part.weightDims ?? '');
+  const [weightDims, setWeightDims] = useState<WeightDims[]>(parseWeightDims(part.weightDims));
   const [specialNotes, setSpecialNotes] = useState<string>(part.specialNotes ?? '');
   const [coreFam, setCoreFamily] = useState<string>(part.coreFam ?? '');
   const [soldToDate, setSoldToDate] = useState<Date | null>(part.soldToDate);
@@ -119,7 +120,7 @@ export default function EditPartDetails({ part, setPart, setIsEditingPart, partC
     } as Part;
 
     if (newPart.weightDims !== part.weightDims) {
-      await editWeightDims(newPart.partNum, weightDims);
+      await editWeightDims(newPart.partNum, formatWeightDims(weightDims));
     }
 
     if (part.qty !== newPart.qty) {
@@ -545,16 +546,6 @@ export default function EditPartDetails({ part, setPart, setIsEditingPart, partC
             <Table variant={['plain', 'edit-row-details']}>
               <tbody>
                 <tr>
-                  <th>Shipping Weights/Dims</th>
-                  <td>
-                    <Input
-                      variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
-                      value={weightDims}
-                      onChange={(e: any) => setWeightDims(e.target.value)}
-                    />  
-                  </td>
-                </tr>
-                <tr>
                   <th>Sales Notes</th>
                   <td>
                     <TextArea
@@ -694,6 +685,15 @@ export default function EditPartDetails({ part, setPart, setIsEditingPart, partC
                     />
                   </td>
                 </tr>
+              </tbody>
+            </Table>
+          </GridItem>
+          <br />
+
+          <GridItem variant={['low-opacity-bg']} className="part-details__weight-dims">
+            <Table variant={['plain', 'edit-row-details']}>
+              <tbody>
+                <EditWeightDims weightDims={weightDims} setWeightDims={setWeightDims} />
               </tbody>
             </Table>
           </GridItem>

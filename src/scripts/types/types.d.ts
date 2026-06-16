@@ -378,6 +378,7 @@ type AddOn = {
   userEditing: { id: number, username: string } | null
   invoiceNum: string | null
   ebayListing: boolean
+  weightDims: string | null
 };
 
 type EngineAddOn = {
@@ -467,6 +468,17 @@ type SalesInfo = {
     recon: number
     core: number
   }
+};
+
+type WeightDimsType = 'Small Pack' | 'LTL';
+
+type WeightDims = {
+  type: WeightDimsType
+  qty: number
+  lbs: number
+  length: number
+  width: number
+  height: number
 };
 
 type PartInfo = {

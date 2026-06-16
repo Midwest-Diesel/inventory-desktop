@@ -9,7 +9,7 @@ import { getNextUPStockNum, getPartsByStockNum, getPartInfoByPartNum } from "@/s
 import { useEffect, useRef, useState } from "react";
 import Input from "../library/Input";
 import { getEngineByStockNum } from "@/scripts/services/enginesService";
-import { cap, formatDate } from "@/scripts/tools/stringUtils";
+import { cap, formatDate, formatWeightDims, parseWeightDims } from "@/scripts/tools/stringUtils";
 import { getPurchaseOrderByPoNum } from "@/scripts/services/purchaseOrderService";
 import { getRatingFromRemarks } from "@/scripts/tools/utils";
 import { getImagesFromPart } from "@/scripts/services/imagesService";
@@ -22,6 +22,7 @@ import { getVendors } from "@/scripts/services/vendorsService";
 import { useNavState } from "@/hooks/useNavState";
 import { emitServerEvent, offServerEvent, onServerEvent } from "@/scripts/config/websockets";
 import { prompt } from "../library/Prompt";
+import EditWeightDims from "../parts/EditWeightDims";
 
 interface Props {
   addOn: AddOn
@@ -57,6 +58,22 @@ export default function ShopPartAddonRow({ addOn, addOns, setAddons, handleDupli
     queryKey: ['vendors'],
     queryFn: getVendors
   });
+
+  useEffect(() => {
+    const fetchWeightDims = async () => {
+      if (addOn.weightDims || !addOn.partNum) return;
+      const res = await getPartInfoByPartNum(addOn.partNum);
+
+      if (res?.weightDims) {
+        setAddons((prev) =>
+          prev.map((a) =>
+            a.id === addOn.id ? { ...a, weightDims: res.weightDims } : a
+          )
+        );
+      }
+    };
+    fetchWeightDims();
+  }, [addOn.partNum]);
 
   useEffect(() => {
     if (!showPartNumSelect) return;
@@ -682,6 +699,19 @@ export default function ShopPartAddonRow({ addOn, addOns, setAddons, handleDupli
               </tr>
             </tbody>
           </Table>
+
+          <div className="add-ons__weight-dims">
+            <h3>Shipment Weight/Dims</h3>
+
+            <Table variant={['plain', 'edit-row-details']} style={{ width: 'fit-content' }}>
+              <tbody>
+                <EditWeightDims
+                  weightDims={parseWeightDims(addOn.weightDims)}
+                  setWeightDims={(weightDims: WeightDims[]) => handleEditAddOn({ ...addOn, weightDims: formatWeightDims(weightDims) })}
+                />
+              </tbody>
+            </Table>
+          </div>
 
           <div className="add-ons__list-row-checkboxes">
             <Checkbox
