@@ -13,6 +13,7 @@ interface Props {
 export default function PartTagUP({ data }: Props) {
   const { stockNum, location, date, partNum } = data;
 
+  
   return (
     <div className="part-tag-up">
       <p className="part-tag-up__date">{ date }</p>
