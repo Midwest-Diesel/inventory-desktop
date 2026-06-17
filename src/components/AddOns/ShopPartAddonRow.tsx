@@ -6,7 +6,7 @@ import Table from "../library/Table";
 import Select from "../library/select/Select";
 import { addAddOn, deleteAddOn, editAddOnIsPoOpened, editAddOnPrintStatus, editAddOnUserEditing } from "@/scripts/services/addOnsService";
 import { getNextUPStockNum, getPartsByStockNum, getPartInfoByPartNum } from "@/scripts/services/partsService";
-import { useEffect, useRef, useState } from "react";
+import { MouseEvent, useEffect, useRef, useState } from "react";
 import Input from "../library/Input";
 import { getEngineByStockNum } from "@/scripts/services/enginesService";
 import { cap, formatDate, formatWeightDims, parseWeightDims } from "@/scripts/tools/stringUtils";
@@ -46,7 +46,9 @@ export default function ShopPartAddonRow({ addOn, addOns, setAddons, handleDupli
   const [purchasedFrom, setPurchasedFrom] = useState<string>(addOn.purchasedFrom?.toString() ?? '');
   const [showPartNumSelect, setShowPartNumSelect] = useState(false);
   const [printQty, setPrintQty] = useState(1);
+  const [collapseRow, setCollapseRow] = useState(addOn.isPrinted);
   const ref = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
   const partNumListRefs = useRef<(HTMLLIElement | null)[]>([]);
   const partNumRef = useRef<HTMLDivElement>(null);
   const prevEngineNum = useRef<string | null>(null);
@@ -398,9 +400,25 @@ export default function ShopPartAddonRow({ addOn, addOns, setAddons, handleDupli
     emitServerEvent('UPDATE_ADDON_OWNERSHIP', [{ id: addOn.id, userEditing }]);
   };
 
+  const onClickToggleRow = (e: MouseEvent) => {
+    if (!addOn.isPrinted) {
+      return;
+    }
+
+    if (!collapseRow) {
+      const target = e.target as HTMLElement;
+
+      if (target !== ref.current && target !== contentRef.current) {
+        return;
+      }
+    }
+
+    setCollapseRow((prev) => !prev);
+  };
+
 
   return (
-    <div>
+    <div style={{ width: '100%' }}>
       {addOn.userEditing &&
         <h4 style={{ display: 'flex', color: user.id === addOn.userEditing.id ? 'var(--green-light-2)' : 'var(--orange-1)' }}>
           <img style={{ width: '0.7rem', marginRight: '0.3rem' }} src="/images/icons/lock.svg" alt="Locked" />
@@ -408,8 +426,12 @@ export default function ShopPartAddonRow({ addOn, addOns, setAddons, handleDupli
         </h4>
       }
 
-      <div className={`add-ons__list-row ${addOn.isPrinted ? 'add-ons__list-row--completed' : ''}`} ref={ref}>
-        <div className="add-ons__list-row-content">
+      <div
+        className={`add-ons__list-row ${addOn.isPrinted ? 'add-ons__list-row--completed' : ''}`}
+        ref={ref}
+        onClick={onClickToggleRow}
+      >
+        <div className="add-ons__list-row-content" ref={contentRef}>
           <Table variant={['plain', 'edit-row-details']} style={{ width: 'fit-content' }}>
             <thead>
               <tr>
@@ -528,221 +550,227 @@ export default function ShopPartAddonRow({ addOn, addOns, setAddons, handleDupli
             </tbody>
           </Table>
 
-          <Table variant={['plain', 'edit-row-details']} style={{ width: 'fit-content' }}>
-            <thead>
-              <tr>
-                <th>Remarks</th>
-                <th>OEM</th>
-                <th>Condition</th>
-                <th>Horse Power</th>
-                <th>Serial Number</th>
-                <th>Rating</th>
-                <th style={poLink ? { textDecoration: 'underline', cursor: 'pointer' } : {}} onClick={onClickOpenPO}>PO Number</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>
-                  <Input
-                    variant={['small', 'thin']}
-                    value={addOn.remarks !== null ? addOn.remarks : ''}
-                    onChange={(e: any) => handleEditAddOn({ ...addOn, remarks: e.target.value })}
-                    onBlur={(e: any) => handleEditAddOn({ ...addOn, rating: getRatingFromRemarks(e.target.value) })}
-                    data-testid="remarks"
-                  />
-                </td>
-                <td>
-                  <Select
-                    style={{ width: '100%' }}
-                    value={addOn.manufacturer ?? ''}
-                    onChange={(e: any) => handleEditAddOn({ ...addOn, manufacturer: e.target.value })}
-                  >
-                    <option value="">-- SELECT --</option>
-                    <option>Caterpillar</option>
-                    <option>Cummins</option>
-                    <option>Detriot Diesel</option>
-                    <option>New Cat</option>
-                    <option>New Genuine Caterpillar</option>
-                    <option>Perkins</option>
-                    <option>New</option>
-                    <option>John Deere</option>
-                  </Select>
-                </td>
-                <td>
-                  <Select
-                    style={{ width: '100%' }}
-                    value={addOn.condition ?? ''}
-                    onChange={(e: any) => handleEditAddOn({ ...addOn, condition: e.target.value })}
-                  >
-                    <option value="">-- SELECT --</option>
-                    <option value="Core">Core</option>
-                    <option value="Good Used">Good Used</option>
-                    <option value="New">New</option>
-                    <option value="Reconditioned">Reconditioned</option>
-                  </Select>
-                </td>
-                <td>
-                  <Input
-                    variant={['small', 'thin']}
-                    value={addOn.hp !== null ? addOn.hp : ''}
-                    onChange={(e: any) => handleEditAddOn({ ...addOn, hp: e.target.value })}
-                    data-testid="hp"
-                  />
-                </td>
-                <td>
-                  <Input
-                    variant={['small', 'thin']}
-                    value={addOn.serialNum !== null ? addOn.serialNum : ''}
-                    onChange={(e: any) => handleEditAddOn({ ...addOn, serialNum: e.target.value })}
-                    data-testid="serial-num"
-                  />
-                </td>
-                <td>
-                  <Input
-                    variant={['small', 'thin']}
-                    type="number"
-                    value={addOn.rating !== null ? addOn.rating : ''}
-                    onChange={(e: any) => handleEditAddOn({ ...addOn, rating: e.target.value })}
-                    data-testid="rating"
-                  />
-                </td>
-                <td>
-                  <Input
-                    variant={['small', 'thin']}
-                    type="number"
-                    value={addOn.po !== null ? addOn.po : ''}
-                    onChange={(e) => {
-                      handleEditAddOn({ ...addOn, po: e.target.value });
-                      setPoLink(e.target.value);
-                    }}
-                    onBlur={(e) => handlePOItemsReceived(e)}
-                    data-testid="po"
-                  />
-                </td>
-              </tr>
-            </tbody>
-          </Table>
+          {!collapseRow &&
+            <>
+              <Table variant={['plain', 'edit-row-details']} style={{ width: 'fit-content' }}>
+                <thead>
+                  <tr>
+                    <th>Remarks</th>
+                    <th>OEM</th>
+                    <th>Condition</th>
+                    <th>Horse Power</th>
+                    <th>Serial Number</th>
+                    <th>Rating</th>
+                    <th style={poLink ? { textDecoration: 'underline', cursor: 'pointer' } : {}} onClick={onClickOpenPO}>PO Number</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      <Input
+                        variant={['small', 'thin']}
+                        value={addOn.remarks !== null ? addOn.remarks : ''}
+                        onChange={(e: any) => handleEditAddOn({ ...addOn, remarks: e.target.value })}
+                        onBlur={(e: any) => handleEditAddOn({ ...addOn, rating: getRatingFromRemarks(e.target.value) })}
+                        data-testid="remarks"
+                      />
+                    </td>
+                    <td>
+                      <Select
+                        style={{ width: '100%' }}
+                        value={addOn.manufacturer ?? ''}
+                        onChange={(e: any) => handleEditAddOn({ ...addOn, manufacturer: e.target.value })}
+                      >
+                        <option value="">-- SELECT --</option>
+                        <option>Caterpillar</option>
+                        <option>Cummins</option>
+                        <option>Detriot Diesel</option>
+                        <option>New Cat</option>
+                        <option>New Genuine Caterpillar</option>
+                        <option>Perkins</option>
+                        <option>New</option>
+                        <option>John Deere</option>
+                      </Select>
+                    </td>
+                    <td>
+                      <Select
+                        style={{ width: '100%' }}
+                        value={addOn.condition ?? ''}
+                        onChange={(e: any) => handleEditAddOn({ ...addOn, condition: e.target.value })}
+                      >
+                        <option value="">-- SELECT --</option>
+                        <option value="Core">Core</option>
+                        <option value="Good Used">Good Used</option>
+                        <option value="New">New</option>
+                        <option value="Reconditioned">Reconditioned</option>
+                      </Select>
+                    </td>
+                    <td>
+                      <Input
+                        variant={['small', 'thin']}
+                        value={addOn.hp !== null ? addOn.hp : ''}
+                        onChange={(e: any) => handleEditAddOn({ ...addOn, hp: e.target.value })}
+                        data-testid="hp"
+                      />
+                    </td>
+                    <td>
+                      <Input
+                        variant={['small', 'thin']}
+                        value={addOn.serialNum !== null ? addOn.serialNum : ''}
+                        onChange={(e: any) => handleEditAddOn({ ...addOn, serialNum: e.target.value })}
+                        data-testid="serial-num"
+                      />
+                    </td>
+                    <td>
+                      <Input
+                        variant={['small', 'thin']}
+                        type="number"
+                        value={addOn.rating !== null ? addOn.rating : ''}
+                        onChange={(e: any) => handleEditAddOn({ ...addOn, rating: e.target.value })}
+                        data-testid="rating"
+                      />
+                    </td>
+                    <td>
+                      <Input
+                        variant={['small', 'thin']}
+                        type="number"
+                        value={addOn.po !== null ? addOn.po : ''}
+                        onChange={(e) => {
+                          handleEditAddOn({ ...addOn, po: e.target.value });
+                          setPoLink(e.target.value);
+                        }}
+                        onBlur={(e) => handlePOItemsReceived(e)}
+                        data-testid="po"
+                      />
+                    </td>
+                  </tr>
+                </tbody>
+              </Table>
 
-          <Table variant={['plain', 'edit-row-details']} style={{ width: 'fit-content' }}>
-            <thead>
-              <tr>
-                <th>New List Price</th>
-                <th>Reman List Price</th>
-                <th>Dealer Price</th>
-                <th>Price Status</th>
-                <th>Purchased From</th>
-                <th>Prefix</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>
-                  <Input
-                    variant={['small', 'thin']}
-                    type="number"
-                    step="any"
-                    value={addOn.newPrice !== null ? addOn.newPrice : ''}
-                    onChange={(e: any) => handleEditAddOn({ ...addOn, newPrice: e.target.value })}
-                  />
-                </td>
-                <td>
-                  <Input
-                    variant={['small', 'thin']}
-                    type="number"
-                    step="any"
-                    value={addOn.remanPrice !== null ? addOn.remanPrice : ''}
-                    onChange={(e: any) => handleEditAddOn({ ...addOn, remanPrice: e.target.value })}
-                  />
-                </td>
-                <td>
-                  <Input
-                    variant={['small', 'thin']}
-                    type="number"
-                    step="any"
-                    value={addOn.dealerPrice !== null ? addOn.dealerPrice : ''}
-                    onChange={(e: any) => handleEditAddOn({ ...addOn, dealerPrice: e.target.value })}
-                  />
-                </td>
-                <td>
-                  <Select
-                    style={{ width: '100%' }}
-                    value={addOn.priceStatus ?? ''}
-                    onChange={(e: any) => handleEditAddOn({ ...addOn, priceStatus: e.target.value })}
-                  >
-                    <option value="">-- SELECT --</option>
-                    <option>We have pricing</option>
-                    <option>No pricing</option>
-                  </Select>
-                </td>
-                <td>
-                  <div style={{ width: '21rem' }}>
-                    <Input
-                      variant={['small', 'thin', 'label-bold', 'search', 'autofill-input']}
-                      value={addOn.purchasedFrom ?? ''}
-                      autofill={purchasedFrom}
-                      onAutofill={(value) => updateAutofillPurchasedFromData(value)}
-                      onChange={(e) => {
-                        handleEditAddOn({ ...addOn, purchasedFrom: e.target.value });
-                        autofillFromPurchasedFrom(e.target.value.toLowerCase());
-                      }}
+              <Table variant={['plain', 'edit-row-details']} style={{ width: 'fit-content' }}>
+                <thead>
+                  <tr>
+                    <th>New List Price</th>
+                    <th>Reman List Price</th>
+                    <th>Dealer Price</th>
+                    <th>Price Status</th>
+                    <th>Purchased From</th>
+                    <th>Prefix</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      <Input
+                        variant={['small', 'thin']}
+                        type="number"
+                        step="any"
+                        value={addOn.newPrice !== null ? addOn.newPrice : ''}
+                        onChange={(e: any) => handleEditAddOn({ ...addOn, newPrice: e.target.value })}
+                      />
+                    </td>
+                    <td>
+                      <Input
+                        variant={['small', 'thin']}
+                        type="number"
+                        step="any"
+                        value={addOn.remanPrice !== null ? addOn.remanPrice : ''}
+                        onChange={(e: any) => handleEditAddOn({ ...addOn, remanPrice: e.target.value })}
+                      />
+                    </td>
+                    <td>
+                      <Input
+                        variant={['small', 'thin']}
+                        type="number"
+                        step="any"
+                        value={addOn.dealerPrice !== null ? addOn.dealerPrice : ''}
+                        onChange={(e: any) => handleEditAddOn({ ...addOn, dealerPrice: e.target.value })}
+                      />
+                    </td>
+                    <td>
+                      <Select
+                        style={{ width: '100%' }}
+                        value={addOn.priceStatus ?? ''}
+                        onChange={(e: any) => handleEditAddOn({ ...addOn, priceStatus: e.target.value })}
+                      >
+                        <option value="">-- SELECT --</option>
+                        <option>We have pricing</option>
+                        <option>No pricing</option>
+                      </Select>
+                    </td>
+                    <td>
+                      <div style={{ width: '21rem' }}>
+                        <Input
+                          variant={['small', 'thin', 'label-bold', 'search', 'autofill-input']}
+                          value={addOn.purchasedFrom ?? ''}
+                          autofill={purchasedFrom}
+                          onAutofill={(value) => updateAutofillPurchasedFromData(value)}
+                          onChange={(e) => {
+                            handleEditAddOn({ ...addOn, purchasedFrom: e.target.value });
+                            autofillFromPurchasedFrom(e.target.value.toLowerCase());
+                          }}
+                        />
+                      </div>
+                    </td>
+                    <td>
+                      <Input
+                        style={(!addOn.prefix && addOn.stockNum && !addOn.stockNum.startsWith('UP')) ? { backgroundColor: 'var(--red-1)' } : {}}
+                        variant={['small', 'thin']}
+                        value={addOn.prefix !== null ? addOn.prefix : ''}
+                        onChange={(e) => handleEditAddOn({ ...addOn, prefix: e.target.value })}
+                      />
+                    </td>
+                  </tr>
+                </tbody>
+              </Table>
+
+              <div className="add-ons__weight-dims">
+                <h3>Shipment Weight/Dims</h3>
+
+                <Table variant={['plain', 'edit-row-details']} style={{ width: 'fit-content' }}>
+                  <tbody>
+                    <EditWeightDims
+                      weightDims={parseWeightDims(addOn.weightDims)}
+                      setWeightDims={(weightDims: WeightDims[]) => handleEditAddOn({ ...addOn, weightDims: formatWeightDims(weightDims) })}
                     />
-                  </div>
-                </td>
-                <td>
-                  <Input
-                    style={(!addOn.prefix && addOn.stockNum && !addOn.stockNum.startsWith('UP')) ? { backgroundColor: 'var(--red-1)' } : {}}
-                    variant={['small', 'thin']}
-                    value={addOn.prefix !== null ? addOn.prefix : ''}
-                    onChange={(e) => handleEditAddOn({ ...addOn, prefix: e.target.value })}
-                  />
-                </td>
-              </tr>
-            </tbody>
-          </Table>
+                  </tbody>
+                </Table>
+              </div>
 
-          <div className="add-ons__weight-dims">
-            <h3>Shipment Weight/Dims</h3>
-
-            <Table variant={['plain', 'edit-row-details']} style={{ width: 'fit-content' }}>
-              <tbody>
-                <EditWeightDims
-                  weightDims={parseWeightDims(addOn.weightDims)}
-                  setWeightDims={(weightDims: WeightDims[]) => handleEditAddOn({ ...addOn, weightDims: formatWeightDims(weightDims) })}
+              <div className="add-ons__list-row-checkboxes">
+                <Checkbox
+                  variant={['label-align-center', 'label-bold']}
+                  label="Special Cost"
+                  checked={addOn.isSpecialCost}
+                  onChange={(e: any) => handleEditAddOn({ ...addOn, isSpecialCost: e.target.checked })}
                 />
-              </tbody>
-            </Table>
-          </div>
 
-          <div className="add-ons__list-row-checkboxes">
-            <Checkbox
-              variant={['label-align-center', 'label-bold']}
-              label="Special Cost"
-              checked={addOn.isSpecialCost}
-              onChange={(e: any) => handleEditAddOn({ ...addOn, isSpecialCost: e.target.checked })}
-            />
-
-            <Checkbox
-              variant={['label-align-center', 'label-bold']}
-              label="Ebay Listing"
-              checked={addOn.ebayListing}
-              onChange={(e) => handleEditAddOn({ ...addOn, ebayListing: e.target.checked })}
-            />
-          </div>
+                <Checkbox
+                  variant={['label-align-center', 'label-bold']}
+                  label="Ebay Listing"
+                  checked={addOn.ebayListing}
+                  onChange={(e) => handleEditAddOn({ ...addOn, ebayListing: e.target.checked })}
+                />
+              </div>
+            </>
+          }
         </div>
 
-        <div className="add-ons__list-row-buttons">
-          <Button type="button" onClick={() => handleDuplicateAddOn(addOn, addOns)} data-testid="duplicate-btn">Duplicate</Button>
-          <Input
-            style={{ width: '3rem' }}
-            variant={['x-small', 'search']}
-            value={printQty}
-            onChange={(e: any) => setPrintQty(e.target.value)}
-            type="number"
-          >
-            <Button type="button" variant={['search']} onClick={handlePrint} data-testid="print-btn">Print</Button>
-          </Input>
-          <Button type="button" variant={['danger']} onClick={onClickDeleteAddOn}>Delete</Button>
-        </div>
+        {!collapseRow &&
+          <div className="add-ons__list-row-buttons">
+            <Button type="button" onClick={() => handleDuplicateAddOn(addOn, addOns)} data-testid="duplicate-btn">Duplicate</Button>
+            <Input
+              style={{ width: '3rem' }}
+              variant={['x-small', 'search']}
+              value={printQty}
+              onChange={(e: any) => setPrintQty(e.target.value)}
+              type="number"
+            >
+              <Button type="button" variant={['search']} onClick={handlePrint} data-testid="print-btn">Print</Button>
+            </Input>
+            <Button type="button" variant={['danger']} onClick={onClickDeleteAddOn}>Delete</Button>
+          </div>
+        }
       </div>
     </div>
   );
