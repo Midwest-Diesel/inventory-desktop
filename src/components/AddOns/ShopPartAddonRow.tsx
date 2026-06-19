@@ -23,6 +23,7 @@ import { useNavState } from "@/hooks/useNavState";
 import { emitServerEvent, offServerEvent, onServerEvent } from "@/scripts/config/websockets";
 import { prompt } from "../library/Prompt";
 import EditWeightDims from "../parts/EditWeightDims";
+import TextArea from "../library/TextArea";
 
 interface Props {
   addOn: AddOn
@@ -567,8 +568,7 @@ export default function ShopPartAddonRow({ addOn, addOns, setAddons, handleDupli
                 <tbody>
                   <tr>
                     <td>
-                      <Input
-                        variant={['small', 'thin']}
+                      <TextArea
                         value={addOn.remarks !== null ? addOn.remarks : ''}
                         onChange={(e: any) => handleEditAddOn({ ...addOn, remarks: e.target.value })}
                         onBlur={(e: any) => handleEditAddOn({ ...addOn, rating: getRatingFromRemarks(e.target.value) })}

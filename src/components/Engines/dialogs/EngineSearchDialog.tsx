@@ -124,7 +124,7 @@ export default function EngineSearchDialog({ open, setOpen, onSearch, listOpen, 
           onChange={(e) => setArrNum(e.target.value)}
         />
 
-       <Input
+        <Input
           label="Purchased From"
           variant={['small', 'thin', 'label-no-stack', 'label-space-between']}
           value={purchasedFrom}

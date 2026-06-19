@@ -19,6 +19,7 @@ import { useNavState } from "@/hooks/useNavState";
 import { emitServerEvent } from "@/scripts/config/websockets";
 import { prompt } from "../library/Prompt";
 import { addEbayItem } from "@/scripts/services/ebayService";
+import TextArea from "../library/TextArea";
 
 interface Props {
   addOn: AddOn
@@ -350,8 +351,7 @@ export default function OfficePartAddonRow({ addOn, addOns, setAddons, onSave, o
             <tbody>
               <tr>
                 <td>
-                  <Input
-                    variant={['small', 'thin']}
+                  <TextArea
                     value={addOn.remarks !== null ? addOn.remarks : ''}
                     onChange={(e: any) => handleEditAddOn({ ...addOn, remarks: e.target.value })}
                     onBlur={(e: any) => handleEditAddOn({ ...addOn, rating: getRatingFromRemarks(e.target.value) })}
