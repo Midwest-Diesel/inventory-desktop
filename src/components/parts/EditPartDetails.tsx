@@ -63,7 +63,7 @@ export default function EditPartDetails({ part, setPart, setIsEditingPart, partC
   const [qtySold, setQtySold] = useState<number | null>(part.qtySold);
   const [sellingPrice, setSellingPrice] = useState<number | null>(part.sellingPrice);
   const [soldTo, setSoldTo] = useState<string>(part.soldTo ?? '');
-  const [handwrittenId, setInvoiceNum] = useState<number | null>(part.handwrittenId);
+  const [handwrittenId, setHandwrittenId] = useState<number | null>(part.handwrittenId);
   const [partCostIn, setPartCostIn] = useState<PartCostIn[]>(partCostInData);
   const [engineCostOut, setEngineCostOut] = useState<EngineCostOut[]>(engineCostOutData);
   const [changesSaved, setChangesSaved] = useState(true);
@@ -661,7 +661,7 @@ export default function EditPartDetails({ part, setPart, setIsEditingPart, partC
                     <Input
                       variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                       value={handwrittenId ?? ''}
-                      onChange={(e: any) => setInvoiceNum(e.target.value)}
+                      onChange={(e) => setHandwrittenId(e.target.value ? Number(e.target.value) : null)}
                       type="number"
                     />
                   </td>
