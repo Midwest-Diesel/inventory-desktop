@@ -149,6 +149,13 @@ interface PricingChangesReport {
   oldPercent?: number
 }
 
+interface NewCustomersReport {
+  name: string
+  contact: string | null
+  phone: string | null
+  createdAt: Date
+}
+
 type InventoryValueReportParts = { combinedTotal: number, data: InventoryValueReportPartsData[] };
 type InventoryValueReportCoreEngines = { combinedTotal: number, data: InventoryValueReportCoreEnginesData[] };
 type InventoryValueReportToreDownEngines = { combinedTotal: number, data: InventoryValueReportToreDownEnginesData[] };

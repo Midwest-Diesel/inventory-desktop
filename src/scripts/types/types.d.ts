@@ -118,6 +118,7 @@ type Customer = {
   rating: number
   createdBy: string | null
   tags: Tag[]
+  createdAt: Date | null
 };
 
 type Quote = {

@@ -63,6 +63,7 @@ import { useSearchParams } from "react-router-dom";
 import PendingHandwrittensTable from "@/components/reports/PendingHandwrittensTable";
 import { getSomeHandwrittensByInvoiceStatus } from "@/scripts/services/handwrittensService";
 import PersonalContactsListTable from "@/components/reports/PersonalContactsListTable";
+import NewCustomersTable from "@/components/reports/NewCustomersTable";
 
 
 export default function Reports() {
@@ -165,18 +166,25 @@ export default function Reports() {
             </div>
 
             <div className="reports-page-section">
-              <h2>Misc Reports</h2>
+              <h2>Inventory Reports</h2>
               <div className="reports-page-section__buttons">
-                <Button onClick={handlePendingHandwrittens}>Pending Handwrittens</Button>
-                <Button onClick={handlePersonalContactsList}>Personal Contacts List</Button>
-                <Button onClick={() => toggleOpenedReport('handwrittens-company')}>Handwrittens by Year</Button>
-                <Button onClick={handleSearchPBB}>PBB List</Button>
-                <Button onClick={handleSearchNoLocationParts}>No Location Parts</Button>
-                <Button onClick={() => toggleOpenedReport('recent-searches')}>Recent Searches</Button>
-                <Button onClick={handleSearchOutstandingCores}>Outstanding High Cores</Button>
                 <Button onClick={() => toggleOpenedReport('pricing-changes')}>Pricing Changes</Button>
                 <Button onClick={() => toggleOpenedReport('the-machines')}>Part Availability</Button>
                 <Button onClick={() => openTable('inventory-value')}>Inventory Accounting</Button>
+                <Button onClick={handleSearchNoLocationParts}>No Location Parts</Button>
+                <Button onClick={() => toggleOpenedReport('recent-searches')}>Recent Searches</Button>
+                <Button onClick={handleSearchPBB}>PBB List</Button>
+              </div>
+            </div>
+
+            <div className="reports-page-section">
+              <h2>Misc Reports</h2>
+              <div className="reports-page-section__buttons">
+                <Button onClick={handlePersonalContactsList}>Personal Contacts List</Button>
+                <Button onClick={handlePendingHandwrittens}>Pending Handwrittens</Button>
+                <Button onClick={() => openTable('new-customers')}>New Customers</Button>
+                <Button onClick={() => toggleOpenedReport('handwrittens-company')}>Handwrittens by Year</Button>
+                <Button onClick={handleSearchOutstandingCores}>Outstanding High Cores</Button>
               </div>
             </div>
           </div>
@@ -317,6 +325,7 @@ export default function Reports() {
           { isTableOpened('parts-company') && <SingleCompanyPartsTable closeTable={() => openTable('')} data={partsCompanyData} /> }
           { isTableOpened('engines-company') && <SingleCompanyEnginesTable closeTable={() => openTable('')} data={enginesCompanyData} /> }
           { isTableOpened('pending-handwrittens') && <PendingHandwrittensTable closeTable={() => openTable('')} data={pendingHandwrittensData} /> }
+          { isTableOpened('new-customers') && <NewCustomersTable closeTable={() => openTable('')} /> }
           { isTableOpened('personal-contacts-list') && <PersonalContactsListTable closeTable={() => openTable('')} /> }
           { isTableOpened('handwrittens-company') && <HandwrittenCompanyTable closeTable={() => openTable('')} data={handwrittensCompanyData} /> }
           { isTableOpened('pbb') && <PBBTable closeTable={() => openTable('')} data={PBBListData} /> }

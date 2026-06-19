@@ -135,7 +135,6 @@ export const getCustomerTypes = async () => {
   }
 };
 
-
 // === POST routes === //
 
 export const addCustomer = async (customer: string) => {

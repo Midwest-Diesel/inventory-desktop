@@ -14,6 +14,7 @@ export const arielSalesReportAtom = atom<ArielSalesReport[]>([]);
 export const partsCompanyReportAtom = atom<SingleCompanyParts[]>([]);
 export const enginesCompanyReportAtom = atom<SingleCompanyEngines[]>([]);
 export const pendingHandwrittensReportAtom = atom<Handwritten[]>([]);
+export const newCustomersReportAtom = atom<NewCustomersReport[]>([]);
 export const handwrittensCompanyReportAtom = atom<HandwrittensCompanyReport[]>([]);
 export const PBBListReportAtom = atom<PBBReport[]>([]);
 export const noLocationPartsReportAtom = atom<NoLocationPartsReport[]>([]);
