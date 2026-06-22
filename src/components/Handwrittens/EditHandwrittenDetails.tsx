@@ -438,6 +438,7 @@ export default function EditHandwrittenDetails({
         thirdParty: handwritten.isThirdParty ?? false,
         contactPhone: handwritten.phone,
         email: handwritten.email,
+        customerEngineInfo: handwritten.customerEngineInfo ?? '',
         ccNumber: formatCCNumber(cardNum),
         handwrittenTotal,
         items: chunk.map((item) => {
@@ -506,6 +507,7 @@ export default function EditHandwrittenDetails({
         thirdParty: handwritten.isThirdParty ?? false,
         contactPhone: handwritten.phone,
         email: handwritten.email,
+        customerEngineInfo: handwritten.customerEngineInfo ?? '',
         ccNumber: formatCCNumber(cardNum),
         handwrittenTotal,
         items: chunk.map((item) => {

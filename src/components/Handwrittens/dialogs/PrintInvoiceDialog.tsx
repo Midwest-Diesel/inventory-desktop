@@ -93,6 +93,7 @@ export default function PrintInvoiceDialog({ open, setOpen, handwritten }: Props
         thirdParty: handwritten?.isThirdParty ?? false,
         contactPhone: handwritten?.phone ?? '',
         email: handwritten?.email ?? '',
+        customerEngineInfo: handwritten.customerEngineInfo ?? '',
         ccNumber: handwritten?.ccNumber ?? '',
         handwrittenTotal,
         items: chunk.map((item) => ({
@@ -158,6 +159,7 @@ export default function PrintInvoiceDialog({ open, setOpen, handwritten }: Props
         thirdParty: handwritten?.isThirdParty ?? false,
         contactPhone: handwritten?.phone ?? '',
         email: handwritten?.email ?? '',
+        customerEngineInfo: handwritten.customerEngineInfo ?? '',
         ccNumber: handwritten?.ccNumber ?? '',
         handwrittenTotal,
         items: chunk.map((item) => ({

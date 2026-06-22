@@ -229,6 +229,7 @@ fn get_available_printers() -> Vec<String> {
 pub async fn print_shipping_label(image_data: String) -> Result<(), String> {
   let res = tauri::async_runtime::spawn_blocking(move || {
     let data = BASE64_STANDARD.decode(image_data.split(',').nth(1).unwrap()).map_err(|e| e.to_string())?;
+    let file_path = "C:/mwd/scripts/screenshots/shipping_label.png";
     let printers = get_available_printers();
     let printer = if printers.contains(&SHIPPING_LABEL_PRINTER.to_string()) {
       SHIPPING_LABEL_PRINTER.to_string()
@@ -243,6 +244,11 @@ pub async fn print_shipping_label(image_data: String) -> Result<(), String> {
       .map_err(|e| e.to_string())?;
 
     let rotated_img: DynamicImage = image::DynamicImage::ImageRgba8(rotate90(&img));
+
+    {
+      let mut file = File::create(file_path).map_err(|e| e.to_string())?;
+      rotated_img.write_to(&mut file, ImageOutputFormat::Png).map_err(|e| e.to_string())?;
+    }
 
     if let Ok(val) = env::var("DISABLE_PRINTING") {
       if val == "TRUE" { return Ok(()) }
@@ -261,6 +267,7 @@ pub async fn print_shipping_label(image_data: String) -> Result<(), String> {
 pub async fn print_cc_label(image_data: String) -> Result<(), String> {
   let res = tauri::async_runtime::spawn_blocking(move || {
     let data = BASE64_STANDARD.decode(image_data.split(',').nth(1).unwrap()).map_err(|e| e.to_string())?;
+    let file_path = "C:/mwd/scripts/screenshots/cc_label.png";
     /* 
       PRINTER DIMENSION SETTNGS (windows printer settings > printer > printer preferences):
       width: 3 in
@@ -278,6 +285,11 @@ pub async fn print_cc_label(image_data: String) -> Result<(), String> {
       .map_err(|e| e.to_string())?
       .decode()
       .map_err(|e| e.to_string())?;
+
+    {
+      let mut file = File::create(file_path).map_err(|e| e.to_string())?;
+      img.write_to(&mut file, ImageOutputFormat::Png).map_err(|e| e.to_string())?;
+    }
 
     if let Ok(val) = env::var("DISABLE_PRINTING") {
       if val == "TRUE" { return Ok(()) }
@@ -450,6 +462,7 @@ pub fn print_bol(args: BOLArgs) -> Result<(), String> {
 pub async fn print_accounting_handwritten(image_data: String) -> Result<(), String> {
   let res = tauri::async_runtime::spawn_blocking(move || {
     let data = BASE64_STANDARD.decode(image_data.split(',').nth(1).unwrap()).map_err(|e| e.to_string())?;
+    let file_path = "C:/mwd/scripts/screenshots/accounting_handwritten.png";
     let printers = get_available_printers();
     let printer = printers.iter().find(|&p| p.contains(&FRONT_DESK_PRINTER.to_string())).cloned().unwrap_or_else(|| "".to_string());
 
@@ -460,6 +473,11 @@ pub async fn print_accounting_handwritten(image_data: String) -> Result<(), Stri
       .map_err(|e| e.to_string())?;
 
     let rotated_img: DynamicImage = image::DynamicImage::ImageRgba8(rotate90(&img));
+
+    {
+      let mut file = File::create(file_path).map_err(|e| e.to_string())?;
+      rotated_img.write_to(&mut file, ImageOutputFormat::Png).map_err(|e| e.to_string())?;
+    }
 
     if let Ok(val) = env::var("DISABLE_PRINTING") {
       if val == "TRUE" { return Ok(()) }
@@ -478,6 +496,7 @@ pub async fn print_accounting_handwritten(image_data: String) -> Result<(), Stri
 pub async fn print_shipping_handwritten(image_data: String) -> Result<(), String> {
   let res = tauri::async_runtime::spawn_blocking(move || {
     let data = BASE64_STANDARD.decode(image_data.split(',').nth(1).unwrap()).map_err(|e| e.to_string())?;
+    let file_path = "C:/mwd/scripts/screenshots/shipping_handwritten.png";
     let printers = get_available_printers();
     let printer = if printers.contains(&SHOP_PRINTER.to_string()) {
       SHOP_PRINTER.to_string()
@@ -492,6 +511,11 @@ pub async fn print_shipping_handwritten(image_data: String) -> Result<(), String
       .map_err(|e| e.to_string())?;
 
     let rotated_img: DynamicImage = image::DynamicImage::ImageRgba8(rotate90(&img));
+
+    {
+      let mut file = File::create(file_path).map_err(|e| e.to_string())?;
+      rotated_img.write_to(&mut file, ImageOutputFormat::Png).map_err(|e| e.to_string())?;
+    }
 
     if let Ok(val) = env::var("DISABLE_PRINTING") {
       if val == "TRUE" { return Ok(()) }
@@ -510,6 +534,7 @@ pub async fn print_shipping_handwritten(image_data: String) -> Result<(), String
 pub async fn print_core_handwritten(image_data: String) -> Result<(), String> {
   let res = tauri::async_runtime::spawn_blocking(move || {
     let data = BASE64_STANDARD.decode(image_data.split(',').nth(1).unwrap()).map_err(|e| e.to_string())?;
+    let file_path = "C:/mwd/scripts/screenshots/core_handwritten.png";
     let printers = get_available_printers();
     let printer = printers.iter().find(|&p| p.contains(&FRONT_DESK_PRINTER.to_string())).cloned().unwrap_or_else(|| "".to_string());
 
@@ -520,6 +545,11 @@ pub async fn print_core_handwritten(image_data: String) -> Result<(), String> {
       .map_err(|e| e.to_string())?;
 
     let rotated_img: DynamicImage = image::DynamicImage::ImageRgba8(rotate90(&img));
+
+    {
+      let mut file = File::create(file_path).map_err(|e| e.to_string())?;
+      rotated_img.write_to(&mut file, ImageOutputFormat::Png).map_err(|e| e.to_string())?;
+    }
 
     if let Ok(val) = env::var("DISABLE_PRINTING") {
       if val == "TRUE" { return Ok(()) }
@@ -651,6 +681,7 @@ pub fn print_coo() -> Result<(), String> {
 pub async fn print_return(image_data: String) -> Result<(), String> {
   let res = tauri::async_runtime::spawn_blocking(move || {
     let data = BASE64_STANDARD.decode(image_data.split(',').nth(1).unwrap()).map_err(|e| e.to_string())?;
+    let file_path = "C:/mwd/scripts/screenshots/return.png";
     let printers = get_available_printers();
     let printer = printers.iter().find(|&p| p.contains(&OFFICE_PRINTER.to_string())).cloned().unwrap_or_else(|| "".to_string());
 
@@ -659,6 +690,11 @@ pub async fn print_return(image_data: String) -> Result<(), String> {
       .map_err(|e| e.to_string())?
       .decode()
       .map_err(|e| e.to_string())?;
+
+    {
+      let mut file = File::create(file_path).map_err(|e| e.to_string())?;
+      img.write_to(&mut file, ImageOutputFormat::Png).map_err(|e| e.to_string())?;
+    }
 
     if let Ok(val) = env::var("DISABLE_PRINTING") {
       if val == "TRUE" { return Ok(()) }
@@ -677,6 +713,7 @@ pub async fn print_return(image_data: String) -> Result<(), String> {
 pub async fn print_warranty(image_data: String) -> Result<(), String> {
   let res = tauri::async_runtime::spawn_blocking(move || {
     let data = BASE64_STANDARD.decode(image_data.split(',').nth(1).unwrap()).map_err(|e| e.to_string())?;
+    let file_path = "C:/mwd/scripts/screenshots/warranty.png";
     let printers = get_available_printers();
     let printer = printers.iter().find(|&p| p.contains(&OFFICE_PRINTER.to_string())).cloned().unwrap_or_else(|| "".to_string());
 
@@ -685,6 +722,11 @@ pub async fn print_warranty(image_data: String) -> Result<(), String> {
       .map_err(|e| e.to_string())?
       .decode()
       .map_err(|e| e.to_string())?;
+
+    {
+      let mut file = File::create(file_path).map_err(|e| e.to_string())?;
+      img.write_to(&mut file, ImageOutputFormat::Png).map_err(|e| e.to_string())?;
+    }
 
     if let Ok(val) = env::var("DISABLE_PRINTING") {
       if val == "TRUE" { return Ok(()) }
@@ -703,6 +745,7 @@ pub async fn print_warranty(image_data: String) -> Result<(), String> {
 pub async fn print_packing_slip(image_data: String) -> Result<(), String> {
   let res = tauri::async_runtime::spawn_blocking(move || {
     let data = BASE64_STANDARD.decode(image_data.split(',').nth(1).unwrap()).map_err(|e| e.to_string())?;
+    let file_path = "C:/mwd/scripts/screenshots/packing_slip.png";
     let printers = get_available_printers();
     let printer = printers.iter().find(|&p| p.contains(&OFFICE_PRINTER.to_string())).cloned().unwrap_or_else(|| "".to_string());
 
@@ -712,6 +755,11 @@ pub async fn print_packing_slip(image_data: String) -> Result<(), String> {
       .decode()
       .map_err(|e| e.to_string())?;
 
+    {
+      let mut file = File::create(file_path).map_err(|e| e.to_string())?;
+      img.write_to(&mut file, ImageOutputFormat::Png).map_err(|e| e.to_string())?;
+    }
+      
     if let Ok(val) = env::var("DISABLE_PRINTING") {
       if val == "TRUE" { return Ok(()) }
     }
@@ -729,6 +777,7 @@ pub async fn print_packing_slip(image_data: String) -> Result<(), String> {
 pub async fn print_po(image_data: String) -> Result<(), String> {
   let res = tauri::async_runtime::spawn_blocking(move || {
     let data = BASE64_STANDARD.decode(image_data.split(',').nth(1).unwrap()).map_err(|e| e.to_string())?;
+    let file_path = "C:/mwd/scripts/screenshots/po.png";
     let printers = get_available_printers();
     let printer = printers.iter().find(|&p| p.contains(&OFFICE_PRINTER.to_string())).cloned().unwrap_or_else(|| "".to_string());
 
@@ -737,6 +786,11 @@ pub async fn print_po(image_data: String) -> Result<(), String> {
       .map_err(|e| e.to_string())?
       .decode()
       .map_err(|e| e.to_string())?;
+
+    {
+      let mut file = File::create(file_path).map_err(|e| e.to_string())?;
+      img.write_to(&mut file, ImageOutputFormat::Png).map_err(|e| e.to_string())?;
+    }
 
     if let Ok(val) = env::var("DISABLE_PRINTING") {
       if val == "TRUE" { return Ok(()) }
@@ -755,6 +809,7 @@ pub async fn print_po(image_data: String) -> Result<(), String> {
 pub async fn print_proforma(image_data: String) -> Result<(), String> {
   let res = tauri::async_runtime::spawn_blocking(move || {
     let data = BASE64_STANDARD.decode(image_data.split(',').nth(1).unwrap()).map_err(|e| e.to_string())?;
+    let file_path = "C:/mwd/scripts/screenshots/proforma.png";
     let printers = get_available_printers();
     let printer = printers.iter().find(|&p| p.contains(&OFFICE_PRINTER.to_string())).cloned().unwrap_or_else(|| "".to_string());
 
@@ -763,6 +818,11 @@ pub async fn print_proforma(image_data: String) -> Result<(), String> {
       .map_err(|e| e.to_string())?
       .decode()
       .map_err(|e| e.to_string())?;
+
+    {
+      let mut file = File::create(file_path).map_err(|e| e.to_string())?;
+      img.write_to(&mut file, ImageOutputFormat::Png).map_err(|e| e.to_string())?;
+    }
 
     if let Ok(val) = env::var("DISABLE_PRINTING") {
       if val == "TRUE" { return Ok(()) }
@@ -782,6 +842,7 @@ pub async fn print_proforma(image_data: String) -> Result<(), String> {
 pub async fn print_part_tag(image_data: String) -> Result<(), String> {
   let res = tauri::async_runtime::spawn_blocking(move || {
     let data = BASE64_STANDARD.decode(image_data.split(',').nth(1).unwrap()).map_err(|e| e.to_string())?;
+    let file_path = "C:/mwd/scripts/screenshots/part_tag.png";
     let printers = get_available_printers();
     let printer = if printers.contains(&PART_TAG_PRINTER.to_string()) {
       PART_TAG_PRINTER.to_string()
@@ -796,6 +857,11 @@ pub async fn print_part_tag(image_data: String) -> Result<(), String> {
       .map_err(|e| e.to_string())?;
 
     let rotated_img: DynamicImage = image::DynamicImage::ImageRgba8(rotate90(&img));
+
+    {
+      let mut file = File::create(file_path).map_err(|e| e.to_string())?;
+      rotated_img.write_to(&mut file, ImageOutputFormat::Png).map_err(|e| e.to_string())?;
+    }
 
     if let Ok(val) = env::var("DISABLE_PRINTING") {
       if val == "TRUE" { return Ok(()) }
@@ -859,6 +925,7 @@ pub async fn print_inj_part_tag(image_data: String) -> Result<(), String> {
 pub async fn print_engine_tag(image_data: String) -> Result<(), String> {
   let res = tauri::async_runtime::spawn_blocking(move || {
     let data = BASE64_STANDARD.decode(image_data.split(',').nth(1).unwrap()).map_err(|e| e.to_string())?;
+    let file_path = "C:/mwd/scripts/screenshots/engine_tag.png";
     let printers = get_available_printers();
     let printer = if printers.contains(&PART_TAG_PRINTER.to_string()) {
       PART_TAG_PRINTER.to_string()
@@ -871,6 +938,11 @@ pub async fn print_engine_tag(image_data: String) -> Result<(), String> {
       .map_err(|e| e.to_string())?
       .decode()
       .map_err(|e| e.to_string())?;
+
+    {
+      let mut file = File::create(file_path).map_err(|e| e.to_string())?;
+      img.write_to(&mut file, ImageOutputFormat::Png).map_err(|e| e.to_string())?;
+    }
 
     if let Ok(val) = env::var("DISABLE_PRINTING") {
       if val == "TRUE" { return Ok(()) }
@@ -889,6 +961,7 @@ pub async fn print_engine_tag(image_data: String) -> Result<(), String> {
 pub async fn print_engine_checklist(image_data: String) -> Result<(), String> {
   let res = tauri::async_runtime::spawn_blocking(move || {
     let data = BASE64_STANDARD.decode(image_data.split(',').nth(1).unwrap()).map_err(|e| e.to_string())?;
+    let file_path = "C:/mwd/scripts/screenshots/engine_checklist.png";
     let printers = get_available_printers();
     let printer = if printers.contains(&PART_TAG_PRINTER.to_string()) {
       PART_TAG_PRINTER.to_string()
@@ -903,6 +976,11 @@ pub async fn print_engine_checklist(image_data: String) -> Result<(), String> {
       .map_err(|e| e.to_string())?;
 
     let rotated_img = image::DynamicImage::ImageRgba8(rotate90(&img));
+
+    {
+      let mut file = File::create(file_path).map_err(|e| e.to_string())?;
+      rotated_img.write_to(&mut file, ImageOutputFormat::Png).map_err(|e| e.to_string())?;
+    }
 
     if let Ok(val) = env::var("DISABLE_PRINTING") {
       if val == "TRUE" { return Ok(()) }
@@ -921,6 +999,7 @@ pub async fn print_engine_checklist(image_data: String) -> Result<(), String> {
 pub async fn print_quotes_list(image_data: String) -> Result<(), String> {
   let res = tauri::async_runtime::spawn_blocking(move || {
     let data = BASE64_STANDARD.decode(image_data.split(',').nth(1).unwrap()).map_err(|e| e.to_string())?;
+    let file_path = "C:/mwd/scripts/screenshots/quotes_list.png";
     let printers = get_available_printers();
     let printer = printers.iter().find(|&p| p.contains(&OFFICE_PRINTER.to_string())).cloned().unwrap_or_else(|| "".to_string());
 
@@ -931,6 +1010,11 @@ pub async fn print_quotes_list(image_data: String) -> Result<(), String> {
       .map_err(|e| e.to_string())?;
 
     let rotated_img: DynamicImage = image::DynamicImage::ImageRgba8(rotate90(&img));
+
+    {
+      let mut file = File::create(file_path).map_err(|e| e.to_string())?;
+      rotated_img.write_to(&mut file, ImageOutputFormat::Png).map_err(|e| e.to_string())?;
+    }
 
     if let Ok(val) = env::var("DISABLE_PRINTING") {
       if val == "TRUE" { return Ok(()) }

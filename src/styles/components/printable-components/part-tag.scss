@@ -1,7 +1,7 @@
 .part-tag {
   background-color: white;
   color: black;
-  padding: 7rem 2rem 10rem 3rem;
+  padding: 9rem 2rem 10rem 3rem;
   text-align: center;
   font-size: 60px;
   position: relative;
@@ -48,7 +48,7 @@
     height: fit-content;
     position: absolute;
     top: 50;
-    left: 2rem;
+    left: 4rem;
   }
 
   &__barcode {
@@ -73,10 +73,10 @@
     display: flex;
     justify-content: space-between;
     align-items: baseline;
-    width: 1380px;
+    width: 1250px;
     position: absolute;
     bottom: 8rem;
-    left: 3rem;
+    left: 8rem;
   }
 
   &__date {

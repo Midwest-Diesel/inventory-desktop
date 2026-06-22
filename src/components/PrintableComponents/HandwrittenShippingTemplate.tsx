@@ -42,6 +42,7 @@ interface Props {
     thirdParty: string
     handwrittenTotal: string
     email: string
+    customerEngineInfo: string
     contactPhone: string
     items: {
       stockNum: string
@@ -116,6 +117,7 @@ export default function HandwrittenShippingTemplate({ data }: Props) {
               </tr>
               <tr><td colSpan={2}>{ data.contactPhone || <span className="print-placeholder">CONTACT PHONE</span> }</td></tr>
               <tr><td colSpan={2}>{ data.email || <span className="print-placeholder">EMAIL</span> }</td></tr>
+              <tr><td colSpan={2}>{ data.customerEngineInfo || <span className="print-placeholder">CUSTOMER ENGINE INFO</span> }</td></tr>
             </tbody>
           </table>
         </div>
