@@ -39,7 +39,7 @@ export default function EditReturnItemsTable({ className, returnData, returnItem
 
   const handleEditItem = (ret: ReturnItem) => {
     setReturnItems(returnItems.map((item) => {
-      if (item.id === item.id) return ret;
+      if (item.id === ret.id) return ret;
       return item;
     }));
   };
