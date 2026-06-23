@@ -15,6 +15,7 @@ import Pagination from "@/components/library/Pagination";
 import AddMapLocationDialog from "@/components/map/dialogs/AddMapLocationDialog";
 import EditMapLocationDialog from "@/components/map/dialogs/EditMapLocationDialog";
 import { useQuery } from "@tanstack/react-query";
+import Loading from "@/components/library/Loading";
 
 type LocationFormData = {
   id?: number
@@ -45,6 +46,7 @@ export default function ImportantCustomersMap() {
   const [filterCustomerType, setFilterCustomerType] = useState('all');
   const [filterSalesman, setFilterSalesman] = useState('all');
   const [cluster, setCluster] = useState<MarkerClusterer | null>(null);
+  const [loading, setLoading] = useState(true);
 
   const { data: usersList = [] } = useQuery<User[]>({
     queryKey: ['usersList'],
@@ -108,7 +110,7 @@ export default function ImportantCustomersMap() {
           map: mapInstanceRef.current,
           position: loc.location,
           title: loc.address,
-          content: pin.element,
+          content: pin,
           gmpClickable: true
         });
         markers.push(marker);
@@ -134,6 +136,7 @@ export default function ImportantCustomersMap() {
       });
 
       setCluster(new MarkerClusterer({ markers, map: mapInstanceRef.current, algorithmOptions: { maxZoom: 20 } }));
+      setLoading(false);
     };
     loadMarkers();
 
@@ -243,7 +246,7 @@ export default function ImportantCustomersMap() {
 
   const handleSubmitNewLocation = async (data: LocationFormData) => {
     const loc = await getGeoLocation(data.address);
-    if (loc.length === 0) return;
+    if (!loc || loc.length === 0) return;
     const { lat, lng } = loc[0].geometry.location;
     handleAddLocation(data.name, { lat, lng }, data.type, data.customerId, data.notes);
     panTo({ lat, lng });
@@ -251,7 +254,7 @@ export default function ImportantCustomersMap() {
 
   const handleSubmitEditLocation = async (data: LocationFormData) => {
     const loc = await getGeoLocation(data.address);
-    if (loc.length === 0) return;
+    if (!loc || loc.length === 0) return;
     const { lat, lng } = loc[0].geometry.location;
     handleEditLocation(Number(data.id), data.name, { lat, lng }, data.type, data.customerId, data.notes);
     panTo({ lat, lng });
@@ -385,6 +388,7 @@ export default function ImportantCustomersMap() {
             />
           }
 
+          { loading && <Loading /> }
           <div ref={mapRef} className="map-page__map"></div>
 
           <div className="map-page__right-side">
