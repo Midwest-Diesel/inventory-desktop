@@ -74,7 +74,7 @@ export default function TakeoffsDialog({ open, setOpen, item, unitPrice, setHand
     }
 
     const isPartGroup = part.qty > 1;
-    const costMatches = Number(part.purchasePrice) === item.cost;
+    const costMatches = formatCurrency(Number(part.purchasePrice)) === formatCurrency(Number(item.cost));
 
     if (!isPartGroup && !costMatches) {
       alert(`Part cost of ${formatCurrency(part.purchasePrice)} doesn't equal line item cost of ${formatCurrency(item.cost)}`);
