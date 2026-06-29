@@ -342,6 +342,10 @@ export default function Return() {
                 <Table variant={['plain', 'row-details']}>
                   <tbody>
                     <tr>
+                      <th>Shipping Company</th>
+                      <td>{ returnData.shipToCompany }</td>
+                    </tr>
+                    <tr>
                       <th>Shipping Address</th>
                       <td>{ returnData.shipToAddress }</td>
                     </tr>
