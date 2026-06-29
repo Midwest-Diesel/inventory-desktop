@@ -13,7 +13,7 @@ import { useToast } from "@/hooks/useToast";
 import Loading from "@/components/library/Loading";
 import { ask } from "@/scripts/config/tauri";
 import { useQuery } from "@tanstack/react-query";
-import { getEngineCostRemaining } from "@/scripts/services/enginesService";
+import { editEngineStatus, getEngineCostRemaining } from "@/scripts/services/enginesService";
 import { getCustomerById } from "@/scripts/services/customerService";
 
 interface Props {
@@ -91,6 +91,7 @@ export default function AddEngineToHandwrittenDialog({ open, setOpen, engine, on
         offset: (currentPage - 1) * LIMIT,
         ...((!search && selectedCustomer?.id) && { customerId: selectedCustomer?.id })
       };
+
       const res = await searchSelectHandwrittensDialogData(searchData);
       if (res.rows.length > 0) {
         setHandwrittens(res.rows);
@@ -154,11 +155,14 @@ export default function AddEngineToHandwrittenDialog({ open, setOpen, engine, on
     if (!selectedHandwrittenId) return;
     const handwritten = await getHandwrittenById(selectedHandwrittenId);
     if (!handwritten) return;
+
     if (handwritten.invoiceStatus === 'SENT TO ACCOUNTING') {
       toast.sendToast('Can\'t add items to handwritten when status is SENT TO ACCOUNTING', 'error');
       return;
     }
     setShowButtons(false);
+
+    await editEngineStatus(engine.id, 'HoldSoldRunner');
 
     if (await ask('Add warranty?')) {
       setShowWarranty(true);
@@ -299,6 +303,7 @@ export default function AddEngineToHandwrittenDialog({ open, setOpen, engine, on
                     label="Search Company"
                     value={search}
                     onChange={(e: any) => setSearch(e.target.value)}
+                    data-testid="search-handwritten-input"
                   />
                 </div>
               </form>

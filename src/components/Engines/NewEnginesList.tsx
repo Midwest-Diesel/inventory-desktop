@@ -113,6 +113,7 @@ export default function NewEnginesList({ engines, setEngine, engineModel, setEng
                       onClick={() => setSelectedHandwrittenItem(engine)}
                       onMouseEnter={() => tooltip.set('Add to Handwritten')}
                       onMouseLeave={() => tooltip.set('')}
+                      data-testid="add-to-handwritten-btn"
                     >
                       <img alt="Quote Engine" src="/images/icons/invoice.svg" width={17} height={17} />
                     </Button>
@@ -134,7 +135,7 @@ export default function NewEnginesList({ engines, setEngine, engineModel, setEng
                   <td>{ engine.application }</td>
                   <td>{ formatCurrency(getTotalEngineCostIn(engine)) }</td>
                   <td>{ engine.purchasedFrom }</td>
-                  <td>{ engine.currentStatus }</td>
+                  <td data-testid="engine-status">{ engine.currentStatus }</td>
                   <td>{ engine.fwhNumber }</td>
                 </tr>
               );
