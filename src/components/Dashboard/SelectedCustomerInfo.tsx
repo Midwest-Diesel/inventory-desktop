@@ -21,6 +21,8 @@ export default function SelectedCustomerInfo({ expandedDetailsOpen }: Props) {
   const [customer, setCustomer] = useAtom<Customer | null>(selectedCustomerAtom);
   const customerInfo = [formatPhone(customer?.phone, true), customer?.email, customer?.billToState, customer?.billToCity].filter((v) => v).join(', ');
   const userIsAllowed = ['JS', 'MR', 'JMF', 'BS'].includes(user.initials);
+  const parser = new DOMParser();
+  const comments = parser.parseFromString(customer?.comments ?? '', 'text/html');
 
   const { data: salesHistory = [] } = useQuery<SalesHistory[]>({
     queryKey: ['salesHistory', customer?.id],
@@ -66,7 +68,7 @@ export default function SelectedCustomerInfo({ expandedDetailsOpen }: Props) {
           </p>
         </div>
         :
-        <div data-testid="customer-details">
+        <div data-testid="customer-details" style={{ maxHeight: '29rem', overflowY: 'auto' }}>
           <div style={{ display: 'flex', gap: '0.3rem', flexWrap: 'wrap', alignItems: 'flex-end' }}>
             <p><strong>Selected Customer:</strong> <Link href={`customer/${customer?.id}`} style={{ fontSize: 'var(--font-md)' }}>{ customer?.company }</Link></p>
             <Rating style={{ marginTop: '0.2rem' }} value={customer?.rating} disabled />
@@ -172,27 +174,9 @@ export default function SelectedCustomerInfo({ expandedDetailsOpen }: Props) {
               <CustomerContactsBlock customer={customer} setCustomer={setCustomer} />
             </GridItem>
 
-            <GridItem variant={['low-opacity-bg']}>
-              <Table variant={['plain', 'row-details']}>
-                <tbody>
-                  <tr>
-                    <th>Parts Manager</th>
-                    <td>{ customer?.partsManager }</td>
-                  </tr>
-                  <tr>
-                    <th>Parts Manager Email</th>
-                    <td>{ customer?.partsManagerEmail }</td>
-                  </tr>
-                  <tr>
-                    <th>Service Manager</th>
-                    <td>{ customer?.serviceManager }</td>
-                  </tr>
-                  <tr>
-                    <th>Service Manager Email</th>
-                    <td>{ customer?.serviceManagerEmail }</td>
-                  </tr>
-                </tbody>
-              </Table>
+            <GridItem variant={['no-style']} colSpan={4} style={{ maxHeight: '9rem', overflowY: 'auto' }}>
+              <h3>Comments</h3>
+              <p>{ comments.querySelector('body')?.innerText }</p>  
             </GridItem>
 
             <GridItem variant={['no-style']} className="customer-details__sales-history">
@@ -219,6 +203,29 @@ export default function SelectedCustomerInfo({ expandedDetailsOpen }: Props) {
                 :
                 <p>Empty</p>
               }
+            </GridItem>
+
+            <GridItem variant={['low-opacity-bg']}>
+              <Table variant={['plain', 'row-details']}>
+                <tbody>
+                  <tr>
+                    <th>Parts Manager</th>
+                    <td>{ customer?.partsManager }</td>
+                  </tr>
+                  <tr>
+                    <th>Parts Manager Email</th>
+                    <td>{ customer?.partsManagerEmail }</td>
+                  </tr>
+                  <tr>
+                    <th>Service Manager</th>
+                    <td>{ customer?.serviceManager }</td>
+                  </tr>
+                  <tr>
+                    <th>Service Manager Email</th>
+                    <td>{ customer?.serviceManagerEmail }</td>
+                  </tr>
+                </tbody>
+              </Table>
             </GridItem>
           </Grid>
 
