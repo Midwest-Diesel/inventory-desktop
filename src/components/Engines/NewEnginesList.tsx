@@ -92,6 +92,8 @@ export default function NewEnginesList({ engines, setEngine, engineModel, setEng
           </thead>
           <tbody>
             {filteredEngines.map((engine: Engine) => {
+              const isHoldSoldRunner = engine.currentStatus === 'HoldSoldRunner';
+
               return (
                 <tr key={engine.id}>
                   <td className="parts-list__left-col table-buttons table-buttons--grid">
@@ -118,7 +120,15 @@ export default function NewEnginesList({ engines, setEngine, engineModel, setEng
                       <img alt="Quote Engine" src="/images/icons/invoice.svg" width={17} height={17} />
                     </Button>
                   </td>
-                  <td><Link href={`/engines/${engine.stockNum}`} data-testid="stock-num-link">{ engine.stockNum }</Link></td>
+                  <td style={isHoldSoldRunner ? { background: 'var(--orange-1)' } : {}}>
+                    <Link
+                      style={isHoldSoldRunner ? { color: 'black' } : {}}
+                      href={`/engines/${engine.stockNum}`}
+                      data-testid="stock-num-link"
+                    >
+                      { engine.stockNum }
+                    </Link>
+                  </td>
                   <td className="cbx-td"><Checkbox checked={isEngineResNotNull(engine)} disabled /></td>
                   <td className="cbx-td"><Checkbox checked={Boolean(engine.ecm)} disabled /></td>
                   <td className="cbx-td"><Checkbox checked={Boolean(engine.warranty)} disabled /></td>
@@ -135,7 +145,7 @@ export default function NewEnginesList({ engines, setEngine, engineModel, setEng
                   <td>{ engine.application }</td>
                   <td>{ formatCurrency(getTotalEngineCostIn(engine)) }</td>
                   <td>{ engine.purchasedFrom }</td>
-                  <td data-testid="engine-status">{ engine.currentStatus }</td>
+                  <td data-testid="engine-status" style={isHoldSoldRunner ? { background: 'var(--orange-1)', color: 'black' } : {}}>{ engine.currentStatus }</td>
                   <td>{ engine.fwhNumber }</td>
                 </tr>
               );
