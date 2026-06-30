@@ -1,4 +1,4 @@
-import { formatDate } from "@/scripts/tools/stringUtils";
+import { formatDate, formatPhone } from "@/scripts/tools/stringUtils";
 import Button from "../library/Button";
 import Table from "../library/Table";
 import Loading from "../library/Loading";
@@ -53,7 +53,7 @@ export default function NewCustomersTable({ closeTable }: Props) {
         row.createdAt,
         row.name,
         row.contact,
-        row.phone
+        formatPhone(row.phone)
       ].join('\t')
     ).join('\n');
     navigator.clipboard.writeText(rowsText);
@@ -112,7 +112,7 @@ export default function NewCustomersTable({ closeTable }: Props) {
                 <td>{ formatDate(row.createdAt) }</td>
                 <td>{ row.name }</td>
                 <td>{ row.contact }</td>
-                <td>{ row.phone }</td>
+                <td>{ formatPhone(row.phone) }</td>
               </tr>
             );
           })}
