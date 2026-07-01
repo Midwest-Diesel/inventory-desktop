@@ -196,7 +196,8 @@ async fn main() {
       print_quotes_list,
       get_json_file,
       read_file_bytes,
-      delete_file
+      delete_file,
+      create_folder
     ])
     .run(tauri::generate_context!());
 }
@@ -797,6 +798,11 @@ fn delete_file(path: String) -> Result<(), String> {
     return Err("Path is not a file".into());
   }
 
-  fs::remove_file(path)
-    .map_err(|e| e.to_string())
+  fs::remove_file(path).map_err(|e| e.to_string())
+}
+
+#[tauri::command]
+fn create_folder(path: String) -> Result<(), String> {
+  let path = Path::new(&path);
+  fs::create_dir_all(path).map_err(|e| e.to_string())
 }

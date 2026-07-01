@@ -2,7 +2,7 @@ import { Layout } from "@/components/Layout";
 import Button from "@/components/library/Button";
 import Input from "@/components/library/Input";
 import Loading from "@/components/library/Loading";
-import { invoke } from "@/scripts/config/tauri";
+import { ask, invoke } from "@/scripts/config/tauri";
 import { FormEvent, useState } from "react";
 
 
@@ -49,6 +49,15 @@ export default function ImageUpload() {
     setIsUploadingEngineNums(false);
   };
 
+  const openFolder = async (filepath: string) => {
+    try {
+      await invoke('view_file', { filepath });
+    } catch (error) {
+      if (!await ask('Pictures don\'t exist for part. Would you like to create a new folder?')) return;
+      await invoke('create_folder', { path: filepath });
+    }
+  };
+
 
   return (
     <Layout title="Image Upload">
@@ -73,7 +82,15 @@ export default function ImageUpload() {
               multiple
               required
             />
-            <Button type="submit">Upload</Button>
+
+            <div style={{ display: 'flex', gap: '0.3rem' }}>
+              <Button type="submit">Upload</Button>
+              <Button
+                onClick={() => openFolder(`\\\\MWD1-SERVER\\Server\\Pictures\\parts_dir\\${partImagesName}`)}
+              >
+                Open Folder
+              </Button>
+            </div>
           </form>
         }
 
@@ -97,7 +114,15 @@ export default function ImageUpload() {
               multiple
               required
             />
-            <Button type="submit">Upload</Button>
+
+            <div style={{ display: 'flex', gap: '0.3rem' }}>
+              <Button type="submit">Upload</Button>
+              <Button
+                onClick={() => openFolder(`\\\\MWD1-SERVER\\Server\\Pictures\\sn_specific\\${stockNumImagesName}`)}
+              >
+                Open Folder
+              </Button>
+            </div>
           </form>
         }
 
@@ -121,7 +146,15 @@ export default function ImageUpload() {
               multiple
               required
             />
-            <Button type="submit">Upload</Button>
+
+            <div style={{ display: 'flex', gap: '0.3rem' }}>
+              <Button type="submit">Upload</Button>
+              <Button
+                onClick={() => openFolder(`\\\\MWD1-SERVER\\Server\\Engines Pictures\\StockPhotos\\${engineNumImagesName}`)}
+              >
+                Open Folder
+              </Button>
+            </div>
           </form>
         }
       </div>
