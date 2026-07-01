@@ -42,7 +42,7 @@ export default function PartTag({ data }: Props) {
 
       <div className="part-tag__bottom-row">
         <p className="part-tag__date">{ date }</p>
-        <h1>{ partNum }</h1>
+        <h1 style={{ fontSize: '120px' }}>{ partNum }</h1>
         <p className="part-tag__rating">{ rating }</p>
       </div>
     </div>
