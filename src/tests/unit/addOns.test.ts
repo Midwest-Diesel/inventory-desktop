@@ -20,22 +20,22 @@ describe('getNextStockNumberSuffix', () => {
   });
 
   test('Get next letter in sequence', async () => {
-    vi.spyOn(partsModule, 'getPartsByStockNum').mockResolvedValue([
+    vi.spyOn(partsModule, 'searchParts').mockResolvedValue({rows: [
       { stockNum: 'TU505-10A' },
       { stockNum: 'TU505-10B' }
-    ] as any);
+    ]} as any);
     const letter = await getNextStockNumberSuffix('TU505-10', addOns);
     expect(letter).toEqual('C');
   });
 
   test('Get first letter for start of sequence', async () => {
-    vi.spyOn(partsModule, 'getPartsByStockNum').mockResolvedValue([]);
+    vi.spyOn(partsModule, 'searchParts').mockResolvedValue({ rows: [] } as any);
     const letter = await getNextStockNumberSuffix('TESTNUMBER123', addOns);
     expect(letter).toEqual('A');
   });
 
   test('Get next letter when stockNum only exists in addons', async () => {
-    vi.spyOn(partsModule, 'getPartsByStockNum').mockResolvedValue([]);
+    vi.spyOn(partsModule, 'searchParts').mockResolvedValue({ rows: [] } as any);
     const letter = await getNextStockNumberSuffix('TESTING825-7', addOns);
     expect(letter).toEqual('B');
   });

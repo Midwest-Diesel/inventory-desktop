@@ -1,4 +1,4 @@
-import { getPartsByStockNum } from "../services/partsService";
+import { searchParts } from "../services/partsService";
 
 export const commonPrefixLength = (a: string, b: string): number => {
   let i = 0;
@@ -15,9 +15,9 @@ export const getAddOnDateCode = (date = new Date()): string => {
 
 const letters = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'];
 export const getNextStockNumberSuffix = async (stockNum: string, addOns: AddOn[]): Promise<string> => {
-  const parts = await getPartsByStockNum(stockNum);
+  const parts = await searchParts({ stockNum: `*${stockNum}`, showSoldParts: true }, 1, 9999);
   const filteredAddOns = addOns.filter((a) => a.stockNum?.slice(0, a.stockNum.length - 1) === stockNum);
-  const stockNumbers = [...parts.map((p) => p.stockNum), ...filteredAddOns.map((a) => a.stockNum)];
+  const stockNumbers = [...parts.rows.map((p) => p.stockNum), ...filteredAddOns.map((a) => a.stockNum)];
   if (stockNumbers.length === 0) return 'A';
 
   let latestStockNumIndex = letters.indexOf(stockNumbers[0]!.charAt(stockNumbers[0]!.length - 1));

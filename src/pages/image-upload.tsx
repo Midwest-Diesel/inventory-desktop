@@ -52,7 +52,7 @@ export default function ImageUpload() {
   const openFolder = async (filepath: string) => {
     try {
       await invoke('view_file', { filepath });
-    } catch (error) {
+    } catch {
       if (!await ask('Pictures don\'t exist for part. Would you like to create a new folder?')) return;
       await invoke('create_folder', { path: filepath });
     }
