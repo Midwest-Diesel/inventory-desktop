@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import Barcode from "../library/Barcode";
 
 interface Props {
@@ -18,6 +19,21 @@ interface Props {
 
 export default function PartTag({ data }: Props) {
   const { stockNum, model, serialNum, hp, location, remarks, date, partNum, rating, hasPictures } = data;
+  const remarksRef = useRef<HTMLParagraphElement | null>(null);
+
+  useEffect(() => {
+    const el = remarksRef.current;
+    if (!el) return;
+
+    let fontSize = 50;
+    el.style.fontSize = `${fontSize}px`;
+
+    while (el.scrollHeight > el.clientHeight && fontSize > 12) {
+      fontSize -= 1;
+      el.style.fontSize = `${fontSize}px`;
+    }
+  }, [remarks]);
+
   
   return (
     <div className="part-tag">
@@ -33,7 +49,7 @@ export default function PartTag({ data }: Props) {
 
       <div className="part-tag__middle">
         <p className="part-tag__location">{ location.replaceAll(' ', '_') }</p>
-        <p className="part-tag__remarks">{ remarks }</p>
+        <p ref={remarksRef} className="part-tag__remarks">{ remarks }</p>
       </div>
       
       <div className="part-tag__barcode">
