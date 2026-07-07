@@ -28,9 +28,11 @@ export default function NewEngineQuoteDialog({ open, setOpen, engine, onNewQuote
   const [desc, setDesc] = useState('');
   const [price, setPrice] = useState('');
   const [notes, setNotes] = useState('');
+  const initDesc = (engine: Engine | null) => engine ? `${engine.model} ${engine.serialNum ? `${engine.serialNum} ` : ''}Engine` : '';
 
   useEffect(() => {
     setStockNum(engine?.stockNum.toString() ?? '');
+    setDesc(initDesc(engine));
   }, [engine]);
 
   const handleSubmit = async (e: FormEvent) => {
@@ -59,7 +61,7 @@ export default function NewEngineQuoteDialog({ open, setOpen, engine, onNewQuote
     setSource('');
     setCompany('');
     setStockNum(engine?.stockNum.toString() ?? '');
-    setDesc('');
+    setDesc(initDesc(engine));
     setPrice('');
     setNotes('');
     setOpen(false);
