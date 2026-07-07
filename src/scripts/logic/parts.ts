@@ -1,7 +1,7 @@
 import { prompt } from "@/components/library/Prompt";
 import { ask } from "../config/tauri";
 import { editAddOnAltParts, getAllAddOns, getOfficeAddOns } from "../services/addOnsService";
-import { addPart, editAltParts, editPart, getNextUPStockNum, getPartInfoByPartNum, searchParts } from "../services/partsService";
+import { addPart, addPartCostIn, editAltParts, editPart, getNextUPStockNum, getPartInfoByPartNum, searchParts } from "../services/partsService";
 import { formatDate } from "../tools/stringUtils";
 
 
@@ -170,6 +170,7 @@ export const manualPartReturn = async (part: Part, qty: number) => {
     return Math.max(max, Number(match[1]));
   }, 0);
 
+  const stockNum = `${part.stockNum?.replace(/-\d+$/, '')}-${maxReturnNum + 1}`;
   const newPart: Part = {
     ...part,
     qty,
@@ -179,9 +180,13 @@ export const manualPartReturn = async (part: Part, qty: number) => {
     soldTo: null,
     handwrittenId: null,
     remarks: removeRemarksSoldText(part.remarks),
-    stockNum: `${part.stockNum?.replace(/-\d+$/, '')}-${maxReturnNum + 1}`
+    stockNum
   };
   await addPart(newPart, true);
+  
+  for (const row of part.partCostIn) {
+    await addPartCostIn(stockNum, row.cost ?? 0, row.invoiceNum, row.vendor, row.costType, row.note);
+  }
 
   await editPart({ ...part, qtySold });
 };
