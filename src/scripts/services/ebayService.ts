@@ -83,7 +83,10 @@ export const addEbayItem = async (addOn: AddOn) => {
       condition: parseItemCondition(addOn.condition, addOn.manufacturer),
       manufacturer: parseItemManufacturer(addOn.manufacturer),
       title: desc,
-      desc
+      desc,
+      newListPrice: addOn.newPrice,
+      remanListPrice: addOn.remanPrice,
+      dealerPrice: addOn.dealerPrice
     };
     await api.post('/api/ebay/item', item);
   } catch (error) {
