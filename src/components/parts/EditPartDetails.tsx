@@ -4,7 +4,7 @@ import Grid from "@/components/library/grid/Grid";
 import GridItem from "@/components/library/grid/GridItem";
 import { FormEvent, useState } from "react";
 import Input from "@/components/library/Input";
-import { addPartCostIn, addToPartQtyHistory, deletePartCostIn, editPartCostIn, getPartInfoByPartNum, getPartById, editWeightDims, editPartsInfoPricing, editPart } from "@/scripts/services/partsService";
+import { addPartCostIn, addToPartQtyHistory, deletePartCostIn, editPartCostIn, getPartInfoByPartNum, getPartById, editWeightDims, editPartsInfoPricing, editPart, editCatDirectPricing } from "@/scripts/services/partsService";
 import Table from "@/components/library/Table";
 import { addEngineCostOut, deleteEngineCostOut, editEngineCostOut } from "@/scripts/services/enginesService";
 import { userAtom } from "@/scripts/atoms/state";
@@ -55,6 +55,7 @@ export default function EditPartDetails({ part, setPart, setIsEditingPart, partC
   const [corePrice, setCorePrice] = useState<number | null>(part.corePrice);
   const [engineStockNum, setEngineStockNum] = useState<number | null>(part.engineNum);
   const [purchasePrice] = useState<number | null>(part.purchasePrice);
+  const [catDirectPrice, setCatDirectPrice] = useState<string | null>(part.catDirectPrice?.toString() ?? '');
   const [altParts, setAltParts] = useState<string[]>(part.altParts);
   const [weightDims, setWeightDims] = useState<WeightDims[]>(parseWeightDims(part.weightDims));
   const [specialNotes, setSpecialNotes] = useState<string>(part.specialNotes ?? '');
@@ -106,6 +107,7 @@ export default function EditPartDetails({ part, setPart, setIsEditingPart, partC
       remanFleetPrice: Number(remanFleetPrice),
       corePrice: Number(corePrice),
       purchasePrice: Number(purchasePrice),
+      catDirectPrice,
       engineNum: engineStockNum,
       altParts,
       specialNotes,
@@ -129,6 +131,7 @@ export default function EditPartDetails({ part, setPart, setIsEditingPart, partC
 
     await editPart(newPart);
     await handlePartPricing(newPart);
+    await handleCatDirectPricing(newPart);
     await editPartCostInRows();
     await addNewPartCostInRows();
 
@@ -154,6 +157,11 @@ export default function EditPartDetails({ part, setPart, setIsEditingPart, partC
     
     const { listPrice, fleetPrice, remanListPrice, remanFleetPrice, corePrice } = newPart;
     await editPartsInfoPricing(altParts, { listPrice, fleetPrice, remanListPrice, remanFleetPrice, corePrice });
+  };
+
+  const handleCatDirectPricing = async (newPart: Part) => {
+    if (part.catDirectPrice?.toString() === newPart.catDirectPrice?.toString()) return;
+    await editCatDirectPricing(altParts, Number(newPart.catDirectPrice));
   };
 
   const editPartCostInRows = async () => {
@@ -466,6 +474,17 @@ export default function EditPartDetails({ part, setPart, setIsEditingPart, partC
                       variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                       value={coreFam ?? ''}
                       onChange={(e: any) => setCoreFamily(e.target.value)}
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <th>CAT Direct Price</th>
+                  <td>
+                    <Input
+                      variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+                      value={catDirectPrice ?? ''}
+                      onChange={(e) => setCatDirectPrice(e.target.value)}
+                      data-testid="cat-direct-price"
                     />
                   </td>
                 </tr>

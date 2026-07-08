@@ -1,6 +1,7 @@
 import { test, expect, Dialog, Page } from '@playwright/test';
 import { altSearch, goto, partSearch } from '../utils';
 import { resetDb } from '../resetDatabase';
+import { formatDate } from '@/scripts/tools/stringUtils';
 
 test.beforeEach(async ({ page }) => {
   await resetDb();
@@ -34,7 +35,7 @@ test.describe('Parts', () => {
     await expect(page.getByTestId('part-num-link').first()).toHaveText('7E0333');
   });
 
-  test('Alt Part search', async ({ page }) => {
+  test('Alt part search', async ({ page }) => {
     await altSearch(page, { partNum: '*7E0331', desc: 'VALVE COVER 3406', stockNum: 'UP9432', location: 'C5G4A', rating: 0.0, serialNum: '79419143', hp: '500', purchFrom: 'CB1', remarks: 'T/O, NTBBD' });
     await expect(page.getByTestId('part-num-link').first()).toHaveText('7E0333');
   });
@@ -48,5 +49,17 @@ test.describe('Parts', () => {
     await altSearch(page, { partNum: '7L0406' });
     await page.getByTestId('part-num-link').first().click();
     await expect(page.getByTestId('alt-parts')).toHaveText('9N3240, 7L0406, 9N3242');
+  });
+
+  test('Edit CAT direct pricing', async ({ page }) => {
+    page.on('dialog', (dialog: Dialog) => dialog.accept());
+    await partSearch(page, { partNum: '7E0333' });
+    await page.getByTestId('part-num-link').first().click();
+    await page.getByTestId('edit-btn').click();
+
+    await page.getByTestId('cat-direct-price').fill('900.5');
+    await page.getByTestId('save-btn').click();
+    await expect(page.getByTestId('cat-direct-price')).toHaveText('$900.50');
+    await expect(page.getByTestId('cat-direct-last-updated')).toHaveText(formatDate(new Date()));
   });
 });

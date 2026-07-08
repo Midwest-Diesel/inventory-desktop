@@ -515,6 +515,8 @@ type Part = {
   fleetPrice: number | null
   remanFleetPrice: number | null
   corePrice: number | null
+  catDirectPrice: number | null
+  catDirectLastUpdated: Date | null
   soldTo: string | null
   qtySold: number | null
   sellingPrice: number | null

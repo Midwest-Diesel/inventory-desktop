@@ -307,11 +307,11 @@ export default function PartDetails() {
                   <tbody>
                     <tr>
                       <th>Qty</th>
-                      <td data-testid="qty">{ part.qty }</td>
+                      <td colSpan={3} data-testid="qty">{ part.qty }</td>
                     </tr>
                     <tr>
                       <th>Stock Number</th>
-                      <td>
+                      <td colSpan={3}>
                         <div className="part-details__stock-pics">
                           { part.stockNum }
                           {part.snImageExists &&
@@ -333,43 +333,49 @@ export default function PartDetails() {
                     </tr>
                     <tr>
                       <th>Location</th>
-                      <td>{ part.location }</td>
+                      <td colSpan={3}>{ part.location }</td>
                     </tr>
                     <tr>
                       <th>Manufacturer</th>
-                      <td>{ part.manufacturer }</td>
+                      <td colSpan={3}>{ part.manufacturer }</td>
                     </tr>
                     <tr>
                       <th>Purchased From</th>
-                      <td>{ part.purchasedFrom }</td>
+                      <td colSpan={3}>{ part.purchasedFrom }</td>
                     </tr>
                     <tr>
                       <th>Condition</th>
-                      <td>{ part.condition }</td>
+                      <td colSpan={3}>{ part.condition }</td>
                     </tr>
                     <tr>
                       <th>Fast Track Status</th>
-                      <td>{ part.fastTrackStatus }</td>
+                      <td colSpan={3}>{ part.fastTrackStatus }</td>
                     </tr>
                     <tr>
                       <th>Rating</th>
-                      <td>{ part.rating }</td>
+                      <td colSpan={3}>{ part.rating }</td>
                     </tr>
                     <tr>
                       <th>Core Family</th>
-                      <td>{ part.coreFam }</td>
+                      <td colSpan={3}>{ part.coreFam }</td>
                     </tr>
                     <tr>
                       <th>Entry Date</th>
-                      <td>{ formatDate(part.entryDate) }</td>
+                      <td colSpan={3}>{ formatDate(part.entryDate) }</td>
                     </tr>
                     <tr>
                       <th>Recon Date</th>
-                      <td>{ formatDate(part.reconDate) }</td>
+                      <td colSpan={3}>{ formatDate(part.reconDate) }</td>
                     </tr>
                     <tr>
                       <th>Price Last Updated</th>
-                      <td>{ formatDate(part.priceLastUpdated) }</td>
+                      <td colSpan={3}>{ formatDate(part.priceLastUpdated) }</td>
+                    </tr>
+                    <tr>
+                      <th>CAT Direct Price</th>
+                      <td style={{ width: '24rem' }} data-testid="cat-direct-price">{ formatCurrency(part.catDirectPrice) }</td>
+                      <th>Last Updated</th>
+                      <td style={{ width: '24rem' }} data-testid="cat-direct-last-updated">{ formatDate(part.catDirectLastUpdated) }</td>
                     </tr>
                   </tbody>
                 </Table>
