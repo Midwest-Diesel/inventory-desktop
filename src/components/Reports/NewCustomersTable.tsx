@@ -6,6 +6,7 @@ import { useAtom } from "jotai";
 import { newCustomersReportAtom } from "@/scripts/atoms/reports";
 import { useEffect, useState } from "react";
 import { reportNewCustomers } from "@/scripts/services/reportsService";
+import Link from "../library/Link";
 
 interface Props {
   closeTable: () => void
@@ -53,6 +54,7 @@ export default function NewCustomersTable({ closeTable }: Props) {
         row.createdAt,
         row.name,
         row.contact,
+        row.email,
         formatPhone(row.phone)
       ].join('\t')
     ).join('\n');
@@ -102,6 +104,7 @@ export default function NewCustomersTable({ closeTable }: Props) {
             <th>Created Date</th>
             <th>Name</th>
             <th>Contact</th>
+            <th>Email</th>
             <th>Phone</th>
           </tr>
         </thead>
@@ -110,8 +113,15 @@ export default function NewCustomersTable({ closeTable }: Props) {
             return (
               <tr key={i}>
                 <td>{ formatDate(row.createdAt) }</td>
-                <td>{ row.name }</td>
+                <td>
+                  {row.customerId ?
+                    <Link href={`/customer/${row.customerId}`}>{ row.name }</Link>
+                    :
+                    row.customerId
+                  }
+                </td>
                 <td>{ row.contact }</td>
+                <td>{ row.email }</td>
                 <td>{ formatPhone(row.phone) }</td>
               </tr>
             );

@@ -150,8 +150,10 @@ interface PricingChangesReport {
 }
 
 interface NewCustomersReport {
+  customerId: number
   name: string
   contact: string | null
+  email: string | null
   phone: string | null
   createdAt: Date
 }
