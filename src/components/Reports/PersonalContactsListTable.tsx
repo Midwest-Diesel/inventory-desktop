@@ -1,4 +1,4 @@
-import { formatDate } from "@/scripts/tools/stringUtils";
+import { formatDate, formatPhone } from "@/scripts/tools/stringUtils";
 import Button from "../library/Button";
 import Table from "../library/Table";
 import { ask } from "@/scripts/config/tauri";
@@ -68,7 +68,7 @@ export default function PersonalContactsListTable({ closeTable }: Props) {
                 <td>{ formatDate(row.dateAdded) }</td>
                 <td>{ row.salesman }</td>
                 <td>{ row.company }</td>
-                <td>{ row.phone }</td>
+                <td>{ formatPhone(row.phone) }</td>
                 <td>{ row.contact }</td>
                 <td>{ row.email }</td>
                 <td className="table-buttons table-buttons--grid">

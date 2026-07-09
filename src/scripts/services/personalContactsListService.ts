@@ -28,9 +28,9 @@ export const getPersonalContactsList = async (params: Search): Promise<PersonalC
 
 // === POST routes === //
 
-export const addPersonalContact = async (customerId: number) => {
+export const addPersonalContact = async (customerId: number, salesmanId: number) => {
   try {
-    await api.post('/api/personal-contacts-list', { customerId });
+    await api.post('/api/personal-contacts-list', { customerId, salesmanId });
   } catch (error) {
     console.error(error);
     alert(`Error in [addPersonalContact] ${error}`);

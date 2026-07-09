@@ -74,7 +74,7 @@ describe('Customers Integration', () => {
   });
 
   it('Add to personal constacts list', async () => {
-    await addPersonalContact(1);
+    await addPersonalContact(1, 1);
     const res = await getPersonalContactsList({ customerId: 1 });
     expect(res[0]).toMatchObject({ company: 'HEAVY DUTY REBUILDERS', "salesman": "TS" });
   });

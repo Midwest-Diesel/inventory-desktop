@@ -26,6 +26,8 @@ import { ask } from "@/scripts/config/tauri";
 import { addPersonalContact, getPersonalContactsList } from "@/scripts/services/personalContactsListService";
 import Tag from "@/components/library/Tag";
 import { addTagToCustomer } from "@/scripts/services/tagsService";
+import UserSelect from "@/components/library/select/UserSelect";
+import { getUserById } from "@/scripts/services/accountService";
 
 
 export default function Customer() {
@@ -42,6 +44,8 @@ export default function Customer() {
   const [addLocDialogOpen, setAddLocDialogOpen] = useState(false);
   const [editLocDialogOpen, setEditLocDialogOpen] = useState(false);
   const [location, setLocation] = useState<MapLocation | null>(null);
+  const [showSalesmanSelect, setShowSalesmanSelect] = useState(false);
+  const [salesmanSelection, setSalesmanSelection] = useState<number | null>(null);
   const parser = new DOMParser();
   const comments = parser.parseFromString(customer?.comments ?? '', 'text/html');
   const fleetNotes = parser.parseFromString(customer?.fleetNotes ?? '', 'text/html');
@@ -61,6 +65,15 @@ export default function Customer() {
   useEffect(() => {
     fetchData();
   }, [params]);
+
+  useEffect(() => {
+    if (!salesmanSelection) return;
+    (async () => {
+      await onClickAddToContactList();
+      setSalesmanSelection(null);
+      setShowSalesmanSelect(false);
+    })();
+  }, [salesmanSelection]);
 
   const fetchData = async () => {
     if (!params) return;
@@ -96,8 +109,11 @@ export default function Customer() {
   };
 
   const onClickAddToContactList = async () => {
-    if (!customer || !await ask('Add to contact list?')) return;
-    await addPersonalContact(customer.id);
+    if (!customer || !salesmanSelection) return;
+    const user = await getUserById(salesmanSelection);
+    if (!await ask(`Add to ${user?.initials}'s contact list?`)) return;
+
+    await addPersonalContact(customer.id, salesmanSelection);
     await addTagToCustomer(customer.id, 1);
     await fetchData();
     refetchContactList();
@@ -182,8 +198,14 @@ export default function Customer() {
             <div className="customer-details__top-bar">
               <Button onClick={() => setEditLocDialogOpen(true)}>Edit Map Location</Button>
               { !isVendor && <Button onClick={onClickAddVendor}>Set as Vendor</Button> }
-              {(personalContactsList.length === 0 && !isFetchingContactList) &&
-                <Button onClick={onClickAddToContactList}>Add to Contact List</Button>
+              {(personalContactsList.length === 0 && !isFetchingContactList && !showSalesmanSelect) &&
+                <Button onClick={() => setShowSalesmanSelect(true)}>Add to Contact List</Button>
+              }
+              {showSalesmanSelect &&
+                <UserSelect
+                  value={salesmanSelection ?? ''}
+                  onChange={(e) => setSalesmanSelection(Number(e.target.value))}
+                />
               }
             </div>
           
