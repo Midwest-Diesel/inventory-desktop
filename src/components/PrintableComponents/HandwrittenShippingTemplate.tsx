@@ -162,25 +162,25 @@ export default function HandwrittenShippingTemplate({ data }: Props) {
         <tbody>
           {
             [...data.items]
-            .sort((a, b) => {
-              if (a.partNum === 'CORE DEPOSIT') return 1;
-              if (b.partNum === 'CORE DEPOSIT') return -1;
-              return 0;
-            })
-            .map((item, i) => {
-              return (
-                <tr key={i}>
-                  <td>{ item.cost }</td>
-                  <td>{ item.qty }</td>
-                  <td>{ item.partNum }</td>
-                  <td>{ item.desc }</td>
-                  <td>{ item.partNum.includes('CORE DEPOSIT') ? '': item.stockNum }</td>
-                  <td>{ item.location }</td>
-                  <td>{ item.unitPrice }</td>
-                  <td>{ item.total }</td>
-                </tr>
-              );
-            })
+              .sort((a, b) => {
+                if (a.partNum === 'CORE DEPOSIT') return 1;
+                if (b.partNum === 'CORE DEPOSIT') return -1;
+                return 0;
+              })
+              .map((item, i) => {
+                return (
+                  <tr key={i}>
+                    <td>{ item.cost }</td>
+                    <td>{ item.qty }</td>
+                    <td>{ item.partNum }</td>
+                    <td>{ item.desc }</td>
+                    <td>{ item.partNum.includes('CORE DEPOSIT') ? '': item.stockNum }</td>
+                    <td>{ item.location }</td>
+                    <td>{ item.unitPrice }</td>
+                    <td>{ item.total }</td>
+                  </tr>
+                );
+              })
           }
         </tbody>
       </Table>

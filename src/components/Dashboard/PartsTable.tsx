@@ -4,11 +4,12 @@ import { formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
 import Pagination from "../library/Pagination";
 import Link from "../library/Link";
 import { getImagesFromPart, getImagesFromStockNum } from "@/scripts/services/imagesService";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import PartPicturesDialog from "../dialogs/PartPicturesDialog";
 import StockNumPicturesDialog from "../dialogs/StockNumPicturesDialog";
 import { useTooltip } from "@/hooks/useTooltip";
 import { extractStatusColors } from "@/scripts/logic/partSearch";
+import { getSurplusCostRemaining } from "@/scripts/services/surplusService";
 
 interface Props {
   parts: Part[]
@@ -32,7 +33,24 @@ export default function PartsTable({ parts, partsData, pageCount, partsQty, rows
   const [picturesStockNum, setPicturesStockNum] = useState<string>('');
   const [partImagesOpen, setPartImagesOpen] = useState(false);
   const [snImagesOpen, setSnImagesOpen] = useState(false);
+  const [surplusCosts, setSurplusCosts] = useState<Record<string, number>>({});
 
+  useEffect(() => {
+    const load = async () => {
+      const entries = await Promise.all(
+        parts
+          .filter((part) => part.purchasedFrom)
+          .map(async (part) => [
+            part.purchasedFrom!,
+            await getSurplusCostRemaining(part.purchasedFrom!)
+          ])
+      );
+      setSurplusCosts(Object.fromEntries(entries));
+    };
+
+    load();
+  }, [parts]);
+  
   const openPartImages = async (part: Part) => {
     setPartImagesOpen(true);
     setPartImages(await getImagesFromPart(part.partNum));
@@ -46,12 +64,15 @@ export default function PartsTable({ parts, partsData, pageCount, partsQty, rows
   };
 
   const partCostStyles = (part: Part) => {
-    if (!part.purchasePrice) return;
+    if (!part.purchasePrice) return {};
+
     const costIn = part.partCostIn
-      .filter((item) => item.costType === 'PurchasePrice')
-      .reduce((acc, item) => acc + (Number(item.cost)), 0);
-      
-    return (costIn > 0 || part.engineCostRemaining > 0)
+      .filter(item => item.costType === 'PurchasePrice')
+      .reduce((acc, item) => acc + Number(item.cost), 0);
+
+    const surplus = surplusCosts[part.purchasedFrom ?? ''] ?? 0;
+
+    return (surplus > 0 || part.engineCostRemaining > 0 || costIn === 0.04)
       ? { color: 'var(--orange-1)', fontWeight: 'bold' }
       : {};
   };
