@@ -23,6 +23,7 @@ import { getSearchedPartNum } from "@/scripts/logic/partSearch";
 import { emitServerEvent } from "@/scripts/config/websockets";
 import PartSearchTabs from "./PartSearchTabs";
 import MassLocationChangeDialog from "./dialogs/MassLocationChangeDialog";
+import { showAlertMsg } from "../library/AlertMsg";
 
 interface Props {
   selectHandwrittenOpen: boolean
@@ -98,6 +99,11 @@ export default function PartSearchSection({ selectHandwrittenOpen, setSelectHand
     if (showAlerts) {
       const alerts = await detectAlerts(params.partNum);
       setSelectedAlerts([...selectedAlerts, ...alerts]);
+    }
+
+    const quotes = params.partNum.replace('*', '') ? await getQuotesByPartNum(params.partNum, 2) : [];
+    if (quotes.length > 0) {
+      showAlertMsg(`${quotes[0].partNum} has already been quoted recently!`);
     }
 
     if (isObjectNull({ ...params, partNum: params.partNum.replace('*', ''), isAltSearch: null, page: null })) location.reload();

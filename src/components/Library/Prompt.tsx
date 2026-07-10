@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
+import { createPortal } from "react-dom";
 import Button from "./Button";
 import Input from "./Input";
 
@@ -26,7 +27,7 @@ export default function Prompt({ message = '', defaultValue = '', onClose }: Pro
   }, [value, onClose]);
 
 
-  return ReactDOM.createPortal(
+  return createPortal(
     <div className="prompt__background">
       <div className="prompt">
         <h4>{ message }</h4>
@@ -55,15 +56,16 @@ export function prompt(message: string, defaultValue = ''): Promise<string | nul
     const container = document.createElement('div');
     document.body.appendChild(container);
 
+    const root = createRoot(container);
+
     function handleClose(value: string | null) {
-      ReactDOM.unmountComponentAtNode(container);
+      root.unmount();
       container.remove();
       resolve(value);
     }
 
-    ReactDOM.render(
-      <Prompt message={message} defaultValue={defaultValue} onClose={handleClose} />,
-      container
+    root.render(
+      <Prompt message={message} defaultValue={defaultValue} onClose={handleClose} />
     );
   });
 }

@@ -39,9 +39,9 @@ export const getRecentPartSearchesToday = async (): Promise<RecentPartSearch[]> 
   }
 };
 
-export const getQuotesByPartNum = async (partNum: string): Promise<RecentQuoteSearch[]> => {
+export const getQuotesByPartNum = async (partNum: string, daysAgo = 120): Promise<RecentQuoteSearch[]> => {
   try {
-    const params = { partNum };
+    const params = { partNum, daysAgo };
     const res = await api.get(`/api/recent-searches/quotes`, { params });
     return parseRecentSearches(res.data);
   } catch (err) {
