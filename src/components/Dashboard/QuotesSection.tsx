@@ -15,6 +15,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useAtom } from "jotai";
 import { useEffect, useState } from "react";
 import PrintQuotesDialog from "./dialogs/PrintQuotesDialog";
+import VendorQuotesDialog from "./dialogs/VendorQuotesDialog";
 
 interface Props {
   quotes: Quote[]
@@ -48,6 +49,7 @@ export default function QuotesSection({ quotes, setQuotes, setHandwrittenQuote, 
   const [piggybackQuoteOpen, setPiggybackQuoteOpen] = useState(false);
   const [piggybackQuote, setPiggybackQuote] = useState<Quote | null>(null);
   const [endOfDayOpen, setEndOfDayOpen] = useState(false);
+  const [vendorQuotesOpen, setVendorQuotesOpen] = useState(false);
   const [emailDialogOpen, setEmailDialogOpen] = useState(false);
   const [quoteEmailed, setQuoteEmailed] = useState<Quote | null>(null);
   const [page, setPage] = useState(1);
@@ -189,7 +191,15 @@ export default function QuotesSection({ quotes, setQuotes, setHandwrittenQuote, 
               page={page}
             />
           }
+
+          <VendorQuotesDialog
+            open={vendorQuotesOpen}
+            setOpen={setVendorQuotesOpen}
+            partNum={partNum.replace('*', '')}
+          />
+
           <SalesEndOfDayDialog open={endOfDayOpen} setOpen={setEndOfDayOpen} />
+          
           {piggybackQuote &&
             <PiggybackQuoteDialog
               open={piggybackQuoteOpen}
@@ -220,17 +230,18 @@ export default function QuotesSection({ quotes, setQuotes, setHandwrittenQuote, 
             <Button onClick={() => setQuoteListType(quoteListType === 'part' ? 'engine' : 'part')} data-testid="engine-quotes-btn">
               { quoteListType === 'part' ? 'Engine Quotes' : 'Part Quotes' }
             </Button>
+            <Button onClick={() => setVendorQuotesOpen(true)} disabled={!partNum.replace('*', '')}>Vendor Quotes</Button>
             <Button
               onClick={() => setFilterByCustomer(!filterByCustomer)}
               disabled={!localStorage.getItem('customerId') && true}
             >
-              {filterByCustomer ? 'No Customer Filter' : 'Filter by Customer'}
+              { filterByCustomer ? 'No Customer Filter' : 'Filter by Customer' }
             </Button>
             <Button
               onClick={() => setFilterByPart(!filterByPart)}
               disabled={partNum?.trim().replace('*', '') === ''}
             >
-              {filterByPart ? 'No Part Filter' : 'Filter by Part'}
+              { filterByPart ? 'No Part Filter' : 'Filter by Part' }
             </Button>
             <Button onClick={() => setEndOfDayOpen(true)}>Sales End of Day</Button>
             <Button onClick={() => setPrintQuotesDialogOpen(true)}>Print</Button>

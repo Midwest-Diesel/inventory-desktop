@@ -1,10 +1,11 @@
-import ReactDraggable from 'react-draggable';
+import { ReactElement } from "react";
+import ReactDraggable from "react-draggable";
 
 interface Props {
-  children: React.ReactElement;
-  handle?: string;
-  x?: number;
-  y?: number;
+  children: ReactElement
+  handle?: string
+  x?: number
+  y?: number
 }
 
 

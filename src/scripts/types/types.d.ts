@@ -182,6 +182,19 @@ type PiggybackQuote = {
   part?: Part
 };
 
+type VendorQuoteCondition = 'New' | 'Good Used' | 'Reconditioned' | 'Core';
+type VendorQuote = {
+  id: number
+  date: Date
+  vendor: Vendor | null
+  contact: string | null
+  partNum: string
+  price: number
+  condition: VendorQuoteCondition
+  notes: string | null
+  salesman: string
+};
+
 type SalesEndOfDayItem = {
   id: number
   billToCompany: string
