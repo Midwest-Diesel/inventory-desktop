@@ -44,8 +44,8 @@ export const getAllEngines = async (): Promise<Engine[]> => {
   try {
     const res = await api.get('/api/engines');
     return parseEngineRes(res.data);
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
     return [];
   }
 };
@@ -54,8 +54,8 @@ export const getAllEngineModels = async (): Promise<string[]> => {
   try {
     const res = await api.get('/api/engines/models');
     return res.data;
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
     return [];
   }
 };
@@ -64,27 +64,29 @@ export const getAutofillEngine = async (engineNum: number) => {
   try {
     const res = await api.get(`/api/engines/autofill/${engineNum}`);
     return parseEngineRes(res.data)[0];
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
   }
 };
 
 export const getEnginesByStatus = async (status: EngineStatus | null, page: number, limit: number): Promise<{ pageCount: number, rows: Engine[] }> => {
   try {
-    const res = await api.get(`/api/engines/status/${encodeURI(JSON.stringify({ status, offset: (page - 1) * limit, limit }))}`);
+    const params = { status, offset: (page - 1) * limit, limit };
+    const res = await api.get(`/api/engines/status`, { params });
     return { pageCount: res.data.pageCount, rows: parseEngineRes(res.data.rows) };
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
     return { pageCount: 0, rows: [] };
   }
 };
 
 export const searchEngines = async (search: EngineSearch): Promise<{ pageCount: number, rows: Engine[] }> => {
   try {
-    const res = await api.get(`/api/engines/search/${encodeURI(JSON.stringify({ ...search, offset: (search.page - 1) * search.limit }))}`);
+    const params = { ...search, stockNum: search.stockNum || '', offset: (search.page - 1) * search.limit };
+    const res = await api.get(`/api/engines/search`, { params });
     return { pageCount: res.data.pageCount, rows: parseEngineRes(res.data.rows) };
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
     return { pageCount: 0, rows: [] };
   }
 };
@@ -94,8 +96,8 @@ export const getEngineByStockNum = async (stockNum: number | null): Promise<Engi
     if (!stockNum || Number(stockNum) === 0) return null;
     const res = await api.get(`/api/engines/stock-num/${stockNum}`);
     return parseEngineRes(res.data)[0];
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
     return null;
   }
 };
@@ -104,8 +106,8 @@ export const getEnginesByEngineData = async (data: CustomerEngineData): Promise<
   try {
     const res = await api.get(`/api/engines/data/${JSON.stringify(data)}`);
     return parseEngineRes(res.data);
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
     return [];
   }
 };
@@ -114,8 +116,8 @@ export const getEngineCostRemaining = async (stockNum: number): Promise<number> 
   try {
     const res = await api.get(`/api/engines/cost-remaining/${stockNum}`);
     return res.data.costRemaining || 0;
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
     return 0;
   }
 };
@@ -124,8 +126,8 @@ export const getEngineProfit = async (stockNum: number) => {
   try {
     const res = await api.get(`/api/engines/profit/${stockNum}`);
     return res.data;
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
   }
 };
 
@@ -134,24 +136,24 @@ export const getEngineProfit = async (stockNum: number) => {
 export const addEngine = async (engine: EngineAddOn) => {
   try {
     await api.post('/api/engines', engine);
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
   }
 };
 
 export const addEngineCostIn = async (engineStockNum: number, cost: number, invoiceNum: string, vendor: string, costType: string, note: string) => {
   try {
     await api.post('/api/engines/cost-in', { engineStockNum, cost, invoiceNum, vendor, costType, note });
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
   }
 };
 
 export const addEngineCostOut = async (stockNum: string, engineStockNum: number, cost: number, costType: string, note: string) => {
   try {
     await api.post('/api/engines/cost-out', { stockNum, engineStockNum, cost, costType, note });
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
   }
 };
 
@@ -160,8 +162,8 @@ export const addEngineCostOut = async (stockNum: string, engineStockNum: number,
 export const editEngineStatus = async (id: number, currentStatus: EngineStatus) => {
   try {
     await api.patch('/api/engines/status', { id, currentStatus });
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
   }
 };
 
@@ -170,32 +172,32 @@ export const editEngineStatus = async (id: number, currentStatus: EngineStatus) 
 export const editEngine = async (engine: Engine) => {
   try {
     await api.put('/api/engines', engine);
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
   }
 };
 
 export const editEngineCostIn = async (engine: EngineCostIn) => {
   try {
     await api.put('/api/engines/cost-in', engine);
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
   }
 };
 
 export const editEngineCostOut = async (engine: EngineCostOut) => {
   try {
     await api.put('/api/engines/cost-out', engine);
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
   }
 };
 
 export const editEnginePartsTable = async (parts: EnginePartsTable, id: number) => {
   try {
     await api.put('/api/engines/parts-table', { parts, id });
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
   }
 };
 
@@ -204,23 +206,23 @@ export const editEnginePartsTable = async (parts: EnginePartsTable, id: number) 
 export const deleteEngine = async (id: number) => {
   try {
     await api.delete(`/api/engines/${id}`);
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
   }
 };
 
 export const deleteEngineCostIn = async (id: number) => {
   try {
     await api.delete(`/api/engines/cost-in/${id}`);
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
   }
 };
 
 export const deleteEngineCostOut = async (id: number) => {
   try {
     await api.delete(`/api/engines/cost-out/${id}`);
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
   }
 };
