@@ -1,5 +1,5 @@
-import api from "../config/axios"
-import { parseResDate } from "../tools/stringUtils"
+import api from "../config/axios";
+import { parseResDate } from "../tools/stringUtils";
 
 export interface VendorQuoteSearchData {
   date: Date | null
