@@ -1,11 +1,11 @@
 {
-  "version": "v1.4.0-staging",
-  "pub_date": "2026-07-14T14:48:20Z",
+  "version": "v1.4.1-staging",
+  "pub_date": "2026-07-14T15:53:36Z",
   "notes": "",
   "platforms": {
     "windows-x86_64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVSYXQxaWtWaFNYeDRVdXBkaHJXenBhUm0xRFZKV1F5WlNHNTY4Y1RmY1BUc0NNbXV3SVd3WTdjSWZHMlkxb2t3Z0w2QUJWWWxKcnFmTW5xQkNDY2xwOXNkV0xJRVorMFE0PQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzg0MDQwNTAwCWZpbGU6SW52ZW50b3J5LVN0YWdpbmdfMS40LjBfeDY0LXNldHVwLm5zaXMuemlwClduOWVkMkczQUNHSDV1UnVNdEFuSGVTdnVEL09rWWI5MTBLaTYwMnNQQUV2ZFI5c0kwY00yZkQzV2dNSHYyVUdUeTV3R09aMTczazRNU3VNaTVUZ0RRPT0K",
-      "url": "file:///c/Users/BennettSmrdel/Documents/repos/inventory-desktop/src-tauri/target/debug/bundle/nsis/Inventory-Staging_1.4.0_x64-setup.nsis.zip"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVSYXQxaWtWaFNYeDh1UmJNSEZPMW5HaXUvN25GNU16NjVVQ3JtekxBejYvZFBGTEZIeHI0ekluMk8vNGdoMThpZFhJdmU5bFRHczJCSXFud1RXeWNkTFYvbWhxblpheFFFPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzg0MDQ0NDE1CWZpbGU6SW52ZW50b3J5LVN0YWdpbmdfMS40LjFfeDY0LXNldHVwLm5zaXMuemlwCnBRamw0TG05Y0hyL01jZFJ1Y2hZeEpraDlaTUtSek5aaEMxTU1EaHRac09WYWFyVjI0U2VkcFQ2cXFOeUpLVzJ5NE9kWFZ1RXdHanNTUFQwUkJyRkNBPT0K",
+      "url": "file:///c/Users/BennettSmrdel/Documents/repos/inventory-desktop/src-tauri/target/debug/bundle/nsis/Inventory-Staging_1.4.1_x64-setup.nsis.zip"
     }
   }
 }
