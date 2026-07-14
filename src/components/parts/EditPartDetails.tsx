@@ -146,12 +146,12 @@ export default function EditPartDetails({ part, setPart, setIsEditingPart, partC
 
   const handlePartPricing = async (newPart: Part) => {
     const hasPricingChanged = (
-      part.listPrice !== newPart.listPrice ||
-      part.fleetPrice !== newPart.fleetPrice ||
-      part.remanListPrice !== newPart.remanListPrice ||
-      part.remanFleetPrice !== newPart.remanFleetPrice ||
-      part.corePrice !== newPart.corePrice ||
-      part.purchasePrice !== newPart.purchasePrice
+      part.listPrice?.toString() !== newPart.listPrice?.toString() ||
+      part.fleetPrice?.toString() !== newPart.fleetPrice?.toString() ||
+      part.remanListPrice?.toString() !== newPart.remanListPrice?.toString() ||
+      part.remanFleetPrice?.toString() !== newPart.remanFleetPrice?.toString() ||
+      part.corePrice?.toString() !== newPart.corePrice?.toString() ||
+      part.purchasePrice?.toString() !== newPart.purchasePrice?.toString()
     );
     if (!hasPricingChanged) return;
     
