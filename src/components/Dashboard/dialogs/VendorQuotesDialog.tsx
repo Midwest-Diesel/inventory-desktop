@@ -40,6 +40,10 @@ export default function VendorQuotesDialog({ open, setOpen, partNum }: Props) {
     if (!quoteEdited) return;
     setOpen(false);
   }, [quoteEdited]);
+
+  useEffect(() => {
+    if (partNum) setSearch({ ...search, partNum });
+  }, [partNum]);
   
   const { data: quotes, isFetching, refetch } = useQuery<{ pageCount: number, rows: VendorQuote[] }>({
     queryKey: ['quotes', open, search, page],
@@ -81,6 +85,7 @@ export default function VendorQuotesDialog({ open, setOpen, partNum }: Props) {
       {quoteEdited &&
         <EditVendorQuoteDialog
           quote={quote}
+          alts={alts}
           setQuote={setQuoteEdited}
           onClose={() => setOpen(true)}
         />
@@ -105,19 +110,6 @@ export default function VendorQuotesDialog({ open, setOpen, partNum }: Props) {
               onChange={(e) => setSearch({ ...search, date: e.target.value ? new Date(e.target.value) : null })}
               type="date"
             />
-
-            <Select
-              variant={['label-stack', 'label-bold']}
-              label="Part Number"
-              value={search.partNum ?? ''}
-              onChange={(e) => setSearch({ ...search, partNum: e.target.value })}
-            >
-              {alts.map((alt) => {
-                return (
-                  <option key={alt}>{ alt }</option>
-                );
-              })}
-            </Select>
 
             <Select
               variant={['label-stack', 'label-bold']}

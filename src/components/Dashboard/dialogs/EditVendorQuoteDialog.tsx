@@ -11,12 +11,13 @@ import Select from "@/components/library/select/Select";
 
 interface Props {
   quote: VendorQuote
+  alts: string[]
   setQuote: (quote: VendorQuote | null) => void
   onClose: (quote: VendorQuote) => void
 }
 
 
-export default function EditVendorQuoteDialog({ quote, setQuote, onClose }: Props) {
+export default function EditVendorQuoteDialog({ quote, alts, setQuote, onClose }: Props) {
   const [date, setDate] = useState<Date | null>(quote.date ?? new Date());
   const [vendor, setVendor] = useState<string>(quote.vendor?.name ?? '');
   const [contact, setContact] = useState<string>(quote.contact ?? '');
@@ -88,12 +89,18 @@ export default function EditVendorQuoteDialog({ quote, setQuote, onClose }: Prop
           maxHeight="20rem"
         />
 
-        <Input
+        <Select
           label="Part Number"
-          variant={['label-full-width', 'small', 'thin', 'label-bold', 'label-stack']}
+          variant={['label-full-width', 'label-bold', 'label-stack']}
           value={partNum}
           onChange={(e) => setPartNum(e.target.value)}
-        />
+        >
+          {alts.map((alt) => {
+            return (
+              <option key={alt}>{ alt }</option>
+            );
+          })}
+        </Select>
 
         <Select
           label="Condition"
