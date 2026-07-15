@@ -45,7 +45,6 @@ test.describe('Parts', () => {
     await expect(page.getByTestId('alt-parts')).toHaveText('9N3240, 7L0406, 9N3242');
 
     await goto(page, '/');
-    await page.waitForLoadState('networkidle');
     await altSearch(page, { partNum: '7L0406' });
     await page.getByTestId('part-num-link').first().click();
     await expect(page.getByTestId('alt-parts')).toHaveText('9N3240, 7L0406, 9N3242');

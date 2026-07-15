@@ -22,7 +22,6 @@ const addHandwrittenItem = async (page: Page, rowIndex: number, desc: string, qt
   await page.getByTestId('select-handwritten-qty').fill(qty.toString());
   await page.getByTestId('select-handwritten-price').fill(price.toString());
   await page.getByTestId('select-handwritten-submit-btn').click();
-  await page.waitForLoadState('networkidle');
 };
 
 const addWarranty = async (page: Page, checkboxIndexes: number[], customWarranty?: string) => {
@@ -302,7 +301,6 @@ test.describe('Takeoffs', () => {
     await page.waitForTimeout(500);
 
     await goto(page, '/');
-    await page.waitForLoadState('networkidle');
     await altSearch(page, { stockNum: 'UP9432' });
     await expect(page.getByTestId('qty').first()).toHaveText('24');
 
@@ -336,7 +334,6 @@ test.describe('Takeoffs', () => {
     await page.waitForTimeout(500);
 
     await goto(page, '/');
-    await page.waitForLoadState('networkidle');
     await altSearch(page, { stockNum: 'UP9432' });
     await expect(page.getByTestId('qty').first()).toHaveText('22');
 

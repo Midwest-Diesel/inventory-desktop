@@ -50,7 +50,6 @@ export const partSearch = async (page: Page, search: SearchData) => {
   if (hp) await page.getByTestId('part-search-hp').fill(hp);
   await page.getByTestId('part-search-submit-btn').click();
   await page.waitForSelector('.part-search');
-  await page.waitForLoadState('networkidle');
 };
 
 export const altSearch = async (page: Page, search: SearchData) => {
@@ -70,7 +69,6 @@ export const altSearch = async (page: Page, search: SearchData) => {
   await page.getByTestId('alt-search-hp').fill(hp ?? '');
   await page.getByTestId('alt-search-submit-btn').click();
   await page.waitForSelector('.part-search');
-  await page.waitForLoadState('networkidle');
 };
 
 export const createHandwritten = async (page: Page, customerSearch: string) => {
