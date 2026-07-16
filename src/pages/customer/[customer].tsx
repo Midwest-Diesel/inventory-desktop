@@ -23,7 +23,7 @@ import CustomerEmails from "@/components/customers/CustomerEmails";
 import { useQuery } from "@tanstack/react-query";
 import Rating from "@/components/library/Rating";
 import { ask } from "@/scripts/config/tauri";
-import { addPersonalContact, getPersonalContactsList } from "@/scripts/services/personalContactsListService";
+import { addPersonalContact } from "@/scripts/services/personalContactsListService";
 import Tag from "@/components/library/Tag";
 import { addTagToCustomer } from "@/scripts/services/tagsService";
 import UserSelect from "@/components/library/select/UserSelect";
@@ -53,12 +53,6 @@ export default function Customer() {
   const { data: emails = [], isFetching: isFetchingEmails } = useQuery<string[]>({
     queryKey: ['emails', customer],
     queryFn: () => getCustomerEmails(customer!.id),
-    enabled: !!customer
-  });
-
-  const { data: personalContactsList = [], isFetching: isFetchingContactList, refetch: refetchContactList } = useQuery<PersonalContact[]>({
-    queryKey: ['personalContactsList', customer],
-    queryFn: () => getPersonalContactsList({ customerId: customer!.id }),
     enabled: !!customer
   });
 
@@ -116,7 +110,6 @@ export default function Customer() {
     await addPersonalContact(customer.id, salesmanSelection);
     await addTagToCustomer(customer.id, 1);
     await fetchData();
-    refetchContactList();
   };
 
 
@@ -198,7 +191,7 @@ export default function Customer() {
             <div className="customer-details__top-bar">
               <Button onClick={() => setEditLocDialogOpen(true)}>Edit Map Location</Button>
               { !isVendor && <Button onClick={onClickAddVendor}>Set as Vendor</Button> }
-              {(personalContactsList.length === 0 && !isFetchingContactList && !showSalesmanSelect) &&
+              {!showSalesmanSelect &&
                 <Button onClick={() => setShowSalesmanSelect(true)}>Add to Contact List</Button>
               }
               {showSalesmanSelect &&
