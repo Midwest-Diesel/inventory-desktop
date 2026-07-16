@@ -25,22 +25,24 @@ export default function Modal({ children, className = '', variant = [], title, c
   const classes = generateClasses(className, variant, 'modal');
 
   useEffect(() => {
-    bindEventListeners();
-    document.querySelector('dialog')?.focus();
+    window.addEventListener('click', handleOutsideClick);
+    window.addEventListener('keydown', handleKeydown);
+
+    return () => {
+      window.removeEventListener('click', handleOutsideClick);
+      window.removeEventListener('keydown', handleKeydown);
+    };
   }, []);
 
-  const bindEventListeners = () => {
-    const handleOutsideClick = (e: MouseEvent) => {
-      if (e.target === (ref as any).current && closeOnOutsideClick) {
-        closeModal();
-      }
-    };
-  
-    if (closeOnOutsideClick) {
-      window.addEventListener('click', handleOutsideClick);
-      return () => {
-        window.removeEventListener('click', handleOutsideClick);
-      };
+  const handleOutsideClick = (e: MouseEvent) => {
+    if (e.target === ref.current && closeOnOutsideClick) {
+      closeModal();
+    }
+  };
+
+  const handleKeydown = (e: KeyboardEvent) => {
+    if (exitWithEsc && e.key === 'Escape') {
+      closeModal();
     }
   };
 
@@ -48,7 +50,7 @@ export default function Modal({ children, className = '', variant = [], title, c
     if (setOpen) {
       setOpen(false);
     } else {
-      if (onClose) onClose();
+      onClose?.();
     }
   };
     
@@ -60,7 +62,6 @@ export default function Modal({ children, className = '', variant = [], title, c
           <dialog
             open={open}
             style={{ width, height }}
-            onKeyDown={(e) => (exitWithEsc && e.key === 'Escape') && closeModal()}
             {...parseClasses(classes)}
             {...props}
           >
