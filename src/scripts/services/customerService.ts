@@ -16,9 +16,15 @@ interface CustomerSearch {
 
 const parseCustomerRes = (data: any[]) => {
   return data.map((customer: any) => {
+    const tags: Tag[] = [];
+    if (customer.customerType) {
+      tags.push({ id: 2, type: 'customer-type', name: customer.customerType });
+    }
+
     return {
       ...customer,
-      dateContacted: customer.dateContacted && parseResDate(customer.dateContacted)
+      dateContacted: customer.dateContacted && parseResDate(customer.dateContacted),
+      tags: [...customer.tags, ...tags]
     };
   });
 };

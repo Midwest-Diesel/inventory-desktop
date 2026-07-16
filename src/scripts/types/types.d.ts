@@ -1052,6 +1052,7 @@ type TagType = 'customer';
 
 type Tag = {
   id: number
+  type: string
   name: string
 };
 

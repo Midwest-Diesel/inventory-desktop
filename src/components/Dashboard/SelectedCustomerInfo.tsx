@@ -57,7 +57,7 @@ export default function SelectedCustomerInfo({ expandedDetailsOpen }: Props) {
        
             {customer?.tags.map((tag) => {
               return (
-                <Tag key={tag.id} text={tag.name} />
+                <Tag key={tag.id} type={tag.type} text={tag.name} />
               );
             })}
           </div>
@@ -75,7 +75,7 @@ export default function SelectedCustomerInfo({ expandedDetailsOpen }: Props) {
        
             {customer?.tags.map((tag) => {
               return (
-                <Tag key={tag.id} text={tag.name} />
+                <Tag key={tag.id} type={tag.type} text={tag.name} />
               );
             })}
           </div>

@@ -163,7 +163,7 @@ export default function CustomerDetails({ customer, setCustomer, setIsEditing, o
 
               {customer.tags.map((tag) => {
                 return (
-                  <Tag key={tag.id} text={tag.name} />
+                  <Tag key={tag.id} type={tag.type} text={tag.name} />
                 );
               })}
             </div>

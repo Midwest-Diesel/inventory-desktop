@@ -1,16 +1,14 @@
 interface Props {
   text: string
+  type: string
 }
 
 
-export default function Tag({ text }: Props) {
+export default function Tag({ text, type }: Props) {
   const getColor = () => {
-    switch (text) {
-      case 'Keep Contact':
-        return 'var(--red-3)';
-      default:
-        return 'white';
-    }
+    if (text === 'Keep Contact') return 'var(--red-3)';
+    if (type === 'customer-type') return 'var(--yellow-2)';
+    return 'white';
   };
 
   const color = getColor();
