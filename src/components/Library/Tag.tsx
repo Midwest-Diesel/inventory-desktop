@@ -8,6 +8,7 @@ export default function Tag({ text, type }: Props) {
   const getColor = () => {
     if (text === 'Keep Contact') return 'var(--red-3)';
     if (type === 'customer-type') return 'var(--yellow-2)';
+    if (type === 'rank') return 'var(--green-1)';
     return 'white';
   };
 

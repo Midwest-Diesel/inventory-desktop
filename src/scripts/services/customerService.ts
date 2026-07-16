@@ -14,19 +14,31 @@ interface CustomerSearch {
 }
 
 
-const parseCustomerRes = (data: any[]) => {
-  return data.map((customer: any) => {
-    const tags: Tag[] = [];
-    if (customer.customerType) {
-      tags.push({ id: 2, type: 'customer-type', name: customer.customerType });
-    }
+const parseCustomerRes = async (data: any[]) => {
+  return await Promise.all(
+    data.map(async (customer: any) => {
+      const tags: Tag[] = await handleCustomerTags(customer);
 
-    return {
-      ...customer,
-      dateContacted: customer.dateContacted && parseResDate(customer.dateContacted),
-      tags: [...customer.tags, ...tags]
-    };
-  });
+      return {
+        ...customer,
+        dateContacted: customer.dateContacted && parseResDate(customer.dateContacted),
+        tags
+      };
+    })
+  );
+};
+
+const handleCustomerTags = async (customer: Customer) => {
+  const tags: Tag[] = [];
+  if (customer.customerType) {
+    tags.push({ id: 100, type: 'customer-type', name: customer.customerType });
+  }
+
+  const rank = await getCustomerSalesRank(customer.id);
+  if (rank > 0) {
+    tags.push({ id: 101, type: 'rank', name: `Rank: ${rank}` });
+  }
+  return [...customer.tags, ...tags];
 };
 
 // === GET routes === //
@@ -34,7 +46,7 @@ const parseCustomerRes = (data: any[]) => {
 export const getCustomers = async (): Promise<Customer[]> => {
   try {
     const res = await api.get('/api/customers');
-    return parseCustomerRes(res.data);
+    return await parseCustomerRes(res.data);
   } catch (error) {
     console.error(error);
     return [];
@@ -44,7 +56,7 @@ export const getCustomers = async (): Promise<Customer[]> => {
 export const getSomeCustomers = async (page: number, limit: number): Promise<{ pageCount: number, rows: Customer[] }> => {
   try {
     const res = await api.get(`/api/customers/limit/${JSON.stringify({ page: (page - 1) * limit, limit })}`);
-    return { pageCount: res.data.pageCount, rows: parseCustomerRes(res.data.rows) };
+    return { pageCount: res.data.pageCount, rows: await parseCustomerRes(res.data.rows) };
   } catch (error) {
     console.error(error);
     return { pageCount: 0, rows: [] };
@@ -64,7 +76,7 @@ export const searchCustomers = async (data: CustomerSearch): Promise<{ pageCount
     );
 
     const res = await api.get(`/api/customers/search?${params.toString()}`);
-    return { pageCount: res.data.pageCount, rows: parseCustomerRes(res.data.rows) };
+    return { pageCount: res.data.pageCount, rows: await parseCustomerRes(res.data.rows) };
   } catch (error) {
     console.error(error);
     return { pageCount: 0, rows: [] };
@@ -104,7 +116,7 @@ export const getCustomersMin = async (): Promise<CustomerMin[]> => {
 export const getCustomerById = async (id: number): Promise<Customer | null> => {
   try {
     const res = await api.get(`/api/customers/id/${id}`);
-    return parseCustomerRes(res.data)[0];
+    return (await parseCustomerRes(res.data))[0];
   } catch (error) {
     console.error(error);
     return null;
@@ -115,7 +127,7 @@ export const getCustomerByName = async (name: string): Promise<Customer | null> 
   try {
     const params = new URLSearchParams({ name });
     const res = await api.get(`/api/customers/name?${params}`);
-    return parseCustomerRes(res.data)[0] ?? null;
+    return (await parseCustomerRes(res.data))[0] ?? null;
   } catch (error) {
     console.error(error);
     return null;
@@ -129,6 +141,16 @@ export const getCustomerSalesHistory = async (id: number): Promise<SalesHistory[
   } catch (error) {
     console.error(error);
     return [];
+  }
+};
+
+export const getCustomerSalesRank = async (id: number): Promise<number> => {
+  try {
+    const res = await api.get(`/api/customers/sales-rank/${id}`);
+    return Number(res.data.rank);
+  } catch (error) {
+    console.error(error);
+    return 0;
   }
 };
 

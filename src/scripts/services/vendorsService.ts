@@ -52,6 +52,7 @@ export const searchVendors = async (search: VendorSearch): Promise<VendorRes> =>
 
 export const getVendorByName = async (name: string): Promise<Vendor | null> => {
   try {
+    if (!name) return null;
     const res = await api.get(`/api/vendors/name/${name.replace(/\s*\(.*?\)/, '')}`);
     return res.data;
   } catch (error) {

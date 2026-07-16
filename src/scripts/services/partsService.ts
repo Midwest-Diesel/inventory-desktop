@@ -117,6 +117,7 @@ export const getPartQty = async (partNum: string): Promise<number | null> => {
 
 export const getAltsByPartNum = async (partNum: string): Promise<string[]> => {
   try {
+    if (!partNum) return [];
     const res = await api.get(`/api/parts/alts/${partNum}`);
     return res.data.length > 0 ? res.data[0] : res.data;
   } catch (error) {
