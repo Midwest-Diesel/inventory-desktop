@@ -98,36 +98,38 @@ export default function NewCustomersTable({ closeTable }: Props) {
         </div>
       </div>
 
-      <Table>
-        <thead>
-          <tr>
-            <th>Created Date</th>
-            <th>Name</th>
-            <th>Contact</th>
-            <th>Email</th>
-            <th>Phone</th>
-          </tr>
-        </thead>
-        <tbody>
-          {newCustomersData && newCustomersData.map((row, i) => {
-            return (
-              <tr key={i}>
-                <td>{ formatDate(row.createdAt) }</td>
-                <td>
-                  {row.customerId ?
-                    <Link href={`/customer/${row.customerId}`}>{ row.name }</Link>
-                    :
-                    row.customerId
-                  }
-                </td>
-                <td>{ row.contact }</td>
-                <td>{ row.email }</td>
-                <td>{ formatPhone(row.phone) }</td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </Table>
+      <div style={{ overflowY: 'auto', maxHeight: '82vh' }}>
+        <Table>
+          <thead>
+            <tr>
+              <th>Created Date</th>
+              <th>Name</th>
+              <th>Contact</th>
+              <th>Email</th>
+              <th>Phone</th>
+            </tr>
+          </thead>
+          <tbody>
+            {newCustomersData && newCustomersData.map((row, i) => {
+              return (
+                <tr key={i}>
+                  <td>{ formatDate(row.createdAt) }</td>
+                  <td>
+                    {row.customerId ?
+                      <Link href={`/customer/${row.customerId}`}>{ row.name }</Link>
+                      :
+                      row.customerId
+                    }
+                  </td>
+                  <td>{ row.contact }</td>
+                  <td>{ row.email }</td>
+                  <td>{ formatPhone(row.phone) }</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </Table>
+      </div>
 
       { newCustomersData.length == 0 && <Loading /> }
     </div>

@@ -13,7 +13,9 @@ interface Props {
 
 export default function CustomerSection({ onExpandDetails }: Props) {
   const [selectedCustomer, setSelectedCustomer] = useAtom<Customer>(selectedCustomerAtom);
-  const [expandedDetailsOpen, setExpandedDetailsOpen] = useState(false);
+  const [expandedDetailsOpen, setExpandedDetailsOpen] = useState(
+    localStorage.getItem('customerExpanded') === 'true' ? true : false
+  );
 
   useEffect(() => {
     const fetchData = async () => {
@@ -25,6 +27,11 @@ export default function CustomerSection({ onExpandDetails }: Props) {
     fetchData();
   }, []);
 
+  const toggleExpandDetails = (isOpen: boolean) => {
+    localStorage.setItem('customerExpanded', `${isOpen}`);
+    setExpandedDetailsOpen(isOpen);
+  };
+
   
   return (
     <div className="customer-search">
@@ -33,7 +40,7 @@ export default function CustomerSection({ onExpandDetails }: Props) {
           selectedCustomer={selectedCustomer}
           setSelectedCustomer={setSelectedCustomer}
           expandedDetailsOpen={expandedDetailsOpen}
-          setExpandedDetailsOpen={setExpandedDetailsOpen}
+          setExpandedDetailsOpen={toggleExpandDetails}
           onExpandDetails={onExpandDetails}
         />
 

@@ -59,16 +59,21 @@ export default function ContactsControls({ isEditing, setIsEditing, contact, set
       <h3>Contacts</h3>
 
       <div className="contacts-block__inputs">
-        <Button type="button" onClick={() => onSelectChangeContact(openedContact)}>Set Contact</Button>
-        <Button type="button" onClick={onClickNewContact}>Add</Button>
-        { (!isEditing && contact) && <Button type="button" onClick={() => setIsEditing(true)} variant={['blue']}>Edit</Button> }
-        {isEditing &&
-          <>
-            <Button type="button" onClick={onClickSaveContact} variant={['save']}>Save</Button>
-            <Button type="button" onClick={onClickCancelEdit}>Cancel</Button>
-          </>
-        }
-        { contact && <Button type="button" onClick={onClickDeleteContact} variant={['danger']}>Delete</Button> }
+        <div className="contacts-block__inputs">
+          <Button type="button" onClick={() => onSelectChangeContact(openedContact)}>Set Contact</Button>
+          <Button type="button" onClick={onClickNewContact}>Add</Button>
+          
+          { (!isEditing && contact) && <Button type="button" onClick={() => setIsEditing(true)} variant={['blue']}>Edit</Button> }
+          {isEditing &&
+            <>
+              <Button type="button" onClick={onClickSaveContact} variant={['save']}>Save</Button>
+              <Button type="button" onClick={onClickCancelEdit}>Cancel</Button>
+            </>
+          }
+
+          { contact && <Button type="button" onClick={onClickDeleteContact} variant={['danger']}>Delete</Button> }
+        </div>
+
         <Select
           value={openedContact || (contact?.name ?? '')}
           onChange={(e) => setOpenedContact(e.target.value)}

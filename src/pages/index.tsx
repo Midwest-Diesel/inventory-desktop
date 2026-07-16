@@ -36,7 +36,9 @@ export default function Dashboard() {
   const [filterByCustomer, setFilterByCustomer] = useState(false);
   const [filterByPart, setFilterByPart] = useState(false);
   const [quoteListType, setQuoteListType] = useState<'part' | 'engine'>('part');
-  const [detailsExpanded, setDetailsExpanded] = useState(false);
+  const [detailsExpanded, setDetailsExpanded] = useState(
+    localStorage.getItem('customerExpanded') === 'true' ? true : false
+  );
   
   const { data: recentSearches } = useQuery<RecentPartSearch[]>({
     queryKey: ['recentPartSearches', user],
@@ -152,6 +154,7 @@ export default function Dashboard() {
   };
 
   const onExpandDetails = (isExpanded: boolean) => {
+    localStorage.setItem('customerExpanded', `${isExpanded}`);
     setDetailsExpanded(isExpanded);
   };
 
@@ -176,10 +179,10 @@ export default function Dashboard() {
               { recentQuoteSearches && <RecentQuotes /> }
             </div>
             :
-            <>
+            <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', overflowY: 'auto', maxHeight: '16rem' }}>
               { recentPartSearches && <RecentPartSearches /> }
               { recentQuoteSearches && <RecentQuotes /> }
-            </>
+            </div>
           }
         </div>
 

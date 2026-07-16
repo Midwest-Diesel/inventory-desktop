@@ -118,6 +118,7 @@ export default function EditQuoteDialog({ setQuoteEdited, quote, setQuote }: Pro
         title="Edit Quote"
         maxHeight="44rem"
         width={500}
+        y={200}
       >
         <form onSubmit={(e)=> handleSubmit(e)}>
           <Input
