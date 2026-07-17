@@ -4,7 +4,7 @@ import Table from "../../library/Table";
 import Checkbox from "@/components/library/Checkbox";
 import { useEffect, useState } from "react";
 import Button from "@/components/library/Button";
-import { addReturn, addReturnItem } from "@/scripts/services/returnsService";
+import { addReturn, addReturnItem, addReturnItemChild, editReturnItemChild, getReturnById } from "@/scripts/services/returnsService";
 import { useAtom } from "jotai";
 import { userAtom } from "@/scripts/atoms/state";
 import { useNavState } from "@/hooks/useNavState";
@@ -88,12 +88,28 @@ export default function NewReturnDialog({ open, setOpen, handwritten }: Props) {
           isReceived: false,
           isAsDescribed: false,
           isPutAway: false,
-          notes: ''
+          notes: '',
+          returnItemChildren: item.invoiceItemChildren
         } as any;
       }
-    });
+    }).filter(Boolean);
+
     for (let i = 0; i < newReturnItems.length; i++) {
       if (newReturnItems[i]) await addReturnItem(newReturnItems[i]);
+    }
+
+    const returnData = id ? await getReturnById(id) : null;
+    if (!returnData) return;
+
+    for (const item of returnData.returnItems) {
+      const children = newReturnItems.flatMap((i) => i.returnItemChildren);
+
+      for (const child of children) {
+        if (child.partNum !== item.partNum) continue;
+        const id = await addReturnItemChild(item.id);
+        if (!id) continue;
+        await editReturnItemChild({ id, returnItemId: item.id, stockNum: child.stockNum, qty: child.qty });
+      }
     }
 
     await push('Returns', '/returns');
