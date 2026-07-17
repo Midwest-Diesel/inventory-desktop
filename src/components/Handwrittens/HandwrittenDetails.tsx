@@ -34,6 +34,7 @@ import { chunkArray } from "@/scripts/tools/utils";
 import { usePdfQue } from "@/hooks/usePdfQue";
 import { getUserById } from "@/scripts/services/accountService";
 import { useToast } from "@/hooks/useToast";
+import { searchReturns } from "@/scripts/services/returnsService";
 
 interface Props {
   handwritten: Handwritten
@@ -117,6 +118,15 @@ export default function HandwrittenDetails({
   const { data: altShip = [], refetch: refetchAltShip } = useQuery<AltShip[]>({
     queryKey: ['altShip', handwritten.customer.id],
     queryFn: () => getAltShipByCustomerId(handwritten.customer.id)
+  });
+
+  const { data: returnData } = useQuery<Return | null>({
+    queryKey: ['returnData', handwritten.id],
+    queryFn: async () => {
+      const res = await searchReturns({ id: null, handwrittenId: handwritten.id, date: null, billToCompany: '', progress: '' }, 1, 999);
+      return res.rows[0] ?? null;
+    },
+    enabled: !!handwritten
   });
 
   const refreshHandwrittenItems = async (id: number) => {
@@ -523,6 +533,9 @@ export default function HandwrittenDetails({
       <div className="handwritten-details">
         <div className="handwritten-details__header">
           <h2>Handwritten <span data-testid="id">{ handwritten.id }</span></h2>
+          <p style={{ alignSelf: 'center', margin: '0 0 0.6rem -0.6rem' }}>
+            { returnData && <Link href={`/returns/${returnData.id}`}>View Return</Link> }
+          </p>
 
           <div className="header__btn-container">
             <Button
