@@ -147,7 +147,7 @@ export default function HandwrittenDetails({
 
   const handleDelete = async () => {
     if (user.accessLevel <= 1 || await prompt('Type "confirm" to delete this handwritten') !== 'confirm') return;
-    await deleteHandwritten(Number(handwritten?.id));
+    await deleteHandwritten(handwritten);
     await push('Handwrittens', '/handwrittens');
   };
 

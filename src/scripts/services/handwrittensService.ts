@@ -1,6 +1,6 @@
 import api from "../config/axios";
 import { emitServerEvent } from "../config/websockets";
-import { formatRemarksSoldText } from "../logic/parts";
+import { formatRemarksSoldText, removeRemarksSoldText } from "../logic/parts";
 import { parseResDate } from "../tools/stringUtils";
 import { filterNullObjValuesArr } from "../tools/utils";
 import { getCoresByCustomer } from "./coresService";
@@ -422,9 +422,16 @@ export const setAllHandwrittenItemDates = async (id: number) => {
 
 // === DELETE routes === //
 
-export const deleteHandwritten = async (id: number) => {
+export const deleteHandwritten = async (handwritten: Handwritten) => {
   try {
-    await api.delete(`/api/handwrittens/${id}`);
+    await api.delete(`/api/handwrittens/${handwritten.id}`);
+    
+    for (const item of handwritten.handwrittenItems) {
+      const part = await getPartById(item.partId);
+      if (!part) continue;
+      await editPart({ ...part, remarks: removeRemarksSoldText(part.remarks) });
+    }
+
     emitServerEvent('REFRESH_ACCOUNTING_PAGE', []);
   } catch (error) {
     console.error(error);
