@@ -164,8 +164,20 @@ export default function Return() {
       returnPaymentTerms: returnData?.returnPaymentTerms ?? '',
       payment: returnData?.payment ?? '',
       restockFee: returnData?.restockFee ?? '',
-      items: returnData?.returnItems.map((item) => {
-        return {
+      items: returnData?.returnItems.flatMap((item) => {
+        if (item.returnItemChildren.length > 0) {
+          return item.returnItemChildren.map((child) => ({
+            cost: formatCurrency(item.cost) || '$0.00',
+            stockNum: child.stockNum ?? '',
+            qty: child.qty,
+            partNum: item.partNum ?? '',
+            desc: item.desc ?? '',
+            unitPrice: formatCurrency(item.unitPrice) || '$0.00',
+            total: formatCurrency(child.qty * (item.unitPrice ?? 0)) || '$0.00'
+          }));
+        }
+
+        return [{
           cost: formatCurrency(item.cost) || '$0.00',
           stockNum: item.stockNum ?? '',
           qty: item.qty,
@@ -173,7 +185,7 @@ export default function Return() {
           desc: item.desc ?? '',
           unitPrice: formatCurrency(item.unitPrice) || '$0.00',
           total: formatCurrency((item.qty ?? 0) * (item.unitPrice ?? 0)) || '$0.00'
-        };
+        }];
       }) || []
     };
     addToQue('return', 'print_return', args, '709.6px', '947.8px');
