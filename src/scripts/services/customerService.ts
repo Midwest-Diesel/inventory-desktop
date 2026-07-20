@@ -35,8 +35,8 @@ const handleCustomerTags = async (customer: Customer) => {
   }
 
   const rank = await getCustomerSalesRank(customer.id);
-  if (rank > 0) {
-    tags.push({ id: 101, type: 'rank', name: `Rank: ${rank}` });
+  if (rank) {
+    tags.push({ id: 101, type: 'rank', name: `Value: ${rank.value} / Qty: ${rank.amount}` });
   }
   return [...customer.tags, ...tags];
 };
@@ -144,13 +144,13 @@ export const getCustomerSalesHistory = async (id: number): Promise<SalesHistory[
   }
 };
 
-export const getCustomerSalesRank = async (id: number): Promise<number> => {
+export const getCustomerSalesRank = async (id: number): Promise<{ amount: number, value: number } | null> => {
   try {
     const res = await api.get(`/api/customers/sales-rank/${id}`);
-    return Number(res.data.rank);
+    return { amount: Number(res.data.amount), value: Number(res.data.value) };
   } catch (error) {
     console.error(error);
-    return 0;
+    return null;
   }
 };
 
