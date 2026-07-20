@@ -1,5 +1,6 @@
 import api from "../config/axios";
 import { parseResDate } from "../tools/stringUtils";
+import { deleteTagFromCustomer } from "./tagsService";
 
 interface Search {
   customerId?: number
@@ -39,9 +40,14 @@ export const addPersonalContact = async (customerId: number, salesmanId: number)
 
 // === DELETE routes === //
 
-export const deletePersonalContact = async (id: number) => {
+export const deletePersonalContact = async (contact: PersonalContact) => {
   try {
-    await api.delete(`/api/personal-contacts-list/${id}`);
+    await api.delete(`/api/personal-contacts-list/${contact.id}`);
+    
+    const res = await getPersonalContactsList({ customerId: contact.customerId });
+    if (res.length === 0) {
+      await deleteTagFromCustomer(contact.customerId, 1);
+    }
   } catch (error) {
     console.error(error);
     alert(`Error in [deletePersonalContact] ${error}`);

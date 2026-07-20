@@ -8,7 +8,6 @@ import { useState } from "react";
 import { useAtom } from "jotai";
 import { userAtom } from "@/scripts/atoms/state";
 import { useQuery } from "@tanstack/react-query";
-import { deleteTagFromCustomer } from "@/scripts/services/tagsService";
 
 interface Props {
   closeTable: () => void
@@ -30,8 +29,7 @@ export default function PersonalContactsListTable({ closeTable }: Props) {
 
   const onClickDelete = async (contact: PersonalContact) => {
     if (!await ask('Are you sure you want to delete this contact?')) return;
-    await deletePersonalContact(contact.id);
-    await deleteTagFromCustomer(contact.customerId, 1);
+    await deletePersonalContact(contact);
     refetch();
   };
 
