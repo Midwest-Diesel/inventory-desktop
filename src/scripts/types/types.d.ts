@@ -56,6 +56,7 @@ type Contact = {
   name: string | null
   position: string | null
   email: string | null
+  phone: string | null
   ext: number | null
   notes: string | null
 };

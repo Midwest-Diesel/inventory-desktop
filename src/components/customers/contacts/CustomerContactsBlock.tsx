@@ -33,12 +33,14 @@ export default function CustomerContactsBlock({ customer, setCustomer }: Props) 
       }
 
       {contact &&
-        <div className="contacts-block">
-          {isEditing ?
-            <EditContacts contact={contact} setContact={setContact} />
-            :
-            <ContactInfo contact={contact} />
-          }
+        <div style={{ containerType: 'inline-size' }}>
+          <div className="contacts-block">
+            {isEditing ?
+              <EditContacts contact={contact} setContact={setContact} />
+              :
+              <ContactInfo contact={contact} />
+            }
+          </div>
         </div>
       }
     </div>

@@ -14,7 +14,7 @@ export default function EditContacts({ contact, setContact }: Props) {
           variant={['small', 'thin', 'label-full-width', 'label-bold']}
           label="Name:"
           value={contact?.name ?? ''}
-          onChange={(e: any) => contact && setContact({ ...contact, name: e.target.value })}
+          onChange={(e) => contact && setContact({ ...contact, name: e.target.value })}
         />
       </div>
       <div className="contacts-block__row">
@@ -22,7 +22,7 @@ export default function EditContacts({ contact, setContact }: Props) {
           variant={['small', 'thin', 'label-full-width', 'label-bold']}
           label="Position:"
           value={contact?.position ?? ''}
-          onChange={(e: any) => contact && setContact({ ...contact, position: e.target.value })}
+          onChange={(e) => contact && setContact({ ...contact, position: e.target.value })}
         />
       </div>
       <div className="contacts-block__row">
@@ -31,7 +31,15 @@ export default function EditContacts({ contact, setContact }: Props) {
           label="Email:"
           type="email"
           value={contact?.email ?? ''}
-          onChange={(e: any) => contact && setContact({ ...contact, email: e.target.value })}
+          onChange={(e) => contact && setContact({ ...contact, email: e.target.value })}
+        />
+      </div>
+      <div className="contacts-block__row">
+        <Input
+          variant={['small', 'thin', 'label-full-width', 'label-bold']}
+          label="Phone:"
+          value={contact?.phone ?? ''}
+          onChange={(e) => contact && setContact({ ...contact, phone: e.target.value })}
         />
       </div>
       <div className="contacts-block__row">
@@ -40,7 +48,7 @@ export default function EditContacts({ contact, setContact }: Props) {
           label="Ext:"
           type="number"
           value={contact?.ext ?? ''}
-          onChange={(e: any) => contact && setContact({ ...contact, ext: e.target.value })}
+          onChange={(e) => contact && setContact({ ...contact, ext: e.target.value ? Number(e.target.value) : null })}
         />
       </div>
       <div className="contacts-block__row">
@@ -48,7 +56,7 @@ export default function EditContacts({ contact, setContact }: Props) {
           variant={['small', 'thin', 'label-full-width', 'label-bold']}
           label="Notes:"
           value={contact?.notes ?? ''}
-          onChange={(e: any) => contact && setContact({ ...contact, notes: e.target.value })}
+          onChange={(e) => contact && setContact({ ...contact, notes: e.target.value })}
         />
       </div>
     </>

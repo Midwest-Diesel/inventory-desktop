@@ -1,3 +1,5 @@
+import { formatPhone } from "@/scripts/tools/stringUtils";
+
 interface Props {
   contact: Contact | null
 }
@@ -17,6 +19,10 @@ export default function ContactInfo({ contact }: Props) {
       <div className="contacts-block__row">
         <p><strong>Email:</strong></p>
         <p>{ contact?.email }</p>
+      </div>
+      <div className="contacts-block__row">
+        <p><strong>Phone:</strong></p>
+        <p>{ formatPhone(contact?.phone) }</p>
       </div>
       <div className="contacts-block__row">
         <p><strong>Ext:</strong></p>
