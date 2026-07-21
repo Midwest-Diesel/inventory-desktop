@@ -179,7 +179,7 @@ export default function Dashboard() {
               { recentQuoteSearches && <RecentQuotes /> }
             </div>
             :
-            <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', overflowY: 'auto', maxHeight: '16rem' }}>
+            <div style={{ display: 'flex', gap: '1rem' }}>
               { recentPartSearches && <RecentPartSearches /> }
               { recentQuoteSearches && <RecentQuotes /> }
             </div>
