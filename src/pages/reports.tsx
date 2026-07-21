@@ -42,6 +42,7 @@ import {
   allSalesmenReportAtom,
   allSourcesReportAtom,
   arielSalesReportAtom,
+  bootsListReportAtom,
   enginesCompanyReportAtom,
   handwrittensCompanyReportAtom,
   noLocationPartsReportAtom,
@@ -64,6 +65,9 @@ import PendingHandwrittensTable from "@/components/reports/PendingHandwrittensTa
 import { getSomeHandwrittensByInvoiceStatus } from "@/scripts/services/handwrittensService";
 import PersonalContactsListTable from "@/components/reports/PersonalContactsListTable";
 import NewCustomersTable from "@/components/reports/NewCustomersTable";
+import BootsListDialog from "@/components/reports/dialogs/BootsListDialog";
+import BootsListTable from "@/components/reports/BootsListTable";
+import RemanPartsInStockTable from "@/components/reports/RemanPartsInStockTable";
 
 
 export default function Reports() {
@@ -89,6 +93,7 @@ export default function Reports() {
   const [recentSearchesData, setRecentSearchesData] = useAtom<RecentPartSearch[]>(recentSearchesReportAtom);
   const [outstandingHighCoresData, setOutstandingHighCoresData] = useAtom<OutstandingCoresReport[]>(outstandingHighCoresReportAtom);
   const [pricingChangesData, setPricingChangesData] = useAtom<PricingChangesReport[]>(pricingChangesReportAtom);
+  const [bootsListData, setBootsListData] = useAtom<BootsListReport[]>(bootsListReportAtom);
   const openedTable = searchParams.get('r') ?? '';
 
   const toggleOpenedReport = (name: string) => {
@@ -171,6 +176,7 @@ export default function Reports() {
                 <Button onClick={() => toggleOpenedReport('pricing-changes')}>Pricing Changes</Button>
                 <Button onClick={() => toggleOpenedReport('the-machines')}>Part Availability</Button>
                 <Button onClick={() => openTable('inventory-value')}>Inventory Accounting</Button>
+                <Button onClick={() => openTable('reman-parts-in-stock')}>CAT Direct</Button>
                 <Button onClick={handleSearchNoLocationParts}>No Location Parts</Button>
                 <Button onClick={() => toggleOpenedReport('recent-searches')}>Recent Searches</Button>
                 <Button onClick={handleSearchPBB}>PBB List</Button>
@@ -185,6 +191,7 @@ export default function Reports() {
                 <Button onClick={() => openTable('new-customers')}>New Customers</Button>
                 <Button onClick={() => toggleOpenedReport('handwrittens-company')}>Handwrittens by Year</Button>
                 <Button onClick={handleSearchOutstandingCores}>Outstanding High Cores</Button>
+                <Button onClick={() => toggleOpenedReport('boots-list')}>Boots List</Button>
               </div>
             </div>
           </div>
@@ -309,6 +316,14 @@ export default function Reports() {
               setTableData={setPricingChangesData}
             />
           }
+          {isReportOpened('boots-list') &&
+            <BootsListDialog
+              open={isReportOpened('boots-list')}
+              setOpen={() => toggleOpenedReport('')}
+              openTable={() => openTable('boots-list')}
+              setTableData={setBootsListData}
+            />
+          }
         </div>
         :
         <>
@@ -334,6 +349,8 @@ export default function Reports() {
           { isTableOpened('outstanding-high-cores') && <OutstandingCoresTable closeTable={() => openTable('')} data={outstandingHighCoresData} /> }
           { isTableOpened('pricing-changes') && <PricingChanges closeTable={() => openTable('')} data={pricingChangesData} /> }
           { isTableOpened('inventory-value') && <InventoryValueTable closeTable={() => openTable('')} /> }
+          { isTableOpened('reman-parts-in-stock') && <RemanPartsInStockTable closeTable={() => openTable('')} /> }
+          { isTableOpened('boots-list') && <BootsListTable closeTable={() => openTable('')} data={bootsListData} /> }
         </>
       }
     </Layout>

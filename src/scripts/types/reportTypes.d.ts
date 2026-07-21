@@ -158,6 +158,21 @@ interface NewCustomersReport {
   createdAt: Date
 }
 
+interface RemanPartsInStockReport {
+  altParts: string
+  qty: number
+}
+
+interface BootsListReport {
+  partNum: string
+  desc: string
+  qty: number
+  ourStock: number
+  soldYTD: number
+  soldAllTime: number
+  lastSoldDate: Date
+}
+
 type InventoryValueReportParts = { combinedTotal: number, data: InventoryValueReportPartsData[] };
 type InventoryValueReportCoreEngines = { combinedTotal: number, data: InventoryValueReportCoreEnginesData[] };
 type InventoryValueReportToreDownEngines = { combinedTotal: number, data: InventoryValueReportToreDownEnginesData[] };

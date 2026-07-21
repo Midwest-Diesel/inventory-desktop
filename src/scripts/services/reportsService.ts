@@ -192,6 +192,27 @@ export const reportNewCustomers = async (date: Date): Promise<NewCustomersReport
   }
 };
 
+export const reportRemanPartsInStock = async (): Promise<RemanPartsInStockReport[]> => {
+  try {
+    const res = await api.get(`/api/reports/reman-parts-in-stock`);
+    return res.data;
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
+};
+
+export const reportBootsList = async (list: [string, string, number][]): Promise<BootsListReport[]> => {
+  try {
+    const params = { list: JSON.stringify(list) };
+    const res = await api.get(`/api/reports/boots-list`, { params });
+    return res.data;
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
+};
+
 export const reportInventoryValueParts = async (): Promise<InventoryValueReportParts> => {
   try {
     const res = await api.get(`/api/reports/inventory-value/parts`);

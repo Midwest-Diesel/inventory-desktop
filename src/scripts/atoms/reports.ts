@@ -21,3 +21,4 @@ export const noLocationPartsReportAtom = atom<NoLocationPartsReport[]>([]);
 export const recentSearchesReportAtom = atom<RecentPartSearch[]>([]);
 export const outstandingHighCoresReportAtom = atom<OutstandingCoresReport[]>([]);
 export const pricingChangesReportAtom = atom<PricingChangesReport[]>([]);
+export const bootsListReportAtom = atom<BootsListReport[]>([]);
