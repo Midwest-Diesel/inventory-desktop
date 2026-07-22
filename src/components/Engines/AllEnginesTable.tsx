@@ -14,6 +14,7 @@ export default function AllEnginesTable({ engines, loading }: Props) {
   return (
     <div className="engines__table-container">
       { loading && <Loading /> }
+
       <Table>
         <thead>
           <tr>
@@ -38,7 +39,7 @@ export default function AllEnginesTable({ engines, loading }: Props) {
           {engines.map((engine: Engine) => {
             return (
               <tr key={engine.id}>
-                <td><Link href={`/engines/${engine.stockNum}`}>{ engine.stockNum }</Link></td>
+                <td><Link href={`/engines/${engine.stockNum}`} data-testid="stock-num">{ engine.stockNum }</Link></td>
                 <td>{ engine.currentStatus }</td>
                 <td>{ formatDate(engine.loginDate) }</td>
                 <td>{ engine.model }</td>

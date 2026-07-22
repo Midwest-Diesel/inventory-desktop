@@ -279,7 +279,7 @@ export default function EngineDetails({ engine, setIsEditing, setEngineProfitOpe
                 </tr>
                 <tr style={{ height: '4rem' }}>
                   <th>Parts Pulled</th>
-                  <td>{ engine.partsPulled }</td>
+                  <td data-testid="parts-pulled">{ engine.partsPulled }</td>
                 </tr>
               </tbody>
             </Table>

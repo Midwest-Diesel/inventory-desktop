@@ -1,5 +1,5 @@
 import { test, expect, Page } from '@playwright/test';
-import { altSearch, goto } from '../utils';
+import { altSearch, engineSearch, goto } from '../utils';
 import { resetDb } from '../resetDatabase';
 
 test.beforeEach(async ({ page }) => {
@@ -9,14 +9,7 @@ test.beforeEach(async ({ page }) => {
   await page.getByTestId('login-btn').click();
   await expect(page.locator('.navbar')).toBeVisible();
   await goto(page, '/add-ons/shop/part');
-
-  page.on('dialog', async dialog => {
-    try {
-      await dialog.accept();
-    } catch (error) {
-      return error;
-    }
-  });
+  page.on('dialog', async (dialog) => dialog.accept());
 });
 
 async function newAddon(page: Page, part: string, qtyValue: number) {
@@ -133,5 +126,43 @@ test.describe('Create addon and add to inventory', () => {
     await altSearch(page, { stockNum: stockNumValue });
 
     await expect(page.getByTestId('stock-num').first()).toHaveText(stockNumValue);
+  });
+});
+
+test.describe('Engine parts pulled', () => {
+  test('Add to Parts Pulled field', async ({ page }) => {
+    await newAddon(page, '4700', 1);
+    const engineNum = page.getByTestId('engine-num').first();
+
+    await engineNum.focus();
+    await engineNum.fill('7342');
+    await engineNum.blur();
+    await page.getByTestId('print-btn').first().click();
+    await page.waitForLoadState('networkidle');
+
+    await goto(page, '/engines/engine-list');
+    await engineSearch(page, { stockNum: '7342' });
+    await page.getByTestId('stock-num').first().click();
+    await page.getByTestId('parts-pulled').waitFor();
+
+    await expect(page.getByTestId('parts-pulled')).toHaveText('INJ7342');
+  });
+
+  test('Cannot add Parts Pulled to ToreDown engines', async ({ page }) => {
+    await newAddon(page, '4700', 1);
+    const engineNum = page.getByTestId('engine-num').first();
+
+    await engineNum.focus();
+    await engineNum.fill('7260');
+    await engineNum.blur();
+    await page.getByTestId('print-btn').first().click();
+    await page.waitForLoadState('networkidle');
+
+    await goto(page, '/engines/engine-list');
+    await engineSearch(page, { stockNum: '7260' });
+    await page.getByTestId('stock-num').first().click();
+    await page.getByTestId('parts-pulled').waitFor();
+
+    await expect(page.getByTestId('parts-pulled')).not.toHaveText('INJ7260');
   });
 });

@@ -101,6 +101,7 @@ export default function EngineSearchDialog({ open, setOpen, onSearch, listOpen, 
           value={stockNum}
           onChange={(e: any) => setStockNum(e.target.value)}
           type="number"
+          data-testid="engine-search-stock-num"
         />
 
         <Input
@@ -223,7 +224,7 @@ export default function EngineSearchDialog({ open, setOpen, onSearch, listOpen, 
 
         <div className="form__footer">
           <Button type="button" variant={['small']} onClick={clearInputs}>Clear</Button>
-          <Button type="submit" variant={['small']}>Submit</Button>
+          <Button type="submit" variant={['small']} data-testid="engine-search-submit-btn">Submit</Button>
         </div>
       </form>
     </Dialog>

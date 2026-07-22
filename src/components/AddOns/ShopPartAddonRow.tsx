@@ -8,7 +8,7 @@ import { addAddOn, deleteAddOn, editAddOnIsPoOpened, editAddOnPrintStatus, editA
 import { getNextUPStockNum, getPartsByStockNum, getPartInfoByPartNum } from "@/scripts/services/partsService";
 import { MouseEvent, useEffect, useRef, useState } from "react";
 import Input from "../library/Input";
-import { getEngineByStockNum } from "@/scripts/services/enginesService";
+import { editEngine, getEngineByStockNum } from "@/scripts/services/enginesService";
 import { cap, formatDate, formatWeightDims, parseWeightDims } from "@/scripts/tools/stringUtils";
 import { getPurchaseOrderByPoNum } from "@/scripts/services/purchaseOrderService";
 import { getRatingFromRemarks } from "@/scripts/tools/utils";
@@ -24,6 +24,7 @@ import { emitServerEvent, offServerEvent, onServerEvent } from "@/scripts/config
 import { prompt } from "../library/Prompt";
 import EditWeightDims from "../parts/EditWeightDims";
 import TextArea from "../library/TextArea";
+import { ask } from "@/scripts/config/tauri";
 
 interface Props {
   addOn: AddOn
@@ -324,6 +325,11 @@ export default function ShopPartAddonRow({ addOn, addOns, setAddons, handleDupli
       return;
     }
     if (await checkDuplicateStockNum(addOn.stockNum)) return;
+
+    const engine = await getEngineByStockNum(addOn.engineNum);
+    if (engine && engine.currentStatus !== 'ToreDown' && await ask(`Add ${addOn.stockNum} to Parts Pulled for engine ${engine.stockNum}`)) {
+      await editEngine({ ...engine, partsPulled: `${engine.partsPulled ? `${engine.partsPulled}, ` : ''}${addOn.stockNum}` });
+    }
     
     await onSave();
     if (!isBlankAddOn(addOns[0])) {
@@ -336,7 +342,6 @@ export default function ShopPartAddonRow({ addOn, addOns, setAddons, handleDupli
     }
     emitServerEvent('PRINT_ADDON', [addOn]);
 
-    const engine = await getEngineByStockNum(addOn.engineNum);
     const pictures = await getImagesFromPart(addOn.partNum);
     await editAddOnPrintStatus(addOn.id, true);
 

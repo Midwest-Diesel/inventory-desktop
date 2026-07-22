@@ -1,6 +1,6 @@
 import { Page } from '@playwright/test';
 
-interface SearchData {
+interface PartSearchData {
   partNum?: string | null
   stockNum?: string | null
   desc?: string | null
@@ -11,6 +11,10 @@ interface SearchData {
   purchFrom?: string | null
   serialNum?: string | null
   hp?: string | null
+}
+
+interface EngineSearchData {
+  stockNum?: string
 }
 
 
@@ -33,7 +37,7 @@ export const goto = async (page: Page, url: string) => {
   await page.waitForSelector('.navbar');
 };
 
-export const partSearch = async (page: Page, search: SearchData) => {
+export const partSearch = async (page: Page, search: PartSearchData) => {
   await page.getByTestId('part-search-btn').waitFor();
   await page.getByTestId('part-search-btn').click();
 
@@ -52,7 +56,7 @@ export const partSearch = async (page: Page, search: SearchData) => {
   await page.waitForSelector('.part-search');
 };
 
-export const altSearch = async (page: Page, search: SearchData) => {
+export const altSearch = async (page: Page, search: PartSearchData) => {
   await page.getByTestId('alt-search-btn').waitFor();
   await page.getByTestId('alt-search-btn').click();
   
@@ -69,6 +73,15 @@ export const altSearch = async (page: Page, search: SearchData) => {
   await page.getByTestId('alt-search-hp').fill(hp ?? '');
   await page.getByTestId('alt-search-submit-btn').click();
   await page.waitForSelector('.part-search');
+};
+
+export const engineSearch = async (page: Page, search: EngineSearchData) => {
+  await page.getByTestId('search-btn').waitFor();
+  await page.getByTestId('search-btn').click();
+
+  const { stockNum } = search;
+  if (stockNum) await page.getByTestId('engine-search-stock-num').fill(stockNum);
+  await page.getByTestId('engine-search-submit-btn').click();
 };
 
 export const createHandwritten = async (page: Page, customerSearch: string) => {

@@ -122,7 +122,8 @@ export default function EngineList() {
               </Button>
             );
           })}
-          <Button onClick={() => setOpenSearch(true)}>Search</Button>
+
+          <Button onClick={() => setOpenSearch(true)} data-testid="search-btn">Search</Button>
         </div>
 
         <EngineSearchDialog
