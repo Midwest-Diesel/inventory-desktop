@@ -227,6 +227,17 @@ export const getHandwrittenEmails = async (customerId: number): Promise<string[]
   }
 };
 
+export const searchHandwrittensByFilter = async (filter: string, limit: number, page: number): Promise<{ pageCount: number, rows: Handwritten[] }> => {
+  try {
+    const params = { filter, limit, offset: (page - 1) * limit };
+    const res = await api.get(`/api/handwrittens/filter`, { params });
+    return { pageCount: res.data.pageCount, rows: await parseHandwrittenRes(res.data.rows) };
+  } catch (error) {
+    console.error(error);
+    return { pageCount: 0, rows: [] };
+  }
+};
+
 // === POST routes === //
 
 const checkForCustomerAlert = (customer: Customer | null) => {

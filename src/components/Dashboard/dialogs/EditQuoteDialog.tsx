@@ -85,7 +85,7 @@ export default function EditQuoteDialog({ setQuoteEdited, quote, setQuote }: Pro
       return;
     }
 
-    const newContact: Contact = { id, name, position: null, email: null, ext: null, notes: null };
+    const newContact: Contact = { id, name, position: null, email: null, phone: null, ext: null, notes: null };
     setContacts([...contacts, newContact].sort((a, b) => (a.name ?? '').localeCompare(b.name ?? '')));
     setContact(newContact.name!);
   };

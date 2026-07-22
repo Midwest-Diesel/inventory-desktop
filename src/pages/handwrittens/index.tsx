@@ -7,7 +7,7 @@ import Loading from "@/components/library/Loading";
 import Pagination from "@/components/library/Pagination";
 import Table from "@/components/library/Table";
 import { userAtom } from "@/scripts/atoms/state";
-import { addHandwritten, getSomeHandwrittens, getYeserdayCOGS, getYeserdaySales, searchHandwrittens } from "@/scripts/services/handwrittensService";
+import { addHandwritten, getSomeHandwrittens, getYeserdayCOGS, getYeserdaySales, searchHandwrittens, searchHandwrittensByFilter } from "@/scripts/services/handwrittensService";
 import { formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
 import { useAtom } from "jotai";
 import Link from "@/components/library/Link";
@@ -33,6 +33,7 @@ export default function Handwrittens() {
   const [unitPrice, setUnitPrice] = useState(0);
   const [takeoffItem, setTakeoffItem] = useState<HandwrittenItem | HandwrittenItemChild | null>(null);
   const [takeoffsOpen, setTakeoffsOpen] = useState(false);
+  const [filter, setFilter] = useState<'' | 'sales'>('');
   const takeoffInputRef = useRef<HTMLInputElement | null>(null);
   const queryClient = useQueryClient();
   const currentPage = pageState.currentPage;
@@ -63,8 +64,11 @@ export default function Handwrittens() {
   });
 
   const { data: handwrittensRes, isFetching, refetch } = useQuery<HandwrittenRes>({
-    queryKey: ['handwrittens', pageState],
+    queryKey: ['handwrittens', pageState, filter],
     queryFn: async () => {
+      if (filter) {
+        return await searchHandwrittensByFilter(filter, LIMIT, currentPage);
+      }
       if (hasValidSearchCriteria) {
         return await searchHandwrittens({ ...search, offset: (currentPage - 1) * LIMIT });
       }
@@ -207,13 +211,15 @@ export default function Handwrittens() {
             { hasValidSearchCriteria && <Button onClick={clearSearch}>Clear Search</Button> }
             <Button onClick={() => setOpenSearch(true)}>Search</Button>
             { user.type === 'office' && <Button onClick={() => setCustomerSelectOpen(true)} data-testid="new-btn">New</Button> }
+            { filter && <Button onClick={() => setFilter('')}>Clear Filters</Button> }
           </div>
+
           <div className="handwrittens__top-bar">
-            <div className="handwrittens__top-bar--count-block">
+            <div className="handwrittens__top-bar--count-block" onClick={() => setFilter('sales')}>
               <h4>Yesterday&apos;s COGS</h4>
               <p>{ isCogsLoading ? 'Loading...' : formatCurrency(totalCOGS) }</p>
             </div>
-            <div className="handwrittens__top-bar--count-block">
+            <div className="handwrittens__top-bar--count-block" onClick={() => setFilter('sales')}>
               <h4>Yesterday&apos;s Sales</h4>
               <p>{ isSalesLoading ? 'Loading...' : formatCurrency(totalSales) }</p>
             </div>
