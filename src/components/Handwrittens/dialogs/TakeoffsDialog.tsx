@@ -1,7 +1,7 @@
 import Button from "@/components/library/Button";
 import Dialog from "@/components/library/Dialog";
 import Input from "@/components/library/Input";
-import { editHandwrittenChildTakeoffState, editHandwrittenItemTakeoffState, editHandwrittenItemPartId, getHandwrittenById } from "@/scripts/services/handwrittensService";
+import { editHandwrittenChildTakeoffState, editHandwrittenItemTakeoffState, editHandwrittenItemPartId, getHandwrittenItemById } from "@/scripts/services/handwrittensService";
 import { addPart, addPartCostIn, addToPartQtyHistory, editPartCostIn, editPartStockNum, getPartById, getPartQty, handlePartTakeoff, searchAltParts, searchParts } from "@/scripts/services/partsService";
 import { getSurplusByCode, zeroAllSurplusItems } from "@/scripts/services/surplusService";
 import { formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
@@ -17,17 +17,17 @@ interface Props {
   setOpen: (open: boolean) => void
   item: HandwrittenItem | HandwrittenItemChild
   unitPrice: number
-  setHandwritten: (handwritten: Handwritten | null) => void
+  refetch: () => void
   onSubmit: () => void
   takeoffInputRef: RefObject<HTMLInputElement>
-  handwrittenId: number
+  handwritten: Handwritten | null
 }
 
 
 const letters = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'];
 const OUT_OF_STOCK_EMAIL_RECIPIENTS = ['terry@midwestdiesel.com', 'jack@midwestdiesel.com', 'matt@midwestdiesel.com', 'jason@midwestdiesel.com', 'jon@midwestdiesel.com', 'ryan@midwestdiesel.com'];
 
-export default function TakeoffsDialog({ open, setOpen, item, unitPrice, setHandwritten, onSubmit, takeoffInputRef, handwrittenId }: Props) {
+export default function TakeoffsDialog({ open, setOpen, item, unitPrice, refetch, onSubmit, takeoffInputRef, handwritten }: Props) {
   const [qty, setQty] = useState<number>(Number(item.qty));
   const [partSelectOpen, setPartSelectOpen] = useState(false);
   const [partSearch, setPartSearch] = useState<Part[]>([]);
@@ -72,6 +72,22 @@ export default function TakeoffsDialog({ open, setOpen, item, unitPrice, setHand
       alert('Part qty cannot go below 0');
       return;
     }
+    if (!handwritten) {
+      alert('Handwritten cannot be null');
+      return;
+    }
+    if (part.stockNum !== item.stockNum || part.id !== item.partId) {
+      alert('Part stock number doesn\'t match item stock number. Please refresh and try again.');
+      return;
+    }
+
+    const parentId = (item as HandwrittenItemChild).parentId;
+    const parent = parentId ? await getHandwrittenItemById(parentId) : null;
+    const handwrittenId = parent?.handwrittenId || (item as HandwrittenItem).handwrittenId;
+    if (handwrittenId !== handwritten.id) {
+      alert('Selected handwritten is out of sync. Please refresh and try again.');
+      return;
+    }
 
     const isPartGroup = part.qty > 1;
     const costMatches = formatCurrency(Number(part.purchasePrice)) === formatCurrency(Number(item.cost));
@@ -81,17 +97,12 @@ export default function TakeoffsDialog({ open, setOpen, item, unitPrice, setHand
       return;
     }
 
-    // Remove qty and edit surplus when applicable
-    const handwritten = await getHandwrittenById(handwrittenId);
-    if (!handwritten) return;
-    setLoading(true);
-
     // Do the takeoff
+    setLoading(true);
     await handlePartTakeoff(part.id, Number(qty), handwritten?.billToCompany ?? '', unitPrice, handwritten.id);
     await addToPartQtyHistory(part.id, -Number(qty));
 
     // Mark takeoff as done
-    const parentId = (item as HandwrittenItemChild).parentId;
     if (parentId) {
       await editHandwrittenChildTakeoffState(item.id, true);
       await editHandwrittenItemTakeoffState(parentId, true);
@@ -100,7 +111,7 @@ export default function TakeoffsDialog({ open, setOpen, item, unitPrice, setHand
     }
     
     // Set all connected surplus cost to $0.01
-    const surplus: Surplus | null = await getSurplusByCode(part.purchasedFrom ?? '');
+    const surplus: Surplus | null = await getSurplusByCode(part.purchasedFrom);
     if (surplus && surplus.price - Number(item.cost) <= 0) await zeroAllSurplusItems(surplus.code);
 
     // Prompt to send a part "out of stock" email if there's no more of these parts left
@@ -170,10 +181,9 @@ export default function TakeoffsDialog({ open, setOpen, item, unitPrice, setHand
     }
 
     // Finalize takeoff
-    const res = await getHandwrittenById(handwrittenId);
     onSubmit();
     setLoading(false);
-    setHandwritten(res);
+    refetch();
     takeoffInputRef.current?.focus();
     setOpen(false);
   };

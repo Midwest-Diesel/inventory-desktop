@@ -29,7 +29,7 @@ import { prompt } from "../library/Prompt";
 import HandwrittenStatusFields from "./HandwrittenStatusFields";
 import ShippingListModal from "./modals/ShippingListModal";
 import ModalList from "../library/ModalList";
-import { offServerEvent, onServerEvent } from "@/scripts/config/websockets";
+import { emitServerEvent, offServerEvent, onServerEvent } from "@/scripts/config/websockets";
 import { chunkArray } from "@/scripts/tools/utils";
 import { usePdfQue } from "@/hooks/usePdfQue";
 import { getUserById } from "@/scripts/services/accountService";
@@ -513,10 +513,10 @@ export default function HandwrittenDetails({
           setOpen={setTakeoffsOpen}
           item={takeoffItem}
           unitPrice={unitPrice}
-          setHandwritten={setHandwritten}
+          refetch={() => emitServerEvent('REFRESH_HANDWRITTEN_ITEMS', [handwritten.id])}
           onSubmit={onSubmitTakeoff}
           takeoffInputRef={takeoffInputRef}
-          handwrittenId={Number(params.handwritten)}
+          handwritten={handwritten}
         />
       }
 

@@ -2,10 +2,6 @@
   display: flex;
   min-width: 42rem;
 
-  @media (max-width: 1950px) {
-    width: 60rem;
-  }
-
   &__buttons {
     display: flex;
     gap: 0.25rem;

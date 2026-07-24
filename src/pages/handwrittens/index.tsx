@@ -76,6 +76,11 @@ export default function Handwrittens() {
     }
   });
 
+  useEffect(() => {
+    const handwritten = handwrittensRes?.rows.find((row) => row.id === focusedHandwritten?.id);
+    if (handwritten) setFocusedHandwritten(handwritten);
+  }, [handwrittensRes]);
+
   useArrowSelector(handwrittensRes?.rows ?? [], focusedHandwritten, setFocusedHandwritten);
 
   const handleChangePage = (_: any, page: number) => {
@@ -194,13 +199,10 @@ export default function Handwrittens() {
           setOpen={setTakeoffsOpen}
           item={takeoffItem}
           unitPrice={unitPrice}
-          setHandwritten={(h) => {
-            setFocusedHandwritten(h);
-            refetch();
-          }}
+          refetch={refetch}
           onSubmit={onSubmitTakeoff}
           takeoffInputRef={takeoffInputRef}
-          handwrittenId={Number(focusedHandwritten?.id)}
+          handwritten={focusedHandwritten}
         />
       }
 
