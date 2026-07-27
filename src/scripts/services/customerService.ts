@@ -147,6 +147,8 @@ export const getCustomerSalesHistory = async (id: number): Promise<SalesHistory[
 export const getCustomerSalesRank = async (id: number): Promise<{ amount: number, value: number } | null> => {
   try {
     const res = await api.get(`/api/customers/sales-rank/${id}`);
+    if (!res.data) return null;
+    
     return { amount: Number(res.data.amount), value: Number(res.data.value) };
   } catch (error) {
     console.error(error);

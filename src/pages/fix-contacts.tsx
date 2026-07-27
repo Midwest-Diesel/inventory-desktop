@@ -17,8 +17,8 @@ export default function FixContacts() {
       const id = Number(params.get('customer-id'));
       const res = await getCustomerById(id);
       if (res?.contacts) {
-        setEmptyContacts(res.contacts.filter((c) => !hasInfo(c)));
-        setContactsWithInfo(res.contacts.filter((c) => hasInfo(c)));
+        setEmptyContacts(res.contacts.sort((a, b) => (a.name ?? '').localeCompare(b.name ?? '')).filter((c) => !hasInfo(c)));
+        setContactsWithInfo(res.contacts.sort((a, b) => (a.name ?? '').localeCompare(b.name ?? '')).filter((c) => hasInfo(c)));
       }
       return res?.contacts ?? [];
     }

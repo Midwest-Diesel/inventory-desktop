@@ -36,13 +36,19 @@ export default function SelectedCustomerInfo({ expandedDetailsOpen }: Props) {
 
     for (const c of customer.contacts) {
       const n = c.name?.toLowerCase().trim() ?? '';
-      for (const existing of Array.from(seen)) {
-        if (existing.startsWith(n) || n.startsWith(existing)) {
+
+      for (const existing of seen) {
+        const shorter = n.length < existing.length ? n : existing;
+        const longer = n.length < existing.length ? existing : n;
+
+        if (shorter.length >= 5 && longer.startsWith(shorter)) {
           return true;
         }
       }
+
       seen.add(n);
     }
+
     return false;
   };
 
@@ -64,7 +70,14 @@ export default function SelectedCustomerInfo({ expandedDetailsOpen }: Props) {
 
           <p>
             <strong>Contact: </strong>
-            { customer?.contact || <em>Not Selected</em> } { (hasSimilarContacts() && userIsAllowed) && <Link style={{ color: 'var(--red-3)', fontWeight: 'bold' }} href={`/fix-contacts?customer-id=${customer?.id}`}>Similar contacts detected!</Link> }
+            {customer?.contact || <em>Not Selected</em> } {(hasSimilarContacts() && userIsAllowed) &&
+              <Link
+                style={{ color: 'var(--red-3)', fontWeight: 'bold' }}
+                href={`/fix-contacts?customer-id=${customer?.id}`}
+              >
+                Similar contacts detected!
+              </Link>
+            }
           </p>
         </div>
         :
@@ -229,7 +242,14 @@ export default function SelectedCustomerInfo({ expandedDetailsOpen }: Props) {
             </GridItem>
           </Grid>
 
-          { (hasSimilarContacts() && userIsAllowed) && <Link style={{ color: 'var(--red-3)', fontWeight: 'bold' }} href={`/fix-contacts?customer-id=${customer?.id}`}>Similar contacts detected!</Link> }
+          {(hasSimilarContacts() && userIsAllowed) &&
+            <Link
+              style={{ color: 'var(--red-3)', fontWeight: 'bold' }}
+              href={`/fix-contacts?customer-id=${customer?.id}`}
+            >
+              Similar contacts detected!
+            </Link>
+          }
         </div>
       }
 
