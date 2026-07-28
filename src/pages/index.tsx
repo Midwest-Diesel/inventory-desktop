@@ -171,7 +171,7 @@ export default function Dashboard() {
           />
         }
 
-        <div className="dashboard__row">
+        <div className="dashboard__row" style={{ display: 'flex', justifyContent: 'space-between' }}>
           <CustomerSection onExpandDetails={onExpandDetails} />
           {detailsExpanded ?
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>

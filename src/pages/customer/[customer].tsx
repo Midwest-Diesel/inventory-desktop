@@ -120,7 +120,7 @@ export default function Customer() {
       {customer &&
         <AddToMapDialog
           open={addLocDialogOpen}
-          setOpen={(setAddLocDialogOpen)}
+          setOpen={setAddLocDialogOpen}
           customer={customer}
           userId={user.id}
         />
