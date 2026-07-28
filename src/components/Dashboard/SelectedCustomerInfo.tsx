@@ -1,7 +1,7 @@
 import Link from "../library/Link";
 import GridItem from "../library/grid/GridItem";
 import Grid from "../library/grid/Grid";
-import { formatCurrency, formatPhone } from "@/scripts/tools/stringUtils";
+import { formatCurrency, formatDate, formatPhone } from "@/scripts/tools/stringUtils";
 import Table from "../library/Table";
 import { getCustomerSalesHistory } from "@/scripts/services/customerService";
 import CustomerContactsBlock from "../customers/contacts/CustomerContactsBlock";
@@ -107,7 +107,7 @@ export default function SelectedCustomerInfo({ expandedDetailsOpen }: Props) {
                   </tr>
                   <tr>
                     <th>Email</th>
-                    <td>{ customer?.email }</td>
+                    <td style={{ wordBreak: 'break-all' }}>{ customer?.email }</td>
                   </tr>
                   <tr>
                     <th>Customer Type</th>
@@ -118,8 +118,8 @@ export default function SelectedCustomerInfo({ expandedDetailsOpen }: Props) {
                     <td>{ customer?.source }</td>
                   </tr>
                   <tr>
-                    <th>Fax</th>
-                    <td>{ formatPhone(customer?.fax) }</td>
+                    <th>Created By</th>
+                    <td>{ customer?.createdBy }{ customer?.createdAt ? ` - (${formatDate(customer?.createdAt)})` : '' }</td>
                   </tr>
                 </tbody>
               </Table>
