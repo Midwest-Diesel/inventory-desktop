@@ -28,6 +28,7 @@ import Tag from "@/components/library/Tag";
 import { addTagToCustomer } from "@/scripts/services/tagsService";
 import UserSelect from "@/components/library/select/UserSelect";
 import { getUserById } from "@/scripts/services/accountService";
+import HandwrittensListModal from "@/components/handwrittens/modals/HandwrittensListModal";
 
 
 export default function Customer() {
@@ -46,6 +47,7 @@ export default function Customer() {
   const [location, setLocation] = useState<MapLocation | null>(null);
   const [showSalesmanSelect, setShowSalesmanSelect] = useState(false);
   const [salesmanSelection, setSalesmanSelection] = useState<number | null>(null);
+  const [handwrittensModalOpen, setHandwrittensModalOpen] = useState(false);
   const parser = new DOMParser();
   const comments = parser.parseFromString(customer?.comments ?? '', 'text/html');
   const fleetNotes = parser.parseFromString(customer?.fleetNotes ?? '', 'text/html');
@@ -132,6 +134,14 @@ export default function Customer() {
         />
       }
 
+      {customer &&
+        <HandwrittensListModal
+          open={handwrittensModalOpen}
+          setOpen={setHandwrittensModalOpen}
+          customerId={customer.id}
+        />
+      }
+
       <div className="customer-details">
         {customer ? isEditing ?
           <EditCustomerDetails
@@ -200,6 +210,7 @@ export default function Customer() {
                   onChange={(e) => setSalesmanSelection(Number(e.target.value))}
                 />
               }
+              <Button onClick={() => setHandwrittensModalOpen(true)}>View Handwrittens</Button>
             </div>
           
             <Grid>
