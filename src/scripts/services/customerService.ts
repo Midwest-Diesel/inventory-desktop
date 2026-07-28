@@ -1,5 +1,6 @@
 import api from "../config/axios";
 import { parseResDate } from "../tools/stringUtils";
+import { addMapLocation } from "./mapService";
 
 interface CustomerSearch {
   name: string
@@ -46,7 +47,7 @@ const handleCustomerTags = async (customer: Customer) => {
 export const getCustomers = async (): Promise<Customer[]> => {
   try {
     const res = await api.get('/api/customers');
-    return await parseCustomerRes(res.data);
+    return await res.data;
   } catch (error) {
     console.error(error);
     return [];
@@ -167,11 +168,25 @@ export const getCustomerTypes = async () => {
 
 // === POST routes === //
 
-export const addCustomer = async (customer: string) => {
+export const addCustomer = async (customer: string): Promise<number | null> => {
   try {
-    await api.post('/api/customers', { name: customer });
+    const res = await api.post('/api/customers', { name: customer });
+    const id = Number(res.data.id);
+    if (id === 0) return null;
+
+    const newCustomer = await getCustomerById(id);
+    if (!newCustomer) return null;
+
+    const mapLocation = {
+      name: newCustomer.company ?? '',
+      customerId: newCustomer.id
+    };
+    await addMapLocation(mapLocation);
+
+    return id;
   } catch (error) {
     console.error(error);
+    return null;
   }
 };
 

@@ -185,12 +185,12 @@ export default function ImportantCustomersMap() {
     }
   };
 
-  const panTo = (loc: any) => {
+  const panTo = (loc: { lat: number, lng: number }) => {
     const { lat, lng } = loc;
     mapInstanceRef.current?.panTo({ lat, lng });
   };
 
-  const handleViewLoc = (loc: any) => {
+  const handleViewLoc = (loc: { lat: number, lng: number }) => {
     panTo(loc);
     if (!mapInstanceRef.current) return;
     const zoom = Number(mapInstanceRef.current.getZoom());
@@ -202,23 +202,18 @@ export default function ImportantCustomersMap() {
     await deleteMapLocation(loc.id);
   };
 
-  const handleAddLocation = async (name: string, location: { lat: number, lng: number }, type: MapLocationType, customerId: number | null, notes: string) => {
+  const handleAddLocation = async (name: string, location: { lat: number, lng: number }, customerId: number) => {
     const geocoder = new window.google.maps.Geocoder();
     await geocoder.geocode({ location }, async (results, status) => {
-      if (status === 'OK' && results) {
-        if (results[0]) {
-          const address = results[0].formatted_address;
-          const loc = results[0].geometry.location;
-          const parsedAddress = address.includes('+') ? `LAT: ${loc.lat()}, LONG: ${loc.lng()}` : address;
-          await addMapLocation({ name, address: parsedAddress, ...location, type, salesmanId: user.id, legacyId: customerId, notes, date: new Date() });
-        }
+      if (status === 'OK' && results?.[0]) {
+        await addMapLocation({ name, customerId });
       } else {
-        console.error('Geocoder failed due to: ' + status);
+        console.error(`Geocoder failed due to: ${status}`);
       }
     });
   };
 
-  const handleEditLocation = async (id: number, name: string, location: { lat: number, lng: number }, type: MapLocationType, customerId: number | null, notes: string) => {
+  const handleEditLocation = async (id: number, name: string, location: { lat: number, lng: number }, type: MapLocationType, notes: string) => {
     const geocoder = new window.google.maps.Geocoder();
     await geocoder.geocode({ location }, async (results, status) => {
       if (status === 'OK' && results) {
@@ -226,10 +221,10 @@ export default function ImportantCustomersMap() {
           const address = results[0].formatted_address;
           const loc = results[0].geometry.location;
           const parsedAddress = address.includes('+') ? `LAT: ${loc.lat()}, LONG: ${loc.lng()}` : address;
-          await editMapLocation({ id, name, address: parsedAddress, ...location, type, legacyId: customerId, notes });
+          await editMapLocation({ id, name, address: parsedAddress, ...location, type, notes });
         }
       } else {
-        console.error('Geocoder failed due to: ' + status);
+        console.error(`Geocoder failed due to: ${status}`);
       }
     });
   };
@@ -239,24 +234,24 @@ export default function ImportantCustomersMap() {
     setNewLocationDialogOpen(true);
   };
 
-  const handleEdit = (loc: MapLocation) => {
-    setEditLocationData(loc);
+  const handleEdit = (location: MapLocation) => {
+    setEditLocationData(location);
     setEditLocationDialogOpen(true);
   };
 
   const handleSubmitNewLocation = async (data: LocationFormData) => {
-    const loc = await getGeoLocation(data.address);
-    if (!loc || loc.length === 0) return;
-    const { lat, lng } = loc[0].geometry.location;
-    handleAddLocation(data.name, { lat, lng }, data.type, data.customerId, data.notes);
+    const res = await getGeoLocation(data.address);
+    if (!res) return;
+    const { lat, lng } = res.geometry.location;
+    handleAddLocation(data.name, { lat, lng }, data.customerId);
     panTo({ lat, lng });
   };
 
   const handleSubmitEditLocation = async (data: LocationFormData) => {
-    const loc = await getGeoLocation(data.address);
-    if (!loc || loc.length === 0) return;
-    const { lat, lng } = loc[0].geometry.location;
-    handleEditLocation(Number(data.id), data.name, { lat, lng }, data.type, data.customerId, data.notes);
+    const res = await getGeoLocation(data.address);
+    if (!res) return;
+    const { lat, lng } = res.geometry.location;
+    handleEditLocation(Number(data.id), data.name, { lat, lng }, data.type, data.notes);
     panTo({ lat, lng });
   };
 
@@ -265,7 +260,7 @@ export default function ImportantCustomersMap() {
     const filteredLocations = locations.filter((loc) => {
       const matchesName = filterName === '' || loc.name.toLowerCase().includes(filterName.toLowerCase());
       const matchesType = filterType === 'all' || loc.type === filterType;
-      const matchesCustomerType = filterCustomerType === 'all' || loc.customerType === filterCustomerType;
+      const matchesCustomerType = filterCustomerType === 'all' || loc.customer.customerType === filterCustomerType;
       const matchesSalesman = filterSalesman === 'all' || loc.salesman === filterSalesman;
       return matchesName && matchesType && matchesCustomerType && matchesSalesman;
     });
@@ -293,9 +288,9 @@ export default function ImportantCustomersMap() {
   const handleFixCoords = async () => {
     const res = await getBrokenLocations();
     if (res.length === 0) return;
-    const validLocations = res.filter((item: any) => item.address);
+    const validLocations = res.filter((item: MapLocation) => item.address);
     const geoLocations = await Promise.all(
-      validLocations.map((item: any) => getGeoLocation(item.address).then((data) => data[0]))
+      validLocations.map((item: MapLocation) => getGeoLocation(item.address).then((data) => data))
     );
 
     const updates = geoLocations.filter(Boolean).map((loc, index) => {
@@ -305,7 +300,7 @@ export default function ImportantCustomersMap() {
         id,
         lat: loc.geometry.location.lat,
         lng: loc.geometry.location.lng,
-        address: loc.formatted_address
+        address: loc.formattedAddress
       });
     });
     await Promise.all(updates.filter(Boolean));

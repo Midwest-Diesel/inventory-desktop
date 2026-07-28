@@ -10,33 +10,35 @@ import TextArea from "@/components/library/TextArea";
 interface Props {
   open: boolean
   setOpen: (open: boolean) => void
-  location: MapLocation | null
+  location: MapLocation
 }
 
 
 export default function EditMapLocDialog({ open, setOpen, location }: Props) {
-  const [name, setName] = useState<string>(location?.name ?? '');
-  const [address, setAddress] = useState<string>(location?.address ?? '');
-  const [type, setType] = useState<MapLocationType>(location?.type ?? '');
-  const [notes, setNotes] = useState<string>(location?.notes ?? '');
+  const [name, setName] = useState<string>(location.name);
+  const [address, setAddress] = useState<string>(location.address ?? '');
+  const [type, setType] = useState<MapLocationType>(location.type);
+  const [notes, setNotes] = useState<string>(location.notes ?? '');
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    if (!location || !await ask('Are you sure?')) return;
-    const res = (await getGeoLocation(address))[0];
-    const newLoc = {
+    if (!await ask('Save changes to map location?')) return;
+    const res = (await getGeoLocation(address));
+    if (!res) {
+      alert('Failed to find geo location');
+      return;
+    }
+
+    const newLocation = {
       id: location.id,
       name,
-      address: res.formatted_address,
-      lat: res.geometry.res.lat,
-      lng: res.geometry.res.lng,
+      address: res.formattedAddress,
+      lat: res.geometry.location.lat,
+      lng: res.geometry.location.lng,
       type,
-      customerId: location.customer?.id,
-      legacyId: null,
-      date: location.date,
       notes
     };
-    await editMapLocation(newLoc);
+    await editMapLocation(newLocation);
     setOpen(false);
   };
 
@@ -62,7 +64,7 @@ export default function EditMapLocDialog({ open, setOpen, location }: Props) {
         <Input
           variant={['label-bold', 'label-stack']}
           label="Address"
-          placeholder="address, city"
+          placeholder="address, city, zip"
           value={address}
           onChange={(e) => setAddress(e.target.value)}
           required

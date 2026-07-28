@@ -21,7 +21,7 @@ app.render(
   <BrowserRouter>
     <Provider>
       <QueryClientProvider client={queryClient}>
-        <APIProvider apiKey={import.meta.env.VITE_PUBLIC_MAPS_API ?? ''}>
+        <APIProvider apiKey={import.meta.env.VITE_PUBLIC_GOOGLE_MAPS_KEY ?? ''}>
           <GlobalData>
             <ErrorBoundary>
               <App />

@@ -126,7 +126,7 @@ export default function Customer() {
         />
       }
 
-      {editLocDialogOpen &&
+      {(editLocDialogOpen && location) &&
         <EditMapLocDialog
           open={editLocDialogOpen}
           setOpen={setEditLocDialogOpen}

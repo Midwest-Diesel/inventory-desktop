@@ -1018,17 +1018,23 @@ type Toast = {
 type MapLocation = {
   id: number
   name: string
-  address: string
-  state: string
+  address: string | null
+  state: string | null
   location: { lat: number, lng: number }
   type: MapLocationType
   salesman: string
-  customer: Customer | null
-  customerType: string
+  customer: Customer
   date: Date
   notes: string | null
 };
 type MapLocationType = 'customer' | 'vendor' | '';
+
+type GeoLocation = {
+  geometry: {
+    location: { lat: number, lng: number }
+  }
+  formattedAddress: string
+};
 
 type Country = {
   id: number
