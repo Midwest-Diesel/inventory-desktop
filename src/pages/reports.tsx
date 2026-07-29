@@ -68,6 +68,7 @@ import NewCustomersTable from "@/components/reports/NewCustomersTable";
 import BootsListDialog from "@/components/reports/dialogs/BootsListDialog";
 import BootsListTable from "@/components/reports/BootsListTable";
 import RemanPartsInStockTable from "@/components/reports/RemanPartsInStockTable";
+import TopCustomersTable from "@/components/reports/TopCustomersTable";
 
 
 export default function Reports() {
@@ -159,6 +160,7 @@ export default function Reports() {
                 <Button onClick={() => toggleOpenedReport('all-sources')}>All Sources</Button>
                 <Button onClick={() => toggleOpenedReport('all-salesmen')}>All Salesmen</Button>
                 <Button onClick={() => toggleOpenedReport('ariel-sales')}>Ariel Sales</Button>
+                <Button onClick={() => openTable('top-customers')}>Top Customers Ranking</Button>
               </div>
             </div>
 
@@ -337,6 +339,7 @@ export default function Reports() {
           { isTableOpened('all-salesmen') && <AllSalesmenTable closeTable={() => openTable('')} data={allSalesmenData} /> }
           { isTableOpened('the-machines') && <PartAvailabilityTable closeTable={() => openTable('')} data={theMachinesData} /> }
           { isTableOpened('ariel-sales') && <ArielSalesTable closeTable={() => openTable('')} data={arielSalesData} /> }
+          { isTableOpened('top-customers') && <TopCustomersTable closeTable={() => openTable('')} /> }
           { isTableOpened('parts-company') && <SingleCompanyPartsTable closeTable={() => openTable('')} data={partsCompanyData} /> }
           { isTableOpened('engines-company') && <SingleCompanyEnginesTable closeTable={() => openTable('')} data={enginesCompanyData} /> }
           { isTableOpened('pending-handwrittens') && <PendingHandwrittensTable closeTable={() => openTable('')} data={pendingHandwrittensData} /> }

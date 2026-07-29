@@ -213,6 +213,16 @@ export const reportBootsList = async (list: [string, string, number][]): Promise
   }
 };
 
+export const reportTopCustomers = async (): Promise<TopCustomersReport | null> => {
+  try {
+    const res = await api.get(`/api/reports/top-customers`);
+    return res.data;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+};
+
 export const reportInventoryValueParts = async (): Promise<InventoryValueReportParts> => {
   try {
     const res = await api.get(`/api/reports/inventory-value/parts`);

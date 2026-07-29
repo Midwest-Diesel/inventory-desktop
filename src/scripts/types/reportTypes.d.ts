@@ -173,6 +173,27 @@ interface BootsListReport {
   lastSoldDate: Date
 }
 
+interface TopCustomersReport {
+  value: {
+    customerId: number
+    billToCompany: string
+    rank: number
+    billToAddress: string
+    billToCity: string
+    billToState: string
+    billToZip: string
+  }[]
+  qty: {
+    customerId: number
+    billToCompany: string
+    rank: number
+    billToAddress: string
+    billToCity: string
+    billToState: string
+    billToZip: string
+  }[]
+}
+
 type InventoryValueReportParts = { combinedTotal: number, data: InventoryValueReportPartsData[] };
 type InventoryValueReportCoreEngines = { combinedTotal: number, data: InventoryValueReportCoreEnginesData[] };
 type InventoryValueReportToreDownEngines = { combinedTotal: number, data: InventoryValueReportToreDownEnginesData[] };
