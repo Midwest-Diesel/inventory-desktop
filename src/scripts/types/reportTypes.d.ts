@@ -14,6 +14,7 @@ interface SingleCompany {
 }
 
 interface AllCompaniesReport {
+  customerId: number
   billToCompany: string
   billToAddress: string
   billToCity: string
@@ -22,6 +23,7 @@ interface AllCompaniesReport {
   country: string
   sales: number
   invoices: number
+  lastPrintedLabel: Date
 }
 
 interface AllPartsReport {
@@ -156,6 +158,7 @@ interface NewCustomersReport {
   email: string | null
   phone: string | null
   createdAt: Date
+  lastPrintedLabel: Date
 }
 
 interface RemanPartsInStockReport {

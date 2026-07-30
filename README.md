@@ -38,7 +38,7 @@ Sometimes it can take around 5 min for the update to propagate.
 - `npm run lint:scss` Run stylelint
 
 ## Testing
-Make sure you run `npm run dev:test` to host the test client.
+Make sure you have run `npm run dev:test` to host the test client.
 - `npm run test` Run all tests
 - `npm run test:unit` Run unit tests
 - `npm run test:integration` Run integration tests

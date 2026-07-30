@@ -331,7 +331,7 @@ export default function Reports() {
         <>
           { isTableOpened('single-company') && <SingleCompanyTable closeTable={() => openTable('')} data={singleCompanyData} /> }
           { isTableOpened('sales-by-bill-to-company') && <SalesByBillToCompanyTable closeTable={() => openTable('')} data={salesByBillToCompanyData} /> }
-          { isTableOpened('all-companies') && <AllCompaniesTable closeTable={() => openTable('')} data={allCompaniesData} /> }
+          { isTableOpened('all-companies') && <AllCompaniesTable closeTable={() => openTable('')} data={allCompaniesData} setData={setAllCompaniesData} /> }
           { isTableOpened('all-parts') && <AllPartsTable closeTable={() => openTable('')} data={allPartsData} /> }
           { isTableOpened('part-desc') && <PartDescTable closeTable={() => openTable('')} data={partDescData} /> }
           { isTableOpened('all-engines') && <AllEnginesTable closeTable={() => openTable('')} data={allEnginesData} /> }

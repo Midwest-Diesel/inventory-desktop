@@ -7,6 +7,8 @@ import { newCustomersReportAtom } from "@/scripts/atoms/reports";
 import { useEffect, useState } from "react";
 import { reportNewCustomers } from "@/scripts/services/reportsService";
 import Link from "../library/Link";
+import { editCustomerLastPrintedLabel, getCustomerById } from "@/scripts/services/customerService";
+import { usePrintQue } from "@/hooks/usePrintQue";
 
 interface Props {
   closeTable: () => void
@@ -16,6 +18,7 @@ interface Props {
 export default function NewCustomersTable({ closeTable }: Props) {
   const [newCustomersData, setNewCustomersData] = useAtom<NewCustomersReport[]>(newCustomersReportAtom);
   const [filter, setFilter] = useState('1 Month');
+  const { addToQue, printQue } = usePrintQue();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -59,6 +62,32 @@ export default function NewCustomersTable({ closeTable }: Props) {
       ].join('\t')
     ).join('\n');
     navigator.clipboard.writeText(rowsText);
+  };
+
+  const onClickPrintLabel = async (row: NewCustomersReport) => {
+    await editCustomerLastPrintedLabel(row.customerId, new Date());
+    const customer = await getCustomerById(row.customerId);
+    if (!customer) return;
+
+    const shipToCityStateZip = [customer.billToCity, `${customer.billToState} ${customer.billToZip}`].join(', ');
+    const args = {
+      shipFromCompany: 'MIDWEST DIESEL',
+      shipFromAddress: '3051 82ND LANE NE',
+      shipFromAddress2: '',
+      shipFromCityStateZip: 'BLAINE, MN 55449',
+      shipToCompany: customer.company ?? '',
+      shipToAddress: customer.billToAddress ?? '',
+      shipToAddress2: customer.billToAddress2 ? `${customer.billToAddress2}\n` : '',
+      shipToCityStateZip: shipToCityStateZip ?? '',
+      shipToContact: customer.contact ?? ''
+    };
+    addToQue('shippingLabel', 'print_shipping_label', args, '576px', '374.4px');
+    printQue();
+
+    setNewCustomersData(newCustomersData.map((d) => {
+      if (d.customerId !== row.customerId) return d;
+      return { ...row, lastPrintedLabel: new Date() };
+    }));
   };
 
 
@@ -107,6 +136,7 @@ export default function NewCustomersTable({ closeTable }: Props) {
               <th>Contact</th>
               <th>Email</th>
               <th>Phone</th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
@@ -124,6 +154,18 @@ export default function NewCustomersTable({ closeTable }: Props) {
                   <td>{ row.contact }</td>
                   <td>{ row.email }</td>
                   <td>{ formatPhone(row.phone) }</td>
+                  <td>
+                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                      <Button
+                        style={{ margin: '0 0 0.1rem' }}
+                        variant={['xx-small', 'fit', 'center']}
+                        onClick={() => onClickPrintLabel(row)}
+                      >
+                        Print
+                      </Button>
+                      <p style={{ fontSize: 'var(--font-xsm)', textAlign: 'center' }}>{ formatDate(row.lastPrintedLabel) }</p>
+                    </div>
+                  </td>
                 </tr>
               );
             })}

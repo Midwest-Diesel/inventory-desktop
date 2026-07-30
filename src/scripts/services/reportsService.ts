@@ -38,12 +38,13 @@ export const reportSalesByBillToCompany = async (billToCompany: string, startDat
   }
 };
 
-export const reportAllCompanies = async (startDate: Date | null, endDate: Date | null) => {
+export const reportAllCompanies = async (startDate: Date | null, endDate: Date | null): Promise<AllCompaniesReport[]> => {
   try {
-    const res = await api.get(`/api/reports/all-companies/${JSON.stringify({startDate, endDate})}`);
-    return parseReportData(res.data);
+    const res = await api.get(`/api/reports/all-companies/${JSON.stringify({ startDate, endDate })}`);
+    return res.data.map((row: any) => ({ ...row, lastPrintedDate: parseResDate(row.lastPrintedDate) }));
   } catch (error) {
     console.error(error);
+    return [];
   }
 };
 

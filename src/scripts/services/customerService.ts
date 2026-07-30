@@ -185,6 +185,16 @@ export const addCustomerContact = async (customerId: number, name: string): Prom
   }
 };
 
+// === PATCH routes === //
+
+export const editCustomerLastPrintedLabel = async (id: number, lastPrintedLabel: Date) => {
+  try {
+    await api.patch('/api/customers/last-printed-label', { id, lastPrintedLabel });
+  } catch (error) {
+    console.error(error);
+    alert(`Error in [editCustomerLastPrintedLabel] ${error}`);
+  }
+};
 
 // === PUT routes === //
 
