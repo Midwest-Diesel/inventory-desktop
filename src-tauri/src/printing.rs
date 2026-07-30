@@ -234,7 +234,7 @@ pub async fn print_shipping_label(image_data: String) -> Result<(), String> {
     let printer = if printers.contains(&SHIPPING_LABEL_PRINTER.to_string()) {
       SHIPPING_LABEL_PRINTER.to_string()
     } else {
-      format!("\\\\{}\\{}", FRONT_DESK_COMPUTER, SHIPPING_LABEL_PRINTER)
+      format!("\\\\{}\\{}", FRONT_DESK_COMPUTER, SHIPPING_LABEL_PRINTER).to_string()
     };
 
     let img = ImageReader::new(Cursor::new(&data))
@@ -277,7 +277,7 @@ pub async fn print_cc_label(image_data: String) -> Result<(), String> {
     let printer = if printers.contains(&FRONT_DESK_CC_PRINTER.to_string()) {
       FRONT_DESK_CC_PRINTER.to_string()
     } else {
-      format!("\\\\{}\\{}", FRONT_DESK_COMPUTER, FRONT_DESK_CC_PRINTER)
+      format!("\\\\{}\\{}", FRONT_DESK_COMPUTER, FRONT_DESK_CC_PRINTER).to_string()
     };
 
     let img = ImageReader::new(Cursor::new(&data))
@@ -501,7 +501,7 @@ pub async fn print_shipping_handwritten(image_data: String) -> Result<(), String
     let printer = if printers.contains(&SHOP_PRINTER.to_string()) {
       SHOP_PRINTER.to_string()
     } else {
-      format!("\\\\{}\\{}", SHOP_COMPUTER, SHOP_PRINTER)
+      format!("\\\\{}\\{}", SHOP_COMPUTER, SHOP_PRINTER).to_string()
     };
 
     let img = ImageReader::new(Cursor::new(&data))
@@ -847,7 +847,7 @@ pub async fn print_part_tag(image_data: String) -> Result<(), String> {
     let printer = if printers.contains(&PART_TAG_PRINTER.to_string()) {
       PART_TAG_PRINTER.to_string()
     } else {
-      format!("\\\\{}\\{}", PART_TAG_COMPUTER, PART_TAG_PRINTER)
+      format!("\\\\{}\\{}", PART_TAG_COMPUTER, PART_TAG_PRINTER).to_string()
     };
 
     let img = ImageReader::new(Cursor::new(&data))
@@ -880,12 +880,12 @@ pub async fn print_part_tag(image_data: String) -> Result<(), String> {
 pub async fn print_inj_part_tag(image_data: String) -> Result<(), String> {
   let res = tauri::async_runtime::spawn_blocking(move || {
     let data = BASE64_STANDARD.decode(image_data.split(',').nth(1).unwrap()).map_err(|e| e.to_string())?;
-    let file_path = "C:/mwd/scripts/screenshots/part_tag.png";
+    let file_path = "C:/mwd/scripts/screenshots/inj_part_tag.png";
     let printers = get_available_printers();
     let printer = if printers.contains(&PART_TAG_PRINTER.to_string()) {
       PART_TAG_PRINTER.to_string()
     } else {
-      format!("\\\\{}\\{}", PART_TAG_COMPUTER, PART_TAG_PRINTER)
+      format!("\\\\{}\\{}", PART_TAG_COMPUTER, PART_TAG_PRINTER).to_string()
     };
 
     let img = ImageReader::new(Cursor::new(&data))
@@ -894,27 +894,18 @@ pub async fn print_inj_part_tag(image_data: String) -> Result<(), String> {
       .decode()
       .map_err(|e| e.to_string())?;
 
-    let upscaled_img = image::imageops::resize(
-      &img,
-      img.width() * 2,
-      img.height() * 2,
-      FilterType::Lanczos3
-    );
-
     {
       let mut file = File::create(file_path).map_err(|e| e.to_string())?;
-      upscaled_img.write_to(&mut file, ImageOutputFormat::Png).map_err(|e| e.to_string())?;
+      img.write_to(&mut file, ImageOutputFormat::Png).map_err(|e| e.to_string())?;
     }
 
     if let Ok(val) = env::var("DISABLE_PRINTING") {
       if val == "TRUE" { return Ok(()) }
     }
 
-    Command::new("mspaint")
-      .current_dir("C:/mwd/scripts/screenshots")
-      .args([file_path, "/pt", &printer])
-      .output()
-      .map_err(|e| e.to_string())?;
+    unsafe {
+      print_image(&printer, &img)?;
+    }
 
     Ok(())
   }).await;
@@ -930,7 +921,7 @@ pub async fn print_engine_tag(image_data: String) -> Result<(), String> {
     let printer = if printers.contains(&PART_TAG_PRINTER.to_string()) {
       PART_TAG_PRINTER.to_string()
     } else {
-      format!("\\\\{}\\{}", PART_TAG_COMPUTER, PART_TAG_PRINTER)
+      format!("\\\\{}\\{}", PART_TAG_COMPUTER, PART_TAG_PRINTER).to_string()
     };
 
     let img = ImageReader::new(Cursor::new(&data))
@@ -966,7 +957,7 @@ pub async fn print_engine_checklist(image_data: String) -> Result<(), String> {
     let printer = if printers.contains(&PART_TAG_PRINTER.to_string()) {
       PART_TAG_PRINTER.to_string()
     } else {
-      format!("\\\\{}\\{}", PART_TAG_COMPUTER, PART_TAG_PRINTER)
+      format!("\\\\{}\\{}", PART_TAG_COMPUTER, PART_TAG_PRINTER).to_string()
     };
 
     let img = ImageReader::new(Cursor::new(&data))
