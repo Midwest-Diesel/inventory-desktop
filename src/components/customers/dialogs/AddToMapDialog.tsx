@@ -11,11 +11,10 @@ interface Props {
   open: boolean
   setOpen: (open: boolean) => void
   customer: Customer
-  userId: number
 }
 
 
-export default function AddToMapDialog({ open, setOpen, customer, userId }: Props) {
+export default function AddToMapDialog({ open, setOpen, customer }: Props) {
   const [name, setName] = useState<string>(customer.company ?? '');
   const [address, setAddress] = useState<string>([customer.billToAddress, customer.billToCity, customer.billToState, customer.billToZip].filter(Boolean).join(', '));
   const [type, setType] = useState<MapLocationType>('customer');
@@ -28,21 +27,18 @@ export default function AddToMapDialog({ open, setOpen, customer, userId }: Prop
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    if (!await ask('Are you sure?')) return;
-    const location = (await getGeoLocation(address))[0];
-    const loc = {
+    if (!await ask('Add new map location?')) return;
+    
+    const res = await getGeoLocation(address);
+    if (!res) return;
+    const location = {
       name,
-      address: location.formatted_address,
-      lat: location.geometry.location.lat,
-      lng: location.geometry.location.lng,
-      type,
-      salesmanId: userId,
+      address: res.formattedAddress,
+      lat: res.geometry.location.lat,
+      lng: res.geometry.location.lng,
       customerId: customer.id,
-      legacyId: null,
-      date: new Date(),
-      notes
     };
-    await addMapLocation(loc);
+    await addMapLocation(location);
     setOpen(false);
   };
 

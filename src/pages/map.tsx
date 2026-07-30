@@ -206,7 +206,13 @@ export default function ImportantCustomersMap() {
     const geocoder = new window.google.maps.Geocoder();
     await geocoder.geocode({ location }, async (results, status) => {
       if (status === 'OK' && results?.[0]) {
-        await addMapLocation({ name, customerId });
+        await addMapLocation({
+          name,
+          customerId,
+          address: results[0].formatted_address,
+          lat: results[0].geometry.location.lat(),
+          lng: results[0].geometry.location.lng(),
+        });
       } else {
         console.error(`Geocoder failed due to: ${status}`);
       }
@@ -287,7 +293,10 @@ export default function ImportantCustomersMap() {
 
   const handleFixCoords = async () => {
     const res = await getBrokenLocations();
-    if (res.length === 0) return;
+    if (res.length === 0) {
+      alert('Nothing to fix');
+      return;
+    }
     const validLocations = res.filter((item: MapLocation) => item.address);
     const geoLocations = await Promise.all(
       validLocations.map((item: MapLocation) => getGeoLocation(item.address).then((data) => data))

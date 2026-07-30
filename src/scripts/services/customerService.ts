@@ -1,6 +1,6 @@
 import api from "../config/axios";
 import { parseResDate } from "../tools/stringUtils";
-import { addMapLocation } from "./mapService";
+import { addMapLocation, getGeoLocation } from "./mapService";
 
 interface CustomerSearch {
   name: string
@@ -177,9 +177,15 @@ export const addCustomer = async (customer: string): Promise<number | null> => {
     const newCustomer = await getCustomerById(id);
     if (!newCustomer) return null;
 
+    const address = [newCustomer.billToAddress, newCustomer.billToCity, newCustomer.billToState, newCustomer.billToZip].filter(Boolean).join(', ');
+    const geoLocation = await getGeoLocation(address);
+    if (!geoLocation) return null;
     const mapLocation = {
       name: newCustomer.company ?? '',
-      customerId: newCustomer.id
+      customerId: newCustomer.id,
+      address: geoLocation.formattedAddress,
+      lat: geoLocation.geometry.location.lat,
+      lng: geoLocation.geometry.location.lng,
     };
     await addMapLocation(mapLocation);
 

@@ -122,7 +122,6 @@ export default function Customer() {
           open={addLocDialogOpen}
           setOpen={setAddLocDialogOpen}
           customer={customer}
-          userId={user.id}
         />
       }
 

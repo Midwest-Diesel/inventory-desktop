@@ -4,6 +4,9 @@ import { parseResDate } from "../tools/stringUtils";
 interface NewMapLocation {
   name: string
   customerId: number
+  address: string
+  lat: number
+  lng: number
 }
 
 interface EditMapLocation {
@@ -88,9 +91,9 @@ export const getGeoLocation = async (address: string | null): Promise<GeoLocatio
 
 // === POST routes === //
 
-export const addMapLocation = async (loc: NewMapLocation) => {
+export const addMapLocation = async (location: NewMapLocation) => {
   try {
-    await api.post('/api/map', loc);
+    await api.post('/api/map', location);
   } catch (error) {
     console.error(error);
   }

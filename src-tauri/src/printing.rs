@@ -1,4 +1,4 @@
-use image::{DynamicImage, ImageOutputFormat, imageops::{FilterType, rotate90}, io::Reader as ImageReader};
+use image::{DynamicImage, ImageOutputFormat, imageops::rotate90, io::Reader as ImageReader};
 use base64::{engine::general_purpose::STANDARD as BASE64_STANDARD, Engine};
 use serde::{Deserialize, Serialize};
 use std::{env, ffi::OsStr, fs::{File, write}, io::Cursor, iter::once, os::windows::ffi::OsStrExt, ptr::{null, null_mut}};
