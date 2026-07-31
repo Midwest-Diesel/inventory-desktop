@@ -89,7 +89,8 @@ export default function TakeoffsDialog({ open, setOpen, item, unitPrice, refetch
       return;
     }
 
-    const isPartGroup = part.qty > 1;
+    const search = await searchParts({ stockNum: part.stockNum ?? '', showSoldParts: true }, 1, 999);
+    const isPartGroup = part.qty > 1 || search.rows.length > 1;
     const costMatches = formatCurrency(Number(part.purchasePrice)) === formatCurrency(Number(item.cost));
 
     if (!isPartGroup && !costMatches) {
