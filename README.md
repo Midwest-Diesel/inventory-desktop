@@ -56,3 +56,4 @@ The DB schema is not automatically synced with prod. You will have to run `npm r
 ## SCSS Bundling
 
 Any time you make a change to the file system under `src/styles`, it will automatically update the bundle.scss file. This behavior can be configured in the scss-bundling.config.json file located in root.
+
