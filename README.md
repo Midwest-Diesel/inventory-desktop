@@ -1,3 +1,5 @@
+[![Maintainability](https://qlty.sh/gh/Midwest-Diesel/projects/inventory-desktop/maintainability.svg)](https://qlty.sh/gh/Midwest-Diesel/projects/inventory-desktop)
+
 # Inventory
 This application is currently only compatible with windows.
 
@@ -50,6 +52,10 @@ Make sure you have run `npm run dev:test` to host the test client.
 When running either integration or E2E tests, a new Docker container will start up for the test DB.
 You can edit the initial data being inserted into the DB by modifying the `/src/tests/db/init.sql` file.
 The DB schema is not automatically synced with prod. You will have to run `npm run db:reset:test` on the server whenever you make a change to the DB schema in prod.
+
+## Qlty
+If you don't already have Qlty installed on your system run `powershell -c "iwr https://qlty.sh | iex"`.
+Test with `qlty --version`.
 
 ## SCSS Bundling
 
