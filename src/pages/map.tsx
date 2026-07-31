@@ -211,7 +211,7 @@ export default function ImportantCustomersMap() {
           customerId,
           address: results[0].formatted_address,
           lat: results[0].geometry.location.lat(),
-          lng: results[0].geometry.location.lng(),
+          lng: results[0].geometry.location.lng()
         });
       } else {
         console.error(`Geocoder failed due to: ${status}`);

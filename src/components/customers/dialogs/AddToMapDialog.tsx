@@ -36,7 +36,7 @@ export default function AddToMapDialog({ open, setOpen, customer }: Props) {
       address: res.formattedAddress,
       lat: res.geometry.location.lat,
       lng: res.geometry.location.lng,
-      customerId: customer.id,
+      customerId: customer.id
     };
     await addMapLocation(location);
     setOpen(false);

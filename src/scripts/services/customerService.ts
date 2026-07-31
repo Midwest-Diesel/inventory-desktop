@@ -185,7 +185,7 @@ export const addCustomer = async (customer: string): Promise<number | null> => {
       customerId: newCustomer.id,
       address: geoLocation.formattedAddress,
       lat: geoLocation.geometry.location.lat,
-      lng: geoLocation.geometry.location.lng,
+      lng: geoLocation.geometry.location.lng
     };
     await addMapLocation(mapLocation);
 
