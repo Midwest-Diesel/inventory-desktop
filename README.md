@@ -53,10 +53,6 @@ When running either integration or E2E tests, a new Docker container will start 
 You can edit the initial data being inserted into the DB by modifying the `/src/tests/db/init.sql` file.
 The DB schema is not automatically synced with prod. You will have to run `npm run db:reset:test` on the server whenever you make a change to the DB schema in prod.
 
-## Qlty
-If you don't already have Qlty installed on your system run `powershell -c "iwr https://qlty.sh | iex"`.
-Test with `qlty --version`.
-
 ## SCSS Bundling
 
 Any time you make a change to the file system under `src/styles`, it will automatically update the bundle.scss file. This behavior can be configured in the scss-bundling.config.json file located in root.
