@@ -322,7 +322,7 @@ pub fn email_po_received(args: EmailPOReceivedArgs) {
   send_email(SendEmailArgs {
     body: format!("PO# {} purchased from {} has received the following items:<br />{}", args.po_num, args.purchased_from, body.replace("\"", "\"\"")),
     recipients: vec![args.email],
-    cc: vec![],
+    cc: vec!["andy@midwestdiesel.com".to_string()],
     attachments: vec![],
     subject: format!("PO #{} has been received!", args.po_num)
   });
