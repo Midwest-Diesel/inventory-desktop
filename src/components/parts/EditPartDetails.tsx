@@ -4,7 +4,7 @@ import Grid from "@/components/library/grid/Grid";
 import GridItem from "@/components/library/grid/GridItem";
 import { FormEvent, useState } from "react";
 import Input from "@/components/library/Input";
-import { addPartCostIn, addToPartQtyHistory, deletePartCostIn, editPartCostIn, getPartInfoByPartNum, getPartById, editWeightDims, editPartsInfoPricing, editPart, editCatDirectPricing } from "@/scripts/services/partsService";
+import { addPartCostIn, addToPartQtyHistory, deletePartCostIn, editPartCostIn, getPartInfoByPartNum, getPartById, editWeightDims, editPartsInfoPricing, editPart, editCatDirectPricing, editPartsInfoSalesNotes } from "@/scripts/services/partsService";
 import Table from "@/components/library/Table";
 import { addEngineCostOut, deleteEngineCostOut, editEngineCostOut } from "@/scripts/services/enginesService";
 import { userAtom } from "@/scripts/atoms/state";
@@ -58,7 +58,7 @@ export default function EditPartDetails({ part, setPart, setIsEditingPart, partC
   const [catDirectPrice, setCatDirectPrice] = useState<string | null>(part.catDirectPrice?.toString() ?? '');
   const [altParts, setAltParts] = useState<string[]>(part.altParts);
   const [weightDims, setWeightDims] = useState<WeightDims[]>(parseWeightDims(part.weightDims));
-  const [specialNotes, setSpecialNotes] = useState<string>(part.specialNotes ?? '');
+  const [salesNotes, setSalesNotes] = useState<string>(part.salesNotes ?? '');
   const [coreFam, setCoreFamily] = useState<string>(part.coreFam ?? '');
   const [soldToDate, setSoldToDate] = useState<Date | null>(part.soldToDate);
   const [qtySold, setQtySold] = useState<number | null>(part.qtySold);
@@ -110,7 +110,7 @@ export default function EditPartDetails({ part, setPart, setIsEditingPart, partC
       catDirectPrice,
       engineNum: engineStockNum,
       altParts,
-      specialNotes,
+      salesNotes,
       coreFam,
       soldToDate,
       qtySold: Number(qtySold),
@@ -132,6 +132,7 @@ export default function EditPartDetails({ part, setPart, setIsEditingPart, partC
     await editPart(newPart);
     await handlePartPricing(newPart);
     await handleCatDirectPricing(newPart);
+    await handleSalesNotes(newPart);
     await editPartCostInRows();
     await addNewPartCostInRows();
 
@@ -162,6 +163,11 @@ export default function EditPartDetails({ part, setPart, setIsEditingPart, partC
   const handleCatDirectPricing = async (newPart: Part) => {
     if (part.catDirectPrice?.toString() === newPart.catDirectPrice?.toString()) return;
     await editCatDirectPricing(altParts, Number(newPart.catDirectPrice));
+  };
+
+  const handleSalesNotes = async (newPart: Part) => {
+    if (part.salesNotes === newPart.salesNotes) return;
+    await editPartsInfoSalesNotes(altParts, newPart.salesNotes);
   };
 
   const editPartCostInRows = async () => {
@@ -571,8 +577,8 @@ export default function EditPartDetails({ part, setPart, setIsEditingPart, partC
                       variant={['label-stack', 'label-bold']}
                       rows={5}
                       cols={100}
-                      value={specialNotes}
-                      onChange={(e: any) => setSpecialNotes(e.target.value)}
+                      value={salesNotes}
+                      onChange={(e: any) => setSalesNotes(e.target.value)}
                     />
                   </td>
                 </tr>

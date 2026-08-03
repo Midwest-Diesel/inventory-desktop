@@ -229,7 +229,7 @@ export default function OfficeEngineAddOnRow({ addOn, onSave }: Props) {
                 <td>
                   <Select
                     style={{ width: '100%' }}
-                    value={addOn.oilPan}
+                    value={addOn.oilPan ?? ''}
                     onChange={(e) => handleEditAddOn({ ...addOn, oilPan: e.target.value as any })}
                   >
                     <option value="">-- OIL PAN --</option>

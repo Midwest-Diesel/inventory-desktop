@@ -228,7 +228,7 @@ export default function ShopEngineAddOnRow({ addOn, onSave }: Props) {
                 <td>
                   <Select
                     style={{ width: '100%' }}
-                    value={addOn.oilPan}
+                    value={addOn.oilPan ?? ''}
                     onChange={(e: any) => handleEditAddOn({ ...addOn, oilPan: e.target.value })}
                   >
                     <option value="">-- OIL PAN --</option>

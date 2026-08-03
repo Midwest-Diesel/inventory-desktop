@@ -368,7 +368,7 @@ export const editPartStockNum = async (partId: number, stockNum: string) => {
 
 export const editWeightDims = async (partNum: string, weightDims: string) => {
   try {
-    await api.patch('/api/parts/weight-dims', { partNum, weightDims });
+    await api.patch('/api/parts/parts-info/weight-dims', { partNum, weightDims });
   } catch (error) {
     console.error(error);
     alert(`Error in [editWeightDims] ${error}`);
@@ -393,9 +393,18 @@ export const editPartsInfoPrefix = async (partNum: string, prefix: string | null
   }
 };
 
+export const editPartsInfoSalesNotes = async (altParts: string[], salesNotes: string | null) => {
+  try {
+    await api.patch('/api/parts/parts-info/sales-notes', { altParts, salesNotes });
+  } catch (error) {
+    console.error(error);
+    alert(`Error in [editPartsInfoSalesNotes] ${error}`);
+  }
+};
+
 export const editPartsInfoPricing = async (altParts: string[], pricing: PartPricing) => {
   try {
-    await api.patch('/api/parts/part-pricing', { altParts, pricing });
+    await api.patch('/api/parts/parts-info/part-pricing', { altParts, pricing });
   } catch (error) {
     console.error(error);
     alert(`Error in [editPartsInfoPricing] ${error}`);
@@ -404,7 +413,7 @@ export const editPartsInfoPricing = async (altParts: string[], pricing: PartPric
 
 export const editCatDirectPricing = async (altParts: string[], price: number) => {
   try {
-    await api.patch('/api/parts/cat-direct-pricing', { altParts, price });
+    await api.patch('/api/parts/parts-info/cat-direct-pricing', { altParts, price });
   } catch (error) {
     console.error(error);
     alert(`Error in [editCatDirectPricing] ${error}`);

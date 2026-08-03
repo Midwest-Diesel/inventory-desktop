@@ -419,7 +419,7 @@ export default function PartDetails() {
                   <tbody>
                     <tr style={{ height: '4rem' }}>
                       <th>Sales Notes</th>
-                      <td>{ part.specialNotes }</td>
+                      <td>{ part.salesNotes }</td>
                     </tr>
                   </tbody>
                 </Table>

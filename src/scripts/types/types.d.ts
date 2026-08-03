@@ -410,7 +410,7 @@ type EngineAddOn = {
   notes: string | null
   ecm: boolean
   jakeBrake: boolean
-  oilPan: '' | 'FS' | 'RS' | 'CS'
+  oilPan: null | 'FS' | 'RS' | 'CS'
   engineCostInCost: number | null
   engineCostInInvoiceNum: string | null
   engineCostInCostType: CostType | null
@@ -508,6 +508,7 @@ type PartInfo = {
   fleetPrice: number | null
   remanFleetPrice: number | null
   corePrice: number | null
+  salesNotes: string | null
 };
 
 type Part = {
@@ -547,7 +548,7 @@ type Part = {
   imageExists: boolean
   snImageExists: boolean
   weightDims: string | null
-  specialNotes: string | null
+  salesNotes: string | null
   coreFam: string | null
   serialNum?: string
   horsePower?: string
