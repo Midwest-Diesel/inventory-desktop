@@ -1,10 +1,11 @@
 use serde::{Deserialize, Serialize};
 use base64::{engine::general_purpose::STANDARD as BASE64_STANDARD, Engine};
+use std::path::Path;
 use std::{io::BufWriter};
 use std::fs::{write, File};
 use std::io::{Write};
 use std::process::{Command};
-use crate::reset_end_of_day_queue;
+use crate::{find_invoice_archive, reset_end_of_day_queue};
 
 #[derive(Deserialize, Serialize)]
 pub struct FilesArgs {
@@ -330,12 +331,39 @@ pub fn email_po_received(args: EmailPOReceivedArgs) {
 
 #[tauri::command]
 pub fn email_end_of_day(args: EmailEndOfDayArgs) {
-  reset_end_of_day_queue(args.day, args.month, args.year);
+  reset_end_of_day_queue(args.day.clone(), args.month.clone(), args.year.clone());
 
   let queue_dir = if cfg!(debug_assertions) {
     "\\\\MWD1-SERVER\\Server\\InvoiceScans\\Testing\\Queue"
   } else {
     "\\\\MWD1-SERVER\\Server\\InvoiceScans\\Queue"
+  };
+
+  let queue_path = format!("{}\\{}.pdf", queue_dir, args.id);
+  let filepath = if Path::new(&queue_path).exists() {
+    queue_path
+  } else {
+    let archive_root = "\\\\MWD1-SERVER\\Server\\InvoiceScans\\Archives";
+    let expected = format!(
+      "{}\\{}\\{}\\{}\\{}.pdf",
+      archive_root,
+      &args.year,
+      &args.month,
+      &args.day,
+      args.id
+    );
+
+    if Path::new(&expected).exists() {
+      expected
+    } else {
+      find_invoice_archive(
+        archive_root,
+        &args.year,
+        &format!("{}.pdf", args.id),
+      )
+      .map(|p| p.to_string_lossy().to_string())
+      .unwrap_or(expected)
+    }
   };
 
   let body = format!(
@@ -392,7 +420,7 @@ pub fn email_end_of_day(args: EmailEndOfDayArgs) {
     args.date,
     body,
     args.email,
-    format!("{}\\{}.pdf", queue_dir, args.id)
+    filepath
   );
 
   let vbs_path = "C:/mwd/scripts/email_end_of_day.vbs";
@@ -403,10 +431,29 @@ pub fn email_end_of_day(args: EmailEndOfDayArgs) {
   cmd.output().unwrap();
 }
 
-
 #[tauri::command]
 pub fn email_karmak_invoice(args: EmailEndOfDayArgs) {
-  let archive_dir = format!("\\\\MWD1-SERVER\\Server\\InvoiceScans\\Archives\\{}\\{}\\{}", args.year, args.month, args.day);
+  let archive_root = "\\\\MWD1-SERVER\\Server\\InvoiceScans\\Archives";
+  let expected = format!(
+    "{}\\{}\\{}\\{}\\{}.pdf",
+    archive_root,
+    args.year,
+    args.month,
+    args.day,
+    args.id
+  );
+
+  let filepath = if Path::new(&expected).exists() {
+    expected
+  } else {
+    find_invoice_archive(
+      archive_root,
+      &args.year,
+      &format!("{}.pdf", args.id),
+    )
+    .map(|p| p.to_string_lossy().to_string())
+    .unwrap_or(expected)
+  };
 
   let body = format!(
     "\"<h2>{}</h2>\" & vbCrLf & _\n\
@@ -462,7 +509,7 @@ pub fn email_karmak_invoice(args: EmailEndOfDayArgs) {
     args.date,
     body,
     args.email,
-    format!("{}\\{}.pdf", archive_dir, args.id)
+    filepath
   );
 
   let vbs_path = "C:/mwd/scripts/email_karmak_invoice.vbs";

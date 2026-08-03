@@ -162,7 +162,6 @@ describe('Handwrittens Integration', () => {
                 sellingPrice: null,
                 soldTo: null,
                 soldToDate: null,
-                salesNotes: null,
                 stockNum: 'UP9432'
               },
               partId: 1,

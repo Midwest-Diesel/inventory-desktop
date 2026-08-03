@@ -19,7 +19,7 @@ use std::fs::{self, write, File, remove_file, create_dir_all};
 use std::io::{self, Write, copy};
 use std::process::{Command};
 use reqwest::Client;
-use std::path::{Path};
+use std::path::{Path, PathBuf};
 use zip::read::ZipArchive;
 use url::Url;
 use crate::printing::{
@@ -189,6 +189,7 @@ async fn main() {
       move_queue_to_archives,
       email_karmak_invoice,
       view_file,
+      view_karmak_invoice,
       save_pdf,
       email_po_received,
       email_fast_track_inventory,
@@ -761,10 +762,57 @@ fn copy_dir_contents(src: &Path, dst: &Path) -> io::Result<()> {
   Ok(())
 }
 
+pub fn find_invoice_archive(base_dir: &str, year: &str, filename: &str) -> Option<PathBuf> {
+  let year_dir = Path::new(base_dir).join(year);
+
+  fn search_dir(dir: &Path, filename: &str) -> Option<PathBuf> {
+    if let Ok(entries) = fs::read_dir(dir) {
+      for entry in entries.flatten() {
+        let path = entry.path();
+
+        if path.is_dir() {
+          if let Some(found) = search_dir(&path, filename) {
+            return Some(found);
+          }
+        } else if path.file_name().and_then(|x| x.to_str()) == Some(filename) {
+          return Some(path);
+        }
+      }
+    }
+
+    None
+  }
+
+  search_dir(&year_dir, filename)
+}
+
 #[tauri::command]
 fn view_file(app_handle: AppHandle, filepath: String) -> Result<(), String> {
   shell::open(&app_handle.shell_scope(), filepath, None)
     .map_err(|e| format!("Failed to open: {}", e))
+}
+
+#[tauri::command]
+fn view_karmak_invoice(app_handle: AppHandle, year: String, month: String, day: String, id: i32) {
+  let archive_root = "\\\\MWD1-SERVER\\Server\\InvoiceScans\\Archives";
+  let expected = format!(
+    "{}\\{}\\{}\\{}\\{}.pdf",
+    archive_root,
+    year,
+    month,
+    day,
+    id
+  );
+
+  let filepath = if Path::new(&expected).exists() {
+    expected
+  } else {
+    find_invoice_archive(archive_root, &year, &format!("{}.pdf", id))
+      .map(|p| p.to_string_lossy().to_string())
+      .unwrap_or(expected)
+  };
+
+  let _ = view_file(app_handle, filepath);
 }
 
 #[tauri::command]
