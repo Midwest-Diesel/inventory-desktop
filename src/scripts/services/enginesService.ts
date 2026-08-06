@@ -60,15 +60,6 @@ export const getAllEngineModels = async (): Promise<string[]> => {
   }
 };
 
-export const getAutofillEngine = async (engineNum: number) => {
-  try {
-    const res = await api.get(`/api/engines/autofill/${engineNum}`);
-    return parseEngineRes(res.data)[0];
-  } catch (error) {
-    console.error(error);
-  }
-};
-
 export const getEnginesByStatus = async (status: EngineStatus | null, page: number, limit: number): Promise<{ pageCount: number, rows: Engine[] }> => {
   try {
     const params = { status, offset: (page - 1) * limit, limit };
@@ -122,12 +113,13 @@ export const getEngineCostRemaining = async (stockNum: number): Promise<number> 
   }
 };
 
-export const getEngineProfit = async (stockNum: number) => {
+export const getEngineProfit = async (stockNum: number): Promise<EngineProfit[]> => {
   try {
     const res = await api.get(`/api/engines/profit/${stockNum}`);
     return res.data;
   } catch (error) {
     console.error(error);
+    return [];
   }
 };
 

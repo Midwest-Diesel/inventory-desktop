@@ -463,6 +463,11 @@ type SalesInfoSales = {
   soldBy: string | null
 };
 
+type SalesInfoSalesByYear = {
+  soldToDate: Date
+  qtySold: number
+};
+
 type SalesInfoQuote = {
   id: number
   soldBy: string
@@ -474,7 +479,7 @@ type SalesInfoQuote = {
 };
 
 type SalesInfo = {
-  salesByYearList: SalesInfoSales[]
+  salesByYearList: SalesInfoSalesByYear[]
   sales: SalesInfoSales[]
   quotes: SalesInfoQuote[]
   counters: {
