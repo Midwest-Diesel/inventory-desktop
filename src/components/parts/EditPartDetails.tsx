@@ -4,18 +4,18 @@ import Grid from "@/components/library/grid/Grid";
 import GridItem from "@/components/library/grid/GridItem";
 import { FormEvent, useState } from "react";
 import Input from "@/components/library/Input";
-import { addPartCostIn, addToPartQtyHistory, deletePartCostIn, editPartCostIn, getPartInfoByPartNum, getPartById, editWeightDims, editPartsInfoPricing, editPart, editCatDirectPricing, editPartsInfoSalesNotes } from "@/scripts/services/partsService";
+import { addPartCostIn, addToPartQtyHistory, deletePartCostIn, editPartCostIn, getPartInfoByPartNum, getPartById, editWeightDims, editPartsInfoPricing, editPart, editCatDirectPricing, editPartsInfoSalesNotes, addPartInfo, editAltParts } from "@/scripts/services/partsService";
 import Table from "@/components/library/Table";
 import { addEngineCostOut, deleteEngineCostOut, editEngineCostOut } from "@/scripts/services/enginesService";
 import { userAtom } from "@/scripts/atoms/state";
 import { useAtom } from "jotai";
 import { usePreventNavigation } from "@/hooks/usePreventNavigation";
 import Loading from "@/components/library/Loading";
-import { ask } from "@/scripts/config/tauri";
+import { ask, confirm } from "@/scripts/config/tauri";
 import Select from "@/components/library/select/Select";
 import CustomerDropdown from "@/components/library/dropdown/CustomerDropdown";
 import TextArea from "@/components/library/TextArea";
-import { promptAddAltParts, promptRemoveAltParts } from "@/scripts/logic/parts";
+import { addAltParts, promptAddAltParts, promptRemoveAltParts } from "@/scripts/logic/parts";
 import InputDropdown from "../library/InputDropdown";
 import { useQuery } from "@tanstack/react-query";
 import { getVendors } from "@/scripts/services/vendorsService";
@@ -84,6 +84,12 @@ export default function EditPartDetails({ part, setPart, setIsEditingPart, partC
     e.preventDefault();
     if (!part.altParts.includes(partNum) && !await ask('This partNum doesn\'t exist in altParts. Are you sure you want to continue?')) return;
     if (!changesSaved && !await ask('Are you sure you want to save these changes?')) return;
+
+    if (partNum !== part.partNum) {
+      const result = await handlePartNumberNotExist();
+      if (!result) return;
+    }
+
     setChangesSaved(false);
     const profitMargin = Number(sellingPrice) - Number(purchasePrice);
     const newPart = {
@@ -143,6 +149,39 @@ export default function EditPartDetails({ part, setPart, setIsEditingPart, partC
     }
     setPart(res);
     setIsEditingPart(false);
+  };
+
+  // Creates a new row on the parts_info table if this partNum is changed to something not previously in the table
+  const handlePartNumberNotExist = async (): Promise<boolean> => {
+    const partInfo = await getPartInfoByPartNum(partNum);
+    if (partInfo) return true;
+    if (!await confirm(`Part number ${partNum} doesn\'t exist yet. A new part number will be created.`)) return false;
+
+    const oldPartInfo = await getPartInfoByPartNum(part.partNum);
+    if (!oldPartInfo) {
+      alert('Failed to clone part info.');
+      return false;
+    }
+
+    const newPartInfo = {
+      partNum,
+      desc: oldPartInfo.desc,
+      altParts: oldPartInfo.altParts,
+      weightDims: oldPartInfo.weightDims,
+      prefix: oldPartInfo.prefix,
+      listPrice: Number(oldPartInfo.listPrice),
+      remanListPrice: Number(oldPartInfo.remanListPrice),
+      fleetPrice: Number(oldPartInfo.fleetPrice),
+      remanFleetPrice: Number(oldPartInfo.remanFleetPrice),
+      corePrice: Number(oldPartInfo.corePrice),
+      salesNotes: oldPartInfo.salesNotes,
+      priceLastUpdated: oldPartInfo.priceLastUpdated,
+      catDirectPrice: Number(oldPartInfo.catDirectPrice),
+      catDirectLastUpdated: oldPartInfo.catDirectLastUpdated
+    };
+    await addPartInfo(newPartInfo);
+    await addAltParts(partNum, [partNum, ...part.altParts]);
+    return true;
   };
 
   const handlePartPricing = async (newPart: Part) => {

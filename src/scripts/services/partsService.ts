@@ -12,6 +12,23 @@ interface PartPricing {
   corePrice: number | null
 }
 
+interface NewPartInfo {
+  partNum: string
+  desc: string
+  altParts: string
+  weightDims: string | null
+  prefix: string | null
+  listPrice: number
+  remanListPrice: number
+  fleetPrice: number
+  remanFleetPrice: number
+  corePrice: number
+  salesNotes: string | null
+  priceLastUpdated: Date | null
+  catDirectPrice: number
+  catDirectLastUpdated: Date | null
+}
+
 
 const parsePartsData = async (parts: any) => {
   const partsWithImages = await Promise.all(parts.map(async (part: any) => {
@@ -319,6 +336,15 @@ export const addPart = async (part: Part, partInfoExists: boolean): Promise<numb
     console.error(error);
     alert(`Error in [addPart] ${error}`);
     return null;
+  }
+};
+
+export const addPartInfo = async (partInfo: NewPartInfo) => {
+  try {
+    await api.post('/api/parts/parts-info', partInfo);
+  } catch (error) {
+    console.error(error);
+    alert(`Error in [addPartInfo] ${error}`);
   }
 };
 

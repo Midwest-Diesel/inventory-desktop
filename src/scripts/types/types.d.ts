@@ -514,6 +514,9 @@ type PartInfo = {
   remanFleetPrice: number | null
   corePrice: number | null
   salesNotes: string | null
+  priceLastUpdated: Date | null
+  catDirectPrice: number | null
+  catDirectLastUpdated: Date | null
 };
 
 type Part = {
