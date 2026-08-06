@@ -776,7 +776,7 @@ export default function EditHandwrittenDetails({
       {accountingProcessOpen &&
         <ModalList onClose={onAccountingProcessClose}>
           <PromotionalModal
-            open={isSentToAccounting && !handwritten.isBlindShipment && !handwritten.isNoPriceInvoice}
+            open={isSentToAccounting && !isBlindShipment && !isNoPriceInvoice}
             handwritten={handwritten}
             onAddPromotionals={onAddPromotionals}
           />
