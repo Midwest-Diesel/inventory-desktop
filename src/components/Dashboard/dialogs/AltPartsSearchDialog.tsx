@@ -113,7 +113,7 @@ export default function AltPartsSearchDialog({ open, setOpen, handleSearch, upda
           label="Alternate Part Number"
           variant={['small', 'thin', 'label-no-stack', 'label-space-between']}
           value={partNum.replaceAll(' ', '')}
-          onChange={(e: any) => setPartNum(`*${e.target.value.toUpperCase().replace('*', '')}`)}
+          onChange={(e: any) => setPartNum(`*${e.target.value.trim().toUpperCase().replace('*', '')}`)}
           ref={inputRef}
           data-testid="alt-search-part-num"
         />

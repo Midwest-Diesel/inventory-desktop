@@ -114,7 +114,7 @@ export default function PartsSearchDialog({ open, setOpen, handleSearch, updateS
           label="Part Number"
           variant={['small', 'thin', 'label-no-stack', 'label-space-between']}
           value={partNum.replaceAll(' ', '')}
-          onChange={(e: any) => setPartNum(e.target.value.toUpperCase())}
+          onChange={(e: any) => setPartNum(e.target.value.trim().toUpperCase())}
           ref={inputRef}
           data-testid="part-search-part-num"
         />

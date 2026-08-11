@@ -249,6 +249,7 @@ export default function EditPoDetails({ poData, setPo, setIsEditing, poItems, po
                     variant={['label-full-width']}
                     value={purchasedFrom}
                     onChange={(value) => handleChangeVendor(value)}
+                    maxHeight="40rem"
                   />
                 </td>
               </tr>

@@ -103,7 +103,11 @@ export default function PurchaseOrders() {
                   <tbody>
                     {purchaseOrders.rows.map((po: PO) => {
                       return (
-                        <tr key={po.id} onClick={() => setFocusedPurchaseOrder(po)} style={ focusedPurchaseOrder && po.id === focusedPurchaseOrder.id ? { border: 'solid 3px var(--yellow-2)' } : {} }>
+                        <tr
+                          key={po.id}
+                          onClick={() => setFocusedPurchaseOrder(po)}
+                          style={ focusedPurchaseOrder && po.id === focusedPurchaseOrder.id ? { border: 'solid 3px var(--yellow-2)' } : {} }
+                        >
                           <td><Link href={`/purchase-orders/${po.poNum}`} data-testid="po-num-link">{ po.poNum }</Link></td>
                           <td>{ formatDate(po.date) }</td>
                           <td>{ po.purchasedFrom }</td>
