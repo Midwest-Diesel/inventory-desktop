@@ -2,7 +2,7 @@ import Button from "@/components/library/Button";
 import Dialog from "@/components/library/Dialog";
 import Input from "@/components/library/Input";
 import { editHandwrittenChildTakeoffState, editHandwrittenItemTakeoffState, editHandwrittenItemPartId, getHandwrittenItemById } from "@/scripts/services/handwrittensService";
-import { addPart, addPartCostIn, addToPartQtyHistory, editPartCostIn, editPartStockNum, getPartById, getPartQty, handlePartTakeoff, searchAltParts, searchParts } from "@/scripts/services/partsService";
+import { addPart, addPartCostIn, addToPartQtyHistory, editPart, editPartCostIn, editPartRemarks, editPartStockNum, getPartById, getPartQty, handlePartTakeoff, searchAltParts, searchParts } from "@/scripts/services/partsService";
 import { getSurplusByCode, zeroAllSurplusItems } from "@/scripts/services/surplusService";
 import { formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
 import { FormEvent, RefObject, useEffect, useRef, useState } from "react";
@@ -11,6 +11,7 @@ import { ask, invoke } from "@/scripts/config/tauri";
 import { useNavState } from "@/hooks/useNavState";
 import { editEngineStatus, getEngineByStockNum } from "@/scripts/services/enginesService";
 import TakeoffPartSelectDialog from "./TakeoffPartSelectDialog";
+import { removeRemarksSoldText } from "@/scripts/logic/parts";
 
 interface Props {
   open: boolean
@@ -172,8 +173,8 @@ export default function TakeoffsDialog({ open, setOpen, item, unitPrice, refetch
           tabs.push([{ name: part.partNum, url: `/part/${newId}` }]);
         }
 
-        // Bring the user to the original part details so they can edit the remarks
-        if (await ask('There\'s still qty left over, do you want to edit the part remarks?\n\nThis will create a new tab.')) {
+        await editPartRemarks(part.id, removeRemarksSoldText(part.remarks));
+        if (await ask('There\'s still qty left over, sold remarks have automatically been removed. Do you want to view the part to verify?\n\nThis message will be removed in the next update.')) {
           tabs.push([{ name: part.stockNum!, url: `/part/${part.id}` }]);
         }
 

@@ -446,6 +446,16 @@ export const editCatDirectPricing = async (altParts: string[], price: number) =>
   }
 };
 
+export const editPartRemarks = async (id: number, remarks: string) => {
+  try {
+    await api.patch('/api/parts/remarks', { id, remarks });
+  } catch (error) {
+    console.error(error);
+    alert(`Error in [editPartRemarks] ${error}`);
+  }
+};
+
+
 // === PUT routes === //
 
 export const editPart = async (part: Part) => {
