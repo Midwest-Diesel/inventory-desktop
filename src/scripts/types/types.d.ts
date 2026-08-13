@@ -120,6 +120,7 @@ type Customer = {
   createdBy: string | null
   tags: Tag[]
   createdAt: Date | null
+  lastPrintedLabel: Date | null
 };
 
 type Quote = {

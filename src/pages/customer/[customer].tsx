@@ -12,7 +12,7 @@ import { useNavState } from "@/hooks/useNavState";
 import { selectedCustomerAtom, userAtom, vendorNamesAtom } from "@/scripts/atoms/state";
 import { deleteCustomer, getCustomerById, getCustomerEmails, getCustomerSalesHistory } from "@/scripts/services/customerService";
 import { deleteMapLocationByCustomer, getMapLocationFromCustomer } from "@/scripts/services/mapService";
-import { formatCurrency, formatPhone } from "@/scripts/tools/stringUtils";
+import { formatCurrency, formatDate, formatPhone } from "@/scripts/tools/stringUtils";
 import { useAtom } from "jotai";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -210,6 +210,11 @@ export default function Customer() {
                 />
               }
               <Button onClick={() => setHandwrittensModalOpen(true)}>View Handwrittens</Button>
+              {customer.lastPrintedLabel &&
+                <p style={{ alignContent: 'center', marginBottom: '0.2rem' }}>
+                  <strong>Mailed Marketing:</strong> { formatDate(customer.lastPrintedLabel) }
+                </p>
+              }
             </div>
           
             <Grid>
