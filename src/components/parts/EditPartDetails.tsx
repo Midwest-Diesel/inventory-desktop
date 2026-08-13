@@ -4,7 +4,7 @@ import Grid from "@/components/library/grid/Grid";
 import GridItem from "@/components/library/grid/GridItem";
 import { FormEvent, useState } from "react";
 import Input from "@/components/library/Input";
-import { addPartCostIn, addToPartQtyHistory, deletePartCostIn, editPartCostIn, getPartInfoByPartNum, getPartById, editWeightDims, editPartsInfoPricing, editPart, editCatDirectPricing, editPartsInfoSalesNotes, addPartInfo, editAltParts } from "@/scripts/services/partsService";
+import { addPartCostIn, addToPartQtyHistory, deletePartCostIn, editPartCostIn, getPartInfoByPartNum, getPartById, editWeightDims, editPartsInfoPricing, editPart, editCatDirectPricing, editPartsInfoSalesNotes, addPartInfo } from "@/scripts/services/partsService";
 import Table from "@/components/library/Table";
 import { addEngineCostOut, deleteEngineCostOut, editEngineCostOut } from "@/scripts/services/enginesService";
 import { userAtom } from "@/scripts/atoms/state";
@@ -155,7 +155,7 @@ export default function EditPartDetails({ part, setPart, setIsEditingPart, partC
   const handlePartNumberNotExist = async (): Promise<boolean> => {
     const partInfo = await getPartInfoByPartNum(partNum);
     if (partInfo) return true;
-    if (!await confirm(`Part number ${partNum} doesn\'t exist yet. A new part number will be created.`)) return false;
+    if (!await confirm(`Part number ${partNum} doesn't exist yet. A new part number will be created.`)) return false;
 
     const oldPartInfo = await getPartInfoByPartNum(part.partNum);
     if (!oldPartInfo) {

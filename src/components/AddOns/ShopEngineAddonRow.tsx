@@ -4,7 +4,7 @@ import Table from "../library/Table";
 import Select from "../library/select/Select";
 import { useEffect, useRef, useState } from "react";
 import Input from "../library/Input";
-import { getAllEngineModels } from "@/scripts/services/enginesService";
+import { getAllEngineModels, getEngineByStockNum } from "@/scripts/services/enginesService";
 import { deleteEngineAddOn, editEngineAddOnPrintStatus, editEngineAddOnUserEditing } from "@/scripts/services/engineAddOnsService";
 import { useAtom } from "jotai";
 import { engineAddOnsAtom, userAtom } from "@/scripts/atoms/state";
@@ -74,6 +74,11 @@ export default function ShopEngineAddOnRow({ addOn, onSave }: Props) {
   const handlePrint = async () => {
     if (!addOn.engineNum) {
       alert('Engine Num cannot be empty');
+      return;
+    }
+    const res = await getEngineByStockNum(addOn.engineNum);
+    if (res) {
+      alert('Engine is already inside inventory');
       return;
     }
 
