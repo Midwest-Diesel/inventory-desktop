@@ -1,0 +1,84 @@
+import { formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
+import Button from "../library/Button";
+import Table from "../library/Table";
+import Loading from "../library/Loading";
+import { useEffect, useState } from "react";
+import Link from "../library/Link";
+
+interface Props {
+  closeTable: () => void
+  data: SingleCompany[]
+}
+
+
+export default function SingleCompanyTable({ closeTable, data }: Props) {
+  const [total, setTotal] = useState(0);
+
+  useEffect(() => {
+    setTotal(data.reduce((acc, cur) => acc + cur.total, 0));
+  }, [data]);
+
+  const handleGoBack = () => {
+    closeTable();
+  };
+
+  const copyToClipboard = () => {
+    const rowsText = data.map((row) =>
+      [row.id, formatDate(row.date), row.billToAddress, row.billToCity, row.billToCompany, row.billToState, row.billToZip, row.desc, row.partNum, row.qty, row.unitPrice, row.total].join('\t')
+    ).join('\n');
+    navigator.clipboard.writeText(rowsText);
+  };
+
+
+  return (
+    <div className="reports-table">
+      <div className="reports-table__top-row">
+        <div className="reports-table__top-bar">
+          <Button onClick={handleGoBack}>Back</Button>
+          <Button onClick={copyToClipboard}>Copy</Button>
+        </div>
+        <h3>Total: { formatCurrency(total) }</h3>
+      </div>
+
+      <Table>
+        <thead>
+          <tr>
+            <th>Handwritten</th>
+            <th>Date</th>
+            <th>BillToAddress</th>
+            <th>BillToCity</th>
+            <th>BillToCompany</th>
+            <th>BillToState</th>
+            <th>BillToZip</th>
+            <th>Desc</th>
+            <th>PartNum</th>
+            <th>Qty</th>
+            <th>UnitPrice</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          {data && data.map((row, i) => {
+            return (
+              <tr key={i}>
+                <td>{ row.id ? <Link href={`/handwrittens/${row.id}`}>{ row.id }</Link> : row.id }</td>
+                <td>{ formatDate(row.date) }</td>
+                <td>{ row.billToAddress }</td>
+                <td>{ row.billToCity }</td>
+                <td>{ row.billToCompany }</td>
+                <td>{ row.billToState }</td>
+                <td>{ row.billToZip }</td>
+                <td>{ row.desc }</td>
+                <td>{ row.partNum }</td>
+                <td>{ row.qty }</td>
+                <td>{ formatCurrency(row.unitPrice) }</td>
+                <td>{ formatCurrency(row.total) }</td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </Table>
+      { data.length == 0 && <Loading /> }
+    </div>
+  );
+}

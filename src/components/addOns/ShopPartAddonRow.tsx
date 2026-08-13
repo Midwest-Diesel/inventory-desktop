@@ -1,0 +1,782 @@
+import { useAtom } from "jotai";
+import { userAtom } from "@/scripts/atoms/state";
+import Button from "../library/Button";
+import Checkbox from "../library/Checkbox";
+import Table from "../library/Table";
+import Select from "../library/select/Select";
+import { addAddOn, deleteAddOn, editAddOnIsPoOpened, editAddOnPrintStatus, editAddOnUserEditing } from "@/scripts/services/addOnsService";
+import { getNextUPStockNum, getPartsByStockNum, getPartInfoByPartNum } from "@/scripts/services/partsService";
+import { MouseEvent, useEffect, useRef, useState } from "react";
+import Input from "../library/Input";
+import { editEngine, getEngineByStockNum } from "@/scripts/services/enginesService";
+import { cap, formatDate, formatWeightDims, parseWeightDims } from "@/scripts/tools/stringUtils";
+import { getPurchaseOrderByPoNum } from "@/scripts/services/purchaseOrderService";
+import { getRatingFromRemarks } from "@/scripts/tools/utils";
+import { getImagesFromPart } from "@/scripts/services/imagesService";
+import { usePrintQue } from "@/hooks/usePrintQue";
+import { selectedPoAddOnAtom } from "@/scripts/atoms/components";
+import { useClickOutside } from "@/hooks/useClickOutside";
+import { commonPrefixLength, getAddOnDateCode, getNextStockNumberSuffix } from "@/scripts/logic/addOns";
+import { useQuery } from "@tanstack/react-query";
+import { getVendors } from "@/scripts/services/vendorsService";
+import { useNavState } from "@/hooks/useNavState";
+import { emitServerEvent, offServerEvent, onServerEvent } from "@/scripts/config/websockets";
+import { prompt } from "../library/Prompt";
+import EditWeightDims from "../parts/EditWeightDims";
+import TextArea from "../library/TextArea";
+import { ask } from "@/scripts/config/tauri";
+
+interface Props {
+  addOn: AddOn
+  addOns: AddOn[]
+  setAddons: React.Dispatch<React.SetStateAction<AddOn[]>>
+  handleDuplicateAddOn: (addOn: AddOn, addOns: AddOn[]) => void
+  partNumList: string[]
+  onSave: () => Promise<void>
+}
+
+
+export default function ShopPartAddonRow({ addOn, addOns, setAddons, handleDuplicateAddOn, partNumList, onSave }: Props) {
+  const [user] = useAtom<User>(userAtom);
+  const [, setSelectedPoData] = useAtom<{ selectedPoAddOn: PO | null, addOn: AddOn | null, receivedItemsDialogOpen: boolean }>(selectedPoAddOnAtom);
+  const { addToQue, printQue } = usePrintQue();
+  const { newTab } = useNavState();
+  const [poLink, setPoLink] = useState<string>(addOn.po ? `${addOn.po}` : '');
+  const [partNum, setPartNum] = useState<string>(addOn.partNum ?? '');
+  const [engineNum, setEngineNum] = useState<string>(addOn.engineNum?.toString() ?? '');
+  const [engineNumLink, setEngineNumLink] = useState(addOn.engineNum);
+  const [purchasedFrom, setPurchasedFrom] = useState<string>(addOn.purchasedFrom?.toString() ?? '');
+  const [showPartNumSelect, setShowPartNumSelect] = useState(false);
+  const [printQty, setPrintQty] = useState(1);
+  const [collapseRow, setCollapseRow] = useState(addOn.isPrinted);
+  const ref = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
+  const partNumListRefs = useRef<(HTMLLIElement | null)[]>([]);
+  const partNumRef = useRef<HTMLDivElement>(null);
+  const prevEngineNum = useRef<string | null>(null);
+  const qtyRef = useRef<HTMLInputElement | null>(null);
+  const isEngineNumInvalid = !engineNumLink || engineNumLink <= 1;
+  useClickOutside(partNumRef, () => setShowPartNumSelect(false));
+
+  const { data: vendors = [] } = useQuery<Vendor[]>({
+    queryKey: ['vendors'],
+    queryFn: getVendors
+  });
+
+  useEffect(() => {
+    const fetchWeightDims = async () => {
+      if (addOn.weightDims || !addOn.partNum) return;
+      const res = await getPartInfoByPartNum(addOn.partNum);
+
+      if (res?.weightDims) {
+        setAddons((prev) =>
+          prev.map((a) =>
+            a.id === addOn.id ? { ...a, weightDims: res.weightDims } : a
+          )
+        );
+      }
+    };
+    fetchWeightDims();
+  }, [addOn.partNum]);
+
+  useEffect(() => {
+    if (!showPartNumSelect) return;
+    const partNumMatch = (addOn.partNum ?? '').toUpperCase();
+    let bestIndex = -1;
+    let bestScore = -1;
+
+    partNumList.forEach((num, i) => {
+      const score = commonPrefixLength(partNumMatch, num.toUpperCase());
+      if (score > bestScore) {
+        bestScore = score;
+        bestIndex = i;
+      }
+    });
+
+    if (bestIndex >= 0 && partNumListRefs.current[bestIndex]) {
+      const listEl: any = document.querySelector('.add-ons__list-select');
+      const item = partNumListRefs.current[bestIndex];
+      if (listEl && item) {
+        listEl.scrollTop = item.offsetTop - listEl.offsetTop + 24;
+      }
+    }
+  }, [showPartNumSelect, addOn.partNum, partNumList]);
+
+  useEffect(() => {
+    const handlePrintEvent = (printedAddOns: AddOn[] | AddOn[]) => {
+      const updates = Array.isArray(printedAddOns) ? printedAddOns : [printedAddOns];
+      if (updates.some((a) => a.id === addOn.id)) {
+        setAddons((prev) =>
+          prev.map((a) =>
+            a.id === addOn.id
+              ? { ...a, isPrinted: true } : a
+          )
+        );
+      }
+    };
+
+    onServerEvent('PRINT_ADDON', handlePrintEvent);
+
+    return () => {
+      offServerEvent('PRINT_ADDON', handlePrintEvent);
+    };
+  }, [addOn.id, setAddons]);
+
+  useEffect(() => {
+    if (addOn.stockNum) checkDuplicateStockNum(addOn.stockNum, false);
+  }, [addOn.stockNum]);
+
+  useEffect(() => {
+    if (addOns[0].id === addOn.id) qtyRef.current?.focus();
+  }, []);
+
+  const handleEditAddOn = async (newAddOn: AddOn) => {
+    if (!addOn.userEditing) {
+      await setUserEditing();
+    }
+    if (addOn.userEditing && addOn.userEditing.id !== user.id) return;
+
+    const updatedAddOns = addOns.map((a: AddOn) => a.id === newAddOn.id ? newAddOn : a);
+    setAddons(updatedAddOns);
+  };
+
+  const onClickDeleteAddOn = async () => {
+    if (await prompt('Type "confirm" to delete this add on') !== 'confirm') return;
+    await deleteAddOn(addOn.id);
+    emitServerEvent('DELETE_ADDON', [addOn.id]);
+  };
+  
+  const autofillFromPartNum = (input: string) => {
+    if (!input) {
+      setPartNum('');
+      return;
+    }
+
+    const upperInput = input.toUpperCase();
+    const match = partNumList.find((p) => {
+      const upperP = p.toUpperCase();
+      if (!upperP.startsWith(upperInput)) return false;
+
+      const remainder = upperP.slice(upperInput.length);
+      if (remainder.length > 0 && /^[A-Z]+$/.test(remainder)) return false;
+      return true;
+    });
+
+    setPartNum(match ?? '');
+  };
+
+  const autofillFromPurchasedFrom = (value: string) => {
+    if (!value) {
+      setPurchasedFrom('');
+    } else {
+      setPurchasedFrom(vendors.find((v: Vendor) => v.name?.toLowerCase().startsWith(value))?.name ?? '');
+    }
+  };
+
+  const updateAutofillPartNumData = async (value: string) => {
+    const partInfo = await getPartInfoByPartNum(value);
+    if (!partInfo) return;
+    const newAddOn = {
+      ...addOn,
+      partNum: partInfo.partNum,
+      desc: partInfo.desc,
+      prefix: partInfo.prefix,
+      newPrice: partInfo.listPrice,
+      dealerPrice: partInfo.fleetPrice,
+      remanPrice: partInfo.remanListPrice
+    } as AddOn;
+    const updatedAddOns = addOns.map((a: AddOn) => {
+      if (a.id === addOn.id) return newAddOn;
+      return a;
+    });
+    setAddons(updatedAddOns);
+    setPartNum('');
+  };
+
+  const updateAutofillEngineNumData = async (value: number) => {
+    if (addOn.engineNum?.toString() === engineNum || value === 99) return;
+    if (value === 0) {
+      await autofillNextAvailableUP();
+    } else if (value === 1) {
+      await autofillDateCodeStockNum();
+    } else {
+      await autofillUsingEngineNum(value);
+    }
+  };
+
+  const updateAutofillPurchasedFromData = async (value: string) => {
+    const newAddOn = {
+      ...addOn,
+      purchasedFrom: value
+    } as AddOn;
+    const updatedAddOns = addOns.map((a: AddOn) => {
+      if (a.id === addOn.id) return newAddOn;
+      return a;
+    });
+    setAddons(updatedAddOns);
+    setPurchasedFrom('');
+  };
+
+  const autofillNextAvailableUP = async () => {
+    const latestUP = await getNextUPStockNum();
+    if (!latestUP) {
+      alert('Failed to fetch latest UP stock number');
+      clearStockNumber();
+      return;
+    }
+    const latestNum = parseInt(latestUP.slice(2), 10);
+    const queueUPNumbers = addOns
+      .map((a) => addOn.id !== a.id && a.stockNum)
+      .filter((stockNum): stockNum is string => typeof stockNum === 'string' && /^UP\d+$/.test(stockNum))
+      .map((stockNum) => parseInt(stockNum.slice(2), 10));
+
+    const maxNum = Math.max(latestNum, ...queueUPNumbers);
+    const nextUP = `UP${maxNum + 1}`;
+
+    const updatedAddOns = addOns.map((a: AddOn) => (a.id === addOn.id ? { ...addOn, stockNum: nextUP } : a));
+    setAddons(updatedAddOns);
+    setEngineNum('');
+  };
+
+  const autofillDateCodeStockNum = async () => {
+    const partsInfo = await getPartInfoByPartNum(addOn.partNum ?? '');
+    const date = getAddOnDateCode();
+    const dateStockNum = `${partsInfo?.prefix ?? ''}${date}`;
+    const newStockNum = `${dateStockNum}${await getNextStockNumberSuffix(dateStockNum, addOns)}`;
+
+    const updatedAddOns = addOns.map((a: AddOn) => (a.id === addOn.id ? { ...addOn, stockNum: newStockNum } : a));
+    setAddons(updatedAddOns);
+    setEngineNum('');
+    return;
+  };
+
+  const autofillUsingEngineNum = async (value: number) => {
+    const res = await getEngineByStockNum(value);
+    const partsInfo = await getPartInfoByPartNum(addOn.partNum ?? '');
+    const newStockNum = `${partsInfo?.prefix ?? ''}${addOn.engineNum}`;
+
+    const newAddOn = {
+      ...addOn,
+      stockNum: newStockNum,
+      hp: res?.horsePower ?? '',
+      serialNum: res?.serialNum ?? ''
+    } as AddOn;
+
+    const updatedAddOns = addOns.map((a: AddOn) => (a.id === addOn.id ? newAddOn : a));
+    setAddons(updatedAddOns);
+    setEngineNum('');
+  };
+
+  const checkDuplicateStockNum = async (stockNum: string, clearField = true): Promise<boolean> => {
+    const parts = await getPartsByStockNum(stockNum);
+    const addOnStockNums = addOns
+      .filter((a) => a.id !== addOn.id && a.stockNum)
+      .map((a) => a.stockNum);
+    
+    const isDuplicated = parts.length > 0 || (addOnStockNums.some((s) => s === stockNum));
+    if (isDuplicated) {
+      alert(`[ERROR: Duplicate stock number ${stockNum}] located in ${(addOnStockNums.some((s) => s === stockNum)) ? 'add on list' : ''}${parts.length > 0 ? 'inventory' : ''}`);
+      if (clearField) clearStockNumber();
+      return true;
+    }
+    return false;
+  };
+
+  const clearStockNumber = () => {
+    const updatedAddOns = addOns.map((a: AddOn) => (a.id === addOn.id ? { ...a, stockNum: '' } : a));
+    setAddons(updatedAddOns);
+  };
+
+  const isBlankAddOn = (addOn: AddOn) => (
+    addOn.qty === null &&
+    addOn.partNum === null &&
+    addOn.desc === null &&
+    addOn.stockNum === null &&
+    addOn.location === null &&
+    addOn.remarks === null &&
+    addOn.rating === null &&
+    addOn.engineNum === null &&
+    addOn.condition === 'New' &&
+    addOn.purchasePrice === null &&
+    addOn.purchasedFrom === null &&
+    addOn.po === null &&
+    addOn.manufacturer === null &&
+    addOn.isSpecialCost === null &&
+    addOn.type === 'Truck' &&
+    addOn.hp === null &&
+    addOn.serialNum === null &&
+    addOn.newPrice === null &&
+    addOn.remanPrice === null &&
+    addOn.dealerPrice === null &&
+    addOn.priceStatus === 'We have pricing' &&
+    addOn.altParts.length === 0 &&
+    addOn.isPrinted === false &&
+    addOn.isPoOpened === false &&
+    addOn.prefix === null
+  );
+
+  const handlePrint = async () => {
+    if (Number(addOn.qty) <= 0) {
+      alert('Missing qty');
+      return;
+    }
+    if (!addOn.stockNum) {
+      alert('Missing stock number');
+      return;
+    }
+    if (await checkDuplicateStockNum(addOn.stockNum)) return;
+
+    const engine = await getEngineByStockNum(addOn.engineNum);
+    if (engine && engine.currentStatus !== 'ToreDown' && await ask(`Add ${addOn.stockNum} to Parts Pulled for engine ${engine.stockNum}`)) {
+      await editEngine({ ...engine, partsPulled: `${engine.partsPulled ? `${engine.partsPulled}, ` : ''}${addOn.stockNum}` });
+    }
+    
+    await onSave();
+    if (!isBlankAddOn(addOns[0])) {
+      const newRow = await addAddOn();
+      if (!newRow) {
+        alert('Failed to create new row');
+        return;
+      }
+      emitServerEvent('INSERT_ADDON', [newRow]);
+    }
+    emitServerEvent('PRINT_ADDON', [addOn]);
+
+    const pictures = await getImagesFromPart(addOn.partNum);
+    await editAddOnPrintStatus(addOn.id, true);
+
+    for (let i = 0; i < printQty; i++) {
+      const args = {
+        stockNum: addOn.stockNum,
+        model: engine?.model ?? '',
+        serialNum: engine?.serialNum ?? '',
+        hp: engine?.horsePower ?? '',
+        location: addOn.location ?? '',
+        remarks: addOn.remarks ?? '',
+        date: formatDate(addOn.entryDate) ?? '',
+        partNum: addOn.partNum ?? '',
+        rating: addOn.rating,
+        hasPictures: pictures.length > 0
+      };
+      if (addOn.stockNum?.toString().toUpperCase().includes('UP')) {
+        addToQue('partTagUP', 'print_part_tag', args, '1500px', '1000px');
+      } else {
+        addToQue('partTag', 'print_part_tag', args, '1300px', '1000px');
+      }
+    }
+    printQue();
+  };
+
+  const handlePOItemsReceived = async (e: any) => {
+    if (!e.target.value || addOn.isPoOpened) return;
+    const po = await getPurchaseOrderByPoNum(e.target.value);
+    if (!po || po.poItems.length === 0) return;
+    onSave();
+    await editAddOnIsPoOpened(addOn.id, true);
+    setAddons(addOns.map((a) => {
+      if (a.id === addOn.id) return { ...a, isPoOpened: true };
+      return a;
+    }));
+    setPoLink(`${po.poNum}`);
+    setSelectedPoData({ selectedPoAddOn: po, addOn, receivedItemsDialogOpen: true });
+  };
+
+  const handlePartNumSelectClick = (num: string) => {
+    if (user.id !== addOn.userEditing?.id) return;
+    handleEditAddOn({ ...addOn, partNum: num });
+    autofillFromPartNum(num.toUpperCase());
+    updateAutofillPartNumData(num);
+    setShowPartNumSelect(false);
+  };
+
+  const onClickOpenPO = () => {
+    if (!poLink) return;
+    newTab([{ name: `PO ${poLink}`, url: `/purchase-orders/${poLink}` }]);
+  };
+
+  const onClickOpenEngine = () => {
+    if (isEngineNumInvalid) return;
+    newTab([{ name: `Engine ${engineNumLink}`, url: `/engines/${engineNumLink}` }]);
+  };
+
+  const setUserEditing = async () => {
+    if (user.id === addOn.userEditing?.id) return;
+    await editAddOnUserEditing(addOn.id, user.id);
+    const userEditing = { id: user.id, username: user.username };
+    emitServerEvent('UPDATE_ADDON_OWNERSHIP', [{ id: addOn.id, userEditing }]);
+  };
+
+  const onClickToggleRow = (e: MouseEvent) => {
+    if (!addOn.isPrinted) {
+      return;
+    }
+
+    if (!collapseRow) {
+      const target = e.target as HTMLElement;
+
+      if (target !== ref.current && target !== contentRef.current) {
+        return;
+      }
+    }
+
+    setCollapseRow((prev) => !prev);
+  };
+
+
+  return (
+    <div style={{ width: '100%' }}>
+      {addOn.userEditing &&
+        <h4 style={{ display: 'flex', color: user.id === addOn.userEditing.id ? 'var(--green-light-2)' : 'var(--orange-1)' }}>
+          <img style={{ width: '0.7rem', marginRight: '0.3rem' }} src="/images/icons/lock.svg" alt="Locked" />
+          { cap(addOn.userEditing.username) }
+        </h4>
+      }
+
+      <div
+        className={`add-ons__list-row ${addOn.isPrinted ? 'add-ons__list-row--completed' : ''}`}
+        ref={ref}
+        onClick={onClickToggleRow}
+      >
+        <div className="add-ons__list-row-content" ref={contentRef}>
+          <Table variant={['plain', 'edit-row-details']} style={{ width: 'fit-content' }}>
+            <thead>
+              <tr>
+                <th>Qty</th>
+                <th>Part Number</th>
+                <th>Description</th>
+                <th>Type</th>
+                <th style={!isEngineNumInvalid ? { textDecoration: 'underline', cursor: 'pointer' } : {}} onClick={onClickOpenEngine}>Engine #</th>
+                <th>Stock Number</th>
+                <th>Location</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <Input
+                    ref={qtyRef}
+                    variant={['x-small', 'thin']}
+                    type="number"
+                    value={addOn.qty !== null ? addOn.qty : ''}
+                    onChange={(e: any) => handleEditAddOn({ ...addOn, qty: e.target.value })}
+                    data-testid="qty"
+                  />
+                </td>
+                <td>
+                  <div ref={partNumRef} style={{ position: 'relative' }}>
+                    <Input
+                      variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold', 'search', 'autofill-input']}
+                      value={addOn.partNum ?? ''}
+                      autofill={partNum}
+                      onAutofill={(value) => updateAutofillPartNumData(value)}
+                      onChange={(e: any) => {
+                        handleEditAddOn({ ...addOn, partNum: e.target.value.toUpperCase() });
+                        autofillFromPartNum(e.target.value.toUpperCase());
+                      }}
+                      data-testid="part-num"
+                    >
+                      <Button variant={['x-small']} type="button" onClick={() => setShowPartNumSelect(!showPartNumSelect)} tabIndex={-1}>
+                        <img src={`/images/icons/arrow-${showPartNumSelect ? 'up' : 'down'}.svg`} alt="Part number dropdown" width="10rem" />
+                      </Button>
+                    </Input>
+
+                    {showPartNumSelect &&
+                      <ul className="add-ons__list-select" tabIndex={-1}>
+                        {partNumList.map((num, i) => {
+                          return (
+                            <li
+                              key={i}
+                              ref={(el) => partNumListRefs.current[i] = el}
+                              onClick={() => handlePartNumSelectClick(num)}
+                            >
+                              { num }
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    }
+                  </div>
+                </td>
+                <td>
+                  <Input
+                    variant={['small', 'thin']}
+                    value={addOn.desc !== null ? addOn.desc : ''}
+                    onChange={(e: any) => handleEditAddOn({ ...addOn, desc: e.target.value })}
+                    onFocus={() => setShowPartNumSelect(false)}
+                    data-testid="desc"
+                  />
+                </td>
+                <td>
+                  <Select
+                    style={{ width: '100%' }}
+                    value={addOn.type ?? ''}
+                    onChange={(e: any) => handleEditAddOn({ ...addOn, type: e.target.value })}
+                  >
+                    <option value="">-- SELECT --</option>
+                    <option>Truck</option>
+                    <option>Industrial</option>
+                  </Select>
+                </td>
+                <td>
+                  <Input
+                    variant={['small', 'thin']}
+                    type="number"
+                    autofill={engineNum}
+                    value={addOn.engineNum !== null ? addOn.engineNum : ''}
+                    onChange={(e: any) => {
+                      setEngineNumLink(e.target.value);
+                      handleEditAddOn({ ...addOn, engineNum: e.target.value });
+                    }}
+                    onBlur={(e) => {
+                      const currentVal = e.target.value;
+                      if (prevEngineNum.current !== currentVal) {
+                        updateAutofillEngineNumData(Number(currentVal));
+                        prevEngineNum.current = currentVal;
+                      }
+                    }}
+                    data-testid="engine-num"
+                  />
+                </td>
+                <td>
+                  <Input
+                    variant={['small', 'thin']}
+                    value={addOn.stockNum !== null ? addOn.stockNum : ''}
+                    onChange={(e: any) => handleEditAddOn({ ...addOn, stockNum: e.target.value })}
+                    data-testid="stock-num"
+                  />
+                </td>
+                <td>
+                  <Input
+                    variant={['small', 'thin']}
+                    value={addOn.location !== null ? addOn.location : ''}
+                    onChange={(e: any) => handleEditAddOn({ ...addOn, location: e.target.value })}
+                  />
+                </td>
+              </tr>
+            </tbody>
+          </Table>
+
+          {!collapseRow &&
+            <>
+              <Table variant={['plain', 'edit-row-details']} style={{ width: 'fit-content' }}>
+                <thead>
+                  <tr>
+                    <th>Remarks</th>
+                    <th>OEM</th>
+                    <th>Condition</th>
+                    <th>Horse Power</th>
+                    <th>Serial Number</th>
+                    <th>Rating</th>
+                    <th style={poLink ? { textDecoration: 'underline', cursor: 'pointer' } : {}} onClick={onClickOpenPO}>PO Number</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      <TextArea
+                        value={addOn.remarks !== null ? addOn.remarks : ''}
+                        onChange={(e: any) => handleEditAddOn({ ...addOn, remarks: e.target.value })}
+                        onBlur={(e: any) => handleEditAddOn({ ...addOn, rating: getRatingFromRemarks(e.target.value) })}
+                        data-testid="remarks"
+                      />
+                    </td>
+                    <td>
+                      <Select
+                        style={{ width: '100%' }}
+                        value={addOn.manufacturer ?? ''}
+                        onChange={(e: any) => handleEditAddOn({ ...addOn, manufacturer: e.target.value })}
+                      >
+                        <option value="">-- SELECT --</option>
+                        <option>Caterpillar</option>
+                        <option>Cummins</option>
+                        <option>Detriot Diesel</option>
+                        <option>New Cat</option>
+                        <option>New Genuine Caterpillar</option>
+                        <option>Perkins</option>
+                        <option>New</option>
+                        <option>John Deere</option>
+                      </Select>
+                    </td>
+                    <td>
+                      <Select
+                        style={{ width: '100%' }}
+                        value={addOn.condition ?? ''}
+                        onChange={(e: any) => handleEditAddOn({ ...addOn, condition: e.target.value })}
+                      >
+                        <option value="">-- SELECT --</option>
+                        <option value="Core">Core</option>
+                        <option value="Good Used">Good Used</option>
+                        <option value="New">New</option>
+                        <option value="Reconditioned">Reconditioned</option>
+                      </Select>
+                    </td>
+                    <td>
+                      <Input
+                        variant={['small', 'thin']}
+                        value={addOn.hp !== null ? addOn.hp : ''}
+                        onChange={(e: any) => handleEditAddOn({ ...addOn, hp: e.target.value })}
+                        data-testid="hp"
+                      />
+                    </td>
+                    <td>
+                      <Input
+                        variant={['small', 'thin']}
+                        value={addOn.serialNum !== null ? addOn.serialNum : ''}
+                        onChange={(e: any) => handleEditAddOn({ ...addOn, serialNum: e.target.value })}
+                        data-testid="serial-num"
+                      />
+                    </td>
+                    <td>
+                      <Input
+                        variant={['small', 'thin']}
+                        type="number"
+                        value={addOn.rating !== null ? addOn.rating : ''}
+                        onChange={(e: any) => handleEditAddOn({ ...addOn, rating: e.target.value })}
+                        data-testid="rating"
+                      />
+                    </td>
+                    <td>
+                      <Input
+                        variant={['small', 'thin']}
+                        type="number"
+                        value={addOn.po !== null ? addOn.po : ''}
+                        onChange={(e) => {
+                          handleEditAddOn({ ...addOn, po: e.target.value });
+                          setPoLink(e.target.value);
+                        }}
+                        onBlur={(e) => handlePOItemsReceived(e)}
+                        data-testid="po"
+                      />
+                    </td>
+                  </tr>
+                </tbody>
+              </Table>
+
+              <Table variant={['plain', 'edit-row-details']} style={{ width: 'fit-content' }}>
+                <thead>
+                  <tr>
+                    <th>New List Price</th>
+                    <th>Reman List Price</th>
+                    <th>Dealer Price</th>
+                    <th>Price Status</th>
+                    <th>Purchased From</th>
+                    <th>Prefix</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      <Input
+                        variant={['small', 'thin']}
+                        type="number"
+                        step="any"
+                        value={addOn.newPrice !== null ? addOn.newPrice : ''}
+                        onChange={(e: any) => handleEditAddOn({ ...addOn, newPrice: e.target.value })}
+                      />
+                    </td>
+                    <td>
+                      <Input
+                        variant={['small', 'thin']}
+                        type="number"
+                        step="any"
+                        value={addOn.remanPrice !== null ? addOn.remanPrice : ''}
+                        onChange={(e: any) => handleEditAddOn({ ...addOn, remanPrice: e.target.value })}
+                      />
+                    </td>
+                    <td>
+                      <Input
+                        variant={['small', 'thin']}
+                        type="number"
+                        step="any"
+                        value={addOn.dealerPrice !== null ? addOn.dealerPrice : ''}
+                        onChange={(e: any) => handleEditAddOn({ ...addOn, dealerPrice: e.target.value })}
+                      />
+                    </td>
+                    <td>
+                      <Select
+                        style={{ width: '100%' }}
+                        value={addOn.priceStatus ?? ''}
+                        onChange={(e: any) => handleEditAddOn({ ...addOn, priceStatus: e.target.value })}
+                      >
+                        <option value="">-- SELECT --</option>
+                        <option>We have pricing</option>
+                        <option>No pricing</option>
+                      </Select>
+                    </td>
+                    <td>
+                      <div style={{ width: '21rem' }}>
+                        <Input
+                          variant={['small', 'thin', 'label-bold', 'search', 'autofill-input']}
+                          value={addOn.purchasedFrom ?? ''}
+                          autofill={purchasedFrom}
+                          onAutofill={(value) => updateAutofillPurchasedFromData(value)}
+                          onChange={(e) => {
+                            handleEditAddOn({ ...addOn, purchasedFrom: e.target.value });
+                            autofillFromPurchasedFrom(e.target.value.toLowerCase());
+                          }}
+                        />
+                      </div>
+                    </td>
+                    <td>
+                      <Input
+                        style={(!addOn.prefix && addOn.stockNum && !addOn.stockNum.startsWith('UP')) ? { backgroundColor: 'var(--red-1)' } : {}}
+                        variant={['small', 'thin']}
+                        value={addOn.prefix !== null ? addOn.prefix : ''}
+                        onChange={(e) => handleEditAddOn({ ...addOn, prefix: e.target.value })}
+                      />
+                    </td>
+                  </tr>
+                </tbody>
+              </Table>
+
+              <div className="add-ons__weight-dims">
+                <h3>Shipment Weight/Dims</h3>
+
+                <Table variant={['plain', 'edit-row-details']} style={{ width: 'fit-content' }}>
+                  <tbody>
+                    <EditWeightDims
+                      weightDims={parseWeightDims(addOn.weightDims)}
+                      setWeightDims={(weightDims: WeightDims[]) => handleEditAddOn({ ...addOn, weightDims: formatWeightDims(weightDims) })}
+                    />
+                  </tbody>
+                </Table>
+              </div>
+
+              <div className="add-ons__list-row-checkboxes">
+                <Checkbox
+                  variant={['label-align-center', 'label-bold']}
+                  label="Special Cost"
+                  checked={addOn.isSpecialCost}
+                  onChange={(e: any) => handleEditAddOn({ ...addOn, isSpecialCost: e.target.checked })}
+                />
+
+                <Checkbox
+                  variant={['label-align-center', 'label-bold']}
+                  label="Ebay Listing"
+                  checked={addOn.ebayListing}
+                  onChange={(e) => handleEditAddOn({ ...addOn, ebayListing: e.target.checked })}
+                />
+              </div>
+            </>
+          }
+        </div>
+
+        {!collapseRow &&
+          <div className="add-ons__list-row-buttons">
+            <Button type="button" onClick={() => handleDuplicateAddOn(addOn, addOns)} data-testid="duplicate-btn">Duplicate</Button>
+            <Input
+              style={{ width: '3rem' }}
+              variant={['x-small', 'search']}
+              value={printQty}
+              onChange={(e: any) => setPrintQty(e.target.value)}
+              type="number"
+            >
+              <Button type="button" variant={['search']} onClick={handlePrint} data-testid="print-btn">Print</Button>
+            </Input>
+            <Button type="button" variant={['danger']} onClick={onClickDeleteAddOn}>Delete</Button>
+          </div>
+        }
+      </div>
+    </div>
+  );
+}

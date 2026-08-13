@@ -1,0 +1,67 @@
+import { formatCurrency } from "@/scripts/tools/stringUtils";
+import Button from "../library/Button";
+import Table from "../library/Table";
+import Loading from "../library/Loading";
+import { useEffect, useState } from "react";
+
+interface Props {
+  closeTable: () => void
+  data: AllPartsReport[]
+}
+
+
+export default function AllPartsTable({ closeTable, data }: Props) {
+  const [total, setTotal] = useState(0);
+
+  useEffect(() => {
+    setTotal(data.reduce((acc, cur) => acc + cur.sales, 0));
+  }, [data]);
+  
+  const handleGoBack = () => {
+    closeTable();
+  };
+
+  const copyToClipboard = () => {
+    const rowsText = data.map((row) =>
+      [row.altParts, row.firstOfDesc, row.sumOfQtySold, row.sales].join('\t')
+    ).join('\n');
+    navigator.clipboard.writeText(rowsText);
+  };
+
+
+  return (
+    <div className="reports-table">
+      <div className="reports-table__top-row">
+        <div className="reports-table__top-bar">
+          <Button onClick={handleGoBack}>Back</Button>
+          <Button onClick={copyToClipboard}>Copy</Button>
+        </div>
+        <h3>Total: { formatCurrency(total) }</h3>
+      </div>
+
+      <Table>
+        <thead>
+          <tr>
+            <th>AltParts</th>
+            <th>FirstOfDescription</th>
+            <th>SumOfQtySold</th>
+            <th>Sales</th>
+          </tr>
+        </thead>
+        <tbody>
+          {data && data.map((row, i) => {
+            return (
+              <tr key={i}>
+                <td>{ row.altParts }</td>
+                <td>{ row.firstOfDesc }</td>
+                <td>{ row.sumOfQtySold }</td>
+                <td>{ formatCurrency(row.sales) }</td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </Table>
+      { data.length == 0 && <Loading /> }
+    </div>
+  );
+}

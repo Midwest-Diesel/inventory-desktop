@@ -1,0 +1,44 @@
+name: Unit Tests
+
+on:
+  workflow_dispatch:
+  push:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    env:
+      DB_CONNECTION_STRING: postgresql://postgres:postgres@localhost:54329/inventory_testing
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install PostgreSQL client
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y postgresql-client
+
+      - name: Install modules
+        run: npm ci
+
+      - name: Start test database
+        run: docker compose -p inventory-tests -f docker-compose.test.yml up -d
+
+      - name: Unit Tests
+        run: npm run test:unit
+
+      # - name: Integration Tests
+      #   run: npm run test:integration
+
+      # - name: Install Playwright browsers
+      #   run: npx playwright install --with-deps chromium
+
+      # - name: E2E Tests
+      #   run: npm run test:e2e
