@@ -22,9 +22,9 @@ export const getAllCores = async (): Promise<Core[]> => {
   }
 };
 
-export const searchCores = async (search: CoreSearch): Promise<Core[]> => {
+export const searchCores = async (params: CoreSearch): Promise<Core[]> => {
   try {
-    const res = await api.get(`/api/cores/search?s=${encodeURIComponent(JSON.stringify(search))}`);
+    const res = await api.get(`/api/cores/search`, { params });
     return parseCoreDataRes(res.data);
   } catch (err) {
     console.error(err);
