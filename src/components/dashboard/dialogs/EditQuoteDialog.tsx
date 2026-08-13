@@ -1,0 +1,227 @@
+import { FormEvent, useEffect, useRef, useState } from "react";
+import Dialog from "../../library/Dialog";
+import Input from "../../library/Input";
+import Button from "../../library/Button";
+import { editQuote } from "@/scripts/services/quotesService";
+import SourceSelect from "../../library/select/SourceSelect";
+import CustomerDropdown from "../../library/dropdown/CustomerDropdown";
+import { parseDateInputValue } from "@/scripts/tools/stringUtils";
+import { addCustomerContact, getCustomerByName, getCustomerNames } from "@/scripts/services/customerService";
+import { useAtom } from "jotai";
+import { customerNamesAtom } from "@/scripts/atoms/state";
+import PartSelectDialog from "./PartSelectDialog";
+import Select from "@/components/library/select/Select";
+import TextArea from "@/components/library/TextArea";
+import { prompt } from "@/components/library/Prompt";
+
+interface Props {
+  setQuoteEdited: (quote: Quote | null) => void
+  quote: Quote
+  setQuote: (quote: Quote) => void
+}
+
+
+export default function EditQuoteDialog({ setQuoteEdited, quote, setQuote }: Props) {
+  const [customerNames, setCustomerNames] = useAtom<string[]>(customerNamesAtom);
+  const [date, setDate] = useState<Date | null>(quote.date);
+  const [source, setSource] = useState<string>(quote.source ?? '');
+  const [company, setCompany] = useState<string>(quote.customer?.company ?? '');
+  const [contact, setContact] = useState<string>(quote.contact ?? '');
+  const [contacts, setContacts] = useState<Contact[]>([]);
+  const [part, setPart] = useState<Part | null>(quote.part);
+  const [partNum, setPartNum] = useState<string>(quote.partNum ?? '');
+  const [stockNum, setStockNum] = useState<string>(quote.stockNum ?? '');
+  const [desc, setDesc] = useState<string>(quote.desc ?? '');
+  const [price, setPrice] = useState<number | null>(quote.price || null);
+  const [notes, setNotes] = useState<string>(quote.notes ?? '');
+  const [partSelectOpen, setPartSelectOpen] = useState(false);
+  const inputRef = useRef<HTMLInputElement | null>(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (customerNames.length === 0) setCustomerNames(await getCustomerNames());
+
+      if (quote.customer) {
+        setContacts(quote.customer.contacts.sort((a, b) => (a.name ?? '').localeCompare(b.name ?? '')));
+      }
+      
+      inputRef.current?.select();
+    };
+    fetchData();
+  }, [quote]);
+
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    const customer = await getCustomerByName(company);
+    const newQuote = {
+      ...quote,
+      customer,
+      contact,
+      date,
+      source,
+      partNum: part ? part.partNum : (partNum || quote.partNum),
+      stockNum: part ? part.stockNum : (stockNum || quote.stockNum),
+      desc,
+      price: Number(price),
+      notes,
+      partId: part ? part.id : null
+    } as Quote;
+    await editQuote(newQuote);
+    setQuote(newQuote);
+    setQuoteEdited(null);
+  };
+
+  const onClickAddContact = async () => {
+    if (!quote.customer) {
+      alert('No customer selected');
+      return;
+    }
+
+    const name = await prompt('Enter a contact name');
+    if (!name) return;
+    const id = await addCustomerContact(quote.customer.id, name);
+    if (!id) {
+      alert('Failed to create contact');
+      return;
+    }
+
+    const newContact: Contact = { id, name, position: null, email: null, phone: null, ext: null, notes: null };
+    setContacts([...contacts, newContact].sort((a, b) => (a.name ?? '').localeCompare(b.name ?? '')));
+    setContact(newContact.name!);
+  };
+
+  const handelCancel = () => {
+    setDate(quote.date);
+    setSource(quote.source ?? '');
+    setCompany(quote.customer?.company ?? '');
+    setContact(quote.contact ?? '');
+    setPart(quote.part);
+    setDesc(quote.desc ?? '');
+    setPrice(quote.price);
+    setNotes(quote.notes ?? '');
+    setQuoteEdited(null);
+  };
+
+  const onSubmitPartSelect = (part: Part) => {
+    setPart(part);
+    setDesc(part.desc ?? '');
+  };
+
+
+  return (
+    <>
+      <PartSelectDialog open={partSelectOpen} setOpen={setPartSelectOpen} onSubmit={onSubmitPartSelect} />
+
+      <Dialog
+        open
+        setOpen={() => setQuoteEdited(null)}
+        title="Edit Quote"
+        maxHeight="44rem"
+        width={500}
+        y={200}
+      >
+        <form onSubmit={(e)=> handleSubmit(e)}>
+          <Input
+            label="Date"
+            variant={['label-full-width', 'small', 'thin', 'label-bold', 'label-stack']}
+            type="date"
+            value={parseDateInputValue(date)}
+            onChange={(e) => setDate(new Date(e.target.value))}
+            required
+          />
+
+          <SourceSelect
+            label="Source"
+            variant={['label-bold', 'label-stack']}
+            value={source}
+            onChange={(e) => setSource(e.target.value)}
+          />
+          
+          <CustomerDropdown
+            label="Customer"
+            variant={['label-full-width', 'gap', 'fill', 'label-bold', 'label-stack']}
+            value={company}
+            onChange={(value: any) => setCompany(value)}
+            maxHeight="15rem"
+          />
+
+          <Button variant={['fit', 'x-small']} onClick={onClickAddContact}>Add Contact</Button>
+          <Select
+            style={{ marginBottom: '1rem' }}
+            variant={['label-full-width', 'label-bold', 'label-stack']}
+            label="Contact"
+            value={contact}
+            onChange={(e) => setContact(e.target.value)}
+          >
+            <option value="">-- SELECT CONTACT --</option>
+            {contacts.map((c) => {
+              return <option key={c.id}>{ c.name }</option>;
+            })}
+          </Select>
+
+          {part &&
+            <>
+              <p><span style={{ fontWeight: 'bold' }}>PartNum:</span> { part.partNum }</p>
+              <p><span style={{ fontWeight: 'bold' }}>StockNum:</span> { part.stockNum }</p>
+            </>
+          }
+
+          <div style={{ margin: part ? '0.5rem 0 1rem' : '0.5rem 0 0', display: 'flex', gap: '0.3rem' }}>
+            <Button variant={['fit']} onClick={() => setPartSelectOpen(true)}>Select Part</Button>
+            { part && <Button variant={['fit']} onClick={() => setPart(null)}>Clear Part</Button> }
+          </div>
+
+          {!part &&
+            <div style={{ marginBottom: '1rem' }}>
+              <Input
+                label="Part Number"
+                variant={['label-full-width', 'small', 'thin', 'label-bold', 'label-stack']}
+                value={partNum}
+                onChange={(e) => setPartNum(e.target.value)}
+              />
+
+              <Input
+                label="Stock Number"
+                variant={['label-full-width', 'small', 'thin', 'label-bold', 'label-stack']}
+                value={stockNum}
+                onChange={(e) => setStockNum(e.target.value)}
+              />
+            </div>
+          }
+
+          <Input
+            label="Description"
+            variant={['label-full-width', 'small', 'thin', 'label-bold', 'label-stack']}
+            value={desc}
+            onChange={(e) => setDesc(e.target.value)}
+          />
+
+          <Input
+            label="Price"
+            variant={['label-full-width', 'small', 'thin', 'label-bold', 'label-stack']}
+            value={price ?? ''}
+            onChange={(e) => setPrice(e.target.value ? Number(e.target.value) : null)}
+            type="number"
+            step="any"
+            ref={inputRef}
+            required
+          />
+
+          <TextArea
+            label="Notes"
+            variant={['label-stack', 'label-bold', 'label-stack', 'label-fit-content']}
+            rows={5}
+            cols={100}
+            value={notes}
+            onChange={(e) => setNotes(e.target.value)}
+          />
+
+          <div className="form__footer">
+            <Button type="button" variant={['small']} onClick={handelCancel}>Cancel</Button>
+            <Button type="submit" variant={['small']}>Save</Button>
+          </div>
+        </form>
+      </Dialog>
+    </>
+  );
+}
