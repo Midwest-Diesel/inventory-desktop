@@ -38,6 +38,7 @@ test.describe('Handwrittens', () => {
     await page.getByTestId('model-btn').first().click();
 
     await page.getByTestId('add-to-handwritten-btn').first().click();
+    await page.getByTestId('select-handwritten-desc').isVisible();
     await page.getByTestId('select-handwritten-desc').fill('TEST');
     await page.getByTestId('select-handwritten-qty').fill('1');
     await page.getByTestId('select-handwritten-price').fill('15000');
@@ -46,9 +47,8 @@ test.describe('Handwrittens', () => {
     await page.waitForLoadState('networkidle');
 
     await goto(page, '/engines/new-engine');
-    await page.waitForSelector('.new-engines-list');
     await page.getByTestId('model-btn').first().click();
-    await page.waitForSelector('.new-engines-list');
+    await page.getByTestId('engine-status').first().isVisible();
     expect(page.getByTestId('engine-status').first()).toHaveText('HoldSoldRunner');
   });
 });
