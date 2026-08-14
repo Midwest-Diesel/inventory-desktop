@@ -711,6 +711,7 @@ type Engine = {
   warranty: boolean
   testRun: boolean
   ecm: boolean
+  researched: boolean
   mileage: string | null
   torque: string | null
   pan: string | null

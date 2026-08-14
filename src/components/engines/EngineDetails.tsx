@@ -211,6 +211,15 @@ export default function EngineDetails({ engine, setIsEditing, setEngineProfitOpe
                 </td>
               </tr>
               <tr>
+                <th>Researched</th>
+                <td>
+                  <Checkbox
+                    checked={Boolean(engine.researched)}
+                    disabled
+                  />
+                </td>
+              </tr>
+              <tr>
                 <th>Torque</th>
                 <td>{ engine.torque }</td>
               </tr>

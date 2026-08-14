@@ -23,11 +23,6 @@ export default function NewEnginesList({ engines, setEngine, engineModel, setEng
   const [filter, setFilter] = useState('all-runner');
   const engineModels = useMemo(() => getEngineModels(engines), [engines]);
 
-  const isEngineResNotNull = (engine: Engine) => {
-    const { turboReman, headNew, headReman, pistonNew, pistonReman, fwhNew, fwhReman, oilPanNew, oilPanReman, oilCoolerNew, oilCoolerReman, frontHousingNew, flywheelNew, ragNew, heuiPumpNew, heuiPumpReman } = engine;
-    return ![turboReman, headNew, headReman, pistonNew, pistonReman, fwhNew, fwhReman, oilPanNew, oilPanReman, oilCoolerNew, oilCoolerReman, frontHousingNew, flywheelNew, ragNew, heuiPumpNew, heuiPumpReman].includes(null);
-  };
-
   const filteredEngines = useMemo(() => {
     return engines.filter((e) => {
       if (e.model !== engineModel) return false;
@@ -70,7 +65,7 @@ export default function NewEnginesList({ engines, setEngine, engineModel, setEng
             <tr>
               <th></th>
               <th>Stock Number</th>
-              <th>Res</th>
+              <th>Researched</th>
               <th>ECM</th>
               <th>Warranty</th>
               <th>Model</th>
@@ -129,7 +124,7 @@ export default function NewEnginesList({ engines, setEngine, engineModel, setEng
                       { engine.stockNum }
                     </Link>
                   </td>
-                  <td className="cbx-td"><Checkbox checked={isEngineResNotNull(engine)} disabled /></td>
+                  <td className="cbx-td"><Checkbox checked={engine.researched} disabled /></td>
                   <td className="cbx-td"><Checkbox checked={Boolean(engine.ecm)} disabled /></td>
                   <td className="cbx-td"><Checkbox checked={Boolean(engine.warranty)} disabled /></td>
                   <td>{ engine.model }</td>

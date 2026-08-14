@@ -41,6 +41,7 @@ export default function EditEngineDetails({ engine, setIsEditing, refetch }: Pro
   const [warranty, setWarranty] = useState<boolean>(engine.warranty);
   const [testRun, setTestRun] = useState<boolean>(engine.testRun);
   const [ecm, setEcm] = useState<boolean>(engine.ecm);
+  const [researched, setResearched] = useState<boolean>(engine.researched);
   const [askingPrice, setAskingPrice] = useState<number | null>(engine.askingPrice);
   const [torque, setTorque] = useState<string>(engine.torque ?? '');
   const [pan, setPan] = useState<string>(engine.pan ?? '');
@@ -145,6 +146,7 @@ export default function EditEngineDetails({ engine, setIsEditing, refetch }: Pro
       warranty,
       testRun,
       ecm,
+      researched,
       askingPrice,
       purchasePrice: engine.purchasePrice,
       torque,
@@ -300,7 +302,7 @@ export default function EditEngineDetails({ engine, setIsEditing, refetch }: Pro
             value={currentStatus}
             label="Current Status"
             variant={['label-stack']}
-            onChange={(e: any) => setCurrentStatus(e.target.value)} 
+            onChange={(e) => setCurrentStatus(e.target.value as EngineStatus)} 
           >
             <option value="ToreDown">Torn Down</option>
             <option value="RunnerReady">Runner Ready</option>
@@ -340,7 +342,7 @@ export default function EditEngineDetails({ engine, setIsEditing, refetch }: Pro
                     variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                     value={parseDateInputValue(loginDate)}
                     type="date"
-                    onChange={(e: any) => setLoginDate(new Date(e.target.value))}
+                    onChange={(e) => setLoginDate(new Date(e.target.value))}
                   />
                 </td>
               </tr>
@@ -350,7 +352,7 @@ export default function EditEngineDetails({ engine, setIsEditing, refetch }: Pro
                   <Input
                     variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                     value={model}
-                    onChange={(e: any) => setModel(e.target.value)}
+                    onChange={(e) => setModel(e.target.value)}
                   />
                 </td>
               </tr>
@@ -360,7 +362,7 @@ export default function EditEngineDetails({ engine, setIsEditing, refetch }: Pro
                   <Input
                     variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                     value={serialNum}
-                    onChange={(e: any) => setSerialNumber(e.target.value)}
+                    onChange={(e) => setSerialNumber(e.target.value)}
                   />
                 </td>
               </tr>
@@ -370,7 +372,7 @@ export default function EditEngineDetails({ engine, setIsEditing, refetch }: Pro
                   <Input
                     variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                     value={arrNum}
-                    onChange={(e: any) => setArrNum(e.target.value)}
+                    onChange={(e) => setArrNum(e.target.value)}
                   />
                 </td>
               </tr>
@@ -380,7 +382,7 @@ export default function EditEngineDetails({ engine, setIsEditing, refetch }: Pro
                   <Input
                     variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                     value={location}
-                    onChange={(e: any) => setLocation(e.target.value)}
+                    onChange={(e) => setLocation(e.target.value)}
                   />
                 </td>
               </tr>
@@ -390,7 +392,7 @@ export default function EditEngineDetails({ engine, setIsEditing, refetch }: Pro
                   <Input
                     variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                     value={horsePower}
-                    onChange={(e: any) => setHorsePower(e.target.value)}
+                    onChange={(e) => setHorsePower(e.target.value)}
                   />
                 </td>
               </tr>
@@ -400,7 +402,7 @@ export default function EditEngineDetails({ engine, setIsEditing, refetch }: Pro
                   <Input
                     variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                     value={mileage}
-                    onChange={(e: any) => setMileage(e.target.value)}
+                    onChange={(e) => setMileage(e.target.value)}
                   />
                 </td>
               </tr>
@@ -410,7 +412,7 @@ export default function EditEngineDetails({ engine, setIsEditing, refetch }: Pro
                   <Input
                     variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                     value={purchasedFrom}
-                    onChange={(e: any) => setPurchasedFrom(e.target.value)}
+                    onChange={(e) => setPurchasedFrom(e.target.value)}
                   />
                 </td>
               </tr>
@@ -421,7 +423,7 @@ export default function EditEngineDetails({ engine, setIsEditing, refetch }: Pro
                     variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                     value={parseDateInputValue(toreDownDate)}
                     type="date"
-                    onChange={(e: any) => setToreDownDate(new Date(e.target.value))}
+                    onChange={(e) => setToreDownDate(new Date(e.target.value))}
                   />
                 </td>
               </tr>
@@ -432,7 +434,7 @@ export default function EditEngineDetails({ engine, setIsEditing, refetch }: Pro
                     variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                     value={parseDateInputValue(soldDate)}
                     type="date"
-                    onChange={(e: any) => setSoldDate(new Date(e.target.value))}
+                    onChange={(e) => setSoldDate(new Date(e.target.value))}
                   />
                 </td>
               </tr>
@@ -442,7 +444,7 @@ export default function EditEngineDetails({ engine, setIsEditing, refetch }: Pro
                   <Input
                     variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                     value={soldTo}
-                    onChange={(e: any) => setSoldTo(e.target.value)}
+                    onChange={(e) => setSoldTo(e.target.value)}
                   />
                 </td>
               </tr>
@@ -452,7 +454,7 @@ export default function EditEngineDetails({ engine, setIsEditing, refetch }: Pro
                   <Checkbox
                     variant={['label-space-between', 'label-full-width', 'label-bold']}
                     checked={jakeBrake}
-                    onChange={(e: any) => setJakeBrake(e.target.checked)}
+                    onChange={(e) => setJakeBrake(e.target.checked)}
                   />
                 </td>
               </tr>
@@ -462,7 +464,7 @@ export default function EditEngineDetails({ engine, setIsEditing, refetch }: Pro
                   <Checkbox
                     variant={['label-space-between', 'label-full-width', 'label-bold']}
                     checked={warranty}
-                    onChange={(e: any) => setWarranty(e.target.checked)}
+                    onChange={(e) => setWarranty(e.target.checked)}
                   />
                 </td>
               </tr>
@@ -472,7 +474,7 @@ export default function EditEngineDetails({ engine, setIsEditing, refetch }: Pro
                   <Checkbox
                     variant={['label-space-between', 'label-full-width', 'label-bold']}
                     checked={testRun}
-                    onChange={(e: any) => setTestRun(e.target.checked)}
+                    onChange={(e) => setTestRun(e.target.checked)}
                   />
                 </td>
               </tr>
@@ -482,7 +484,17 @@ export default function EditEngineDetails({ engine, setIsEditing, refetch }: Pro
                   <Checkbox
                     variant={['label-space-between', 'label-full-width', 'label-bold']}
                     checked={ecm}
-                    onChange={(e: any) => setEcm(e.target.checked)}
+                    onChange={(e) => setEcm(e.target.checked)}
+                  />
+                </td>
+              </tr>
+              <tr>
+                <th>Researched</th>
+                <td>
+                  <Checkbox
+                    variant={['label-space-between', 'label-full-width', 'label-bold']}
+                    checked={researched}
+                    onChange={(e) => setResearched(e.target.checked)}
                   />
                 </td>
               </tr>
@@ -492,7 +504,7 @@ export default function EditEngineDetails({ engine, setIsEditing, refetch }: Pro
                   <Input
                     variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                     value={torque}
-                    onChange={(e: any) => setTorque(e.target.value)}
+                    onChange={(e) => setTorque(e.target.value)}
                   />
                 </td>
               </tr>
@@ -502,7 +514,7 @@ export default function EditEngineDetails({ engine, setIsEditing, refetch }: Pro
                   <Input
                     variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                     value={pan}
-                    onChange={(e: any) => setPan(e.target.value)}
+                    onChange={(e) => setPan(e.target.value)}
                   />
                 </td>
               </tr>
@@ -512,7 +524,7 @@ export default function EditEngineDetails({ engine, setIsEditing, refetch }: Pro
                   <Input
                     variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                     value={application}
-                    onChange={(e: any) => setApplication(e.target.value)}
+                    onChange={(e) => setApplication(e.target.value)}
                   />
                 </td>
               </tr>
@@ -522,7 +534,7 @@ export default function EditEngineDetails({ engine, setIsEditing, refetch }: Pro
                   <Input
                     variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                     value={turboHpNew}
-                    onChange={(e: any) => setTurboHP(e.target.value)}
+                    onChange={(e) => setTurboHP(e.target.value)}
                   />
                 </td>
               </tr>
@@ -532,7 +544,7 @@ export default function EditEngineDetails({ engine, setIsEditing, refetch }: Pro
                   <Input
                     variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                     value={turboLpNew}
-                    onChange={(e: any) => setTurboLP(e.target.value)}
+                    onChange={(e) => setTurboLP(e.target.value)}
                   />
                 </td>
               </tr>
@@ -542,7 +554,7 @@ export default function EditEngineDetails({ engine, setIsEditing, refetch }: Pro
                   <Input
                     variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                     value={fwhNumber}
-                    onChange={(e: any) => setFwhNumber(e.target.value)}
+                    onChange={(e) => setFwhNumber(e.target.value)}
                   />
                 </td>
               </tr>
@@ -554,7 +566,7 @@ export default function EditEngineDetails({ engine, setIsEditing, refetch }: Pro
                     value={sellPrice ?? ''}
                     type="number"
                     step="any"
-                    onChange={(e: any) => setSellPrice(e.target.value)}
+                    onChange={(e) => setSellPrice(e.target.value ? Number(e.target.value) : null)}
                     
                   />
                 </td>
@@ -567,7 +579,7 @@ export default function EditEngineDetails({ engine, setIsEditing, refetch }: Pro
                     value={askingPrice ?? ''}
                     type="number"
                     step="any"
-                    onChange={(e: any) => setAskingPrice(e.target.value)}
+                    onChange={(e) => setAskingPrice(e.target.value ? Number(e.target.value) : null)}
                   />
                 </td>
               </tr>
@@ -587,7 +599,7 @@ export default function EditEngineDetails({ engine, setIsEditing, refetch }: Pro
                       rows={5}
                       cols={100}
                       value={comments}
-                      onChange={(e: any) => setComments(e.target.value)}
+                      onChange={(e) => setComments(e.target.value)}
                     />
                   </td>
                 </tr>
@@ -599,7 +611,7 @@ export default function EditEngineDetails({ engine, setIsEditing, refetch }: Pro
                       rows={5}
                       cols={100}
                       value={partsPulled}
-                      onChange={(e: any) => setPartsPulled(e.target.value)}
+                      onChange={(e) => setPartsPulled(e.target.value)}
                     />
                   </td>
                 </tr>
@@ -635,7 +647,7 @@ export default function EditEngineDetails({ engine, setIsEditing, refetch }: Pro
                       <Input
                         variant={['x-small', 'thin', 'label-bold']}
                         value={item.cost ?? ''}
-                        onChange={(e: any) => handleChangeEngineCostIn({ ...item, cost: e.target.value }, i)}
+                        onChange={(e) => handleChangeEngineCostIn({ ...item, cost: e.target.value ? Number(e.target.value) : null }, i)}
                         type="number"
                         step="any"
                       />
@@ -644,7 +656,7 @@ export default function EditEngineDetails({ engine, setIsEditing, refetch }: Pro
                       <Input
                         variant={['x-small', 'thin', 'label-bold']}
                         value={item.engineStockNum ?? ''}
-                        onChange={(e: any) => handleChangeEngineCostIn({ ...item, engineStockNum: e.target.value }, i)}
+                        onChange={(e) => handleChangeEngineCostIn({ ...item, engineStockNum: e.target.value ? Number(e.target.value) : null }, i)}
                         type="number"
                       />
                     </td>
@@ -652,21 +664,21 @@ export default function EditEngineDetails({ engine, setIsEditing, refetch }: Pro
                       <Input
                         variant={['x-small', 'thin', 'label-bold']}
                         value={item.vendor ?? ''}
-                        onChange={(e: any) => handleChangeEngineCostIn({ ...item, vendor: e.target.value }, i)}
+                        onChange={(e) => handleChangeEngineCostIn({ ...item, vendor: e.target.value }, i)}
                       />
                     </td>
                     <td>
                       <Input
                         variant={['x-small', 'thin', 'label-bold']}
                         value={item.invoiceNum ?? ''}
-                        onChange={(e: any) => handleChangeEngineCostIn({ ...item, invoiceNum: e.target.value }, i)}
+                        onChange={(e) => handleChangeEngineCostIn({ ...item, invoiceNum: e.target.value }, i)}
                       />
                     </td>
                     <td>
                       <Select
                         variant={['label-bold']}
                         value={item.costType ?? ''}
-                        onChange={(e: any) => handleChangeEngineCostIn({ ...item, costType: e.target.value }, i)}
+                        onChange={(e) => handleChangeEngineCostIn({ ...item, costType: e.target.value as CostType }, i)}
                       >
                         <option value="">-- SELECT COST TYPE --</option>
                         <option>PurchasePrice</option>
@@ -678,7 +690,7 @@ export default function EditEngineDetails({ engine, setIsEditing, refetch }: Pro
                       <Input
                         variant={['x-small', 'thin', 'label-bold']}
                         value={item.note ?? ''}
-                        onChange={(e: any) => handleChangeEngineCostIn({ ...item, note: e.target.value }, i)}
+                        onChange={(e) => handleChangeEngineCostIn({ ...item, note: e.target.value }, i)}
                       />
                     </td>
                     <td>
@@ -700,7 +712,7 @@ export default function EditEngineDetails({ engine, setIsEditing, refetch }: Pro
                   <Input
                     variant={['x-small', 'thin', 'label-bold']}
                     value={newEngineCostInRow.cost}
-                    onChange={(e: any) => handleNewEngineCostInRowChange('cost', e.target.value)}
+                    onChange={(e) => handleNewEngineCostInRowChange('cost', e.target.value)}
                     type="number"
                     step="any"
                   />
@@ -709,7 +721,7 @@ export default function EditEngineDetails({ engine, setIsEditing, refetch }: Pro
                   <Input
                     variant={['x-small', 'thin', 'label-bold']}
                     value={newEngineCostInRow.engineStockNum}
-                    onChange={(e: any) => handleNewEngineCostInRowChange('engineStockNum', e.target.value)}
+                    onChange={(e) => handleNewEngineCostInRowChange('engineStockNum', e.target.value)}
                     type="number"
                   />
                 </td>
@@ -717,14 +729,14 @@ export default function EditEngineDetails({ engine, setIsEditing, refetch }: Pro
                   <Input
                     variant={['x-small', 'thin', 'label-bold']}
                     value={newEngineCostInRow.vendor}
-                    onChange={(e: any) => handleNewEngineCostInRowChange('vendor', e.target.value)}
+                    onChange={(e) => handleNewEngineCostInRowChange('vendor', e.target.value)}
                   />
                 </td>
                 <td>
                   <Input
                     variant={['x-small', 'thin', 'label-bold']}
                     value={newEngineCostInRow.invoiceNum}
-                    onChange={(e: any) => handleNewEngineCostInRowChange('invoiceNum', e.target.value)}
+                    onChange={(e) => handleNewEngineCostInRowChange('invoiceNum', e.target.value)}
                     type="number"
                   />
                 </td>
@@ -732,7 +744,7 @@ export default function EditEngineDetails({ engine, setIsEditing, refetch }: Pro
                   <Select
                     variant={['label-bold']}
                     value={newEngineCostInRow.costType}
-                    onChange={(e: any) => handleNewEngineCostInRowChange('costType', e.target.value)}
+                    onChange={(e) => handleNewEngineCostInRowChange('costType', e.target.value)}
                   >
                     <option value="">-- SELECT COST TYPE --</option>
                     <option>PurchasePrice</option>
@@ -744,7 +756,7 @@ export default function EditEngineDetails({ engine, setIsEditing, refetch }: Pro
                   <Input
                     variant={['x-small', 'thin', 'label-bold']}
                     value={newEngineCostInRow.note}
-                    onChange={(e: any) => handleNewEngineCostInRowChange('note', e.target.value)}
+                    onChange={(e) => handleNewEngineCostInRowChange('note', e.target.value)}
                   />
                 </td>
                 <td>
@@ -781,7 +793,7 @@ export default function EditEngineDetails({ engine, setIsEditing, refetch }: Pro
                       <Input
                         variant={['x-small', 'thin', 'label-bold']}
                         value={item.cost ?? ''}
-                        onChange={(e: any) => handleChangeEngineCostOut({ ...item, cost: e.target.value }, i)}
+                        onChange={(e) => handleChangeEngineCostOut({ ...item, cost: e.target.value ? Number(e.target.value) : null }, i)}
                         type="number"
                         step="any"
                       />
@@ -790,7 +802,7 @@ export default function EditEngineDetails({ engine, setIsEditing, refetch }: Pro
                       <Input
                         variant={['x-small', 'thin', 'label-bold']}
                         value={item.engineStockNum ?? ''}
-                        onChange={(e: any) => handleChangeEngineCostOut({ ...item, engineStockNum: e.target.value }, i)}
+                        onChange={(e) => handleChangeEngineCostOut({ ...item, engineStockNum: e.target.value ? Number(e.target.value) : null }, i)}
                         type="number"
                         required
                       />
@@ -799,7 +811,7 @@ export default function EditEngineDetails({ engine, setIsEditing, refetch }: Pro
                       <Input
                         variant={['x-small', 'thin', 'label-bold']}
                         value={item.stockNum ?? ''}
-                        onChange={(e: any) => handleChangeEngineCostOut({ ...item, stockNum: e.target.value }, i)}
+                        onChange={(e) => handleChangeEngineCostOut({ ...item, stockNum: e.target.value }, i)}
                         required
                       />
                     </td>
@@ -807,7 +819,7 @@ export default function EditEngineDetails({ engine, setIsEditing, refetch }: Pro
                       <Select
                         variant={['label-bold']}
                         value={item.costType ?? ''}
-                        onChange={(e: any) => handleChangeEngineCostOut({ ...item, costType: e.target.value }, i)}
+                        onChange={(e) => handleChangeEngineCostOut({ ...item, costType: e.target.value as EngineCostType }, i)}
                       >
                         <option value="">-- SELECT COST TYPE --</option>
                         <option>Parts</option>
@@ -819,7 +831,7 @@ export default function EditEngineDetails({ engine, setIsEditing, refetch }: Pro
                       <Input
                         variant={['x-small', 'thin', 'label-bold']}
                         value={item.note ?? ''}
-                        onChange={(e: any) => handleChangeEngineCostOut({ ...item, note: e.target.value }, i)}
+                        onChange={(e) => handleChangeEngineCostOut({ ...item, note: e.target.value }, i)}
                       />
                     </td>
                     <td>
@@ -841,7 +853,7 @@ export default function EditEngineDetails({ engine, setIsEditing, refetch }: Pro
                   <Input
                     variant={['x-small', 'thin', 'label-bold']}
                     value={newEngineCostOutRow.cost}
-                    onChange={(e: any) => handleNewEngineCostOutRowChange('cost', e.target.value)}
+                    onChange={(e) => handleNewEngineCostOutRowChange('cost', e.target.value)}
                     type="number"
                     step="any"
                   />
@@ -850,21 +862,21 @@ export default function EditEngineDetails({ engine, setIsEditing, refetch }: Pro
                   <Input
                     variant={['x-small', 'thin', 'label-bold']}
                     value={newEngineCostOutRow.engineStockNum}
-                    onChange={(e: any) => handleNewEngineCostOutRowChange('engineStockNum', e.target.value)}
+                    onChange={(e) => handleNewEngineCostOutRowChange('engineStockNum', e.target.value)}
                   />
                 </td>
                 <td>
                   <Input
                     variant={['x-small', 'thin', 'label-bold']}
                     value={newEngineCostOutRow.stockNum}
-                    onChange={(e: any) => handleNewEngineCostOutRowChange('stockNum', e.target.value)}
+                    onChange={(e) => handleNewEngineCostOutRowChange('stockNum', e.target.value)}
                   />
                 </td>
                 <td>
                   <Select
                     variant={['label-bold']}
                     value={newEngineCostOutRow.costType}
-                    onChange={(e: any) => handleNewEngineCostOutRowChange('costType', e.target.value)}
+                    onChange={(e) => handleNewEngineCostOutRowChange('costType', e.target.value)}
                   >
                     <option value="">-- SELECT COST TYPE --</option>
                     <option>Parts</option>
@@ -876,7 +888,7 @@ export default function EditEngineDetails({ engine, setIsEditing, refetch }: Pro
                   <Input
                     variant={['x-small', 'thin', 'label-bold']}
                     value={newEngineCostOutRow.note}
-                    onChange={(e: any) => handleNewEngineCostOutRowChange('note', e.target.value)}
+                    onChange={(e) => handleNewEngineCostOutRowChange('note', e.target.value)}
                   />
                 </td>
                 <td>

@@ -22,9 +22,7 @@ export default function NewEnginesListPage() {
     queryKey: ['engines'],
     queryFn: async () => {
       const engines = await getAllEngines();
-      return [...engines].sort(
-        (a: any, b: any) => b.loginDate - a.loginDate
-      );
+      return engines.sort((a: any, b: any) => b.loginDate - a.loginDate);
     }
   });
 

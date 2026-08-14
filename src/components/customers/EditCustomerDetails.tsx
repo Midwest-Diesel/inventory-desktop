@@ -197,7 +197,7 @@ export default function CustomerDetails({ customer, setCustomer, setIsEditing, o
                   <tbody>
                     <tr>
                       <th>Contact</th>
-                      <td><Input value={customer.contact ?? ''} /></td>
+                      <td><Input value={customer.contact ?? ''} disabled /></td>
                     </tr>
                     <tr>
                       <th>Phone</th>
