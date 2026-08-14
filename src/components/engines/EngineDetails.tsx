@@ -10,7 +10,7 @@ import Button from "../library/Button";
 import { userAtom } from "@/scripts/atoms/state";
 import { useAtom } from "jotai";
 import { useNavState } from "@/hooks/useNavState";
-import { deleteEngine } from "@/scripts/services/enginesService";
+import { deleteEngine, editEnginePartsTableByArrNum } from "@/scripts/services/enginesService";
 import { prompt } from "../library/Prompt";
 import { useState } from "react";
 import { getEngineImages } from "@/scripts/services/imagesService";
@@ -18,7 +18,8 @@ import { useQuery } from "@tanstack/react-query";
 import Loading from "../library/Loading";
 import EnginePicturesDialog from "../dialogs/EnginePicturesDialog";
 import { usePrintQue } from "@/hooks/usePrintQue";
-import { getEnginePurchaseCost, getTotalEngineCostIn, getTotalEngineCostOut } from "@/scripts/logic/engines";
+import { getEnginePartsFromEngine, getEnginePurchaseCost, getTotalEngineCostIn, getTotalEngineCostOut } from "@/scripts/logic/engines";
+import { confirm } from "@/scripts/config/tauri";
 
 interface Props {
   engine: Engine
@@ -64,6 +65,14 @@ export default function EngineDetails({ engine, setIsEditing, setEngineProfitOpe
       addToQue('engineTag', 'print_engine_tag', args, '700px', '1000px');
     }
     printQue();
+  };
+
+  const onClickSetEngineParts = async () => {
+    if (!engine.arrNum) return alert('Missing arrangement number');
+    if (!await confirm(`This will set the parts table for all engines with the arrangment number ${engine.arrNum} equal to the parts shown on this engine.`)) return;
+
+    const parts = getEnginePartsFromEngine(engine);
+    await editEnginePartsTableByArrNum(parts, engine.arrNum);
   };
 
 
@@ -296,6 +305,14 @@ export default function EngineDetails({ engine, setIsEditing, setEngineProfitOpe
           <br />
 
           <GridItem variant={['low-opacity-bg']}>
+            <Button
+              variant={['x-small']}
+              style={{ marginBottom: '0.3rem' }}
+              onClick={onClickSetEngineParts}
+            >
+              Set all Engine Parts by Arrangement Number
+            </Button>
+
             <EnginePartsTable engine={engine} />
           </GridItem>
         </GridItem>

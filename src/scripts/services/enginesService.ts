@@ -193,6 +193,14 @@ export const editEnginePartsTable = async (parts: EnginePartsTable, id: number) 
   }
 };
 
+export const editEnginePartsTableByArrNum = async (parts: EnginePartsTable, arrNum: string) => {
+  try {
+    await api.put('/api/engines/parts-table/arr-num', { parts, arrNum });
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 // === DELETE routes === //
 
 export const deleteEngine = async (id: number) => {
