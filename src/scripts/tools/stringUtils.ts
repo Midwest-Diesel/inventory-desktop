@@ -174,9 +174,10 @@ export const parseWeightDims = (weightDims: string | null): WeightDims[] => {
 
 export const formatWeightDims = (weightDims: WeightDims[]): string => {
   const results: string[] = [];
+  const totalQty = weightDims.reduce((acc, row) => acc + row.qty, 0);
   weightDims.forEach((row) => {
     const { qty, type, lbs, length, width, height } = row;
-    results.push(`${weightDims.length > 1 ? `(QTY ${qty}) ` : ''}${type}: ${lbs}lbs - L: ${length}, W: ${width}, H: ${height}`);
+    results.push(`${totalQty > 1 ? `(QTY ${qty}) ` : ''}${type}: ${lbs}lbs - L: ${length}, W: ${width}, H: ${height}`);
   });
   return results.join('\n');
 };

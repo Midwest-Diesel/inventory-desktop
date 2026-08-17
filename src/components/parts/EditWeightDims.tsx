@@ -25,36 +25,32 @@ export default function EditWeightDims({ weightDims, setWeightDims }: Props) {
     <>
       {weightDims.map((item, i) => (
         <tr key={i} onMouseEnter={() => setHoveredRow(i)} onMouseLeave={() => setHoveredRow(null)}>
-          {weightDims.length > 1 &&
-            <>
-              <th style={{ position: 'relative' }}>
-                Qty
+          <th style={{ position: 'relative' }}>
+            Qty
 
-                {hoveredRow === i &&
-                  <Button
-                    style={{ position: 'absolute', zIndex: 1, left: 0, top: 0, bottom: 0, background: 'var(--red-1)', padding: '0.2rem' }}
-                    variant={['danger']}
-                    onClick={() => onClickDeleteRow(i)}
-                  >
-                    <img src="/images/icons/delete.svg" alt="Delete" width={17} height={17} draggable={false} />
-                  </Button>
-                }
-              </th>
+            {hoveredRow === i &&
+              <Button
+                style={{ position: 'absolute', zIndex: 1, left: 0, top: 0, bottom: 0, background: 'var(--red-1)', padding: '0.2rem' }}
+                variant={['danger']}
+                onClick={() => onClickDeleteRow(i)}
+              >
+                <img src="/images/icons/delete.svg" alt="Delete" width={17} height={17} draggable={false} />
+              </Button>
+            }
+          </th>
 
-              <td style={{ width: '4rem' }}>
-                <Input
-                  value={item.qty ?? ''}
-                  onChange={(e) => {
-                    const newWeightDims = [...weightDims];
-                    newWeightDims[i] = { ...item, qty: Number(e.target.value)};
-                    setWeightDims(newWeightDims);
-                  }}
-                  type="number"
-                  step="any"
-                />
-              </td>
-            </>
-          }
+          <td style={{ width: '4rem' }}>
+            <Input
+              value={item.qty ?? ''}
+              onChange={(e) => {
+                const newWeightDims = [...weightDims];
+                newWeightDims[i] = { ...item, qty: Number(e.target.value)};
+                setWeightDims(newWeightDims);
+              }}
+              type="number"
+              step="any"
+            />
+          </td>
 
           <th>Type</th>
           <td style={{ width: '4rem' }}>
