@@ -1181,3 +1181,23 @@ interface EnginePartsTable {
   exhManifoldActual: string | null
   exhManifoldReman: string | null
 }
+
+interface EngineCorePartsTable {
+  blockReman: string | null
+  blockNew: string | null
+  crankReman: string | null
+  crankNew: string | null
+  camReman: string | null
+  camNew: string | null
+  injReman: string | null
+  injNew: string | null
+  headReman: string | null
+  headNew: string | null
+  pistonReman: string | null
+  pistonNew: string | null
+  ragNew: string | null
+  oilPumpReman: string | null
+  oilPumpNew: string | null
+  waterPumpReman: string | null
+  waterPump: string | null
+}

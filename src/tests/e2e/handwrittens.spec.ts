@@ -136,22 +136,12 @@ test.describe('Handwritten items', () => {
     await createHandwritten(page, 'ConEquip');
     await page.getByTestId('save-btn').waitFor();
 
-    await addHandwrittenItem(page, 1, 'THERM HSNG', 6, 100);
+    await addHandwrittenItem(page, 0, 'THERM HSNG', 6, 100);
     await addWarranty(page, [0, 1, 2], 'TEST WARRANTY');
-
-    // await page.getByTestId('tab').first().click();
-    // await addHandwrittenItem(page, 2, 'DELETE THIS', 1, 80);
-    // await addWarranty(page, [1], 'TEST WARRANTY');
 
     await page.getByTestId('item-qty-input').first().fill('4');
     await page.getByTestId('save-btn').click();
     await page.waitForLoadState('networkidle');
-
-    // await expect(page.getByTestId('item-qty').first()).toHaveText('4');
-    // await page.getByTestId('edit-btn').click();
-    // await page.getByTestId('item-delete-btn').first().click();
-    // await page.getByTestId('save-btn').click();
-    // await page.waitForLoadState('networkidle');
 
     await expect(page.getByTestId('item-desc').first()).toHaveText('THERM HSNG');
     await expect(page.getByTestId('item-qty').first()).toHaveText('4');

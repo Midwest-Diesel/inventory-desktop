@@ -10,7 +10,7 @@ import Button from "../library/Button";
 import { userAtom } from "@/scripts/atoms/state";
 import { useAtom } from "jotai";
 import { useNavState } from "@/hooks/useNavState";
-import { deleteEngine, editEnginePartsTableByArrNum } from "@/scripts/services/enginesService";
+import { deleteEngine, editEngineCorePartsTableByArrNum, editEnginePartsTableByArrNum } from "@/scripts/services/enginesService";
 import { prompt } from "../library/Prompt";
 import { useState } from "react";
 import { getEngineImages } from "@/scripts/services/imagesService";
@@ -67,18 +67,33 @@ export default function EngineDetails({ engine, setIsEditing, setEngineProfitOpe
     printQue();
   };
 
-  const onClickSetEngineParts = async () => {
+  const onClickSetAllEngineParts = async () => {
     if (!engine.arrNum) return alert('Missing arrangement number');
-    if (!await confirm(`This will set the parts table for all engines with the arrangment number ${engine.arrNum} equal to the parts shown on this engine.`)) return;
+    if (!await confirm(`Set all arrangement components? This will modify all data on the parts table for engines with the arrangment number ${engine.arrNum} equal to the parts shown on this engine.`)) return;
 
     const parts = getEnginePartsFromEngine(engine);
     await editEnginePartsTableByArrNum(parts, engine.arrNum);
   };
 
+  const onClickSetCoreEngineParts = async () => {
+    if (!engine.arrNum) return alert('Missing arrangement number');
+    if (!await confirm(`Set core arrangement components? This will modify certain fields on the parts table for engines with the arrangment number ${engine.arrNum} equal to the parts shown on this engine.`)) return;
+
+    const parts = getEnginePartsFromEngine(engine);
+    await editEngineCorePartsTableByArrNum(parts, engine.arrNum);
+  };
+
 
   return (
     <>
-      { pictures.length > 0 && picturesOpen && <EnginePicturesDialog open={picturesOpen} setOpen={setPicturesOpen} pictures={pictures} stockNum={engine.stockNum} /> }
+      {(pictures.length > 0 && picturesOpen) &&
+        <EnginePicturesDialog
+          open={picturesOpen}
+          setOpen={setPicturesOpen}
+          pictures={pictures}
+          stockNum={engine.stockNum}
+        />
+      }
 
       <div className="engine-details__header">
         <div>
@@ -308,9 +323,17 @@ export default function EngineDetails({ engine, setIsEditing, setEngineProfitOpe
             <Button
               variant={['x-small']}
               style={{ marginBottom: '0.3rem' }}
-              onClick={onClickSetEngineParts}
+              onClick={onClickSetAllEngineParts}
             >
-              Set all Engine Parts by Arrangement Number
+              Set all Arrangement Components
+            </Button>
+
+            <Button
+              variant={['x-small']}
+              style={{ marginBottom: '0.3rem' }}
+              onClick={onClickSetCoreEngineParts}
+            >
+              Set Core Arrangement Components
             </Button>
 
             <EnginePartsTable engine={engine} />

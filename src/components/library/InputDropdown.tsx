@@ -21,10 +21,11 @@ interface Props {
   onBlur?: (value: string) => void
   maxHeight?: string
   minWidth?: string
+  type?: string
 }
 
 
-export default function InputDropdown({ children, className = '', variant = [], label = '', value = '', onChange, onBlur, maxHeight = 'none', minWidth = 'none' }: Props) {
+export default function InputDropdown({ children, className = '', variant = [], label = '', value = '', onChange, onBlur, maxHeight = 'none', minWidth = 'none', type = 'text' }: Props) {
   const classes = generateClasses(className, variant.filter((v) => !['label-stack', 'label-space-between', 'label-bold'].includes(v)), 'dropdown-input');
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState('');
@@ -146,6 +147,7 @@ export default function InputDropdown({ children, className = '', variant = [], 
               setSearch(e.target.value);
               onChange?.(e.target.value);
             }}
+            type={type}
             onFocus={() => setIsOpen(true)}
             onKeyDown={handleKeyDown}
             onBlur={(e: React.FocusEvent<HTMLInputElement>) => onBlur?.(e.target.value)}

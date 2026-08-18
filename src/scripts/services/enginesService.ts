@@ -195,7 +195,15 @@ export const editEnginePartsTable = async (parts: EnginePartsTable, id: number) 
 
 export const editEnginePartsTableByArrNum = async (parts: EnginePartsTable, arrNum: string) => {
   try {
-    await api.put('/api/engines/parts-table/arr-num', { parts, arrNum });
+    await api.put('/api/engines/parts-table/arr-num/all', { parts, arrNum });
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const editEngineCorePartsTableByArrNum = async (parts: EngineCorePartsTable, arrNum: string) => {
+  try {
+    await api.put('/api/engines/parts-table/arr-num/core', { parts, arrNum });
   } catch (error) {
     console.error(error);
   }
