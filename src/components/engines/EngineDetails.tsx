@@ -320,21 +320,21 @@ export default function EngineDetails({ engine, setIsEditing, setEngineProfitOpe
           <br />
 
           <GridItem variant={['low-opacity-bg']}>
-            <Button
-              variant={['x-small']}
-              style={{ marginBottom: '0.3rem' }}
-              onClick={onClickSetAllEngineParts}
-            >
-              Set all Arrangement Components
-            </Button>
+            <div style={{ marginBottom: '0.3rem', display: 'flex', gap: '0.3rem' }}>
+              <Button
+                variant={['x-small']}
+                onClick={onClickSetAllEngineParts}
+              >
+                Set all Arrangement Components
+              </Button>
 
-            <Button
-              variant={['x-small']}
-              style={{ marginBottom: '0.3rem' }}
-              onClick={onClickSetCoreEngineParts}
-            >
-              Set Core Arrangement Components
-            </Button>
+              <Button
+                variant={['x-small']}
+                onClick={onClickSetCoreEngineParts}
+              >
+                Set Core Arrangement Components
+              </Button>
+            </div>
 
             <EnginePartsTable engine={engine} />
           </GridItem>

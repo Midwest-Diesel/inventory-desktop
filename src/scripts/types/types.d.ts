@@ -779,6 +779,15 @@ type Engine = {
   waterPumpNew: string | null
   waterPumpReman: string | null
   waterPumpActual: string | null
+  egrCoolerReman: string | null
+  egrCoolerNew: string | null
+  egrCoolerActual: string | null
+  exhAftertreatmentReman: string | null
+  exhAftertreatmentNew: string | null
+  exhAftertreatmentActual: string | null
+  fuelPumpReman: string | null
+  fuelPumpNew: string | null
+  fuelPumpActual: string | null
 };
 
 type CompareConsist = {
@@ -1180,6 +1189,15 @@ interface EnginePartsTable {
   exhManifoldNew: string | null
   exhManifoldActual: string | null
   exhManifoldReman: string | null
+  egrCoolerReman: string | null
+  egrCoolerNew: string | null
+  egrCoolerActual: string | null
+  exhAftertreatmentReman: string | null
+  exhAftertreatmentNew: string | null
+  exhAftertreatmentActual: string | null
+  fuelPumpReman: string | null
+  fuelPumpNew: string | null
+  fuelPumpActual: string | null
 }
 
 interface EngineCorePartsTable {

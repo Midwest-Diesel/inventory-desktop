@@ -115,7 +115,16 @@ export default function EditEngineDetails({ engine, setIsEditing, refetch }: Pro
     waterPumpActual: engine.waterPumpActual,
     exhManifoldNew: engine.exhManifoldNew,
     exhManifoldActual: engine.exhManifoldActual,
-    exhManifoldReman: engine.exhManifoldReman
+    exhManifoldReman: engine.exhManifoldReman,
+    egrCoolerReman: engine.egrCoolerReman,
+    egrCoolerNew: engine.egrCoolerNew,
+    egrCoolerActual: engine.egrCoolerActual,
+    exhAftertreatmentReman: engine.exhAftertreatmentReman,
+    exhAftertreatmentNew: engine.exhAftertreatmentNew,
+    exhAftertreatmentActual: engine.exhAftertreatmentActual,
+    fuelPumpReman: engine.fuelPumpReman,
+    fuelPumpNew: engine.fuelPumpNew,
+    fuelPumpActual: engine.fuelPumpActual
   };
 
   useEffect(() => {

@@ -146,10 +146,31 @@ export default function EnginePartsTable({ engine }: Props) {
         </tr>
         <tr>
           <th>Exh Manifold</th>
-          <td>{ engine.exhManifoldReman }</td>
           <td>{ engine.exhManifoldNew }</td>
+          <td>{ engine.exhManifoldReman }</td>
           <td></td>
           <td>{ engine.exhManifoldActual }</td>
+        </tr>
+        <tr>
+          <th>EGR Cooler</th>
+          <td>{ engine.egrCoolerNew }</td>
+          <td>{ engine.egrCoolerReman }</td>
+          <td></td>
+          <td>{ engine.egrCoolerActual }</td>
+        </tr>
+        <tr>
+          <th>Exh Aftertreatment</th>
+          <td>{ engine.exhAftertreatmentNew }</td>
+          <td>{ engine.exhAftertreatmentReman }</td>
+          <td></td>
+          <td>{ engine.exhAftertreatmentActual }</td>
+        </tr>
+        <tr>
+          <th>Fuel Pump</th>
+          <td>{ engine.fuelPumpNew }</td>
+          <td>{ engine.fuelPumpReman }</td>
+          <td></td>
+          <td>{ engine.fuelPumpActual }</td>
         </tr>
       </tbody>
     </Table>

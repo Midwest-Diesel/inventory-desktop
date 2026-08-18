@@ -547,6 +547,90 @@ export default function EditEnginePartsTable() {
             />
           </td>
         </tr>
+        <tr>
+          <th>EGR Cooler</th>
+          <td>
+            <Input
+              variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+              name="egrCoolerNew"
+              value={engineParts.egrCoolerNew ?? ''}
+              onChange={handleChange}
+            />
+          </td>
+          <td>
+            <Input
+              variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+              name="egrCoolerReman"
+              value={engineParts.egrCoolerReman ?? ''}
+              onChange={handleChange}
+            />
+          </td>
+          <td></td>
+          <td>
+            <Input
+              variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+              name="egrCoolerActual"
+              value={engineParts.egrCoolerActual ?? ''}
+              onChange={handleChange}
+            />
+          </td>
+        </tr>
+        <tr>
+          <th>Exh Aftertreatment</th>
+          <td>
+            <Input
+              variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+              name="exhAftertreatmentNew"
+              value={engineParts.exhAftertreatmentNew ?? ''}
+              onChange={handleChange}
+            />
+          </td>
+          <td>
+            <Input
+              variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+              name="exhAftertreatmentReman"
+              value={engineParts.exhAftertreatmentReman ?? ''}
+              onChange={handleChange}
+            />
+          </td>
+          <td></td>
+          <td>
+            <Input
+              variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+              name="exhAftertreatmentActual"
+              value={engineParts.exhAftertreatmentActual ?? ''}
+              onChange={handleChange}
+            />
+          </td>
+        </tr>
+        <tr>
+          <th>Fuel Pump</th>
+          <td>
+            <Input
+              variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+              name="fuelPumpNew"
+              value={engineParts.fuelPumpNew ?? ''}
+              onChange={handleChange}
+            />
+          </td>
+          <td>
+            <Input
+              variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+              name="fuelPumpReman"
+              value={engineParts.fuelPumpReman ?? ''}
+              onChange={handleChange}
+            />
+          </td>
+          <td></td>
+          <td>
+            <Input
+              variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+              name="fuelPumpActual"
+              value={engineParts.fuelPumpActual ?? ''}
+              onChange={handleChange}
+            />
+          </td>
+        </tr>
       </tbody>
     </Table>
   );
