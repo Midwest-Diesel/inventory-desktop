@@ -82,3 +82,38 @@ export const getPartTypeFromDesc = (desc: string): string | null => {
   if (value.includes('piston')) return 'Piston';
   return null;
 };
+
+export const getAddOnFromPart = (part: Part): AddOn => {
+  return {
+    qty: part.qty,
+    partNum: part.partNum,
+    desc: part.desc,
+    stockNum: part.stockNum,
+    location: part.location,
+    remarks: part.remarks,
+    entryDate: part.entryDate,
+    rating: part.rating?.toString() ?? '',
+    engineNum: part.engineNum,
+    condition: part.condition,
+    purchasePrice: part.purchasePrice,
+    purchasedFrom: part.purchasedFrom,
+    po: null,
+    manufacturer: part.manufacturer,
+    isSpecialCost: false,
+    newPrice: part.listPrice,
+    remanPrice: part.remanListPrice,
+    dealerPrice: part.fleetPrice,
+    type: 'Truck',
+    priceStatus: null,
+    hp: part.horsePower ?? '',
+    serialNum: part.serialNum ?? '',
+    altParts: part.altParts,
+    isPrinted: false,
+    isPoOpened: false,
+    prefix: null,
+    userEditing: null,
+    invoiceNum: null,
+    ebayListing: false,
+    weightDims: part.weightDims
+  } as AddOn;
+};

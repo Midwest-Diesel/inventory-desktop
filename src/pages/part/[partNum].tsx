@@ -22,13 +22,15 @@ import { setTitle } from "@/scripts/tools/utils";
 import { getSurplusCostRemaining } from "@/scripts/services/surplusService";
 import { useNavState } from "@/hooks/useNavState";
 import { usePrintQue } from "@/hooks/usePrintQue";
-import { confirm } from "@/scripts/config/tauri";
+import { ask, confirm } from "@/scripts/config/tauri";
 import PartQtyHistoryDialog from "@/components/parts/dialogs/PartQtyHistoryDialog";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { prompt } from "@/components/library/Prompt";
 import { getNextUP, manualPartReturn, removeRemarksSoldText } from "@/scripts/logic/parts";
 import EngineCostAlertModal from "@/components/parts/modals/EngineCostAlertModal";
 import SurplusCostAlertModal from "@/components/parts/modals/SurplusCostAlertModal";
+import { addEbayItem } from "@/scripts/services/ebayService";
+import { getAddOnFromPart } from "@/scripts/logic/addOns";
 
 
 export default function PartDetails() {
@@ -190,7 +192,14 @@ export default function PartDetails() {
     if (qty === 0) return;
 
     await manualPartReturn(part, qty);
+    refetchPart();
+  };
 
+  const onClickAddEbayItem = async (part: Part) => {
+    if (!await ask('Add this to pending eBay items?')) return;
+
+    const addOn = getAddOnFromPart(part);
+    await addEbayItem(addOn);
     refetchPart();
   };
 
@@ -285,20 +294,34 @@ export default function PartDetails() {
             <Button onClick={() => onClickPrintInjTag()}>Print Inj Tag</Button>
             <Button onClick={() => setPartQtyHistoryOpen(true)} disabled={history.length === 0}>Qty History</Button>
             <Button onClick={() => onClickManualReturn(part)}>Manual Return</Button>
+            <Button onClick={() => onClickAddEbayItem(part)}>Add eBay Item</Button>
             {part.listingId &&
               <a
                 href={`https://www${import.meta.env.DEV ? '.sandbox' : ''}.ebay.com/itm/${part.listingId}`}
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                Ebay Listing
+                eBay Listing
               </a>
             }
           </div>
 
-
-          { part.imageExists && picturesOpen && <PartPicturesDialog open={picturesOpen} setOpen={setPicturesOpen} pictures={pictures} partNum={part.partNum} /> }
-          { part.snImageExists && snPicturesOpen && <StockNumPicturesDialog open={snPicturesOpen} setOpen={setSnPicturesOpen} pictures={snPictures} stockNum={part.stockNum} /> }
+          {(part.imageExists && picturesOpen) &&
+            <PartPicturesDialog
+              open={picturesOpen}
+              setOpen={setPicturesOpen}
+              pictures={pictures}
+              partNum={part.partNum}
+            />
+          }
+          {(part.snImageExists && snPicturesOpen) &&
+            <StockNumPicturesDialog
+              open={snPicturesOpen}
+              setOpen={setSnPicturesOpen}
+              pictures={snPictures}
+              stockNum={part.stockNum}
+            />
+          }
 
           <Grid>
             <GridItem colSpan={6} variant={['no-style']}>
