@@ -51,6 +51,11 @@
   }
 }
 
+.tab-dragging,
+.tab-dragging * {
+  cursor: grabbing !important;
+}
+
 .navbar-tab {
   position: relative;
   border-bottom: 2px solid var(--grey-dark-2);

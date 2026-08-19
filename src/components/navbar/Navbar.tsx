@@ -5,7 +5,7 @@ import ShopNavbar from "./ShopNavbar";
 import Button from "../library/Button";
 import { useNavState } from "../../hooks/useNavState";
 import ContextMenu from "../library/ContextMenu";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import NavTab from "./NavTab";
 import { prompt } from "../library/Prompt";
 
@@ -15,6 +15,8 @@ export default function Navbar() {
   const { tabs, setTabs, forward, backward, changeTab, newTab, deleteTab } = useNavState();
   const [menuOpen, setMenuOpen] = useState(false);
   const [selectedTab, setSelectedTab] = useState<Tab | null>(null);
+  const draggedTab = useRef<number | null>(null);
+  const lastDragTarget = useRef<string | null>(null);
 
   const handleRenameTab = async () => {
     const name = await prompt('Name');
@@ -24,6 +26,36 @@ export default function Navbar() {
       }
       return tab;
     }));
+  };
+
+  const handleTabDrag = (targetId: number, clientX: number) => {
+    const draggedId = draggedTab.current;
+    if (draggedId === null || draggedId === targetId) return;
+
+    const targetElement = document.querySelector<HTMLElement>(
+      `.navbar-tab[data-tabid="${targetId}"]`
+    );
+    if (!targetElement) return;
+
+    const rect = targetElement.getBoundingClientRect();
+    const insertAfter = clientX > rect.left + rect.width / 2;
+    const dragTarget = `${targetId}-${insertAfter ? 'after' : 'before'}`;
+    if (lastDragTarget.current === dragTarget) return;
+
+    lastDragTarget.current = dragTarget;
+
+    setTabs((prevTabs) => {
+      const draggedIndex = prevTabs.findIndex((tab) => tab.id === draggedId);
+      const targetIndex = prevTabs.findIndex((tab) => tab.id === targetId);
+      if (draggedIndex === -1 || targetIndex === -1) return prevTabs;
+
+      const newTabs = [...prevTabs];
+      const [tab] = newTabs.splice(draggedIndex, 1);
+      const newTargetIndex = newTabs.findIndex((tab) => tab.id === targetId);
+      
+      newTabs.splice( newTargetIndex + (insertAfter ? 1 : 0), 0, tab);
+      return newTabs;
+    });
   };
 
 
@@ -41,7 +73,31 @@ export default function Navbar() {
         ]}
       />
 
-      <div className="navbar-tab__container">
+      <div
+        className="navbar-tab__container"
+        onPointerMove={(e) => {
+          if (draggedTab.current === null) return;
+
+          const element = document.elementFromPoint(e.clientX, e.clientY);
+          const tabElement = element?.closest<HTMLElement>('.navbar-tab');
+          if (!tabElement) return;
+
+          const targetId = Number(tabElement.dataset.tabid);
+          if (!targetId) return;
+
+          handleTabDrag(targetId, e.clientX);
+        }}
+        onPointerUp={() => {
+          draggedTab.current = null;
+          lastDragTarget.current = null;
+          document.body.classList.remove('tab-dragging');
+        }}
+        onPointerCancel={() => {
+          draggedTab.current = null;
+          lastDragTarget.current = null;
+          document.body.classList.remove('tab-dragging');
+        }}
+      >
         <div className="nav-buttons">
           <Button id="nav-buttons__back" onClick={backward}>&lt;</Button>
           <Button id="nav-buttons__foward" onClick={forward}>&gt;</Button>
@@ -56,6 +112,7 @@ export default function Navbar() {
               handleDeleteTab={deleteTab}
               setSelectedTab={setSelectedTab}
               closeBtnActive={tabs.length > 1}
+              draggedTab={draggedTab}
             />
           );
         })}
