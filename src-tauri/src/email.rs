@@ -409,10 +409,24 @@ pub fn email_end_of_day(args: EmailEndOfDayArgs) {
     MailItem.HTMLBody = {}
     MailItem.To = "{}"
     
+    Dim fso
+    Set fso = CreateObject("Scripting.FileSystemObject")
     Dim attachmentPath
     attachmentPath = Trim("{}")
+    
     If attachmentPath <> "" Then
-      MailItem.Attachments.Add attachmentPath
+      If fso.FileExists(attachmentPath) Then
+        MailItem.Attachments.Add attachmentPath
+      Else
+        MsgBox "ERROR: Could not find Karmak invoice file." & vbCrLf & _
+          "Handwritten ID: {}" & vbCrLf & _
+          "Filepath: " & attachmentPath, _
+          vbCritical, "Email End of Day"
+      End If
+    Else
+      MsgBox "ERROR: Attachment filepath is empty." & vbCrLf & _
+        "Handwritten ID: {}", _
+        vbCritical, "Email End of Day"
     End If
 
     MailItem.Display
@@ -420,7 +434,9 @@ pub fn email_end_of_day(args: EmailEndOfDayArgs) {
     args.date,
     body,
     args.email,
-    filepath
+    filepath,
+    args.id,
+    args.id
   );
 
   let vbs_path = "C:/mwd/scripts/email_end_of_day.vbs";
