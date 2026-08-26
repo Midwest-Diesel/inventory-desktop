@@ -1,10 +1,17 @@
 .add-ons {
   position: relative;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+  min-height: 80vh;
 
   &__top-buttons {
     display: flex;
     gap: 0.3rem;
     margin-bottom: 0.5rem;
+  }
+
+  .header__btn-container {
+    right: 0.5rem;
   }
 
   &__list {
