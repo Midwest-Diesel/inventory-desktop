@@ -56,22 +56,14 @@ export default function ContactsControls({ isEditing, setIsEditing, contact, set
   
   return (
     <div className="contacts-block__header">
-      <h3>Contacts</h3>
+      <div className="contacts-block__title">
+        <h3>Contacts</h3>
+        <Button type="button" onClick={onClickNewContact}>Add</Button>
+      </div>
 
       <div className="contacts-block__inputs">
         <div className="contacts-block__inputs">
           <Button type="button" onClick={() => onSelectChangeContact(openedContact)}>Set Contact</Button>
-          <Button type="button" onClick={onClickNewContact}>Add</Button>
-          
-          { (!isEditing && contact) && <Button type="button" onClick={() => setIsEditing(true)} variant={['blue']}>Edit</Button> }
-          {isEditing &&
-            <>
-              <Button type="button" onClick={onClickSaveContact} variant={['save']}>Save</Button>
-              <Button type="button" onClick={onClickCancelEdit}>Cancel</Button>
-            </>
-          }
-
-          { contact && <Button type="button" onClick={onClickDeleteContact} variant={['danger']}>Delete</Button> }
         </div>
 
         <Select
@@ -83,6 +75,18 @@ export default function ContactsControls({ isEditing, setIsEditing, contact, set
             return <option key={contact.id}>{ contact.name }</option>;
           })}
         </Select>
+
+        <div className="contacts-block__inputs">
+          { (!isEditing && contact) && <Button type="button" onClick={() => setIsEditing(true)} variant={['blue']}>Edit</Button> }
+          {isEditing &&
+            <>
+              <Button type="button" onClick={onClickSaveContact} variant={['save']}>Save</Button>
+              <Button type="button" onClick={onClickCancelEdit}>Cancel</Button>
+            </>
+          }
+
+          { contact && <Button type="button" onClick={onClickDeleteContact} variant={['danger']}>Delete</Button> }
+        </div>
       </div>
     </div>
   );

@@ -91,7 +91,6 @@ export default function EngineSearchDialog({ open, setOpen, onSearch, listOpen, 
       setOpen={setOpen}
       title="Engines Search"
       width={400}
-      height={600}
       className="engines-search-dialog"
     >
       <form onSubmit={(e) => handleSubmit(e)}>

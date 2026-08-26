@@ -32,6 +32,7 @@ export default function CustomerDetails({ customer, setCustomer, setIsEditing, o
   const commentsDoc = parser.parseFromString(customer?.comments ?? '', "text/html");
   const fleetNotesDoc = parser.parseFromString(customer?.fleetNotes ?? '', "text/html");
   const [company, setCompany] = useState<string>(customer.company ?? '');
+  const [contact, setContact] = useState<string>(customer.contact ?? '');
   const [phone, setPhone] = useState<string>(customer.phone ?? '');
   const [billToPhone, setBillToPhone] = useState<string>(customer.billToPhone ?? '');
   const [email, setEmail] = useState<string>(customer.email ?? '');
@@ -76,7 +77,7 @@ export default function CustomerDetails({ customer, setCustomer, setIsEditing, o
       ...customer,
       id: customer.id,
       company,
-      contact: customer.contact,
+      contact,
       phone,
       email,
       customerType,
@@ -197,7 +198,18 @@ export default function CustomerDetails({ customer, setCustomer, setIsEditing, o
                   <tbody>
                     <tr>
                       <th>Contact</th>
-                      <td><Input value={customer.contact ?? ''} disabled /></td>
+                      <td>
+                        <Select
+                          value={contact}
+                          onChange={(e) => setContact(e.target.value)}
+                        >
+                          {customer.contacts.map((c) => {
+                            return (
+                              <option key={c.id}>{ c.name }</option>
+                            );
+                          })}
+                        </Select>
+                      </td>
                     </tr>
                     <tr>
                       <th>Phone</th>
@@ -432,7 +444,7 @@ export default function CustomerDetails({ customer, setCustomer, setIsEditing, o
                 <CustomerContactsBlock customer={customer} setCustomer={setCustomer} />
 
                 <Checkbox
-                  variant={['label-bold', 'label-align-center']}
+                  variant={['label-bold', 'label-align-center', 'label-fit']}
                   label="TAXABLE"
                   checked={isTaxable}
                   onChange={(e) => setIsTaxable(e.target.checked)}

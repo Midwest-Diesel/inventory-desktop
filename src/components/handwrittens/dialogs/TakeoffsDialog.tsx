@@ -94,7 +94,7 @@ export default function TakeoffsDialog({ open, setOpen, item, unitPrice, refetch
     const costMatches = formatCurrency(Number(part.purchasePrice)) === formatCurrency(Number(item.cost));
 
     if (!isPartGroup && !costMatches) {
-      alert(`Part cost of ${formatCurrency(part.purchasePrice)} doesn't equal line item cost of ${formatCurrency(item.cost)}`);
+      alert(`Part cost of ${formatCurrency(part.purchasePrice)} doesn't equal line item cost of ${formatCurrency(item.cost)}. Update cost on part record.`);
       return;
     }
 

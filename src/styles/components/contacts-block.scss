@@ -12,11 +12,27 @@
     margin-bottom: 0.3rem;
   }
 
+  &__title {
+    display: flex;
+    gap: 0.4rem;
+    margin-bottom: 0.5rem;
+
+    button {
+      font-size: var(--font-xsm);
+      height: fit-content;
+    }
+  }
+
   &__inputs {
     display: flex;
     gap: 0.4rem;
     margin: 0 0 0.2rem;
     flex-wrap: wrap;
+
+    button {
+      font-size: var(--font-xsm);
+      height: fit-content;
+    }
   }
 
   &__row {
