@@ -230,7 +230,6 @@ type Core = {
 
 type Handwritten = {
   id: number
-  invoiceId: number
   legacyId: number | null
   customer: Customer
   handwrittenItems: HandwrittenItem[]

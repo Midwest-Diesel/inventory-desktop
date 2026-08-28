@@ -170,6 +170,12 @@ export const getCustomerTypes = async () => {
 
 export const addCustomer = async (customer: string): Promise<number | null> => {
   try {
+    const existingCustomer = await getCustomerByName(customer);
+    if (existingCustomer) {
+      alert('Customer already exists');
+      return null;
+    }
+
     const res = await api.post('/api/customers', { name: customer });
     const id = Number(res.data.id);
     if (id === 0) return null;
