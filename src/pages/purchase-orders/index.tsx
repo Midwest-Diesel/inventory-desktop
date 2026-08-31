@@ -55,6 +55,7 @@ export default function PurchaseOrders() {
 
   const handleNewPurchaseOrder = async () => {
     await addBlankPurchaseOrder();
+    clearSearch();
     await refetch();
   };
 
