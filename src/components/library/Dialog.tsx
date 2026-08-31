@@ -30,8 +30,10 @@ export default function Dialog({ children, className = '', variant = [], title, 
   const classes = generateClasses(className, variant, 'dialog');
 
   useEffect(() => {
-    bindEventListeners();
+    const cleanup = bindEventListeners();
     setupOrder();
+
+    return cleanup;
   }, []);
 
   useEffect(() => {

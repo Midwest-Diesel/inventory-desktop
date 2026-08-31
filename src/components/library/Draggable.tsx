@@ -1,4 +1,4 @@
-import { ReactElement } from "react";
+import { cloneElement, ReactElement, useRef } from "react";
 import ReactDraggable from "react-draggable";
 
 interface Props {
@@ -10,9 +10,17 @@ interface Props {
 
 
 export default function Draggable({ children, handle, y = 50, x = 550 }: Props) {
+  const nodeRef = useRef<HTMLDivElement>(null);
+
+
   return (
-    <ReactDraggable handle={handle} bounds="body" defaultPosition={{ x: x, y: y }}>
-      { children }
+    <ReactDraggable
+      nodeRef={nodeRef}
+      handle={handle}
+      bounds="body"
+      defaultPosition={{ x: x, y: y }}
+    >
+      {cloneElement(children, { ref: nodeRef, })}
     </ReactDraggable>
   );
 }
