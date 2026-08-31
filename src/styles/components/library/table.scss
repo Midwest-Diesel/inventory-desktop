@@ -115,3 +115,12 @@
     }
   }
 }
+
+.plain-tr {
+  background-color: transparent !important;
+
+  td {
+    background-color: transparent !important;
+    border-color: transparent;
+  }
+}

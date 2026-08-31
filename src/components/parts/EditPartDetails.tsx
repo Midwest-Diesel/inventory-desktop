@@ -645,12 +645,12 @@ export default function EditPartDetails({ part, setPart, setIsEditingPart, partC
                         :
                         <p style={{ marginLeft: '0.8rem' }} data-testid="alt-parts">{ altParts.join(', ') }</p>
                       :
-                      <center>
+                      <div style={{ display: 'flex', justifyContent: 'center' }}>
                         <p>Modifying Alts</p>
                         <p>DO NOT exit</p>
                         <p>{ loadingProgress }</p>
                         <Loading />
-                      </center>
+                      </div>
                     }
                   </td>
                 </tr>

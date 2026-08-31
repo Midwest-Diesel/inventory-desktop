@@ -125,12 +125,16 @@ export default function EditWeightDims({ weightDims, setWeightDims }: Props) {
         </tr>
       ))}
 
-      <Button
-        variant={['xx-small', 'fit']}
-        onClick={onClickAddRow}
-      >
-        Add
-      </Button>
+      <tr className="plain-tr">
+        <td>
+          <Button
+            variant={['xx-small', 'fit']}
+            onClick={onClickAddRow}
+          >
+            Add
+          </Button>
+        </td>
+      </tr>
     </>
   );
 }

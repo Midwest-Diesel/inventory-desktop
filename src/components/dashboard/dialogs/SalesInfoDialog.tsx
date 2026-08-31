@@ -80,6 +80,8 @@ export default function SalesInfo({ open, setOpen }: Props) {
         <div>
           <h3>Sales History</h3>
           <div className="sales-info__sales-history">
+            { isFetching && <Loading /> }
+
             <Table>
               <thead>
                 <tr>
@@ -94,7 +96,6 @@ export default function SalesInfo({ open, setOpen }: Props) {
                 </tr>
               </thead>
               <tbody>
-                { isFetching && <Loading /> }
                 {!isFetching && salesInfo?.sales.map((info: SalesInfoSales, i) => {
                   return (
                     <tr key={i}>

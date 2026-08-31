@@ -9,6 +9,15 @@ exclude_patterns = [
 [smells]
 mode = "comment"
 
+[smells.function_complexity]
+threshold = 80
+
+[smells.file_complexity]
+threshold = 100
+
+[smells.return_statements]
+enabled = false
+
 [[source]]
 name = "default"
 default = true

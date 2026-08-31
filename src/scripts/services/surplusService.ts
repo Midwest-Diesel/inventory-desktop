@@ -14,8 +14,8 @@ export const getAllSurplus = async () => {
   try {
     const res = await api.get('/api/surplus');
     return parseSurplusDataRes(res.data);
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
   }
 };
 
@@ -24,42 +24,48 @@ export const getSurplusByCode = async (code: string | null): Promise<Surplus | n
     if (!code) return null;
     const res = await api.get(`/api/surplus/code/${code}`);
     return parseSurplusDataRes(res.data)[0];
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
     return null;
   }
 };
 
 export const getSurplusSoldParts = async (code: string): Promise<any[]> => {
   try {
-    const res = await api.get(`/api/surplus/sold/${code}`);
+    if (!code) return [];
+    const params = { code };
+    const res = await api.get(`/api/surplus/sold`, { params });
     return res.data.map((d: any) => {
       return { ...d, soldToDate: parseResDate(d.soldToDate) };
     });
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
     return [];
   }
 };
 
 export const getSurplusRemainingParts = async (code: string): Promise<any[]> => {
   try {
-    const res = await api.get(`/api/surplus/remaining/${code}`);
+    if (!code) return [];
+    const params = { code };
+    const res = await api.get(`/api/surplus/remaining`, { params });
     return res.data.map((d: any) => {
       return { ...d, soldToDate: parseResDate(d.soldToDate) };
     });
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
     return [];
   }
 };
 
 export const getSurplusCostRemaining = async (code: string): Promise<number | null> => {
   try {
-    const res = await api.get(`/api/surplus/cost-remaining/${code}`);
+    if (!code) return null;
+    const params = { code };
+    const res = await api.get(`/api/surplus/cost-remaining`, { params });
     return res.data.costRemaining;
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
     return null;
   }
 };
@@ -69,8 +75,8 @@ export const getSurplusCostRemaining = async (code: string): Promise<number | nu
 export const addSurplus = async (surplus: Surplus) => {
   try {
     await api.post('/api/surplus', surplus);
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
   }
 };
 
@@ -79,7 +85,7 @@ export const addSurplus = async (surplus: Surplus) => {
 export const zeroAllSurplusItems = async (vendor: string) => {
   try {
     await api.put('/api/surplus/zero-all', { vendor });
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
   }
 };

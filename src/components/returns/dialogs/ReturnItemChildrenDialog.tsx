@@ -52,8 +52,9 @@ export default function ReturnItemChildrenDialog({ open, setOpen, returnItemChil
       width={500}
       className="return-item-children-dialog"
     >
-      <form onSubmit={handleSave}>
-        <Button variant={['fit', 'no-hover-color']} type="submit">Save</Button>
+      <div>
+        <Button variant={['fit', 'no-hover-color']} onClick={handleSave}>Save</Button>
+
         <Table>
           <thead>
             <tr>
@@ -83,15 +84,16 @@ export default function ReturnItemChildrenDialog({ open, setOpen, returnItemChil
                     />
                   </td>
                   <td>
-                    <Button variant={['danger']} type="button" onClick={() => handleDelete(row.id)}>Delete</Button>
+                    <Button variant={['danger']} onClick={() => handleDelete(row.id)}>Delete</Button>
                   </td>
                 </tr>
               );
             })}
           </tbody>
         </Table>
-        <Button variant={['fit']} type="button" onClick={handleNewRow}>New</Button>
-      </form>
+
+        <Button variant={['fit']} onClick={handleNewRow}>New</Button>
+      </div>
     </Dialog>
   );
 }

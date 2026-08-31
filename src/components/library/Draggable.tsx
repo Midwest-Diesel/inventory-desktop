@@ -20,7 +20,7 @@ export default function Draggable({ children, handle, y = 50, x = 550 }: Props) 
       bounds="body"
       defaultPosition={{ x: x, y: y }}
     >
-      {cloneElement(children, { ref: nodeRef, })}
+      { cloneElement(children, { ref: nodeRef }) }
     </ReactDraggable>
   );
 }
