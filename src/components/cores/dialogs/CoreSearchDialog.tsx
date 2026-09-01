@@ -89,7 +89,7 @@ export default function CoreSearchDialog({ open, setOpen, onSearch }: Props) {
           variant={['label-space-between', 'label-inline']}
           label="Priority"
           value={priority}
-          onChange={(e: any) => setPriority(e.target.value)}
+          onChange={(e) => setPriority(e.target.value as any)}
         >
           <option value="">Both</option>
           <option value="HIGH">High</option>

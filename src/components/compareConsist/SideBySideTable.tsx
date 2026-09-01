@@ -354,7 +354,7 @@ export default function SideBySideTable({ customer, customerEngineData, mwdEngin
           type="number"
           step="any"
           value={price}
-          onChange={(e: any) => setPrice(e.target.value)}
+          onChange={(e) => setPrice(e.target.value)}
         />
       </div>
 

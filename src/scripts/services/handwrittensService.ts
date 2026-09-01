@@ -31,13 +31,13 @@ export const parseHandwrittenRes = (data: any) => {
     return {
       ...handwritten,
       date: handwritten.date && parseResDate(handwritten.date),
-      handwrittenItems: filterNullObjValuesArr(handwritten.handwrittenItems.filter((item: HandwrittenItem) => item)).map((item: any) => {
+      handwrittenItems: filterNullObjValuesArr(handwritten.handwrittenItems.filter((item: HandwrittenItem) => item)).map((item) => {
         return {
           ...item,
           date: item.date && parseResDate(item.date),
           invoiceItemChildren: item.invoiceItemChildren ? item.invoiceItemChildren : []
         };
-      }).sort((a: any, b: any) => b.id - a.id)
+      }).sort((a, b) => b.id - a.id)
     };
   });
 };

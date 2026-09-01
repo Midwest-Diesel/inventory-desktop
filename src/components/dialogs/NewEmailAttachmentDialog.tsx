@@ -74,14 +74,14 @@ export default function NewEmailAttachmentDialog({ open, setOpen, refetch }: Pro
           label="Name"
           variant={['small', 'thin', 'label-no-stack', 'label-space-between']}
           value={name}
-          onChange={(e: any) => setName(e.target.value)}
+          onChange={(e) => setName(e.target.value)}
           required
         />
         <Input
           label="Files"
           type="file"
           variant={['small', 'thin', 'label-no-stack', 'label-space-between']}
-          onChange={(e: any) => setFiles(e.target.files)}
+          onChange={(e) => setFiles(Array.from(e.target.files ?? []))}
           multiple
           required
         />

@@ -42,7 +42,7 @@ export default function CoreFamilySearchDialog({ open, setOpen }: Props) {
           label="Core Family"
           variant={['small', 'thin', 'label-no-stack', 'label-space-between', 'label-bold']}
           value={coreFamily}
-          onChange={(e: any) => setCoreFamily(e.target.value)}
+          onChange={(e) => setCoreFamily(e.target.value)}
         />
 
         <div className="form__footer">

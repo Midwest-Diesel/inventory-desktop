@@ -1,7 +1,8 @@
 import { generateClasses, parseClasses } from "@/scripts/tools/utils";
+import { ReactNode } from "react";
 
 interface Props extends ButtonHTML {
-  children: any
+  children: ReactNode
   className?: string
   variant?: ('no-style' | 'small' | 'x-small' | 'xx-small' | 'large' | 'no-hover-color' |'hover-move' | 'search' | 'X' | 'circle' | 'center' | 'plain' | 'save' | 'blue' | 'green' | 'red-color' | 'link' | 'fit' | 'danger')[]
   type?: 'submit' | 'reset' | 'button'

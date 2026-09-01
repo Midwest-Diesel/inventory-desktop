@@ -63,7 +63,7 @@ export default function POSearchDialog({ open, setOpen, limit, page }: Props) {
           variant={['small', 'thin', 'label-no-stack', 'label-space-between']}
           label="PO Number"
           value={poNum}
-          onChange={(e: any) => setPoNum(e.target.value)}
+          onChange={(e) => setPoNum(e.target.value)}
           type="number"
         />
 
@@ -71,7 +71,7 @@ export default function POSearchDialog({ open, setOpen, limit, page }: Props) {
           variant={['small', 'thin', 'label-no-stack', 'label-space-between']}
           label="Date"
           value={parseDateInputValue(date)}
-          onChange={(e: any) => setDate(new Date(e.target.value))}
+          onChange={(e) => setDate(new Date(e.target.value))}
           type="date"
         />
 
@@ -79,21 +79,21 @@ export default function POSearchDialog({ open, setOpen, limit, page }: Props) {
           variant={['small', 'thin', 'label-no-stack', 'label-space-between']}
           label="Purchased From"
           value={purchasedFrom}
-          onChange={(e: any) => setPurchasedFrom(e.target.value)}
+          onChange={(e) => setPurchasedFrom(e.target.value)}
         />
 
         <Input
           variant={['small', 'thin', 'label-no-stack', 'label-space-between']}
           label="Purchased For"
           value={purchasedFor}
-          onChange={(e: any) => setPurchasedFor(e.target.value)}
+          onChange={(e) => setPurchasedFor(e.target.value)}
         />
 
         <Select
           variant={['label-space-between', 'label-inline']}
           label="Is Item Received"
           value={isItemReceived}
-          onChange={(e: any) => setIsItemReceived(e.target.value)}
+          onChange={(e) => setIsItemReceived(e.target.value as any)}
         >
           <option value="">Both</option>
           <option value="TRUE">True</option>
@@ -104,7 +104,7 @@ export default function POSearchDialog({ open, setOpen, limit, page }: Props) {
           variant={['small', 'thin', 'label-no-stack', 'label-space-between']}
           label="Ordered By"
           value={orderedBy}
-          onChange={(e: any) => setOrderedBy(e.target.value)}
+          onChange={(e) => setOrderedBy(e.target.value)}
         />
 
         <div className="form__footer">

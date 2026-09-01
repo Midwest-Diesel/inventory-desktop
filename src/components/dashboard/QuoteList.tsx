@@ -54,11 +54,11 @@ export default function QuoteList({ quotes, setQuotes, onInvoiceQuote, onChangeP
     onChangePage(null, page);
   };
 
-  const handleQuoteSale = async (e: any, quote: Quote) => {
-    if (!await ask(`Mark quote as ${e.target.checked ? 'Sold' : 'Unsold'}`)) return;
-    await toggleQuoteSold(quote.id, !e.target.checked);
-    setQuotes(quotes.map((q) => q.id === quote.id ? { ...q, sale: !e.target.checked } : q));
-    setQuotesData(quotesData.map((q) => q.id === quote.id ? { ...q, sale: !e.target.checked } : q));
+  const handleQuoteSale = async (sold: boolean, quote: Quote) => {
+    if (!await ask(`Mark quote as ${sold ? 'Sold' : 'Unsold'}`)) return;
+    await toggleQuoteSold(quote.id, !sold);
+    setQuotes(quotes.map((q) => q.id === quote.id ? { ...q, sale: !sold } : q));
+    setQuotesData(quotesData.map((q) => q.id === quote.id ? { ...q, sale: !sold } : q));
   };
   
 
@@ -161,7 +161,7 @@ export default function QuoteList({ quotes, setQuotes, onInvoiceQuote, onChangeP
                     <td className="cbx-td" style={ quote.sale ? { backgroundColor: 'var(--green-dark-2)' } : {}}>
                       <Checkbox
                         checked={quote.sale}
-                        onChange={(e) => handleQuoteSale(e, quote)}
+                        onChange={(e) => handleQuoteSale(e.target.checked, quote)}
                       />
                     </td>
                   </tr>
@@ -187,7 +187,7 @@ export default function QuoteList({ quotes, setQuotes, onInvoiceQuote, onChangeP
                                       label="Add to Email"
                                       variant={['label-bold', 'label-align-center', 'label-vertical-align']}
                                       checked={piggybackQuote.addToEmail}
-                                      onChange={(e: any) => handleAddToEmail(quote.id, e.target.checked)}
+                                      onChange={(e) => handleAddToEmail(quote.id, e.target.checked)}
                                     />
                                   </div>
                                 </li>

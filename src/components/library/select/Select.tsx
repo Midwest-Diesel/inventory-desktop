@@ -1,7 +1,8 @@
 import { generateClasses, parseClasses } from "@/scripts/tools/utils";
+import { ReactNode } from "react";
 
 interface Props extends SelectHTML {
-  children: any
+  children: ReactNode
   className?: string
   labelClass?: string
   variant?: ('label-inline' | 'label-space-between' | 'label-full-width' | 'label-stack' | 'large' | 'label-bold')[]

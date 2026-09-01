@@ -26,7 +26,7 @@ export default function Dashboard() {
   const [user] = useAtom<User>(userAtom);
   const [recentPartSearches, setRecentPartSearches] = useAtom<RecentPartSearch[]>(recentPartSearchesAtom);
   const [recentQuoteSearches] = useAtom<RecentQuoteSearch[]>(recentQuotesAtom);
-  const [customer] = useAtom<Customer>(selectedCustomerAtom);
+  const [customer] = useAtom<Customer | null>(selectedCustomerAtom);
   const [, setHandwrittenCustomer] = useState<Customer | null>(null);
   const [selectHandwrittenOpen, setSelectHandwrittenOpen] = useState(false);
   const [selectedHandwrittenPart, setSelectedHandwrittenPart] = useState<Part | null>(null);
@@ -44,8 +44,8 @@ export default function Dashboard() {
     queryKey: ['recentPartSearches', user],
     queryFn: async () => {
       if (!user || isObjectNull(user)) return [];
-      const prevSearch: any = localStorage.getItem('altPartSearches') || localStorage.getItem('partSearches');
-      const partNum = JSON.parse(prevSearch)?.partNum.replace('*', '');
+      const prevSearch: string | null = localStorage.getItem('altPartSearches') || localStorage.getItem('partSearches');
+      const partNum = prevSearch ? JSON.parse(prevSearch).partNum.replace('*', '') : null;
       return await getRecentPartSearches(partNum && partNum !== '' ? partNum : '*');
     },
     enabled: !!user && !isObjectNull(user)
@@ -128,20 +128,22 @@ export default function Dashboard() {
   };
 
   const handleNewQuote = async (part?: Part) => {
-    const newQuote: any = {
+    const newQuote = {
       date: new Date(),
       source: null,
-      customerId: customer?.id,
-      contact: customer ? customer.contact : '',
-      phone: customer ? customer.phone : '',
-      state: customer ? customer.billToState : '',
-      partNum: part?.partNum,
+      customerId: customer ? Number(customer.id) : null,
+      contact: customer?.contact ?? '',
+      phone: customer?.phone ?? '',
+      email: '',
+      state: customer?.billToState ?? '',
+      partNum: part?.partNum ?? '',
       desc: part?.desc ?? '',
-      stockNum: part?.stockNum,
+      stockNum: part?.stockNum ?? '',
       price: 0,
+      rating: 0,
       notes: null,
       salesmanId: user.id,
-      partId: part?.id
+      partId: part ? part.id : null
     };
     await addQuote(newQuote);
     const res = await getSomeQuotes(1, 26, '', 0, quoteListType === 'engine');

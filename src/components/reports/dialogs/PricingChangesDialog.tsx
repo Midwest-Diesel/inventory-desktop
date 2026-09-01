@@ -36,7 +36,7 @@ export default function PricingChangesDialog({ open, setOpen, openTable, setTabl
     openTable();
     setOpen(false);
 
-    const oldList: any = await readFile(`${fileStoragePath}/pricing_changes.xlsx`);
+    const oldList = await readFile(`${fileStoragePath}/pricing_changes.xlsx`);
     const filteredList = getModifiedRows(oldList);
     await uploadFile(file, `${fileStoragePath}/pricing_changes.xlsx`);
     await uploadFile(
@@ -131,8 +131,8 @@ export default function PricingChangesDialog({ open, setOpen, openTable, setTabl
     const sheetName = workbook.SheetNames[0];
     const worksheet = workbook.Sheets[sheetName];
 
-    const jsonData = XLSX.utils.sheet_to_json(worksheet);
-    return jsonData.map((row: any) => ({
+    const jsonData = XLSX.utils.sheet_to_json<any>(worksheet);
+    return jsonData.map((row) => ({
       partNum: `${row.PART_NUMBER}`.trim(),
       desc: row.PART_DESCRIPTION,
       qty: Number(row.AVAILABLE_QTY),
@@ -188,7 +188,7 @@ export default function PricingChangesDialog({ open, setOpen, openTable, setTabl
       const workbook = XLSX.read(data, { type: "array" });
       const firstSheetName = workbook.SheetNames[0];
       const worksheet = workbook.Sheets[firstSheetName];
-      const jsonData: any = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+      const jsonData = XLSX.utils.sheet_to_json<any>(worksheet, { header: 1 });
       setList(formatFile(jsonData).filter((row) => row.partNum));
     };
     reader.readAsArrayBuffer(file);
@@ -209,7 +209,7 @@ export default function PricingChangesDialog({ open, setOpen, openTable, setTabl
         <Input
           label="Upload Spreadsheet"
           variant={['label-bold']}
-          onChange={(e: any) => handleFile(e)}
+          onChange={(e) => handleFile(e)}
           accept=".xlsx,.xls"
           type="file"
         />

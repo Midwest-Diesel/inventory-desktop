@@ -1,7 +1,8 @@
 import { generateClasses, parseClasses } from "@/scripts/tools/utils";
+import { ReactNode } from "react";
 
 interface Props extends TableHTML {
-  children: any
+  children: ReactNode
   variant?: ('plain' | 'row-details' | 'edit-row-details' | 'fit')[]
 }
 

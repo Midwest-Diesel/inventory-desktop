@@ -93,7 +93,7 @@ export default function NewEngineQuoteDialog({ open, setOpen, engine, onNewQuote
             label="Source"
             variant={['label-bold', 'label-stack']}
             value={source}
-            onChange={(e: any) => setSource(e.target.value)}
+            onChange={(e) => setSource(e.target.value)}
           />
           
           <CustomerDropdown
@@ -109,7 +109,7 @@ export default function NewEngineQuoteDialog({ open, setOpen, engine, onNewQuote
             label="Description"
             variant={['label-full-width', 'small', 'thin', 'label-bold', 'label-stack']}
             value={desc}
-            onChange={(e: any) => setDesc(e.target.value)}
+            onChange={(e) => setDesc(e.target.value)}
             data-testid="desc"
           />
 
@@ -117,7 +117,7 @@ export default function NewEngineQuoteDialog({ open, setOpen, engine, onNewQuote
             label="Price"
             variant={['label-full-width', 'small', 'thin', 'label-bold', 'label-stack']}
             value={price}
-            onChange={(e: any) => setPrice(e.target.value)}
+            onChange={(e) => setPrice(e.target.value)}
             type="number"
             step="any"
             required
@@ -130,7 +130,7 @@ export default function NewEngineQuoteDialog({ open, setOpen, engine, onNewQuote
             rows={5}
             cols={100}
             value={notes}
-            onChange={(e: any) => setNotes(e.target.value)}
+            onChange={(e) => setNotes(e.target.value)}
           />
 
           <div className="form__footer">

@@ -94,7 +94,7 @@ export default function AddOnAltPartsDialog({ open, setOpen, addOn, partNumList 
           value={partNum}
           autofill={autofillPartNum}
           onAutofill={(value) => setPartNum(value)}
-          onChange={(e: any) => {
+          onChange={(e) => {
             setPartNum(e.target.value.toUpperCase());
             autofillFromPartNum(e.target.value.toUpperCase());
           }}

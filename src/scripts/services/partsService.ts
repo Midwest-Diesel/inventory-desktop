@@ -322,7 +322,7 @@ export const addPart = async (part: Part, partInfoExists: boolean): Promise<numb
       await api.put('/api/parts/parts-info/add', { partNums: filteredAlts, altParts: includedAlts });
       
       // Updates alt parts
-      let altsToAdd: any[] = [];
+      let altsToAdd: string[] = [];
       const res = await searchAltParts({ partNum: `*${filteredAlts[0]}`, showSoldParts: true }, 1, 999999999) ?? [];
       res.rows.forEach((part) => {
         altsToAdd.push(...part.altParts);

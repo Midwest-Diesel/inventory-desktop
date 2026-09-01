@@ -36,7 +36,7 @@ interface Props {
 export default function EditPartDetails({ part, setPart, setIsEditingPart, partCostInData, engineCostOutData, setPartCostInData, setEngineCostOutData }: Props) {
   const [user] = useAtom<User>(userAtom);
   const [desc, setDesc] = useState<string>(part.desc ?? '');
-  const [qty, setQty] = useState<number>(part.qty);
+  const [qty, setQty] = useState<number | null>(part.qty);
   const [partNum, setPartNum] = useState<string>(part.partNum ?? '');
   const [stockNum, setStockNum] = useState<string>(part.stockNum ?? '');
   const [location, setLocation] = useState<string>(part.location ?? '');
@@ -44,7 +44,7 @@ export default function EditPartDetails({ part, setPart, setIsEditingPart, partC
   const [purchasedFrom, setPurchasedFrom] = useState<string>(part.purchasedFrom ?? '');
   const [condition, setCondition] = useState<string>(part.condition ?? '');
   const [fastTrackStatus, setFastTrackStatus] = useState<string>(part.fastTrackStatus ?? '');
-  const [rating, setRating] = useState<number>(part.rating ?? 0);
+  const [rating, setRating] = useState<number | null>(part.rating ?? 0);
   const [entryDate, setEntryDate] = useState<Date | null>(part.entryDate);
   const [reconDate, setReconDate] = useState<Date | null>(part.reconDate);
   const [remarks, setRemarks] = useState<string>(part.remarks ?? '');
@@ -394,9 +394,9 @@ export default function EditPartDetails({ part, setPart, setIsEditingPart, partC
                   <td>
                     <Input
                       variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
-                      value={qty}
+                      value={qty ?? ''}
                       type="number"
-                      onChange={(e: any) => setQty(e.target.value)}
+                      onChange={(e) => setQty(e.target.value ? Number(e.target.value) : null)}
                       required
                       data-testid="qty"
                     />
@@ -408,7 +408,7 @@ export default function EditPartDetails({ part, setPart, setIsEditingPart, partC
                     <Input
                       variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                       value={stockNum}
-                      onChange={(e: any) => setStockNum(e.target.value)}
+                      onChange={(e) => setStockNum(e.target.value)}
                       required
                     />
                   </td>
@@ -419,7 +419,7 @@ export default function EditPartDetails({ part, setPart, setIsEditingPart, partC
                     <Input
                       variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                       value={location}
-                      onChange={(e: any) => setLocation(e.target.value)}
+                      onChange={(e) => setLocation(e.target.value)}
                     />
                   </td>
                 </tr>
@@ -449,7 +449,7 @@ export default function EditPartDetails({ part, setPart, setIsEditingPart, partC
                     <Input
                       variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                       value={purchasedFrom}
-                      onChange={(e: any) => setPurchasedFrom(e.target.value)}
+                      onChange={(e) => setPurchasedFrom(e.target.value)}
                     />
                   </td>
                 </tr>
@@ -459,7 +459,7 @@ export default function EditPartDetails({ part, setPart, setIsEditingPart, partC
                     <Select
                       variant={['label-space-between', 'label-full-width', 'label-bold']}
                       value={condition}
-                      onChange={(e: any) => setCondition(e.target.value)}
+                      onChange={(e) => setCondition(e.target.value)}
                     >
                       <option value="">-- SELECT CONDITION --</option>
                       <option value="Core">Core</option>
@@ -484,9 +484,9 @@ export default function EditPartDetails({ part, setPart, setIsEditingPart, partC
                   <td>
                     <Input
                       variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
-                      value={rating}
+                      value={rating ?? ''}
                       type="number"
-                      onChange={(e: any) => setRating(e.target.value)}
+                      onChange={(e) => setRating(e.target.value ? Number(e.target.value) : null)}
                     />
                   </td>
                 </tr>
@@ -497,7 +497,7 @@ export default function EditPartDetails({ part, setPart, setIsEditingPart, partC
                       variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                       type="date"
                       value={parseDateInputValue(entryDate)}
-                      onChange={(e: any) => setEntryDate(new Date(e.target.value))}
+                      onChange={(e) => setEntryDate(new Date(e.target.value))}
                     />
                   </td>
                 </tr>
@@ -508,7 +508,7 @@ export default function EditPartDetails({ part, setPart, setIsEditingPart, partC
                       variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                       type="date"
                       value={parseDateInputValue(reconDate)}
-                      onChange={(e: any) => setReconDate(new Date(e.target.value))}
+                      onChange={(e) => setReconDate(new Date(e.target.value))}
                     />
                   </td>
                 </tr>
@@ -518,7 +518,7 @@ export default function EditPartDetails({ part, setPart, setIsEditingPart, partC
                     <Input
                       variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                       value={coreFam ?? ''}
-                      onChange={(e: any) => setCoreFamily(e.target.value)}
+                      onChange={(e) => setCoreFamily(e.target.value)}
                     />
                   </td>
                 </tr>
@@ -547,7 +547,7 @@ export default function EditPartDetails({ part, setPart, setIsEditingPart, partC
                     <Input
                       variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                       value={listPrice ?? ''}
-                      onChange={(e: any) => setListPrice(e.target.value)}
+                      onChange={(e) => setListPrice(e.target.value ? Number(e.target.value) : null)}
                       type="number"
                       step="any"
                     />
@@ -559,7 +559,7 @@ export default function EditPartDetails({ part, setPart, setIsEditingPart, partC
                     <Input
                       variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                       value={fleetPrice ?? ''}
-                      onChange={(e: any) => setFleetPrice(e.target.value)}
+                      onChange={(e) => setFleetPrice(e.target.value ? Number(e.target.value) : null)}
                       type="number"
                       step="any"
                     />
@@ -571,7 +571,7 @@ export default function EditPartDetails({ part, setPart, setIsEditingPart, partC
                     <Input
                       variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                       value={remanListPrice ?? ''}
-                      onChange={(e: any) => setRemanListPrice(e.target.value)}
+                      onChange={(e) => setRemanListPrice(e.target.value ? Number(e.target.value) : null)}
                       type="number"
                       step="any"
                     />
@@ -583,7 +583,7 @@ export default function EditPartDetails({ part, setPart, setIsEditingPart, partC
                     <Input
                       variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                       value={remanFleetPrice ?? ''}
-                      onChange={(e: any) => setRemanFleetPrice(e.target.value)}
+                      onChange={(e) => setRemanFleetPrice(e.target.value ? Number(e.target.value) : null)}
                       type="number"
                       step="any"
                     />
@@ -595,7 +595,7 @@ export default function EditPartDetails({ part, setPart, setIsEditingPart, partC
                     <Input
                       variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                       value={corePrice ?? ''}
-                      onChange={(e: any) => setCorePrice(e.target.value)}
+                      onChange={(e) => setCorePrice(e.target.value ? Number(e.target.value) : null)}
                       type="number"
                       step="any"
                     />
@@ -617,7 +617,7 @@ export default function EditPartDetails({ part, setPart, setIsEditingPart, partC
                       rows={5}
                       cols={100}
                       value={salesNotes}
-                      onChange={(e: any) => setSalesNotes(e.target.value)}
+                      onChange={(e) => setSalesNotes(e.target.value)}
                     />
                   </td>
                 </tr>
@@ -662,7 +662,7 @@ export default function EditPartDetails({ part, setPart, setIsEditingPart, partC
                       rows={5}
                       cols={100}
                       value={remarks}
-                      onChange={(e: any) => setRemarks(e.target.value)}
+                      onChange={(e) => setRemarks(e.target.value)}
                     />
                   </td>
                 </tr>
@@ -681,7 +681,7 @@ export default function EditPartDetails({ part, setPart, setIsEditingPart, partC
                       variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                       type="date"
                       value={parseDateInputValue(soldToDate)}
-                      onChange={(e: any) => setSoldToDate(new Date(e.target.value))}
+                      onChange={(e) => setSoldToDate(new Date(e.target.value))}
                     />
                   </td>
                 </tr>
@@ -691,7 +691,7 @@ export default function EditPartDetails({ part, setPart, setIsEditingPart, partC
                     <Input
                       variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                       value={qtySold ?? ''}
-                      onChange={(e: any) => setQtySold(e.target.value)}
+                      onChange={(e) => setQtySold(e.target.value ? Number(e.target.value) : null)}
                       type="number"
                     />
                   </td>
@@ -702,7 +702,7 @@ export default function EditPartDetails({ part, setPart, setIsEditingPart, partC
                     <Input
                       variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                       value={sellingPrice ?? ''}
-                      onChange={(e: any) => setSellingPrice(e.target.value)}
+                      onChange={(e) => setSellingPrice(e.target.value ? Number(e.target.value) : null)}
                       type="number"
                       step="any"
                     />
@@ -744,7 +744,7 @@ export default function EditPartDetails({ part, setPart, setIsEditingPart, partC
                     <Input
                       variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                       value={engineStockNum ?? ''}
-                      onChange={(e: any) => setEngineStockNum(e.target.value)}
+                      onChange={(e) => setEngineStockNum(e.target.value ? Number(e.target.value) : null)}
                       type="number"
                     />
                   </td>
@@ -784,7 +784,7 @@ export default function EditPartDetails({ part, setPart, setIsEditingPart, partC
                       <Input
                         variant={['x-small', 'thin', 'label-bold']}
                         value={item.cost ?? ''}
-                        onChange={(e: any) => handleChangePartCostIn({ ...item, cost: e.target.value }, i)}
+                        onChange={(e) => handleChangePartCostIn({ ...item, cost: e.target.value ? Number(e.target.value) : null }, i)}
                         type="number"
                         step="any"
                       />
@@ -793,7 +793,7 @@ export default function EditPartDetails({ part, setPart, setIsEditingPart, partC
                       <Select
                         variant={['label-bold']}
                         value={item.costType ?? ''}
-                        onChange={(e: any) => handleChangePartCostIn({ ...item, costType: e.target.value }, i)}
+                        onChange={(e) => handleChangePartCostIn({ ...item, costType: e.target.value as CostType }, i)}
                       >
                         <option value="">-- COST TYPE --</option>
                         <option>PurchasePrice</option>
@@ -824,7 +824,7 @@ export default function EditPartDetails({ part, setPart, setIsEditingPart, partC
                       <Input
                         variant={['x-small', 'thin', 'label-bold']}
                         value={item.note ?? ''}
-                        onChange={(e: any) => handleChangePartCostIn({ ...item, note: e.target.value }, i)}
+                        onChange={(e) => handleChangePartCostIn({ ...item, note: e.target.value }, i)}
                       />
                     </td>
                     <td>
@@ -846,7 +846,7 @@ export default function EditPartDetails({ part, setPart, setIsEditingPart, partC
                   <Input
                     variant={['x-small', 'thin', 'label-bold']}
                     value={newPartCostInRow.cost}
-                    onChange={(e: any) => handleNewPartCostInRowChange('cost', e.target.value)}
+                    onChange={(e) => handleNewPartCostInRowChange('cost', e.target.value)}
                     type="number"
                     step="any"
                   />
@@ -855,7 +855,7 @@ export default function EditPartDetails({ part, setPart, setIsEditingPart, partC
                   <Select
                     variant={['label-bold']}
                     value={newPartCostInRow.costType}
-                    onChange={(e: any) => handleNewPartCostInRowChange('costType', e.target.value)}
+                    onChange={(e) => handleNewPartCostInRowChange('costType', e.target.value)}
                   >
                     <option value="">-- COST TYPE --</option>
                     <option>PurchasePrice</option>
@@ -886,7 +886,7 @@ export default function EditPartDetails({ part, setPart, setIsEditingPart, partC
                   <Input
                     variant={['x-small', 'thin', 'label-bold']}
                     value={newPartCostInRow.note}
-                    onChange={(e: any) => handleNewPartCostInRowChange('note', e.target.value)}
+                    onChange={(e) => handleNewPartCostInRowChange('note', e.target.value)}
                   />
                 </td>
                 <td>
@@ -923,7 +923,7 @@ export default function EditPartDetails({ part, setPart, setIsEditingPart, partC
                       <Input
                         variant={['x-small', 'thin', 'label-bold']}
                         value={item.cost ?? ''}
-                        onChange={(e: any) => handleChangeEngineCostOut({ ...item, cost: e.target.value }, i)}
+                        onChange={(e) => handleChangeEngineCostOut({ ...item, cost: e.target.value ? Number(e.target.value) : null }, i)}
                         type="number"
                         step="any"
                       />
@@ -932,7 +932,7 @@ export default function EditPartDetails({ part, setPart, setIsEditingPart, partC
                       <Input
                         variant={['x-small', 'thin', 'label-bold']}
                         value={item.engineStockNum ?? ''}
-                        onChange={(e: any) => handleChangeEngineCostOut({ ...item, engineStockNum: e.target.value }, i)}
+                        onChange={(e) => handleChangeEngineCostOut({ ...item, engineStockNum: e.target.value ? Number(e.target.value) : null }, i)}
                         type="number"
                       />
                     </td>
@@ -940,14 +940,14 @@ export default function EditPartDetails({ part, setPart, setIsEditingPart, partC
                       <Input
                         variant={['x-small', 'thin', 'label-bold']}
                         value={item.stockNum ?? ''}
-                        onChange={(e: any) => handleChangeEngineCostOut({ ...item, stockNum: e.target.value }, i)}
+                        onChange={(e) => handleChangeEngineCostOut({ ...item, stockNum: e.target.value }, i)}
                       />
                     </td>
                     <td>
                       <Select
                         variant={['label-bold']}
                         value={item.costType ?? ''}
-                        onChange={(e: any) => handleChangeEngineCostOut({ ...item, costType: e.target.value }, i)}
+                        onChange={(e) => handleChangeEngineCostOut({ ...item, costType: e.target.value as EngineCostType }, i)}
                       >
                         <option value="">-- COST TYPE --</option>
                         <option>Parts</option>
@@ -959,7 +959,7 @@ export default function EditPartDetails({ part, setPart, setIsEditingPart, partC
                       <Input
                         variant={['x-small', 'thin', 'label-bold']}
                         value={item.note ?? ''}
-                        onChange={(e: any) => handleChangeEngineCostOut({ ...item, note: e.target.value }, i)}
+                        onChange={(e) => handleChangeEngineCostOut({ ...item, note: e.target.value }, i)}
                       />
                     </td>
                     <td>
@@ -981,7 +981,7 @@ export default function EditPartDetails({ part, setPart, setIsEditingPart, partC
                   <Input
                     variant={['x-small', 'thin', 'label-bold']}
                     value={newEngineCostOutRow.cost}
-                    onChange={(e: any) => handleNewEngineCostOutRowChange('cost', e.target.value)}
+                    onChange={(e) => handleNewEngineCostOutRowChange('cost', e.target.value)}
                     type="number"
                     step="any"
                   />
@@ -990,21 +990,21 @@ export default function EditPartDetails({ part, setPart, setIsEditingPart, partC
                   <Input
                     variant={['x-small', 'thin', 'label-bold']}
                     value={newEngineCostOutRow.engineStockNum}
-                    onChange={(e: any) => handleNewEngineCostOutRowChange('engineStockNum', e.target.value)}
+                    onChange={(e) => handleNewEngineCostOutRowChange('engineStockNum', e.target.value)}
                   />
                 </td>
                 <td>
                   <Input
                     variant={['x-small', 'thin', 'label-bold']}
                     value={newEngineCostOutRow.stockNum}
-                    onChange={(e: any) => handleNewEngineCostOutRowChange('stockNum', e.target.value)}
+                    onChange={(e) => handleNewEngineCostOutRowChange('stockNum', e.target.value)}
                   />
                 </td>
                 <td>
                   <Select
                     variant={['label-bold']}
                     value={newEngineCostOutRow.costType}
-                    onChange={(e: any) => handleNewEngineCostOutRowChange('costType', e.target.value)}
+                    onChange={(e) => handleNewEngineCostOutRowChange('costType', e.target.value)}
                   >
                     <option value="">-- COST TYPE --</option>
                     <option>Parts</option>
@@ -1016,7 +1016,7 @@ export default function EditPartDetails({ part, setPart, setIsEditingPart, partC
                   <Input
                     variant={['x-small', 'thin', 'label-bold']}
                     value={newEngineCostOutRow.note}
-                    onChange={(e: any) => handleNewEngineCostOutRowChange('note', e.target.value)}
+                    onChange={(e) => handleNewEngineCostOutRowChange('note', e.target.value)}
                   />
                 </td>
                 <td>

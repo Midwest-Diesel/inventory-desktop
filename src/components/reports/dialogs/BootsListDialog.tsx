@@ -62,7 +62,7 @@ export default function BootsListDialog({ open, setOpen, openTable, setTableData
           variant={['label-bold']}
           accept=".xlsx,.xls"
           type="file"
-          onChange={(e: any) => handleFile(e)}
+          onChange={(e) => handleFile(e)}
         />
 
         <br />

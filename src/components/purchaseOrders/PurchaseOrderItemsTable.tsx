@@ -37,7 +37,7 @@ export default function PurchaseOrderItemsTable({ className, poItems, poReceived
                     <td className="cbx-td">
                       <Checkbox
                         checked={item.isReceived}
-                        onChange={(e: any) => handleToggleIsItemReceived(item.id, e.target.checked)}
+                        onChange={(e) => handleToggleIsItemReceived(item.id, e.target.checked)}
                         disabled
                       />
                     </td>

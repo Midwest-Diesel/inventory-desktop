@@ -82,7 +82,7 @@ export default function PartPicturesDialog({ open, setOpen, pictures, partNum }:
             <Checkbox
               variant={['label-fit', 'dark-bg']}
               checked={selectedImages.includes(pic.name)}
-              onChange={(e: any) => editSelectedImages(e.target.checked, pic.name)}
+              onChange={(e) => editSelectedImages(e.target.checked, pic.name)}
             />
           </div>
         );

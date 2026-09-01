@@ -27,7 +27,8 @@ export default function RecentPartSearches() {
   }, []);
 
   const refreshRecentSearches = async () => {
-    const prevSearch: any = localStorage.getItem('altPartSearches') || localStorage.getItem('partSearches');
+    const prevSearch = localStorage.getItem('altPartSearches') || localStorage.getItem('partSearches');
+    if (!prevSearch) return;
     const partNum = JSON.parse(prevSearch).partNum.replace('*', '');
     setRecentPartSearches(await getRecentPartSearches((partNum && partNum !== '') ? partNum : '*'));
   };

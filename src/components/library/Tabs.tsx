@@ -1,9 +1,9 @@
 import { generateClasses, parseClasses } from "@/scripts/tools/utils";
-import React, { useState } from "react";
+import React, { ReactElement, useState } from "react";
 import Button from "./Button";
 
 interface Props {
-  children: any
+  children: ReactElement[]
   className?: string
   variant?: ('no-top-margin')[]
 }
@@ -25,7 +25,7 @@ export default function Tabs({ children, className = '', variant = [], ...props 
       {...props}
     >
       <div className="tabs__links">
-        {tabLinks.map((child: any, i: number) => {
+        {tabLinks.map((child: ReactElement, i: number) => {
           return (
             <Button
               key={i}
@@ -38,7 +38,7 @@ export default function Tabs({ children, className = '', variant = [], ...props 
         })}
       </div>
 
-      {children.map((child: any, i: number) => {        
+      {children.map((child: ReactElement, i: number) => {        
         if (i === activeTab) {
           return (
             <div key={i} className={child.props.className ? child.props.className : ''}>

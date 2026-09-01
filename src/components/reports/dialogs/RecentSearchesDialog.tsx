@@ -38,7 +38,7 @@ export default function RecentSearchesDialog({ open, setOpen, openTable, setTabl
           label="Part Number"
           variant={['label-stack']}
           value={partNum}
-          onChange={(e: any) => setPartNum(e.target.value)}
+          onChange={(e) => setPartNum(e.target.value)}
         />
 
         <div className="form__footer">

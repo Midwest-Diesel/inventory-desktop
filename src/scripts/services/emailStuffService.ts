@@ -22,7 +22,7 @@ export const getAllEmailStuff = async (): Promise<EmailStuff[]> => {
 
 // === POST routes === //
 
-export const addEmailStuffItem = async (payload: any) => {
+export const addEmailStuffItem = async (payload: { name: string, images: string }) => {
   try {
     await api.post('/api/email-stuff', payload);
   } catch (err) {

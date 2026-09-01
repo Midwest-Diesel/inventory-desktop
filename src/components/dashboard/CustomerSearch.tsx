@@ -145,7 +145,7 @@ export default function CustomerSearch({ selectedCustomer, setSelectedCustomer, 
         <Input
           style={{ margin: 0 }}
           variant={['search', 'label-space-between']}
-          onChange={(e: any) => setSearchTerm(e.target.value)}
+          onChange={(e) => setSearchTerm(e.target.value)}
           value={searchTerm}
           data-testid="customer-input"
         >

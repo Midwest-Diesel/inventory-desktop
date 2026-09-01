@@ -15,6 +15,11 @@ import CompareConsistHistoryDialog from "@/components/compareConsist/dialogs/Com
 import { useToast } from "@/hooks/useToast";
 import CustomerDropdown from "@/components/library/dropdown/CustomerDropdown";
 
+interface CompareConsistParams {
+  c?: string
+  r?: string
+}
+
 
 const ENGINE_PARTS = [
   'head',
@@ -49,7 +54,7 @@ export default function CompareConsist() {
   const [customerEngineData, setCustomerEngineData] = useAtom<CustomerEngineData | null>(compareConsistAtom);
   const [mwdEngine, setMwdEngine] = useState<Engine | null>(null);
   const urlSearchParams = new URLSearchParams(window.location.search);
-  const params: any = Object.fromEntries(urlSearchParams.entries());
+  const params: CompareConsistParams = Object.fromEntries(urlSearchParams.entries());
   const [searchData, setSearchData] = useState<CompareConsist[]>([]);
   const [showSearchHistory, setShowSearchHistory] = useState(false);
   const { push } = useNavState();
@@ -62,14 +67,14 @@ export default function CompareConsist() {
   useEffect(() => {
     const fetchData = async () => {
       if (params.c) {
-        const res = await getCustomerById(params.c);
+        const res = await getCustomerById(Number(params.c));
         setCustomer(res);
         setCompany(res?.company ?? '');
       } else {
         setCustomer(null);
       }
       if (params.r) {
-        const res = await getCompareDataById(params.r);
+        const res = await getCompareDataById(Number(params.r));
         loadCompareData(res);
       }
       if (customerData.length < 100) setCustomersData(await getCustomers());

@@ -141,7 +141,7 @@ export default function EditQuoteDialog({ setQuoteEdited, quote, setQuote }: Pro
             label="Customer"
             variant={['label-full-width', 'gap', 'fill', 'label-bold', 'label-stack']}
             value={company}
-            onChange={(value: any) => setCompany(value)}
+            onChange={(value) => setCompany(value)}
             maxHeight="15rem"
           />
 

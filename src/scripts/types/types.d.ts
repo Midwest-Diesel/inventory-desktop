@@ -401,7 +401,7 @@ type EngineAddOn = {
   engineNum: number | null
   model: string | null
   serialNum: string | null
-  arrNum: number | null
+  arrNum: string | null
   entryDate: Date | null
   location: string | null
   hp: string | null

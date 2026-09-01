@@ -44,7 +44,7 @@ export default function TheMachinesDialog({ open, setOpen, openTable, setTableDa
       const workbook = XLSX.read(data, { type: "array" });
       const firstSheetName = workbook.SheetNames[0];
       const worksheet = workbook.Sheets[firstSheetName];
-      const jsonData: any = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+      const jsonData: string[][] = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
       setPartList(formatFile(jsonData));
     };
     reader.readAsArrayBuffer(file);
@@ -80,7 +80,7 @@ export default function TheMachinesDialog({ open, setOpen, openTable, setTableDa
             variant={['label-bold']}
             accept=".xlsx,.xls"
             type="file"
-            onChange={(e: any) => handleFile(e)}
+            onChange={(e) => handleFile(e)}
           />
           {loading ?
             <Loading />

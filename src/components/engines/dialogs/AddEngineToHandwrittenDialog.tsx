@@ -216,7 +216,7 @@ export default function AddEngineToHandwrittenDialog({ open, setOpen, engine, on
                 variant={['small', 'thin', 'label-bold', 'label-stack', 'label-fit-content']}
                 label="Warranty"
                 value={warranty}
-                onChange={(e: any) => setWarranty(e.target.value)}
+                onChange={(e) => setWarranty(e.target.value)}
                 data-testid="warranty"
               />
               <div>
@@ -224,21 +224,21 @@ export default function AddEngineToHandwrittenDialog({ open, setOpen, engine, on
                   label="No CAT Warranty"
                   variant={['label-bold', 'dark-bg', 'label-align-center', 'label-fit']}
                   checked={noWarranty}
-                  onChange={(e: any) => setNoWarranty(e.target.checked)}
+                  onChange={(e) => setNoWarranty(e.target.checked)}
                   data-testid="no-cat-warranty"
                 />
                 <Checkbox
                   label="Injector Warranty"
                   variant={['label-bold', 'dark-bg', 'label-align-center', 'label-fit']}
                   checked={injectorWar}
-                  onChange={(e: any) => setInjectorWar(e.target.checked)}
+                  onChange={(e) => setInjectorWar(e.target.checked)}
                   data-testid="inj-warranty"
                 />
                 <Checkbox
                   label="Custom Warranty"
                   variant={['label-bold', 'dark-bg', 'label-align-center', 'label-fit']}
                   checked={customWar}
-                  onChange={(e: any) => setCustomWar(e.target.checked)}
+                  onChange={(e) => setCustomWar(e.target.checked)}
                   data-testid="custom-warranty"
                 />
               </div>
@@ -262,7 +262,7 @@ export default function AddEngineToHandwrittenDialog({ open, setOpen, engine, on
                     variant={['small', 'thin', 'label-bold', 'label-stack', 'label-fit-content']}
                     label="Description"
                     value={desc}
-                    onChange={(e: any) => setDesc(e.target.value)}
+                    onChange={(e) => setDesc(e.target.value)}
                     required
                     ref={descRef}
                     data-testid="select-handwritten-desc"
@@ -272,7 +272,7 @@ export default function AddEngineToHandwrittenDialog({ open, setOpen, engine, on
                     label="Qty"
                     type="number"
                     value={qty ?? ''}
-                    onChange={(e: any) => setQty(e.target.value)}
+                    onChange={(e) => setQty(e.target.value ? Number(e.target.value) : null)}
                     required
                     data-testid="select-handwritten-qty"
                   />
@@ -282,7 +282,7 @@ export default function AddEngineToHandwrittenDialog({ open, setOpen, engine, on
                     type="number"
                     step="any"
                     value={price ?? ''}
-                    onChange={(e: any) => setPrice(e.target.value)}
+                    onChange={(e) => setPrice(e.target.value ? Number(e.target.value) : null)}
                     required
                     data-testid="select-handwritten-price"
                   />
@@ -302,7 +302,7 @@ export default function AddEngineToHandwrittenDialog({ open, setOpen, engine, on
                     variant={['label-bold', 'label-stack', 'label-fit-content']}
                     label="Search Company"
                     value={search}
-                    onChange={(e: any) => setSearch(e.target.value)}
+                    onChange={(e) => setSearch(e.target.value)}
                     data-testid="search-handwritten-input"
                   />
                 </div>

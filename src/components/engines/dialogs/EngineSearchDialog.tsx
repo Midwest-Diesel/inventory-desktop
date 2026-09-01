@@ -98,7 +98,7 @@ export default function EngineSearchDialog({ open, setOpen, onSearch, listOpen, 
           label="Stock Number"
           variant={['small', 'thin', 'label-no-stack', 'label-space-between']}
           value={stockNum}
-          onChange={(e: any) => setStockNum(e.target.value)}
+          onChange={(e) => setStockNum(e.target.value)}
           type="number"
           data-testid="engine-search-stock-num"
         />
@@ -107,14 +107,14 @@ export default function EngineSearchDialog({ open, setOpen, onSearch, listOpen, 
           label="Model"
           variant={['small', 'thin', 'label-no-stack', 'label-space-between']}
           value={model}
-          onChange={(e: any) => setModel(e.target.value)}
+          onChange={(e) => setModel(e.target.value)}
         />
 
         <Input
           label="Serial Number"
           variant={['small', 'thin', 'label-no-stack', 'label-space-between']}
           value={serialNum}
-          onChange={(e: any) => setSerialNum(e.target.value)}
+          onChange={(e) => setSerialNum(e.target.value)}
         />
         
         <Input
@@ -144,7 +144,7 @@ export default function EngineSearchDialog({ open, setOpen, onSearch, listOpen, 
           label="Date"
           variant={['small', 'thin', 'label-no-stack', 'label-space-between']}
           value={parseDateInputValue(date)}
-          onChange={(e: any) => setDate(new Date(e.target.value))}
+          onChange={(e) => setDate(new Date(e.target.value))}
           type="date"
         />
 
@@ -152,35 +152,35 @@ export default function EngineSearchDialog({ open, setOpen, onSearch, listOpen, 
           label="Location"
           variant={['small', 'thin', 'label-no-stack', 'label-space-between']}
           value={location}
-          onChange={(e: any) => setLocation(e.target.value)}
+          onChange={(e) => setLocation(e.target.value)}
         />
 
         <Input
           label="Comments"
           variant={['small', 'thin', 'label-no-stack', 'label-space-between']}
           value={comments}
-          onChange={(e: any) => setComments(e.target.value)}
+          onChange={(e) => setComments(e.target.value)}
         />
 
         <Input
           label="HP"
           variant={['small', 'thin', 'label-no-stack', 'label-space-between']}
           value={horsePower}
-          onChange={(e: any) => setHorsePower(e.target.value)}
+          onChange={(e) => setHorsePower(e.target.value)}
         />
 
         <Input
           label="Mileage"
           variant={['small', 'thin', 'label-no-stack', 'label-space-between']}
           value={mileage}
-          onChange={(e: any) => setMileage(e.target.value)}
+          onChange={(e) => setMileage(e.target.value)}
         />
 
         <Select
           variant={['label-space-between', 'label-inline']}
           label="Jake Brake"
           value={jakeBrake}
-          onChange={(e: any) => setJakeBrake(e.target.value)}
+          onChange={(e) => setJakeBrake(e.target.value as any)}
         >
           <option value="">Both</option>
           <option value="TRUE">True</option>
@@ -191,7 +191,7 @@ export default function EngineSearchDialog({ open, setOpen, onSearch, listOpen, 
           variant={['label-space-between', 'label-inline']}
           label="Warranty"
           value={warranty}
-          onChange={(e: any) => setWarranty(e.target.value)}
+          onChange={(e) => setWarranty(e.target.value as any)}
         >
           <option value="">Both</option>
           <option value="TRUE">True</option>
@@ -202,7 +202,7 @@ export default function EngineSearchDialog({ open, setOpen, onSearch, listOpen, 
           variant={['label-space-between', 'label-inline']}
           label="Test Run"
           value={testRun}
-          onChange={(e: any) => setTestRun(e.target.value)}
+          onChange={(e) => setTestRun(e.target.value as any)}
         >
           <option value="">Both</option>
           <option value="TRUE">True</option>

@@ -78,7 +78,7 @@ export default function StockNumPicturesDialog({ open, setOpen, pictures = [], s
             <Checkbox
               variant={['label-fit', 'dark-bg']}
               checked={selectedImages.includes(pic.name)}
-              onChange={(e: any) => editSelectedImages(e.target.checked, pic.name)}
+              onChange={(e) => editSelectedImages(e.target.checked, pic.name)}
             />
           </div>
         );

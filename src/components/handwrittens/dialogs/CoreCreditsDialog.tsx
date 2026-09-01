@@ -25,12 +25,15 @@ export default function CoreCreditsDialog({ open, setOpen, cores, handwritten }:
   const { push } = useNavState();
   const [user] = useAtom<User>(userAtom);
   const [selectedCores, setSelectedCores] = useState<Core[]>([]);
-  const [inputQty, setInputQty] = useState(1);
+  const [inputQty, setInputQty] = useState<number | null>(1);
   const [inputCore, setInputCore] = useState<Core | null>(null);
 
   const handleCredit = async () => {
     if (selectedCores.length === 0 || !await ask('Are you sure?')) return;
     const id = await addHandwritten({ ...handwritten, date: new Date(), salesmanId: user.id } as Handwritten);
+    if (!id) {
+      return alert('Failed core credit');
+    }
 
     for (let i = 0; i < selectedCores.length; i++) {
       const core = selectedCores[i];
@@ -48,7 +51,7 @@ export default function CoreCreditsDialog({ open, setOpen, cores, handwritten }:
         return: false,
         date: new Date(),
         invoiceItemChildren: []
-      } as any;
+      };
       await addHandwrittenItem(newItem);
       await removeQtyFromCore(core, qty);
       if (core.qty - qty <= 0) await deleteCore(core.id);
@@ -71,7 +74,7 @@ export default function CoreCreditsDialog({ open, setOpen, cores, handwritten }:
 
   const handleSubmitQty = (e: FormEvent, core: Core) => {
     e.preventDefault();
-    setSelectedCores([...selectedCores, { ...core, selectedQty: inputQty }] as Core[]);
+    setSelectedCores([...selectedCores, { ...core, selectedQty: Number(inputQty) }] as Core[]);
     setInputQty(1);
     setInputCore(null);
   };
@@ -119,8 +122,8 @@ export default function CoreCreditsDialog({ open, setOpen, cores, handwritten }:
                       <Input
                         variant={['no-arrows', 'label-bold']}
                         label="Qty"
-                        value={inputQty}
-                        onChange={(e: any) => setInputQty(Math.min(e.target.value, core.qty) || '' as any)}
+                        value={inputQty ?? ''}
+                        onChange={(e) => setInputQty(e.target.value ? Math.min(Number(e.target.value), core.qty) : null)}
                         type="number"
                         data-testid="core-qty-input"
                       />

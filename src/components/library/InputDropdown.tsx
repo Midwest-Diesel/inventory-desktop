@@ -1,11 +1,11 @@
 import { generateClasses, parseClasses } from "../../scripts/tools/utils";
-import React, { Children, useState, useEffect, useRef, ReactElement } from "react";
+import React, { Children, useState, useEffect, useRef, ReactElement, ReactNode } from "react";
 import Input from "./Input";
 import DropdownOption from "./dropdown/DropdownOption";
 
 interface DropdownOptionProps {
   value: string
-  data?: any
+  data?: ReactNode
   children: string
   onClick?: () => void
   className?: string
@@ -17,7 +17,7 @@ interface Props {
   variant?: ('small' | 'label-space-between' | 'label-stack' | 'label-inline' | 'label-full-width' | 'large' | 'no-margin' | 'label-full-height' | 'fill' | 'gap' | 'label-bold')[]
   label?: string
   value?: string
-  onChange?: (value: string, data?: any) => void
+  onChange?: <T>(value: string, data?: T) => void
   onBlur?: (value: string) => void
   maxHeight?: string
   minWidth?: string

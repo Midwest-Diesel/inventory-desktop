@@ -22,7 +22,11 @@ export default function NewEnginesListPage() {
     queryKey: ['engines'],
     queryFn: async () => {
       const engines = await getAllEngines();
-      return engines.sort((a: any, b: any) => b.loginDate - a.loginDate);
+      return engines.sort((a, b) => {
+        if (!a.loginDate) return 1;
+        if (!b.loginDate) return -1;
+        return b.loginDate.getTime() - a.loginDate.getTime();
+      });
     }
   });
 

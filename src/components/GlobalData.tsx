@@ -1,6 +1,6 @@
 import { userAtom, alertsAtom, tabsAtom, tooltipAtom } from "@/scripts/atoms/state";
 import { useAtom } from "jotai";
-import { useEffect, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import Login from "./Login";
 import { getUser } from "@/scripts/services/accountService";
 import { getAlerts } from "@/scripts/services/alertsService";
@@ -12,7 +12,7 @@ import { useNavigate } from "react-router-dom";
 import useHotkeys from "@/hooks/useHotkeys";
 
 interface Props {
-  children: any
+  children: ReactNode
 }
 
 

@@ -72,7 +72,7 @@ export default function ImageUpload() {
               label="Folder Name"
               variant={['small', 'thin', 'label-stack', 'label-fit-content']}
               value={partImagesName}
-              onChange={(e: any) => setPartImagesName(e.target.value)}
+              onChange={(e) => setPartImagesName(e.target.value)}
               required
             />
             <Input
@@ -104,7 +104,7 @@ export default function ImageUpload() {
               label="Folder Name"
               variant={['small', 'thin', 'label-stack', 'label-fit-content']}
               value={stockNumImagesName}
-              onChange={(e: any) => setStockNumImagesName(e.target.value)}
+              onChange={(e) => setStockNumImagesName(e.target.value)}
               required
             />
             <Input
@@ -136,7 +136,7 @@ export default function ImageUpload() {
               label="Folder Name"
               variant={['small', 'thin', 'label-stack', 'label-fit-content']}
               value={engineNumImagesName}
-              onChange={(e: any) => setEngineNumImagesName(e.target.value)}
+              onChange={(e) => setEngineNumImagesName(e.target.value)}
               required
             />
             <Input

@@ -17,7 +17,7 @@ interface Props {
 
 
 export default function HandwrittensSearchDialog({ open, setOpen, handleSearch, limit }: Props) {
-  const [id, setId] = useState<number>('' as any);
+  const [id, setId] = useState<number | null>(null);
   const [date, setDate] = useState<Date | null>(null);
   const [poNum, setPoNum] = useState('');
   const [billToCompany, setBillToCompany] = useState('');
@@ -26,7 +26,7 @@ export default function HandwrittensSearchDialog({ open, setOpen, handleSearch, 
   const [payment, setPayment] = useState('');
 
   const clearInputs = () => {
-    setId('' as any);
+    setId(null);
     setDate(null);
     setPoNum('');
     setBillToCompany('');
@@ -66,8 +66,8 @@ export default function HandwrittensSearchDialog({ open, setOpen, handleSearch, 
         <Input
           label="Handwritten ID"
           variant={['small', 'thin', 'label-no-stack', 'label-space-between']}
-          value={id}
-          onChange={(e: any) => setId(e.target.value)}
+          value={id ?? ''}
+          onChange={(e) => setId(e.target.value ? Number(e.target.value) : null)}
           type="number"
         />
 
@@ -75,7 +75,7 @@ export default function HandwrittensSearchDialog({ open, setOpen, handleSearch, 
           label="Date"
           variant={['small', 'thin', 'label-no-stack', 'label-space-between']}
           value={parseDateInputValue(date)}
-          onChange={(e: any) => setDate(new Date(e.target.value))}
+          onChange={(e) => setDate(new Date(e.target.value))}
           type="date"
         />
 
@@ -83,35 +83,35 @@ export default function HandwrittensSearchDialog({ open, setOpen, handleSearch, 
           label="Bill to Company"
           variant={['small', 'thin', 'label-no-stack', 'label-space-between']}
           value={billToCompany}
-          onChange={(e: any) => setBillToCompany(e.target.value)}
+          onChange={(e) => setBillToCompany(e.target.value)}
         />
 
         <Input
           label="Ship to Company"
           variant={['small', 'thin', 'label-no-stack', 'label-space-between']}
           value={shipToCompany}
-          onChange={(e: any) => setShipToCompany(e.target.value)}
+          onChange={(e) => setShipToCompany(e.target.value)}
         />
 
         <Input
           label="PO Number"
           variant={['small', 'thin', 'label-no-stack', 'label-space-between']}
           value={poNum}
-          onChange={(e: any) => setPoNum(e.target.value)}
+          onChange={(e) => setPoNum(e.target.value)}
         />
 
         <SourceSelect
           variant={['label-space-between', 'label-inline']}
           label="Source"
           value={source}
-          onChange={(e: any) => setSource(e.target.value)}
+          onChange={(e) => setSource(e.target.value)}
         />
 
         <Select
           variant={['label-space-between', 'label-inline']}
           label="Payment"
           value={payment}
-          onChange={(e: any) => setPayment(e.target.value)}
+          onChange={(e) => setPayment(e.target.value)}
         >
           <option value="">-- SELECT PAYMENT TYPE --</option>
           {paymentTypes.map((type, i) => {

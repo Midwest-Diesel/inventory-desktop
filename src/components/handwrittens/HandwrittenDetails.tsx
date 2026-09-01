@@ -906,7 +906,7 @@ export default function HandwrittenDetails({
             variant={['label-bold', 'label-stack', 'small']}
             label="Takeoff"
             value={takeoff}
-            onChange={(e: any) => setTakeoff(e.target.value)}
+            onChange={(e) => setTakeoff(e.target.value)}
             required
             data-testid="takeoff-input"
           />

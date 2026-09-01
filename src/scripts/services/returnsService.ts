@@ -21,8 +21,8 @@ export const getReturnById = async (id: number): Promise<Return | null> => {
   try {
     const res = await api.get(`/api/returns/id/${id}`);
     return parseReturnRes(res.data)[0];
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
     return null;
   }
 };
@@ -31,8 +31,8 @@ export const getSomeReturns = async (page: number, limit: number, isShopPanel: b
   try {
     const res = await api.get(`/api/returns/limit/${JSON.stringify({ page: (page - 1) * limit, limit, isShopPanel })}`);
     return { pageCount: res.data.pageCount, rows: parseReturnRes(res.data.rows) };
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
     return { pageCount: 0, rows: [] };
   }
 };
@@ -41,8 +41,8 @@ export const getSomeCompletedReturns = async (page: number, limit: number): Prom
   try {
     const res = await api.get(`/api/returns/limit/completed/${JSON.stringify({ page: (page - 1) * limit, limit })}`);
     return { pageCount: res.data.pageCount, rows: parseReturnRes(res.data.rows) };
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
     return { pageCount: 0, rows: [] };
   }
 };
@@ -52,8 +52,8 @@ export const searchReturns = async (search: ReturnSearch, page: number, limit: n
     const params = { ...search, offset: (page - 1) * limit, limit };
     const res = await api.get(`/api/returns/search`, { params });
     return { pageCount: res.data.pageCount, rows: parseReturnRes(res.data.rows) };
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
     return { pageCount: 0, rows: [] };
   }
 };
@@ -64,16 +64,16 @@ export const addReturn = async (returnData: Return) => {
   try {
     const res: any = await api.post('/api/returns', returnData);
     return Number(res.data.id);
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
   }
 };
 
 export const addReturnItem = async (returnItem: ReturnItem) => {
   try {
     await api.post('/api/returns/items', returnItem);
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
   }
 };
 
@@ -81,8 +81,8 @@ export const addReturnItemChild = async (returnItemId: number): Promise<number |
   try {
     const res = await api.post('/api/returns/item-child', { returnItemId });
     return res.data.id;
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
     return null;
   }
 };
@@ -92,24 +92,24 @@ export const addReturnItemChild = async (returnItemId: number): Promise<number |
 export const editReturn = async (returnData: Return) => {
   try {
     await api.put('/api/returns', returnData);
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
   }
 };
 
 export const editReturnItem = async (item: ReturnItem) => {
   try {
     await api.put('/api/returns/item', item);
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
   }
 };
 
 export const editReturnItemChild = async (child: ReturnItemChild) => {
   try {
     await api.put('/api/returns/item-child', child);
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
   }
 };
 
@@ -118,8 +118,8 @@ export const editReturnItemChild = async (child: ReturnItemChild) => {
 export const issueReturnCredit = async (id: number) => {
   try {
     await api.patch('/api/returns/credit-issued', { id });
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
   }
 };
 
@@ -128,23 +128,23 @@ export const issueReturnCredit = async (id: number) => {
 export const deleteReturn = async (id: number) => {
   try {
     await api.delete(`/api/returns/${id}`);
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
   }
 };
 
 export const deleteReturnItem = async (id: number) => {
   try {
     await api.delete(`/api/returns/item/${id}`);
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
   }
 };
 
 export const deleteReturnItemChild = async (id: number) => {
   try {
     await api.delete(`/api/returns/item-child/${id}`);
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
   }
 };

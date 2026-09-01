@@ -20,11 +20,18 @@ export function Layout({ children, title }: Props) {
   useEffect(() => {
     document.title = title ? `${title} | ${baseTitle}` : baseTitle;
 
-    document.addEventListener('wheel', (event: any) => {
-      if (event.target.type === 'number') {
-        event.preventDefault();
+    const handleWheel = (e: WheelEvent) => {
+      const target = e.target as HTMLInputElement;
+      if (target.type === 'number') {
+        e.preventDefault();
       }
-    }, { passive: false });
+    };
+
+    document.addEventListener('wheel', handleWheel, { passive: false });
+
+    return () => {
+      document.removeEventListener('wheel', handleWheel);
+    };
   }, []);
 
 

@@ -159,7 +159,7 @@ export default function EmailQuotesDialog({ open, setOpen, quote }: Props) {
           variant={['label-bold', 'label-stack']}
           label="Recipients (seperated by comma)"
           value={recipients}
-          onChange={(e: any) => setRecipients(e.target.value)}
+          onChange={(e) => setRecipients(e.target.value)}
           required
         />
 

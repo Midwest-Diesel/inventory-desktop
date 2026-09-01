@@ -40,7 +40,7 @@ export default function Login() {
           <Input
             label="Username"
             value={username}
-            onChange={(e: any) => setUsername(e.target.value)}
+            onChange={(e) => setUsername(e.target.value)}
             data-testid="username"
             required
           />
@@ -48,7 +48,7 @@ export default function Login() {
             type="password"
             label="Password"
             value={password}
-            onChange={(e: any) => setPassword(e.target.value)}
+            onChange={(e) => setPassword(e.target.value)}
             data-testid="password"
             required
           />

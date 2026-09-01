@@ -1,8 +1,8 @@
 import { generateClasses, parseClasses } from "@/scripts/tools/utils";
-import { useEffect, useRef, forwardRef } from "react";
+import { useEffect, useRef, forwardRef, ReactNode } from "react";
 
 interface Props extends InputHTML {
-  children?: any
+  children?: ReactNode
   className?: string
   labelClass?: string
   variant?: ('thin' | 'small' | 'x-small' | 'search' | 'label-stack' | 'label-no-stack' | 'label-space-between' | 'md-text' | 'label-full-width' | 'label-bold' | 'label-inline' | 'label-no-margin' | 'no-style' | 'label-fit-content' | 'autofill-input' | 'no-arrows')[]

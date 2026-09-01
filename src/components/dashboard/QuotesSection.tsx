@@ -9,7 +9,7 @@ import Loading from "@/components/library/Loading";
 import { lastPartSearchAtom, quotesAtom, selectedCustomerAtom } from "@/scripts/atoms/state";
 import { getCustomerById } from "@/scripts/services/customerService";
 import { getPartById } from "@/scripts/services/partsService";
-import { getSomeQuotes, searchQuotes } from "@/scripts/services/quotesService";
+import { getSomeQuotes, QuoteSearchData, searchQuotes } from "@/scripts/services/quotesService";
 import { isObjectNull } from "@/scripts/tools/utils";
 import { useQuery } from "@tanstack/react-query";
 import { useAtom } from "jotai";
@@ -44,7 +44,7 @@ export default function QuotesSection({ quotes, setQuotes, setHandwrittenQuote, 
   const [pageCount, setPageCount] = useState(0);
   const [quotesOpen, setQuotesOpen] = useState(localStorage.getItem('quotesOpen') === 'true' || localStorage.getItem('quotesOpen') === null ? true : false);
   const [searchDialogOpen, setSearchDialogOpen] = useState(false);
-  const [searchData, setSearchData] = useState<any>(null);
+  const [searchData, setSearchData] = useState<QuoteSearchData | null>(null);
   const [selectedCustomer] = useAtom<Customer | null>(selectedCustomerAtom);
   const [piggybackQuoteOpen, setPiggybackQuoteOpen] = useState(false);
   const [piggybackQuote, setPiggybackQuote] = useState<Quote | null>(null);

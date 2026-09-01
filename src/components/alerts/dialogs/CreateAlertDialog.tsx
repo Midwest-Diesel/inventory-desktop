@@ -31,7 +31,7 @@ export default function CreateAlertDialog({ open, setOpen }: Props) {
       date: new Date(),
       salesmanId: user.id,
       note
-    } as any;
+    };
     await addAlert(newAlert);
     setOpen(false);
     setAlertsAtom(await getAlerts());

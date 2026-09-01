@@ -47,7 +47,7 @@ export default function HandwrittenCompanyDialog({ open, setOpen, openTable, set
           label="Year"
           variant={['label-stack']}
           value={year}
-          onChange={(e: any) => setYear(e.target.value)}
+          onChange={(e) => setYear(e.target.value)}
           type="number"
         />
 

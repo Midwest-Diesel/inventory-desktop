@@ -131,7 +131,7 @@ export default function ShippingListModal({ open, onNext, onPrev, handwrittenIte
           label="Date"
           value={parseDateInputValue(date)}
           type="date"
-          onChange={(e: any) => {
+          onChange={(e) => {
             const [year, month, day] = e.target.value.split('-');
             setDate(new Date(Number(year), Number(month) - 1, Number(day)));
           }}          
@@ -142,7 +142,7 @@ export default function ShippingListModal({ open, onNext, onPrev, handwrittenIte
             variant={['label-bold', 'label-align-center']}
             label="Description Condensed"
             checked={isCondensed}
-            onChange={(e: any) => setIsCondensed(e.target.checked)}
+            onChange={(e) => setIsCondensed(e.target.checked)}
           />
         }
         {isCondensed &&
@@ -152,7 +152,7 @@ export default function ShippingListModal({ open, onNext, onPrev, handwrittenIte
               variant={['label-bold']}
               label="Description"
               value={desc}
-              onChange={(e: any) => setDesc(e.target.value)}
+              onChange={(e) => setDesc(e.target.value)}
               required
             />
           </>

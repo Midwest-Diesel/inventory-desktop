@@ -17,14 +17,14 @@ import EditMapLocationDialog from "@/components/map/dialogs/EditMapLocationDialo
 import { useQuery } from "@tanstack/react-query";
 import Loading from "@/components/library/Loading";
 
-type LocationFormData = {
+export interface LocationFormData {
   id?: number
   name: string
   address: string
   type: MapLocationType
-  customerId: number
+  customerId: number | null
   notes: string
-};
+}
 
 
 const START_POS = { lat: 44.98022677, lng: -93.35875787 };
@@ -82,16 +82,13 @@ export default function ImportantCustomersMap() {
 
   useEffect(() => {
     if (!mapInstanceRef.current) return;
-    let clickEvent: any;
-    let closeWindowsEvent: any;
-
     handlePageChange(null, 1);
     
     const loadMarkers = async () => {
       const { AdvancedMarkerElement, PinElement } = await google.maps.importLibrary('marker') as google.maps.MarkerLibrary;
       const { InfoWindow } = google.maps;
       const infoWindow = new InfoWindow();
-      const markers: any[] = [];
+      const markers: google.maps.marker.AdvancedMarkerElement[] = [];
 
       markersRef.current.forEach((marker) => marker.map = null);
       markersRef.current.clear();
@@ -116,7 +113,7 @@ export default function ImportantCustomersMap() {
         markers.push(marker);
     
         markersRef.current.set(loc.id, marker);
-        marker.addListener('click', (e: any) => {
+        marker.addListener('click', (e: google.maps.MapMouseEvent) => {
           e.domEvent.stopPropagation();
           const days = dateDiffInDays(new Date(), loc.date);
           const { lat, lng } = loc.location;
@@ -139,11 +136,6 @@ export default function ImportantCustomersMap() {
       setLoading(false);
     };
     loadMarkers();
-
-    return () => {
-      closeWindowsEvent?.removeEventListener();
-      google.maps.event.removeListener(clickEvent);
-    };    
   }, [filteredLocations, listOfLocations, mapInstanceRef]);
 
   const handlePageChange = (_: any, page: number) => {
@@ -249,7 +241,7 @@ export default function ImportantCustomersMap() {
     const res = await getGeoLocation(data.address);
     if (!res) return;
     const { lat, lng } = res.geometry.location;
-    handleAddLocation(data.name, { lat, lng }, data.customerId);
+    handleAddLocation(data.name, { lat, lng }, Number(data.customerId));
     panTo({ lat, lng });
   };
 
@@ -331,13 +323,13 @@ export default function ImportantCustomersMap() {
               variant={['label-bold', 'label-stack']}
               label="Search Name"
               value={filterName}
-              onChange={(e: any) => setFilterName(e.target.value)}
+              onChange={(e) => setFilterName(e.target.value)}
             />
             <Select
               variant={['label-stack', 'label-bold']}
               label="Type"
               value={filterType}
-              onChange={(e: any) => setFilterType(e.target.value)}
+              onChange={(e) => setFilterType(e.target.value)}
             >
               <option>all</option>
               <option>customer</option>
@@ -347,7 +339,7 @@ export default function ImportantCustomersMap() {
               variant={['label-stack', 'label-bold']}
               label="Customer Type"
               value={filterCustomerType}
-              onChange={(e: any) => setFilterCustomerType(e.target.value)}
+              onChange={(e) => setFilterCustomerType(e.target.value)}
             >
               <option>all</option>
               <option>CAT</option>
@@ -362,7 +354,7 @@ export default function ImportantCustomersMap() {
               variant={['label-stack', 'label-bold']}
               label="Salesmen"
               value={filterSalesman}
-              onChange={(e: any) => setFilterSalesman(e.target.value)}
+              onChange={(e) => setFilterSalesman(e.target.value)}
             >
               <option>all</option>
               {usersList.filter((user) => user.subtype === 'sales').map((user) => {

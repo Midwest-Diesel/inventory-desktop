@@ -1,5 +1,7 @@
+import { ReactNode } from "react";
+
 interface Props {
-  children: any
+  children: ReactNode
   value: string | number
   className?: string
   onClick?: () => void

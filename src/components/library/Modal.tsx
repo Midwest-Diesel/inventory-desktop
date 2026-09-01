@@ -1,10 +1,10 @@
 import { generateClasses, parseClasses } from "@/scripts/tools/utils";
-import React, { useEffect, useRef } from "react";
+import React, { CSSProperties, useEffect, useRef } from "react";
 import Button from "./Button";
 
 interface Props {
   children: React.ReactNode
-  style?: any
+  style?: CSSProperties
   className?: string
   variant?: ('default')[]
   title?: string

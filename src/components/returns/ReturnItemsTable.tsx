@@ -100,19 +100,19 @@ export default function ReturnItemsTable({ className, returnItems, returnData, r
                       <td className="cbx-td">
                         <Checkbox
                           checked={ret.isReceived}
-                          onChange={(e: any) => handleToggleIsReceived(ret, e.target.checked)}
+                          onChange={(e) => handleToggleIsReceived(ret, e.target.checked)}
                         />
                       </td>
                       <td className="cbx-td">
                         <Checkbox
                           checked={ret.isAsDescribed}
-                          onChange={(e: any) => handleToggleAsDescribed(ret, e.target.checked)}
+                          onChange={(e) => handleToggleAsDescribed(ret, e.target.checked)}
                         />
                       </td>
                       <td className="cbx-td">
                         <Checkbox
                           checked={ret.isPutAway}
-                          onChange={(e: any) => handleTogglePutAway(ret, e.target.checked)}
+                          onChange={(e) => handleTogglePutAway(ret, e.target.checked)}
                         />
                       </td>
                       <td>

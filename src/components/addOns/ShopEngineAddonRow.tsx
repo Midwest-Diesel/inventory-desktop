@@ -140,7 +140,7 @@ export default function ShopEngineAddOnRow({ addOn, onSave }: Props) {
                   <Input
                     variant={['small', 'thin']}
                     value={addOn.engineNum !== null ? addOn.engineNum : ''}
-                    onChange={(e: any) => handleEditAddOn({ ...addOn, engineNum: e.target.value })}
+                    onChange={(e) => handleEditAddOn({ ...addOn, engineNum: e.target.value ? Number(e.target.value) : null })}
                     type="number"
                   />
                 </td>
@@ -160,28 +160,28 @@ export default function ShopEngineAddOnRow({ addOn, onSave }: Props) {
                   <Input
                     variant={['small', 'thin']}
                     value={addOn.serialNum !== null ? addOn.serialNum : ''}
-                    onChange={(e: any) => handleEditAddOn({ ...addOn, serialNum: e.target.value })}
+                    onChange={(e) => handleEditAddOn({ ...addOn, serialNum: e.target.value })}
                   />
                 </td>
                 <td>
                   <Input
                     variant={['small', 'thin']}
                     value={addOn.arrNum !== null ? addOn.arrNum : ''}
-                    onChange={(e: any) => handleEditAddOn({ ...addOn, arrNum: e.target.value })}
+                    onChange={(e) => handleEditAddOn({ ...addOn, arrNum: e.target.value })}
                   />
                 </td>
                 <td>
                   <Input
                     variant={['small', 'thin']}
                     value={addOn.location !== null ? addOn.location : ''}
-                    onChange={(e: any) => handleEditAddOn({ ...addOn, location: e.target.value })}
+                    onChange={(e) => handleEditAddOn({ ...addOn, location: e.target.value })}
                   />
                 </td>
                 <td>
                   <Input
                     variant={['small', 'thin']}
                     value={addOn.hp !== null ? addOn.hp : ''}
-                    onChange={(e: any) => handleEditAddOn({ ...addOn, hp: e.target.value })}
+                    onChange={(e) => handleEditAddOn({ ...addOn, hp: e.target.value })}
                   />
                 </td>
               </tr>
@@ -203,7 +203,7 @@ export default function ShopEngineAddOnRow({ addOn, onSave }: Props) {
                   <Select
                     style={{ width: '100%' }}
                     value={addOn.currentStatus ? addOn.currentStatus.trim() : ''}
-                    onChange={(e: any) => handleEditAddOn({ ...addOn, currentStatus: e.target.value })}
+                    onChange={(e) => handleEditAddOn({ ...addOn, currentStatus: e.target.value as EngineStatus })}
                   >
                     <option>ToreDown</option>
                     <option>RunnerReady</option>
@@ -227,14 +227,14 @@ export default function ShopEngineAddOnRow({ addOn, onSave }: Props) {
                     variant={['small', 'thin']}
                     style={{ width: '18rem' }}
                     value={addOn.notes !== null ? addOn.notes : ''}
-                    onChange={(e: any) => handleEditAddOn({ ...addOn, notes: e.target.value })}
+                    onChange={(e) => handleEditAddOn({ ...addOn, notes: e.target.value })}
                   />
                 </td>
                 <td>
                   <Select
                     style={{ width: '100%' }}
                     value={addOn.oilPan ?? ''}
-                    onChange={(e: any) => handleEditAddOn({ ...addOn, oilPan: e.target.value })}
+                    onChange={(e) => handleEditAddOn({ ...addOn, oilPan: e.target.value as any })}
                   >
                     <option value="">-- OIL PAN --</option>
                     <option>FS</option>
@@ -250,13 +250,13 @@ export default function ShopEngineAddOnRow({ addOn, onSave }: Props) {
             variant={['label-align-center', 'label-bold']}
             label="ECM"
             checked={addOn.ecm}
-            onChange={(e: any) => handleEditAddOn({ ...addOn, ecm: e.target.checked })}
+            onChange={(e) => handleEditAddOn({ ...addOn, ecm: e.target.checked })}
           />
           <Checkbox
             variant={['label-align-center', 'label-bold']}
             label="Jake Brake"
             checked={addOn.jakeBrake}
-            onChange={(e: any) => handleEditAddOn({ ...addOn, jakeBrake: e.target.checked })}
+            onChange={(e) => handleEditAddOn({ ...addOn, jakeBrake: e.target.checked })}
           />
         </div>
 
@@ -265,7 +265,7 @@ export default function ShopEngineAddOnRow({ addOn, onSave }: Props) {
             style={{ width: '3rem' }}
             variant={['x-small', 'search']}
             value={printQty}
-            onChange={(e: any) => setPrintQty(e.target.value)}
+            onChange={(e) => setPrintQty(Number(e.target.value))}
             type="number"
           >
             <Button type="button" variant={['search']} onClick={handlePrint}>Print</Button>

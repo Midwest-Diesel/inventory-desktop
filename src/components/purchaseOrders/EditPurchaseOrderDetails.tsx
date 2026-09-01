@@ -90,11 +90,8 @@ export default function EditPoDetails({ poData, setPo, setIsEditing, poItems, po
     // Edit PO items
     if (JSON.stringify(poItems) !== JSON.stringify(poData.poItems)) {
       for (let i = 0; i < poItems.length; i++) {
-        const item: any = poItems[i];
-        const newItem = {
-          id: item.id,
-          ...item
-        } as POItem;
+        const item = poItems[i];
+        const newItem = { ...item } as POItem;
         await editPurchaseOrderItem(newItem);
       }
 
@@ -115,11 +112,8 @@ export default function EditPoDetails({ poData, setPo, setIsEditing, poItems, po
     // Edit PO received items
     if (JSON.stringify(poItemsReceived) !== JSON.stringify(poData.poReceivedItems)) {
       for (let i = 0; i < poItemsReceived.length; i++) {
-        const item: any = poItemsReceived[i];
-        const newItem = {
-          id: item.id,
-          ...item
-        } as POReceivedItem;
+        const item = poItemsReceived[i];
+        const newItem = { ...item } as POReceivedItem;
         await editPurchaseOrderReceivedItem(newItem);
       }
     }
@@ -228,7 +222,7 @@ export default function EditPoDetails({ poData, setPo, setIsEditing, poItems, po
                     variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                     value={parseDateInputValue(date)}
                     type="date"
-                    onChange={(e: any) => setDate(new Date(e.target.value))}
+                    onChange={(e) => setDate(new Date(e.target.value))}
                   />
                 </td>
               </tr>
@@ -238,7 +232,7 @@ export default function EditPoDetails({ poData, setPo, setIsEditing, poItems, po
                   <Input
                     variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                     value={orderedBy}
-                    onChange={(e: any) => setOrderedBy(e.target.value)}
+                    onChange={(e) => setOrderedBy(e.target.value)}
                   />
                 </td>
               </tr>
@@ -259,7 +253,7 @@ export default function EditPoDetails({ poData, setPo, setIsEditing, poItems, po
                   <Input
                     variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                     value={vendorContact}
-                    onChange={(e: any) => setVendorContact(e.target.value)}
+                    onChange={(e) => setVendorContact(e.target.value)}
                   />
                 </td>
               </tr>
@@ -269,7 +263,7 @@ export default function EditPoDetails({ poData, setPo, setIsEditing, poItems, po
                   <Input
                     variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                     value={vendorAddress}
-                    onChange={(e: any) => setVendorAddress(e.target.value)}
+                    onChange={(e) => setVendorAddress(e.target.value)}
                   />
                 </td>
               </tr>
@@ -279,7 +273,7 @@ export default function EditPoDetails({ poData, setPo, setIsEditing, poItems, po
                   <Input
                     variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                     value={vendorCity}
-                    onChange={(e: any) => setVendorCity(e.target.value)}
+                    onChange={(e) => setVendorCity(e.target.value)}
                   />
                 </td>
               </tr>
@@ -289,7 +283,7 @@ export default function EditPoDetails({ poData, setPo, setIsEditing, poItems, po
                   <Input
                     variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                     value={vendorState}
-                    onChange={(e: any) => setVendorState(e.target.value)}
+                    onChange={(e) => setVendorState(e.target.value)}
                   />
                 </td>
               </tr>
@@ -299,7 +293,7 @@ export default function EditPoDetails({ poData, setPo, setIsEditing, poItems, po
                   <Input
                     variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                     value={vendorZip}
-                    onChange={(e: any) => setVendorZip(e.target.value)}
+                    onChange={(e) => setVendorZip(e.target.value)}
                   />
                 </td>
               </tr>
@@ -309,7 +303,7 @@ export default function EditPoDetails({ poData, setPo, setIsEditing, poItems, po
                   <Input
                     variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                     value={vendorPhone}
-                    onChange={(e: any) => setVendorPhone(e.target.value)}
+                    onChange={(e) => setVendorPhone(e.target.value)}
                   />
                 </td>
               </tr>
@@ -319,7 +313,7 @@ export default function EditPoDetails({ poData, setPo, setIsEditing, poItems, po
                   <Input
                     variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                     value={vendorFax}
-                    onChange={(e: any) => setVendorFax(e.target.value)}
+                    onChange={(e) => setVendorFax(e.target.value)}
                   />
                 </td>
               </tr>
@@ -329,7 +323,7 @@ export default function EditPoDetails({ poData, setPo, setIsEditing, poItems, po
                   <Select
                     variant={['label-space-between', 'label-full-width', 'label-bold']}
                     value={paymentTerms}
-                    onChange={(e: any) => setPaymentTerms(e.target.value)}
+                    onChange={(e) => setPaymentTerms(e.target.value)}
                     required
                     data-testid="payment-terms"
                   >
@@ -355,7 +349,7 @@ export default function EditPoDetails({ poData, setPo, setIsEditing, poItems, po
                     <Input
                       variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                       value={shipToCompany}
-                      onChange={(e: any) => setShipToCompany(e.target.value)}
+                      onChange={(e) => setShipToCompany(e.target.value)}
                     />
                   </td>
                 </tr>
@@ -365,7 +359,7 @@ export default function EditPoDetails({ poData, setPo, setIsEditing, poItems, po
                     <Input
                       variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                       value={shipToAddress}
-                      onChange={(e: any) => setShipToAddress(e.target.value)}
+                      onChange={(e) => setShipToAddress(e.target.value)}
                     />
                   </td>
                 </tr>
@@ -375,7 +369,7 @@ export default function EditPoDetails({ poData, setPo, setIsEditing, poItems, po
                     <Input
                       variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                       value={shipToCity}
-                      onChange={(e: any) => setShipToCity(e.target.value)}
+                      onChange={(e) => setShipToCity(e.target.value)}
                     />
                   </td>
                 </tr>
@@ -385,7 +379,7 @@ export default function EditPoDetails({ poData, setPo, setIsEditing, poItems, po
                     <Input
                       variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                       value={shipToState}
-                      onChange={(e: any) => setShipToState(e.target.value)}
+                      onChange={(e) => setShipToState(e.target.value)}
                     />
                   </td>
                 </tr>
@@ -395,7 +389,7 @@ export default function EditPoDetails({ poData, setPo, setIsEditing, poItems, po
                     <Input
                       variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                       value={shipToZip}
-                      onChange={(e: any) => setShipToZip(e.target.value)}
+                      onChange={(e) => setShipToZip(e.target.value)}
                     />
                   </td>
                 </tr>
@@ -405,7 +399,7 @@ export default function EditPoDetails({ poData, setPo, setIsEditing, poItems, po
                     <Input
                       variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                       value={shipToPhone}
-                      onChange={(e: any) => setShipToPhone(e.target.value)}
+                      onChange={(e) => setShipToPhone(e.target.value)}
                     />
                   </td>
                 </tr>
@@ -415,7 +409,7 @@ export default function EditPoDetails({ poData, setPo, setIsEditing, poItems, po
                     <Input
                       variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                       value={shipToFax}
-                      onChange={(e: any) => setShipToFax(e.target.value)}
+                      onChange={(e) => setShipToFax(e.target.value)}
                     />
                   </td>
                 </tr>
@@ -425,7 +419,7 @@ export default function EditPoDetails({ poData, setPo, setIsEditing, poItems, po
                     <Input
                       variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                       value={shippingMethod}
-                      onChange={(e: any) => setShippingMethod(e.target.value)}
+                      onChange={(e) => setShippingMethod(e.target.value)}
                     />
                   </td>
                 </tr>
@@ -443,7 +437,7 @@ export default function EditPoDetails({ poData, setPo, setIsEditing, poItems, po
                     <Input
                       variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                       value={purchasedFor}
-                      onChange={(e: any) => setPurchasedFor(e.target.value)}
+                      onChange={(e) => setPurchasedFor(e.target.value)}
                       required
                       data-testid="purchased-for"
                     />
@@ -465,7 +459,7 @@ export default function EditPoDetails({ poData, setPo, setIsEditing, poItems, po
                     rows={3}
                     cols={100}
                     value={specialInstructions}
-                    onChange={(e: any) => setSpecialInstructions(e.target.value)}
+                    onChange={(e) => setSpecialInstructions(e.target.value)}
                   />
                 </td>
               </tr>
@@ -477,7 +471,7 @@ export default function EditPoDetails({ poData, setPo, setIsEditing, poItems, po
                     rows={3}
                     cols={100}
                     value={comments}
-                    onChange={(e: any) => setComments(e.target.value)}
+                    onChange={(e) => setComments(e.target.value)}
                   />
                 </td>
               </tr>
@@ -505,7 +499,7 @@ export default function EditPoDetails({ poData, setPo, setIsEditing, poItems, po
                     <td>
                       <Input
                         value={item.qty ?? ''}
-                        onChange={(e: any) => handleEditItem({ ...item, qty: e.target.value }, i)}
+                        onChange={(e) => handleEditItem({ ...item, qty: e.target.value ? Number(e.target.value) : null }, i)}
                         type="number"
                         required
                       />
@@ -513,13 +507,13 @@ export default function EditPoDetails({ poData, setPo, setIsEditing, poItems, po
                     <td>
                       <Input
                         value={item.desc ?? ''}
-                        onChange={(e: any) => handleEditItem({ ...item, desc: e.target.value }, i)}
+                        onChange={(e) => handleEditItem({ ...item, desc: e.target.value }, i)}
                       />
                     </td>
                     <td>
                       <Input
                         value={item.unitPrice ?? ''}
-                        onChange={(e: any) => handleEditItem({ ...item, unitPrice: e.target.value }, i)}
+                        onChange={(e) => handleEditItem({ ...item, unitPrice: e.target.value ? Number(e.target.value) : null }, i)}
                         type="number"
                         step="any"
                         required
@@ -531,7 +525,7 @@ export default function EditPoDetails({ poData, setPo, setIsEditing, poItems, po
                     <td className="cbx-td">
                       <Checkbox
                         checked={item.isReceived}
-                        onChange={(e: any) => handleEditItem({ ...item, isReceived: e.target.checked }, i)}
+                        onChange={(e) => handleEditItem({ ...item, isReceived: e.target.checked }, i)}
                       />
                     </td>
                     <td style={{ textAlign: 'center' }}>
@@ -571,25 +565,25 @@ export default function EditPoDetails({ poData, setPo, setIsEditing, poItems, po
                     <td>
                       <Input
                         value={item.partNum ?? ''}
-                        onChange={(e: any) => handleEditReceivedItem({ ...item, partNum: e.target.value }, i)}
+                        onChange={(e) => handleEditReceivedItem({ ...item, partNum: e.target.value }, i)}
                       />
                     </td>
                     <td>
                       <Input
                         value={item.stockNum ?? ''}
-                        onChange={(e: any) => handleEditReceivedItem({ ...item, stockNum: e.target.value }, i)}
+                        onChange={(e) => handleEditReceivedItem({ ...item, stockNum: e.target.value }, i)}
                       />
                     </td>
                     <td>
                       <Input
                         value={item.desc ?? ''}
-                        onChange={(e: any) => handleEditReceivedItem({ ...item, desc: e.target.value }, i)}
+                        onChange={(e) => handleEditReceivedItem({ ...item, desc: e.target.value }, i)}
                       />
                     </td>
                     <td>
                       <Input
                         value={item.cost ?? ''}
-                        onChange={(e: any) => handleEditReceivedItem({ ...item, cost: e.target.value }, i)}
+                        onChange={(e) => handleEditReceivedItem({ ...item, cost: e.target.value ? Number(e.target.value) : null }, i)}
                         type="number"
                         step="any"
                       />

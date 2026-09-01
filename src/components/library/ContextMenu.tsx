@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback, useRef, MouseEvent } from "react";
+import { useEffect, useState, useCallback, useRef, MouseEvent as ReactMouseEvent } from "react";
 import Button from "./Button";
 
 interface Props {
@@ -6,7 +6,7 @@ interface Props {
   setOpen: (value: boolean) => void;
   targetClass: string;
   notTargetClass: string
-  list: { name: string; fn: (e?: MouseEvent) => void }[];
+  list: { name: string; fn: (e?: ReactMouseEvent) => void }[];
 }
 
 
@@ -15,7 +15,7 @@ export default function ContextMenu({ open, setOpen, targetClass, notTargetClass
   const [y, setY] = useState(0);
   const menuRef = useRef<HTMLDivElement | null>(null);
 
-  const handleContextMenu = useCallback((e: any) => {
+  const handleContextMenu = useCallback((e: MouseEvent) => {
     const target = e.target as HTMLElement;
     if (target.classList.contains(targetClass) && !target.classList.contains(notTargetClass)) {
       e.preventDefault();
@@ -28,7 +28,7 @@ export default function ContextMenu({ open, setOpen, targetClass, notTargetClass
   }, [setOpen, targetClass]);
 
   useEffect(() => {
-    const handleClickOutside = (e: any) => {
+    const handleClickOutside = (e: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
         setOpen(false);
       }
@@ -58,7 +58,7 @@ export default function ContextMenu({ open, setOpen, targetClass, notTargetClass
             <Button
               key={i}
               variant={["no-style"]}
-              onClick={(e: MouseEvent) => {
+              onClick={(e) => {
                 row.fn(e);
                 setOpen(false);
               }}

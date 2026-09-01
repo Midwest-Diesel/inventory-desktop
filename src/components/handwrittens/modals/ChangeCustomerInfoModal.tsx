@@ -82,7 +82,7 @@ export default function ChangeCustomerInfoModal({ open, onNext, onPrev, customer
                 variant={['label-bold', 'label-no-stack', 'label-space-between']}
                 label="Bill to Company"
                 value={billToCompany}
-                onChange={(e: any) => setBillToCompany(e.target.value)}
+                onChange={(e) => setBillToCompany(e.target.value)}
               />
             }
             {showBillToAddress &&
@@ -90,7 +90,7 @@ export default function ChangeCustomerInfoModal({ open, onNext, onPrev, customer
                 variant={['label-bold', 'label-no-stack', 'label-space-between']}
                 label="Bill to Address"
                 value={billToAddress}
-                onChange={(e: any) => setBillToAddress(e.target.value)}
+                onChange={(e) => setBillToAddress(e.target.value)}
               />
             }
             {showBillToAddress2 &&
@@ -98,7 +98,7 @@ export default function ChangeCustomerInfoModal({ open, onNext, onPrev, customer
                 variant={['label-bold', 'label-no-stack', 'label-space-between']}
                 label="Bill to Address 2"
                 value={billToAddress2}
-                onChange={(e: any) => setBillToAddress2(e.target.value)}
+                onChange={(e) => setBillToAddress2(e.target.value)}
               />
             }
             {showBillToCity &&
@@ -106,7 +106,7 @@ export default function ChangeCustomerInfoModal({ open, onNext, onPrev, customer
                 variant={['label-bold', 'label-no-stack', 'label-space-between']}
                 label="Bill to City"
                 value={billToCity}
-                onChange={(e: any) => setBillToCity(e.target.value)}
+                onChange={(e) => setBillToCity(e.target.value)}
               />
             }
             {showBillToState &&
@@ -114,7 +114,7 @@ export default function ChangeCustomerInfoModal({ open, onNext, onPrev, customer
                 variant={['label-bold', 'label-no-stack', 'label-space-between']}
                 label="Bill to State"
                 value={billToState}
-                onChange={(e: any) => setBillToState(e.target.value)}
+                onChange={(e) => setBillToState(e.target.value)}
               />
             }
             {showBillToZip &&
@@ -122,7 +122,7 @@ export default function ChangeCustomerInfoModal({ open, onNext, onPrev, customer
                 variant={['label-bold', 'label-no-stack', 'label-space-between']}
                 label="Bill to Zip"
                 value={billToZip}
-                onChange={(e: any) => setBillToZip(e.target.value)}
+                onChange={(e) => setBillToZip(e.target.value)}
               />
             }
           </div>

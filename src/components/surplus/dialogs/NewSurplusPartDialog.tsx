@@ -81,7 +81,7 @@ export default function NewSurplusPartDialog({ open, setOpen, refetch }: Props) 
           label="Purchase Date"
           variant={['label-space-between', 'label-full-width', 'small', 'thin']}
           value={parseDateInputValue(date)}
-          onChange={(e: any) => setDate(new Date(e.target.value))}
+          onChange={(e) => setDate(new Date(e.target.value))}
           type="date"
           required
         />

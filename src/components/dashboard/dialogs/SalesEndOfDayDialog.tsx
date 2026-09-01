@@ -61,23 +61,23 @@ export default function SalesEndOfDayDialog({ open, setOpen }: Props) {
   };
 
   const handleNewQuote = async () => {
-    const quote: any = {
+    const quote = {
       date: new Date(),
       source: null,
-      customerId: selectedItem?.customer.id,
-      contact: selectedItem?.customer.contact,
-      phone: selectedItem?.customer.phone,
-      state: selectedItem?.customer.billToState,
-      partNum: selectedItem?.partNum,
-      desc: selectedItem?.desc,
-      stockNum: selectedItem?.part?.stockNum,
-      price: selectedItem?.unitPrice,
+      customerId: selectedItem?.customer.id ?? null,
+      contact: selectedItem?.customer.contact ?? null,
+      phone: selectedItem?.customer.phone ?? null,
+      state: selectedItem?.customer.billToState ?? null,
+      partNum: selectedItem?.partNum ?? null,
+      desc: selectedItem?.desc ?? null,
+      stockNum: selectedItem?.part?.stockNum ?? null,
+      price: selectedItem?.unitPrice ?? null,
       notes: '',
       rating: selectedItem?.part?.rating ?? 0,
-      email: selectedItem?.customer.email,
-      salesmanId: user.id,
-      partId: selectedItem?.part?.id,
-      handwrittenItemId: selectedItem?.id
+      email: selectedItem?.customer.email ?? null,
+      salesmanId: user.id ?? null,
+      partId: selectedItem?.part?.id ?? null,
+      handwrittenItemId: selectedItem?.id ?? null
     };
     const id = await addQuote(quote);
     await toggleQuoteSold(id, true);

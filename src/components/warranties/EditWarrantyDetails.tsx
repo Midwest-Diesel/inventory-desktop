@@ -134,7 +134,7 @@ export default function EditWarrantyDetails({ warrantyData, setWarranty, setIsEd
                   <CustomerDropdown
                     variant={['fill', 'label-full-width', 'label-full-height', 'no-margin']}
                     value={company}
-                    onChange={(value: any) => setCompany(value)}
+                    onChange={(value) => setCompany(value)}
                     maxHeight="15rem"
                   />
                 </td>
@@ -146,7 +146,7 @@ export default function EditWarrantyDetails({ warrantyData, setWarranty, setIsEd
                     variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                     value={parseDateInputValue(date)}
                     type="date"
-                    onChange={(e: any) => setDate(new Date(e.target.value))}
+                    onChange={(e) => setDate(new Date(e.target.value))}
                   />
                 </td>
               </tr>
@@ -162,7 +162,7 @@ export default function EditWarrantyDetails({ warrantyData, setWarranty, setIsEd
                 <td>
                   <Input
                     value={vendor}
-                    onChange={(e: any) => setVendor(e.target.value)}
+                    onChange={(e) => setVendor(e.target.value)}
                   />
                 </td>
               </tr>
@@ -172,7 +172,7 @@ export default function EditWarrantyDetails({ warrantyData, setWarranty, setIsEd
                   <Input
                     type="number"
                     value={vendorWarrantyNum}
-                    onChange={(e: any) => setVendorWarrantyNum(e.target.value)}
+                    onChange={(e) => setVendorWarrantyNum(e.target.value)}
                   />
                 </td>
               </tr>
@@ -182,7 +182,7 @@ export default function EditWarrantyDetails({ warrantyData, setWarranty, setIsEd
                   <Input
                     type="number"
                     value={handwrittenId}
-                    onChange={(e: any) => setHandwrittenId(e.target.value)}
+                    onChange={(e) => setHandwrittenId(e.target.value)}
                   />
                 </td>
               </tr>
@@ -216,26 +216,26 @@ export default function EditWarrantyDetails({ warrantyData, setWarranty, setIsEd
                     <td>
                       <Input
                         value={item.stockNum ?? ''}
-                        onChange={(e: any) => handleEditItem({ ...item, stockNum: e.target.value }, i)}
+                        onChange={(e) => handleEditItem({ ...item, stockNum: e.target.value }, i)}
                       />
                     </td>
                     <td>
                       <Input
                         type="number"
                         value={item.qty ?? ''}
-                        onChange={(e: any) => handleEditItem({ ...item, qty: e.target.value }, i)}
+                        onChange={(e) => handleEditItem({ ...item, qty: e.target.value ? Number(e.target.value) : null }, i)}
                       />
                     </td>
                     <td>
                       <Input
                         value={item.partNum ?? ''}
-                        onChange={(e: any) => handleEditItem({ ...item, partNum: e.target.value }, i)}
+                        onChange={(e) => handleEditItem({ ...item, partNum: e.target.value }, i)}
                       />
                     </td>
                     <td>
                       <Input
                         value={item.desc ?? ''}
-                        onChange={(e: any) => handleEditItem({ ...item, desc: e.target.value }, i)}
+                        onChange={(e) => handleEditItem({ ...item, desc: e.target.value }, i)}
                       />
                     </td>
                     <td>
@@ -243,7 +243,7 @@ export default function EditWarrantyDetails({ warrantyData, setWarranty, setIsEd
                         type="number"
                         step="any"
                         value={item.cost ?? ''}
-                        onChange={(e: any) => handleEditItem({ ...item, cost: e.target.value }, i)}
+                        onChange={(e) => handleEditItem({ ...item, cost: e.target.value ? Number(e.target.value) : null }, i)}
                       />
                     </td>
                     <td>
@@ -251,44 +251,44 @@ export default function EditWarrantyDetails({ warrantyData, setWarranty, setIsEd
                         type="number"
                         step="any"
                         value={item.price ?? ''}
-                        onChange={(e: any) => handleEditItem({ ...item, price: e.target.value }, i)}
+                        onChange={(e) => handleEditItem({ ...item, price: e.target.value ? Number(e.target.value) : null }, i)}
                       />
                     </td>
                     <td>
                       <Input
                         type="date"
                         value={parseDateInputValue(item.returnedVendorDate)}
-                        onChange={(e: any) => handleEditItem({ ...item, returnedVendorDate: new Date(e.target.value) }, i)}
+                        onChange={(e) => handleEditItem({ ...item, returnedVendorDate: new Date(e.target.value) }, i)}
                       />
                     </td>
                     <td>
                       <Input
                         value={item.claimReason ?? ''}
-                        onChange={(e: any) => handleEditItem({ ...item, claimReason: e.target.value }, i)}
+                        onChange={(e) => handleEditItem({ ...item, claimReason: e.target.value }, i)}
                       />
                     </td>
                     <td>
                       <Input
                         value={item.vendorReport ?? ''}
-                        onChange={(e: any) => handleEditItem({ ...item, vendorReport: e.target.value }, i)}
+                        onChange={(e) => handleEditItem({ ...item, vendorReport: e.target.value }, i)}
                       />
                     </td>
                     <td>
                       <Input
                         value={item.vendorCredit ?? ''}
-                        onChange={(e: any) => handleEditItem({ ...item, vendorCredit: e.target.value }, i)}
+                        onChange={(e) => handleEditItem({ ...item, vendorCredit: e.target.value }, i)}
                       />
                     </td>
                     <td className="cbx-td">
                       <Checkbox
                         checked={item.hasVendorReplacedPart}
-                        onChange={(e: any) => handleEditItem({ ...item, hasVendorReplacedPart: e.target.checked }, i)}
+                        onChange={(e) => handleEditItem({ ...item, hasVendorReplacedPart: e.target.checked }, i)}
                       />
                     </td>
                     <td className="cbx-td">
                       <Checkbox
                         checked={item.isCustomerCredited}
-                        onChange={(e: any) => handleEditItem({ ...item, isCustomerCredited: e.target.checked }, i)}
+                        onChange={(e) => handleEditItem({ ...item, isCustomerCredited: e.target.checked }, i)}
                       />
                     </td>
                     <td>

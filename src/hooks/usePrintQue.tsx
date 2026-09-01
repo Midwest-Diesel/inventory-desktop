@@ -12,9 +12,9 @@ const setScale = (maxWidth: string, maxHeight: string): { width: string, height:
 
 export function usePrintQue() {
   const router = useNavState();
-  const [que, setQue] = useAtom<{ name: string, printCmd: string, data: any, printArgs?: any, maxWidth: string, maxHeight: string, fileName?: string }[]>(printQueAtom);
+  const [que, setQue] = useAtom<{ name: string, printCmd: string, data: unknown, printArgs?: unknown, maxWidth: string, maxHeight: string, fileName?: string }[]>(printQueAtom);
 
-  const addToQue = (name: string, printCmd: string, data: any, maxWidth: string, maxHeight: string, printArgs?: any, fileName?: string) => {
+  const addToQue = (name: string, printCmd: string, data: unknown, maxWidth: string, maxHeight: string, printArgs?: unknown, fileName?: string) => {
     const { width, height } = setScale(maxWidth, maxHeight);
     setQue((prev) => [...prev, { name, printCmd, data, printArgs, maxWidth: width, maxHeight: height, fileName }]);
   };

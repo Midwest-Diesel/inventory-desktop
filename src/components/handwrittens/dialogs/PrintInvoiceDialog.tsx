@@ -194,19 +194,19 @@ export default function PrintInvoiceDialog({ open, setOpen, handwritten }: Props
           variant={['label-bold', 'dark-bg', 'label-align-center']}
           label="Print Accounting Copy"
           checked={accounting}
-          onChange={(e: any) => setAccounting(e.target.checked)}
+          onChange={(e) => setAccounting(e.target.checked)}
         />
         <Checkbox
           variant={['label-bold', 'dark-bg', 'label-align-center']}
           label="Print Shipping Copy"
           checked={shipping}
-          onChange={(e: any) => setShipping(e.target.checked)}
+          onChange={(e) => setShipping(e.target.checked)}
         />
         <Checkbox
           variant={['label-bold', 'dark-bg', 'label-align-center']}
           label="Print Core Deposit Copy"
           checked={coreDeposit}
-          onChange={(e: any) => setCoreDeposit(e.target.checked)}
+          onChange={(e) => setCoreDeposit(e.target.checked)}
         />
         
         <div className="form__footer">

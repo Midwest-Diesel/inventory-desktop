@@ -6,7 +6,7 @@ import Table from "../library/Table";
 import Select from "../library/select/Select";
 import { addAddOn, deleteAddOn, editAddOnIsPoOpened, editAddOnPrintStatus, editAddOnUserEditing } from "@/scripts/services/addOnsService";
 import { getNextUPStockNum, getPartsByStockNum, getPartInfoByPartNum } from "@/scripts/services/partsService";
-import { MouseEvent, useEffect, useRef, useState } from "react";
+import { FocusEvent, MouseEvent, useEffect, useRef, useState } from "react";
 import Input from "../library/Input";
 import { editEngine, getEngineByStockNum } from "@/scripts/services/enginesService";
 import { cap, formatDate, formatWeightDims, parseWeightDims } from "@/scripts/tools/stringUtils";
@@ -94,7 +94,7 @@ export default function ShopPartAddonRow({ addOn, addOns, setAddons, handleDupli
     });
 
     if (bestIndex >= 0 && partNumListRefs.current[bestIndex]) {
-      const listEl: any = document.querySelector('.add-ons__list-select');
+      const listEl: HTMLElement | null = document.querySelector('.add-ons__list-select');
       const item = partNumListRefs.current[bestIndex];
       if (listEl && item) {
         listEl.scrollTop = item.offsetTop - listEl.offsetTop + 24;
@@ -367,7 +367,7 @@ export default function ShopPartAddonRow({ addOn, addOns, setAddons, handleDupli
     printQue();
   };
 
-  const handlePOItemsReceived = async (e: any) => {
+  const handlePOItemsReceived = async (e: FocusEvent<HTMLInputElement>) => {
     if (!e.target.value || addOn.isPoOpened) return;
     const po = await getPurchaseOrderByPoNum(e.target.value);
     if (!po || po.poItems.length === 0) return;
@@ -457,8 +457,8 @@ export default function ShopPartAddonRow({ addOn, addOns, setAddons, handleDupli
                     ref={qtyRef}
                     variant={['x-small', 'thin']}
                     type="number"
-                    value={addOn.qty !== null ? addOn.qty : ''}
-                    onChange={(e: any) => handleEditAddOn({ ...addOn, qty: e.target.value })}
+                    value={addOn.qty ?? ''}
+                    onChange={(e) => handleEditAddOn({ ...addOn, qty: e.target.value ? Number(e.target.value) : null })}
                     data-testid="qty"
                   />
                 </td>
@@ -469,7 +469,7 @@ export default function ShopPartAddonRow({ addOn, addOns, setAddons, handleDupli
                       value={addOn.partNum ?? ''}
                       autofill={partNum}
                       onAutofill={(value) => updateAutofillPartNumData(value)}
-                      onChange={(e: any) => {
+                      onChange={(e) => {
                         handleEditAddOn({ ...addOn, partNum: e.target.value.toUpperCase() });
                         autofillFromPartNum(e.target.value.toUpperCase());
                       }}
@@ -500,8 +500,8 @@ export default function ShopPartAddonRow({ addOn, addOns, setAddons, handleDupli
                 <td>
                   <Input
                     variant={['small', 'thin']}
-                    value={addOn.desc !== null ? addOn.desc : ''}
-                    onChange={(e: any) => handleEditAddOn({ ...addOn, desc: e.target.value })}
+                    value={addOn.desc ?? ''}
+                    onChange={(e) => handleEditAddOn({ ...addOn, desc: e.target.value })}
                     onFocus={() => setShowPartNumSelect(false)}
                     data-testid="desc"
                   />
@@ -510,7 +510,7 @@ export default function ShopPartAddonRow({ addOn, addOns, setAddons, handleDupli
                   <Select
                     style={{ width: '100%' }}
                     value={addOn.type ?? ''}
-                    onChange={(e: any) => handleEditAddOn({ ...addOn, type: e.target.value })}
+                    onChange={(e) => handleEditAddOn({ ...addOn, type: e.target.value as any })}
                   >
                     <option value="">-- SELECT --</option>
                     <option>Truck</option>
@@ -523,9 +523,10 @@ export default function ShopPartAddonRow({ addOn, addOns, setAddons, handleDupli
                     type="number"
                     autofill={engineNum}
                     value={addOn.engineNum !== null ? addOn.engineNum : ''}
-                    onChange={(e: any) => {
-                      setEngineNumLink(e.target.value);
-                      handleEditAddOn({ ...addOn, engineNum: e.target.value });
+                    onChange={(e) => {
+                      const value = e.target.value ? Number(e.target.value) : null;
+                      setEngineNumLink(value);
+                      handleEditAddOn({ ...addOn, engineNum: value });
                     }}
                     onBlur={(e) => {
                       const currentVal = e.target.value;
@@ -541,7 +542,7 @@ export default function ShopPartAddonRow({ addOn, addOns, setAddons, handleDupli
                   <Input
                     variant={['small', 'thin']}
                     value={addOn.stockNum !== null ? addOn.stockNum : ''}
-                    onChange={(e: any) => handleEditAddOn({ ...addOn, stockNum: e.target.value })}
+                    onChange={(e) => handleEditAddOn({ ...addOn, stockNum: e.target.value })}
                     data-testid="stock-num"
                   />
                 </td>
@@ -549,7 +550,7 @@ export default function ShopPartAddonRow({ addOn, addOns, setAddons, handleDupli
                   <Input
                     variant={['small', 'thin']}
                     value={addOn.location !== null ? addOn.location : ''}
-                    onChange={(e: any) => handleEditAddOn({ ...addOn, location: e.target.value })}
+                    onChange={(e) => handleEditAddOn({ ...addOn, location: e.target.value })}
                   />
                 </td>
               </tr>
@@ -575,8 +576,8 @@ export default function ShopPartAddonRow({ addOn, addOns, setAddons, handleDupli
                     <td>
                       <TextArea
                         value={addOn.remarks !== null ? addOn.remarks : ''}
-                        onChange={(e: any) => handleEditAddOn({ ...addOn, remarks: e.target.value })}
-                        onBlur={(e: any) => handleEditAddOn({ ...addOn, rating: getRatingFromRemarks(e.target.value) })}
+                        onChange={(e) => handleEditAddOn({ ...addOn, remarks: e.target.value })}
+                        onBlur={(e) => handleEditAddOn({ ...addOn, rating: getRatingFromRemarks(e.target.value) })}
                         data-testid="remarks"
                       />
                     </td>
@@ -584,7 +585,7 @@ export default function ShopPartAddonRow({ addOn, addOns, setAddons, handleDupli
                       <Select
                         style={{ width: '100%' }}
                         value={addOn.manufacturer ?? ''}
-                        onChange={(e: any) => handleEditAddOn({ ...addOn, manufacturer: e.target.value })}
+                        onChange={(e) => handleEditAddOn({ ...addOn, manufacturer: e.target.value })}
                       >
                         <option value="">-- SELECT --</option>
                         <option>Caterpillar</option>
@@ -601,7 +602,7 @@ export default function ShopPartAddonRow({ addOn, addOns, setAddons, handleDupli
                       <Select
                         style={{ width: '100%' }}
                         value={addOn.condition ?? ''}
-                        onChange={(e: any) => handleEditAddOn({ ...addOn, condition: e.target.value })}
+                        onChange={(e) => handleEditAddOn({ ...addOn, condition: e.target.value })}
                       >
                         <option value="">-- SELECT --</option>
                         <option value="Core">Core</option>
@@ -614,7 +615,7 @@ export default function ShopPartAddonRow({ addOn, addOns, setAddons, handleDupli
                       <Input
                         variant={['small', 'thin']}
                         value={addOn.hp !== null ? addOn.hp : ''}
-                        onChange={(e: any) => handleEditAddOn({ ...addOn, hp: e.target.value })}
+                        onChange={(e) => handleEditAddOn({ ...addOn, hp: e.target.value })}
                         data-testid="hp"
                       />
                     </td>
@@ -622,7 +623,7 @@ export default function ShopPartAddonRow({ addOn, addOns, setAddons, handleDupli
                       <Input
                         variant={['small', 'thin']}
                         value={addOn.serialNum !== null ? addOn.serialNum : ''}
-                        onChange={(e: any) => handleEditAddOn({ ...addOn, serialNum: e.target.value })}
+                        onChange={(e) => handleEditAddOn({ ...addOn, serialNum: e.target.value })}
                         data-testid="serial-num"
                       />
                     </td>
@@ -631,7 +632,7 @@ export default function ShopPartAddonRow({ addOn, addOns, setAddons, handleDupli
                         variant={['small', 'thin']}
                         type="number"
                         value={addOn.rating !== null ? addOn.rating : ''}
-                        onChange={(e: any) => handleEditAddOn({ ...addOn, rating: e.target.value })}
+                        onChange={(e) => handleEditAddOn({ ...addOn, rating: e.target.value })}
                         data-testid="rating"
                       />
                     </td>
@@ -671,7 +672,7 @@ export default function ShopPartAddonRow({ addOn, addOns, setAddons, handleDupli
                         type="number"
                         step="any"
                         value={addOn.newPrice !== null ? addOn.newPrice : ''}
-                        onChange={(e: any) => handleEditAddOn({ ...addOn, newPrice: e.target.value })}
+                        onChange={(e) => handleEditAddOn({ ...addOn, newPrice: e.target.value ? Number(e.target.value) : null })}
                       />
                     </td>
                     <td>
@@ -680,7 +681,7 @@ export default function ShopPartAddonRow({ addOn, addOns, setAddons, handleDupli
                         type="number"
                         step="any"
                         value={addOn.remanPrice !== null ? addOn.remanPrice : ''}
-                        onChange={(e: any) => handleEditAddOn({ ...addOn, remanPrice: e.target.value })}
+                        onChange={(e) => handleEditAddOn({ ...addOn, remanPrice: e.target.value ? Number(e.target.value) : null })}
                       />
                     </td>
                     <td>
@@ -689,14 +690,14 @@ export default function ShopPartAddonRow({ addOn, addOns, setAddons, handleDupli
                         type="number"
                         step="any"
                         value={addOn.dealerPrice !== null ? addOn.dealerPrice : ''}
-                        onChange={(e: any) => handleEditAddOn({ ...addOn, dealerPrice: e.target.value })}
+                        onChange={(e) => handleEditAddOn({ ...addOn, dealerPrice: e.target.value ? Number(e.target.value) : null })}
                       />
                     </td>
                     <td>
                       <Select
                         style={{ width: '100%' }}
                         value={addOn.priceStatus ?? ''}
-                        onChange={(e: any) => handleEditAddOn({ ...addOn, priceStatus: e.target.value })}
+                        onChange={(e) => handleEditAddOn({ ...addOn, priceStatus: e.target.value as any })}
                       >
                         <option value="">-- SELECT --</option>
                         <option>We have pricing</option>
@@ -747,7 +748,7 @@ export default function ShopPartAddonRow({ addOn, addOns, setAddons, handleDupli
                   variant={['label-align-center', 'label-bold']}
                   label="Special Cost"
                   checked={addOn.isSpecialCost}
-                  onChange={(e: any) => handleEditAddOn({ ...addOn, isSpecialCost: e.target.checked })}
+                  onChange={(e) => handleEditAddOn({ ...addOn, isSpecialCost: e.target.checked })}
                 />
 
                 <Checkbox
@@ -768,7 +769,7 @@ export default function ShopPartAddonRow({ addOn, addOns, setAddons, handleDupli
               style={{ width: '3rem' }}
               variant={['x-small', 'search']}
               value={printQty}
-              onChange={(e: any) => setPrintQty(e.target.value)}
+              onChange={(e) => setPrintQty(Number(e.target.value))}
               type="number"
             >
               <Button type="button" variant={['search']} onClick={handlePrint} data-testid="print-btn">Print</Button>

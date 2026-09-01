@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 
 interface Props {
-  children: any
+  children: ReactNode
   label: string
   className?: string
 }
@@ -11,16 +11,18 @@ export default function NavDropdown({ children, className, label, ...props }: Pr
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
-    window.addEventListener('click', (e: any) => handleScreenClick(e));
+    window.addEventListener('click', (e) => handleScreenClick(e));
 
     return () => {
-      window.removeEventListener('click', (e: any) => handleScreenClick(e));
+      window.removeEventListener('click', (e) => handleScreenClick(e));
     };
   }, []);
 
-  const handleScreenClick = (e: any) => {
-    if (e.target.classList[1] === 'alert__btn--primary') return;
-    const clickedDropdown = e.target.closest('.nav-dropdown');
+  const handleScreenClick = (e: MouseEvent) => {
+    const target = e.target as Element;
+    if (target.classList[1] === 'alert__btn--primary') return;
+    
+    const clickedDropdown = target.closest('.nav-dropdown');
     if (!clickedDropdown) setIsOpen(false);
   };
 

@@ -5,12 +5,13 @@ import Input from "@/components/library/Input";
 import Select from "@/components/library/select/Select";
 import { getCustomerById, getCustomers } from "@/scripts/services/customerService";
 import TextArea from "@/components/library/TextArea";
+import { LocationFormData } from "@/pages/map";
 
 interface Props {
   open: boolean
   setOpen: (value: boolean) => void
   data: MapLocation | null
-  onSubmit: (data: any) => void
+  onSubmit: (data: LocationFormData) => void
 }
 
 
@@ -51,9 +52,11 @@ export default function EditMapLocationDialog({ open, setOpen, data, onSubmit }:
           label="Customer"
           type="number"
           value={customerId}
-          onChange={async (e: any) => {
-            const customer = await getCustomerById(e.target.value);
-            setCustomerId(customer?.id);
+          onChange={async (e) => {
+            if (!e.target.value) return;
+            const id = Number(e.target.value);
+            const customer = await getCustomerById(id);
+            setCustomerId(id);
             setName(customer?.company ?? '');
             setAddress(`${customer?.billToAddress}, ${customer?.billToCity}`);
           }}
@@ -67,7 +70,7 @@ export default function EditMapLocationDialog({ open, setOpen, data, onSubmit }:
           variant={['label-bold']}
           label="Name"
           value={name}
-          onChange={(e: any) => setName(e.target.value)}
+          onChange={(e) => setName(e.target.value)}
           required
         />
         <Input
@@ -75,14 +78,14 @@ export default function EditMapLocationDialog({ open, setOpen, data, onSubmit }:
           label="Address"
           placeholder="address, city"
           value={address}
-          onChange={(e: any) => setAddress(e.target.value)}
+          onChange={(e) => setAddress(e.target.value)}
           required
         />
         <Select
           variant={['label-stack', 'label-bold']}
           label="Type"
           value={type}
-          onChange={(e: any) => setType(e.target.value)}
+          onChange={(e) => setType(e.target.value as MapLocationType)}
         >
           <option>customer</option>
           <option>vendor</option>
@@ -91,7 +94,7 @@ export default function EditMapLocationDialog({ open, setOpen, data, onSubmit }:
           variant={['label-bold']}
           label="Notes"
           value={notes}
-          onChange={(e: any) => setNotes(e.target.value)}
+          onChange={(e) => setNotes(e.target.value)}
         />
         <div className="form__footer">
           <Button type="submit">Submit</Button>

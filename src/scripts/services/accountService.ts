@@ -1,3 +1,4 @@
+import axios from "axios";
 import api from "../config/axios";
 import schedule from 'node-schedule';
 
@@ -60,9 +61,12 @@ export const loginUser = async (user: UserLogin) => {
       headers: { 'Content-Type': 'application/json' }
     };
     await api.post('/api/account/authenticate', user, config);
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error(error);
-    return error?.response.data.message;
+    if (axios.isAxiosError(error)) {
+      return error.response?.data?.message;
+    }
+    return undefined;
   }
 };
 

@@ -83,7 +83,7 @@ export default function SearchReturnsDialog({ open, setOpen, onSearch }: Props) 
           label="Progress"
           variant={['label-space-between', 'label-inline']}
           value={progress}
-          onChange={(e: any) => setProgress(e.target.value)}
+          onChange={(e) => setProgress(e.target.value as any)}
         >
           <option value="">Any</option>
           <option value="shop">Shop</option>

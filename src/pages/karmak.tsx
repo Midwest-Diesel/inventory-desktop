@@ -154,7 +154,7 @@ export default function Karmak() {
           <Input
             variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
             value={parseDateInputValue(date)}
-            onChange={(e: any) => setDate(new Date(e.target.value))}
+            onChange={(e) => setDate(new Date(e.target.value))}
             type="date"
           />
         </div>

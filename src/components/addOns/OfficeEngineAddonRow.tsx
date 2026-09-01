@@ -136,7 +136,7 @@ export default function OfficeEngineAddOnRow({ addOn, onSave }: Props) {
                   <Input
                     variant={['small', 'thin']}
                     value={addOn.engineNum !== null ? addOn.engineNum : ''}
-                    onChange={(e: any) => handleEditAddOn({ ...addOn, engineNum: e.target.value })}
+                    onChange={(e) => handleEditAddOn({ ...addOn, engineNum: e.target.value ? Number(e.target.value) : null })}
                     type="number"
                   />
                 </td>
@@ -305,7 +305,7 @@ export default function OfficeEngineAddOnRow({ addOn, onSave }: Props) {
                     <Input
                       variant={['small', 'thin']}
                       value={addOn.engineCostInNote ?? ''}
-                      onChange={(e: any) => handleEditAddOn({ ...addOn, engineCostInNote: e.target.value })}
+                      onChange={(e) => handleEditAddOn({ ...addOn, engineCostInNote: e.target.value })}
                     />
                   </td>
                 </tr>

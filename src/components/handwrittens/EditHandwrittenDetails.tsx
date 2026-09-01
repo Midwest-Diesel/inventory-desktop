@@ -123,10 +123,10 @@ export default function EditHandwrittenDetails({
   const [handwrittenItems, setHandwrittenItems] = useState<HandwrittenItem[]>(handwritten.handwrittenItems);
   const [orderNotes, setOrderNotes] = useState<string>(handwritten.orderNotes ?? '');
   const [shippingNotes, setShippingNotes] = useState<string>(handwritten.shippingNotes ?? '');
-  const [mp, setMp] = useState<number>(handwritten.mp);
-  const [cap, setCap] = useState<number>(handwritten.cap);
-  const [br, setBr] = useState<number>(handwritten.br);
-  const [fl, setFl] = useState<number>(handwritten.fl);
+  const [mp, setMp] = useState<number | null>(handwritten.mp);
+  const [cap, setCap] = useState<number | null>(handwritten.cap);
+  const [br, setBr] = useState<number | null>(handwritten.br);
+  const [fl, setFl] = useState<number | null>(handwritten.fl);
   const [trackingNumbers, setTrackingNumbers] = useState<TrackingNumber[]>(handwritten.trackingNumbers);
   const [blankTrackingNumber, setBlankTrackingNumber] = useState('');
   const [newShippingListRow, setNewShippingListRow] = useState<Handwritten | null>(null);
@@ -349,11 +349,13 @@ export default function EditHandwrittenDetails({
     }
 
     for (let i = 0; i < trackingNumbers.length; i++) {
-      if (deletedNumbers.some((num: any) => num.id === deletedNumbers)) continue;
-      if (!handwritten.trackingNumbers.some((num) => num.id === trackingNumbers[i].id)) {
-        await addTrackingNumber(handwritten.id, trackingNumbers[i].trackingNumber);
-      } else if (trackingNumbers[i].trackingNumber !== handwritten.trackingNumbers[i].trackingNumber) {
-        await editTrackingNumber(trackingNumbers[i].id, trackingNumbers[i].trackingNumber);
+      const currentNumber = trackingNumbers[i];
+      if (deletedNumbers.includes(currentNumber.id)) continue;
+      
+      if (!handwritten.trackingNumbers.some((num) => num.id === currentNumber.id)) {
+        await addTrackingNumber(handwritten.id, currentNumber.trackingNumber);
+      } else if (currentNumber.trackingNumber !== handwritten.trackingNumbers[i].trackingNumber) {
+        await editTrackingNumber(currentNumber.id, currentNumber.trackingNumber);
       }
     }
   };
@@ -622,7 +624,7 @@ export default function EditHandwrittenDetails({
     return null;
   };
 
-  const handleEditShipVia = async (id: number) => {
+  const handleEditShipVia = async (id: number | null) => {
     setShipViaId(id);
     const shipVia = await getFreightCarrierById(id);
     const res = await getHandwrittenById(handwritten.id);
@@ -845,7 +847,7 @@ export default function EditHandwrittenDetails({
                         <Input
                           variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                           value={billToCompany}
-                          onChange={(e: any) => setBillToCompany(e.target.value)}
+                          onChange={(e) => setBillToCompany(e.target.value)}
                           data-testid="bill-to-company-input"
                         />
                       </td>
@@ -856,7 +858,7 @@ export default function EditHandwrittenDetails({
                         <Input
                           variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                           value={billToAddress}
-                          onChange={(e: any) => setBillToAddress(e.target.value)}
+                          onChange={(e) => setBillToAddress(e.target.value)}
                           data-testid="bill-to-address-input"
                         />
                       </td>
@@ -867,7 +869,7 @@ export default function EditHandwrittenDetails({
                         <Input
                           variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                           value={billToAddress2}
-                          onChange={(e: any) => setBillToAddress2(e.target.value)}
+                          onChange={(e) => setBillToAddress2(e.target.value)}
                           data-testid="bill-to-address-2-input"
                         />
                       </td>
@@ -878,7 +880,7 @@ export default function EditHandwrittenDetails({
                         <Input
                           variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                           value={billToCity}
-                          onChange={(e: any) => setBillToCity(e.target.value)}
+                          onChange={(e) => setBillToCity(e.target.value)}
                           data-testid="bill-to-city-input"
                         />
                       </td>
@@ -889,7 +891,7 @@ export default function EditHandwrittenDetails({
                         <Input
                           variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                           value={billToState}
-                          onChange={(e: any) => setBillToState(e.target.value)}
+                          onChange={(e) => setBillToState(e.target.value)}
                           data-testid="bill-to-state-input"
                         />
                       </td>
@@ -900,7 +902,7 @@ export default function EditHandwrittenDetails({
                         <Input
                           variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                           value={billToZip}
-                          onChange={(e: any) => setBillToZip(e.target.value)}
+                          onChange={(e) => setBillToZip(e.target.value)}
                           data-testid="bill-to-zip-input"
                         />
                       </td>
@@ -911,7 +913,7 @@ export default function EditHandwrittenDetails({
                         <Input
                           variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                           value={billToPhone}
-                          onChange={(e: any) => setBillToPhone(e.target.value)}
+                          onChange={(e) => setBillToPhone(e.target.value)}
                           data-testid="bill-to-phone-input"
                         />
                       </td>
@@ -950,7 +952,7 @@ export default function EditHandwrittenDetails({
                         <Input
                           variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                           value={parseDateInputValue(date)}
-                          onChange={(e: any) => setDate(new Date(e.target.value))}
+                          onChange={(e) => setDate(new Date(e.target.value))}
                           type="date"
                         />
                       </td>
@@ -961,7 +963,7 @@ export default function EditHandwrittenDetails({
                         <CustomerDropdown
                           variant={['fill', 'label-full-width', 'label-full-height', 'no-margin']}
                           value={company}
-                          onChange={(value: any) => setCompany(value)}
+                          onChange={(value) => setCompany(value)}
                           maxHeight="15rem"
                         />
                       </td>
@@ -972,7 +974,7 @@ export default function EditHandwrittenDetails({
                         <Input
                           variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                           value={poNum}
-                          onChange={(e: any) => setPoNum(e.target.value)}
+                          onChange={(e) => setPoNum(e.target.value)}
                           data-testid="po-num-input"
                         />
                       </td>
@@ -983,7 +985,7 @@ export default function EditHandwrittenDetails({
                         <Select
                           variant={['label-space-between']}
                           value={source}
-                          onChange={(e: any) => setSource(e.target.value)}
+                          onChange={(e) => setSource(e.target.value)}
                           data-testid="source-input"
                         >
                           <option value="">-- SELECT A SOURCE --</option>
@@ -999,7 +1001,7 @@ export default function EditHandwrittenDetails({
                         <Select
                           variant={['label-space-between']}
                           value={soldBy}
-                          onChange={(e: any) => setSoldBy(Number(e.target.value))}
+                          onChange={(e) => setSoldBy(Number(e.target.value))}
                         >
                           <option value="">-- SOLD BY --</option>
                           {users.map((user: User) => {
@@ -1014,7 +1016,7 @@ export default function EditHandwrittenDetails({
                         <Input
                           variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                           value={contact}
-                          onChange={(e: any) => setContact(e.target.value)}
+                          onChange={(e) => setContact(e.target.value)}
                           data-testid="contact-input"
                         />
                       </td>
@@ -1037,7 +1039,7 @@ export default function EditHandwrittenDetails({
                           <Input
                             variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                             value={shipToCompany}
-                            onChange={(e: any) => setShipToCompany(e.target.value)}
+                            onChange={(e) => setShipToCompany(e.target.value)}
                             data-testid="ship-to-company-input"
                           />
                         </td>
@@ -1048,7 +1050,7 @@ export default function EditHandwrittenDetails({
                           <Input
                             variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                             value={shipToAddress}
-                            onChange={(e: any) => setShipToAddress(e.target.value)}
+                            onChange={(e) => setShipToAddress(e.target.value)}
                             data-testid="ship-to-address-input"
                           />
                         </td>
@@ -1059,7 +1061,7 @@ export default function EditHandwrittenDetails({
                           <Input
                             variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                             value={shipToAddress2}
-                            onChange={(e: any) => setShipToAddress2(e.target.value)}
+                            onChange={(e) => setShipToAddress2(e.target.value)}
                             data-testid="ship-to-address-2-input"
                           />
                         </td>
@@ -1070,7 +1072,7 @@ export default function EditHandwrittenDetails({
                           <Input
                             variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                             value={shipToCity}
-                            onChange={(e: any) => setShipToCity(e.target.value)}
+                            onChange={(e) => setShipToCity(e.target.value)}
                             data-testid="ship-to-city-input"
                           />
                         </td>
@@ -1081,7 +1083,7 @@ export default function EditHandwrittenDetails({
                           <Input
                             variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                             value={shipToState}
-                            onChange={(e: any) => setShipToState(e.target.value)}
+                            onChange={(e) => setShipToState(e.target.value)}
                             data-testid="ship-to-state-input"
                           />
                         </td>
@@ -1092,7 +1094,7 @@ export default function EditHandwrittenDetails({
                           <Input
                             variant={['x-small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                             value={shipToZip}
-                            onChange={(e: any) => setShipToZip(e.target.value)}
+                            onChange={(e) => setShipToZip(e.target.value)}
                             data-testid="ship-to-zip-input"
                           />
                         </td>
@@ -1103,7 +1105,7 @@ export default function EditHandwrittenDetails({
                           <Input
                             variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                             value={shipToContact}
-                            onChange={(e: any) => setShipToContact(e.target.value)}
+                            onChange={(e) => setShipToContact(e.target.value)}
                             data-testid="attn-to-input"
                           />
                         </td>
@@ -1122,7 +1124,7 @@ export default function EditHandwrittenDetails({
                         <FreightCarrierSelect
                           variant={['label-bold']}
                           value={shipViaId ?? ''}
-                          onChange={(e: any) => handleEditShipVia(e.target.value)}
+                          onChange={(e) => handleEditShipVia(e.target.value ? Number(e.target.value) : null)}
                           data-testid="ship-via-input"
                         />
                       </td>
@@ -1133,7 +1135,7 @@ export default function EditHandwrittenDetails({
                         <Input
                           variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
                           value={contactPhone}
-                          onChange={(e: any) => setContactPhone(e.target.value)}
+                          onChange={(e) => setContactPhone(e.target.value)}
                           data-testid="contact-phone-input"
                         />
                       </td>
@@ -1172,7 +1174,7 @@ export default function EditHandwrittenDetails({
                     variant={['label-bold', 'label-align-center']}
                     label="3RD PARTY BILL"
                     checked={isThirdParty}
-                    onChange={(e: any) => {
+                    onChange={(e) => {
                       setIsThirdParty(e.target.checked);
                       setIsCollect(false);
                       setTimeout(() => accountNumRef.current?.focus(), 100);
@@ -1182,7 +1184,7 @@ export default function EditHandwrittenDetails({
                     variant={['label-bold', 'label-align-center']}
                     label="COLLECT"
                     checked={isCollect}
-                    onChange={(e: any) => {
+                    onChange={(e) => {
                       setIsCollect(e.target.checked);
                       setIsThirdParty(false);
                       setTimeout(() => accountNumRef.current?.focus(), 100);
@@ -1194,7 +1196,7 @@ export default function EditHandwrittenDetails({
                     variant={['small', 'thin', 'label-bold']}
                     label="Account Number "
                     value={thirdPartyAccount}
-                    onChange={(e: any) => setThirdPartyAccount(e.target.value)}
+                    onChange={(e) => setThirdPartyAccount(e.target.value)}
                     ref={accountNumRef}
                   />
                 }
@@ -1206,13 +1208,13 @@ export default function EditHandwrittenDetails({
                     variant={['label-bold', 'label-align-center']}
                     label="TAXABLE"
                     checked={isTaxable}
-                    onChange={(e: any) => toggleTaxable(e.target.checked)}
+                    onChange={(e) => toggleTaxable(e.target.checked)}
                   />
                   <Checkbox
                     variant={['label-bold', 'label-align-center']}
                     label="BLIND"
                     checked={isBlindShipment}
-                    onChange={(e: any) => {
+                    onChange={(e) => {
                       setIsBlind(e.target.checked);
                       if (e.target.checked) setIsNoPriceInvoice(true);
                     }}
@@ -1221,19 +1223,19 @@ export default function EditHandwrittenDetails({
                     variant={['label-bold', 'label-align-center']}
                     label="NPI"
                     checked={isNoPriceInvoice}
-                    onChange={(e: any) => setIsNoPriceInvoice(e.target.checked)}
+                    onChange={(e) => setIsNoPriceInvoice(e.target.checked)}
                   />
                   <Checkbox
                     variant={['label-bold', 'label-align-center']}
                     label="SETUP"
                     checked={isSetup}
-                    onChange={(e: any) => setIsSetup(e.target.checked)}
+                    onChange={(e) => setIsSetup(e.target.checked)}
                   />
                   <Checkbox
                     variant={['label-bold', 'label-align-center']}
                     label="Email Invoice EOD"
                     checked={isEndOfDay}
-                    onChange={(e: any) => setIsEndOfDay(e.target.checked)}
+                    onChange={(e) => setIsEndOfDay(e.target.checked)}
                   />
                 </div>
               </GridItem>
@@ -1270,7 +1272,7 @@ export default function EditHandwrittenDetails({
                           <Input
                             variant={['small', 'thin']}
                             value={num.trackingNumber}
-                            onChange={(e: any) => editTrackingNumbers(e.target.value, i)}
+                            onChange={(e) => editTrackingNumbers(e.target.value, i)}
                           />
                           <Button
                             variant={['danger']}
@@ -1288,7 +1290,7 @@ export default function EditHandwrittenDetails({
                     <Input
                       variant={['small', 'thin']}
                       value={blankTrackingNumber}
-                      onChange={(e: any) => setBlankTrackingNumber(e.target.value)}
+                      onChange={(e) => setBlankTrackingNumber(e.target.value)}
                     />
                     <Button type="button" onClick={handleAddTrackingNumber}>Add</Button>
                   </div>
@@ -1303,7 +1305,7 @@ export default function EditHandwrittenDetails({
                     variant={['label-stack', 'label-bold', 'label-full-width']}
                     rows={5}
                     value={shippingNotes}
-                    onChange={(e: any) => setShippingNotes(e.target.value)}
+                    onChange={(e) => setShippingNotes(e.target.value)}
                     data-testid="shipping-notes-input"
                   />
 
@@ -1316,8 +1318,8 @@ export default function EditHandwrittenDetails({
                             <Input
                               style={{ margin: 0, color: 'white' }}
                               variant={['no-arrows', 'no-style']}
-                              value={mp}
-                              onChange={(e: any) => setMp(e.target.value)}
+                              value={mp ?? ''}
+                              onChange={(e) => setMp(e.target.value ? Number(e.target.value) : null)}
                               type="number"
                             />
                           </td>
@@ -1328,8 +1330,8 @@ export default function EditHandwrittenDetails({
                             <Input
                               style={{ margin: 0, color: 'white' }}
                               variant={['no-arrows', 'no-style']}
-                              value={cap}
-                              onChange={(e: any) => setCap(e.target.value)}
+                              value={cap ?? ''}
+                              onChange={(e) => setCap(e.target.value ? Number(e.target.value) : null)}
                               type="number"
                             />
                           </td>
@@ -1340,8 +1342,8 @@ export default function EditHandwrittenDetails({
                             <Input
                               style={{ margin: 0, color: 'white' }}
                               variant={['no-arrows', 'no-style']}
-                              value={br}
-                              onChange={(e: any) => setBr(e.target.value)}
+                              value={br ?? ''}
+                              onChange={(e) => setBr(e.target.value ? Number(e.target.value) : null)}
                               type="number"
                             />
                           </td>
@@ -1353,8 +1355,8 @@ export default function EditHandwrittenDetails({
                               style={{ margin: 0, color: 'white' }}
                               variant={['no-arrows', 'no-style']}
                               maxLength={245}
-                              value={fl}
-                              onChange={(e: any) => setFl(e.target.value)}
+                              value={fl ?? ''}
+                              onChange={(e) => setFl(e.target.value ? Number(e.target.value) : null)}
                               type="number"
                             />
                           </td>
@@ -1374,7 +1376,7 @@ export default function EditHandwrittenDetails({
                     rows={5}
                     maxLength={245}
                     value={orderNotes}
-                    onChange={(e: any) => setOrderNotes(e.target.value)}
+                    onChange={(e) => setOrderNotes(e.target.value)}
                   />
                 </div>
               </GridItem>

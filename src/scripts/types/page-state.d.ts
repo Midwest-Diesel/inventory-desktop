@@ -23,14 +23,14 @@ interface POPageState {
 }
 
 interface HandwrittenSearch {
-  id?: number
-  customerId?: number
-  date?: string
-  poNum?: string
-  billToCompany?: string
-  shipToCompany?: string
-  source?: string
-  payment?: string
+  id?: number | null
+  customerId?: number | null
+  date?: string | null
+  poNum?: string | null
+  billToCompany?: string | null
+  shipToCompany?: string | null
+  source?: string | null
+  payment?: string | null
   limit: number
   offset: number
 }

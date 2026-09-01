@@ -15,13 +15,13 @@ interface Props {
 
 export default function WarrantySearchDialog({ open, setOpen, limit }: Props) {
   const [, setSearchData] = useAtom(warrantySearchAtom);
-  const [id, setId] = useState<number>('' as any);
+  const [id, setId] = useState<number | null>(null);
   const [partNum, setPartNum] = useState('');
   const [vendor, setVendor] = useState('');
   const [status, setStatus] = useState<'' | 'TRUE' | 'FALSE'>('');
 
   const clearInputs = () => {
-    setId('' as any);
+    setId(null);
     setPartNum('');
     setVendor('');
     setStatus('');
@@ -55,8 +55,8 @@ export default function WarrantySearchDialog({ open, setOpen, limit }: Props) {
         <Input
           label="Warranty ID"
           variant={['small', 'thin', 'label-no-stack', 'label-space-between']}
-          value={id}
-          onChange={(e: any) => setId(e.target.value)}
+          value={id ?? ''}
+          onChange={(e) => setId(e.target.value ? Number(e.target.value) : null)}
           type="number"
         />
 
@@ -64,7 +64,7 @@ export default function WarrantySearchDialog({ open, setOpen, limit }: Props) {
           label="Part Number"
           variant={['small', 'thin', 'label-no-stack', 'label-space-between']}
           value={partNum}
-          onChange={(e: any) => setPartNum(e.target.value)}
+          onChange={(e) => setPartNum(e.target.value)}
         />
 
         <Input
@@ -78,7 +78,7 @@ export default function WarrantySearchDialog({ open, setOpen, limit }: Props) {
           variant={['label-space-between', 'label-inline']}
           label="Status"
           value={status}
-          onChange={(e: any) => setStatus(e.target.value)}
+          onChange={(e) => setStatus(e.target.value as any)}
         >
           <option value="">Both</option>
           <option value="TRUE">Closed</option>

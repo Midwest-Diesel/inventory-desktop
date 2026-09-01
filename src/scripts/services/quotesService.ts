@@ -1,10 +1,10 @@
 import api from "../config/axios";
 import { parseResDate } from "../tools/stringUtils";
 
-interface QuoteSearchData {
-  id?: number
-  date?: string
-  salesmanId?: number
+export interface QuoteSearchData {
+  id?: number | null
+  date?: Date | null
+  salesmanId?: number | null
   source?: string
   customer?: string
   contact?: string
@@ -13,7 +13,7 @@ interface QuoteSearchData {
   partNum?: string
   desc?: string
   stockNum?: string
-  sale?: string
+  sale?: '' | 'TRUE' | 'FALSE'
   limit: number
   page: number
 }
@@ -26,20 +26,20 @@ export interface EngineQuoteSearchData {
 
 interface NewQuote {
   date: Date
-  source: string
-  customerId: number
-  contact: string
-  phone: string
-  state: string
-  partNum: string
-  desc: string
-  stockNum: string
-  price: number
-  notes: string
+  source: string | null
+  customerId: number | null
+  contact: string | null
+  phone: string | null
+  state: string | null
+  partNum: string | null
+  desc: string | null
+  stockNum: string | null
+  price: number | null
+  notes: string | null
   salesmanId: number
-  rating: number
-  email: string
-  partId: number
+  rating: number | null
+  email: string | null
+  partId: number | null
 }
 
 
@@ -60,8 +60,8 @@ export const getSomeQuotes = async (page: number, limit: number, partNum: string
   try {
     const res = await api.get(`/api/quotes/limit/${JSON.stringify({ page: (page - 1) * limit, limit, partNum, customerId, isEngineQuote })}`);
     return { pageCount: res.data.pageCount, rows: parseQuotesRes(res.data.rows)};
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
     return { pageCount: 0, rows: [] };
   }
 };
@@ -74,8 +74,8 @@ export const getQuotesByCustomer = async (id: number | null): Promise<any> => {
       rows: parseQuotesRes(res.data.rows) ?? [],
       pageCount: res.data.pageCount ?? []
     };
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
   }
 };
 
@@ -83,8 +83,8 @@ export const getYesterdaysQuotesBySalesman = async (id: number): Promise<Quote[]
   try {
     const res = await api.get(`/api/quotes/salesman-yesterday/${id}`);
     return parseQuotesRes(res.data);
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
     return [];
   }
 };
@@ -93,8 +93,8 @@ export const getLastWeeksQuotesBySalesman = async (id: number): Promise<Quote[]>
   try {
     const res = await api.get(`/api/quotes/salesman-last-week/${id}`);
     return parseQuotesRes(res.data);
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
     return [];
   }
 };
@@ -104,8 +104,8 @@ export const getQuotesBySalesmanDateRange = async (id: number, startDate: Date, 
     const params = { startDate, endDate };
     const res = await api.get(`/api/quotes/salesman-date-range/${id}`, { params });
     return parseQuotesRes(res.data);
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
     return [];
   }
 };
@@ -119,8 +119,8 @@ export const getSomeUnsoldQuotesByPartNum = async (page: number, limit: number, 
         return { ...row, date: parseResDate(row.date) };
       })
     };
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
     return { pageCount: 0, rows: [] };
   }
 };
@@ -129,8 +129,8 @@ export const searchQuotes = async (quote: QuoteSearchData, customerId: number): 
   try {
     const res = await api.get(`/api/quotes/search/${encodeURIComponent(JSON.stringify({ ...quote, customerId }))}`);
     return { pageCount: res.data.pageCount, rows: parseQuotesRes(res.data.rows)};
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
     return { pageCount: 0, rows: [] };
   }
 };
@@ -139,20 +139,21 @@ export const searchEngineQuotes = async (data: EngineQuoteSearchData): Promise<{
   try {
     const res = await api.get(`/api/quotes/search-engines/${encodeURIComponent(JSON.stringify(data))}`);
     return { pageCount: res.data.pageCount, rows: parseQuotesRes(res.data.rows)};
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
     return { pageCount: 0, rows: [] };
   }
 };
 
 // === POST routes === //
 
-export const addQuote = async (quote: NewQuote) => {
+export const addQuote = async (quote: NewQuote): Promise<number | null> => {
   try {
     const res = await api.post('/api/quotes', { quote });
     return res.data.id;
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
+    return null;
   }
 };
 
@@ -161,8 +162,8 @@ export const addQuote = async (quote: NewQuote) => {
 export const editQuote = async (quote: Quote) => {
   try {
     await api.put('/api/quotes', quote);
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
   }
 };
 
@@ -171,24 +172,24 @@ export const editQuote = async (quote: Quote) => {
 export const toggleQuoteSold = async (id: number, sale: boolean) => {
   try {
     await api.patch('/api/quotes/toggle', { id, sale });
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
   }
 };
 
 export const piggybackQuote = async (parentId: number, piggybackId: number) => {
   try {
     await api.patch('/api/quotes', { parentId, piggybackId });
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
   }
 };
 
 export const toggleAddToEmail = async (id: number, value: boolean) => {
   try {
     await api.patch('/api/quotes/add-to-email', { id, value });
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
   }
 };
 
@@ -197,7 +198,7 @@ export const toggleAddToEmail = async (id: number, value: boolean) => {
 export const deleteQuote = async (id: number) => {
   try {
     await api.delete(`/api/quotes/${id}`);
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
   }
 };

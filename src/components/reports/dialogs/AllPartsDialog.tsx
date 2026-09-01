@@ -41,7 +41,7 @@ export default function AllPartsDialog({ open, setOpen, openTable, setTableData 
           variant={['label-stack']}
           type="date"
           value={parseDateInputValue(startDate)}
-          onChange={(e: any) => setStartDate(new Date(e.target.value))}
+          onChange={(e) => setStartDate(new Date(e.target.value))}
           required
         />
         <Input
@@ -49,7 +49,7 @@ export default function AllPartsDialog({ open, setOpen, openTable, setTableData 
           variant={['label-stack']}
           type="date"
           value={parseDateInputValue(endDate)}
-          onChange={(e: any) => setEndDate(new Date(e.target.value))}
+          onChange={(e) => setEndDate(new Date(e.target.value))}
           required
         />
 
