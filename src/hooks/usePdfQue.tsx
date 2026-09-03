@@ -5,9 +5,9 @@ import { pdfQueAtom } from "@/scripts/atoms/state";
 
 export function usePdfQue() {
   const router = useNavState();
-  const [que, setQue] = useAtom<{ name: string, pdfCmd: string, data: unknown, args: unknown, maxWidth: string, maxHeight: string }[]>(pdfQueAtom);
+  const [que, setQue] = useAtom<{ name: string, pdfCmd: string, data: any, args: any, maxWidth: string, maxHeight: string }[]>(pdfQueAtom);
 
-  const addToQue = (name: string, pdfCmd: string, data: unknown, args: unknown, maxWidth: string, maxHeight: string) => {
+  const addToQue = (name: string, pdfCmd: string, data: any, args: any, maxWidth: string, maxHeight: string) => {
     setQue((prev) => [...prev, { name, pdfCmd, data, args, maxWidth, maxHeight }]);
   };
 

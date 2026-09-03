@@ -105,9 +105,13 @@ export default function Karmak() {
   };
 
   const printQuoteList = async () => {
+    const today = new Date();
+    if (today.getDay() === 5) return;
+
+    const date = new Date();
+    date.setDate(date.getDate() - 1);
+    
     for (const salesman of salesmen) {
-      const date = new Date();
-      date.setDate(date.getDate() - 1);
       const quotes = await getYesterdaysQuotesBySalesman(salesman.id);
       queueQuotes(salesman.initials, formatDate(date), quotes);
     }

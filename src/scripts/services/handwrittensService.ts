@@ -242,9 +242,11 @@ export const searchHandwrittensByFilter = async (filter: string, limit: number, 
 
 const checkForCustomerAlert = (customer: Customer | null) => {
   if (!customer) return;
-  if (customer.comments?.split(' ').some((c: string) => c.trim().toLowerCase().includes('residential'))) {
+  const comments = customer.comments?.split(' ') ?? [];
+  
+  if (comments.some((c) => c.trim().toLowerCase().includes('residential'))) {
     alert('Customer has residential address');
-  } else if (customer.comments?.split(' ').some((c: string) => c.trim().toLowerCase().includes('remote'))) {
+  } else if (comments.some((c) => c.trim().toLowerCase().includes('remote'))) {
     alert('Customer has remote address');
   }
 };

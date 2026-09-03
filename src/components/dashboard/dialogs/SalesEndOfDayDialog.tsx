@@ -80,6 +80,8 @@ export default function SalesEndOfDayDialog({ open, setOpen }: Props) {
       handwrittenItemId: selectedItem?.id ?? null
     };
     const id = await addQuote(quote);
+    if (!id) return;
+
     await toggleQuoteSold(id, true);
     refetchQuotes();
     refetchItems();

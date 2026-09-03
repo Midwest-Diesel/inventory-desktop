@@ -33,6 +33,7 @@ export default function EditAlertDialog({ open, setOpen, alert }: Props) {
       partNum,
       date: new Date(),
       salesmanId: user.id,
+      addedBy: alert.addedBy,
       note
     };
     await editAlert(newAlert);

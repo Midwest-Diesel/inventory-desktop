@@ -294,7 +294,7 @@ export default function PartDetails() {
             <Button onClick={() => onClickPrintInjTag()}>Print Inj Tag</Button>
             <Button onClick={() => setPartQtyHistoryOpen(true)} disabled={history.length === 0}>Qty History</Button>
             <Button onClick={() => onClickManualReturn(part)}>Manual Return</Button>
-            <Button onClick={() => onClickAddEbayItem(part)}>Add eBay Item</Button>
+            { !part.listingId && <Button onClick={() => onClickAddEbayItem(part)}>Add to eBay</Button> }
             {part.listingId &&
               <a
                 href={`https://www${import.meta.env.DEV ? '.sandbox' : ''}.ebay.com/itm/${part.listingId}`}

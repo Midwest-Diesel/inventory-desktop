@@ -3,7 +3,6 @@ import Select from "@/components/library/select/Select";
 import { addCustomerContact, deleteContact, editContact, editCustomer, getCustomerById } from "@/scripts/services/customerService";
 import { ask } from "@/scripts/config/tauri";
 import { prompt } from "@/components/library/Prompt";
-import { useState } from "react";
 
 interface Props {
   isEditing: boolean
@@ -17,21 +16,30 @@ interface Props {
 
 
 export default function ContactsControls({ isEditing, setIsEditing, contact, setContact, contacts, customer, setCustomer }: Props) {
-  const [openedContact, setOpenedContact] = useState('');
-
-  const onSelectChangeContact = async (contactName: string) => {
-    setContact(contacts.find((c) => c.name === contactName) ?? null);
-    await editCustomer({ ...customer, contact: contactName });
-    setCustomer({ ...customer, contact: contactName });
+  const onSelectChangeContact = async () => {
+    await editCustomer({ ...customer, contact: contact?.name ?? null });
+    setCustomer({ ...customer, contact: contact?.name ?? null });
   };
 
   const onClickNewContact = async () => {
     const name = await prompt('Enter a contact name');
     if (!name) return;
+
     await addCustomerContact(customer.id, name);
-    await onSelectChangeContact(name);
+    await editCustomer({ ...customer, contact: name });
+
     const res = await getCustomerById(customer.id);
     setCustomer(res);
+  };
+
+  const onClickSelectContact = (name: string) => {
+    const contact = contacts.find((c) => c.name === name);
+    if (!contact) {
+      setContact(null);
+      return;
+    }
+
+    setContact({ ...contact, name });
   };
 
   const onClickSaveContact = async () => {
@@ -46,11 +54,13 @@ export default function ContactsControls({ isEditing, setIsEditing, contact, set
   };
 
   const onClickDeleteContact = async () => {
-    if (!contact?.id || !await ask(`Are you sure you want to delete ${customer.contact}?`)) return;
+    if (!contact?.id || !await ask(`Are you sure you want to delete ${contact.name}?`)) return;
+    const newContact = contact.name === customer.contact ? null : customer.contact;
+
     await deleteContact(contact.id);
-    await editCustomer({ ...customer, contact: null });
+    await editCustomer({ ...customer, contact: newContact });
     const filteredContacts = contacts.filter((c) => c.id !== contact.id);
-    setCustomer({ ...customer, contact: null, contacts: filteredContacts });
+    setCustomer({ ...customer, contact: newContact, contacts: filteredContacts });
   };
 
   
@@ -63,12 +73,12 @@ export default function ContactsControls({ isEditing, setIsEditing, contact, set
 
       <div className="contacts-block__inputs">
         <div className="contacts-block__inputs">
-          <Button type="button" onClick={() => onSelectChangeContact(openedContact)}>Set Contact</Button>
+          <Button type="button" onClick={onSelectChangeContact}>Set Contact</Button>
         </div>
 
         <Select
-          value={openedContact || (contact?.name ?? '')}
-          onChange={(e) => setOpenedContact(e.target.value)}
+          value={contact?.name ?? ''}
+          onChange={(e) => onClickSelectContact(e.target.value)}
         >
           <option value="">-- CONTACT NAME --</option>
           {contacts.map((contact: Contact) => {
