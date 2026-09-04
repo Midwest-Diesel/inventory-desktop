@@ -25,11 +25,13 @@ import Rating from "@/components/library/Rating";
 import { ask } from "@/scripts/config/tauri";
 import { addPersonalContact } from "@/scripts/services/personalContactsListService";
 import Tag from "@/components/library/Tag";
-import { addTagToCustomer } from "@/scripts/services/tagsService";
+import { addTagToCustomer, deleteTagFromCustomer } from "@/scripts/services/tagsService";
 import UserSelect from "@/components/library/select/UserSelect";
 import { getUserById } from "@/scripts/services/accountService";
 import HandwrittensListModal from "@/components/handwrittens/modals/HandwrittensListModal";
 
+
+const TAX_EXEMPT_ID = 2;
 
 export default function Customer() {
   const { closeDetailsBtn, push } = useNavState();
@@ -111,6 +113,20 @@ export default function Customer() {
 
     await addPersonalContact(customer.id, salesmanSelection);
     await addTagToCustomer(customer.id, 1);
+    await fetchData();
+  };
+
+  const toggleTag = async (id: number, name: string) => {
+    const hasTag = customer?.tags.some((t) => t.id === id);
+
+    const prompt = hasTag ? `Remove ${name} tag from customer?` : `Add ${name} tag to customer?`;
+    if (!customer || !await ask(prompt)) return;
+
+    if (hasTag) {
+      await deleteTagFromCustomer(customer.id, id);
+    } else {
+      await addTagToCustomer(customer.id, id);
+    }
     await fetchData();
   };
 
@@ -215,6 +231,12 @@ export default function Customer() {
                   <strong>Mailed Marketing:</strong> { formatDate(customer.lastPrintedLabel) }
                 </p>
               }
+              <Checkbox
+                variant={['label-vertical-align', 'label-bold', 'label-align-center']}
+                label="Tax Exempt"
+                checked={customer.tags.some((t) => t.id === TAX_EXEMPT_ID)}
+                onChange={() => toggleTag(TAX_EXEMPT_ID, 'Tax Exempt')}
+              />
             </div>
           
             <Grid>
