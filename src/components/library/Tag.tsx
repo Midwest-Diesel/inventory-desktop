@@ -7,6 +7,7 @@ interface Props {
 export default function Tag({ text, type }: Props) {
   const getColor = () => {
     if (text === 'Keep Contact') return 'var(--red-3)';
+    if (text === 'Tax Exempt') return 'var(--orange-1)';
     if (type === 'customer-type') return 'var(--yellow-2)';
     if (type === 'rank') return 'var(--green-light-1)';
     return 'white';
