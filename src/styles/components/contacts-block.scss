@@ -8,6 +8,10 @@
   flex-wrap: wrap;
   max-height: 6rem;
 
+  &:has(input) {
+    max-height: none;
+  }
+
   &__header h3 {
     margin-bottom: 0.3rem;
   }
