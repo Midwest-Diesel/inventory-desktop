@@ -26,8 +26,7 @@ export default function ContactsControls({ isEditing, setIsEditing, contact, set
     if (!name) return;
 
     await addCustomerContact(customer.id, name);
-    await editCustomer({ ...customer, contact: name });
-
+    
     const res = await getCustomerById(customer.id);
     setCustomer(res);
   };
@@ -68,12 +67,12 @@ export default function ContactsControls({ isEditing, setIsEditing, contact, set
     <div className="contacts-block__header">
       <div className="contacts-block__title">
         <h3>Contacts</h3>
-        <Button type="button" onClick={onClickNewContact}>Add</Button>
+        <Button onClick={onClickNewContact}>Add</Button>
       </div>
 
       <div className="contacts-block__inputs">
         <div className="contacts-block__inputs">
-          <Button type="button" onClick={onSelectChangeContact}>Set Contact</Button>
+          <Button onClick={onSelectChangeContact}>Set Main Contact</Button>
         </div>
 
         <Select
@@ -87,15 +86,15 @@ export default function ContactsControls({ isEditing, setIsEditing, contact, set
         </Select>
 
         <div className="contacts-block__inputs">
-          { (!isEditing && contact) && <Button type="button" onClick={() => setIsEditing(true)} variant={['blue']}>Edit</Button> }
+          { (!isEditing && contact) && <Button onClick={() => setIsEditing(true)} variant={['blue']}>Edit</Button> }
           {isEditing &&
             <>
-              <Button type="button" onClick={onClickSaveContact} variant={['save']}>Save</Button>
-              <Button type="button" onClick={onClickCancelEdit}>Cancel</Button>
+              <Button onClick={onClickSaveContact} variant={['save']}>Save</Button>
+              <Button onClick={onClickCancelEdit}>Cancel</Button>
             </>
           }
 
-          { contact && <Button type="button" onClick={onClickDeleteContact} variant={['danger']}>Delete</Button> }
+          { contact && <Button onClick={onClickDeleteContact} variant={['danger']}>Delete</Button> }
         </div>
       </div>
     </div>
