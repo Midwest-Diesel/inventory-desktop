@@ -83,7 +83,7 @@ export default function CompareConsist() {
   }, [params.c, params.r]);
 
   const openSideBySide = (engine: Engine) => {
-    setCustomerEngineData(getEngineData());
+    setCustomerEngineData(getEngineData(true));
     setMwdEngine(engine);
   };
 
