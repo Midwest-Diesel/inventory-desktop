@@ -64,11 +64,13 @@ export const getVendorByName = async (name: string): Promise<Vendor | null> => {
 
 // === POST routes === //
 
-export const addVendor = async (name: string, customer?: Customer) => {
+export const addVendor = async (name: string, customer?: Customer): Promise<number | null> => {
   try {
-    await api.post('/api/vendors', { name, customer });
+    const res = await api.post('/api/vendors', { name, customer });
+    return res.data.id;
   } catch (error) {
     handleError(error, 'addVendor');
+    return null;
   }
 };
 
