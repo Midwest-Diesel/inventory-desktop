@@ -11,6 +11,7 @@ import Input from "@/components/library/Input";
 import { prompt } from "@/components/library/Prompt";
 import { useAtom } from "jotai";
 import { vendorNamesAtom } from "@/scripts/atoms/state";
+import { useNavState } from "@/hooks/useNavState";
 
 
 const LIMIT = 40;
@@ -20,8 +21,9 @@ export default function Vendors() {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchData, setSearchData] = useState<VendorSearch>({ name: '', offset: 0, limit: LIMIT });
   const [nameSearch, setNameSearch] = useState('');
+  const { push } = useNavState();
 
-  const { data: vendors, refetch, isFetching } = useQuery<VendorRes | null>({
+  const { data: vendors, isFetching } = useQuery<VendorRes | null>({
     queryKey: ['vendors', currentPage, searchData],
     queryFn: async () => {
       return await searchVendors({
@@ -37,15 +39,13 @@ export default function Vendors() {
 
   const onClickNewVendor = async () => {
     const name = await prompt('Vendor Name');
-    if (!name) {
-      alert('Name cannot be empty');
-      return;
-    }
-    await addVendor(name);
+    if (!name) return;
 
+    const id = await addVendor(name);
     const res = await getVendorNames();
     setVendorsData(res);
-    refetch();
+    
+    await push(name, `/vendors/${id}`);
   };
 
   const handleNameSearch = (e: FormEvent) => {
