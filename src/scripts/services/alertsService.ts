@@ -1,5 +1,6 @@
 import api from "../config/axios";
 import { parseResDate } from "../tools/stringUtils";
+import { handleError } from "../tools/utils";
 
 interface NewAlert {
   date: Date
@@ -23,8 +24,8 @@ export const getAlerts = async (): Promise<Alert[]> => {
   try {
     const res = await api.get('/api/alerts');
     return parseAlertDataRes(res.data);
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    handleError(error, 'getAlerts');
     return [];
   }
 };
@@ -34,8 +35,8 @@ export const searchAlerts = async (partNum: string): Promise<Alert[]> => {
     const params = new URLSearchParams({ partNum });
     const res = await api.get(`/api/alerts/search?${params.toString()}`);
     return parseAlertDataRes(res.data);
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    handleError(error, 'searchAlerts');
     return [];
   }
 };
@@ -45,8 +46,8 @@ export const detectAlerts = async (partNum: string): Promise<Alert[]> => {
   try {
     const res = await api.get(`/api/alerts/partNum/${partNum}`);
     return parseAlertDataRes(res.data);
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    handleError(error, 'detectAlerts');
     return [];
   }
 };
@@ -56,8 +57,8 @@ export const detectAlerts = async (partNum: string): Promise<Alert[]> => {
 export const addAlert = async (alert: NewAlert) => {
   try {
     await api.post('/api/alerts', alert);
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    handleError(error, 'addAlert');
   }
 };
 
@@ -66,8 +67,8 @@ export const addAlert = async (alert: NewAlert) => {
 export const editAlert = async (alert: Alert) => {
   try {
     await api.put('/api/alerts', alert);
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    handleError(error, 'editAlert');
   }
 };
 
@@ -76,7 +77,7 @@ export const editAlert = async (alert: Alert) => {
 export const deleteAlert = async (id: number) => {
   try {
     await api.delete(`/api/alerts/${id}`);
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    handleError(error, 'deleteAlert');
   }
 };

@@ -1,5 +1,6 @@
 import api from "../config/axios";
 import { parseResDate } from "../tools/stringUtils";
+import { handleError } from "../tools/utils";
 import { getEngineCostRemaining } from "./enginesService";
 
 
@@ -16,7 +17,7 @@ export const searchCompareData = async (customerId: number, arrNum: string): Pro
     const res = await api.get(`/api/compare-consist/search/${JSON.stringify({ customerId, arrNum })}`);
     return parseCompareDataRes(res.data);
   } catch (error) {
-    console.error(error);
+    handleError(error, 'searchCompareData');
     return [];
   }
 };
@@ -26,7 +27,7 @@ export const getCompareDataById = async (id: number): Promise<CompareConsist | n
     const res = await api.get(`/api/compare-consist/id/${id}`);
     return parseCompareDataRes(res.data)[0];
   } catch (error) {
-    console.error(error);
+    handleError(error, 'getCompareDataById');
     return null;
   }
 };
@@ -41,7 +42,7 @@ export const getPartsOnEngines = async (partNum: string): Promise<{ partNum: str
     const parsedData = await Promise.all(parsedDataPromises);
     return { partNum, engines: parsedData };
   } catch (error) {
-    console.error(error);
+    handleError(error, 'getPartsOnEngines');
     return { partNum, engines: [] };
   }
 };
@@ -52,7 +53,7 @@ export const addCompareData = async (data: CompareConsist) => {
   try {
     await api.post('/api/compare-consist', data);
   } catch (error) {
-    console.error(error);
+    handleError(error, 'addCompareData');
   }
 };
 
@@ -62,6 +63,6 @@ export const deleteCompareData = async (id: number) => {
   try {
     await api.delete(`/api/compare-consist/${id}`);
   } catch (error) {
-    console.error(error);
+    handleError(error, 'deleteCompareData');
   }
 };

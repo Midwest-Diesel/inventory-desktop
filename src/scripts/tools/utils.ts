@@ -1,6 +1,7 @@
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import { invoke } from '../config/tauri';
+import axios, { AxiosError } from 'axios';
 
 
 export const clamp = (num: number, min: number, max: number) => Math.min(Math.max(num, min), max);
@@ -160,4 +161,31 @@ export const chunkArray = <T,>(arr: T[], size: number): T[][] => {
     chunks.push(arr.slice(i, i + size));
   }
   return chunks;
+};
+
+export const handleError = (error: unknown, fn: string) => {
+  const handle = `[Error in ${fn}]`;
+
+  if (axios.isAxiosError(error)) {
+    if (error.response) {
+      alert(`${handle} ${error.name} ${error.response.status}: ${error.message}`);
+      console.error(handle, error.message, '\n\n', error.response.data, '\n', error.config);
+    } else if (error.request) {
+      alert(`${handle} ${error.name}: ${error.message}`);
+      console.error(handle, error.request, '\n', error.config);
+    } else {
+      alert(`${handle} ${error.name}: ${error.message}`);
+      console.error(handle, error.message, '\n', error.config);
+    }
+    return;
+  }
+
+  if (error instanceof Error) {
+    alert(`${handle} ${error.name}: ${error.message}`);
+    console.error(handle, error);
+    return;
+  }
+
+  alert(`${handle} ${String(error)}`);
+  console.error(handle, error);
 };

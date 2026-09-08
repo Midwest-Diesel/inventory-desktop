@@ -1,5 +1,6 @@
 import api from "../config/axios";
 import { getPartTypeFromDesc } from "../logic/addOns";
+import { handleError } from "../tools/utils";
 import { getEngineByStockNum } from "./enginesService";
 
 interface EditEbayItemQty {
@@ -55,7 +56,7 @@ export const getAddonItemFromSku = async (sku: string): Promise<any | null> => {
     const res = await api.get(`/api/ebay/add-ons/sku/${sku}`);
     return res.data;
   } catch (error) {
-    console.error(error);
+    handleError(error, 'getAddonItemFromSku');
     return null;
   }
 };
@@ -66,7 +67,7 @@ export const getOfferBySku = async (sku: string): Promise<Offer | null> => {
     const res = await api.get(`/api/ebay/offer/sku`, { params });
     return res.data;
   } catch (error) {
-    console.error(error);
+    handleError(error, 'getOfferBySku');
     return null;
   }
 };
@@ -90,8 +91,7 @@ export const addEbayItem = async (addOn: AddOn) => {
     };
     await api.post('/api/ebay/item', item);
   } catch (error) {
-    console.error(error);
-    alert(`Error in [addEbayItem] ${error}`);
+    handleError(error, 'addEbayItem');
   }
 };
 
@@ -120,8 +120,7 @@ export const editEbayItemQty = async (params: EditEbayItemQty) => {
     
     await editEbayAddonItem({ ...ebayAddOnItem, qty: params.qty });
   } catch (error) {
-    console.error(error);
-    alert(`Error in [editEbayItemQty] ${error}`);
+    handleError(error, 'editEbayItemQty');
   }
 };
 
@@ -131,7 +130,6 @@ export const editEbayAddonItem = async (ebayAddOnItem: any) => {
   try {
     await api.put(`/api/ebay/item`, ebayAddOnItem);
   } catch (error) {
-    console.error(error);
-    alert(`Error in [editEbayAddonItem] ${error}`);
+    handleError(error, 'editEbayAddonItem');
   }
 };

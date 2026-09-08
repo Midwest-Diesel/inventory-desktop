@@ -1,5 +1,6 @@
 import { invoke } from "@/scripts/config/tauri";
 import api from "../config/axios";
+import { handleError } from "../tools/utils";
 
 
 const parseEmailStuffRes = async (res: any) => {
@@ -14,8 +15,8 @@ export const getAllEmailStuff = async (): Promise<EmailStuff[]> => {
   try {
     const res = await api.get('/api/email-stuff');
     return await parseEmailStuffRes(res.data) ?? [];
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    handleError(error, 'getAllEmailStuff');
     return [];
   }
 };
@@ -25,8 +26,8 @@ export const getAllEmailStuff = async (): Promise<EmailStuff[]> => {
 export const addEmailStuffItem = async (payload: { name: string, images: string }) => {
   try {
     await api.post('/api/email-stuff', payload);
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    handleError(error, 'addEmailStuffItem');
   }
 };
 
@@ -35,7 +36,7 @@ export const addEmailStuffItem = async (payload: { name: string, images: string 
 export const deleteEmailStuffItem = async (id: number) => {
   try {
     await api.delete(`/api/email-stuff/${id}`);
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    handleError(error, 'deleteEmailStuffItem');
   }
 };

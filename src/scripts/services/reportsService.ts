@@ -1,5 +1,6 @@
 import api from "../config/axios";
 import { parseResDate } from "../tools/stringUtils";
+import { handleError } from "../tools/utils";
 
 
 const parseReportData = (data: any) => {
@@ -15,7 +16,7 @@ export const getPerformance = async (): Promise<Perf | null> => {
     const res = await api.get(`/api/reports/performance`);
     return { sales: res.data } as any;
   } catch (error) {
-    console.error(error);
+    handleError(error, 'getPerformance');
     return null;
   }
 };
@@ -25,7 +26,7 @@ export const reportSingleCompany = async (customer: number, startDate: Date | nu
     const res = await api.get(`/api/reports/single-company/${JSON.stringify({customer, startDate, endDate})}`);
     return parseReportData(res.data);
   } catch (error) {
-    console.error(error);
+    handleError(error, 'reportSingleCompany');
   }
 };
 
@@ -34,7 +35,7 @@ export const reportSalesByBillToCompany = async (billToCompany: string, startDat
     const res = await api.get(`/api/reports/sales-by-bill-to-company/${JSON.stringify({billToCompany, startDate, endDate})}`);
     return parseReportData(res.data);
   } catch (error) {
-    console.error(error);
+    handleError(error, 'reportSalesByBillToCompany');
   }
 };
 
@@ -43,7 +44,7 @@ export const reportAllCompanies = async (startDate: Date | null, endDate: Date |
     const res = await api.get(`/api/reports/all-companies/${JSON.stringify({ startDate, endDate })}`);
     return res.data.map((row: any) => ({ ...row, lastPrintedDate: parseResDate(row.lastPrintedDate) }));
   } catch (error) {
-    console.error(error);
+    handleError(error, 'reportAllCompanies');
     return [];
   }
 };
@@ -53,7 +54,7 @@ export const reportAllParts = async (startDate: Date | null, endDate: Date | nul
     const res = await api.get(`/api/reports/all-parts/${JSON.stringify({startDate, endDate})}`);
     return res.data;
   } catch (error) {
-    console.error(error);
+    handleError(error, 'reportAllParts');
   }
 };
 
@@ -62,7 +63,7 @@ export const reportPartDesc = async (keyword: string, startDate: Date | null, en
     const res = await api.get(`/api/reports/part-desc/${JSON.stringify({keyword, startDate, endDate})}`);
     return res.data;
   } catch (error) {
-    console.error(error);
+    handleError(error, 'reportPartDesc');
   }
 };
 
@@ -71,7 +72,7 @@ export const reportAllEngines = async (startDate: Date | null, endDate: Date | n
     const res = await api.get(`/api/reports/all-engines/${JSON.stringify({startDate, endDate})}`);
     return res.data;
   } catch (error) {
-    console.error(error);
+    handleError(error, 'reportAllEngines');
   }
 };
 
@@ -80,7 +81,7 @@ export const reportAllSources = async (startDate: Date | null, endDate: Date | n
     const res = await api.get(`/api/reports/all-sources/${JSON.stringify({startDate, endDate})}`);
     return res.data;
   } catch (error) {
-    console.error(error);
+    handleError(error, 'reportAllSources');
   }
 };
 
@@ -89,7 +90,7 @@ export const reportAllSalesmen = async (startDate: Date | null, endDate: Date | 
     const res = await api.get(`/api/reports/all-salesmen/${JSON.stringify({startDate, endDate})}`);
     return res.data;
   } catch (error) {
-    console.error(error);
+    handleError(error, 'reportAllSalesmen');
   }
 };
 
@@ -98,7 +99,7 @@ export const reportTheMachines = async () => {
     const res = await api.get(`/api/reports/the-machines`);
     return res.data;
   } catch (error) {
-    console.error(error);
+    handleError(error, 'reportTheMachines');
   }
 };
 
@@ -107,7 +108,7 @@ export const reportArielSales = async (startDate: Date | null, endDate: Date | n
     const res = await api.get(`/api/reports/ariel-sales/${JSON.stringify({startDate, endDate})}`);
     return parseReportData(res.data);
   } catch (error) {
-    console.error(error);
+    handleError(error, 'reportArielSales');
   }
 };
 
@@ -116,7 +117,7 @@ export const reportSingleCompanyParts = async (purchasedFrom: string, startDate:
     const res = await api.get(`/api/reports/single-company-parts/${JSON.stringify({purchasedFrom, startDate, endDate})}`);
     return parseReportData(res.data);
   } catch (error) {
-    console.error(error);
+    handleError(error, 'reportSingleCompanyParts');
   }
 };
 
@@ -125,7 +126,7 @@ export const reportSingleCompanyEngines = async (purchasedFrom: string, startDat
     const res = await api.get(`/api/reports/single-company-engines/${JSON.stringify({purchasedFrom, startDate, endDate})}`);
     return parseReportData(res.data);
   } catch (error) {
-    console.error(error);
+    handleError(error, 'reportSingleCompanyEngines');
   }
 };
 
@@ -134,7 +135,7 @@ export const reportHandwrittenCompany = async (customer: number, year: number) =
     const res = await api.get(`/api/reports/handwrittens-company/${JSON.stringify({customer, year})}`);
     return res.data;
   } catch (error) {
-    console.error(error);
+    handleError(error, 'reportHandwrittenCompany');
   }
 };
 
@@ -143,7 +144,7 @@ export const reportPBB = async () => {
     const res = await api.get(`/api/reports/pbb`);
     return res.data;
   } catch (error) {
-    console.error(error);
+    handleError(error, 'reportPBB');
   }
 };
 
@@ -152,7 +153,7 @@ export const reportNoLocationParts = async () => {
     const res = await api.get(`/api/reports/no-location-parts`);
     return res.data;
   } catch (error) {
-    console.error(error);
+    handleError(error, 'reportNoLocationParts');
   }
 };
 
@@ -161,7 +162,7 @@ export const reportRecentSearches = async (partNum: string) => {
     const res = await api.get(`/api/reports/recent-searches/${JSON.stringify({partNum})}`);
     return parseReportData(res.data);
   } catch (error) {
-    console.error(error);
+    handleError(error, 'reportRecentSearches');
   }
 };
 
@@ -170,7 +171,7 @@ export const reportEmails = async (startDate: Date | null, endDate: Date | null)
     const res = await api.get(`/api/reports/emails/${JSON.stringify({startDate, endDate})}`);
     return parseReportData(res.data);
   } catch (error) {
-    console.error(error);
+    handleError(error, 'reportEmails');
   }
 };
 
@@ -179,7 +180,7 @@ export const reportOutstandingCores = async () => {
     const res = await api.get(`/api/reports/outstanding-cores`);
     return parseReportData(res.data);
   } catch (error) {
-    console.error(error);
+    handleError(error, 'reportOutstandingCores');
   }
 };
 
@@ -188,7 +189,7 @@ export const reportNewCustomers = async (date: Date): Promise<NewCustomersReport
     const res = await api.get(`/api/reports/new-customers`, { params: { date } });
     return res.data;
   } catch (error) {
-    console.error(error);
+    handleError(error, 'reportNewCustomers');
     return [];
   }
 };
@@ -198,7 +199,7 @@ export const reportRemanPartsInStock = async (): Promise<RemanPartsInStockReport
     const res = await api.get(`/api/reports/reman-parts-in-stock`);
     return res.data;
   } catch (error) {
-    console.error(error);
+    handleError(error, 'reportRemanPartsInStock');
     return [];
   }
 };
@@ -209,7 +210,7 @@ export const reportBootsList = async (list: [string, string, number][]): Promise
     const res = await api.get(`/api/reports/boots-list`, { params });
     return res.data;
   } catch (error) {
-    console.error(error);
+    handleError(error, 'reportBootsList');
     return [];
   }
 };
@@ -219,7 +220,7 @@ export const reportTopCustomers = async (): Promise<TopCustomersReport | null> =
     const res = await api.get(`/api/reports/top-customers`);
     return res.data;
   } catch (error) {
-    console.error(error);
+    handleError(error, 'reportTopCustomers');
     return null;
   }
 };
@@ -229,7 +230,7 @@ export const reportInventoryValueParts = async (): Promise<InventoryValueReportP
     const res = await api.get(`/api/reports/inventory-value/parts`);
     return res.data;
   } catch (error) {
-    console.error(error);
+    handleError(error, 'reportInventoryValueParts');
     return { combinedTotal: 0, data: [] };
   }
 };
@@ -239,7 +240,7 @@ export const reportInventoryValueCoreEngines = async (): Promise<InventoryValueR
     const res = await api.get(`/api/reports/inventory-value/core-engines`);
     return { combinedTotal: res.data.combinedTotal, data: res.data.data.map((r: any) => ({ ...r, loginDate: parseResDate(r.loginDate) })) };
   } catch (error) {
-    console.error(error);
+    handleError(error, 'reportInventoryValueCoreEngines');
     return { combinedTotal: 0, data: [] };
   }
 };
@@ -249,7 +250,7 @@ export const reportInventoryValueToreDownEngines = async (): Promise<InventoryVa
     const res = await api.get(`/api/reports/inventory-value/tore-down-engines`);
     return { combinedTotal: res.data.combinedTotal, data: parseReportData(res.data.data) };
   } catch (error) {
-    console.error(error);
+    handleError(error, 'reportInventoryValueToreDownEngines');
     return { combinedTotal: 0, data: [] };
   }
 };
@@ -259,7 +260,7 @@ export const reportInventoryValueRunningEngines = async (): Promise<InventoryVal
     const res = await api.get(`/api/reports/inventory-value/running-engines`);
     return { combinedTotal: res.data.combinedTotal, data: parseReportData(res.data.data) };
   } catch (error) {
-    console.error(error);
+    handleError(error, 'reportInventoryValueRunningEngines');
     return { combinedTotal: 0, data: [] };
   }
 };
@@ -269,7 +270,7 @@ export const reportInventoryValueShortBlocks = async (): Promise<InventoryValueR
     const res = await api.get(`/api/reports/inventory-value/short-blocks`);
     return { combinedTotal: res.data.combinedTotal, data: parseReportData(res.data.data) };
   } catch (error) {
-    console.error(error);
+    handleError(error, 'reportInventoryValueShortBlocks');
     return { combinedTotal: 0, data: [] };
   }
 };
@@ -279,7 +280,7 @@ export const reportInventoryValueSurplus = async (): Promise<InventoryValueRepor
     const res = await api.get(`/api/reports/inventory-value/surplus`);
     return { combinedTotal: res.data.combinedTotal, data: parseReportData(res.data.data) };
   } catch (error) {
-    console.error(error);
+    handleError(error, 'reportInventoryValueSurplus');
     return { combinedTotal: 0, data: [] };
   }
 };
@@ -290,7 +291,7 @@ export const addGonculatorData = async (partList: string[]) => {
   try {
     await api.post(`/api/reports/the-machines`, { partList });
   } catch (error) {
-    console.error(error);
+    handleError(error, 'addGonculatorData');
   }
 };
 
@@ -300,6 +301,6 @@ export const deleteGonculatorData = async () => {
   try {
     await api.delete(`/api/reports/the-machines`);
   } catch (error) {
-    console.error(error);
+    handleError(error, 'deleteGonculatorData');
   }
 };

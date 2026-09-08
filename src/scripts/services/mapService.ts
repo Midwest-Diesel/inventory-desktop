@@ -1,5 +1,6 @@
 import api from "../config/axios";
 import { parseResDate } from "../tools/stringUtils";
+import { handleError } from "../tools/utils";
 
 interface NewMapLocation {
   name: string
@@ -33,7 +34,7 @@ export const getMapLocations = async () => {
     const res = await api.get('/api/map');
     return parseMapData(res.data);
   } catch (error) {
-    console.error(error);
+    handleError(error, 'getMapLocations');
   }
 };
 
@@ -42,7 +43,7 @@ export const getMapLocationFromCustomer = async (id: number): Promise<MapLocatio
     const res = await api.get(`/api/map/${id}`);
     return res.data;
   } catch (error) {
-    console.error(error);
+    handleError(error, 'getMapLocationFromCustomer');
     return null;
   }
 };
@@ -52,7 +53,7 @@ export const getMapTopCustomers = async (): Promise<number[]> => {
     const res = await api.get('/api/map/top-customers');
     return res.data.slice(0, 100);
   } catch (error) {
-    console.error(error);
+    handleError(error, 'getMapTopCustomers');
     return [];
   }
 };
@@ -62,7 +63,7 @@ export const getMapNewLeads = async () => {
     const res = await api.get('/api/map/new-leads');
     return res.data;
   } catch (error) {
-    console.error(error);
+    handleError(error, 'getMapNewLeads');
   }
 };
 
@@ -71,7 +72,7 @@ export const getBrokenLocations = async (): Promise<MapLocation[]> => {
     const res = await api.get('/api/map/broken');
     return parseMapData(res.data);
   } catch (error) {
-    console.error(error);
+    handleError(error, 'getBrokenLocations');
     return [];
   }
 };
@@ -84,7 +85,7 @@ export const getGeoLocation = async (address: string | null): Promise<GeoLocatio
     const res = await api.get('/api/map/geo-location', { params });
     return res.data.results[0];
   } catch (error) {
-    console.error(error);
+    handleError(error, 'getGeoLocation');
     return null;
   }
 };
@@ -95,7 +96,7 @@ export const addMapLocation = async (location: NewMapLocation) => {
   try {
     await api.post('/api/map', location);
   } catch (error) {
-    console.error(error);
+    handleError(error, 'addMapLocation');
   }
 };
 
@@ -105,7 +106,7 @@ export const fixMapLocation = async (location: { id: number, address: string, la
   try {
     await api.patch('/api/map/fix', location);
   } catch (error) {
-    console.error(error);
+    handleError(error, 'fixMapLocation');
   }
 };
 
@@ -115,7 +116,7 @@ export const editMapLocation = async (location: EditMapLocation) => {
   try {
     await api.put('/api/map', location);
   } catch (error) {
-    console.error(error);
+    handleError(error, 'editMapLocation');
   }
 };
 
@@ -125,7 +126,7 @@ export const deleteMapLocation = async (id: number) => {
   try {
     await api.delete(`/api/map/${id}`);
   } catch (error) {
-    console.error(error);
+    handleError(error, 'deleteMapLocation');
   }
 };
 
@@ -133,6 +134,6 @@ export const deleteMapLocationByCustomer = async (id: number) => {
   try {
     await api.delete(`/api/map/customer/${id}`);
   } catch (error) {
-    console.error(error);
+    handleError(error, 'deleteMapLocationByCustomer');
   }
 };

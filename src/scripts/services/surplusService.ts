@@ -1,5 +1,6 @@
 import api from "../config/axios";
 import { parseResDate } from "../tools/stringUtils";
+import { handleError } from "../tools/utils";
 
 
 const parseSurplusDataRes = (data: any) => {
@@ -15,7 +16,7 @@ export const getAllSurplus = async () => {
     const res = await api.get('/api/surplus');
     return parseSurplusDataRes(res.data);
   } catch (error) {
-    console.error(error);
+    handleError(error, 'getAllSurplus');
   }
 };
 
@@ -25,7 +26,7 @@ export const getSurplusByCode = async (code: string | null): Promise<Surplus | n
     const res = await api.get(`/api/surplus/code/${code}`);
     return parseSurplusDataRes(res.data)[0];
   } catch (error) {
-    console.error(error);
+    handleError(error, 'getSurplusByCode');
     return null;
   }
 };
@@ -39,7 +40,7 @@ export const getSurplusSoldParts = async (code: string): Promise<any[]> => {
       return { ...d, soldToDate: parseResDate(d.soldToDate) };
     });
   } catch (error) {
-    console.error(error);
+    handleError(error, 'getSurplusSoldParts');
     return [];
   }
 };
@@ -53,7 +54,7 @@ export const getSurplusRemainingParts = async (code: string): Promise<any[]> => 
       return { ...d, soldToDate: parseResDate(d.soldToDate) };
     });
   } catch (error) {
-    console.error(error);
+    handleError(error, 'getSurplusRemainingParts');
     return [];
   }
 };
@@ -65,7 +66,7 @@ export const getSurplusCostRemaining = async (code: string): Promise<number | nu
     const res = await api.get(`/api/surplus/cost-remaining`, { params });
     return res.data.costRemaining;
   } catch (error) {
-    console.error(error);
+    handleError(error, 'getSurplusCostRemaining');
     return null;
   }
 };
@@ -76,7 +77,7 @@ export const addSurplus = async (surplus: Surplus) => {
   try {
     await api.post('/api/surplus', surplus);
   } catch (error) {
-    console.error(error);
+    handleError(error, 'addSurplus');
   }
 };
 
@@ -86,6 +87,6 @@ export const zeroAllSurplusItems = async (vendor: string) => {
   try {
     await api.put('/api/surplus/zero-all', { vendor });
   } catch (error) {
-    console.error(error);
+    handleError(error, 'zeroAllSurplusItems');
   }
 };

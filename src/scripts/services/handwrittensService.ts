@@ -2,7 +2,7 @@ import api from "../config/axios";
 import { emitServerEvent } from "../config/websockets";
 import { formatRemarksSoldText, removeRemarksSoldText } from "../logic/parts";
 import { parseResDate } from "../tools/stringUtils";
-import { filterNullObjValuesArr } from "../tools/utils";
+import { filterNullObjValuesArr, handleError } from "../tools/utils";
 import { getCoresByCustomer } from "./coresService";
 import { editPart, getPartById } from "./partsService";
 
@@ -64,7 +64,7 @@ export const getHandwrittenById = async (id: number): Promise<Handwritten | null
     res.data[0].cores = cores;
     return parseHandwrittenRes(res.data)[0];
   } catch (error) {
-    console.error(error);
+    handleError(error, 'getHandwrittenById');
     return null;
   }
 };
@@ -74,7 +74,7 @@ export const getHandwrittenItemById = async (id: number): Promise<HandwrittenIte
     const res = await api.get(`/api/handwrittens/item/id/${id}`);
     return { ...res.data, date: parseResDate(res.data.date) };
   } catch (error) {
-    console.error(error);
+    handleError(error, 'getHandwrittenItemById');
     return null;
   }
 };
@@ -84,7 +84,7 @@ export const getSomeHandwrittens = async (page: number, limit: number, onlyShowR
     const res = await api.get(`/api/handwrittens/limit/${JSON.stringify({ page: (page - 1) * limit, limit, onlyShowRecent })}`);
     return { pageCount: res.data.pageCount, rows: await parseHandwrittenRes(res.data.rows) };
   } catch (error) {
-    console.error(error);
+    handleError(error, 'getSomeHandwrittens');
     return { pageCount: 0, rows: [] };
   }
 };
@@ -102,7 +102,7 @@ export const searchHandwrittens = async (handwritten: HandwrittenSearch): Promis
     const res = await api.get(`/api/handwrittens/search?${params.toString()}`);
     return { pageCount: res.data.pageCount, rows: await parseHandwrittenRes(res.data.rows) };
   } catch (error) {
-    console.error(error);
+    handleError(error, 'searchHandwrittens');
     return { pageCount: 0, rows: [] };
   }
 };
@@ -121,7 +121,7 @@ export const searchSelectHandwrittensDialogData = async (handwritten: Handwritte
     const rows = res.data.rows.map((row: SelectHandwrittenDialogResult) => ({ ...row, date: parseResDate(row.date as any) }));
     return { pageCount: res.data.pageCount, rows };
   } catch (error) {
-    console.error(error);
+    handleError(error, 'searchSelectHandwrittensDialogData');
     return { pageCount: 0, rows: [] };
   }
 };
@@ -134,7 +134,7 @@ export const getSomeHandwrittensByInvoiceStatus = async (page: number, limit: nu
     });
     return { pageCount: res.data.pageCount, rows: parsedData };
   } catch (error) {
-    console.error(error);
+    handleError(error, 'getSomeHandwrittensByInvoiceStatus');
     return { pageCount: 0, rows: [] };
   }
 };
@@ -147,7 +147,7 @@ export const getSomeHandwrittensByAccountingStatus = async (page: number, limit:
     });
     return { pageCount: res.data.pageCount, rows: parsedData };
   } catch (error) {
-    console.error(error);
+    handleError(error, 'getSomeHandwrittensByAccountingStatus');
     return { pageCount: 0, rows: [] };
   }
 };
@@ -157,7 +157,7 @@ export const getCustomerHandwrittens = async (customerId: number): Promise<Custo
     const res = await api.get(`/api/handwrittens/customer`, { params: { customerId } });
     return res.data.map((item: any) => ({ ...item, date: parseResDate(item.date) }));
   } catch (error) {
-    console.error(error);
+    handleError(error, 'getCustomerHandwrittens');
     return [];
   }
 };
@@ -167,7 +167,7 @@ export const getCustomerHandwrittenItems = async (customerId: number): Promise<C
     const res = await api.get(`/api/handwrittens/item/customer/${customerId}`);
     return res.data.map((item: any) => ({ ...item, date: parseResDate(item.date) }));
   } catch (error) {
-    console.error(error);
+    handleError(error, 'getCustomerHandwrittenItems');
     return [];
   }
 };
@@ -182,7 +182,7 @@ export const getSomeUnsoldItems = async (page: number, limit: number, salesmanId
       })
     };
   } catch (error) {
-    console.error(error);
+    handleError(error, 'getSomeUnsoldItems');
     return { pageCount: 0, rows: [] };
   }
 };
@@ -192,8 +192,7 @@ export const getEndOfDayHandwrittens = async (date: Date) => {
     const res = await api.get(`/api/handwrittens/end-of-day`, { params: { date } });
     return parseHandwrittenRes(res.data);
   } catch (error) {
-    console.error(error);
-    alert(`Error in [getEndOfDayHandwrittens] ${error}`);
+    handleError(error, 'getHandwrittenById');
   }
 };
 
@@ -202,7 +201,7 @@ export const getYeserdaySales = async (): Promise<number> => {
     const res = await api.get(`/api/handwrittens/yesterday-sales`);
     return Number(res.data.sum);
   } catch (error) {
-    console.error(error);
+    handleError(error, 'getYeserdaySales');
     return 0;
   }
 };
@@ -212,7 +211,7 @@ export const getYeserdayCOGS = async (): Promise<number> => {
     const res = await api.get(`/api/handwrittens/yesterday-cogs`);
     return Number(res.data.sum);
   } catch (error) {
-    console.error(error);
+    handleError(error, 'getYeserdayCOGS');
     return 0;
   }
 };
@@ -222,7 +221,7 @@ export const getHandwrittenEmails = async (customerId: number): Promise<string[]
     const res = await api.get(`/api/handwrittens/emails/${customerId}`);
     return res.data;
   } catch (error) {
-    console.error(error);
+    handleError(error, 'getHandwrittenEmails');
     return [];
   }
 };
@@ -233,7 +232,7 @@ export const searchHandwrittensByFilter = async (filter: string, limit: number, 
     const res = await api.get(`/api/handwrittens/filter`, { params });
     return { pageCount: res.data.pageCount, rows: await parseHandwrittenRes(res.data.rows) };
   } catch (error) {
-    console.error(error);
+    handleError(error, 'searchHandwrittensByFilter');
     return { pageCount: 0, rows: [] };
   }
 };
@@ -275,8 +274,7 @@ export const addHandwritten = async (handwritten: Handwritten): Promise<number |
     checkForCustomerAlert(handwritten.customer);
     return Number(res.data.id);
   } catch (error) {
-    console.error(error);
-    alert(`Error in [addHandwritten] ${error}`);
+    handleError(error, 'addHandwritten');
     return null;
   }
 };
@@ -290,8 +288,7 @@ export const addHandwrittenItem = async (item: NewHandwrittenItem, options?: { a
     emitServerEvent('REFRESH_HANDWRITTEN_ITEMS', [item.handwrittenId]);
     return Number(res.data.id);
   } catch (error) {
-    console.error(error);
-    alert(`Error in [addHandwrittenItem] ${error}`);
+    handleError(error, 'addHandwrittenItem');
     return null;
   }
 };
@@ -304,8 +301,7 @@ export const addHandwrittenItemChild = async (parentId: number, item: NewHandwri
     const handwrittenItem = await getHandwrittenItemById(parentId);
     if (addSoldRemarks) await handleRemarksSoldText(item, res.data.id, Number(handwrittenItem?.handwrittenId));
   } catch (error) {
-    console.error(error);
-    alert(`Error in [addHandwrittenItemChild] ${error}`);
+    handleError(error, 'addHandwrittenItemChild');
   }
 };
 
@@ -315,8 +311,7 @@ export const editHandwrittenPaymentType = async (id: number, payment: string) =>
   try {
     await api.patch('/api/handwrittens/payment', { id, payment });
   } catch (error) {
-    console.error(error);
-    alert(`Error in [editHandwrittenPaymentType] ${error}`);
+    handleError(error, 'editHandwrittenPaymentType');
   }
 };
 
@@ -324,8 +319,7 @@ export const editHandwrittenItemTakeoffState = async (id: number, isTakeoffDone:
   try {
     await api.patch('/api/handwrittens/takeoff', { id, isTakeoffDone });
   } catch (error) {
-    console.error(error);
-    alert(`Error in [editHandwrittenItemTakeoffState] ${error}`);
+    handleError(error, 'editHandwrittenItemTakeoffState');
   }
 };
 
@@ -333,8 +327,7 @@ export const editHandwrittenChildTakeoffState = async (id: number, isTakeoffDone
   try {
     await api.patch('/api/handwrittens/takeoff-child', { id, isTakeoffDone });
   } catch (error) {
-    console.error(error);
-    alert(`Error in [editHandwrittenChildTakeoffState] ${error}`);
+    handleError(error, 'editHandwrittenChildTakeoffState');
   }
 };
 
@@ -342,8 +335,7 @@ export const editHandwrittenTaxable = async (id: number, value: boolean) => {
   try {
     await api.patch('/api/handwrittens/taxable', { id, value });
   } catch (error) {
-    console.error(error);
-    alert(`Error in [editHandwrittenTaxable] ${error}`);
+    handleError(error, 'editHandwrittenTaxable');
   }
 };
 
@@ -351,8 +343,7 @@ export const editHandwrittenPromotionals = async (id: number, mp: number, cap: n
   try {
     await api.patch('/api/handwrittens/promotionals', { id, mp, cap, br, fl });
   } catch (error) {
-    console.error(error);
-    alert(`Error in [editHandwrittenPromotionals] ${error}`);
+    handleError(error, 'editHandwrittenPromotionals');
   }
 };
 
@@ -360,8 +351,7 @@ export const editHandwrittenHasPrinted = async (id: number, hasPrinted: boolean)
   try {
     await api.patch('/api/handwrittens/has-printed', { id, hasPrinted });
   } catch (error) {
-    console.error(error);
-    alert(`Error in [editHandwrittenHasPrinted] ${error}`);
+    handleError(error, 'editHandwrittenHasPrinted');
   }
 };
 
@@ -369,8 +359,7 @@ export const editHandwrittenCCNumber = async (id: number, ccNumber: string) => {
   try {
     await api.patch('/api/handwrittens/cc-number', { id, ccNumber });
   } catch (error) {
-    console.error(error);
-    alert(`Error in [editHandwrittenCCNumber] ${error}`);
+    handleError(error, 'editHandwrittenCCNumber');
   }
 };
 
@@ -378,8 +367,7 @@ export const editHandwrittenItemPartId = async (id: number, partId: number) => {
   try {
     await api.patch('/api/handwrittens/part-id', { id, partId });
   } catch (error) {
-    console.error(error);
-    alert(`Error in [editHandwrittenItemPartId] ${error}`);
+    handleError(error, 'editHandwrittenItemPartId');
   }
 };
 
@@ -390,8 +378,7 @@ export const editHandwritten = async (handwritten: Handwritten) => {
     await api.put('/api/handwrittens', handwritten);
     emitServerEvent('REFRESH_ACCOUNTING_PAGE', []);
   } catch (error) {
-    console.error(error);
-    alert(`Error in [editHandwritten] ${error}`);
+    handleError(error, 'editHandwritten');
   }
 };
 
@@ -400,8 +387,7 @@ export const editHandwrittenItem = async (item: HandwrittenItem) => {
     await api.put('/api/handwrittens/items', item);
     emitServerEvent('REFRESH_HANDWRITTEN_ITEMS', [item.handwrittenId]);
   } catch (error) {
-    console.error(error);
-    alert(`Error in [editHandwrittenItem] ${error}`);
+    handleError(error, 'editHandwrittenItem');
   }
 };
 
@@ -409,8 +395,7 @@ export const editHandwrittenItemChild = async (item: HandwrittenItemChild) => {
   try {
     await api.put('/api/handwrittens/items/child', item);
   } catch (error) {
-    console.error(error);
-    alert(`Error in [editHandwrittenItemChild] ${error}`);
+    handleError(error, 'editHandwrittenItemChild');
   }
 };
 
@@ -419,8 +404,7 @@ export const editHandwrittenOrderNotes = async (id: number, orderNotes: string) 
     await api.put('/api/handwrittens/order-notes', { id, orderNotes });
     emitServerEvent('UPDATE_HANDWRITTEN_WARRANTY', [id, orderNotes]);
   } catch (error) {
-    console.error(error);
-    alert(`Error in [editHandwrittenOrderNotes] ${error}`);
+    handleError(error, 'editHandwrittenOrderNotes');
   }
 };
 
@@ -428,8 +412,7 @@ export const setAllHandwrittenItemDates = async (id: number) => {
   try {
     await api.put('/api/handwrittens/item-dates', { id });
   } catch (error) {
-    console.error(error);
-    alert(`Error in [setAllHandwrittenItemDates] ${error}`);
+    handleError(error, 'setAllHandwrittenItemDates');
   }
 };
 
@@ -447,8 +430,7 @@ export const deleteHandwritten = async (handwritten: Handwritten) => {
 
     emitServerEvent('REFRESH_ACCOUNTING_PAGE', []);
   } catch (error) {
-    console.error(error);
-    alert(`Error in [deleteHandwritten] ${error}`);
+    handleError(error, 'deleteHandwritten');
   }
 };
 
@@ -456,8 +438,7 @@ export const deleteHandwrittenItem = async (id: number) => {
   try {
     await api.delete(`/api/handwrittens/item/${id}`);
   } catch (error) {
-    console.error(error);
-    alert(`Error in [deleteHandwrittenItem] ${error}`);
+    handleError(error, 'deleteHandwrittenItem');
   }
 };
 
@@ -465,8 +446,7 @@ export const deleteHandwrittenItemChild = async (id: number) => {
   try {
     await api.delete(`/api/handwrittens/item-child/${id}`);
   } catch (error) {
-    console.error(error);
-    alert(`Error in [deleteHandwrittenItemChild] ${error}`);
+    handleError(error, 'deleteHandwrittenItemChild');
   }
 };
 

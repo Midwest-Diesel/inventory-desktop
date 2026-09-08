@@ -1,5 +1,6 @@
 import api from "../config/axios";
 import { parseResDate } from "../tools/stringUtils";
+import { handleError } from "../tools/utils";
 
 
 const parseAddOnDataRes = (data: any) => {
@@ -15,7 +16,7 @@ export const getAllAddOns = async (): Promise<AddOn[]> => {
     const res = await api.get('/api/add-ons');
     return parseAddOnDataRes(res.data);
   } catch (error) {
-    console.error(error);
+    handleError(error, 'getAllAddOns');
     return [];
   }
 };
@@ -25,7 +26,7 @@ export const getOfficeAddOns = async (): Promise<AddOn[]> => {
     const res = await api.get('/api/add-ons/office');
     return parseAddOnDataRes(res.data);
   } catch (error) {
-    console.error(error);
+    handleError(error, 'getOfficeAddOns');
     return [];
   }
 };
@@ -35,7 +36,7 @@ export const getAddOnById = async (id: number): Promise<AddOn | null> => {
     const res = await api.get(`/api/add-ons/id/${id}`);
     return parseAddOnDataRes(res.data)[0];
   } catch (error) {
-    console.error(error);
+    handleError(error, 'getAddOnById');
     return null;
   }
 };
@@ -47,8 +48,7 @@ export const addAddOn = async (addOn?: AddOn): Promise<AddOn | null> => {
     const res = await api.post('/api/add-ons', addOn);
     return { ...res.data, id: Number(res.data.id) };
   } catch (error) {
-    console.error(error);
-    alert(`Error in [addAddOn] ${error}`);
+    handleError(error, 'addAddOn');
     return null;
   }
 };
@@ -59,8 +59,7 @@ export const editAddOnAltParts = async (id: number, altParts: string) => {
   try {
     await api.patch('/api/add-ons/alt-parts', { id, altParts });
   } catch (error) {
-    console.error(error);
-    alert(`Error in [editAddOnAltParts] ${error}`);
+    handleError(error, 'editAddOnAltParts');
   }
 };
 
@@ -68,8 +67,7 @@ export const editAddOnPrintStatus = async (id: number, isPrinted: boolean) => {
   try {
     await api.patch('/api/add-ons/is-printed', { id, isPrinted });
   } catch (error) {
-    console.error(error);
-    alert(`Error in [editAddOnPrintStatus] ${error}`);
+    handleError(error, 'editAddOnPrintStatus');
   }
 };
 
@@ -77,8 +75,7 @@ export const editAddOnIsPoOpened = async (id: number, isPoOpened: boolean) => {
   try {
     await api.patch('/api/add-ons/po-opened', { id, isPoOpened });
   } catch (error) {
-    console.error(error);
-    alert(`Error in [editAddOnIsPoOpened] ${error}`);
+    handleError(error, 'editAddOnIsPoOpened');
   }
 };
 
@@ -86,8 +83,7 @@ export const editAddOnUserEditing = async (id: number, userEditing: number) => {
   try {
     await api.patch('/api/add-ons/user-editing', { id, userEditing });
   } catch (error) {
-    console.error(error);
-    alert(`Error in [editAddOnUserEditing] ${error}`);
+    handleError(error, 'editAddOnUserEditing');
   }
 };
 
@@ -97,8 +93,7 @@ export const editAddOns = async (addOns: AddOn[]) => {
   try {
     await api.put('/api/add-ons/list', { addOns });
   } catch (error) {
-    console.error(error);
-    alert(`Error in [editAddOns] ${error}`);
+    handleError(error, 'editAddOns');
   }
 };
 
@@ -106,8 +101,7 @@ export const addOnClearUserEditing = async (userEditing: number) => {
   try {
     await api.put('/api/add-ons/clear-user-editing', { userEditing });
   } catch (error) {
-    console.error(error);
-    alert(`Error in [addOnClearUserEditing] ${error}`);
+    handleError(error, 'addOnClearUserEditing');
   }
 };
 
@@ -117,7 +111,6 @@ export const deleteAddOn = async (id: number) => {
   try {
     await api.delete(`/api/add-ons/${id}`);
   } catch (error) {
-    console.error(error);
-    alert(`Error in [deleteAddOn] ${error}`);
+    handleError(error, 'deleteAddOn');
   }
 };

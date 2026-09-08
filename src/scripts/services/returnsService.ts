@@ -1,6 +1,7 @@
 import { ReturnSearch } from "@/components/returns/dialogs/SearchReturnsDialog";
 import api from "../config/axios";
 import { parseResDate } from "../tools/stringUtils";
+import { handleError } from "../tools/utils";
 
 
 const parseReturnRes = (data: any) => {  
@@ -22,7 +23,7 @@ export const getReturnById = async (id: number): Promise<Return | null> => {
     const res = await api.get(`/api/returns/id/${id}`);
     return parseReturnRes(res.data)[0];
   } catch (error) {
-    console.error(error);
+    handleError(error, 'getReturnById');
     return null;
   }
 };
@@ -32,7 +33,7 @@ export const getSomeReturns = async (page: number, limit: number, isShopPanel: b
     const res = await api.get(`/api/returns/limit/${JSON.stringify({ page: (page - 1) * limit, limit, isShopPanel })}`);
     return { pageCount: res.data.pageCount, rows: parseReturnRes(res.data.rows) };
   } catch (error) {
-    console.error(error);
+    handleError(error, 'getSomeReturns');
     return { pageCount: 0, rows: [] };
   }
 };
@@ -42,7 +43,7 @@ export const getSomeCompletedReturns = async (page: number, limit: number): Prom
     const res = await api.get(`/api/returns/limit/completed/${JSON.stringify({ page: (page - 1) * limit, limit })}`);
     return { pageCount: res.data.pageCount, rows: parseReturnRes(res.data.rows) };
   } catch (error) {
-    console.error(error);
+    handleError(error, 'getSomeCompletedReturns');
     return { pageCount: 0, rows: [] };
   }
 };
@@ -53,7 +54,7 @@ export const searchReturns = async (search: ReturnSearch, page: number, limit: n
     const res = await api.get(`/api/returns/search`, { params });
     return { pageCount: res.data.pageCount, rows: parseReturnRes(res.data.rows) };
   } catch (error) {
-    console.error(error);
+    handleError(error, 'searchReturns');
     return { pageCount: 0, rows: [] };
   }
 };
@@ -65,7 +66,7 @@ export const addReturn = async (returnData: Return) => {
     const res: any = await api.post('/api/returns', returnData);
     return Number(res.data.id);
   } catch (error) {
-    console.error(error);
+    handleError(error, 'addReturn');
   }
 };
 
@@ -73,7 +74,7 @@ export const addReturnItem = async (returnItem: ReturnItem) => {
   try {
     await api.post('/api/returns/items', returnItem);
   } catch (error) {
-    console.error(error);
+    handleError(error, 'addReturnItem');
   }
 };
 
@@ -82,7 +83,7 @@ export const addReturnItemChild = async (returnItemId: number): Promise<number |
     const res = await api.post('/api/returns/item-child', { returnItemId });
     return res.data.id;
   } catch (error) {
-    console.error(error);
+    handleError(error, 'addReturnItemChild');
     return null;
   }
 };
@@ -93,7 +94,7 @@ export const editReturn = async (returnData: Return) => {
   try {
     await api.put('/api/returns', returnData);
   } catch (error) {
-    console.error(error);
+    handleError(error, 'editReturn');
   }
 };
 
@@ -101,7 +102,7 @@ export const editReturnItem = async (item: ReturnItem) => {
   try {
     await api.put('/api/returns/item', item);
   } catch (error) {
-    console.error(error);
+    handleError(error, 'editReturnItem');
   }
 };
 
@@ -109,7 +110,7 @@ export const editReturnItemChild = async (child: ReturnItemChild) => {
   try {
     await api.put('/api/returns/item-child', child);
   } catch (error) {
-    console.error(error);
+    handleError(error, 'editReturnItemChild');
   }
 };
 
@@ -119,7 +120,7 @@ export const issueReturnCredit = async (id: number) => {
   try {
     await api.patch('/api/returns/credit-issued', { id });
   } catch (error) {
-    console.error(error);
+    handleError(error, 'issueReturnCredit');
   }
 };
 
@@ -129,7 +130,7 @@ export const deleteReturn = async (id: number) => {
   try {
     await api.delete(`/api/returns/${id}`);
   } catch (error) {
-    console.error(error);
+    handleError(error, 'deleteReturn');
   }
 };
 
@@ -137,7 +138,7 @@ export const deleteReturnItem = async (id: number) => {
   try {
     await api.delete(`/api/returns/item/${id}`);
   } catch (error) {
-    console.error(error);
+    handleError(error, 'deleteReturnItem');
   }
 };
 
@@ -145,6 +146,6 @@ export const deleteReturnItemChild = async (id: number) => {
   try {
     await api.delete(`/api/returns/item-child/${id}`);
   } catch (error) {
-    console.error(error);
+    handleError(error, 'deleteReturnItemChild');
   }
 };

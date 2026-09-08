@@ -1,5 +1,6 @@
 import api from "../config/axios";
 import { parseResDate } from "../tools/stringUtils";
+import { handleError } from "../tools/utils";
 
 
 const parseAddOnDataRes = (data: any) => {
@@ -15,7 +16,7 @@ export const getAllEngineAddOns = async (): Promise<EngineAddOn[]> => {
     const res = await api.get('/api/engine-add-ons');
     return parseAddOnDataRes(res.data);
   } catch (error) {
-    console.error(error);
+    handleError(error, 'getAllEngineAddOns');
     return [];
   }
 };
@@ -25,7 +26,7 @@ export const getOfficeEngineAddOns = async (): Promise<EngineAddOn[]> => {
     const res = await api.get('/api/engine-add-ons/office');
     return parseAddOnDataRes(res.data);
   } catch (error) {
-    console.error(error);
+    handleError(error, 'getOfficeEngineAddOns');
     return [];
   }
 };
@@ -37,8 +38,7 @@ export const addEngineAddOn = async (addOn?: EngineAddOn) => {
     const res = await api.post('/api/engine-add-ons', addOn);
     return res.data;
   } catch (error) {
-    console.error(error);
-    alert(`Error in [addEngineAddOn] ${error}`);
+    handleError(error, 'addEngineAddOn');
   }
 };
 
@@ -48,8 +48,7 @@ export const editEngineAddOn = async (addOn: EngineAddOn) => {
   try {
     await api.put('/api/engine-add-ons', addOn);
   } catch (error) {
-    console.error(error);
-    alert(`Error in [editEngineAddOn] ${error}`);
+    handleError(error, 'editEngineAddOn');
   }
 };
 
@@ -57,8 +56,7 @@ export const editEngineAddOns = async (addOns: EngineAddOn[]) => {
   try {
     await api.put('/api/engine-add-ons/list', { addOns });
   } catch (error) {
-    console.error(error);
-    alert(`Error in [editEngineAddOns] ${error}`);
+    handleError(error, 'editEngineAddOn');
   }
 };
 
@@ -66,8 +64,7 @@ export const engineAddOnClearUserEditing = async (userEditing: number) => {
   try {
     await api.put('/api/engine-add-ons/clear-user-editing', { userEditing });
   } catch (error) {
-    console.error(error);
-    alert(`Error in [engineAddOnClearUserEditing] ${error}`);
+    handleError(error, 'engineAddOnClearUserEditing');
   }
 };
 
@@ -77,8 +74,7 @@ export const editEngineAddOnPrintStatus = async (id: number, isPrinted: boolean)
   try {
     await api.patch('/api/engine-add-ons/is-printed', { id, isPrinted });
   } catch (error) {
-    console.error(error);
-    alert(`Error in [editEngineAddOnPrintStatus] ${error}`);
+    handleError(error, 'editEngineAddOnPrintStatus');
   }
 };
 
@@ -86,8 +82,7 @@ export const editEngineAddOnUserEditing = async (id: number, userEditing: number
   try {
     await api.patch('/api/engine-add-ons/user-editing', { id, userEditing });
   } catch (error) {
-    console.error(error);
-    alert(`Error in [editEngineAddOnUserEditing] ${error}`);
+    handleError(error, 'editEngineAddOnUserEditing');
   }
 };
 
@@ -97,7 +92,6 @@ export const deleteEngineAddOn = async (id: number) => {
   try {
     await api.delete(`/api/engine-add-ons/${id}`);
   } catch (error) {
-    console.error(error);
-    alert(`Error in [deleteEngineAddOn] ${error}`);
+    handleError(error, 'deleteEngineAddOn');
   }
 };

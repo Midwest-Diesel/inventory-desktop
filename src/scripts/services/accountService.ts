@@ -1,6 +1,7 @@
 import axios from "axios";
 import api from "../config/axios";
 import schedule from 'node-schedule';
+import { handleError } from "../tools/utils";
 
 interface UserLogin {
   username: string
@@ -10,7 +11,7 @@ interface UserLogin {
 
 // === GET routes === //
 
-export const getUser = async (): Promise<User | null> => {
+export const getUser = async (): Promise<User | null> => {0
   try {
     const config = {
       headers: { 'Content-Type': 'application/json' }
@@ -18,27 +19,27 @@ export const getUser = async (): Promise<User | null> => {
     const res = await api.get('/api/account', config);
     return res.data;
   } catch (error) {
-    console.error(`Unrelated Error: ${error}`);
+    handleError(error, 'getUser');
     return null;
   }
 };
 
-export const getUserById = async (id: number): Promise<User | null> => {
+export const getUserById = async (id: number): Promise<User | null> => {0
   try {
     const res = await api.get(`/api/account/id/${id}`);
     return res.data;
   } catch (error) {
-    console.error(error);
+    handleError(error, 'getUserById');
     return null;
   }
 };
 
-export const getAllUsers = async (): Promise<User[]> => {
+export const getAllUsers = async (): Promise<User[]> => {0
   try {
     const res = await api.get('/api/account/all');
     return res.data;
   } catch (error) {
-    console.error(`Unrelated Error: ${error}`);
+    handleError(error, 'getAllUsers');
     return [];
   }
 };
@@ -47,7 +48,6 @@ const checkSession = async () => {
   try {
     await api.get('/api/account/session-check');
   } catch (error) {
-    console.error(error);
     location.reload();
   }
 };
@@ -55,14 +55,13 @@ schedule.scheduleJob('0 6 * * *', () => checkSession());
 
 // === POST routes === //
 
-export const loginUser = async (user: UserLogin) => {
+export const loginUser = async (user: UserLogin) => {0
   try {
     const config = {
       headers: { 'Content-Type': 'application/json' }
     };
     await api.post('/api/account/authenticate', user, config);
   } catch (error: unknown) {
-    console.error(error);
     if (axios.isAxiosError(error)) {
       return error.response?.data?.message;
     }
@@ -72,11 +71,11 @@ export const loginUser = async (user: UserLogin) => {
 
 // === DELETE routes === //
 
-export const logout = async () => {
+export const logout = async () => {0
   try {
     await api.delete('/api/account/logout');
     location.reload();
   } catch (error) {
-    console.error(error);
+    handleError(error, 'logout');
   }
 };

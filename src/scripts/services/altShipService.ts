@@ -1,4 +1,5 @@
 import api from "../config/axios";
+import { handleError } from "../tools/utils";
 
 
 // === GET routes === //
@@ -7,8 +8,8 @@ export const getAltShipByCustomerId = async (customerId: number): Promise<AltShi
   try {
     const res = await api.get(`/api/alt-ship/${customerId}`);
     return res.data;
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    handleError(error, 'getAltShipByCustomerId');
     return [];
   }
 };
@@ -18,8 +19,8 @@ export const getAltShipByCustomerId = async (customerId: number): Promise<AltShi
 export const addAltShipAddress = async (altShip: AltShip) => {
   try {
     await api.post('/api/alt-ship', altShip);
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    handleError(error, 'addAltShipAddress');
   }
 };
 
@@ -28,8 +29,8 @@ export const addAltShipAddress = async (altShip: AltShip) => {
 export const editAltShipAddress = async (altShip: AltShip) => {
   try {
     await api.put('/api/alt-ship', altShip);
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    handleError(error, 'editAltShipAddress');
   }
 };
 
@@ -38,7 +39,7 @@ export const editAltShipAddress = async (altShip: AltShip) => {
 export const deleteAltShipAddress = async (id: number) => {
   try {
     await api.delete(`/api/alt-ship/${id}`);
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    handleError(error, 'deleteAltShipAddress');
   }
 };
