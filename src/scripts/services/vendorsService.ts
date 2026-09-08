@@ -1,4 +1,5 @@
 import api from "../config/axios";
+import { handleError } from "../tools/utils";
 
 export interface VendorSearch {
   name: string
@@ -14,7 +15,7 @@ export const getVendors = async (): Promise<Vendor[]> => {
     const res = await api.get('/api/vendors');
     return res.data;
   } catch (error) {
-    console.error(error);
+    handleError(error, 'getVendors');
     return [];
   }
 };
@@ -24,7 +25,7 @@ export const getVendorNames = async (): Promise<string[]> => {
     const res = await api.get('/api/vendors/names');
     return res.data.map((row: any) => row.name);
   } catch (error) {
-    console.error(error);
+    handleError(error, 'getVendorNames');
     return [];
   }
 };
@@ -34,7 +35,7 @@ export const getVendorById = async (id: number): Promise<Vendor | null> => {
     const res = await api.get(`/api/vendors/id/${id}`);
     return res.data;
   } catch (error) {
-    console.error(error);
+    handleError(error, 'getVendorById');
     return null;
   }
 };
@@ -45,7 +46,7 @@ export const searchVendors = async (search: VendorSearch): Promise<VendorRes> =>
     const res = await api.get(`/api/vendors/search?${params.toString()}`);
     return { pageCount: res.data.pageCount, rows: res.data.rows };
   } catch (error) {
-    console.error(error);
+    handleError(error, 'searchVendors');
     return { pageCount: 0, rows: [] };
   }
 };
@@ -56,7 +57,7 @@ export const getVendorByName = async (name: string): Promise<Vendor | null> => {
     const res = await api.get(`/api/vendors/name/${name.replace(/\s*\(.*?\)/, '')}`);
     return res.data;
   } catch (error) {
-    console.error(error);
+    handleError(error, 'getVendorByName');
     return null;
   }
 };
@@ -67,7 +68,7 @@ export const addVendor = async (name: string, customer?: Customer) => {
   try {
     await api.post('/api/vendors', { name, customer });
   } catch (error) {
-    console.error(error);
+    handleError(error, 'addVendor');
   }
 };
 
@@ -77,7 +78,7 @@ export const editVendor = async (vendor: Vendor) => {
   try {
     await api.put('/api/vendors', { ...vendor });
   } catch (error) {
-    console.error(error);
+    handleError(error, 'editVendor');
   }
 };
 
@@ -87,6 +88,6 @@ export const deleteVendor = async (id: number) => {
   try {
     await api.delete(`/api/vendors/${id}`);
   } catch (error) {
-    console.error(error);
+    handleError(error, 'deleteVendor');
   }
 };

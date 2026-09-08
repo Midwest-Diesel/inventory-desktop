@@ -1,5 +1,6 @@
 import api from "../config/axios";
 import { parseResDate } from "../tools/stringUtils";
+import { handleError } from "../tools/utils";
 import { deleteTagFromCustomer } from "./tagsService";
 
 interface Search {
@@ -21,8 +22,7 @@ export const getPersonalContactsList = async (params: Search): Promise<PersonalC
     const res = await api.get('/api/personal-contacts-list', { params });
     return parseData(res.data);
   } catch (error) {
-    console.error(error);
-    alert(`Error in [getPersonalContactsList] ${error}`);
+    handleError(error, 'getPersonalContactsList');
     return [];
   }
 };
@@ -33,8 +33,7 @@ export const addPersonalContact = async (customerId: number, salesmanId: number)
   try {
     await api.post('/api/personal-contacts-list', { customerId, salesmanId });
   } catch (error) {
-    console.error(error);
-    alert(`Error in [addPersonalContact] ${error}`);
+    handleError(error, 'addPersonalContact');
   }
 };
 
@@ -49,7 +48,6 @@ export const deletePersonalContact = async (contact: PersonalContact) => {
       await deleteTagFromCustomer(contact.customerId, 1);
     }
   } catch (error) {
-    console.error(error);
-    alert(`Error in [deletePersonalContact] ${error}`);
+    handleError(error, 'deletePersonalContact');
   }
 };

@@ -1,5 +1,6 @@
 import api from "../config/axios";
 import { parseResDate } from "../tools/stringUtils";
+import { handleError } from "../tools/utils";
 import { addMapLocation, getGeoLocation } from "./mapService";
 
 interface CustomerSearch {
@@ -49,7 +50,7 @@ export const getCustomers = async (): Promise<Customer[]> => {
     const res = await api.get('/api/customers');
     return await res.data;
   } catch (error) {
-    console.error(error);
+    handleError(error, 'getCustomers');
     return [];
   }
 };
@@ -59,7 +60,7 @@ export const getSomeCustomers = async (page: number, limit: number): Promise<{ p
     const res = await api.get(`/api/customers/limit/${JSON.stringify({ page: (page - 1) * limit, limit })}`);
     return { pageCount: res.data.pageCount, rows: await parseCustomerRes(res.data.rows) };
   } catch (error) {
-    console.error(error);
+    handleError(error, 'getSomeCustomers');
     return { pageCount: 0, rows: [] };
   }
 };
@@ -79,7 +80,7 @@ export const searchCustomers = async (data: CustomerSearch): Promise<{ pageCount
     const res = await api.get(`/api/customers/search?${params.toString()}`);
     return { pageCount: res.data.pageCount, rows: await parseCustomerRes(res.data.rows) };
   } catch (error) {
-    console.error(error);
+    handleError(error, 'searchCustomers');
     return { pageCount: 0, rows: [] };
   }
 };
@@ -89,7 +90,7 @@ export const getCustomerNames = async (): Promise<string[]> => {
     const res = await api.get('/api/customers/names');
     return res.data.map((c: Customer) => c.company);
   } catch (error) {
-    console.error(error);
+    handleError(error, 'getCustomerNames');
     return [];
   }
 };
@@ -99,7 +100,7 @@ export const getCustomerEmails = async (customerId: number): Promise<string[]> =
     const res = await api.get(`/api/customers/emails/${customerId}`);
     return res.data.map((row: any) => row.email);
   } catch (error) {
-    console.error(error);
+    handleError(error, 'getCustomerEmails');
     return [];
   }
 };
@@ -109,7 +110,7 @@ export const getCustomersMin = async (): Promise<CustomerMin[]> => {
     const res = await api.get('/api/customers/min');
     return res.data;
   } catch (error) {
-    console.error(error);
+    handleError(error, 'getCustomersMin');
     return [];
   }
 };
@@ -119,7 +120,7 @@ export const getCustomerById = async (id: number): Promise<Customer | null> => {
     const res = await api.get(`/api/customers/id/${id}`);
     return (await parseCustomerRes(res.data))[0];
   } catch (error) {
-    console.error(error);
+    handleError(error, 'getCustomerById');
     return null;
   }
 };
@@ -130,7 +131,7 @@ export const getCustomerByName = async (name: string): Promise<Customer | null> 
     const res = await api.get(`/api/customers/name?${params}`);
     return (await parseCustomerRes(res.data))[0] ?? null;
   } catch (error) {
-    console.error(error);
+    handleError(error, 'getCustomerByName');
     return null;
   }
 };
@@ -140,7 +141,7 @@ export const getCustomerSalesHistory = async (id: number): Promise<SalesHistory[
     const res = await api.get(`/api/customers/sales/${id}`);
     return res.data ?? [];
   } catch (error) {
-    console.error(error);
+    handleError(error, 'getCustomerSalesHistory');
     return [];
   }
 };
@@ -152,7 +153,7 @@ export const getCustomerSalesRank = async (id: number): Promise<{ amount: number
     
     return { amount: Number(res.data.amount), value: Number(res.data.value) };
   } catch (error) {
-    console.error(error);
+    handleError(error, 'getCustomerSalesRank');
     return null;
   }
 };
@@ -162,7 +163,7 @@ export const getCustomerTypes = async () => {
     const res = await api.get(`/api/customers/types/all`);
     return res.data;
   } catch (error) {
-    console.error(error);
+    handleError(error, 'getCustomerTypes');
   }
 };
 
@@ -197,7 +198,7 @@ export const addCustomer = async (customer: string): Promise<number | null> => {
 
     return id;
   } catch (error) {
-    console.error(error);
+    handleError(error, 'addCustomer');
     return null;
   }
 };
@@ -207,7 +208,7 @@ export const addCustomerContact = async (customerId: number, name: string): Prom
     const res = await api.post('/api/customers/contact', { customerId, name });
     return res.data.id;
   } catch (error) {
-    console.error(error);
+    handleError(error, 'addCustomerContact');
     return null;
   }
 };
@@ -218,8 +219,7 @@ export const editCustomerLastPrintedLabel = async (id: number, lastPrintedLabel:
   try {
     await api.patch('/api/customers/last-printed-label', { id, lastPrintedLabel });
   } catch (error) {
-    console.error(error);
-    alert(`Error in [editCustomerLastPrintedLabel] ${error}`);
+    handleError(error, 'editCustomerLastPrintedLabel');
   }
 };
 
@@ -229,7 +229,7 @@ export const editCustomer = async (customer: Customer) => {
   try {
     await api.put('/api/customers', customer);
   } catch (error) {
-    console.error(error);
+    handleError(error, 'editCustomer');
   }
 };
 
@@ -237,7 +237,7 @@ export const editContact = async (contact: Contact) => {
   try {
     await api.put('/api/customers/contact', contact);
   } catch (error) {
-    console.error(error);
+    handleError(error, 'editContact');
   }
 };
 
@@ -245,7 +245,7 @@ export const customerMerge = async (badId: number, goodId: number) => {
   try {
     await api.put('/api/customers/merge', { badId, goodId });
   } catch (error) {
-    console.error(error);
+    handleError(error, 'customerMerge');
   }
 };
 
@@ -255,7 +255,7 @@ export const deleteCustomer = async (id: number) => {
   try {
     await api.delete(`/api/customers/${id}`);
   } catch (error) {
-    console.error(error);
+    handleError(error, 'deleteCustomer');
   }
 };
 
@@ -263,6 +263,6 @@ export const deleteContact = async (id: number) => {
   try {
     await api.delete(`/api/customers/contact/${id}`);
   } catch (error) {
-    console.error(error);
+    handleError(error, 'deleteContact');
   }
 };

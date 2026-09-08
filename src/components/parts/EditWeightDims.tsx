@@ -39,7 +39,7 @@ export default function EditWeightDims({ weightDims, setWeightDims }: Props) {
             }
           </th>
 
-          <td style={{ width: '4rem' }}>
+          <td>
             <Input
               value={item.qty ?? ''}
               onChange={(e) => {
@@ -53,7 +53,7 @@ export default function EditWeightDims({ weightDims, setWeightDims }: Props) {
           </td>
 
           <th>Type</th>
-          <td style={{ width: '4rem' }}>
+          <td>
             <Select
               value={item.type}
               onChange={(e) => {
@@ -68,7 +68,7 @@ export default function EditWeightDims({ weightDims, setWeightDims }: Props) {
           </td>
 
           <th>Lbs</th>
-          <td style={{ width: '4rem' }}>
+          <td>
             <Input
               value={item.lbs ?? ''}
               onChange={(e) => {
@@ -82,7 +82,7 @@ export default function EditWeightDims({ weightDims, setWeightDims }: Props) {
           </td>
 
           <th>L</th>
-          <td style={{ width: '4rem' }}>
+          <td>
             <Input
               value={item.length ?? ''}
               onChange={(e) => {
@@ -96,7 +96,7 @@ export default function EditWeightDims({ weightDims, setWeightDims }: Props) {
           </td>
 
           <th>W</th>
-          <td style={{ width: '4rem' }}>
+          <td>
             <Input
               value={item.width ?? ''}
               onChange={(e) => {
@@ -110,7 +110,7 @@ export default function EditWeightDims({ weightDims, setWeightDims }: Props) {
           </td>
 
           <th>H</th>
-          <td style={{ width: '4rem' }}>
+          <td>
             <Input
               value={item.height ?? ''}
               onChange={(e) => {

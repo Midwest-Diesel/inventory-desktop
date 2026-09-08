@@ -1,5 +1,6 @@
 import api from "../config/axios";
 import { parseResDate } from "../tools/stringUtils";
+import { handleError } from "../tools/utils";
 
 interface RecentSearch {
   partNum: string
@@ -23,8 +24,8 @@ export const getRecentPartSearches = async (partNum: string): Promise<RecentPart
     const params = { partNum };
     const res = await api.get(`/api/recent-searches/parts`, { params });
     return parseRecentSearches(res.data);
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    handleError(error, 'getRecentPartSearches');
     return [];
   }
 };
@@ -33,8 +34,8 @@ export const getRecentPartSearchesToday = async (): Promise<RecentPartSearch[]> 
   try {
     const res = await api.get(`/api/recent-searches/parts/today`);
     return parseRecentSearches(res.data);
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    handleError(error, 'getRecentPartSearchesToday');
     return [];
   }
 };
@@ -44,8 +45,8 @@ export const getQuotesByPartNum = async (partNum: string, daysAgo = 120): Promis
     const params = { partNum, daysAgo };
     const res = await api.get(`/api/recent-searches/quotes`, { params });
     return parseRecentSearches(res.data);
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    handleError(error, 'getQuotesByPartNum');
     return [];
   }
 };
@@ -55,7 +56,7 @@ export const getQuotesByPartNum = async (partNum: string, daysAgo = 120): Promis
 export const addRecentSearch = async (payload: RecentSearch) => {
   try {
     await api.post('/api/recent-searches', payload);
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    handleError(error, 'addRecentSearch');
   }
 };

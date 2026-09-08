@@ -1,5 +1,6 @@
 import api from "../config/axios";
 import { parseResDate } from "../tools/stringUtils";
+import { handleError } from "../tools/utils";
 
 export interface QuoteSearchData {
   id?: number | null
@@ -61,7 +62,7 @@ export const getSomeQuotes = async (page: number, limit: number, partNum: string
     const res = await api.get(`/api/quotes/limit/${JSON.stringify({ page: (page - 1) * limit, limit, partNum, customerId, isEngineQuote })}`);
     return { pageCount: res.data.pageCount, rows: parseQuotesRes(res.data.rows)};
   } catch (error) {
-    console.error(error);
+    handleError(error, 'getSomeQuotes');
     return { pageCount: 0, rows: [] };
   }
 };
@@ -75,7 +76,7 @@ export const getQuotesByCustomer = async (id: number | null): Promise<any> => {
       pageCount: res.data.pageCount ?? []
     };
   } catch (error) {
-    console.error(error);
+    handleError(error, 'getQuotesByCustomer');
   }
 };
 
@@ -84,7 +85,7 @@ export const getYesterdaysQuotesBySalesman = async (id: number): Promise<Quote[]
     const res = await api.get(`/api/quotes/salesman-yesterday/${id}`);
     return parseQuotesRes(res.data);
   } catch (error) {
-    console.error(error);
+    handleError(error, 'getYesterdaysQuotesBySalesman');
     return [];
   }
 };
@@ -94,7 +95,7 @@ export const getLastWeeksQuotesBySalesman = async (id: number): Promise<Quote[]>
     const res = await api.get(`/api/quotes/salesman-last-week/${id}`);
     return parseQuotesRes(res.data);
   } catch (error) {
-    console.error(error);
+    handleError(error, 'getLastWeeksQuotesBySalesman');
     return [];
   }
 };
@@ -105,7 +106,7 @@ export const getQuotesBySalesmanDateRange = async (id: number, startDate: Date, 
     const res = await api.get(`/api/quotes/salesman-date-range/${id}`, { params });
     return parseQuotesRes(res.data);
   } catch (error) {
-    console.error(error);
+    handleError(error, 'getQuotesBySalesmanDateRange');
     return [];
   }
 };
@@ -120,7 +121,7 @@ export const getSomeUnsoldQuotesByPartNum = async (page: number, limit: number, 
       })
     };
   } catch (error) {
-    console.error(error);
+    handleError(error, 'getSomeUnsoldQuotesByPartNum');
     return { pageCount: 0, rows: [] };
   }
 };
@@ -130,7 +131,7 @@ export const searchQuotes = async (quote: QuoteSearchData, customerId: number): 
     const res = await api.get(`/api/quotes/search/${encodeURIComponent(JSON.stringify({ ...quote, customerId }))}`);
     return { pageCount: res.data.pageCount, rows: parseQuotesRes(res.data.rows)};
   } catch (error) {
-    console.error(error);
+    handleError(error, 'searchQuotes');
     return { pageCount: 0, rows: [] };
   }
 };
@@ -140,7 +141,7 @@ export const searchEngineQuotes = async (data: EngineQuoteSearchData): Promise<{
     const res = await api.get(`/api/quotes/search-engines/${encodeURIComponent(JSON.stringify(data))}`);
     return { pageCount: res.data.pageCount, rows: parseQuotesRes(res.data.rows)};
   } catch (error) {
-    console.error(error);
+    handleError(error, 'searchEngineQuotes');
     return { pageCount: 0, rows: [] };
   }
 };
@@ -152,7 +153,7 @@ export const addQuote = async (quote: NewQuote): Promise<number | null> => {
     const res = await api.post('/api/quotes', { quote });
     return res.data.id;
   } catch (error) {
-    console.error(error);
+    handleError(error, 'addQuote');
     return null;
   }
 };
@@ -163,7 +164,7 @@ export const editQuote = async (quote: Quote) => {
   try {
     await api.put('/api/quotes', quote);
   } catch (error) {
-    console.error(error);
+    handleError(error, 'editQuote');
   }
 };
 
@@ -173,7 +174,7 @@ export const toggleQuoteSold = async (id: number, sale: boolean) => {
   try {
     await api.patch('/api/quotes/toggle', { id, sale });
   } catch (error) {
-    console.error(error);
+    handleError(error, 'toggleQuoteSold');
   }
 };
 
@@ -181,7 +182,7 @@ export const piggybackQuote = async (parentId: number, piggybackId: number) => {
   try {
     await api.patch('/api/quotes', { parentId, piggybackId });
   } catch (error) {
-    console.error(error);
+    handleError(error, 'piggybackQuote');
   }
 };
 
@@ -189,7 +190,7 @@ export const toggleAddToEmail = async (id: number, value: boolean) => {
   try {
     await api.patch('/api/quotes/add-to-email', { id, value });
   } catch (error) {
-    console.error(error);
+    handleError(error, 'toggleAddToEmail');
   }
 };
 
@@ -199,6 +200,6 @@ export const deleteQuote = async (id: number) => {
   try {
     await api.delete(`/api/quotes/${id}`);
   } catch (error) {
-    console.error(error);
+    handleError(error, 'deleteQuote');
   }
 };
