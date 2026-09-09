@@ -237,6 +237,7 @@ export default function CustomerDetails({ customer, setCustomer, setIsEditing, o
                           onChange={(e) => setCustomerType(e.target.value)}
                           value={customerType}
                         >
+                          <option>-- SELECT CUSTOMER TYPE --</option>
                           {customerTypes.map((type, i) => {
                             return <option key={i} value={type}>{ type }</option>;
                           })}
