@@ -80,12 +80,12 @@ export const getQuotesByCustomer = async (id: number | null): Promise<any> => {
   }
 };
 
-export const getYesterdaysQuotesBySalesman = async (id: number): Promise<Quote[]> => {
+export const getTodaysQuotesBySalesman = async (id: number): Promise<Quote[]> => {
   try {
-    const res = await api.get(`/api/quotes/salesman-yesterday/${id}`);
+    const res = await api.get(`/api/quotes/salesman-today/${id}`);
     return parseQuotesRes(res.data);
   } catch (error) {
-    handleError(error, 'getYesterdaysQuotesBySalesman');
+    handleError(error, 'getTodaysQuotesBySalesman');
     return [];
   }
 };
