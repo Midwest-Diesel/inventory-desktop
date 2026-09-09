@@ -14,7 +14,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getFastTrackInventory, getNetcomInventory } from "@/scripts/services/partsService";
 import { offServerEvent, onServerEvent } from "@/scripts/config/websockets";
 import { usePrintQue } from "@/hooks/usePrintQue";
-import { getYesterdaysQuotesBySalesman } from "@/scripts/services/quotesService";
+import { getTodaysQuotesBySalesman } from "@/scripts/services/quotesService";
 import { getAllUsers } from "@/scripts/services/accountService";
 import { chunkArray } from "@/scripts/tools/utils";
 import Input from "@/components/library/Input";
@@ -107,13 +107,10 @@ export default function Karmak() {
   const printQuoteList = async () => {
     const today = new Date();
     if (today.getDay() === 5) return;
-
-    const date = new Date();
-    date.setDate(date.getDate() - 1);
     
     for (const salesman of salesmen) {
-      const quotes = await getYesterdaysQuotesBySalesman(salesman.id);
-      queueQuotes(salesman.initials, formatDate(date), quotes);
+      const quotes = await getTodaysQuotesBySalesman(salesman.id);
+      queueQuotes(salesman.initials, formatDate(today), quotes);
     }
     printQue();
   };

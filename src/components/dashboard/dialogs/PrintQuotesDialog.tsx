@@ -2,7 +2,7 @@ import Button from "@/components/library/Button";
 import Dialog from "@/components/library/Dialog";
 import Input from "@/components/library/Input";
 import { usePrintQue } from "@/hooks/usePrintQue";
-import { getLastWeeksQuotesBySalesman, getQuotesBySalesmanDateRange, getYesterdaysQuotesBySalesman } from "@/scripts/services/quotesService";
+import { getLastWeeksQuotesBySalesman, getQuotesBySalesmanDateRange, getTodaysQuotesBySalesman } from "@/scripts/services/quotesService";
 import { getAllUsers } from "@/scripts/services/accountService";
 import { formatDate, parseDateInputValue } from "@/scripts/tools/stringUtils";
 import { chunkArray } from "@/scripts/tools/utils";
@@ -32,7 +32,7 @@ export default function PrintQuotesDialog({ open, setOpen }: Props) {
 
   const onClickPrintYesterday = async () => {
     for (const salesman of salesmen) {
-      const quotes = await getYesterdaysQuotesBySalesman(salesman.id);
+      const quotes = await getTodaysQuotesBySalesman(salesman.id);
       const date = quotes.find((q) => q.date)?.date;
       queueQuotes(salesman.initials, formatDate(date), quotes);
     }
