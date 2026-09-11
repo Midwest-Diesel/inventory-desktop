@@ -25,7 +25,7 @@ export const getAlerts = async (): Promise<Alert[]> => {
     const res = await api.get('/api/alerts');
     return parseAlertDataRes(res.data);
   } catch (error) {
-    handleError(error, 'getAlerts');
+    console.error(error);
     return [];
   }
 };

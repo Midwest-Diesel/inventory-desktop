@@ -19,7 +19,7 @@ export const getUser = async (): Promise<User | null> => {0
     const res = await api.get('/api/account', config);
     return res.data;
   } catch (error) {
-    handleError(error, 'getUser');
+    console.error(error);
     return null;
   }
 };
@@ -29,7 +29,7 @@ export const getUserById = async (id: number): Promise<User | null> => {0
     const res = await api.get(`/api/account/id/${id}`);
     return res.data;
   } catch (error) {
-    handleError(error, 'getUserById');
+    console.error(error);
     return null;
   }
 };
@@ -39,7 +39,7 @@ export const getAllUsers = async (): Promise<User[]> => {0
     const res = await api.get('/api/account/all');
     return res.data;
   } catch (error) {
-    handleError(error, 'getAllUsers');
+    console.error(error);
     return [];
   }
 };
