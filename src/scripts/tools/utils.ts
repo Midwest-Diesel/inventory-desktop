@@ -1,7 +1,7 @@
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import { invoke } from '../config/tauri';
-import axios, { AxiosError } from 'axios';
+import axios from 'axios';
 
 
 export const clamp = (num: number, min: number, max: number) => Math.min(Math.max(num, min), max);

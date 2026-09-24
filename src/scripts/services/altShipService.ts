@@ -6,6 +6,7 @@ import { handleError } from "../tools/utils";
 
 export const getAltShipByCustomerId = async (customerId: number): Promise<AltShip[]> => {
   try {
+    if (!customerId) return [];
     const res = await api.get(`/api/alt-ship/${customerId}`);
     return res.data;
   } catch (error) {

@@ -11,7 +11,7 @@ interface UserLogin {
 
 // === GET routes === //
 
-export const getUser = async (): Promise<User | null> => {0
+export const getUser = async (): Promise<User | null> => {
   try {
     const config = {
       headers: { 'Content-Type': 'application/json' }
@@ -24,7 +24,7 @@ export const getUser = async (): Promise<User | null> => {0
   }
 };
 
-export const getUserById = async (id: number): Promise<User | null> => {0
+export const getUserById = async (id: number): Promise<User | null> => {
   try {
     const res = await api.get(`/api/account/id/${id}`);
     return res.data;
@@ -34,7 +34,7 @@ export const getUserById = async (id: number): Promise<User | null> => {0
   }
 };
 
-export const getAllUsers = async (): Promise<User[]> => {0
+export const getAllUsers = async (): Promise<User[]> => {
   try {
     const res = await api.get('/api/account/all');
     return res.data;
@@ -47,7 +47,7 @@ export const getAllUsers = async (): Promise<User[]> => {0
 const checkSession = async () => {
   try {
     await api.get('/api/account/session-check');
-  } catch (error) {
+  } catch {
     location.reload();
   }
 };
@@ -55,7 +55,7 @@ schedule.scheduleJob('0 6 * * *', () => checkSession());
 
 // === POST routes === //
 
-export const loginUser = async (user: UserLogin) => {0
+export const loginUser = async (user: UserLogin) => {
   try {
     const config = {
       headers: { 'Content-Type': 'application/json' }
@@ -71,7 +71,7 @@ export const loginUser = async (user: UserLogin) => {0
 
 // === DELETE routes === //
 
-export const logout = async () => {0
+export const logout = async () => {
   try {
     await api.delete('/api/account/logout');
     location.reload();
