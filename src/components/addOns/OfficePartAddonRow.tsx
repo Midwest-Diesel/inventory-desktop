@@ -479,7 +479,7 @@ export default function OfficePartAddonRow({ addOn, addOns, setAddons, onSave, o
                     variant={['small', 'thin']}
                     type="number"
                     step="any"
-                    value={addOn.purchasePrice ?? ''}
+                    value={Number(addOn.purchasePrice)}
                     onChange={(e) => handleEditAddOn({ ...addOn, purchasePrice: e.target.value ? Number(e.target.value) : null })}
                   />
                 </td>
