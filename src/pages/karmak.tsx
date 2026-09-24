@@ -18,6 +18,7 @@ import { getTodaysQuotesBySalesman } from "@/scripts/services/quotesService";
 import { getAllUsers } from "@/scripts/services/accountService";
 import { chunkArray } from "@/scripts/tools/utils";
 import Input from "@/components/library/Input";
+import Checkbox from "@/components/library/Checkbox";
 
 type AccountingStatus = '' | 'all' | 'IN PROCESS' | 'COMPLETE';
 
@@ -29,6 +30,7 @@ export default function Karmak() {
   const [currentStatus, setCurrentStatus] = useAtom(accountingPageFilterAtom);
   const [currentPage, setCurrentPage] = useState(1);
   const [date, setDate] = useState<Date>(new Date());
+  const [printQuotes, setPrintQuotes] = useState(new Date().getDay() !== 5);
   const { addToQue, printQue } = usePrintQue();
 
   const { data: salesmen = [] } = useQuery<User[]>({
@@ -69,9 +71,12 @@ export default function Karmak() {
       return alert('Could not find any handwrittens marked of EOD.');
     }
 
-    const year = (res[0].date.getUTCFullYear()).toString();
-    const month = (res[0].date.getUTCMonth() + 1).toString();
-    const day = (res[0].date.getUTCDate()).toString();
+    const fileDate: Date = res.reduce((latest: Date, item: Handwritten) =>
+      item.date > latest ? item.date : latest, res[0].date
+    );
+    const year = (fileDate.getUTCFullYear()).toString();
+    const month = (fileDate.getUTCMonth() + 1).toString();
+    const day = (fileDate.getUTCDate()).toString();
     for (let i = 0; i < res.length; i++) {
       const handwritten: Handwritten = res[i];
       const args = {
@@ -105,12 +110,11 @@ export default function Karmak() {
   };
 
   const printQuoteList = async () => {
-    const today = new Date();
-    if (today.getDay() === 5) return;
+    if (!printQuotes) return;
     
     for (const salesman of salesmen) {
       const quotes = await getTodaysQuotesBySalesman(salesman.id);
-      queueQuotes(salesman.initials, formatDate(today), quotes);
+      queueQuotes(salesman.initials, formatDate(new Date()), quotes);
     }
     printQue();
   };
@@ -152,12 +156,21 @@ export default function Karmak() {
             End of Day
           </Button>
 
-          <Input
-            variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
-            value={parseDateInputValue(date)}
-            onChange={(e) => setDate(new Date(e.target.value))}
-            type="date"
-          />
+          <div className="karmak-page__top-inputs">
+            <Input
+              variant={['small', 'thin', 'label-space-between', 'label-full-width', 'label-bold']}
+              value={parseDateInputValue(date)}
+              onChange={(e) => setDate(new Date(e.target.value))}
+              type="date"
+            />
+
+            <Checkbox
+              variant={['label-full-width', 'label-align-center']}
+              label="Print Quotes"
+              checked={printQuotes}
+              onChange={(e) => setPrintQuotes(e.target.checked)}
+            />
+          </div>
         </div>
         <hr />
         <div className="karmak-page__top-buttons">

@@ -15,6 +15,11 @@
     margin-bottom: 0.5rem;
   }
 
+  &__top-inputs {
+    display: flex;
+    gap: 0.3rem;
+  }
+
   &__table-container {
     max-height: 44rem;
     overflow-y: auto;
