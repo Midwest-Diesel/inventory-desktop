@@ -188,6 +188,16 @@ export const formatWeightDims = (weightDims: WeightDims[]): string => {
   return results.join('\n');
 };
 
+export const formatShippingListWeightDims = (weightDims: WeightDims[]) => {
+  return formatWeightDims(weightDims)
+    .replaceAll('Small Pack: ', '')
+    .replaceAll('LTL: ', '')
+    .replaceAll('lbs ', ' lbs ')
+    .replaceAll('L: ', '')
+    .replaceAll(', W: ', 'x')
+    .replaceAll(', H: ', 'x');
+};
+
 export const serializeWeightDims = (weightDims: string | null): string => {
   if (!weightDims) return '';
   return formatWeightDims(parseWeightDims(weightDims));

@@ -388,7 +388,7 @@ type ShippingListRow = {
   packaged: boolean
   gone: boolean
   ready: boolean
-  weightDims: WeightDims
+  weightDims: WeightDims[]
   scheduled: string | null
   awaitingPayment: boolean
   isComplete: boolean

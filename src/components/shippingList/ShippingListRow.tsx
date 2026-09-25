@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Checkbox from "../library/Checkbox";
 import { getRowClasses } from "@/scripts/logic/shippingList";
+import { formatShippingListWeightDims, formatWeightDims } from "@/scripts/tools/stringUtils";
 
 interface Props {
   row: ShippingListRow
@@ -44,7 +45,7 @@ export default function ShippingListRow({ row }: Props) {
       <td style={{ textAlign: 'center' }}>
         <Checkbox checked={row.ready} onChange={() => {}} />
       </td>
-      <td></td>
+      <td>{ formatShippingListWeightDims(row.weightDims) }</td>
       <td>{ row.handwrittenId }</td>
       <td>{ row.scheduled }</td>
     </tr>
