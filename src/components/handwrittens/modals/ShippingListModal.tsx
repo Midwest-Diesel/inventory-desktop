@@ -1,6 +1,6 @@
 import Input from "@/components/library/Input";
 import { FormEvent, useEffect, useState } from "react";
-import { formatWeightDims, parseDateInputValue } from "@/scripts/tools/stringUtils";
+import { formatWeightDims, parseDateInputValue, parseWeightDims } from "@/scripts/tools/stringUtils";
 import Checkbox from "@/components/library/Checkbox";
 import Button from "@/components/library/Button";
 import Loading from "@/components/library/Loading";
@@ -8,6 +8,7 @@ import { getHandwrittenById } from "@/scripts/services/handwrittensService";
 import Modal from "@/components/library/Modal";
 import { addShippingListRow } from "@/scripts/services/shippingListService";
 import { getImagesFromPart } from "@/scripts/services/imagesService";
+import { getPartInfoByPartNum } from "@/scripts/services/partsService";
 
 interface Props {
   open?: boolean
@@ -43,17 +44,12 @@ export default function ShippingListModal({ open, onNext, onPrev, handwrittenIte
     setLoading(true);
 
     if (isCondensed) {
-      const weight = handwrittenItems.reduce((arr, item) => arr + item.weight, 0);
-      const { length, width, height } = handwrittenItems[0];
       const pics = await getImagesFromPart(handwrittenItems[0].partNum);
-      const weightDims = formatWeightDims([{
-        type: 'Small Pack',
-        qty: 1,
-        lbs: weight,
-        length,
-        width,
-        height
-      }]);
+      const lbs = handwrittenItems.reduce((arr, item) => arr + item.weight, 0);
+      const partsInfo = await getPartInfoByPartNum(handwrittenItems[0].partNum);
+      const dims = partsInfo ? parseWeightDims(partsInfo.weightDims) : [];
+      const weightDims = dims.length > 0 ? formatWeightDims(dims.map((d) => ({ ...d, lbs }))) : '';
+      
       const row = {
         handwrittenId: Number(handwritten?.id),
         date,
@@ -84,17 +80,11 @@ export default function ShippingListModal({ open, onNext, onPrev, handwrittenIte
     } else {
       for (let i = 0; i < handwrittenItems.length; i++) {
         if (['FREIGHT', 'TAX', 'CORE DEPOSIT', 'CORE DEPOSIT PRIORITY', 'FEE'].includes(handwrittenItems[i].partNum ?? '')) continue;
-        const { length, width, height } = handwrittenItems[i];
         const qty = Number(handwrittenItems[i].qty);
         const pics = await getImagesFromPart(handwrittenItems[i].partNum);
-        const weightDims = formatWeightDims([{
-          type: 'Small Pack',
-          qty: 1,
-          lbs: handwrittenItems[i].weight || 0,
-          length,
-          width,
-          height
-        }]);
+        const partsInfo = await getPartInfoByPartNum(handwrittenItems[i].partNum);
+        const weightDims = partsInfo?.weightDims ?? '';
+        
         const row = {
           handwrittenId: Number(handwritten?.id),
           date,

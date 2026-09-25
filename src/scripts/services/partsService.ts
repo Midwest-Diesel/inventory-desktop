@@ -61,8 +61,9 @@ export const getPartById = async (id: number | null): Promise<Part | null> => {
   }
 };
 
-export const getPartInfoByPartNum = async (partNum: string): Promise<PartInfo | null> => {
+export const getPartInfoByPartNum = async (partNum: string | null): Promise<PartInfo | null> => {
   try {
+    if (!partNum) return null;
     const res = await api.get(`/api/parts/parts-info/part-num/${partNum}`);
     return res.data ? res.data : null;
   } catch (error) {
