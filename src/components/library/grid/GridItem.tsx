@@ -1,12 +1,11 @@
 import { generateClasses, parseClasses } from "@/scripts/tools/utils";
-import { CSSProperties } from "react";
 
 interface Props {
   variant?: ('no-style' | 'low-opacity-bg' | 'sub-table-item')[]
   children: React.ReactNode
   className?: string
   colSpan?: number
-  style?: CSSProperties
+  style?: React.CSSProperties
 }
 
 

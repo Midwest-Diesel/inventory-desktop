@@ -234,17 +234,18 @@ fn cleanup_temp_files() {
 #[tauri::command]
 async fn open_window(app: tauri::AppHandle, window_args: WindowArgs) {
   let title = window_args.title.clone();
+  let label = format!("window-{}", uuid::Uuid::new_v4());
   let base_url = if window_args.is_prod {
     "https://tauri.localhost"
   } else {
     "http://localhost:3000"
   };
-  let url = format!("{}/{}", base_url, window_args.url);
+  let url = format!("{}{}", base_url, window_args.url);
   let parsed_url = Url::parse(&url).expect("Invalid URL");
 
   let new_window = tauri::WindowBuilder::new(
     &app,
-    title.clone(),
+    label,
     tauri::WindowUrl::External(parsed_url.into())
   )
   .title(title)

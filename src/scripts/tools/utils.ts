@@ -27,37 +27,6 @@ export const setTitle = (title: string) => {
   document.title = `${title} | Inventory`;
 };
 
-function getStartOfWeek(date: Date) {
-  const dayOfWeek = date.getDay();
-  const start = new Date(date);
-  start.setDate(date.getDate() - dayOfWeek);
-  start.setHours(0, 0, 0, 0);
-  return start;
-}
-
-export const isDateInCurrentOrNextWeek = (date: Date) => {
-  const now = new Date();
-  
-  const currentWeekStart = getStartOfWeek(now);
-  const currentWeekEnd = new Date(currentWeekStart);
-  currentWeekEnd.setDate(currentWeekStart.getDate() + 6);
-  currentWeekEnd.setHours(23, 59, 59, 999);
-
-  const nextWeekStart = new Date(currentWeekEnd);
-  nextWeekStart.setDate(currentWeekEnd.getDate() + 1);
-  const nextWeekEnd = new Date(nextWeekStart);
-  nextWeekEnd.setDate(nextWeekStart.getDate() + 6);
-  nextWeekEnd.setHours(23, 59, 59, 999);
-
-  if (date >= currentWeekStart && date <= currentWeekEnd) {
-    return "current";
-  } else if (date >= nextWeekStart && date <= nextWeekEnd) {
-    return "next";
-  } else {
-    return "other";
-  }
-};
-
 export const getRatingFromRemarks = (string: string): string => {
   const str = string.trim();
   const start = str.indexOf('(') + 1;

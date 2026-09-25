@@ -1,7 +1,7 @@
-import { CSSProperties, useState } from "react";
+import { useState } from "react";
 
 interface Props {
-  style?: CSSProperties
+  style?: React.CSSProperties
   amount?: number
   onChange?: (position: number) => void
   value?: number

@@ -50,3 +50,5 @@ export const tabsAtom = atom<Tab[]>(tabs());
 export const compareConsistAtom = atom<CustomerEngineData | null>(null);
 export const partSearchAtom = atom<PartSearchParams | null>(null);
 export const altPartSearchAtom = atom<PartSearchParams | null>(null);
+export const shippingListWeekAtom = atom<'Current' | 'Next'>('Current');
+export const shippingListDayAtom = atom(new Date());
