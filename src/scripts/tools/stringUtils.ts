@@ -8,6 +8,12 @@ export const formatDate = (date: Date | string | null | undefined): string => {
   return `${m}/${day}/${y}`;
 };
 
+export const getDay = (date: Date): string | null => {
+  if (!(date instanceof Date) || isNaN(date.getDay())) return null;
+  const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  return days[date.getDay()];
+};
+
 export const parseResDate = (date: string): Date | null => {
   if (!date || typeof date !== 'string') return null;
   if (date.includes('T')) {

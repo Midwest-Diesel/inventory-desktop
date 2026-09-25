@@ -1,15 +1,13 @@
 import Input from "@/components/library/Input";
 import { FormEvent, useEffect, useState } from "react";
-import { parseDateInputValue } from "@/scripts/tools/stringUtils";
+import { formatWeightDims, parseDateInputValue } from "@/scripts/tools/stringUtils";
 import Checkbox from "@/components/library/Checkbox";
-import { invoke } from "@/scripts/config/tauri";
-import { isDateInCurrentOrNextWeek } from "@/scripts/tools/utils";
 import Button from "@/components/library/Button";
 import Loading from "@/components/library/Loading";
 import { getHandwrittenById } from "@/scripts/services/handwrittensService";
-import { getImagesFromPart } from "@/scripts/services/imagesService";
 import Modal from "@/components/library/Modal";
-import { CURRENT_WEEK_FILENAME, NEXT_WEEK_FILENAME } from "@/scripts/logic/handwrittens";
+import { addShippingListRow } from "@/scripts/services/shippingListService";
+import { getImagesFromPart } from "@/scripts/services/imagesService";
 
 interface Props {
   open?: boolean
@@ -43,75 +41,87 @@ export default function ShippingListModal({ open, onNext, onPrev, handwrittenIte
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    const path = (isDateInCurrentOrNextWeek(date) === 'current' ?
-      `\\\\MWD1-SERVER/Server/${CURRENT_WEEK_FILENAME}`
-      :
-      `\\\\MWD1-SERVER/Server/${NEXT_WEEK_FILENAME}`
-    );
+
     if (isCondensed) {
       const weight = handwrittenItems.reduce((arr, item) => arr + item.weight, 0);
-      const { length, width, height, partNum } = handwrittenItems[0];
-      const pics = await getImagesFromPart(partNum ?? '');
-      const new_shipping_list_row = {
-        handwritten_id: Number(handwritten?.id),
-        initials: handwritten?.createdBy ?? '',
-        ship_via: handwritten?.shipVia?.name ?? '',
-        ship_type: handwritten?.shipVia?.type ?? '',
+      const { length, width, height } = handwrittenItems[0];
+      const pics = await getImagesFromPart(handwrittenItems[0].partNum);
+      const weightDims = formatWeightDims([{
+        type: 'Small Pack',
+        qty: 1,
+        lbs: weight,
+        length,
+        width,
+        height
+      }]);
+      const row = {
+        handwrittenId: Number(handwritten?.id),
+        date,
+        createdBy: handwritten?.createdBy ?? '',
+        shipVia: handwritten?.shipVia?.name ?? '',
         customer: `${handwritten?.customer.company}${handwritten?.billToCompany !== handwritten?.shipToCompany ? ` / ${handwritten?.shipToCompany}` : '' }`,
-        attn_to: handwritten?.shipToContact ?? '',
-        part_num: 'Multiple',
+        shipToContact: handwritten?.shipToContact ?? '',
+        partNum: 'Multiple',
         desc,
-        stock_num: 'See Yellow',
+        stockNum: 'See Yellow',
         location: 'See Yellow',
-        mp: handwritten?.isBlindShipment ? 0 : handwritten?.mp,
-        br: handwritten?.isBlindShipment ? 0 : handwritten?.br,
-        cap: handwritten?.isBlindShipment ? 0 : handwritten?.cap,
-        fl: handwritten?.isBlindShipment ? 0 : handwritten?.fl,
+        mp: handwritten?.isBlindShipment ? 0 : (handwritten?.mp ?? 0),
+        br: handwritten?.isBlindShipment ? 0 : (handwritten?.br ?? 0),
+        cap: handwritten?.isBlindShipment ? 0 : (handwritten?.cap ?? 0),
+        fl: handwritten?.isBlindShipment ? 0 : (handwritten?.fl ?? 0),
+        marketingContact: null,
         pulled: false,
         packaged: false,
         gone: false,
         ready: false,
-        weight: weight || 0,
-        dims: `${length || 0}x${width || 0}x${height || 0}`,
-        day: date.getDay(),
-        list_path: path,
-        has_pics: pics.length > 0,
-        is_blind: handwritten?.isBlindShipment ? true : false
+        weightDims,
+        scheduled: null,
+        isBlind: Boolean(handwritten?.isBlindShipment),
+        isMissingPartPhotos: pics.length === 0
       };
-      await invoke('add_to_shipping_list', { newShippingListRow: new_shipping_list_row });
+
+      await addShippingListRow(row);
     } else {
       for (let i = 0; i < handwrittenItems.length; i++) {
         if (['FREIGHT', 'TAX', 'CORE DEPOSIT', 'CORE DEPOSIT PRIORITY', 'FEE'].includes(handwrittenItems[i].partNum ?? '')) continue;
-        const { length, width, height, partNum } = handwrittenItems[i];
+        const { length, width, height } = handwrittenItems[i];
         const qty = Number(handwrittenItems[i].qty);
-        const pics = await getImagesFromPart(partNum ?? '');
-        const new_shipping_list_row = {
-          handwritten_id: Number(handwritten?.id),
-          initials: handwritten?.createdBy ?? '',
-          ship_via: handwritten?.shipVia?.name ?? '',
-          ship_type: handwritten?.shipVia?.type ?? '',
+        const pics = await getImagesFromPart(handwrittenItems[i].partNum);
+        const weightDims = formatWeightDims([{
+          type: 'Small Pack',
+          qty: 1,
+          lbs: handwrittenItems[i].weight || 0,
+          length,
+          width,
+          height
+        }]);
+        const row = {
+          handwrittenId: Number(handwritten?.id),
+          date,
+          createdBy: handwritten?.createdBy ?? '',
+          shipVia: handwritten?.shipVia?.name ?? '',
           customer: `${handwritten?.customer.company}${handwritten?.billToCompany !== handwritten?.shipToCompany ? ` / ${handwritten?.shipToCompany}` : '' }`,
-          attn_to: handwritten?.shipToContact ?? '',
-          part_num: handwrittenItems[i].partNum,
+          shipToContact: handwritten?.shipToContact ?? '',
+          partNum: handwrittenItems[i].partNum,
           desc: qty > 1 ? `${qty} ${handwrittenItems[i].desc}` : handwrittenItems[i].desc,
-          stock_num: handwrittenItems[i].stockNum,
+          stockNum: handwrittenItems[i].stockNum,
           location: handwrittenItems[i].location,
-          mp: handwritten?.isBlindShipment ? 0 : handwritten?.mp,
-          br: handwritten?.isBlindShipment ? 0 : handwritten?.br,
-          cap: handwritten?.isBlindShipment ? 0 : handwritten?.cap,
-          fl: handwritten?.isBlindShipment ? 0 : handwritten?.fl,
+          mp: handwritten?.isBlindShipment ? 0 : (handwritten?.mp ?? 0),
+          br: handwritten?.isBlindShipment ? 0 : (handwritten?.br ?? 0),
+          cap: handwritten?.isBlindShipment ? 0 : (handwritten?.cap ?? 0),
+          fl: handwritten?.isBlindShipment ? 0 : (handwritten?.fl ?? 0),
+          marketingContact: null,
           pulled: false,
           packaged: false,
           gone: false,
           ready: false,
-          weight: handwrittenItems[i].weight || 0,
-          dims: `${length || 0}x${width || 0}x${height || 0}`,
-          day: date.getDay(),
-          list_path: path,
-          has_pics: pics.length > 0,
-          is_blind: handwritten?.isBlindShipment ? true : false
+          weightDims,
+          scheduled: null,
+          isBlind: Boolean(handwritten?.isBlindShipment),
+          isMissingPartPhotos: pics.length === 0
         };
-        await invoke('add_to_shipping_list', { newShippingListRow: new_shipping_list_row });
+
+        await addShippingListRow(row);
       }
     }
     setLoading(false);

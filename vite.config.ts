@@ -23,7 +23,13 @@ export default defineConfig({
     })
   ],
   optimizeDeps: {
-    include: ['node-schedule']
+    include: ['node-schedule'],
+    entries: ['index.html']
+  },
+  server: {
+    watch: {
+      ignored: ['**/src-tauri/**']
+    }
   },
   resolve: {
     alias: {

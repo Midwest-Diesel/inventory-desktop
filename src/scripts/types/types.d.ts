@@ -362,6 +362,40 @@ type SelectHandwrittenDialogResult = {
   billToCompany: string
 };
 
+type ShippingListSection = {
+  name: string | null
+  rows: ShippingListRow[]
+};
+
+type ShippingListRow = {
+  id: number
+  handwrittenId: number | null
+  date: Date
+  createdBy: string
+  shipVia: string
+  customer: string
+  shipToContact: string | null
+  partNum: string | null
+  desc: string | null
+  stockNum: string | null
+  location: string | null
+  mp: number
+  br: number
+  cap: number
+  fl: number
+  marketingContact: string | null
+  pulled: boolean
+  packaged: boolean
+  gone: boolean
+  ready: boolean
+  weightDims: WeightDims
+  scheduled: string | null
+  awaitingPayment: boolean
+  isComplete: boolean
+  isBlind: boolean
+  isMissingStockPhotos: boolean
+};
+
 type AddOn = {
   id: number
   qty: number | null
@@ -979,29 +1013,6 @@ type EmailStuff = {
   id: number
   name: string
   images: { data: string, path: string }[]
-};
-
-type ShippingList = {
-  id: number
-  handwrittenId: number
-  initials: string
-  shipVia: string
-  customer: string
-  attnTo: string
-  partNum: string
-  desc: string
-  stockNum: string
-  location: string
-  mp: number
-  br: number
-  cap: number
-  fl: number
-  pulled: boolean
-  packaged: boolean
-  gone: boolean
-  ready: boolean
-  weight: number
-  dims: string
 };
 
 type Vendor = {
