@@ -1,10 +1,10 @@
-import { Layout } from "@/components/Layout";
+import { Layout } from "../components/Layout";
 import { invoke } from "@/scripts/config/tauri";
 import { getVersion } from "@tauri-apps/api/app";
 import { useEffect, useState } from "react";
 import { logout } from "@/scripts/services/accountService";
 import { useAtom } from "jotai";
-import { userAtom } from "@/scripts/atoms/state";
+import { userAtom } from "../scripts/atoms/state";
 import { cap } from "@/scripts/tools/stringUtils";
 import { check } from '@tauri-apps/plugin-updater';
 import Button from "@/components/library/Button";
@@ -38,12 +38,18 @@ export default function System() {
   return (
     <Layout title="System">
       <div className="system-page">
+        <Button
+          style={{ padding: '0.3rem', marginBottom: '0.5rem' }}
+          variant={['link', 'fit']}
+        >
+          <a href="/">Back</a>
+        </Button>
+
         <h3>v{ version }</h3>
         <p className="system-page__username">Logged in as <span>{ cap(user.username) }</span></p>
         { !status && <Button variant={['fit']} onClick={checkForUpdates}>Check For Updates</Button> }
         { status && <p className="system-page__status-text">{ status }</p> }
         
-        <br />
         <Button variant={['fit']} onClick={logout}>Logout</Button>
       </div>
     </Layout>

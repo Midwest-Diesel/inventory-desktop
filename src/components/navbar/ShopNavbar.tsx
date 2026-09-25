@@ -23,7 +23,6 @@ export default function ShopNavbar() {
         <Link href="/add-ons/shop/part">Shop Parts</Link>
         <Link href="/add-ons/shop/engine">Shop Engines</Link>
       </NavDropdown>
-      <Link href="/shipping-list" className="navbar__link">Shipping List</Link>
       <Link href="/image-upload" className="navbar__link">Image Upload</Link>
       <Link href="/system" className="navbar__link">System</Link>
     </>

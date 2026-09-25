@@ -1,6 +1,6 @@
-import { userAtom, tooltipAtom } from "@/scripts/atoms/state";
+import { userAtom, tooltipAtom } from "../scripts/atoms/state";
 import { useAtom } from "jotai";
-import { useEffect, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { isTauri } from "@tauri-apps/api/core";
 import { check } from "@tauri-apps/plugin-updater";
 import { getUser } from "@/scripts/services/accountService";
@@ -9,14 +9,14 @@ import Tooltip from "@/components/library/Tooltip";
 import Login from "@/components/Login";
 
 interface Props {
-  children: any
+  children: ReactNode
 }
 
 
 export default function GlobalData({ children }: Props) {
   const [, setUserData] = useAtom<User>(userAtom);
   const [tooltip] = useAtom<string>(tooltipAtom);
-  const [user, setUser] = useState<User>();
+  const [user, setUser] = useState<User | null>(null);
   const [loaded, setLoaded] = useState(false);
   const [updateDialogOpen, setUpdateDialogOpen] = useState(false);
   const [updateNotes, setUpdateNotes] = useState('');

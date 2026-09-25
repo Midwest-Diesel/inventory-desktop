@@ -165,11 +165,6 @@ export default function Home() {
     });
   };
 
-  const onClickOpenWindow = () => {
-    const windowArgs = { title: 'Shipping List', url: '/shipping-list', is_prod: import.meta.env.PROD };
-    invoke('open_window', { windowArgs });
-  };
-
   const onClickSaveList = async () => {
     if (!await confirm('Create backup for current week?')) return;
     
@@ -193,16 +188,18 @@ export default function Home() {
 
       <div className="shipping-list">
         <div className="shipping-list__top-right-buttons">
+          <Button variant={['link']}>
+            <a href={`/presentation?date=${date}`}>
+              <img alt="tv" src="/images/icons/tv.svg" draggable={false} />
+            </a>
+          </Button>
           <Button onClick={onClickSaveList}>
             <img alt="save" src="/images/icons/save.svg" draggable={false} />
           </Button>
-          <Button onClick={onClickOpenWindow}>
-            <img alt="window" src="/images/icons/arrow-up-right.svg" draggable={false} />
-          </Button>
-          <Button variant={['link']}>
-            <Link href={`/shipping-list/presentation?date=${date}`}>
-              <img alt="tv" src="/images/icons/tv.svg" draggable={false} />
-            </Link>
+          <Button variant={['link']} className="shipping-list__system-btn">
+            <a href="/system">
+              <img alt="System" src="/images/icons/gear.svg" width={17} />
+            </a>
           </Button>
         </div>
 
