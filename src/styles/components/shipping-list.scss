@@ -1,21 +1,138 @@
 .shipping-list {
-  &__header {
-    position: relative;
-    margin-bottom: 1rem;
+  &__top-right-buttons {
+    position: absolute;
+    top: 6.3rem;
+    right: 1rem;
+    display: flex;
+    gap: 0.3rem;
+    
+    img {
+      width: 1rem;
+    }
   }
 
-  &__table-section {
-    padding: 0.3rem 1rem;
-    text-align: start;
-    background-color: var(--grey-light-2);
-    text-decoration: underline;
+  &__top-buttons {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+    justify-content: center;
+  }
+
+  &__date-buttons {
+    display: flex;
+    gap: 0.3rem;
   }
 
   table {
+    color: var(--white-0);
+    font-size: var(--font-xsm);
+  }
+
+  tr, th, td {
+    background-color: rgb(71, 71, 71);
+
     input {
-      color: white;
-      height: 100%;
-      margin: 0;
+      color: var(--white-0);
     }
+  }
+
+  td:has(input) {
+    padding: 0;
+  }
+  
+  th {
+    padding: 0.2rem;
+    background-color: rgb(48, 48, 48);
+  }
+
+  &__section {
+    th {
+      padding: 0.3rem;
+      font-size: var(--font-md);
+      text-align: start;
+      text-decoration: underline;
+    }
+  }
+
+  &__marketing-inputs {
+    max-width: 2rem;
+  }
+
+  &__editing-user {
+    position: absolute;
+    top: -0.3rem;
+    left: 0;
+    background-color: var(--yellow-2);
+    color: black;
+    font-size: var(--font-xsm);
+    padding: 0 0.3rem;
+    border-bottom-right-radius: 0.3rem;
+    font-weight: bold;
+    user-select: none;
+    pointer-events: none;
+  }
+
+  td:has(.shipping-list__editing-user) {
+    border: 3px solid var(--yellow-2);
+  }
+
+  .mini-dialog[open] .shipping-list-row__mini-dialog-content {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+    width: 5.51rem;
+  }
+}
+
+.shipping-list-row {  
+  &--ups-red {
+    color: #e62929 !important;
+    font-weight: 600;
+  }
+  
+  &--blind {
+    td {
+      background-color: var(--peach-1);
+      color: #943030;
+      font-weight: 600;
+    }
+
+    input {
+      font-weight: 600;
+    }
+  }
+  
+  &--missing-photos {
+    color: black;
+    
+    td {
+      background-color: var(--mint-1);
+    }
+  }
+
+  &--awaiting-payment {
+    color: black;
+
+    td {
+      background-color: var(--yellow-4);
+    }
+  }
+  
+  &--complete {
+    td {
+      font-weight: 900;
+    }
+  
+    input {
+      font-weight: 900;
+    }
+  }
+}
+
+.shipping-list-presentation {
+  &__close-btn {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
   }
 }

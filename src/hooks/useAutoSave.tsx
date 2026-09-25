@@ -14,9 +14,9 @@ interface Options {
  *   - delay (default: 300ms)
  *   - ignoreFirstSave (default: false)
  */
-export default function useAutoSave<T extends Record<string, any>>(values: T, saveFn: (values: T) => void | Promise<void>, options?: Options) {
+export default function useAutoSave<T>(values: T, saveFn: (values: T) => void | Promise<void>, options?: Options) {
   const lastSaved = useRef<T>(values);
-  const firstSave = useRef<boolean>(true);
+  const firstSave = useRef(true);
   const loading = useRef(true);
   const delay = options?.delay ?? 300;
   const ignoreFirstSave = options?.ignoreFirstSave ?? false;
@@ -26,15 +26,13 @@ export default function useAutoSave<T extends Record<string, any>>(values: T, sa
       loading.current = false;
       return;
     }
+
     if (ignoreFirstSave && firstSave.current) {
       firstSave.current = false;
       return;
     }
 
-    const changed = Object.keys(values).some((key) =>
-      values[key] !== lastSaved.current[key]
-    );
-    if (!changed) return;
+    if (values === lastSaved.current) return;
 
     const timeout = setTimeout(async () => {
       await saveFn(values);

@@ -1,6 +1,7 @@
-import { ask, invoke } from "../config/tauri";
+import { ask } from "../config/tauri";
 import { addCore } from "../services/coresService";
 import { addHandwrittenItem, addHandwrittenItemChild, setAllHandwrittenItemDates } from "../services/handwrittensService";
+import { editShippingListRowCompleted } from "../services/shippingListService";
 import { formatCurrency } from "../tools/stringUtils";
 
 interface TakeoffRes {
@@ -9,9 +10,6 @@ interface TakeoffRes {
   parentItem: HandwrittenItem | null
 }
 
-
-export const CURRENT_WEEK_FILENAME = import.meta.env.PROD ? 'Shipping List (Current Week).xlsx' : 'shipping_list_current_week.xlsx';
-export const NEXT_WEEK_FILENAME = import.meta.env.PROD ? 'Shipping List (Next Week).xlsx' : 'shipping_list_next_week.xlsx';
 
 export const paymentTypes = ['Net 30', 'Wire Transfer', 'EBPP - Secure', 'Visa', 'Mastercard', 'AMEX', 'Discover', 'Comchek', 'T-Check', 'Check', 'Cash', 'Card on File', 'Net 10', 'No Charge'].sort();
 
@@ -103,13 +101,7 @@ export const handleAccountingCompleted = async (handwritten: Handwritten, accoun
   if (!isAccountingCompleted) return;
 
   await setAllHandwrittenItemDates(handwritten.id);
-
-  const args = {
-    path: `\\\\MWD1-SERVER/Server/${CURRENT_WEEK_FILENAME}`,
-    handwritten_id: handwritten.id,
-    action: 'BoldRow'
-  };
-  await invoke('edit_shipping_list_row', { args });
+  await editShippingListRowCompleted(handwritten.id, true);
 };
 
 export const getProformaId = (handwrittenDate: Date): string => {

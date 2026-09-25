@@ -26,6 +26,7 @@ export default function OfficeNavbar() {
         <Link href="/add-ons/shop/engine">Shop Engines</Link>
       </NavDropdown>
       <Link href="/karmak" className="navbar__link">Accounting</Link>
+      <Link href="/shipping-list" className="navbar__link">Shipping List</Link>
       <Link href="/email-stuff" className="navbar__link">Email Stuff</Link>
       <NavDropdown label="Tools">
         <Link href="/reports">Reports</Link>

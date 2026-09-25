@@ -6,16 +6,17 @@ interface Props {
   href: string
   style?: CSSProperties
   className?: string
+  tabName?: string
 }
 
 
-export default function Link({ children, href, style, className, ...props }: Props) {
+export default function Link({ children, href, style, className, tabName, ...props }: Props) {
   const { push, newTab } = useNavState();
   const ref = useRef<HTMLAnchorElement>(null);
 
   const handleChangePage = () => {
     if (!ref.current || location.pathname === href) return;
-    push(ref.current.textContent || 'Home', href);
+    push(tabName || ref.current.textContent || 'Home', href);
   };
 
   
@@ -32,7 +33,8 @@ export default function Link({ children, href, style, className, ...props }: Pro
         if (e.button === 1) {
           e.preventDefault();
           e.stopPropagation();
-          newTab([{ name: e.currentTarget.textContent ?? '', url: href }], false);
+          const name = tabName ? tabName : (e.currentTarget.textContent ?? '');
+          newTab([{ name, url: href }], false);
         }
       }}
       style={style}

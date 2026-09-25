@@ -4,6 +4,7 @@ import { handleError } from "../tools/utils";
 
 export const getImagesFromPart = async (partNum: string | null): Promise<Picture[]> => {
   try {
+    if (!window?.__TAURI_IPC__) return [];
     const res = await invoke('get_part_num_images', { pictureArgs: { part_num: partNum }});
     return res.filter((pic: Picture) => pic.name !== 'Thumbs.db') ?? [] as Picture[];
   } catch (error) {
