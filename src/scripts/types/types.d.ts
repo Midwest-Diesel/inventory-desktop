@@ -393,7 +393,7 @@ type ShippingListRow = {
   awaitingPayment: boolean
   isComplete: boolean
   isBlind: boolean
-  isMissingStockPhotos: boolean
+  isMissingPartPhotos: boolean
 };
 
 type AddOn = {
