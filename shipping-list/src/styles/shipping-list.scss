@@ -1,8 +1,14 @@
 .shipping-list {
+  position: relative;
+
+  &__system-btn {
+    padding: 0.3rem 0 0.1rem;
+  }
+
   &__top-right-buttons {
     position: absolute;
-    top: 6.3rem;
-    right: 1rem;
+    top: 2.3rem;
+    right: 0;
     display: flex;
     gap: 0.3rem;
     

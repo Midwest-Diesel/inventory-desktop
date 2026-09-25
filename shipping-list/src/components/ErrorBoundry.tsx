@@ -34,14 +34,7 @@ function ErrorFallback({ error }: ErrorFallbackProps) {
 
       <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
         <button onClick={() => location.reload()}>Reload</button>
-        <button
-          onClick={() => {
-            // push('Home', '/');
-            location.reload();
-          }}
-        >
-          Home
-        </button>
+        <button onClick={() => location.replace('/')}>Home</button>
       </div>
     </div>
   );
