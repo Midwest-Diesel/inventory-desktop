@@ -36,7 +36,7 @@ export const getShippingList = async (date: Date): Promise<ShippingListSection[]
   try {
     const params = { date };
     const res = await api.get('/api/shipping-list', { params });
-    return res.data.map((d: ShippingListSection) => ({ ...d, rows: d.rows.map((r) => ({ ...r, weightDims: parseWeightDims(r.weightDims.toString()) })) }));
+    return res.data.map((d: ShippingListSection) => ({ ...d, rows: d.rows.map((r) => ({ ...r, weightDims: r.weightDims ? parseWeightDims(r.weightDims.toString()) : [] })) }));
   } catch (error) {
     handleError(error, 'getShippingList');
     return [];

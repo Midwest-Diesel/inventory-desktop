@@ -34,18 +34,18 @@ export default function ShippingListRow({ row }: Props) {
       <td>{ row.fl || '' }</td>
       <td>{ row.marketingContact }</td>
       <td style={{ textAlign: 'center' }}>
-        <Checkbox checked={row.pulled} onChange={() => {}} />
+        <input checked={row.pulled} onChange={() => {}} type="checkbox" />
       </td>
       <td style={{ textAlign: 'center' }}>
-        <Checkbox checked={row.packaged} onChange={() => {}} />
+        <input checked={row.packaged} onChange={() => {}} type="checkbox" />
       </td>
       <td style={{ textAlign: 'center' }}>
-        <Checkbox checked={row.gone} onChange={() => {}} />
+        <input checked={row.gone} onChange={() => {}} type="checkbox" />
       </td>
       <td style={{ textAlign: 'center' }}>
-        <Checkbox checked={row.ready} onChange={() => {}} />
+        <input checked={row.ready} onChange={() => {}} type="checkbox" />
       </td>
-      <td>{ formatShippingListWeightDims(row.weightDims) }</td>
+      <td>{ row.weightDims.length > 0 ? formatShippingListWeightDims(row.weightDims) : null }</td>
       <td>{ row.handwrittenId }</td>
       <td>{ row.scheduled }</td>
     </tr>

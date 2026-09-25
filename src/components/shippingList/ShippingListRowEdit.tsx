@@ -202,27 +202,31 @@ export default function ShippingListRow({ row, onEditRow, editingUser, refetch, 
         </ShippingListInput>
       </td>
       <td style={{ textAlign: 'center' }}>
-        <Checkbox
+        <Input
           checked={row.pulled}
           onChange={(e) => onEditRow(row.id, 'pulled', e.target.checked)}
+          type="checkbox"
         />
       </td>
       <td style={{ textAlign: 'center' }}>
-        <Checkbox
+        <Input
           checked={row.packaged}
           onChange={(e) => onEditRow(row.id, 'packaged', e.target.checked)}
+          type="checkbox"
         />
       </td>
       <td style={{ textAlign: 'center' }}>
-        <Checkbox
+        <Input
           checked={row.gone}
           onChange={(e) => onEditRow(row.id, 'gone', e.target.checked)}
+          type="checkbox"
         />
       </td>
       <td style={{ textAlign: 'center' }}>
-        <Checkbox
+        <Input
           checked={row.ready}
           onChange={(e) => onEditRow(row.id, 'ready', e.target.checked)}
+          type="checkbox"
         />
       </td>
       <td></td>
@@ -248,10 +252,10 @@ export default function ShippingListRow({ row, onEditRow, editingUser, refetch, 
         </ShippingListInput>
       </td>
 
-      <td>
-        <Button onClick={() => setActionButtonsOpen(true)}>...</Button>
+      <td className="shipping-list-row__menu-btn" onClick={() => !actionButtonsOpen && setActionButtonsOpen(true)}>
+        <p style={{ color: 'white' }}>...</p>
 
-        <div style={{ position: 'absolute', right: '8.8rem', top: 0 }}>
+        <div style={{ position: 'absolute', right: '8rem', top: 0 }}>
           <MiniDialog
             open={actionButtonsOpen}
             setOpen={setActionButtonsOpen}
