@@ -25,6 +25,15 @@
         "autoExecuteCommands": true
       },
       {
+        "name": "shipping-list",
+        "icon": "checklist",
+        "color": "terminal.ansiBlack",
+        "commands": [
+          "cd shipping-list"
+        ],
+        "autoExecuteCommands": true
+      },
+      {
         "name": "bash",
         "icon": "terminal",
         "color": "terminal.ansiBlue"

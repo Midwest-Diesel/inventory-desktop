@@ -1,6 +1,5 @@
-import Button from "@/components/library/Button";
-import Link from "@/components/library/Link";
-import ShippingListTable from "@/components/shippingList/ShippingListTable";
+import { Button } from "@midwest-diesel/mwd-ui";
+import ShippingListTable from "../components/shippingList/ShippingListTable";
 import { getShippingList } from "@/scripts/services/shippingListService";
 import { formatDate, getDay, parseResDate } from "@/scripts/tools/stringUtils";
 import { useQuery } from "@tanstack/react-query";
@@ -23,9 +22,9 @@ export default function Presentation() {
       </h2>
       
       <Button variant={['link', 'red-color']} className="shipping-list-presentation__close-btn">
-        <Link href="/shipping-list" tabName="Shipping List">
+        <a href="/shipping-list">
           X
-        </Link>
+        </a>
       </Button>
 
       <ShippingListTable sections={sections} />

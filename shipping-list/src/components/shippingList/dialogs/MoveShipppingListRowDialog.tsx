@@ -1,6 +1,6 @@
-import Button from "@/components/library/Button";
-import Dialog from "@/components/library/Dialog";
-import Input from "@/components/library/Input";
+import { Button } from "@midwest-diesel/mwd-ui";
+import { Dialog } from "@midwest-diesel/mwd-ui";
+import { Input } from "@midwest-diesel/mwd-ui";
 import { editShippingList } from "@/scripts/services/shippingListService";
 import { parseDateInputValue } from "@/scripts/tools/stringUtils";
 import { useEffect, useState } from "react";

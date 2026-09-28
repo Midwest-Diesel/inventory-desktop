@@ -7,7 +7,7 @@ import { useAtom } from "jotai";
 import { userAtom } from "../scripts/atoms/state";
 import { cap } from "@/scripts/tools/stringUtils";
 import { check } from '@tauri-apps/plugin-updater';
-import Button from "@/components/library/Button";
+import { Button } from "@midwest-diesel/mwd-ui";
 
 
 export default function System() {
@@ -23,14 +23,18 @@ export default function System() {
   }, []);
 
   const checkForUpdates = async () => {
-    const update = await check();
-    if (update) {
-      invoke('install_update');
-      setStatus('Installing update...');
-      localStorage.removeItem('showUpdate');
-    } else {
-      setStatus('Most recent version is installed');
-      setTimeout(() => setStatus(''), 2000);
+    try {
+      const update = await check();
+      if (update) {
+        invoke('install_update');
+        setStatus('Installing update...');
+        localStorage.removeItem('showUpdate');
+      } else {
+        setStatus('Most recent version is installed');
+        setTimeout(() => setStatus(''), 2000);
+      } 
+    } catch (error) {
+      console.error(error);
     }
   };
 

@@ -1,10 +1,10 @@
 import { useNavState } from "../../hooks/useNavState";
-import { CSSProperties, ReactNode, useRef } from "react";
+import { ReactNode, useRef } from "react";
 
 interface Props {
   children: ReactNode
   href: string
-  style?: CSSProperties
+  style?: React.CSSProperties
   className?: string
   tabName?: string
 }

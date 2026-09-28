@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import Button from "@/components/library/Button";
-import Input from "@/components/library/Input";
+import { Button } from "@midwest-diesel/mwd-ui";
+import { Input } from "@midwest-diesel/mwd-ui";
 import MiniDialog from "@/components/library/MiniDialog";
 import ShippingListInput from "./ShippingListInput";
 import { ask } from "@/scripts/config/tauri";

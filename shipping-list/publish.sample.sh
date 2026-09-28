@@ -1,7 +1,7 @@
 #!/bin/bash
 
-export TAURI_PRIVATE_KEY="PATH TO KEY"
-export TAURI_KEY_PASSWORD=""
+export TAURI_SIGNING_PRIVATE_KEY=""
+export TAURI_SIGNING_PRIVATE_KEY_PASSWORD=""
 GITHUB_TOKEN="GITHUB PERSONAL ACCESS TOKEN"
 REPO="Midwest-Diesel/inventory-desktop"
 
@@ -25,20 +25,20 @@ fi
 pub_date=$(TZ=America/Chicago date -u +"%Y-%m-%dT%H:%M:%SZ")
 
 jq --arg version "$version" \
-   --arg versionPrefix "v$version" \
+   --arg versionPrefix "v$version-shipping-list" \
    --arg signature "$signature" \
    --arg pub_date "$pub_date" \
    '.version = $versionPrefix |
     .platforms."windows-x86_64".signature = $signature |
-    .platforms."windows-x86_64".url = "https://github.com/Midwest-Diesel/inventory-desktop/releases/download/v\($version)/Shipping-List_\($version)_x64-setup.nsis.zip" |
+    .platforms."windows-x86_64".url = "https://github.com/Midwest-Diesel/inventory-desktop/releases/download/v\($version)-shipping-list/Shipping-List_\($version)_x64-setup.exe" |
     .pub_date = $pub_date' \
    "$latest_json" > tmp.json && mv tmp.json "$latest_json"
 
 echo "latest.json updated with version $version."
 
-TAG="v$version"
-TITLE="v$version"
-BODY="Release for version $version"
+TAG="v${version}-shipping-list"
+TITLE="Shipping List v${version}"
+BODY=""
 
 # Create the release
 response=$(curl -s -X POST "https://api.github.com/repos/$REPO/releases" \

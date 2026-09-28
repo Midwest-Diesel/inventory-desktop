@@ -4,8 +4,8 @@ import { ReactNode, useEffect, useState } from "react";
 import { isTauri } from "@tauri-apps/api/core";
 import { check } from "@tauri-apps/plugin-updater";
 import { getUser } from "@/scripts/services/accountService";
-import UpdateModal from "@/components/modals/UpdateModal";
-import Tooltip from "@/components/library/Tooltip";
+import UpdateModal from "./UpdateModal";
+import { Tooltip } from "@midwest-diesel/mwd-ui";
 import Login from "@/components/Login";
 
 interface Props {

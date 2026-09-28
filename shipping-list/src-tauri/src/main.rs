@@ -69,7 +69,7 @@ async fn download_update() -> Result<(), Box<dyn std::error::Error>> {
 
   let (product_name, update_json_url, install_dir) = (
     "Shipping-List",
-    "https://raw.githubusercontent.com/Midwest-Diesel/shipping-list/refs/heads/main/latest.json",
+    "https://raw.githubusercontent.com/Midwest-Diesel/inventory-desktop/refs/heads/main/shipping-list/latest.json",
     r"C:/MWD/repos/content/shipping-list"
   );
 
@@ -83,9 +83,9 @@ async fn download_update() -> Result<(), Box<dyn std::error::Error>> {
     .await?;
 
   let version_tag = res.version.trim_start_matches('v');
-  let version_file = version_tag.replace("-staging", "");
+  let version_file = version_tag.replace("-shipping-list", "");
   let url = format!(
-    "https://github.com/Midwest-Diesel/shipping-list/releases/download/v{}/{}_{}_x64-setup.exe",
+    "https://github.com/Midwest-Diesel/inventory-desktop/releases/download/v{}/{}_{}_x64-setup.exe",
     version_tag, product_name, version_file
   );
   let exe_path = format!(
@@ -93,8 +93,12 @@ async fn download_update() -> Result<(), Box<dyn std::error::Error>> {
     product_name,
     version_file
   );
+  
+  let response = client
+    .get(&url)
+    .send().await?
+    .error_for_status()?;
 
-  let response = client.get(&url).send().await?;
   let mut dest = File::create(&exe_path)?;
   copy(&mut response.bytes().await?.as_ref(), &mut dest)?;
   drop(dest);

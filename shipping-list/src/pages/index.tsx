@@ -1,11 +1,10 @@
 import { Layout } from "../components/Layout";
-import Button from "@/components/library/Button";
-import Link from "@/components/library/Link";
+import { Button } from "@midwest-diesel/mwd-ui";
 import MoveShippingListRowDialog from "../components/shippingList/dialogs/MoveShipppingListRowDialog";
 import ShippingListTableEdit from "../components/shippingList/ShippingListTableEdit";
 import useAutoSave from "@/hooks/useAutoSave";
 import { shippingListDayAtom, shippingListWeekAtom } from "../scripts/atoms/state";
-import { confirm, invoke } from "@/scripts/config/tauri";
+import { confirm, invoke } from "../scripts/config/tauri";
 import { offServerEvent, onServerEvent, socket } from "@/scripts/config/websockets";
 import { exportShippingList } from "@/scripts/logic/shippingList";
 import { editShippingList, getShippingList } from "@/scripts/services/shippingListService";
@@ -198,7 +197,7 @@ export default function Home() {
           </Button>
           <Button variant={['link']} className="shipping-list__system-btn">
             <a href="/system">
-              <img alt="System" src="/images/icons/gear.svg" width={17} />
+              <img alt="System" src="/images/icons/gear.svg" draggable={false} />
             </a>
           </Button>
         </div>

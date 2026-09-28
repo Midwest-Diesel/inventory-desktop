@@ -52,7 +52,7 @@ export default function ShopPartAddonRow({ addOn, addOns, setAddons, handleDupli
   const ref = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const partNumListRefs = useRef<(HTMLLIElement | null)[]>([]);
-  const partNumRef = useRef<HTMLDivElement>(null);
+  const partNumRef = useRef<HTMLDivElement | null>(null);
   const prevEngineNum = useRef<string | null>(null);
   const qtyRef = useRef<HTMLInputElement | null>(null);
   const isEngineNumInvalid = !engineNumLink || engineNumLink <= 1;
@@ -486,7 +486,9 @@ export default function ShopPartAddonRow({ addOn, addOns, setAddons, handleDupli
                           return (
                             <li
                               key={i}
-                              ref={(el) => partNumListRefs.current[i] = el}
+                              ref={(el) => {
+                                partNumListRefs.current[i] = el;
+                              }}
                               onClick={() => handlePartNumSelectClick(num)}
                             >
                               { num }

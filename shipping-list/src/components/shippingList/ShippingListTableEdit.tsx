@@ -1,4 +1,4 @@
-import Table from "@/components/library/Table";
+import { Table } from "@midwest-diesel/mwd-ui";
 import ShippingListRowEdit from "./ShippingListRowEdit";
 import { Fragment } from "react";
 
