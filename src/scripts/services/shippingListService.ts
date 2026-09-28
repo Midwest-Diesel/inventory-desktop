@@ -1,6 +1,6 @@
 import api from "../config/axios";
 import { socket } from "../config/websockets";
-import { parseWeightDims } from "../tools/stringUtils";
+import { formatWeightDims, parseWeightDims } from "../tools/stringUtils";
 import { handleError } from "../tools/utils";
 
 interface NewShippingListRow {
@@ -58,7 +58,8 @@ export const addShippingListRow = async (row: NewShippingListRow) => {
 
 export const editShippingList = async (row: ShippingListRow, field: keyof ShippingListRow) => {
   try {
-    await api.put('/api/shipping-list', { ...row, field, socketId: socket.id });
+    const payload = { ...row, weightDims: formatWeightDims(row.weightDims) };
+    await api.put('/api/shipping-list', { ...payload, field, socketId: socket.id });
   } catch (error) {
     handleError(error, 'editShippingList');
   }

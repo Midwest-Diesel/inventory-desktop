@@ -8,10 +8,11 @@ interface Props {
   editingUser: { id: number, field: keyof ShippingListRow, user: string } | null
   refetch: () => void
   setMoveRow: (value: ShippingListRow | null) => void
+  onEditWeightDims: (row: ShippingListRow) => void
 }
 
 
-export default function ShippingListTableEdit({ sections, onEditRow, editingUser, refetch, setMoveRow }: Props) {
+export default function ShippingListTableEdit({ sections, onEditRow, editingUser, refetch, setMoveRow, onEditWeightDims }: Props) {
   return (
     <Table variant={['plain']}>
       <thead>
@@ -56,6 +57,7 @@ export default function ShippingListTableEdit({ sections, onEditRow, editingUser
                     editingUser={editingUser}
                     refetch={refetch}
                     setMoveRow={setMoveRow}
+                    onEditWeightDims={onEditWeightDims}
                   />
                 );
               })}

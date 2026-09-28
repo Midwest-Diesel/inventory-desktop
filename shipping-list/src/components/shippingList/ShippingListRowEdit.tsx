@@ -14,10 +14,11 @@ interface Props {
   editingUser: { id: number, field: keyof ShippingListRow, user: string } | null
   refetch: () => void
   setMoveRow: (value: ShippingListRow | null) => void
+  onEditWeightDims: (row: ShippingListRow) => void
 }
 
 
-export default function ShippingListRow({ row, onEditRow, editingUser, refetch, setMoveRow }: Props) {
+export default function ShippingListRow({ row, onEditRow, editingUser, refetch, setMoveRow, onEditWeightDims }: Props) {
   const [actionButtonsOpen, setActionButtonsOpen] = useState(false);
   const [className, setClassName] = useState('shipping-list-row');
   const tooltip = useTooltip();
@@ -228,7 +229,15 @@ export default function ShippingListRow({ row, onEditRow, editingUser, refetch, 
           type="checkbox"
         />
       </td>
-      <td></td>
+      <td style={{ textAlign: 'center' }}>
+        <Button
+          style={{ backgroundColor: 'var(--grey-light-1)' }}
+          variant={['xx-small']}
+          onClick={() => onEditWeightDims(row)}
+        >
+          Edit
+        </Button>
+      </td>
       <td>
         <ShippingListInput row={row} field="handwrittenId" editingUser={editingUser}>
           <Input

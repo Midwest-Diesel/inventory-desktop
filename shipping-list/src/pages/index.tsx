@@ -8,10 +8,11 @@ import { confirm, invoke } from "../scripts/config/tauri";
 import { offServerEvent, onServerEvent, socket } from "@/scripts/config/websockets";
 import { exportShippingList } from "@/scripts/logic/shippingList";
 import { editShippingList, getShippingList } from "@/scripts/services/shippingListService";
-import { formatDate, getDay } from "@/scripts/tools/stringUtils";
+import { formatDate, getDay, parseWeightDims } from "@/scripts/tools/stringUtils";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAtom } from "jotai";
 import { useEffect, useState } from "react";
+import EditWeightDimsDialog from "../components/shippingList/dialogs/EditWeightDimsDialog";
 
 
 export default function Home() {
@@ -20,6 +21,7 @@ export default function Home() {
   const [editedRow, setEditedRow] = useState<{ row: ShippingListRow, field: keyof ShippingListRow } | null>(null);
   const [shipViaEdit, setShipViaEdit] = useState<{ row: ShippingListRow, field: 'shipVia' } | null>(null);
   const [editingUser, setEditingUser] = useState<{ id: number, field: keyof ShippingListRow, user: string } | null>(null);
+  const [weightDimsEdit, setWeightDimsEdit] = useState<ShippingListRow | null>(null);
   const [moveRow, setMoveRow] = useState<ShippingListRow | null>(null);
   const queryClient = useQueryClient();
 
@@ -54,14 +56,16 @@ export default function Home() {
       }
 
       queryClient.setQueryData<ShippingListSection[]>(['sections', formatDate(date)], (currentSections = []) => {
-        return currentSections.map((section) => ({
-          ...section,
-          rows: section.rows.map((row) =>
-            row.id === data.row!.id
-              ? { ...row, [data.field!]: data.row![data.field!] }
-              : row
-          )
-        }));
+        return currentSections.map((section) => (
+          {
+            ...section,
+            rows: section.rows.map((row) =>
+              row.id === data.row!.id
+                ? { ...row, [data.field!]: data.field === 'weightDims' ? parseWeightDims((data.row![data.field!]).toString()) : data.row![data.field!] }
+                : row
+            )
+          }
+        ));
       });
     };
 
@@ -185,6 +189,14 @@ export default function Home() {
         />
       }
 
+      {weightDimsEdit &&
+        <EditWeightDimsDialog
+          row={weightDimsEdit}
+          setRow={setWeightDimsEdit}
+          refetch={refetch}
+        />
+      }
+
       <div className="shipping-list">
         <div className="shipping-list__top-right-buttons">
           <Button variant={['link']}>
@@ -234,6 +246,7 @@ export default function Home() {
           editingUser={editingUser}
           refetch={refetch}
           setMoveRow={setMoveRow}
+          onEditWeightDims={setWeightDimsEdit}
         />
       </div>
     </Layout>

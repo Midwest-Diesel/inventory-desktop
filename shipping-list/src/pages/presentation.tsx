@@ -22,9 +22,7 @@ export default function Presentation() {
       </h2>
       
       <Button variant={['link', 'red-color']} className="shipping-list-presentation__close-btn">
-        <a href="/shipping-list">
-          X
-        </a>
+        <a href="/">X</a>
       </Button>
 
       <ShippingListTable sections={sections} />

@@ -190,6 +190,7 @@ export const formatWeightDims = (weightDims: WeightDims[]): string => {
 
 export const formatShippingListWeightDims = (weightDims: WeightDims[]) => {
   return formatWeightDims(weightDims)
+    .replaceAll(/\(QTY [0-9]\) /gm, '')
     .replaceAll('Small Pack: ', '')
     .replaceAll('LTL: ', '')
     .replaceAll('lbs ', ' lbs ')

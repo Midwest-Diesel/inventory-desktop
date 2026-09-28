@@ -44,7 +44,7 @@ export default function ShippingListRow({ row }: Props) {
       <td style={{ textAlign: 'center' }}>
         <input checked={row.ready} onChange={() => {}} type="checkbox" />
       </td>
-      <td>{ row.weightDims.length > 0 ? formatShippingListWeightDims(row.weightDims) : null }</td>
+      <td style={{ whiteSpace: 'pre' }}>{ row.weightDims.length > 0 ? formatShippingListWeightDims(row.weightDims) : null }</td>
       <td>{ row.handwrittenId }</td>
       <td>{ row.scheduled }</td>
     </tr>
