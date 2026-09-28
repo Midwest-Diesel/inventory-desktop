@@ -1,11 +1,11 @@
 {
-  "version": "v0.1.0",
-  "pub_date": "2026-08-31T19:47:15Z",
+  "version": "v0.1.1-shipping-list",
+  "pub_date": "2026-09-28T15:07:49Z",
   "notes": "",
   "platforms": {
     "windows-x86_64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVSYXQxaWtWaFNYeHdXNWNLS2IyRWlQWTZzRjlwSkV4VTJPa1o4dDE0bFRwa0JHcVdIOFZNVW14eGJXYTdSSHVpa3UzUU8yNVpZU3JlWWk0SFFXaGk0MDhONlY2SXZ3S2dBPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzg4MjA1NjM0CWZpbGU6ZUJheS1JbnZlbnRvcnlfMC44LjJfeDY0LXNldHVwLmV4ZQp1RkhKczROUW82UmRHL3d4Q1hsNGF0SVNnNTNGaDAyM3hVUFZzaWVxNk9RNUhCNDcyWFNYcDg1bWdxZkRzR21xZkVrRmxXZjNsci9udGppekFVR1lBZz09Cg==",
-      "url": "https://github.com/Midwest-Diesel/inventory-desktop/releases/download/v0.1.0/shipping_list_0.1.0_x64-setup.nsis.zip"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVSYXQxaWtWaFNYeDh6eDZwMElYN2hDZmtrVXV5cjFEVTArNEpqVjFFVHI0a09xWXhCMU1YdTUzcmVqT2U1dklhMXlsVDRkd09nREVyU0g5TEtNNGFyRkNrT1laZ0ZQclFBPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzkwNjA4MDY4CWZpbGU6U2hpcHBpbmctTGlzdF8wLjEuMV94NjQtc2V0dXAuZXhlCXZlcnNpb246MC4xLjEKK056N25qMXcwN1hMSU1oRkVlRDdDd2lqb3hVR20vUENVWWNWTE0yMWlZbHpnR2Uwc0J4NmhkWTI5ZUwrZ0ZJNU01OTM5SFFIWWlzYm1HL3YrQWMzQ2c9PQo=",
+      "url": "https://github.com/Midwest-Diesel/inventory-desktop/releases/download/v0.1.1-shipping-list/Shipping-List_0.1.1_x64-setup.nsis.zip"
     }
   }
 }
