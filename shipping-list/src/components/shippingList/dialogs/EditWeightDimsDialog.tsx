@@ -1,27 +1,22 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Dialog from "@/components/library/Dialog";
 import { Button, Input, Table } from "@midwest-diesel/mwd-ui";
 import useAutoSave from "@/hooks/useAutoSave";
-import { editShippingList } from "@/scripts/services/shippingListService";
+import { confirm } from "../../../scripts/config/tauri";
 
 interface Props {
   row: ShippingListRow
-  setRow: (value: ShippingListRow | null) => void
-  refetch: () => void
+  setRow: (value: number | null) => void
+  onEditWeightDims: (row: ShippingListRow, weightDims: WeightDims[]) => Promise<void>
 }
 
 
-export default function EditWeightDimsDialog({ row, setRow, refetch }: Props) {
+export default function EditWeightDimsDialog({ row, setRow, onEditWeightDims }: Props) {
   const [weightDims, setWeightDims] = useState<WeightDims[]>(row.weightDims);
 
-  useEffect(() => {
-    setWeightDims(row.weightDims);
-  }, [row]);
-
   useAutoSave(weightDims, async () => {
-    const newWeightDims: WeightDims[] = weightDims.map((r) => ({ ...r, lbs: Number(r.lbs) }));
-    await editShippingList({ ...row, weightDims: newWeightDims }, 'weightDims');
-    refetch();
+    const newWeightDims = weightDims.map((r) => ({ ...r, lbs: Number(r.lbs), length: Number(r.length) }));
+    await onEditWeightDims(row, newWeightDims);
   }, { delay: 0 });
 
   const onChange = (i: number, field: keyof typeof weightDims[number], value: string | number) => {
@@ -38,6 +33,7 @@ export default function EditWeightDimsDialog({ row, setRow, refetch }: Props) {
   };
 
   const onClickRemoveRow = async (i: number) => {
+    if (!await confirm('Delete row?')) return;
     setWeightDims((prev) => prev.filter((_, index) => index !== i))
   };
  
@@ -50,10 +46,11 @@ export default function EditWeightDimsDialog({ row, setRow, refetch }: Props) {
       y={-200}
       x={850}
     >
+      <h4>Handwritten { row.handwrittenId }</h4>
       <Table>
         <thead>
           <tr>
-            <th>Weight</th>
+            <th>Lbs</th>
             <th>Length</th>
             <th>Width</th>
             <th>Height</th>

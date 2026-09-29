@@ -40,5 +40,5 @@ export default function useAutoSave<T>(values: T, saveFn: (values: T) => void | 
     }, delay);
 
     return () => clearTimeout(timeout);
-  }, [values, delay, saveFn]);
+  }, [values, delay, ignoreFirstSave]);
 }

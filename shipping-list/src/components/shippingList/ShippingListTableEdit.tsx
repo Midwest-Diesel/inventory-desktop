@@ -8,7 +8,7 @@ interface Props {
   editingUser: { id: number, field: keyof ShippingListRow, user: string } | null
   refetch: () => void
   setMoveRow: (value: ShippingListRow | null) => void
-  onEditWeightDims: (row: ShippingListRow) => void
+  onEditWeightDims: (id: number) => void
 }
 
 

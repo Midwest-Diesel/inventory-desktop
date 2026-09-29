@@ -21,7 +21,8 @@ export default function Home() {
   const [editedRow, setEditedRow] = useState<{ row: ShippingListRow, field: keyof ShippingListRow } | null>(null);
   const [shipViaEdit, setShipViaEdit] = useState<{ row: ShippingListRow, field: 'shipVia' } | null>(null);
   const [editingUser, setEditingUser] = useState<{ id: number, field: keyof ShippingListRow, user: string } | null>(null);
-  const [weightDimsEdit, setWeightDimsEdit] = useState<ShippingListRow | null>(null);
+  const [weightDimsEditId, setWeightDimsEditId] = useState<number | null>(null);
+  const [weightDimsVersion, setWeightDimsVersion] = useState(0);
   const [moveRow, setMoveRow] = useState<ShippingListRow | null>(null);
   const queryClient = useQueryClient();
 
@@ -56,17 +57,26 @@ export default function Home() {
       }
 
       queryClient.setQueryData<ShippingListSection[]>(['sections', formatDate(date)], (currentSections = []) => {
-        return currentSections.map((section) => (
-          {
-            ...section,
-            rows: section.rows.map((row) =>
-              row.id === data.row!.id
-                ? { ...row, [data.field!]: data.field === 'weightDims' ? parseWeightDims((data.row![data.field!]).toString()) : data.row![data.field!] }
-                : row
-            )
-          }
-        ));
+        return currentSections.map((section) => ({
+          ...section,
+          rows: section.rows.map((row) =>
+            row.id === data.row!.id
+              ? {
+                  ...row,
+                  [data.field!]: data.field === 'weightDims'
+                    ? data.row!.weightDims
+                      ? parseWeightDims(data.row!.weightDims.toString())
+                      : []
+                    : data.row![data.field!]
+                }
+              : row
+          )
+        }));
       });
+
+      if (data.field === 'weightDims') {
+        setWeightDimsVersion((version) => version + 1);
+      }
     };
 
     const onRefreshShippingList = (data: { date: string, socketId: string }) => {
@@ -97,7 +107,7 @@ export default function Home() {
   useAutoSave(editedRow, async (edited) => {
     if (!edited) return;
     await editShippingList(edited.row, edited.field);
-  }, { ignoreFirstSave: true, delay: 0 });
+  }, { delay: 0 });
 
   useAutoSave(shipViaEdit, async (edited) => {
     if (!edited) return;
@@ -110,7 +120,7 @@ export default function Home() {
       input?.focus();
       input?.setSelectionRange(input.value.length, input.value.length);
     });
-  }, { ignoreFirstSave: true, delay: 500 });
+  }, { delay: 500 });
 
   const onClickChangeWeek = () => {
     const days = week === 'Next' ? -7 : 7;
@@ -178,6 +188,25 @@ export default function Home() {
     await invoke('backup_shipping_list', { args });
   };
 
+  const onEditWeightDims = async (row: ShippingListRow, weightDims: WeightDims[]) => {
+    await editShippingList({ ...row, weightDims }, 'weightDims');
+
+    queryClient.setQueryData<ShippingListSection[]>(['sections', formatDate(date)], (currentSections = []) => {
+      return currentSections.map((section) => ({
+        ...section,
+        rows: section.rows.map((currentRow) =>
+          currentRow.id === row.id
+            ? { ...currentRow, weightDims }
+            : currentRow
+        )
+      }));
+    });
+  };
+
+  const weightDimsRow = data
+    .flatMap((section) => section.rows)
+    .find((row) => row.id === weightDimsEditId);
+
 
   return (
     <Layout title="Shipping List">
@@ -189,11 +218,12 @@ export default function Home() {
         />
       }
 
-      {weightDimsEdit &&
+      {weightDimsRow &&
         <EditWeightDimsDialog
-          row={weightDimsEdit}
-          setRow={setWeightDimsEdit}
-          refetch={refetch}
+          key={`${weightDimsRow.id}-${weightDimsVersion}`}
+          row={weightDimsRow}
+          setRow={setWeightDimsEditId}
+          onEditWeightDims={onEditWeightDims}
         />
       }
 
@@ -246,7 +276,7 @@ export default function Home() {
           editingUser={editingUser}
           refetch={refetch}
           setMoveRow={setMoveRow}
-          onEditWeightDims={setWeightDimsEdit}
+          onEditWeightDims={setWeightDimsEditId}
         />
       </div>
     </Layout>

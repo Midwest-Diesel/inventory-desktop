@@ -14,7 +14,7 @@ interface Props {
   editingUser: { id: number, field: keyof ShippingListRow, user: string } | null
   refetch: () => void
   setMoveRow: (value: ShippingListRow | null) => void
-  onEditWeightDims: (row: ShippingListRow) => void
+  onEditWeightDims: (id: number) => void
 }
 
 
@@ -22,6 +22,7 @@ export default function ShippingListRow({ row, onEditRow, editingUser, refetch, 
   const [actionButtonsOpen, setActionButtonsOpen] = useState(false);
   const [className, setClassName] = useState('shipping-list-row');
   const tooltip = useTooltip();
+  const isMissingWeightDims = (row.weightDims.reduce((acc, w) => acc + (w.lbs + w.length + w.width + w.height), 0) === 0 && row.shipVia !== 'Will Call');
 
   useEffect(() => {
     setClassName(getRowClasses(row));
@@ -57,7 +58,7 @@ export default function ShippingListRow({ row, onEditRow, editingUser, refetch, 
     await deleteShippingListRow(row.id);
     refetch();
   };
-
+  
 
   return (
     <tr style={{ position: 'relative'}} className={className}>
@@ -229,11 +230,15 @@ export default function ShippingListRow({ row, onEditRow, editingUser, refetch, 
           type="checkbox"
         />
       </td>
-      <td style={{ textAlign: 'center' }}>
+      <td style={{ textAlign: 'center', backgroundColor: 'rgb(71, 71, 71)' }}>
+        {isMissingWeightDims &&
+          <span className="shipping-list-row__indicator">{'<!>'}</span> 
+        }
+
         <Button
           style={{ backgroundColor: 'var(--grey-light-1)' }}
           variant={['xx-small']}
-          onClick={() => onEditWeightDims(row)}
+          onClick={() => onEditWeightDims(row.id)}
         >
           Edit
         </Button>
