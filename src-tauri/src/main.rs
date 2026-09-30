@@ -141,12 +141,6 @@ struct DateArgs {
   day: String
 }
 
-#[derive(Deserialize, Serialize)]
-struct BackupShippingListArgs {
-  path: String,
-  name: String
-}
-
 
 #[tokio::main]
 async fn main() {
@@ -204,8 +198,7 @@ async fn main() {
       get_json_file,
       read_file_bytes,
       delete_file,
-      create_folder,
-      backup_shipping_list
+      create_folder
     ])
     .run(tauri::generate_context!());
 }
@@ -862,62 +855,4 @@ fn delete_file(path: String) -> Result<(), String> {
 fn create_folder(path: String) -> Result<(), String> {
   let path = Path::new(&path);
   fs::create_dir_all(path).map_err(|e| e.to_string())
-}
-
-#[tauri::command]
-fn backup_shipping_list(args: BackupShippingListArgs) -> Result<(), String> {
-  let downloads = dirs::download_dir().ok_or("Could not find Downloads directory")?;
-  let source = downloads.join(&args.name);
-  let destination = std::path::Path::new(&args.path).join(&args.name);
-
-  let file = std::fs::read(&source).map_err(|e| {
-    format!("Could not read source {:?}: {}", source, e)
-  })?;
-
-  std::fs::write(&destination, file).map_err(|e| {
-    format!("Could not write destination {:?}: {}", destination, e)
-  })?;
-
-  std::fs::remove_file(&source).map_err(|e| e.to_string())?;
-
-
-  let vbs_script = format!(
-    r#"
-    Dim ExcelApp, Workbook, ExcelSheet
-    Dim r, targetRow, foundSheet, sheetIndex
-
-    Set ExcelApp = CreateObject("Excel.Application")
-    ExcelApp.Visible = False
-    ExcelApp.DisplayAlerts = False
-    Set Workbook = ExcelApp.Workbooks.Open({})
-    Set ExcelSheet = Workbook.Worksheets(1)
-
-    ExcelSheet.Rows(1).Font.Bold = True
-    ExcelSheet.Rows(1).Font.Size = 18
-    ExcelSheet.Rows(1).Interior.Color = RGB(255, 255, 255)
-    ExcelSheet.Rows(2).Font.Bold = True
-    ExcelSheet.Rows(2).HorizontalAlignment = -4108 ' xlCenter
-    ExcelSheet.Rows(2).Interior.Color = RGB(255, 255, 255)
-
-    For Each r In ExcelSheet.UsedRange
-      If UCase(Trim(CStr(r.Value))) = "TRUE" Then
-        r.Value = "x"
-      End If
-    Next
-
-    Workbook.Save
-    Workbook.Close
-    ExcelApp.Quit
-    "#,
-    format!("{:?}", destination)
-  );
-
-  let temp_vbs_path = "C:/mwd/scripts/backup_shipping_list.vbs";
-  std::fs::write(&temp_vbs_path, vbs_script).unwrap();
-  std::process::Command::new("wscript.exe")
-    .arg(temp_vbs_path)
-    .output()
-    .unwrap();
-
-  Ok(())
 }
