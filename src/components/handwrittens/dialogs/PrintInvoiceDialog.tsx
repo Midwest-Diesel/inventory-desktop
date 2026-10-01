@@ -109,7 +109,7 @@ export default function PrintInvoiceDialog({ open, setOpen, handwritten }: Props
         })) || []
       };
 
-      addToQue('handwrittenAcct', 'print_accounting_handwritten', { ...args, items: args.items }, '956.53px', '709.6px', null);
+      if (accounting) addToQue('handwrittenAcct', 'print_accounting_handwritten', { ...args, items: args.items }, '956.53px', '709.6px', null);
       if (hasCore) addToQue('handwrittenCore', 'print_core_handwritten', args, '956.53px', '709.6px', null);
     }
     printQue();
