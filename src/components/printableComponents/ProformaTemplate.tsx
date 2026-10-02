@@ -16,6 +16,7 @@ interface Props {
     shipToZip: string
     poNum: string
     billToPhone: string
+    note: string | null
     orderTotal: string
     pageNum: number
     items: {
@@ -69,6 +70,9 @@ export default function ProformaTemplate({ data }: Props) {
           </div>
 
           <div className="proforma-template__divider"></div>
+
+          { data.note && <br /> }
+          <p style={{ textAlign: 'center', fontSize: 'var(--font-md)' }}>{ data.note }</p>
         </>
       }
 

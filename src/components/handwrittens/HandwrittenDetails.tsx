@@ -387,7 +387,8 @@ export default function HandwrittenDetails({
     invoke('email_karmak_invoice', { args });
   };
 
-  const onClickPrintProforma = () => {
+  const onClickPrintProforma = async () => {
+    const note = await prompt('Add note to proforma?');
     const proformaId = `${handwritten.id}`;
     const args = {
       date: formatDate(handwritten.date),
@@ -404,6 +405,7 @@ export default function HandwrittenDetails({
       shipToZip: handwritten.shipToZip,
       poNum: handwritten.poNum,
       billToPhone: formatPhone(handwritten.billToPhone),
+      note,
       orderTotal: formatCurrency(handwritten.handwrittenItems.reduce((acc, item) => acc + ((item.unitPrice ?? 0) * (item.qty ?? 0)), 0)),
       items: handwritten.handwrittenItems.map((item) => {
         return {
@@ -424,6 +426,7 @@ export default function HandwrittenDetails({
   };
 
   const onClickEmailProforma = async () => {
+    const note = await prompt('Add note to proforma?');
     const proformaId = `${handwritten.id}`;
     const data = {
       date: formatDate(handwritten.date),
@@ -440,6 +443,7 @@ export default function HandwrittenDetails({
       shipToZip: handwritten.shipToZip,
       poNum: handwritten.poNum,
       billToPhone: formatPhone(handwritten.billToPhone),
+      note,
       orderTotal: formatCurrency(handwritten.handwrittenItems.reduce((acc, item) => acc + ((item.unitPrice ?? 0) * (item.qty ?? 0)), 0)),
       items: handwritten.handwrittenItems.map((item) => {
         return {
