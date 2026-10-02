@@ -607,9 +607,9 @@ interface PartSearchData {
   stockNum?: string
   desc?: string
   location?: string
-  qty?: number
+  qty?: number | null
   remarks?: string
-  rating?: number
+  rating?: number | null
   purchasedFrom?: string
   serialNum?: string
   hp?: string

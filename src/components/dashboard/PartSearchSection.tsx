@@ -78,8 +78,8 @@ export default function PartSearchSection({ selectHandwrittenOpen, setSelectHand
     queryFn: () => {
       if (!searchParams) throw new Error('No search params');
       return searchParams.isAltSearch
-        ? searchAltParts({ ...searchParams, showSoldParts, qty: Number(searchParams.qty), rating: Number(searchParams.rating) }, searchParams.page, LIMIT)
-        : searchParts({ ...searchParams, showSoldParts, qty: Number(searchParams.qty), rating: Number(searchParams.rating) }, searchParams.page, LIMIT);
+        ? searchAltParts({ ...searchParams, showSoldParts }, searchParams.page, LIMIT)
+        : searchParts({ ...searchParams, showSoldParts }, searchParams.page, LIMIT);
     },
     enabled: !!searchParams
   });
@@ -124,8 +124,8 @@ export default function PartSearchSection({ selectHandwrittenOpen, setSelectHand
     let name = params.stockNum || params.partNum.replace('*', '');
     if (!name) {
       const res = params.isAltSearch
-        ? await searchAltParts({ ...params, showSoldParts, qty: Number(params.qty), rating: Number(params.rating) }, params.page, LIMIT)
-        : await searchParts({ ...params, showSoldParts, qty: Number(params.qty), rating: Number(params.rating) }, params.page, LIMIT);
+        ? await searchAltParts({ ...params, showSoldParts }, params.page, LIMIT)
+        : await searchParts({ ...params, showSoldParts }, params.page, LIMIT);
 
       name = res.rows[0].partNum;
     }
