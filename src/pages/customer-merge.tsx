@@ -14,11 +14,16 @@ export default function CustomerMerge() {
   const handleMerge = async (e: FormEvent) => {
     e.preventDefault();
     if (badId === 0 || goodId === 0) {
-      alert('Select customer');
-      return;
+      return alert('Select customer');
     }
+    if (badId === goodId) {
+      return alert('Cannot select the same customer twice');
+    }
+
     await customerMerge(badId, goodId);
     toast.sendToast('Customer merged', 'success');
+    setBadId(0);
+    setGoodId(0);
   };
 
 
