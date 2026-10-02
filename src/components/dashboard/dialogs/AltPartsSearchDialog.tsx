@@ -21,9 +21,9 @@ export default function AltPartsSearchDialog({ open, setOpen, handleSearch, upda
   const [stockNum, setStockNum] = useState('');
   const [desc, setDesc] = useState('');
   const [location, setLocation] = useState('');
-  const [qty, setQty] = useState('' as any);
+  const [qty, setQty] = useState<number | null>(null);
   const [remarks, setRemarks] = useState('');
-  const [rating, setRating] = useState<number>('' as any);
+  const [rating, setRating] = useState<number | null>(null);
   const [purchasedFrom, setPurchasedFrom] = useState('');
   const [serialNum, setSerialNum] = useState('');
   const [hp, setHp] = useState('');
@@ -51,10 +51,7 @@ export default function AltPartsSearchDialog({ open, setOpen, handleSearch, upda
   }, [showSoldParts]);
 
   useEffect(() => {
-    if (!altPartSearch) {
-      clearInputs();
-      return;
-    }
+    if (!altPartSearch) return;
 
     const { partNum, stockNum, desc, location, qty, remarks, rating, purchasedFrom, serialNum, hp } = altPartSearch;
     setPartNum(partNum);
@@ -79,9 +76,9 @@ export default function AltPartsSearchDialog({ open, setOpen, handleSearch, upda
     setStockNum('');
     setDesc('');
     setLocation('');
-    setQty('' as any);
+    setQty(null);
     setRemarks('');
-    setRating('' as any);
+    setRating(null);
     setPurchasedFrom('');
     setSerialNum('');
     setHp('');
@@ -97,7 +94,7 @@ export default function AltPartsSearchDialog({ open, setOpen, handleSearch, upda
     await handleSearch(params);
     updateSelectedTab(params);
   };
-
+  
 
   return (
     <Dialog
@@ -113,7 +110,7 @@ export default function AltPartsSearchDialog({ open, setOpen, handleSearch, upda
           label="Alternate Part Number"
           variant={['small', 'thin', 'label-no-stack', 'label-space-between']}
           value={partNum.replaceAll(' ', '')}
-          onChange={(e: any) => setPartNum(`*${e.target.value.trim().toUpperCase().replace('*', '')}`)}
+          onChange={(e) => setPartNum(`*${e.target.value.trim().toUpperCase().replace('*', '')}`)}
           ref={inputRef}
           data-testid="alt-search-part-num"
         />
@@ -122,7 +119,7 @@ export default function AltPartsSearchDialog({ open, setOpen, handleSearch, upda
           label="Stock Number"
           variant={['small', 'thin', 'label-no-stack', 'label-space-between']}
           value={stockNum}
-          onChange={(e: any) => setStockNum(e.target.value)}
+          onChange={(e) => setStockNum(e.target.value)}
           data-testid="alt-search-stock-num"
         />
 
@@ -130,7 +127,7 @@ export default function AltPartsSearchDialog({ open, setOpen, handleSearch, upda
           label="Description"
           variant={['small', 'thin', 'label-no-stack', 'label-space-between']}
           value={desc}
-          onChange={(e: any) => setDesc(e.target.value)}
+          onChange={(e) => setDesc(e.target.value)}
           data-testid="alt-search-desc"
         />
 
@@ -138,7 +135,7 @@ export default function AltPartsSearchDialog({ open, setOpen, handleSearch, upda
           label="Location"
           variant={['small', 'thin', 'label-no-stack', 'label-space-between']}
           value={location}
-          onChange={(e: any) => setLocation(e.target.value)}
+          onChange={(e) => setLocation(e.target.value)}
           data-testid="alt-search-location"
         />
 
@@ -146,8 +143,8 @@ export default function AltPartsSearchDialog({ open, setOpen, handleSearch, upda
           label="Qty"
           type="number"
           variant={['small', 'thin', 'label-no-stack', 'label-space-between']}
-          value={qty}
-          onChange={(e: any) => setQty(e.target.value)}
+          value={qty ?? ''}
+          onChange={(e) => setQty(e.target.value ? Number(e.target.value) : null)}
           data-testid="alt-search-qty"
         />
 
@@ -155,7 +152,7 @@ export default function AltPartsSearchDialog({ open, setOpen, handleSearch, upda
           label="Remarks"
           variant={['small', 'thin', 'label-no-stack', 'label-space-between']}
           value={remarks}
-          onChange={(e: any) => setRemarks(e.target.value)}
+          onChange={(e) => setRemarks(e.target.value)}
           data-testid="alt-search-remarks"
         />
 
@@ -163,8 +160,8 @@ export default function AltPartsSearchDialog({ open, setOpen, handleSearch, upda
           label="Rating"
           type="number"
           variant={['small', 'thin', 'label-no-stack', 'label-space-between']}
-          value={rating}
-          onChange={(e: any) => setRating(e.target.value)}
+          value={rating ?? ''}
+          onChange={(e) => setRating(e.target.value ? Number(e.target.value) : null)}
           data-testid="alt-search-rating"
         />
 
@@ -172,7 +169,7 @@ export default function AltPartsSearchDialog({ open, setOpen, handleSearch, upda
           label="Purchased From"
           variant={['small', 'thin', 'label-no-stack', 'label-space-between']}
           value={purchasedFrom}
-          onChange={(e: any) => setPurchasedFrom(e.target.value)}
+          onChange={(e) => setPurchasedFrom(e.target.value)}
           data-testid="alt-search-purch-from"
         />
 
@@ -180,7 +177,7 @@ export default function AltPartsSearchDialog({ open, setOpen, handleSearch, upda
           label="Serial Number"
           variant={['small', 'thin', 'label-no-stack', 'label-space-between']}
           value={serialNum}
-          onChange={(e: any) => setSerialNum(e.target.value)}
+          onChange={(e) => setSerialNum(e.target.value)}
           data-testid="alt-search-serial-num"
         />
 
@@ -188,7 +185,7 @@ export default function AltPartsSearchDialog({ open, setOpen, handleSearch, upda
           label="HP"
           variant={['small', 'thin', 'label-no-stack', 'label-space-between']}
           value={hp}
-          onChange={(e: any) => setHp(e.target.value)}
+          onChange={(e) => setHp(e.target.value)}
           data-testid="alt-search-hp"
         />
 
