@@ -66,6 +66,12 @@ export const getVendorByName = async (name: string): Promise<Vendor | null> => {
 
 export const addVendor = async (name: string, customer?: Customer): Promise<number | null> => {
   try {
+    const existingVendor = await getVendorByName(name);
+    if (existingVendor) {
+      alert('Vendor already exists');
+      return null;
+    }
+
     const res = await api.post('/api/vendors', { name, customer });
     return res.data.id;
   } catch (error) {

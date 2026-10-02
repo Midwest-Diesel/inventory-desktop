@@ -42,6 +42,8 @@ export default function Vendors() {
     if (!name) return;
 
     const id = await addVendor(name);
+    if (!id) return;
+    
     const res = await getVendorNames();
     setVendorsData(res);
     
