@@ -19,12 +19,13 @@ export default function SalesInfo({ open, setOpen }: Props) {
     queryFn: async () => {
       const rawPartSearch = JSON.parse(localStorage.getItem('partSearches')!);
       const filteredPartSearch = rawPartSearch && Object.fromEntries(
-        Object.entries(rawPartSearch).filter(([_, value]) => (value as any).toString().replace('*', ''))
+        Object.entries(rawPartSearch).filter(([_, value]) => (value as any)?.toString().replace('*', ''))
       );
       const rawAltPartSearch = JSON.parse(localStorage.getItem('altPartSearches')!);
       const filteredAltPartSearch = rawAltPartSearch && Object.fromEntries(
-        Object.entries(rawAltPartSearch).filter(([_, value]) => (value as any).toString().replace('*', ''))
+        Object.entries(rawAltPartSearch).filter(([_, value]) => (value as any)?.toString().replace('*', ''))
       );
+      
       const partSearch = filteredPartSearch && await searchParts({ ...filteredPartSearch, showSoldParts: true }, 1, 1);
       const altPartSearch = filteredAltPartSearch && await searchAltParts({ ...filteredAltPartSearch, showSoldParts: true }, 1, 1);
       const prevSearch = partSearch ?? altPartSearch;
