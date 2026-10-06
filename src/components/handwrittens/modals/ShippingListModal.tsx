@@ -1,6 +1,6 @@
 import Input from "@/components/library/Input";
 import { FormEvent, useEffect, useState } from "react";
-import { formatWeightDims, parseDateInputValue, parseWeightDims } from "@/scripts/tools/stringUtils";
+import { parseDateInputValue } from "@/scripts/tools/stringUtils";
 import Checkbox from "@/components/library/Checkbox";
 import Button from "@/components/library/Button";
 import Loading from "@/components/library/Loading";
@@ -8,7 +8,6 @@ import { getHandwrittenById } from "@/scripts/services/handwrittensService";
 import Modal from "@/components/library/Modal";
 import { addShippingListRow } from "@/scripts/services/shippingListService";
 import { getImagesFromPart } from "@/scripts/services/imagesService";
-import { getPartInfoByPartNum } from "@/scripts/services/partsService";
 
 interface Props {
   open?: boolean
@@ -45,10 +44,6 @@ export default function ShippingListModal({ open, onNext, onPrev, handwrittenIte
 
     if (isCondensed) {
       const pics = await getImagesFromPart(handwrittenItems[0].partNum);
-      const lbs = handwrittenItems.reduce((arr, item) => arr + item.weight, 0);
-      const partsInfo = await getPartInfoByPartNum(handwrittenItems[0].partNum);
-      const dims = partsInfo ? parseWeightDims(partsInfo.weightDims) : [];
-      const weightDims = dims.length > 0 ? formatWeightDims(dims.map((d) => ({ ...d, lbs }))) : '';
       
       const row = {
         handwrittenId: Number(handwritten?.id),
@@ -70,7 +65,7 @@ export default function ShippingListModal({ open, onNext, onPrev, handwrittenIte
         packaged: false,
         gone: false,
         ready: false,
-        weightDims,
+        weightDims: '',
         scheduled: null,
         isBlind: Boolean(handwritten?.isBlindShipment),
         isMissingPartPhotos: pics.length === 0
@@ -82,8 +77,6 @@ export default function ShippingListModal({ open, onNext, onPrev, handwrittenIte
         if (['FREIGHT', 'TAX', 'CORE DEPOSIT', 'CORE DEPOSIT PRIORITY', 'FEE'].includes(handwrittenItems[i].partNum ?? '')) continue;
         const qty = Number(handwrittenItems[i].qty);
         const pics = await getImagesFromPart(handwrittenItems[i].partNum);
-        const partsInfo = await getPartInfoByPartNum(handwrittenItems[i].partNum);
-        const weightDims = partsInfo?.weightDims ?? '';
         
         const row = {
           handwrittenId: Number(handwritten?.id),
@@ -105,7 +98,7 @@ export default function ShippingListModal({ open, onNext, onPrev, handwrittenIte
           packaged: false,
           gone: false,
           ready: false,
-          weightDims,
+          weightDims: '',
           scheduled: null,
           isBlind: Boolean(handwritten?.isBlindShipment),
           isMissingPartPhotos: pics.length === 0
