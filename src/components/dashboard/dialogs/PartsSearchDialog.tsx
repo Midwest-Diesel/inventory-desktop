@@ -3,7 +3,8 @@ import Dialog from "../../library/Dialog";
 import Input from "../../library/Input";
 import Button from "../../library/Button";
 import { useAtom } from "jotai";
-import { partSearchAtom, showSoldPartsAtom } from "@/scripts/atoms/state";
+import { partSearchAtom, showSoldPartsAtom, userAtom } from "@/scripts/atoms/state";
+import { addRecentSearch } from "@/scripts/services/recentSearchesService";
 
 interface Props {
   open: boolean
@@ -14,6 +15,7 @@ interface Props {
 
 
 export default function PartsSearchDialog({ open, setOpen, handleSearch, updateSelectedTab }: Props) {
+  const [user] = useAtom<User>(userAtom);
   const [showSoldParts] = useAtom<boolean>(showSoldPartsAtom);
   const [partSearch] = useAtom<PartSearchParams | null>(partSearchAtom);
   const prevSearches = JSON.parse(localStorage.getItem('partSearches')!);
@@ -92,6 +94,11 @@ export default function PartsSearchDialog({ open, setOpen, handleSearch, updateS
     
     const params = { partNum, stockNum, desc, location, qty, remarks, rating, purchasedFrom, serialNum, hp, page: 1, isAltSearch: false };
     await handleSearch(params);
+
+    if (params.partNum && params.partNum !== '*' && user.subtype === 'sales') {
+      await addRecentSearch({ partNum: params.partNum.replace('*', ''), salespersonId: user.id });
+    }
+
     updateSelectedTab(params);
   };
 

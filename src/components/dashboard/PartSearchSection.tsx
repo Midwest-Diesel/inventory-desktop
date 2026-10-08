@@ -18,7 +18,7 @@ import { addHandwrittenItemChild, deleteHandwrittenItemChild, editHandwrittenIte
 import { useToast } from "@/hooks/useToast";
 import { useQuery } from "@tanstack/react-query";
 import { detectAlerts } from "@/scripts/services/alertsService";
-import { addRecentSearch, getQuotesByPartNum } from "@/scripts/services/recentSearchesService";
+import { getQuotesByPartNum } from "@/scripts/services/recentSearchesService";
 import { getSearchedPartNum } from "@/scripts/logic/partSearch";
 import { emitServerEvent } from "@/scripts/config/websockets";
 import PartSearchTabs from "./PartSearchTabs";
@@ -108,9 +108,6 @@ export default function PartSearchSection({ selectHandwrittenOpen, setSelectHand
 
     if (isObjectNull({ ...params, partNum: params.partNum.replace('*', ''), isAltSearch: null, page: null })) location.reload();
 
-    if (params.partNum && params.partNum !== '*' && user.subtype === 'sales') {
-      await addRecentSearch({ partNum: params.partNum.replace('*', ''), salespersonId: user.id });
-    }
     setLastSearch(params.partNum.replace('*', ''));
     emitServerEvent('INSERT_RECENT_SEARCH', []);
   };
