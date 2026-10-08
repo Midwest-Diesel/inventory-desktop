@@ -1067,6 +1067,15 @@ type GeoLocation = {
   formattedAddress: string
 };
 
+interface LocationFormData {
+  id?: number
+  name: string
+  address: string
+  type: MapLocationType
+  customerId: number | null
+  notes: string
+}
+
 type Country = {
   id: number
   name: string

@@ -3,7 +3,6 @@ import Dialog from "@/components/library/Dialog";
 import Input from "@/components/library/Input";
 import Select from "@/components/library/select/Select";
 import TextArea from "@/components/library/TextArea";
-import { LocationFormData } from "@/pages/map";
 import { getCustomerById, getCustomers } from "@/scripts/services/customerService";
 import { FormEvent, useEffect, useState } from "react";
 

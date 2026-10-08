@@ -1,46 +1,29 @@
 import { Layout } from "@/components/Layout";
 import Button from "@/components/library/Button";
-import { addMapLocation, deleteMapLocation, editMapLocation, fixMapLocation, getBrokenLocations, getGeoLocation, getMapLocations, getMapTopCustomers } from "@/scripts/services/mapService";
-import { FormEvent, Fragment, useEffect, useRef, useState } from "react";
+import { getMapLocations, getMapTopCustomers } from "@/scripts/services/mapService";
+import { useEffect, useRef, useState } from "react";
 import { Loader } from "@googlemaps/js-api-loader";
 import { MarkerClusterer } from "@googlemaps/markerclusterer";
-import { useAtom } from "jotai";
-import { userAtom } from "@/scripts/atoms/state";
 import { formatDate } from "@/scripts/tools/stringUtils";
 import { dateDiffInDays } from "@/scripts/tools/utils";
 import { getAllUsers } from "@/scripts/services/accountService";
 import Input from "@/components/library/Input";
 import Select from "@/components/library/select/Select";
-import Pagination from "@/components/library/Pagination";
-import AddMapLocationDialog from "@/components/map/dialogs/AddMapLocationDialog";
-import EditMapLocationDialog from "@/components/map/dialogs/EditMapLocationDialog";
 import { useQuery } from "@tanstack/react-query";
 import Loading from "@/components/library/Loading";
-
-export interface LocationFormData {
-  id?: number
-  name: string
-  address: string
-  type: MapLocationType
-  customerId: number | null
-  notes: string
-}
+import MapRightSide from "@/components/map/MapRightSide";
 
 
 const START_POS = { lat: 44.98022677, lng: -93.35875787 };
 const LIMIT = 30;
 
 export default function ImportantCustomersMap() {
-  const [user] = useAtom<User>(userAtom);
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<google.maps.Map | null>(null);
   const markersRef = useRef<Map<number, google.maps.marker.AdvancedMarkerElement>>(new Map());
+  const [listDisplayItems, setListDisplayItems] = useState<MapLocation[]>([]);
   const [listOfLocations, setListOfLocations] = useState<MapLocation[]>([]);
   const [filteredLocations, setFilteredLocations] = useState<MapLocation[]>([]);
-  const [listDisplayItems, setListDisplayItems] = useState<MapLocation[]>([]);
-  const [newLocationDialogOpen, setNewLocationDialogOpen] = useState(false);
-  const [editLocationDialogOpen, setEditLocationDialogOpen] = useState(false);
-  const [editLocationData, setEditLocationData] = useState<MapLocation | null>(null);
   const [filterName, setFilterName] = useState('');
   const [filterType, setFilterType] = useState('all');
   const [filterCustomerType, setFilterCustomerType] = useState('all');
@@ -83,63 +66,59 @@ export default function ImportantCustomersMap() {
   useEffect(() => {
     if (!mapInstanceRef.current) return;
     handlePageChange(null, 1);
-    
-    const loadMarkers = async () => {
-      const { AdvancedMarkerElement, PinElement } = await google.maps.importLibrary('marker') as google.maps.MarkerLibrary;
-      const { InfoWindow } = google.maps;
-      const infoWindow = new InfoWindow();
-      const markers: google.maps.marker.AdvancedMarkerElement[] = [];
-
-      markersRef.current.forEach((marker) => marker.map = null);
-      markersRef.current.clear();
-    
-      filteredLocations.forEach((loc) => {
-        const { bg, border } = getPinStyles(loc.type === 'customer' ? loc.salesman : loc.type);
-        const pin = new PinElement({
-          background: bg,
-          borderColor: border,
-          glyphColor: 'white',
-          glyph: getPinIcon(loc),
-          scale: 0.9
-        });
-    
-        const marker = new AdvancedMarkerElement({
-          map: mapInstanceRef.current,
-          position: loc.location,
-          title: loc.address,
-          content: pin,
-          gmpClickable: true
-        });
-        markers.push(marker);
-    
-        markersRef.current.set(loc.id, marker);
-        marker.addListener('click', (e: google.maps.MapMouseEvent) => {
-          e.domEvent.stopPropagation();
-          const days = dateDiffInDays(new Date(), loc.date);
-          const { lat, lng } = loc.location;
-          panTo({ lat, lng });
-          infoWindow.setContent(`
-            <div class="map-page__info-window">
-              <h3>${loc.name}</h3>
-              <p>${loc.address}</p>
-              <hr />
-              <p><em>Added ${formatDate(loc.date)} (${days})</em></p>
-              <p><strong>Notes</strong></p>
-              <p>${loc.notes ? loc.notes : ''}</p>
-            </div>
-          `);
-          infoWindow.open({ anchor: marker, map: mapInstanceRef.current });
-        });
-      });
-
-      setCluster(new MarkerClusterer({ markers, map: mapInstanceRef.current, algorithmOptions: { maxZoom: 20 } }));
-      setLoading(false);
-    };
     loadMarkers();
   }, [filteredLocations, listOfLocations, mapInstanceRef]);
 
-  const handlePageChange = (_: any, page: number) => {
-    setListDisplayItems(filteredLocations.slice((page - 1) * LIMIT, page * LIMIT));
+  const loadMarkers = async () => {
+    const { AdvancedMarkerElement, PinElement } = await google.maps.importLibrary('marker') as google.maps.MarkerLibrary;
+    const { InfoWindow } = google.maps;
+    const infoWindow = new InfoWindow();
+    const markers: google.maps.marker.AdvancedMarkerElement[] = [];
+
+    markersRef.current.forEach((marker) => marker.map = null);
+    markersRef.current.clear();
+  
+    filteredLocations.forEach((loc) => {
+      const { bg, border } = getPinStyles(loc.type === 'customer' ? loc.salesman : loc.type);
+      const pin = new PinElement({
+        background: bg,
+        borderColor: border,
+        glyphColor: 'white',
+        glyph: getPinIcon(loc),
+        scale: 0.9
+      });
+  
+      const marker = new AdvancedMarkerElement({
+        map: mapInstanceRef.current,
+        position: loc.location,
+        title: loc.address,
+        content: pin,
+        gmpClickable: true
+      });
+      markers.push(marker);
+  
+      markersRef.current.set(loc.id, marker);
+      marker.addListener('click', (e: google.maps.MapMouseEvent) => {
+        e.domEvent.stopPropagation();
+        const days = dateDiffInDays(new Date(), loc.date);
+        const { lat, lng } = loc.location;
+        panTo({ lat, lng });
+        infoWindow.setContent(`
+          <div class="map-page__info-window">
+            <h3>${loc.name}</h3>
+            <p>${loc.address}</p>
+            <hr />
+            <p><em>Added ${formatDate(loc.date)} (${days})</em></p>
+            <p><strong>Notes</strong></p>
+            <p>${loc.notes ? loc.notes : ''}</p>
+          </div>
+        `);
+        infoWindow.open({ anchor: marker, map: mapInstanceRef.current });
+      });
+    });
+
+    setCluster(new MarkerClusterer({ markers, map: mapInstanceRef.current, algorithmOptions: { maxZoom: 20 } }));
+    setLoading(false);
   };
   
   const getPinStyles = (str: string) => {
@@ -182,77 +161,6 @@ export default function ImportantCustomersMap() {
     mapInstanceRef.current?.panTo({ lat, lng });
   };
 
-  const handleViewLoc = (loc: { lat: number, lng: number }) => {
-    panTo(loc);
-    if (!mapInstanceRef.current) return;
-    const zoom = Number(mapInstanceRef.current.getZoom());
-    mapInstanceRef.current.setZoom(zoom >= 15 ? zoom : 15);
-  };
-
-  const handleDeleteLocation = async (loc: MapLocation) => {
-    if (!confirm('Are you sure?')) return;
-    await deleteMapLocation(loc.id);
-  };
-
-  const handleAddLocation = async (name: string, location: { lat: number, lng: number }, customerId: number) => {
-    const geocoder = new window.google.maps.Geocoder();
-    await geocoder.geocode({ location }, async (results, status) => {
-      if (status === 'OK' && results?.[0]) {
-        await addMapLocation({
-          name,
-          customerId,
-          address: results[0].formatted_address,
-          lat: results[0].geometry.location.lat(),
-          lng: results[0].geometry.location.lng()
-        });
-      } else {
-        console.error(`Geocoder failed due to: ${status}`);
-      }
-    });
-  };
-
-  const handleEditLocation = async (id: number, name: string, location: { lat: number, lng: number }, type: MapLocationType, notes: string) => {
-    const geocoder = new window.google.maps.Geocoder();
-    await geocoder.geocode({ location }, async (results, status) => {
-      if (status === 'OK' && results) {
-        if (results[0]) {
-          const address = results[0].formatted_address;
-          const loc = results[0].geometry.location;
-          const parsedAddress = address.includes('+') ? `LAT: ${loc.lat()}, LONG: ${loc.lng()}` : address;
-          await editMapLocation({ id, name, address: parsedAddress, ...location, type, notes });
-        }
-      } else {
-        console.error(`Geocoder failed due to: ${status}`);
-      }
-    });
-  };
-
-  const handleAdd = (e: FormEvent) => {
-    e.preventDefault();
-    setNewLocationDialogOpen(true);
-  };
-
-  const handleEdit = (location: MapLocation) => {
-    setEditLocationData(location);
-    setEditLocationDialogOpen(true);
-  };
-
-  const handleSubmitNewLocation = async (data: LocationFormData) => {
-    const res = await getGeoLocation(data.address);
-    if (!res) return;
-    const { lat, lng } = res.geometry.location;
-    handleAddLocation(data.name, { lat, lng }, Number(data.customerId));
-    panTo({ lat, lng });
-  };
-
-  const handleSubmitEditLocation = async (data: LocationFormData) => {
-    const res = await getGeoLocation(data.address);
-    if (!res) return;
-    const { lat, lng } = res.geometry.location;
-    handleEditLocation(Number(data.id), data.name, { lat, lng }, data.type, data.notes);
-    panTo({ lat, lng });
-  };
-
   const handleFilters = (locations: MapLocation[]) => {
     cluster?.clearMarkers();
     const filteredLocations = locations.filter((loc) => {
@@ -265,7 +173,7 @@ export default function ImportantCustomersMap() {
     setFilteredLocations(filteredLocations);
   };
 
-  const handleClearFilters = () => {
+  const onClickClearFilters = () => {
     cluster?.clearMarkers();
     setFilterName('');
     setFilterType('all');
@@ -274,7 +182,7 @@ export default function ImportantCustomersMap() {
     setFilteredLocations(listOfLocations);
   };
 
-  const handleFilterTopCustomers = async () => {
+  const onClickFilterTopCustomers = async () => {
     cluster?.clearMarkers();
     const topCustomers: number[] = await getMapTopCustomers();
     const newList = listOfLocations.filter((loc) => {
@@ -283,28 +191,8 @@ export default function ImportantCustomersMap() {
     setFilteredLocations(newList);
   };
 
-  const handleFixCoords = async () => {
-    const res = await getBrokenLocations();
-    if (res.length === 0) {
-      alert('Nothing to fix');
-      return;
-    }
-    const validLocations = res.filter((item: MapLocation) => item.address);
-    const geoLocations = await Promise.all(
-      validLocations.map((item: MapLocation) => getGeoLocation(item.address).then((data) => data))
-    );
-
-    const updates = geoLocations.filter(Boolean).map((loc, index) => {
-      if (!loc) return null;
-      const { id } = validLocations[index];
-      return fixMapLocation({
-        id,
-        lat: loc.geometry.location.lat,
-        lng: loc.geometry.location.lng,
-        address: loc.formattedAddress
-      });
-    });
-    await Promise.all(updates.filter(Boolean));
+  const handlePageChange = (_: any, page: number) => {
+    setListDisplayItems(filteredLocations.slice((page - 1) * LIMIT, page * LIMIT));
   };
   
 
@@ -367,60 +255,24 @@ export default function ImportantCustomersMap() {
 
           <div className="map-page-filters__buttons">
             <Button type="submit">Filter</Button>
-            <Button type="button" onClick={handleClearFilters}>Clear Filters</Button>
+            <Button type="button" onClick={onClickClearFilters}>Clear Filters</Button>
             <br />
-            <Button type="button" onClick={handleFilterTopCustomers}>Top 100 Customers</Button>
+            <Button type="button" onClick={onClickFilterTopCustomers}>Top 100 Customers</Button>
           </div>
         </form>
 
         <div className="map-page">
-          <AddMapLocationDialog open={newLocationDialogOpen} setOpen={setNewLocationDialogOpen} onSubmit={handleSubmitNewLocation} />
-          {editLocationDialogOpen &&
-            <EditMapLocationDialog
-              open={editLocationDialogOpen}
-              setOpen={setEditLocationDialogOpen}
-              data={editLocationData}
-              onSubmit={handleSubmitEditLocation}
-            />
-          }
-
           { loading && <Loading /> }
           <div ref={mapRef} className="map-page__map"></div>
-
-          <div className="map-page__right-side">
-            <form className="map-page__right-side-search" onSubmit={handleAdd}>
-              <Button type="submit">Add</Button>
-              { user.id === 1 && <Button type="button" onClick={handleFixCoords}>Fix Coords</Button> }
-            </form>
-
-            <div className="map-page__pagination-container">
-              <div className="map-locations">
-                {listDisplayItems.map((loc: MapLocation) => {
-                  return (
-                    <Fragment key={loc.id}>
-                      <div className="map-locations__item">
-                        <h3>{ loc.name }</h3>
-                        <p>{ loc.address }</p>
-                        <div className="map-locations__btn-container">
-                          <Button onClick={() => handleViewLoc(loc.location)}>View</Button>
-                          <Button onClick={() => handleEdit(loc)}>Edit</Button>
-                          <Button onClick={() => handleDeleteLocation(loc)}>Delete</Button>
-                        </div>
-                      </div>
-                    </Fragment>
-                  );
-                })}
-              </div>
-
-              <Pagination
-                data={filteredLocations}
-                setData={handlePageChange}
-                pageCount={filteredLocations.length}
-                pageSize={LIMIT}
-                buttonsDisplayed={3}
-              />
-            </div>
-          </div>
+        
+          <MapRightSide
+            listDisplayItems={listDisplayItems}
+            panTo={panTo}
+            mapInstanceRef={mapInstanceRef}
+            filteredLocations={filteredLocations}
+            handlePageChange={handlePageChange}
+            limit={LIMIT}
+          />
         </div>
       </div>
     </Layout>

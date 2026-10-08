@@ -5,7 +5,6 @@ import Input from "@/components/library/Input";
 import Select from "@/components/library/select/Select";
 import { getCustomerById, getCustomers } from "@/scripts/services/customerService";
 import TextArea from "@/components/library/TextArea";
-import { LocationFormData } from "@/pages/map";
 
 interface Props {
   open: boolean
