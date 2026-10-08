@@ -16,6 +16,7 @@ import { useQuery } from "@tanstack/react-query";
 import Rating from "../library/Rating";
 import { addTagToCustomer, deleteTagFromCustomer } from "@/scripts/services/tagsService";
 import Tag from "../library/Tag";
+import { editMapLocation, getGeoLocation, getMapLocationFromCustomer } from "@/scripts/services/mapService";
 
 interface Props {
   customer: Customer
@@ -120,8 +121,48 @@ export default function CustomerDetails({ customer, setCustomer, setIsEditing, o
       await deleteTagFromCustomer(customer.id, tag.id);
     }
 
+    await handleMapLocation();
+
     setCustomer(newCustomer);
     setIsEditing(false);
+  };
+
+  const handleMapLocation = async () => {
+    const oldAddress = {
+      shipToAddress: customer.shipToAddress,
+      shipToAddress2: customer.shipToAddress2,
+      shipToCity: customer.shipToCity,
+      shipToState: customer.shipToState,
+      shipToZip: customer.shipToZip
+    };
+    const newAddress = { shipToAddress, shipToAddress2, shipToCity, shipToState, shipToZip };
+    const mapLocation = await getMapLocationFromCustomer(customer.id);
+    if (!mapLocation) {
+      return alert('Tried to update map location, but customer has not been added to map.');
+    }
+    
+    if (oldAddress === newAddress) {
+      if (company !== customer.company) {
+        const { lat, lng } = mapLocation?.location;
+        await editMapLocation({ ...mapLocation, name: company, lat, lng });
+      }
+      return;
+    }
+
+    const address = [shipToAddress, shipToCity, shipToState, shipToZip].filter(Boolean).join(', ');
+    const res = (await getGeoLocation(address));
+    if (!res) {
+      return alert('Failed automatically update customer map location');
+    }
+
+    const newLocation = {
+      ...mapLocation,
+      name: company,
+      address: res.formattedAddress,
+      lat: res.geometry.location.lat,
+      lng: res.geometry.location.lng
+    };
+    await editMapLocation(newLocation);
   };
 
   const onClickStopEditing = async () => {

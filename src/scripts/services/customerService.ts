@@ -181,19 +181,7 @@ export const addCustomer = async (customer: string): Promise<number | null> => {
     const id = Number(res.data.id);
     if (id === 0) return null;
 
-    const newCustomer = await getCustomerById(id);
-    if (!newCustomer) return null;
-
-    const address = [newCustomer.billToAddress, newCustomer.billToCity, newCustomer.billToState, newCustomer.billToZip].filter(Boolean).join(', ');
-    const geoLocation = await getGeoLocation(address);
-    if (!geoLocation) return null;
-    const mapLocation = {
-      name: newCustomer.company ?? '',
-      customerId: newCustomer.id,
-      address: geoLocation.formattedAddress,
-      lat: geoLocation.geometry.location.lat,
-      lng: geoLocation.geometry.location.lng
-    };
+    const mapLocation = { name: customer, customerId: id, address: null, lat: 0, lng: 0 };
     await addMapLocation(mapLocation);
 
     return id;

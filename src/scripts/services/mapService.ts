@@ -5,7 +5,7 @@ import { handleError } from "../tools/utils";
 interface NewMapLocation {
   name: string
   customerId: number
-  address: string
+  address: string | null
   lat: number
   lng: number
 }
@@ -13,11 +13,11 @@ interface NewMapLocation {
 interface EditMapLocation {
   id: number
   name: string
-  address: string
+  address: string | null
   lat: number
   lng: number
   type: string
-  notes: string
+  notes: string | null
 }
 
 
@@ -85,7 +85,7 @@ export const getGeoLocation = async (address: string | null): Promise<GeoLocatio
     const res = await api.get('/api/map/geo-location', { params });
     return res.data.results[0];
   } catch (error) {
-    handleError(error, 'getGeoLocation');
+    console.error('[getGeoLocation] ', error);
     return null;
   }
 };

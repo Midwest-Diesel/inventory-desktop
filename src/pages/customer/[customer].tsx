@@ -1,7 +1,6 @@
 import { Layout } from "@/components/Layout";
 import CustomerContactsBlock from "@/components/customers/contacts/CustomerContactsBlock";
 import EditCustomerDetails from "@/components/customers/EditCustomerDetails";
-import AddToMapDialog from "@/components/customers/dialogs/AddToMapDialog";
 import Button from "@/components/library/Button";
 import Checkbox from "@/components/library/Checkbox";
 import Grid from "@/components/library/grid/Grid";
@@ -11,12 +10,11 @@ import Table from "@/components/library/Table";
 import { useNavState } from "@/hooks/useNavState";
 import { selectedCustomerAtom, userAtom, vendorNamesAtom } from "@/scripts/atoms/state";
 import { deleteCustomer, getCustomerById, getCustomerEmails, getCustomerSalesHistory } from "@/scripts/services/customerService";
-import { deleteMapLocationByCustomer, getMapLocationFromCustomer } from "@/scripts/services/mapService";
+import { deleteMapLocationByCustomer } from "@/scripts/services/mapService";
 import { formatCurrency, formatDate, formatPhone } from "@/scripts/tools/stringUtils";
 import { useAtom } from "jotai";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import EditMapLocDialog from "@/components/customers/dialogs/EditMapLocDialog";
 import { prompt } from "@/components/library/Prompt";
 import { addVendor, getVendorByName, getVendorNames } from "@/scripts/services/vendorsService";
 import CustomerEmails from "@/components/customers/CustomerEmails";
@@ -43,10 +41,6 @@ export default function Customer() {
   const [isVendor, setIsVendor] = useState(false);
   const [salesHistory, setSalesHistory] = useState<SalesHistory[]>([]);
   const [isEditing, setIsEditing] = useState(false);
-  const [isOnMap, setIsOnMap] = useState(true);
-  const [addLocDialogOpen, setAddLocDialogOpen] = useState(false);
-  const [editLocDialogOpen, setEditLocDialogOpen] = useState(false);
-  const [location, setLocation] = useState<MapLocation | null>(null);
   const [showSalesmanSelect, setShowSalesmanSelect] = useState(false);
   const [salesmanSelection, setSalesmanSelection] = useState<number | null>(null);
   const [handwrittensModalOpen, setHandwrittensModalOpen] = useState(false);
@@ -83,10 +77,6 @@ export default function Customer() {
 
     const vendor = await getVendorByName(customerRes.company);
     setIsVendor(!!vendor);
-
-    if (!await getMapLocationFromCustomer(id)) setIsOnMap(false);
-    const location = await getMapLocationFromCustomer(customerRes.id);
-    setLocation(location);
   };
 
   const handleDelete = async () => {
@@ -134,22 +124,6 @@ export default function Customer() {
   return (
     <Layout title="Customer">
       {customer &&
-        <AddToMapDialog
-          open={addLocDialogOpen}
-          setOpen={setAddLocDialogOpen}
-          customer={customer}
-        />
-      }
-
-      {(editLocDialogOpen && location) &&
-        <EditMapLocDialog
-          open={editLocDialogOpen}
-          setOpen={setEditLocDialogOpen}
-          location={location}
-        />
-      }
-
-      {customer &&
         <HandwrittensListModal
           open={handwrittensModalOpen}
           setOpen={setHandwrittensModalOpen}
@@ -188,14 +162,6 @@ export default function Customer() {
                 >
                   Edit
                 </Button>
-                {!isOnMap &&
-                  <Button
-                    className="customer-details__close-btn"
-                    onClick={() => setAddLocDialogOpen(true)}
-                  >
-                    Add to Map
-                  </Button>
-                }
                 <Button
                   className="customer-details__close-btn"
                   onClick={async () => await closeDetailsBtn()}
@@ -214,7 +180,6 @@ export default function Customer() {
             </div>
 
             <div className="customer-details__top-bar">
-              <Button onClick={() => setEditLocDialogOpen(true)}>Edit Map Location</Button>
               { !isVendor && <Button onClick={onClickAddVendor}>Set as Vendor</Button> }
               {!showSalesmanSelect &&
                 <Button onClick={() => setShowSalesmanSelect(true)}>Add to Contact List</Button>
