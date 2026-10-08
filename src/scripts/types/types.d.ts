@@ -1067,6 +1067,13 @@ type GeoLocation = {
   formattedAddress: string
 };
 
+interface MapFilters {
+  name: string
+  type: 'all' | 'customer' | 'vendor'
+  customerType: string
+  salesman: string
+}
+
 interface LocationFormData {
   id?: number
   name: string
