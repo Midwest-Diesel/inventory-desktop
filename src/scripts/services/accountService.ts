@@ -9,6 +9,8 @@ interface UserLogin {
 }
 
 
+schedule.scheduleJob('0 6 * * *', () => location.reload());
+
 // === GET routes === //
 
 export const getUser = async (): Promise<User | null> => {
@@ -43,15 +45,6 @@ export const getAllUsers = async (): Promise<User[]> => {
     return [];
   }
 };
-
-const checkSession = async () => {
-  try {
-    await api.get('/api/account/session-check');
-  } catch {
-    location.reload();
-  }
-};
-schedule.scheduleJob('0 6 * * *', () => checkSession());
 
 // === POST routes === //
 
