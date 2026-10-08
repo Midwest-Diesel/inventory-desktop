@@ -10,7 +10,7 @@ import EditMapLocationDialog from "./dialogs/EditMapLocationDialog";
 interface Props {
   listDisplayItems: MapLocation[]
   panTo: (loc: { lat: number, lng: number }) => void
-  mapInstanceRef: any
+  mapInstanceRef: React.RefObject<google.maps.Map | null>
   filteredLocations: MapLocation[]
   handlePageChange: (data: any, page: number) => void
   limit: number

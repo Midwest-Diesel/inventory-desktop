@@ -1,17 +1,13 @@
 import { Layout } from "@/components/Layout";
-import Button from "@/components/library/Button";
-import { getMapLocations, getMapTopCustomers } from "@/scripts/services/mapService";
+import { getMapLocations } from "@/scripts/services/mapService";
 import { useEffect, useRef, useState } from "react";
 import { Loader } from "@googlemaps/js-api-loader";
 import { MarkerClusterer } from "@googlemaps/markerclusterer";
 import { formatDate } from "@/scripts/tools/stringUtils";
 import { dateDiffInDays } from "@/scripts/tools/utils";
-import { getAllUsers } from "@/scripts/services/accountService";
-import Input from "@/components/library/Input";
-import Select from "@/components/library/select/Select";
-import { useQuery } from "@tanstack/react-query";
 import Loading from "@/components/library/Loading";
 import MapRightSide from "@/components/map/MapRightSide";
+import MapPageFilters from "@/components/map/MapPageFilters";
 
 
 const START_POS = { lat: 44.98022677, lng: -93.35875787 };
@@ -24,17 +20,9 @@ export default function ImportantCustomersMap() {
   const [listDisplayItems, setListDisplayItems] = useState<MapLocation[]>([]);
   const [listOfLocations, setListOfLocations] = useState<MapLocation[]>([]);
   const [filteredLocations, setFilteredLocations] = useState<MapLocation[]>([]);
-  const [filterName, setFilterName] = useState('');
-  const [filterType, setFilterType] = useState('all');
-  const [filterCustomerType, setFilterCustomerType] = useState('all');
-  const [filterSalesman, setFilterSalesman] = useState('all');
+  const [filters, setFilters] = useState<MapFilters>({ name: '', type: 'all', customerType: 'all', salesman: 'all' });
   const [cluster, setCluster] = useState<MarkerClusterer | null>(null);
   const [loading, setLoading] = useState(true);
-
-  const { data: usersList = [] } = useQuery<User[]>({
-    queryKey: ['usersList'],
-    queryFn: getAllUsers
-  });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -164,31 +152,13 @@ export default function ImportantCustomersMap() {
   const handleFilters = (locations: MapLocation[]) => {
     cluster?.clearMarkers();
     const filteredLocations = locations.filter((loc) => {
-      const matchesName = filterName === '' || loc.name.toLowerCase().includes(filterName.toLowerCase());
-      const matchesType = filterType === 'all' || loc.type === filterType;
-      const matchesCustomerType = filterCustomerType === 'all' || loc.customer.customerType === filterCustomerType;
-      const matchesSalesman = filterSalesman === 'all' || loc.salesman === filterSalesman;
+      const matchesName = filters.name === '' || loc.name.toLowerCase().includes(filters.name.toLowerCase());
+      const matchesType = filters.type === 'all' || loc.type === filters.type;
+      const matchesCustomerType = filters.customerType === 'all' || loc.customer.customerType === filters.customerType;
+      const matchesSalesman = filters.salesman === 'all' || loc.salesman === filters.salesman;
       return matchesName && matchesType && matchesCustomerType && matchesSalesman;
     });
     setFilteredLocations(filteredLocations);
-  };
-
-  const onClickClearFilters = () => {
-    cluster?.clearMarkers();
-    setFilterName('');
-    setFilterType('all');
-    setFilterCustomerType('all');
-    setFilterSalesman('all');
-    setFilteredLocations(listOfLocations);
-  };
-
-  const onClickFilterTopCustomers = async () => {
-    cluster?.clearMarkers();
-    const topCustomers: number[] = await getMapTopCustomers();
-    const newList = listOfLocations.filter((loc) => {
-      return loc.customer && topCustomers.includes(loc.customer.id);
-    });
-    setFilteredLocations(newList);
   };
 
   const handlePageChange = (_: any, page: number) => {
@@ -199,67 +169,14 @@ export default function ImportantCustomersMap() {
   return (
     <Layout>
       <div className="map-page-container">
-        <form
-          className="map-page-filters"
-          onSubmit={(e) => {
-            e.preventDefault();
-            handleFilters(listOfLocations);
-          }}
-        >
-          <div className="map-page-filters__inputs">
-            <Input
-              variant={['label-bold', 'label-stack']}
-              label="Search Name"
-              value={filterName}
-              onChange={(e) => setFilterName(e.target.value)}
-            />
-            <Select
-              variant={['label-stack', 'label-bold']}
-              label="Type"
-              value={filterType}
-              onChange={(e) => setFilterType(e.target.value)}
-            >
-              <option>all</option>
-              <option>customer</option>
-              <option>vendor</option>
-            </Select>
-            <Select
-              variant={['label-stack', 'label-bold']}
-              label="Customer Type"
-              value={filterCustomerType}
-              onChange={(e) => setFilterCustomerType(e.target.value)}
-            >
-              <option>all</option>
-              <option>CAT</option>
-              <option>Peterbilt</option>
-              <option>Heavy Equipment</option>
-              <option>Machinery</option>
-              <option>Repair Shop</option>
-              <option>Parts</option>
-              <option>Truck</option>
-            </Select>
-            <Select
-              variant={['label-stack', 'label-bold']}
-              label="Salesmen"
-              value={filterSalesman}
-              onChange={(e) => setFilterSalesman(e.target.value)}
-            >
-              <option>all</option>
-              {usersList.filter((user) => user.subtype === 'sales').map((user) => {
-                return (
-                  <option key={user.id}>{ user.initials }</option>
-                );
-              })}
-            </Select>
-          </div>
-
-          <div className="map-page-filters__buttons">
-            <Button type="submit">Filter</Button>
-            <Button type="button" onClick={onClickClearFilters}>Clear Filters</Button>
-            <br />
-            <Button type="button" onClick={onClickFilterTopCustomers}>Top 100 Customers</Button>
-          </div>
-        </form>
+        <MapPageFilters
+          filters={filters}
+          setFilters={setFilters}
+          cluster={cluster}
+          listOfLocations={listOfLocations}
+          setFilteredLocations={setFilteredLocations}
+          handleFilters={handleFilters}
+        />
 
         <div className="map-page">
           { loading && <Loading /> }
