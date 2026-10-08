@@ -98,3 +98,21 @@
     font-size: var(--font-xxxsm) !important;
   }
 }
+
+.map-startup-screen {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  h2 {
+    font-size: var(--font-md);
+  }
+
+  &__options {
+    display: flex;
+    gap: 0.8rem;
+  }
+}

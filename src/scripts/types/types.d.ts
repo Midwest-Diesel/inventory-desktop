@@ -1051,7 +1051,7 @@ type MapLocation = {
   name: string
   address: string | null
   state: string | null
-  location: { lat: number, lng: number }
+  location: GeoCoord
   type: MapLocationType
   salesman: string
   customer: Customer
@@ -1062,9 +1062,14 @@ type MapLocationType = 'customer' | 'vendor' | '';
 
 type GeoLocation = {
   geometry: {
-    location: { lat: number, lng: number }
+    location: GeoCoord
   }
   formattedAddress: string
+};
+
+type GeoCoord = {
+  lat: number
+  lng: number
 };
 
 interface MapFilters {
@@ -1077,10 +1082,10 @@ interface MapFilters {
 interface LocationFormData {
   id?: number
   name: string
-  address: string
+  address: string | null
   type: MapLocationType
   customerId: number | null
-  notes: string
+  notes: string | null
 }
 
 type Country = {
