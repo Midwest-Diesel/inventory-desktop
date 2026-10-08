@@ -9,7 +9,7 @@ import EditMapLocationDialog from "./dialogs/EditMapLocationDialog";
 
 interface Props {
   listDisplayItems: MapLocation[]
-  panTo: (loc: { lat: number, lng: number }) => void
+  panTo: (loc: GeoCoord) => void
   mapInstanceRef: React.RefObject<google.maps.Map | null>
   filteredLocations: MapLocation[]
   handlePageChange: (data: any, page: number) => void
@@ -23,7 +23,7 @@ export default function MapRightSide({ listDisplayItems, panTo, mapInstanceRef, 
   const [editLocationDialogOpen, setEditLocationDialogOpen] = useState(false);
   const [editLocationData, setEditLocationData] = useState<MapLocation | null>(null);
   
-  const onClickViewLoc = (loc: { lat: number, lng: number }) => {
+  const onClickViewLoc = (loc: GeoCoord) => {
     panTo(loc);
     if (!mapInstanceRef.current) return;
     const zoom = Number(mapInstanceRef.current.getZoom());
@@ -35,7 +35,7 @@ export default function MapRightSide({ listDisplayItems, panTo, mapInstanceRef, 
     await deleteMapLocation(loc.id);
   };
 
-  const handleAddLocation = async (name: string, location: { lat: number, lng: number }, customerId: number) => {
+  const handleAddLocation = async (name: string, location: GeoCoord, customerId: number) => {
     const geocoder = new window.google.maps.Geocoder();
     await geocoder.geocode({ location }, async (results, status) => {
       if (status === 'OK' && results?.[0]) {
@@ -52,7 +52,7 @@ export default function MapRightSide({ listDisplayItems, panTo, mapInstanceRef, 
     });
   };
 
-  const handleEditLocation = async (id: number, name: string, location: { lat: number, lng: number }, type: MapLocationType, notes: string) => {
+  const handleEditLocation = async (id: number, name: string, location: GeoCoord, type: MapLocationType, notes: string | null) => {
     const geocoder = new window.google.maps.Geocoder();
     await geocoder.geocode({ location }, async (results, status) => {
       if (status === 'OK' && results) {
@@ -127,7 +127,7 @@ export default function MapRightSide({ listDisplayItems, panTo, mapInstanceRef, 
         onSubmit={onSubmitNewLocation}
       />
       
-      {editLocationDialogOpen &&
+      {(editLocationDialogOpen && editLocationData) &&
         <EditMapLocationDialog
           open={editLocationDialogOpen}
           setOpen={setEditLocationDialogOpen}

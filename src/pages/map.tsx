@@ -8,9 +8,9 @@ import { dateDiffInDays } from "@/scripts/tools/utils";
 import Loading from "@/components/library/Loading";
 import MapRightSide from "@/components/map/MapRightSide";
 import MapPageFilters from "@/components/map/MapPageFilters";
+import MapStartupScreen from "@/components/map/MapStartupScreen";
 
 
-const START_POS = { lat: 44.98022677, lng: -93.35875787 };
 const LIMIT = 30;
 
 export default function ImportantCustomersMap() {
@@ -22,9 +22,13 @@ export default function ImportantCustomersMap() {
   const [filteredLocations, setFilteredLocations] = useState<MapLocation[]>([]);
   const [filters, setFilters] = useState<MapFilters>({ name: '', type: 'all', customerType: 'all', salesman: 'all' });
   const [cluster, setCluster] = useState<MarkerClusterer | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [startPos, setStartPos] = useState<GeoCoord | null>(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    if (!startPos) return;
+    setLoading(true);
+
     const fetchData = async () => {
       const res = await getMapLocations();
       setListOfLocations(res);
@@ -42,14 +46,14 @@ export default function ImportantCustomersMap() {
       if (!mapRef.current) return;
       const map = new google.maps.Map(mapRef.current, {
         zoom: 9,
-        center: START_POS,
+        center: startPos,
         mapId: 'ldT4&DjKDaAaivn%uumtvEya@Jxw9CC', // Map style
         mapTypeControl: false,
         streetViewControl: false
       });
       mapInstanceRef.current = map;
     });
-  }, [mapRef]);
+  }, [mapRef, startPos]);
 
   useEffect(() => {
     if (!mapInstanceRef.current) return;
@@ -144,7 +148,7 @@ export default function ImportantCustomersMap() {
     }
   };
 
-  const panTo = (loc: { lat: number, lng: number }) => {
+  const panTo = (loc: GeoCoord) => {
     const { lat, lng } = loc;
     mapInstanceRef.current?.panTo({ lat, lng });
   };
@@ -169,27 +173,36 @@ export default function ImportantCustomersMap() {
   return (
     <Layout>
       <div className="map-page-container">
-        <MapPageFilters
-          filters={filters}
-          setFilters={setFilters}
-          cluster={cluster}
-          listOfLocations={listOfLocations}
-          setFilteredLocations={setFilteredLocations}
-          handleFilters={handleFilters}
-        />
+        {startPos &&
+          <MapPageFilters
+            filters={filters}
+            setFilters={setFilters}
+            cluster={cluster}
+            listOfLocations={listOfLocations}
+            setFilteredLocations={setFilteredLocations}
+            handleFilters={handleFilters}
+          />
+        }
 
         <div className="map-page">
           { loading && <Loading /> }
-          <div ref={mapRef} className="map-page__map"></div>
-        
-          <MapRightSide
-            listDisplayItems={listDisplayItems}
-            panTo={panTo}
-            mapInstanceRef={mapInstanceRef}
-            filteredLocations={filteredLocations}
-            handlePageChange={handlePageChange}
-            limit={LIMIT}
-          />
+
+          {!startPos ?
+            <MapStartupScreen setStartPos={setStartPos} />
+            :
+            <>
+              <div ref={mapRef} className="map-page__map"></div>
+            
+              <MapRightSide
+                listDisplayItems={listDisplayItems}
+                panTo={panTo}
+                mapInstanceRef={mapInstanceRef}
+                filteredLocations={filteredLocations}
+                handlePageChange={handlePageChange}
+                limit={LIMIT}
+              />
+            </>
+          }
         </div>
       </div>
     </Layout>
