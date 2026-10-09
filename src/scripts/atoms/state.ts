@@ -1,9 +1,22 @@
 import { atom } from "jotai";
 
-const tabs = (): Tab[] => {
+export const loadTabs = (): Tab[] => {
   const stored = localStorage.getItem('tabs');
-  if (!stored) return [{ id: 0, name: null, urlIndex: 0, history: [{name: 'Home', url: '/'}], selected: true }];
-  return JSON.parse(stored);
+  if (!stored) return [{ id: 0, name: null, urlIndex: 0, history: [{ name: 'Home', url: '/' }], selected: true }];
+
+  const tabs: Tab[] = JSON.parse(stored);
+  const url = location.pathname;
+  const selected = tabs.find((tab) => tab.selected);
+
+  if (!selected || selected.history[selected.urlIndex].url !== url) {
+    const id = tabs.length ? Math.max(...tabs.map((tab) => tab.id)) + 1 : 0;
+    return [
+      ...tabs.map((tab) => ({ ...tab, selected: false })),
+      { id, name: null, urlIndex: 0, history: [{ name: 'Home', url }], selected: true }
+    ];
+  }
+
+  return tabs;
 };
 
 const user = {
@@ -46,7 +59,7 @@ export const toastAtom = atom<Toast[]>([]);
 export const tooltipAtom = atom<string>('');
 export const accountingPageFilterAtom = atom<'' | 'all' | 'IN PROCESS' | 'COMPLETE'>('all');
 export const customersMinAtom = atom<CustomerMin[]>([]);
-export const tabsAtom = atom<Tab[]>(tabs());
+export const tabsAtom = atom<Tab[]>(loadTabs());
 export const compareConsistAtom = atom<CustomerEngineData | null>(null);
 export const partSearchAtom = atom<PartSearchParams | null>(null);
 export const altPartSearchAtom = atom<PartSearchParams | null>(null);

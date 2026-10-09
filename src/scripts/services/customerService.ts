@@ -158,6 +158,18 @@ export const getCustomerSalesRank = async (id: number): Promise<{ amount: number
   }
 };
 
+export const getCustomerSalesMeasurement = async (id: number): Promise<{ amount: number, value: number } | null> => {
+  try {
+    const res = await api.get(`/api/customers/sales-measurement/${id}`);
+    if (!res.data) return null;
+    
+    return { amount: Number(res.data.amount), value: Number(res.data.value) };
+  } catch (error) {
+    handleError(error, 'getCustomerSalesMeasurement');
+    return null;
+  }
+};
+
 export const getCustomerTypes = async () => {
   try {
     const res = await api.get(`/api/customers/types/all`);

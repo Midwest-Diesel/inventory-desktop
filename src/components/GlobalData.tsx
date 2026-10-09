@@ -1,4 +1,4 @@
-import { userAtom, alertsAtom, tabsAtom, tooltipAtom } from "@/scripts/atoms/state";
+import { userAtom, alertsAtom, tooltipAtom, loadTabs } from "@/scripts/atoms/state";
 import { useAtom } from "jotai";
 import { ReactNode, useEffect, useState } from "react";
 import Login from "./Login";
@@ -19,7 +19,6 @@ interface Props {
 export default function GlobalData({ children }: Props) {
   const navigate = useNavigate();
   const [, setUserData] = useAtom<User>(userAtom);
-  const [, setTabs] = useAtom<Tab[]>(tabsAtom);
   const [, setAlertsData] = useAtom<Alert[]>(alertsAtom);
   const [tooltip] = useAtom<string>(tooltipAtom);
   const [user, setUser] = useState<User>();
@@ -35,13 +34,8 @@ export default function GlobalData({ children }: Props) {
       await handleGetUser();
       setLoaded(true);
       setAlertsData(await getAlerts());
-      const tabs = (): Tab[] => {
-        const stored = localStorage.getItem('tabs');
-        if (!stored) return [{ id: 0, name: null, urlIndex: 0, history: [{name: 'Home', url: '/'}], selected: true }];
-        return JSON.parse(stored);
-      };
-      setTabs(tabs());
-      const selectedTab = tabs().find((t) => t.selected);
+
+      const selectedTab = loadTabs().find((t) => t.selected);
       if (selectedTab) navigate(selectedTab.history[selectedTab.urlIndex].url, { replace: false });
     };
     fetchData();
