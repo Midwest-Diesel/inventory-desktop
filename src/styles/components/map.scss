@@ -116,3 +116,50 @@
     gap: 0.8rem;
   }
 }
+
+.map-cluster {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: rgba(6, 46, 110, 0.85);
+  border: 4px solid rgb(6, 46, 110);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.map-cluster--red {
+  background: rgba(231, 15, 15, 0.85);
+  border-color: rgb(200, 0, 0);
+  width: 40px;
+  height: 40px;
+}
+
+.map-cluster__tooltip {
+  display: none;
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 8px);
+  transform: translateX(-50%);
+  padding: 8px 12px;
+  border-radius: 4px;
+  background: #fff;
+  color: #222;
+  font-size: 12px;
+  font-weight: normal;
+  line-height: 1.5;
+  white-space: pre-line;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  z-index: 1000;
+  pointer-events: none;
+  min-width: max-content;
+}
+
+.map-cluster:hover .map-cluster__tooltip {
+  display: block;
+}
