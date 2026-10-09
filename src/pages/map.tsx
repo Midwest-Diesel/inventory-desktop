@@ -3,11 +3,13 @@ import { getMapLocations } from "@/scripts/services/mapService";
 import { useEffect, useRef, useState } from "react";
 import { Loader } from "@googlemaps/js-api-loader";
 import { MarkerClusterer } from "@googlemaps/markerclusterer";
-import { dateDiffInDays } from "@/scripts/tools/utils";
 import Loading from "@/components/library/Loading";
 import MapRightSide from "@/components/map/MapRightSide";
 import MapPageFilters from "@/components/map/MapPageFilters";
 import MapStartupScreen from "@/components/map/MapStartupScreen";
+import { getCustomerSalesMeasurement } from "@/scripts/services/customerService";
+import { formatCurrency } from "@/scripts/tools/stringUtils";
+import { invoke } from "@/scripts/config/tauri";
 
 
 const LIMIT = 30;
@@ -90,21 +92,29 @@ export default function ImportantCustomersMap() {
       markers.push(marker);
   
       markersRef.current.set(loc.id, marker);
-      marker.addListener('click', (e: google.maps.MapMouseEvent) => {
+      marker.addListener('click', async (e: google.maps.MapMouseEvent) => {
         e.domEvent.stopPropagation();
-        const days = dateDiffInDays(new Date(), loc.date);
+        const res = await getCustomerSalesMeasurement(loc.customer.id);
         const { lat, lng } = loc.location;
         panTo({ lat, lng });
         infoWindow.setContent(`
           <div class="map-page__info-window">
-            <h3>${loc.name}</h3>
+            <h3 id="customer-${loc.customer.id}">${loc.name}</h3>
             <p>${loc.address}</p>
             <hr />
+            <p><strong>Sales (2 years):</strong> ${res ? `${res.amount} invoices / ${formatCurrency(res.value)}</p>` : '<em>None</em>'}
             <p><strong>Notes</strong></p>
             <p>${loc.notes ? loc.notes : ''}</p>
           </div>
         `);
         infoWindow.open({ anchor: marker, map: mapInstanceRef.current });
+
+        google.maps.event.addListenerOnce(infoWindow, 'domready', () => {
+          document.getElementById(`customer-${loc.customer.id}`)?.addEventListener('click', async () => {
+            const windowArgs = { title: loc.name, url: `/customer/${loc.customer.id}`, is_prod: import.meta.env.PROD };
+            await invoke('open_window', { windowArgs });
+          });
+        });
       });
     });
 
