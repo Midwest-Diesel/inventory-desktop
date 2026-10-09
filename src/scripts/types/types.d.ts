@@ -1053,7 +1053,7 @@ type MapLocation = {
   state: string | null
   location: GeoCoord
   type: MapLocationType
-  salesman: string
+  salesman: string | null
   customer: Customer
   date: Date
   notes: string | null

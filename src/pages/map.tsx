@@ -3,7 +3,6 @@ import { getMapLocations } from "@/scripts/services/mapService";
 import { useEffect, useRef, useState } from "react";
 import { Loader } from "@googlemaps/js-api-loader";
 import { MarkerClusterer } from "@googlemaps/markerclusterer";
-import { formatDate } from "@/scripts/tools/stringUtils";
 import { dateDiffInDays } from "@/scripts/tools/utils";
 import Loading from "@/components/library/Loading";
 import MapRightSide from "@/components/map/MapRightSide";
@@ -45,9 +44,9 @@ export default function ImportantCustomersMap() {
     loader.load().then(() => {
       if (!mapRef.current) return;
       const map = new google.maps.Map(mapRef.current, {
-        zoom: 9,
+        zoom: 6,
         center: startPos,
-        mapId: 'ldT4&DjKDaAaivn%uumtvEya@Jxw9CC', // Map style
+        mapId: 'ldT4&DjKDaAaivn%uumtvEya@Jxw9CC',
         mapTypeControl: false,
         streetViewControl: false
       });
@@ -71,11 +70,12 @@ export default function ImportantCustomersMap() {
     markersRef.current.clear();
   
     filteredLocations.forEach((loc) => {
-      const { bg, border } = getPinStyles(loc.type === 'customer' ? loc.salesman : loc.type);
+      const background = loc.type === 'vendor' ? '#555555' : 'var(--yellow-light-1)';
+      const borderColor = loc.type === 'vendor' ? '#494949' : 'black';
       const pin = new PinElement({
-        background: bg,
-        borderColor: border,
-        glyphColor: 'white',
+        background,
+        borderColor,
+        glyphColor: 'black',
         glyph: getPinIcon(loc),
         scale: 0.9
       });
@@ -83,7 +83,7 @@ export default function ImportantCustomersMap() {
       const marker = new AdvancedMarkerElement({
         map: mapInstanceRef.current,
         position: loc.location,
-        title: loc.address,
+        title: loc.name,
         content: pin,
         gmpClickable: true
       });
@@ -100,7 +100,6 @@ export default function ImportantCustomersMap() {
             <h3>${loc.name}</h3>
             <p>${loc.address}</p>
             <hr />
-            <p><em>Added ${formatDate(loc.date)} (${days})</em></p>
             <p><strong>Notes</strong></p>
             <p>${loc.notes ? loc.notes : ''}</p>
           </div>
@@ -109,37 +108,55 @@ export default function ImportantCustomersMap() {
       });
     });
 
-    setCluster(new MarkerClusterer({ markers, map: mapInstanceRef.current, algorithmOptions: { maxZoom: 20 } }));
+    setCluster(new MarkerClusterer({
+      markers,
+      map: mapInstanceRef.current,
+      algorithmOptions: { maxZoom: 20 },
+      renderer: {
+        render: ({ count, position, markers }) => {
+          const div = document.createElement('div');
+          div.className = `map-cluster${count >= 100 ? ' map-cluster--red' : ''}`;
+          div.textContent = String(count);
+
+          const tooltip = document.createElement('div');
+          tooltip.className = 'map-cluster__tooltip';
+
+          const names = markers
+            .map((marker) => {
+              const loc = filteredLocations.find((loc) => markersRef.current.get(loc.id) === marker);
+              return loc?.name;
+            })
+            .filter((name): name is string => Boolean(name))
+            .slice(0, 6);
+
+          tooltip.textContent = names.join('\n');
+
+          if (count > 6) {
+            tooltip.textContent += '\n...';
+          }
+
+          div.appendChild(tooltip);
+
+          return new google.maps.marker.AdvancedMarkerElement({
+            position,
+            content: div
+          });
+        }
+      }
+    }));
     setLoading(false);
-  };
-  
-  const getPinStyles = (str: string) => {
-    switch (str) {
-      case 'BS':
-        return { bg: '#3C89D5', border: '#3C74D5' };
-      case 'MR':
-        return { bg: '#D3640A', border: '#CB5E05' };
-      case 'JS':
-        return { bg: '#6B4E43', border: '#60453C' };
-      case 'TT':
-        return { bg: '#741CDA', border: '#6B18CA' };
-      case 'JF':
-        return { bg: '#0A9618', border: '#088615' };
-      case 'JMF':
-        return { bg: '#01A987', border: '#019578' };
-      case 'vendor':
-        return { bg: '#555555', border: '#494949' };
-      default:
-        return { bg: '', border: '' };
-    }
   };
 
   const getPinIcon = (loc: MapLocation) => {
     const img = document.createElement('img');
 
     switch (loc.type) {
-      case 'customer':
-        return loc.salesman;
+      case 'customer': {
+        const glyph = document.createElement('span');
+        glyph.textContent = loc.salesman ?? '';
+        glyph.style.fontSize = '10px';
+        return glyph;
+      }
       case 'vendor':
         img.src = '/images/shop.svg';
         return img;
