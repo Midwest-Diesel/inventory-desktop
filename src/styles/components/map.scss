@@ -25,6 +25,22 @@
   &__map {
     height: 100%;
     width: 100%;
+    position: relative;
+  }
+
+  &__map-controls {
+    position: absolute;
+    top: 0.3rem;
+    left: 0.3rem;
+    z-index: 2;
+  
+    button {
+      padding: 8px 12px;
+      background: white;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      cursor: pointer;
+    }
   }
 
   &__right-side {
