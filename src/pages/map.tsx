@@ -18,17 +18,19 @@ export default function ImportantCustomersMap() {
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<google.maps.Map | null>(null);
   const markersRef = useRef<Map<number, google.maps.marker.AdvancedMarkerElement>>(new Map());
+  const locationsRef = useRef<Map<number, MapLocation>>(new Map());
+  const clusterRef = useRef<MarkerClusterer | null>(null);
+  const infoWindowRef = useRef<google.maps.InfoWindow | null>(null);
+  const filteredLocationsRef = useRef<MapLocation[]>([]);
+  const syncingMarkersRef = useRef(false);
   const [listDisplayItems, setListDisplayItems] = useState<MapLocation[]>([]);
   const [listOfLocations, setListOfLocations] = useState<MapLocation[]>([]);
   const [filteredLocations, setFilteredLocations] = useState<MapLocation[]>([]);
   const [filters, setFilters] = useState<MapFilters>({ name: '', type: 'all', customerType: 'all', salesman: 'all' });
-  const [cluster, setCluster] = useState<MarkerClusterer | null>(null);
   const [startPos, setStartPos] = useState<GeoCoord | null>(null);
-  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (!startPos) return;
-    setLoading(true);
 
     const fetchData = async () => {
       const res = await getMapLocations();
@@ -53,108 +55,176 @@ export default function ImportantCustomersMap() {
         streetViewControl: false
       });
       mapInstanceRef.current = map;
+      infoWindowRef.current = new google.maps.InfoWindow();
+
+      clusterRef.current = new MarkerClusterer({
+        map,
+        markers: [],
+        algorithmOptions: { maxZoom: 20 },
+        renderer: {
+          render: ({ count, position, markers }) => {
+            const div = document.createElement("div");
+            div.className = `map-cluster${count >= 100 ? " map-cluster--red" : ""}`;
+            div.textContent = String(count);
+
+            const tooltip = document.createElement("div");
+            tooltip.className = "map-cluster__tooltip";
+
+            const names = markers
+              .map((marker) => {
+                for (const [id, currentMarker] of markersRef.current) {
+                  if (currentMarker === marker) {
+                    return locationsRef.current.get(id)?.name;
+                  }
+                }
+
+                return undefined;
+              })
+              .filter((name): name is string => Boolean(name))
+              .slice(0, 6);
+
+            tooltip.textContent = names.join("\n");
+
+            if (count > 6) {
+              tooltip.textContent += "\n...";
+            }
+
+            div.appendChild(tooltip);
+
+            return new google.maps.marker.AdvancedMarkerElement({
+              position,
+              content: div
+            });
+          }
+        }
+      });
+
+      map.addListener('idle', syncVisibleMarkers);
     });
   }, [mapRef, startPos]);
 
   useEffect(() => {
-    if (!mapInstanceRef.current) return;
+    filteredLocationsRef.current = filteredLocations;
+
+    locationsRef.current = new Map(
+      filteredLocations.map((loc) => [loc.id, loc])
+    );
+
     handlePageChange(null, 1);
-    loadMarkers();
-  }, [filteredLocations, listOfLocations, mapInstanceRef]);
+    void syncVisibleMarkers();
+  }, [filteredLocations]);
 
-  const loadMarkers = async () => {
+  const createMarker = async (loc: MapLocation): Promise<google.maps.marker.AdvancedMarkerElement> => {
     const { AdvancedMarkerElement, PinElement } = await google.maps.importLibrary('marker') as google.maps.MarkerLibrary;
-    const { InfoWindow } = google.maps;
-    const infoWindow = new InfoWindow();
-    const markers: google.maps.marker.AdvancedMarkerElement[] = [];
+    const background = loc.type === 'vendor' ? '#555555' : 'var(--yellow-light-1)';
+    const borderColor = loc.type === 'vendor' ? '#494949' : 'black';
 
-    markersRef.current.forEach((marker) => marker.map = null);
-    markersRef.current.clear();
-  
-    filteredLocations.forEach((loc) => {
-      const background = loc.type === 'vendor' ? '#555555' : 'var(--yellow-light-1)';
-      const borderColor = loc.type === 'vendor' ? '#494949' : 'black';
-      const pin = new PinElement({
-        background,
-        borderColor,
-        glyphColor: 'black',
-        glyph: getPinIcon(loc),
-        scale: 0.9
-      });
-  
-      const marker = new AdvancedMarkerElement({
-        map: mapInstanceRef.current,
-        position: loc.location,
-        title: loc.name,
-        content: pin,
-        gmpClickable: true
-      });
-      markers.push(marker);
-  
-      markersRef.current.set(loc.id, marker);
-      marker.addListener('click', async (e: google.maps.MapMouseEvent) => {
-        e.domEvent.stopPropagation();
-        const res = await getCustomerSalesMeasurement(loc.customer.id);
-        const { lat, lng } = loc.location;
-        panTo({ lat, lng });
-        infoWindow.setContent(`
-          <div class="map-page__info-window">
-            <h3 id="customer-${loc.customer.id}">${loc.name}</h3>
-            <p>${loc.address}</p>
-            <hr />
-            <p><strong>Sales (2 years):</strong> ${res ? `${res.amount} invoices / ${formatCurrency(res.value)}</p>` : '<em>None</em>'}
-            <p><strong>Notes</strong></p>
-            <p>${loc.notes ? loc.notes : ''}</p>
-          </div>
-        `);
-        infoWindow.open({ anchor: marker, map: mapInstanceRef.current });
+    const pin = new PinElement({
+      background,
+      borderColor,
+      glyphColor: 'black',
+      glyph: getPinIcon(loc),
+      scale: 0.9
+    });
 
-        google.maps.event.addListenerOnce(infoWindow, 'domready', () => {
-          document.getElementById(`customer-${loc.customer.id}`)?.addEventListener('click', async () => {
-            const windowArgs = { title: loc.name, url: `/customer/${loc.customer.id}`, is_prod: import.meta.env.PROD };
-            await invoke('open_window', { windowArgs });
-          });
+    const marker = new AdvancedMarkerElement({
+      position: loc.location,
+      title: loc.name,
+      content: pin,
+      gmpClickable: true
+    });
+
+    marker.addListener('click', async (e: google.maps.MapMouseEvent) => {
+      e.domEvent.stopPropagation();
+      const res = await getCustomerSalesMeasurement(loc.customer.id);
+      const { lat, lng } = loc.location;
+      panTo({ lat, lng });
+
+      infoWindowRef.current?.setContent(`
+        <div class="map-page__info-window">
+          <h3 id="customer-${loc.customer.id}">${loc.name}</h3>
+          <p>${loc.address}</p>
+          <hr />
+          <p><strong>Sales (2 years):</strong> ${res ? `${res.amount} invoices / ${formatCurrency(res.value)}` : '<em>None</em>'}</p>
+          <p><strong>Notes</strong></p>
+          <p>${loc.notes ?? ''}</p>
+        </div>
+      `);
+
+      infoWindowRef.current?.open({ anchor: marker, map: mapInstanceRef.current });
+
+      google.maps.event.addListenerOnce(infoWindowRef.current!, 'domready', () => {
+        document.getElementById(`customer-${loc.customer.id}`)?.addEventListener('click', async () => {
+          const windowArgs = {
+            title: loc.name,
+            url: `/customer/${loc.customer.id}`,
+            is_prod: import.meta.env.PROD
+          };
+
+          await invoke('open_window', { windowArgs });
         });
       });
     });
 
-    setCluster(new MarkerClusterer({
-      markers,
-      map: mapInstanceRef.current,
-      algorithmOptions: { maxZoom: 20 },
-      renderer: {
-        render: ({ count, position, markers }) => {
-          const div = document.createElement('div');
-          div.className = `map-cluster${count >= 100 ? ' map-cluster--red' : ''}`;
-          div.textContent = String(count);
+    return marker;
+  };
 
-          const tooltip = document.createElement('div');
-          tooltip.className = 'map-cluster__tooltip';
+  const syncVisibleMarkers = async () => {
+    const map = mapInstanceRef.current;
+    const clusterer = clusterRef.current;
+    const bounds = map?.getBounds();
 
-          const names = markers
-            .map((marker) => {
-              const loc = filteredLocations.find((loc) => markersRef.current.get(loc.id) === marker);
-              return loc?.name;
-            })
-            .filter((name): name is string => Boolean(name))
-            .slice(0, 6);
+    if (!map || !clusterer || !bounds || syncingMarkersRef.current) return;
 
-          tooltip.textContent = names.join('\n');
+    syncingMarkersRef.current = true;
 
-          if (count > 6) {
-            tooltip.textContent += '\n...';
-          }
+    try {
+      const visibleLocations = filteredLocationsRef.current.filter((loc) =>
+        bounds.contains(loc.location)
+      );
 
-          div.appendChild(tooltip);
+      const visibleIds = new Set(visibleLocations.map((loc) => loc.id));
+      const markersToRemove: google.maps.marker.AdvancedMarkerElement[] = [];
 
-          return new google.maps.marker.AdvancedMarkerElement({
-            position,
-            content: div
-          });
+      markersRef.current.forEach((marker, id) => {
+        if (!visibleIds.has(id)) {
+          markersToRemove.push(marker);
+          markersRef.current.delete(id);
         }
+      });
+
+      if (markersToRemove.length) {
+        clusterer.removeMarkers(markersToRemove, true);
       }
-    }));
-    setLoading(false);
+
+      const locationsToAdd = visibleLocations.filter(
+        (loc) => !markersRef.current.has(loc.id)
+      );
+
+      const markersToAdd = await Promise.all(
+        locationsToAdd.map(async (loc) => ({
+          id: loc.id,
+          marker: await createMarker(loc)
+        }))
+      );
+
+      markersToAdd.forEach(({ id, marker }) => {
+        markersRef.current.set(id, marker);
+      });
+
+      if (markersToAdd.length) {
+        clusterer.addMarkers(
+          markersToAdd.map(({ marker }) => marker),
+          true
+        );
+      }
+
+      if (markersToRemove.length || markersToAdd.length) {
+        clusterer.render();
+      }
+    } finally {
+      syncingMarkersRef.current = false;
+    }
   };
 
   const getPinIcon = (loc: MapLocation) => {
@@ -181,7 +251,7 @@ export default function ImportantCustomersMap() {
   };
 
   const handleFilters = (locations: MapLocation[]) => {
-    cluster?.clearMarkers();
+    clusterRef.current?.clearMarkers();
     const filteredLocations = locations.filter((loc) => {
       const matchesName = filters.name === '' || loc.name.toLowerCase().includes(filters.name.toLowerCase());
       const matchesType = filters.type === 'all' || loc.type === filters.type;
@@ -204,7 +274,7 @@ export default function ImportantCustomersMap() {
           <MapPageFilters
             filters={filters}
             setFilters={setFilters}
-            cluster={cluster}
+            cluster={clusterRef.current}
             listOfLocations={listOfLocations}
             setFilteredLocations={setFilteredLocations}
             handleFilters={handleFilters}
@@ -212,8 +282,6 @@ export default function ImportantCustomersMap() {
         }
 
         <div className="map-page">
-          { loading && <Loading /> }
-
           {!startPos ?
             <MapStartupScreen setStartPos={setStartPos} />
             :
