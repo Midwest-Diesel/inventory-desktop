@@ -3,7 +3,6 @@ import { getMapLocations } from "@/scripts/services/mapService";
 import { useEffect, useRef, useState } from "react";
 import { Loader } from "@googlemaps/js-api-loader";
 import { MarkerClusterer } from "@googlemaps/markerclusterer";
-import Loading from "@/components/library/Loading";
 import MapRightSide from "@/components/map/MapRightSide";
 import MapPageFilters from "@/components/map/MapPageFilters";
 import MapStartupScreen from "@/components/map/MapStartupScreen";
@@ -28,6 +27,7 @@ export default function ImportantCustomersMap() {
   const [filteredLocations, setFilteredLocations] = useState<MapLocation[]>([]);
   const [filters, setFilters] = useState<MapFilters>({ name: '', type: 'all', customerType: 'all', salesman: 'all' });
   const [startPos, setStartPos] = useState<GeoCoord | null>(null);
+  const [satelliteView, setSatelliteView] = useState(false);
 
   useEffect(() => {
     if (!startPos) return;
@@ -262,6 +262,15 @@ export default function ImportantCustomersMap() {
     setFilteredLocations(filteredLocations);
   };
 
+  const toggleSatelliteView = () => {
+    const map = mapInstanceRef.current;
+    if (!map) return;
+
+    const nextView = !satelliteView;
+    map.setMapTypeId(nextView ? google.maps.MapTypeId.SATELLITE : google.maps.MapTypeId.ROADMAP);
+    setSatelliteView(nextView);
+  };
+
   const handlePageChange = (_: any, page: number) => {
     setListDisplayItems(filteredLocations.slice((page - 1) * LIMIT, page * LIMIT));
   };
@@ -286,7 +295,15 @@ export default function ImportantCustomersMap() {
             <MapStartupScreen setStartPos={setStartPos} />
             :
             <>
-              <div ref={mapRef} className="map-page__map"></div>
+              <div className="map-page__map">
+                <div className="map-page__map-controls">
+                  <button onClick={toggleSatelliteView}>
+                    { satelliteView ? 'Map View' : 'Satellite View' }
+                  </button>
+                </div>
+
+                <div ref={mapRef} className="map-page__map"></div>
+              </div>
             
               <MapRightSide
                 listDisplayItems={listDisplayItems}
