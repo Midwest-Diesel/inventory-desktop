@@ -16,6 +16,10 @@ This application is currently only compatible with windows.
 - `npm install`
 - Create *.env.production* and *.env.development* files
 - Create *publish.sh* and *publish.staging.sh* files
+- Set Tauri private key:
+  - Find the note labled **Tauri Private Key** inside Bitwarden. There should be a value for the KEY and PASSWORD.
+  - Create a file called "C:\Users\USERNAME\.tauri\myapp.key" and paste the key into it
+  - Set the TAURI_KEY_PASSWORD variable inside *publish.sh* and *publish.staging.sh*
 - Run the following commands:
   - `chmod +x publish.sh`
   - `chmod +x publish.staging.sh`

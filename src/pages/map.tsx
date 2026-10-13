@@ -64,11 +64,11 @@ export default function ImportantCustomersMap() {
         renderer: {
           render: ({ count, position, markers }) => {
             const div = document.createElement("div");
-            div.className = `map-cluster${count >= 100 ? " map-cluster--red" : ""}`;
+            div.className = `map-cluster${count >= 300 ? ' map-cluster--red' : count >= 100 ? ' map-cluster--orange' : ''}`;
             div.textContent = String(count);
 
-            const tooltip = document.createElement("div");
-            tooltip.className = "map-cluster__tooltip";
+            const tooltip = document.createElement('div');
+            tooltip.className = 'map-cluster__tooltip';
 
             const names = markers
               .map((marker) => {
@@ -83,10 +83,10 @@ export default function ImportantCustomersMap() {
               .filter((name): name is string => Boolean(name))
               .slice(0, 6);
 
-            tooltip.textContent = names.join("\n");
+            tooltip.textContent = names.join('\n');
 
             if (count > 6) {
-              tooltip.textContent += "\n...";
+              tooltip.textContent += '\n...';
             }
 
             div.appendChild(tooltip);

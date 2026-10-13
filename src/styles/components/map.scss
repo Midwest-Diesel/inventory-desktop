@@ -157,6 +157,13 @@
   cursor: pointer;
 }
 
+.map-cluster--orange {
+  background: rgba(230, 126, 0, 0.85);
+  border-color: rgb(204, 102, 0);
+  width: 35px;
+  height: 35px;
+}
+
 .map-cluster--red {
   background: rgba(231, 15, 15, 0.85);
   border-color: rgb(200, 0, 0);

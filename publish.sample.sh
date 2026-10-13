@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export TAURI_PRIVATE_KEY="PATH TO KEY"
+export TAURI_PRIVATE_KEY="$(cat "$HOME/.tauri/myapp.key")"
 export TAURI_KEY_PASSWORD=""
 GITHUB_TOKEN="GITHUB PERSONAL ACCESS TOKEN"
 REPO="Midwest-Diesel/inventory-desktop"
