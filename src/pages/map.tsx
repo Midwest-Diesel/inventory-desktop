@@ -22,9 +22,8 @@ export default function ImportantCustomersMap() {
   const clusterRef = useRef<MarkerClusterer | null>(null);
   const infoWindowRef = useRef<google.maps.InfoWindow | null>(null);
   const filteredLocationsRef = useRef<MapLocation[]>([]);
-  const syncingMarkersRef = useRef(false);
   const [listDisplayItems, setListDisplayItems] = useState<MapLocation[]>([]);
-  const [filters, setFilters] = useState<MapFilters>({ name: '', type: 'all', customerType: 'all', salesman: 'all' });
+  const [filters, setFilters] = useState<MapFilters>({ name: '', type: 'all', customerType: 'all', salesman: 'all', ranking: null });
   const [startPos, setStartPos] = useState<GeoCoord | null>(null);
   const [satelliteView, setSatelliteView] = useState(false);
 
@@ -32,7 +31,8 @@ export default function ImportantCustomersMap() {
     queryKey: ['listOfLocations', filters],
     queryFn: async () => {
       clusterRef.current?.clearMarkers();
-      const res = await getMapLocations();
+      const params = { ranking: filters.ranking };
+      const res = await getMapLocations(params);
 
       return res.filter((loc) => {
         const matchesName = filters.name === '' || loc.name.toLowerCase().includes(filters.name.toLowerCase());
@@ -105,8 +105,6 @@ export default function ImportantCustomersMap() {
           }
         }
       });
-
-      map.addListener('idle', syncVisibleMarkers);
     });
   }, [mapRef, startPos]);
 
@@ -118,7 +116,32 @@ export default function ImportantCustomersMap() {
     );
 
     handlePageChange(null, 1);
-    void syncVisibleMarkers();
+
+    const renderMarkers = async () => {
+      const clusterer = clusterRef.current;
+
+      if (!clusterer) return;
+
+      clusterer.clearMarkers();
+      markersRef.current.clear();
+
+      const markers = await Promise.all(
+        listOfLocations.map(async (loc) => ({
+          id: loc.id,
+          marker: await createMarker(loc)
+        }))
+      );
+
+      markers.forEach(({ id, marker }) => {
+        markersRef.current.set(id, marker);
+      });
+
+      clusterer.addMarkers(
+        markers.map(({ marker }) => marker)
+      );
+    };
+
+    void renderMarkers();
   }, [listOfLocations]);
 
   const createMarker = async (loc: MapLocation): Promise<google.maps.marker.AdvancedMarkerElement> => {
@@ -174,64 +197,6 @@ export default function ImportantCustomersMap() {
     });
 
     return marker;
-  };
-
-  const syncVisibleMarkers = async () => {
-    const map = mapInstanceRef.current;
-    const clusterer = clusterRef.current;
-    const bounds = map?.getBounds();
-
-    if (!map || !clusterer || !bounds || syncingMarkersRef.current) return;
-
-    syncingMarkersRef.current = true;
-
-    try {
-      const visibleLocations = filteredLocationsRef.current.filter((loc) =>
-        bounds.contains(loc.location)
-      );
-
-      const visibleIds = new Set(visibleLocations.map((loc) => loc.id));
-      const markersToRemove: google.maps.marker.AdvancedMarkerElement[] = [];
-
-      markersRef.current.forEach((marker, id) => {
-        if (!visibleIds.has(id)) {
-          markersToRemove.push(marker);
-          markersRef.current.delete(id);
-        }
-      });
-
-      if (markersToRemove.length) {
-        clusterer.removeMarkers(markersToRemove, true);
-      }
-
-      const locationsToAdd = visibleLocations.filter(
-        (loc) => !markersRef.current.has(loc.id)
-      );
-
-      const markersToAdd = await Promise.all(
-        locationsToAdd.map(async (loc) => ({
-          id: loc.id,
-          marker: await createMarker(loc)
-        }))
-      );
-
-      markersToAdd.forEach(({ id, marker }) => {
-        markersRef.current.set(id, marker);
-      });
-
-      if (markersToAdd.length) {
-        clusterer.addMarkers(
-          markersToAdd.map(({ marker }) => marker),
-          true
-        );
-      }
-
-      if (markersToRemove.length || markersToAdd.length) {
-        clusterer.render();
-      }
-    } finally {
-      syncingMarkersRef.current = false;
-    }
   };
 
   const getPinIcon = (loc: MapLocation) => {
