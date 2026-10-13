@@ -2,6 +2,10 @@ import api from "../config/axios";
 import { parseResDate } from "../tools/stringUtils";
 import { handleError } from "../tools/utils";
 
+interface MapLocationSearch {
+  ranking: null | 'value' | 'qty'
+}
+
 interface NewMapLocation {
   name: string
   customerId: number
@@ -29,9 +33,9 @@ const parseMapData = (res: any) => {
 
 // === GET routes === //
 
-export const getMapLocations = async (): Promise<MapLocation[]> => {
+export const getMapLocations = async (params: MapLocationSearch): Promise<MapLocation[]> => {
   try {
-    const res = await api.get('/api/map');
+    const res = await api.get('/api/map', { params });
     return parseMapData(res.data);
   } catch (error) {
     handleError(error, 'getMapLocations');

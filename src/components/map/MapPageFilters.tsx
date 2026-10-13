@@ -24,7 +24,8 @@ export default function MapPageFilters({ filters, setFilters, cluster }: Props) 
       name: '',
       type: 'all',
       customerType: 'all',
-      salesman: 'all'
+      salesman: 'all',
+      ranking: null
     });
   };
 
@@ -82,8 +83,8 @@ export default function MapPageFilters({ filters, setFilters, cluster }: Props) 
         <Button onClick={onClickClearFilters}>Clear Filters</Button>
         <br />
         
-        <Button>Top 100 by Sales Value</Button>
-        <Button>Top 100 by Sales Qty</Button>
+        <Button onClick={() => setFilters({ ...filters, ranking: 'value' })}>Top 100 by Sales Value</Button>
+        <Button onClick={() => setFilters({ ...filters, ranking: 'qty' })}>Top 100 by Sales Qty</Button>
       </div>
     </form>
   );
