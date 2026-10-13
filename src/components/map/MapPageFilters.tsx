@@ -3,20 +3,16 @@ import Button from "../library/Button";
 import Input from "../library/Input";
 import Select from "../library/select/Select";
 import { getAllUsers } from "@/scripts/services/accountService";
-import { getMapTopCustomers } from "@/scripts/services/mapService";
 import { MarkerClusterer } from "@googlemaps/markerclusterer";
 
 interface Props {
   filters: MapFilters
   setFilters: (filters: MapFilters) => void
   cluster: MarkerClusterer | null
-  listOfLocations: MapLocation[]
-  setFilteredLocations: (locations: MapLocation[]) => void
-  handleFilters: (locations: MapLocation[]) => void
 }
 
 
-export default function MapPageFilters({ filters, setFilters, cluster, listOfLocations, setFilteredLocations, handleFilters }: Props) {
+export default function MapPageFilters({ filters, setFilters, cluster }: Props) {
   const { data: usersList = [] } = useQuery<User[]>({
     queryKey: ['usersList'],
     queryFn: getAllUsers
@@ -30,27 +26,11 @@ export default function MapPageFilters({ filters, setFilters, cluster, listOfLoc
       customerType: 'all',
       salesman: 'all'
     });
-    setFilteredLocations(listOfLocations);
-  };
-
-  const onClickFilterTopCustomers = async () => {
-    cluster?.clearMarkers();
-    const topCustomers: number[] = await getMapTopCustomers();
-    const newList = listOfLocations.filter((loc) => {
-      return loc.customer && topCustomers.includes(loc.customer.id);
-    });
-    setFilteredLocations(newList);
   };
 
 
   return (
-    <form
-      className="map-page-filters"
-      onSubmit={(e) => {
-        e.preventDefault();
-        handleFilters(listOfLocations);
-      }}
-    >
+    <form className="map-page-filters">
       <div className="map-page-filters__inputs">
         <Input
           variant={['label-bold', 'label-stack']}
@@ -99,10 +79,11 @@ export default function MapPageFilters({ filters, setFilters, cluster, listOfLoc
       </div>
 
       <div className="map-page-filters__buttons">
-        <Button type="submit">Filter</Button>
-        <Button type="button" onClick={onClickClearFilters}>Clear Filters</Button>
+        <Button onClick={onClickClearFilters}>Clear Filters</Button>
         <br />
-        <Button type="button" onClick={onClickFilterTopCustomers}>Top 100 Customers</Button>
+        
+        <Button>Top 100 by Sales Value</Button>
+        <Button>Top 100 by Sales Qty</Button>
       </div>
     </form>
   );

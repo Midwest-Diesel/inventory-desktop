@@ -9,6 +9,7 @@ import MapStartupScreen from "@/components/map/MapStartupScreen";
 import { getCustomerSalesMeasurement } from "@/scripts/services/customerService";
 import { formatCurrency } from "@/scripts/tools/stringUtils";
 import { invoke } from "@/scripts/config/tauri";
+import { useQuery } from "@tanstack/react-query";
 
 
 const LIMIT = 30;
@@ -23,22 +24,28 @@ export default function ImportantCustomersMap() {
   const filteredLocationsRef = useRef<MapLocation[]>([]);
   const syncingMarkersRef = useRef(false);
   const [listDisplayItems, setListDisplayItems] = useState<MapLocation[]>([]);
-  const [listOfLocations, setListOfLocations] = useState<MapLocation[]>([]);
-  const [filteredLocations, setFilteredLocations] = useState<MapLocation[]>([]);
   const [filters, setFilters] = useState<MapFilters>({ name: '', type: 'all', customerType: 'all', salesman: 'all' });
   const [startPos, setStartPos] = useState<GeoCoord | null>(null);
   const [satelliteView, setSatelliteView] = useState(false);
 
+  const { data: listOfLocations = [] } = useQuery<MapLocation[]>({
+    queryKey: ['listOfLocations', filters],
+    queryFn: async () => {
+      clusterRef.current?.clearMarkers();
+      const res = await getMapLocations();
+
+      return res.filter((loc) => {
+        const matchesName = filters.name === '' || loc.name.toLowerCase().includes(filters.name.toLowerCase());
+        const matchesType = filters.type === 'all' || loc.type === filters.type;
+        const matchesCustomerType = filters.customerType === 'all' || loc.customer.customerType === filters.customerType;
+        const matchesSalesman = filters.salesman === 'all' || loc.salesman === filters.salesman;
+        return matchesName && matchesType && matchesCustomerType && matchesSalesman;
+      });
+    }
+  });
+
   useEffect(() => {
     if (!startPos) return;
-
-    const fetchData = async () => {
-      const res = await getMapLocations();
-      setListOfLocations(res);
-      setFilteredLocations(res);
-      handleFilters(res);
-    };
-    fetchData();
 
     const loader = new Loader({
       apiKey: process.env.NEXT_PUBLIC_MAPS_API!,
@@ -104,15 +111,15 @@ export default function ImportantCustomersMap() {
   }, [mapRef, startPos]);
 
   useEffect(() => {
-    filteredLocationsRef.current = filteredLocations;
+    filteredLocationsRef.current = listOfLocations;
 
     locationsRef.current = new Map(
-      filteredLocations.map((loc) => [loc.id, loc])
+      listOfLocations.map((loc) => [loc.id, loc])
     );
 
     handlePageChange(null, 1);
     void syncVisibleMarkers();
-  }, [filteredLocations]);
+  }, [listOfLocations]);
 
   const createMarker = async (loc: MapLocation): Promise<google.maps.marker.AdvancedMarkerElement> => {
     const { AdvancedMarkerElement, PinElement } = await google.maps.importLibrary('marker') as google.maps.MarkerLibrary;
@@ -238,7 +245,7 @@ export default function ImportantCustomersMap() {
         return glyph;
       }
       case 'vendor':
-        img.src = '/images/shop.svg';
+        img.src = '/images/icons/shop.svg';
         return img;
       default:
         return '';
@@ -248,18 +255,6 @@ export default function ImportantCustomersMap() {
   const panTo = (loc: GeoCoord) => {
     const { lat, lng } = loc;
     mapInstanceRef.current?.panTo({ lat, lng });
-  };
-
-  const handleFilters = (locations: MapLocation[]) => {
-    clusterRef.current?.clearMarkers();
-    const filteredLocations = locations.filter((loc) => {
-      const matchesName = filters.name === '' || loc.name.toLowerCase().includes(filters.name.toLowerCase());
-      const matchesType = filters.type === 'all' || loc.type === filters.type;
-      const matchesCustomerType = filters.customerType === 'all' || loc.customer.customerType === filters.customerType;
-      const matchesSalesman = filters.salesman === 'all' || loc.salesman === filters.salesman;
-      return matchesName && matchesType && matchesCustomerType && matchesSalesman;
-    });
-    setFilteredLocations(filteredLocations);
   };
 
   const toggleSatelliteView = () => {
@@ -272,7 +267,7 @@ export default function ImportantCustomersMap() {
   };
 
   const handlePageChange = (_: any, page: number) => {
-    setListDisplayItems(filteredLocations.slice((page - 1) * LIMIT, page * LIMIT));
+    setListDisplayItems(listOfLocations.slice((page - 1) * LIMIT, page * LIMIT));
   };
   
 
@@ -284,9 +279,6 @@ export default function ImportantCustomersMap() {
             filters={filters}
             setFilters={setFilters}
             cluster={clusterRef.current}
-            listOfLocations={listOfLocations}
-            setFilteredLocations={setFilteredLocations}
-            handleFilters={handleFilters}
           />
         }
 
@@ -309,7 +301,7 @@ export default function ImportantCustomersMap() {
                 listDisplayItems={listDisplayItems}
                 panTo={panTo}
                 mapInstanceRef={mapInstanceRef}
-                filteredLocations={filteredLocations}
+                filteredLocations={listOfLocations}
                 handlePageChange={handlePageChange}
                 limit={LIMIT}
               />
