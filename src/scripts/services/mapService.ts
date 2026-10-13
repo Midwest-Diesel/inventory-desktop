@@ -29,12 +29,13 @@ const parseMapData = (res: any) => {
 
 // === GET routes === //
 
-export const getMapLocations = async () => {
+export const getMapLocations = async (): Promise<MapLocation[]> => {
   try {
     const res = await api.get('/api/map');
     return parseMapData(res.data);
   } catch (error) {
     handleError(error, 'getMapLocations');
+    return [];
   }
 };
 
@@ -45,25 +46,6 @@ export const getMapLocationFromCustomer = async (id: number): Promise<MapLocatio
   } catch (error) {
     handleError(error, 'getMapLocationFromCustomer');
     return null;
-  }
-};
-
-export const getMapTopCustomers = async (): Promise<number[]> => {
-  try {
-    const res = await api.get('/api/map/top-customers');
-    return res.data.slice(0, 100);
-  } catch (error) {
-    handleError(error, 'getMapTopCustomers');
-    return [];
-  }
-};
-
-export const getMapNewLeads = async () => {
-  try {
-    const res = await api.get('/api/map/new-leads');
-    return res.data;
-  } catch (error) {
-    handleError(error, 'getMapNewLeads');
   }
 };
 
