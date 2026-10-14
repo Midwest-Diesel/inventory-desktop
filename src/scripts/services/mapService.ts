@@ -12,6 +12,7 @@ interface NewMapLocation {
   address: string | null
   lat: number
   lng: number
+  type: MapLocationType
 }
 
 interface EditMapLocation {

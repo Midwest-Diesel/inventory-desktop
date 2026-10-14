@@ -6,6 +6,7 @@ import { userAtom } from "@/scripts/atoms/state";
 import { addMapLocation, deleteMapLocation, editMapLocation, fixMapLocation, getBrokenLocations, getGeoLocation } from "@/scripts/services/mapService";
 import AddMapLocationDialog from "./dialogs/AddMapLocationDialog";
 import EditMapLocationDialog from "./dialogs/EditMapLocationDialog";
+import { getVendorByName } from "@/scripts/services/vendorsService";
 
 interface Props {
   listDisplayItems: MapLocation[]
@@ -39,12 +40,16 @@ export default function MapRightSide({ listDisplayItems, panTo, mapInstanceRef, 
     const geocoder = new window.google.maps.Geocoder();
     await geocoder.geocode({ location }, async (results, status) => {
       if (status === 'OK' && results?.[0]) {
+        const vendor = await getVendorByName(name);
+        const type: MapLocationType = vendor?.id ? 'vendor' : 'customer';
+
         await addMapLocation({
           name,
           customerId,
           address: results[0].formatted_address,
           lat: results[0].geometry.location.lat(),
-          lng: results[0].geometry.location.lng()
+          lng: results[0].geometry.location.lng(),
+          type
         });
       } else {
         console.error(`Geocoder failed due to: ${status}`);

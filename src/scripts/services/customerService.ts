@@ -193,7 +193,14 @@ export const addCustomer = async (customer: string): Promise<number | null> => {
     const id = Number(res.data.id);
     if (id === 0) return null;
 
-    const mapLocation = { name: customer, customerId: id, address: null, lat: 0, lng: 0 };
+    const mapLocation = {
+      name: customer,
+      customerId: id,
+      address: null,
+      lat: 0,
+      lng: 0,
+      type: 'customer' as MapLocationType
+    };
     await addMapLocation(mapLocation);
 
     return id;
