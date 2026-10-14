@@ -22,6 +22,7 @@ export default function ImportantCustomersMap() {
   const clusterRef = useRef<MarkerClusterer | null>(null);
   const infoWindowRef = useRef<google.maps.InfoWindow | null>(null);
   const filteredLocationsRef = useRef<MapLocation[]>([]);
+  const [mapReady, setMapReady] = useState(false);
   const [listDisplayItems, setListDisplayItems] = useState<MapLocation[]>([]);
   const [filters, setFilters] = useState<MapFilters>({ name: '', type: 'all', customerType: 'all', salesman: 'all', ranking: null });
   const [startPos, setStartPos] = useState<GeoCoord | null>(null);
@@ -105,17 +106,18 @@ export default function ImportantCustomersMap() {
           }
         }
       });
+
+      setMapReady(true);
     });
   }, [mapRef, startPos]);
 
   useEffect(() => {
     filteredLocationsRef.current = listOfLocations;
-
-    locationsRef.current = new Map(
-      listOfLocations.map((loc) => [loc.id, loc])
-    );
+    locationsRef.current = new Map(listOfLocations.map((loc) => [loc.id, loc]));
 
     handlePageChange(null, 1);
+
+    if (!mapReady || !clusterRef.current) return;
 
     const renderMarkers = async () => {
       const clusterer = clusterRef.current;
@@ -142,7 +144,7 @@ export default function ImportantCustomersMap() {
     };
 
     void renderMarkers();
-  }, [listOfLocations]);
+  }, [listOfLocations, mapReady]);
 
   const createMarker = async (loc: MapLocation): Promise<google.maps.marker.AdvancedMarkerElement> => {
     const { AdvancedMarkerElement, PinElement } = await google.maps.importLibrary('marker') as google.maps.MarkerLibrary;
@@ -175,7 +177,7 @@ export default function ImportantCustomersMap() {
           <h3 id="customer-${loc.customer.id}">${loc.name}</h3>
           <p>${loc.address}</p>
           <hr />
-          <p><strong>Sales (2 years):</strong> ${res ? `${res.amount} invoices / ${formatCurrency(res.value)}` : '<em>None</em>'}</p>
+          <p><strong>Sales (2 years):</strong> ${(res?.amount || res?.value) ? `${res.amount} invoices / ${formatCurrency(res.value)}` : '<em>None</em>'}</p>
           <p><strong>Notes</strong></p>
           <p>${loc.notes ?? ''}</p>
         </div>
