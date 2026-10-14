@@ -6,6 +6,7 @@ import { addMapLocation, getGeoLocation } from "@/scripts/services/mapService";
 import { FormEvent, useEffect, useState } from "react";
 import { ask } from "@/scripts/config/tauri";
 import TextArea from "@/components/library/TextArea";
+import { getVendorByName } from "@/scripts/services/vendorsService";
 
 interface Props {
   open: boolean
@@ -31,12 +32,16 @@ export default function AddToMapDialog({ open, setOpen, customer }: Props) {
     
     const res = await getGeoLocation(address);
     if (!res) return;
+    const vendor = await getVendorByName(name);
+    const type: MapLocationType = vendor?.id ? 'vendor' : 'customer';
+
     const location = {
       name,
       address: res.formattedAddress,
       lat: res.geometry.location.lat,
       lng: res.geometry.location.lng,
-      customerId: customer.id
+      customerId: customer.id,
+      type
     };
     await addMapLocation(location);
     setOpen(false);

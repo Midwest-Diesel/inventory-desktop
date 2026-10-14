@@ -1,5 +1,6 @@
 import api from "../config/axios";
 import { handleError } from "../tools/utils";
+import { editMapLocation, getMapLocationFromCustomer } from "./mapService";
 
 export interface VendorSearch {
   name: string
@@ -70,6 +71,14 @@ export const addVendor = async (name: string, customer?: Customer): Promise<numb
     if (existingVendor) {
       alert('Vendor already exists');
       return null;
+    }
+
+    if (customer) {
+      const mapLocation = await getMapLocationFromCustomer(customer.id);
+      if (mapLocation)  {
+        const { lat, lng } = mapLocation?.location;
+        await editMapLocation({ ...mapLocation, type: 'vendor', lat, lng });
+      }
     }
 
     const res = await api.post('/api/vendors', { name, customer });

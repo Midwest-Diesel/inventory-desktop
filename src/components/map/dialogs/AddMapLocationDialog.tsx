@@ -3,6 +3,7 @@ import Dialog from "@/components/library/Dialog";
 import Input from "@/components/library/Input";
 import CustomerSelectId from "@/components/library/select/CustomerSelectId";
 import { getCustomerById } from "@/scripts/services/customerService";
+import { getVendorByName } from "@/scripts/services/vendorsService";
 import { FormEvent, useState } from "react";
 
 interface Props {
@@ -19,7 +20,9 @@ export default function AddMapLocationDialog({ open, setOpen, onSubmit }: Props)
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    onSubmit({ name, address, type: 'customer', notes: null, customerId });
+    const vendor = await getVendorByName(name);
+    const type: MapLocationType = vendor?.id ? 'vendor' : 'customer';
+    onSubmit({ name, address, type, notes: null, customerId });
 
     setCustomerId(null);
     setName('');
