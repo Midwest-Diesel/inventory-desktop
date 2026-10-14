@@ -4,6 +4,7 @@ import Input from "../library/Input";
 import Select from "../library/select/Select";
 import { getAllUsers } from "@/scripts/services/accountService";
 import { MarkerClusterer } from "@googlemaps/markerclusterer";
+import { FormEvent, useState } from "react";
 
 interface Props {
   filters: MapFilters
@@ -13,6 +14,8 @@ interface Props {
 
 
 export default function MapPageFilters({ filters, setFilters, cluster }: Props) {
+  const [search, setSearch] = useState(filters.name);
+
   const { data: usersList = [] } = useQuery<User[]>({
     queryKey: ['usersList'],
     queryFn: getAllUsers
@@ -20,6 +23,7 @@ export default function MapPageFilters({ filters, setFilters, cluster }: Props) 
 
   const onClickClearFilters = () => {
     cluster?.clearMarkers();
+    setSearch('');
     setFilters({
       name: '',
       type: 'all',
@@ -29,15 +33,20 @@ export default function MapPageFilters({ filters, setFilters, cluster }: Props) 
     });
   };
 
+  const onSubmitSearch = (e: FormEvent) => {
+    e.preventDefault();
+    setFilters({ ...filters, name: search });
+  };
+
 
   return (
-    <form className="map-page-filters">
+    <form className="map-page-filters" onSubmit={onSubmitSearch}>
       <div className="map-page-filters__inputs">
         <Input
           variant={['label-bold', 'label-stack']}
           label="Search Name"
-          value={filters.name}
-          onChange={(e) => setFilters({ ...filters, name: e.target.value })}
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
         />
         <Select
           variant={['label-stack', 'label-bold']}
