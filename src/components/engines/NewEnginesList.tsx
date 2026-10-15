@@ -148,6 +148,8 @@ export default function NewEnginesList({ engines, setEngine, engineModel, setEng
           </tbody>
         </Table>
       </div>
+
+      <p>{ filteredEngines.length } { filteredEngines.length > 1 ? 'rows' : 'row' }</p>
     </div>
   );
 }
