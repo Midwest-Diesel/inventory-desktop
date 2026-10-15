@@ -4,6 +4,7 @@ import { getPartInfoByPartNum } from "@/scripts/services/partsService";
 import Input from "../../library/Input";
 import Button from "../../library/Button";
 import { editAddOnAltParts } from "@/scripts/services/addOnsService";
+import { useQuery } from "@tanstack/react-query";
 
 interface Props {
   open: boolean
@@ -18,8 +19,19 @@ export default function AddOnAltPartsDialog({ open, setOpen, addOn, partNumList 
   const [partNum, setPartNum] = useState('');
   const [alts, setAlts] = useState<string[]>(addOn?.altParts ?? []);
 
+  const { data: initialPartInfo } = useQuery<PartInfo | null>({
+    queryKey: ['initialPartInfo', addOn!.partNum],
+    queryFn: () => getPartInfoByPartNum(addOn!.partNum),
+    enabled: !!addOn
+  });
+
   useEffect(() => {
-    setAlts(addOn?.altParts ?? []);
+    const array = [
+      ...(addOn?.altParts ?? []),
+      ...(initialPartInfo?.altParts.split(', ') ?? [])
+    ].filter((alt) => alt !== addOn?.partNum);
+
+    setAlts(Array.from(new Set(array)));
   }, [partNumList]);
 
   const autofillFromPartNum = (partNum: string) => {
