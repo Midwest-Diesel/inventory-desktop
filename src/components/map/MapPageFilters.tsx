@@ -29,7 +29,8 @@ export default function MapPageFilters({ filters, setFilters, cluster }: Props) 
       type: 'all',
       customerType: 'all',
       salesman: 'all',
-      ranking: null
+      ranking: null,
+      hasSales: 'both'
     });
   };
 
@@ -94,6 +95,16 @@ export default function MapPageFilters({ filters, setFilters, cluster }: Props) 
         
         <Button onClick={() => setFilters({ ...filters, ranking: 'value' })}>Top 100 by Sales Value</Button>
         <Button onClick={() => setFilters({ ...filters, ranking: 'qty' })}>Top 100 by Sales Qty</Button>
+        <Select
+          variant={['label-bold', 'label-stack']}
+          label="Sales"
+          value={filters.hasSales}
+          onChange={(e: any) => setFilters({ ...filters, hasSales: e.target.value })}
+        >
+          <option value="both">Both</option>
+          <option value="yes">Made Purchases</option>
+          <option value="no">No Purchases</option>
+        </Select>
       </div>
     </form>
   );

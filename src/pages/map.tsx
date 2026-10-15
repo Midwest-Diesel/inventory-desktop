@@ -24,7 +24,7 @@ export default function ImportantCustomersMap() {
   const filteredLocationsRef = useRef<MapLocation[]>([]);
   const [mapReady, setMapReady] = useState(false);
   const [listDisplayItems, setListDisplayItems] = useState<MapLocation[]>([]);
-  const [filters, setFilters] = useState<MapFilters>({ name: '', type: 'all', customerType: 'all', salesman: 'all', ranking: null });
+  const [filters, setFilters] = useState<MapFilters>({ name: '', type: 'all', customerType: 'all', salesman: 'all', ranking: null, hasSales: 'both' });
   const [startPos, setStartPos] = useState<GeoCoord | null>(null);
   const [satelliteView, setSatelliteView] = useState(false);
 
@@ -32,7 +32,7 @@ export default function ImportantCustomersMap() {
     queryKey: ['listOfLocations', filters],
     queryFn: async () => {
       clusterRef.current?.clearMarkers();
-      const params = { ranking: filters.ranking };
+      const params = { ranking: filters.ranking, hasSales: filters.hasSales };
       const res = await getMapLocations(params);
 
       return res.filter((loc) => {

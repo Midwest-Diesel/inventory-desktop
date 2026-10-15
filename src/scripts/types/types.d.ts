@@ -1078,6 +1078,7 @@ interface MapFilters {
   customerType: string
   salesman: string
   ranking: null | 'value' | 'qty'
+  hasSales: 'both' | 'yes' | 'no'
 }
 
 interface LocationFormData {

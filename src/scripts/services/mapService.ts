@@ -4,6 +4,7 @@ import { handleError } from "../tools/utils";
 
 interface MapLocationSearch {
   ranking: null | 'value' | 'qty'
+  hasSales: 'both' | 'yes' | 'no'
 }
 
 interface NewMapLocation {
@@ -28,7 +29,7 @@ interface EditMapLocation {
 
 const parseMapData = (res: any) => {
   return res.map((row: any) => {
-    return { ...row, date: parseResDate(row.date), customer: row.customer ? {...row.customer, dateContacted: parseResDate(row.customer.dateContacted)} : null };
+    return { ...row, date: parseResDate(row.date), customer: row.customer ? { ...row.customer, dateContacted: parseResDate(row.customer.dateContacted) } : null };
   });
 };
 
