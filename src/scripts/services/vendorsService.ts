@@ -76,7 +76,7 @@ export const addVendor = async (name: string, customer?: Customer): Promise<numb
     if (customer) {
       const mapLocation = await getMapLocationFromCustomer(customer.id);
       if (mapLocation)  {
-        const { lat, lng } = mapLocation?.location;
+        const { lat, lng } = mapLocation.location;
         await editMapLocation({ ...mapLocation, type: 'vendor', lat, lng });
       }
     }

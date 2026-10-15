@@ -143,7 +143,7 @@ export default function CustomerDetails({ customer, setCustomer, setIsEditing, o
     
     if (oldAddress === newAddress) {
       if (company !== customer.company) {
-        const { lat, lng } = mapLocation?.location;
+        const { lat, lng } = mapLocation.location;
         await editMapLocation({ ...mapLocation, name: company, lat, lng });
       }
       return;

@@ -1,9 +1,12 @@
 import api from "../config/axios";
+import { ask } from "../config/tauri";
 import { emitServerEvent } from "../config/websockets";
+import { isStateTaxable } from "../logic/customers";
 import { formatRemarksSoldText, removeRemarksSoldText } from "../logic/parts";
 import { parseResDate } from "../tools/stringUtils";
 import { filterNullObjValuesArr, handleError } from "../tools/utils";
 import { getCoresByCustomer } from "./coresService";
+import { editCustomer } from "./customerService";
 import { editPart, getPartById } from "./partsService";
 
 interface NewHandwrittenItem {
@@ -252,9 +255,18 @@ const checkForCustomerAlert = (customer: Customer | null) => {
 
 export const addHandwritten = async (handwritten: Handwritten): Promise<number | null> => {
   try {
-    const res = await api.post('/api/handwrittens', handwritten);
+    // Reminder for first time customers
+    let isTaxable = handwritten.isTaxable || handwritten.customer.isTaxable;
+    const handwrittens = await getCustomerHandwrittens(handwritten.customer.id);
+    if (handwrittens.length === 0 && isStateTaxable(handwritten.customer.shipToState) && await ask('Is this customer taxable?') && !isTaxable) {
+      isTaxable = true;
+      await editCustomer({ ...handwritten.customer, isTaxable: true });
+    }
+    
+    const res = await api.post('/api/handwrittens', { ...handwritten, isTaxable: !!isTaxable });
+
     // Add TAX line item if customer is taxable
-    if (handwritten.customer.isTaxable) {
+    if (isTaxable) {
       const item = {
         handwrittenId: Number(res.data.id),
         date: new Date(),

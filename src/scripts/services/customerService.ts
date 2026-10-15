@@ -1,7 +1,7 @@
 import api from "../config/axios";
 import { parseResDate } from "../tools/stringUtils";
 import { handleError } from "../tools/utils";
-import { addMapLocation, getGeoLocation } from "./mapService";
+import { addMapLocation } from "./mapService";
 
 interface CustomerSearch {
   name: string
