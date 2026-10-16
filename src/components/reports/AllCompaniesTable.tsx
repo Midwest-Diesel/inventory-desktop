@@ -6,21 +6,36 @@ import { useEffect, useState } from "react";
 import { usePrintQue } from "@/hooks/usePrintQue";
 import { editCustomerLastPrintedLabel, getCustomerById } from "@/scripts/services/customerService";
 import Link from "../library/Link";
+import TableSortButton from "../library/TableSortButton";
+import { reportAllCompanies } from "@/scripts/services/reportsService";
 
 interface Props {
   closeTable: () => void
-  data: AllCompaniesReport[]
-  setData: (data: AllCompaniesReport[]) => void
+  data: { startDate: Date | null, endDate: Date | null, data: AllCompaniesReport[] }
+  setData: (data: { startDate: Date | null, endDate: Date | null, data: AllCompaniesReport[] }) => void
+}
+
+export interface AllCompaniesReportSorters {
+  sales: Sorter
+  invoices: Sorter
 }
 
 
 export default function AllCompaniesTable({ closeTable, data, setData }: Props) {
   const [total, setTotal] = useState(0);
+  const [sorters, setSorters] = useState<AllCompaniesReportSorters>({ sales: null, invoices: null });
   const { addToQue, printQue } = usePrintQue();
 
   useEffect(() => {
-    setTotal(data.reduce((acc, cur) => acc + cur.sales, 0));
+    setTotal(data.data.reduce((acc, cur) => acc + cur.sales, 0));
   }, [data]);
+
+  useEffect(() => {
+    (async () => {
+      const res = await reportAllCompanies(data.startDate, data.endDate, sorters);
+      setData({ ...data, data: res });
+    })();
+  }, [sorters, data.startDate, data.endDate]);
 
   const handleGoBack = () => {
     closeTable();
@@ -46,10 +61,10 @@ export default function AllCompaniesTable({ closeTable, data, setData }: Props) 
     addToQue('shippingLabel', 'print_shipping_label', args, '576px', '374.4px');
     printQue();
 
-    setData(data.map((d) => {
+    setData({...data, data: data.data.map((d) => {
       if (d.customerId !== row.customerId) return d;
       return { ...row, lastPrintedLabel: new Date() };
-    }));
+    })});
   };
 
 
@@ -69,13 +84,25 @@ export default function AllCompaniesTable({ closeTable, data, setData }: Props) 
             <th>BillToState</th>
             <th>BillToZip</th>
             <th>Country</th>
-            <th>Sales</th>
-            <th>Invoices</th>
+            <th>
+              Sales
+              <TableSortButton
+                sorter={sorters.sales}
+                onClick={(sorter) => setSorters({ sales: sorter, invoices: null })}
+              />
+            </th>
+            <th>
+              Invoices
+              <TableSortButton
+                sorter={sorters.invoices}
+                onClick={(sorter) => setSorters({ invoices: sorter, sales: null })}
+              />
+            </th>
             <th></th>
           </tr>
         </thead>
         <tbody>
-          {data && data.map((row, i) => {
+          {data && data.data.map((row, i) => {
             return (
               <tr key={i}>
                 <td><Link href={`/customer/${row.customerId}`}>{ row.billToCompany }</Link></td>
@@ -104,7 +131,7 @@ export default function AllCompaniesTable({ closeTable, data, setData }: Props) 
         </tbody>
       </Table>
 
-      { data.length == 0 && <Loading /> }
+      { data.data.length == 0 && <Loading /> }
     </div>
   );
 }

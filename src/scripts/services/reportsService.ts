@@ -1,3 +1,4 @@
+import { AllCompaniesReportSorters } from "@/components/reports/AllCompaniesTable";
 import api from "../config/axios";
 import { parseResDate } from "../tools/stringUtils";
 import { handleError } from "../tools/utils";
@@ -39,9 +40,11 @@ export const reportSalesByBillToCompany = async (billToCompany: string, startDat
   }
 };
 
-export const reportAllCompanies = async (startDate: Date | null, endDate: Date | null): Promise<AllCompaniesReport[]> => {
+export const reportAllCompanies = async (startDate: Date | null, endDate: Date | null, sorters?: AllCompaniesReportSorters): Promise<AllCompaniesReport[]> => {
   try {
-    const res = await api.get(`/api/reports/all-companies/${JSON.stringify({ startDate, endDate })}`);
+    const parsedSorters = JSON.stringify(sorters ?? { sales: null, invoices: null });
+    const params = { startDate, endDate, sorters: parsedSorters };
+    const res = await api.get('/api/reports/all-companies', { params });
     return res.data.map((row: any) => ({ ...row, lastPrintedDate: parseResDate(row.lastPrintedDate) }));
   } catch (error) {
     handleError(error, 'reportAllCompanies');

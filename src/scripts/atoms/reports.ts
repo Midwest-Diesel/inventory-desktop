@@ -3,7 +3,7 @@ import { atom } from "jotai";
 
 export const singleCompanyReportAtom = atom<SingleCompany[]>([]);
 export const salesByBillToCompanyReportAtom = atom<SingleCompany[]>([]);
-export const allCompaniesReportAtom = atom<AllCompaniesReport[]>([]);
+export const allCompaniesReportAtom = atom<{ startDate: Date | null, endDate: Date | null, data: AllCompaniesReport[] }>({ startDate: null, endDate: null, data: [] });
 export const allPartsReportAtom = atom<AllPartsReport[]>([]);
 export const partDescReportAtom = atom<PartDescReport[]>([]);
 export const allEnginesReportAtom = atom<AllEnginesReport[]>([]);

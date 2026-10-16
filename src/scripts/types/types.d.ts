@@ -1090,6 +1090,8 @@ interface LocationFormData {
   notes: string | null
 }
 
+type Sorter = 'asc' | 'desc' | null;
+
 type Country = {
   id: number
   name: string

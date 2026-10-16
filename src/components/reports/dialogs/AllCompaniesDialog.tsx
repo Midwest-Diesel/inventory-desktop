@@ -9,7 +9,7 @@ interface Props {
   open: boolean
   setOpen: (open: boolean) => void
   openTable: () => void
-  setTableData: (data: AllCompaniesReport[]) => void
+  setTableData: (data: { startDate: Date | null, endDate: Date | null, data: AllCompaniesReport[] }) => void
 }
 
 
@@ -21,8 +21,8 @@ export default function AllCompaniesDialog({ open, setOpen, openTable, setTableD
     e.preventDefault();
     openTable();
     setOpen(false);
-    const res = await reportAllCompanies(startDate, endDate);
-    setTableData(res);
+    const data = await reportAllCompanies(startDate, endDate);
+    setTableData({ startDate, endDate, data });
   };
 
 

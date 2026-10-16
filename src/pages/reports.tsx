@@ -77,7 +77,7 @@ export default function Reports() {
   const [openedReport, setOpenedReport] = useState('');
   const [singleCompanyData, setSingleCompanyData] = useAtom<SingleCompany[]>(singleCompanyReportAtom);
   const [salesByBillToCompanyData, setSalesByBillToCompanyData] = useAtom<SingleCompany[]>(salesByBillToCompanyReportAtom);
-  const [allCompaniesData, setAllCompaniesData] = useAtom<AllCompaniesReport[]>(allCompaniesReportAtom);
+  const [allCompaniesData, setAllCompaniesData] = useAtom<{ startDate: Date | null, endDate: Date | null, data: AllCompaniesReport[] }>(allCompaniesReportAtom);
   const [allPartsData, setAllPartsData] = useAtom<AllPartsReport[]>(allPartsReportAtom);
   const [partDescData, setPartDescData] = useAtom<PartDescReport[]>(partDescReportAtom);
   const [allEnginesData, setAllEnginesData] = useAtom<AllEnginesReport[]>(allEnginesReportAtom);
