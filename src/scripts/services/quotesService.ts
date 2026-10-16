@@ -116,9 +116,9 @@ export const getSomeUnsoldQuotesByPartNum = async (page: number, limit: number, 
     const res = await api.get(`/api/quotes/unsold-quotes/part-num/${JSON.stringify({ page: (page - 1) * limit, limit, partNum, customerId, includeAlts })}`);
     return {
       pageCount: res.data.pageCount,
-      rows: res.data.rows.map((row: any) => {
+      rows: res.data.rows?.map((row: any) => {
         return { ...row, date: parseResDate(row.date) };
-      })
+      }) ?? []
     };
   } catch (error) {
     handleError(error, 'getSomeUnsoldQuotesByPartNum');
