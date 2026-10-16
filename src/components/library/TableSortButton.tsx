@@ -11,7 +11,7 @@ export default function TableSortButton({ sorter, onClick }: Props) {
     if (sorter === 'asc') return 'arrow-up-filter.svg';
     if (sorter === 'desc') return 'arrow-down-filter.svg';
     return 'sort.svg';
-  }
+  };
 
 
   return (

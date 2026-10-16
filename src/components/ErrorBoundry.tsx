@@ -41,7 +41,7 @@ function ErrorFallback({ error }: ErrorFallbackProps) {
         <button
           onClick={() => {
             push('Home', '/');
-            location.reload();
+            location.replace('/');
           }}
         >
           Home

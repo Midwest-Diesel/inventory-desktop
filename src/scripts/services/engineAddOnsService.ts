@@ -31,6 +31,20 @@ export const getOfficeEngineAddOns = async (): Promise<EngineAddOn[]> => {
   }
 };
 
+export const getEngineAddOnByEngineNum = async (engineNum: number | null): Promise<EngineAddOn | null> => {
+  try {
+    if (!engineNum) return null;
+    const params = { engineNum };
+    const res = await api.get('/api/engine-add-ons/engine-num', { params });
+    if (!res.data) return null;
+
+    return parseAddOnDataRes([res.data]);
+  } catch (error) {
+    handleError(error, 'getEngineAddOnByEngineNum');
+    return null;
+  }
+};
+
 // === POST routes === //
 
 export const addEngineAddOn = async (addOn?: EngineAddOn) => {

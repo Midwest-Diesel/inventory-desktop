@@ -3,7 +3,7 @@ import { userAtom } from "@/scripts/atoms/state";
 import { deleteAddOn, editAddOnAltParts, editAddOnUserEditing, getAddOnById } from "@/scripts/services/addOnsService";
 import { addPart, addPartCostIn, getPartsByStockNum, getPartInfoByPartNum, editPartsInfoPricing, searchAltParts, editPartsInfoPrefix, editWeightDims } from "@/scripts/services/partsService";
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
-import { addEngineCostOut, getEngineCostRemaining } from "@/scripts/services/enginesService";
+import { addEngineCostOut, getEngineByStockNum, getEngineCostRemaining } from "@/scripts/services/enginesService";
 import { getRatingFromRemarks } from "@/scripts/tools/utils";
 import { ask } from "@/scripts/config/tauri";
 import { cap, formatCurrency } from "@/scripts/tools/stringUtils";
@@ -20,6 +20,7 @@ import { emitServerEvent } from "@/scripts/config/websockets";
 import { prompt } from "../library/Prompt";
 import { addEbayItem } from "@/scripts/services/ebayService";
 import TextArea from "../library/TextArea";
+import { getEngineAddOnByEngineNum } from "@/scripts/services/engineAddOnsService";
 
 interface Props {
   addOn: AddOn
@@ -40,12 +41,23 @@ export default function OfficePartAddonRow({ addOn, addOns, setAddons, onSave, o
   const [purchasedFrom, setPurchasedFrom] = useState<string>(addOn.purchasedFrom?.toString() ?? '');
   const [isNewPart, setIsNewPart] = useState(false);
   const ref = useRef<HTMLDivElement | null>(null);
-  const isEngineNumInvalid = !addOn.engineNum || addOn.engineNum <= 1;
 
   const { data: vendors = [] } = useQuery<Vendor[]>({
     queryKey: ['vendors'],
     queryFn: getVendors
   });
+
+  const { data: engine } = useQuery<Engine | null>({
+    queryKey: ['engine', addOn.engineNum],
+    queryFn: () => getEngineByStockNum(addOn.engineNum),
+    enabled: !!addOn.engineNum
+  });
+  const { data: engineAddOn } = useQuery<EngineAddOn | null>({
+    queryKey: ['engineAddOn', addOn.engineNum],
+    queryFn: () => getEngineAddOnByEngineNum(addOn.engineNum),
+    enabled: !!addOn.engineNum
+  });
+  const hasInvalidEngine = addOn.engineNum && !engineAddOn && !engine;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -215,7 +227,7 @@ export default function OfficePartAddonRow({ addOn, addOns, setAddons, onSave, o
   };
 
   const onClickOpenEngine = () => {
-    if (isEngineNumInvalid) return;
+    if ((hasInvalidEngine || !addOn.engineNum)) return;
     newTab([{ name: `Engine ${addOn.engineNum}`, url: `/engines/${addOn.engineNum}` }]);
   };
   
@@ -247,7 +259,7 @@ export default function OfficePartAddonRow({ addOn, addOns, setAddons, onSave, o
                 {isNewPart && <th>Prefix</th> }
                 <th>Cost Remaining</th>
                 <th>Type</th>
-                <th style={!isEngineNumInvalid ? { textDecoration: 'underline', cursor: 'pointer' } : {}} onClick={onClickOpenEngine}>Engine #</th>
+                <th style={(hasInvalidEngine || !addOn.engineNum) ? {} : { textDecoration: 'underline', cursor: 'pointer' }} onClick={onClickOpenEngine}>Engine #</th>
                 <th>Stock Number</th>
                 <th>Location</th>
               </tr>
@@ -308,7 +320,7 @@ export default function OfficePartAddonRow({ addOn, addOns, setAddons, onSave, o
                     <option>Industrial</option>
                   </Select>
                 </td>
-                <td>
+                <td style={hasInvalidEngine ? { backgroundColor: 'var(--red-1)' } : {}}>
                   <Input
                     variant={['small', 'thin']}
                     type="number"

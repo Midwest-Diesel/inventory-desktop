@@ -25,6 +25,7 @@ import { prompt } from "../library/Prompt";
 import EditWeightDims from "../parts/EditWeightDims";
 import TextArea from "../library/TextArea";
 import { ask } from "@/scripts/config/tauri";
+import { getEngineAddOnByEngineNum } from "@/scripts/services/engineAddOnsService";
 
 interface Props {
   addOn: AddOn
@@ -55,13 +56,24 @@ export default function ShopPartAddonRow({ addOn, addOns, setAddons, handleDupli
   const partNumRef = useRef<HTMLDivElement | null>(null);
   const prevEngineNum = useRef<string | null>(null);
   const qtyRef = useRef<HTMLInputElement | null>(null);
-  const isEngineNumInvalid = !engineNumLink || engineNumLink <= 1;
   useClickOutside(partNumRef, () => setShowPartNumSelect(false));
 
   const { data: vendors = [] } = useQuery<Vendor[]>({
     queryKey: ['vendors'],
     queryFn: getVendors
   });
+
+  const { data: engine } = useQuery<Engine | null>({
+    queryKey: ['engine', addOn.engineNum],
+    queryFn: () => getEngineByStockNum(addOn.engineNum),
+    enabled: !!addOn.engineNum
+  });
+  const { data: engineAddOn } = useQuery<EngineAddOn | null>({
+    queryKey: ['engineAddOn', addOn.engineNum],
+    queryFn: () => getEngineAddOnByEngineNum(addOn.engineNum),
+    enabled: !!addOn.engineNum
+  });
+  const hasInvalidEngine = addOn.engineNum && !engineAddOn && !engine;
 
   useEffect(() => {
     const fetchWeightDims = async () => {
@@ -395,7 +407,7 @@ export default function ShopPartAddonRow({ addOn, addOns, setAddons, handleDupli
   };
 
   const onClickOpenEngine = () => {
-    if (isEngineNumInvalid) return;
+    if ((hasInvalidEngine || !addOn.engineNum)) return;
     newTab([{ name: `Engine ${engineNumLink}`, url: `/engines/${engineNumLink}` }]);
   };
 
@@ -445,7 +457,7 @@ export default function ShopPartAddonRow({ addOn, addOns, setAddons, handleDupli
                 <th>Part Number</th>
                 <th>Description</th>
                 <th>Type</th>
-                <th style={!isEngineNumInvalid ? { textDecoration: 'underline', cursor: 'pointer' } : {}} onClick={onClickOpenEngine}>Engine #</th>
+                <th style={(hasInvalidEngine || !addOn.engineNum) ? {} : { textDecoration: 'underline', cursor: 'pointer' }} onClick={onClickOpenEngine}>Engine #</th>
                 <th>Stock Number</th>
                 <th>Location</th>
               </tr>
@@ -519,7 +531,7 @@ export default function ShopPartAddonRow({ addOn, addOns, setAddons, handleDupli
                     <option>Industrial</option>
                   </Select>
                 </td>
-                <td>
+                <td style={hasInvalidEngine ? { backgroundColor: 'var(--red-1)' } : {}}>
                   <Input
                     variant={['small', 'thin']}
                     type="number"
