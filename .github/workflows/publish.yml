@@ -42,6 +42,11 @@ jobs:
             Write-Host "Release $tag does not exist. Publishing."
           }
 
+      - name: Cache Rust build artifacts
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri -> target
+
       - name: Setup Node.js
         if: steps.check.outputs.SHOULD_PUBLISH == 'true'
         uses: actions/setup-node@v4
