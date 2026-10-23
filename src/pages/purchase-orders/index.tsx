@@ -13,7 +13,7 @@ import Link from "@/components/library/Link";
 import { useState } from "react";
 import { useArrowSelector } from "@/hooks/useArrowSelector";
 import { useQuery } from "@tanstack/react-query";
-import { poPageStateAtom } from "@/scripts/atoms/page-state";
+import { POPageState, poPageStateAtom } from "@/scripts/atoms/page-state";
 
 
 const LIMIT = 40;

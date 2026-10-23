@@ -2,6 +2,18 @@ import api from "../config/axios";
 import { parseResDate } from "../tools/stringUtils";
 import { handleError } from "../tools/utils";
 
+export interface POSearch {
+  poNum: number
+  date: string
+  purchasedFrom: string
+  purchasedFor: string
+  isItemReceived: string
+  orderedBy: string
+  limit: number
+  offset: number
+  showIncoming: boolean
+}
+
 
 const parsePoDataRes = (data: any) => {
   return data.map((d: PO) => {

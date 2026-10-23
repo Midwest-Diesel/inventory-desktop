@@ -1,7 +1,14 @@
-import { ReturnSearch } from "@/components/returns/dialogs/SearchReturnsDialog";
 import api from "../config/axios";
 import { parseResDate } from "../tools/stringUtils";
 import { handleError } from "../tools/utils";
+
+export interface ReturnSearch {
+  id: number | null
+  handwrittenId: number | null
+  date: Date | null
+  billToCompany: string
+  progress: '' | 'shop' | 'accounting' | 'completed'
+}
 
 
 const parseReturnRes = (data: any) => {  

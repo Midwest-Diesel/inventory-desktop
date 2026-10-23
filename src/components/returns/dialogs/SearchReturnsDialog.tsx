@@ -2,6 +2,7 @@ import Button from "@/components/library/Button";
 import Dialog from "@/components/library/Dialog";
 import Input from "@/components/library/Input";
 import Select from "@/components/library/select/Select";
+import { ReturnSearch } from "@/scripts/services/returnsService";
 import { parseDateInputValue } from "@/scripts/tools/stringUtils";
 import { FormEvent, useState } from "react";
 
@@ -9,14 +10,6 @@ interface Props {
   open: boolean
   setOpen: (value: boolean) => void
   onSearch: (search: ReturnSearch) => void
-}
-
-export interface ReturnSearch {
-  id: number | null
-  handwrittenId: number | null
-  date: Date | null
-  billToCompany: string
-  progress: '' | 'shop' | 'accounting' | 'completed'
 }
 
 

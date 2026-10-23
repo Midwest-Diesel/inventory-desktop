@@ -12,7 +12,7 @@ interface Props {
   onSearch: (search: CoreSearch) => void
 }
 
-export interface CoreSearch {
+interface CoreSearch {
   partNum: string
   billToCompany: string
   desc: string

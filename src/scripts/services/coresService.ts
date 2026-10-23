@@ -1,8 +1,15 @@
-import { CoreSearch } from "@/components/cores/dialogs/CoreSearchDialog";
 import api from "../config/axios";
 import { parseResDate } from "../tools/stringUtils";
 import { deleteHandwrittenItem } from "./handwrittensService";
 import { handleError } from "../tools/utils";
+
+export interface CoreSearch {
+  partNum: string
+  billToCompany: string
+  desc: string
+  priority: string
+  salesperson: string
+}
 
 
 const parseCoreDataRes = (data: any) => {

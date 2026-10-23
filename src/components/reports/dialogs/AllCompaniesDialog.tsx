@@ -1,7 +1,6 @@
 import Button from "@/components/library/Button";
 import Dialog from "@/components/library/Dialog";
 import Input from "@/components/library/Input";
-import { reportAllCompanies } from "@/scripts/services/reportsService";
 import { parseDateInputValue } from "@/scripts/tools/stringUtils";
 import { FormEvent, useState } from "react";
 
@@ -17,14 +16,13 @@ export default function AllCompaniesDialog({ open, setOpen, openTable, setTableD
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
 
-  const handleSearch = async (e: FormEvent) => {
+  const handleSearch = (e: FormEvent) => {
     e.preventDefault();
-    openTable();
-    setOpen(false);
-    const data = await reportAllCompanies(startDate, endDate);
-    setTableData({ startDate, endDate, data });
-  };
+    setTableData({ startDate, endDate, data: [] });
 
+    setOpen(false);
+    openTable();
+  };
 
   return (
     <Dialog

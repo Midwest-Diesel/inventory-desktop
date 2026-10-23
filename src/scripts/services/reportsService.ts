@@ -1,7 +1,11 @@
-import { AllCompaniesReportSorters } from "@/components/reports/AllCompaniesTable";
 import api from "../config/axios";
 import { parseResDate } from "../tools/stringUtils";
 import { handleError } from "../tools/utils";
+
+export interface AllCompaniesReportSorters {
+  sales: Sorter
+  invoices: Sorter
+}
 
 
 const parseReportData = (data: any) => {

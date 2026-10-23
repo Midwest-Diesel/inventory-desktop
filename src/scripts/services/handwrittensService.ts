@@ -9,6 +9,19 @@ import { getCoresByCustomer } from "./coresService";
 import { editCustomer } from "./customerService";
 import { editPart, getPartById } from "./partsService";
 
+export interface HandwrittenSearch {
+  id?: number | null
+  customerId?: number | null
+  date?: string | null
+  poNum?: string | null
+  billToCompany?: string | null
+  shipToCompany?: string | null
+  source?: string | null
+  payment?: string | null
+  limit: number
+  offset: number
+}
+
 interface NewHandwrittenItem {
   handwrittenId: number
   date: Date

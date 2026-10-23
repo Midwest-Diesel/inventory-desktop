@@ -5,12 +5,12 @@ import Table from "@/components/library/Table";
 import { useState } from "react";
 import Link from "@/components/library/Link";
 import Loading from "@/components/library/Loading";
-import { getSomeCompletedReturns, getSomeReturns, searchReturns } from "@/scripts/services/returnsService";
+import { getSomeCompletedReturns, getSomeReturns, ReturnSearch, searchReturns } from "@/scripts/services/returnsService";
 import { cap, formatDate } from "@/scripts/tools/stringUtils";
 import { useQuery } from "@tanstack/react-query";
 import { useSearchParams } from "react-router-dom";
 import { useNavState } from "@/hooks/useNavState";
-import SearchReturnsDialog, { ReturnSearch } from "@/components/returns/dialogs/SearchReturnsDialog";
+import SearchReturnsDialog from "@/components/returns/dialogs/SearchReturnsDialog";
 import { isObjectNull } from "@/scripts/tools/utils";
 
 const LIMIT = 26;

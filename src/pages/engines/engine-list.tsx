@@ -13,9 +13,8 @@ import { useQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import AllEnginesTable from "@/components/engines/AllEnginesTable";
 import { useAtom } from "jotai";
-import { engineListPageStateAtom } from "@/scripts/atoms/page-state";
+import { EngineListPageState, engineListPageStateAtom, EngineListType } from "@/scripts/atoms/page-state";
 
-type EngineListType = 'all' | 'running' | 'toreDown' | 'core' | 'sold' | 'shortBlock' | 'longBlock';
 
 const LIMIT = 40;
 const STATUS_MAP: Record<EngineListType, EngineStatus[] | null> = {
@@ -27,7 +26,6 @@ const STATUS_MAP: Record<EngineListType, EngineStatus[] | null> = {
   shortBlock: ['ShortBlock'],
   longBlock: ['LongBlock']
 };
-
 
 export default function EngineList() {
   const [pageState, setPageState] = useAtom<EngineListPageState>(engineListPageStateAtom);

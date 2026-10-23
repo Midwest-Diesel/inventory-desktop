@@ -7,7 +7,7 @@ import Loading from "@/components/library/Loading";
 import Pagination from "@/components/library/Pagination";
 import Table from "@/components/library/Table";
 import { userAtom } from "@/scripts/atoms/state";
-import { addHandwritten, getSomeHandwrittens, getYeserdayCOGS, getYeserdaySales, searchHandwrittens, searchHandwrittensByFilter } from "@/scripts/services/handwrittensService";
+import { addHandwritten, getSomeHandwrittens, getYeserdayCOGS, getYeserdaySales, HandwrittenSearch, searchHandwrittens, searchHandwrittensByFilter } from "@/scripts/services/handwrittensService";
 import { formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
 import { useAtom } from "jotai";
 import Link from "@/components/library/Link";
@@ -17,7 +17,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import TakeoffsDialog from "@/components/handwrittens/dialogs/TakeoffsDialog";
 import { startTakeoff } from "@/scripts/logic/handwrittens";
 import Input from "@/components/library/Input";
-import { handwrittensPageStateAtom } from "@/scripts/atoms/page-state";
+import { HandwrittensPageState, handwrittensPageStateAtom } from "@/scripts/atoms/page-state";
 
 
 const LIMIT = 40;

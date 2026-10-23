@@ -2,22 +2,17 @@ import { formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
 import Button from "../library/Button";
 import Table from "../library/Table";
 import Loading from "../library/Loading";
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { usePrintQue } from "@/hooks/usePrintQue";
 import { editCustomerLastPrintedLabel, getCustomerById } from "@/scripts/services/customerService";
 import Link from "../library/Link";
 import TableSortButton from "../library/TableSortButton";
-import { reportAllCompanies } from "@/scripts/services/reportsService";
+import { AllCompaniesReportSorters, reportAllCompanies } from "@/scripts/services/reportsService";
 
 interface Props {
   closeTable: () => void
   data: { startDate: Date | null, endDate: Date | null, data: AllCompaniesReport[] }
-  setData: (data: { startDate: Date | null, endDate: Date | null, data: AllCompaniesReport[] }) => void
-}
-
-export interface AllCompaniesReportSorters {
-  sales: Sorter
-  invoices: Sorter
+  setData: Dispatch<SetStateAction<{ startDate: Date | null, endDate: Date | null, data: AllCompaniesReport[] }>>
 }
 
 
@@ -31,11 +26,23 @@ export default function AllCompaniesTable({ closeTable, data, setData }: Props) 
   }, [data]);
 
   useEffect(() => {
-    (async () => {
+    if (!data.startDate || !data.endDate) return;
+    let cancelled = false;
+
+    const fetchReport = async () => {
       const res = await reportAllCompanies(data.startDate, data.endDate, sorters);
-      setData({ ...data, data: res });
-    })();
-  }, [sorters, data.startDate, data.endDate]);
+
+      if (!cancelled) {
+        setData((prev) => ({ ...prev, data: res }));
+      }
+    };
+
+    fetchReport();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [data.startDate, data.endDate, sorters, setData]);
 
   const handleGoBack = () => {
     closeTable();

@@ -159,7 +159,7 @@ type PiggybackQuote = {
   id: number
   piggybackQuoteId: number
   date: Date
-  source: Source
+  source: string
   customer: Customer
   contact: string
   phone: string

@@ -1,10 +1,10 @@
 import { Layout } from "@/components/Layout";
-import CoreSearchDialog, { CoreSearch } from "@/components/cores/dialogs/CoreSearchDialog";
+import CoreSearchDialog from "@/components/cores/dialogs/CoreSearchDialog";
 import Button from "@/components/library/Button";
 import Link from "@/components/library/Link";
 import Loading from "@/components/library/Loading";
 import Table from "@/components/library/Table";
-import { getAllCores, searchCores } from "@/scripts/services/coresService";
+import { CoreSearch, getAllCores, searchCores } from "@/scripts/services/coresService";
 import { formatCurrency, formatDate } from "@/scripts/tools/stringUtils";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
