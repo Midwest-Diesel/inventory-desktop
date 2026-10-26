@@ -1,11 +1,11 @@
 {
-  "version": "v1.5.2-staging",
-  "pub_date": "2026-09-29T21:12:44Z",
+  "version": "v1.5.3-staging",
+  "pub_date": "2026-10-26T14:34:17Z",
   "notes": "",
   "platforms": {
     "windows-x86_64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVSYXQxaWtWaFNYeDdIM3JNbm1MMjRHOTVuZ0Rubk5OcXIvb241ZldIK203bjRLb2lncWtxNlFEWm1wMEo4SDhDTFlUREc5RFdIc2hHTy9PNkhEM29hM2tVSzRxTmcweXdFPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzkwNzE2MzY0CWZpbGU6SW52ZW50b3J5LVN0YWdpbmdfMS41LjJfeDY0LXNldHVwLm5zaXMuemlwCmNUQzlvMkxCL0xhTWNtTUN4S2VGbFZOQ3Y4eW1NSll5L0ZlYit0aFhDV3dxNVdtN3BHa0FHakpFL2JBWHRDUVFJTmNTMXdPWGNxOHlRei92WjVZcEFBPT0K",
-      "url": "file:///c/Users/BennettSmrdel/Documents/repos/inventory-desktop/src-tauri/target/debug/bundle/nsis/Inventory-Staging_1.5.2_x64-setup.nsis.zip"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVSYXQxaWtWaFNYeDMrSlpsaE1tZTB1Slcra2FXK0NSMTVjTnoxMUJyTVB3dTIzTUMxbm92Z3FaRnY2S0xNUGM1WDMvS24wNndjS3U5VmFVMkZkSUR5Y0lYOVVsTVlkR2dFPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzkzMDI1MjU3CWZpbGU6SW52ZW50b3J5LVN0YWdpbmdfMS41LjNfeDY0LXNldHVwLmV4ZQl2ZXJzaW9uOjEuNS4zCnkrcDRYdnpsRXdRL043ZjQzM0duTWxJMnFXdXRSY2pNRG5aUGFuYVREK3ZDOXp0OXZ2VXd3Y2ZnRXBHYlVWVDJyRnh0UjdYcjhrYmxCdFF5ZFBnV0F3PT0K",
+      "url": "https://github.com/Midwest-Diesel/inventory-desktop/releases/download/v1.5.3-staging/Inventory-Staging_1.5.3_x64-setup.exe"
     }
   }
 }
