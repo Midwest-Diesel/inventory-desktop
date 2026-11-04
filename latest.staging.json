@@ -1,11 +1,11 @@
 {
-  "notes": "",
   "platforms": {
     "windows-x86_64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVSYXQxaWtWaFNYeC8ralhjYW96SFhKV3BXSkYvK2dIREgyRll5K05ULy92NzlnSmpIR0xPTFE5Z2hwSklyREdVVEVTU1UwRGtpTHRxZnVLbVBNNVBJaEMzUUordzdnSEFNPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzkzODI4MTUyCWZpbGU6SW52ZW50b3J5LVN0YWdpbmdfMS42LjFfeDY0LXNldHVwLmV4ZQl2ZXJzaW9uOjEuNi4xCjZhQkpDMHlWVjlFNzFHQ0dIMkdBa2NZdzRhTEZUTDY3Ti9PSnJYNVk4U0gvdkdhMFgyRnB4S3JHR1d6b2dOWDVZY21Db0NCY1NjQS96MUVZWTBCRkNnPT0K",
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVSYXQxaWtWaFNYeDVVL01NeTBFU0xxeTFQZDQyMHU3TUw1QUFXcktGWm5KTTFJbnlFOTVqdDE5NEYrQkMxTFdjZEJMdGg3NXZNTUl2WUNkbWlRY3l0a3gvV3h5NVYyV1FzPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzkzODI5ODQ0CWZpbGU6SW52ZW50b3J5LVN0YWdpbmdfMS42LjFfeDY0LXNldHVwLmV4ZQl2ZXJzaW9uOjEuNi4xCjJCTTdxbFpwWVlVVEtwWkxoVDVjamw3a2dxMDF3QnZVQWZWcml0cjhmYjJyVGxubWRoUlVyQzJEaWNkOU5CUlpic1hvVUZpSnpDUGVocEFpSis1eEF3PT0K",
       "url": "https://github.com/Midwest-Diesel/inventory-desktop/releases/download/v1.6.1-staging/Inventory-Staging_1.6.1_x64-setup.exe"
     }
   },
-  "pub_date": "2026-11-04T21:36:07Z",
-  "version": "v1.6.1-staging"
+  "pub_date": "2026-11-04T22:04:18Z",
+  "version": "v1.6.1-staging",
+  "notes": ""
 }
