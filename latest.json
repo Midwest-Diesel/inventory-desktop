@@ -1,11 +1,11 @@
 {
+  "version": "1.21.5",
   "notes": "",
   "platforms": {
     "windows-x86_64": {
-      "url": "https://github.com/Midwest-Diesel/inventory-desktop/releases/download/v1.21.4/Inventory_1.21.4_x64-setup.exe",
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVSYXQxaWtWaFNYeDhXOFlQM0lJeHdGSG5wck1OMkg2TEtTcG9kZWFLYmtTaFpmRzNhdUI2RkREQjk4MU5KeVVsTVQvWk91WHJJUXRBZzl3RWRObFFWK2FtaVcxMmQyNWc4PQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzkzODMwNjE4CWZpbGU6SW52ZW50b3J5XzEuMjEuNF94NjQtc2V0dXAuZXhlCXZlcnNpb246MS4yMS40CmljS2xIdjBTU2VuczBPc0N2ZHQ2UGJNL3ZPTmwvR3VIWjRKVjgvWXEwcCt5cG01QkR6VWpVR1BMbEhKS1ZRYUtNSzVDcmgrVEZmcHhZTThLL2JSUkJ3PT0K"
+      "url": "https://github.com/Midwest-Diesel/inventory-desktop/releases/download/v1.21.5/Inventory_1.21.5_x64-setup.exe",
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVSYXQxaWtWaFNYeDdlRFJVdkVUL0djSUVRR3Vacmh0bXNDZ1lLeGpGMWhlZjAyaFQ4a1dGMnJYNW44WkZobWVRcGZpVHZoYllsVFhBM1R5akVCWVM4TkpqV2t1ZWNHZlFBPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzk0MDA0NzI3CWZpbGU6SW52ZW50b3J5XzEuMjEuNV94NjQtc2V0dXAuZXhlCXZlcnNpb246MS4yMS41Cmd5ckhtcTV1UTgzVWxPTU56NUxMWDUrZUJFTDY4WkI2UVhZQVdzSlFTVTFLVzQyZ2szYzljVjF4eitUc2puYnYwejZGTUs0WkJ5SElhOHpYYTZaQUJBPT0K"
     }
   },
-  "version": "1.21.4",
-  "pub_date": "2026-11-04T22:17:07Z"
+  "pub_date": "2026-11-06T22:38:56Z"
 }
