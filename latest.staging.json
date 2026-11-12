@@ -1,11 +1,11 @@
 {
+  "pub_date": "2026-11-12T21:07:19Z",
+  "version": "v1.7.0-staging",
   "notes": "",
   "platforms": {
     "windows-x86_64": {
-      "url": "https://github.com/Midwest-Diesel/inventory-desktop/releases/download/v1.6.3-staging/Inventory-Staging_1.6.3_x64-setup.exe",
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVSYXQxaWtWaFNYeDQzcjJtSTFabkE1dEhNUUIweXQ5cUMrdHpxd3BCcGhDcDNWREk2eWNEUmo4VUxqUWRHT0REcERLOXFqRzI4NUVhS1VqdGR6YTlDcXF6emtjQTFFOUFnPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzk0MDAzNzAzCWZpbGU6SW52ZW50b3J5LVN0YWdpbmdfMS42LjNfeDY0LXNldHVwLmV4ZQl2ZXJzaW9uOjEuNi4zCjZ2N2VuTEdCN25ERklwNVdPRG81eWFqOVU2bk1tdG1NcURaMnVaemx2VjRxc1B3TURJRk1vSDJFR2o5TkNNaW1QM1RhU3FjQTdTSmZ6NGpvT2JtREF3PT0K"
+      "url": "https://github.com/Midwest-Diesel/inventory-desktop/releases/download/v1.7.0-staging/Inventory-Staging_1.7.0_x64-setup.exe",
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVSYXQxaWtWaFNYeDV5RHhqa252a2ZuMjZiMTFQdWVYbUVqNm9tMzAxOUVkN0hlYUY4R3hNSGR0SndMZldYRXhWemtKL0JXdUl4QmJPZi9ueW9aL0ZaaGk1d0liRFNVK0FJPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzk0NTE3NjI0CWZpbGU6SW52ZW50b3J5LVN0YWdpbmdfMS43LjBfeDY0LXNldHVwLmV4ZQl2ZXJzaW9uOjEuNy4wCnFvZXJMMzZNL0Y4Wm5IV3pRQzgxQi9ZdGRyV3g5NFoxTmcxU01qM1dLbUUya0lTOGIzSVFFZW5LMERPaEtmd0ZjLzRuWE56L2Nid3BqSUU5SVpnUERnPT0K"
     }
-  },
-  "version": "v1.6.3-staging",
-  "pub_date": "2026-11-06T22:21:57Z"
+  }
 }
