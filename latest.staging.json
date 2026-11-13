@@ -1,11 +1,11 @@
 {
-  "pub_date": "2026-11-12T21:07:19Z",
-  "version": "v1.7.0-staging",
-  "notes": "",
   "platforms": {
     "windows-x86_64": {
-      "url": "https://github.com/Midwest-Diesel/inventory-desktop/releases/download/v1.7.0-staging/Inventory-Staging_1.7.0_x64-setup.exe",
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVSYXQxaWtWaFNYeDV5RHhqa252a2ZuMjZiMTFQdWVYbUVqNm9tMzAxOUVkN0hlYUY4R3hNSGR0SndMZldYRXhWemtKL0JXdUl4QmJPZi9ueW9aL0ZaaGk1d0liRFNVK0FJPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzk0NTE3NjI0CWZpbGU6SW52ZW50b3J5LVN0YWdpbmdfMS43LjBfeDY0LXNldHVwLmV4ZQl2ZXJzaW9uOjEuNy4wCnFvZXJMMzZNL0Y4Wm5IV3pRQzgxQi9ZdGRyV3g5NFoxTmcxU01qM1dLbUUya0lTOGIzSVFFZW5LMERPaEtmd0ZjLzRuWE56L2Nid3BqSUU5SVpnUERnPT0K"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVSYXQxaWtWaFNYeDBFbzhGZm1va3g0MHJxeFVOc0VsdElLNml6REZVbW9reDRRUUxrWWxFTlJxWGFHcXl1ZlkwNU8wb2dxMTdKN1BiTExFTHlIS3lzOWp4cURtaWtjQmc0PQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzk0NjA3NTU0CWZpbGU6SW52ZW50b3J5LVN0YWdpbmdfMS43LjBfeDY0LXNldHVwLmV4ZQl2ZXJzaW9uOjEuNy4wCmdMU0t6TU1qVFdBbHZRTlZwV2xuWUdaRUdOWUlYZG9mNmIzWGo5ZnA2b1hYMytUQVVjeVRjMmJyaTlmYlNtK1BjS1hPQTQxWjBmNnpIcmRnTngvZEFnPT0K",
+      "url": "https://github.com/Midwest-Diesel/inventory-desktop/releases/download/v1.7.0-staging/Inventory-Staging_1.7.0_x64-setup.exe"
     }
-  }
+  },
+  "notes": "",
+  "pub_date": "2026-11-13T22:06:08Z",
+  "version": "v1.7.0-staging"
 }
